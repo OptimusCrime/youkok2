@@ -25,8 +25,7 @@ date_default_timezone_set('Europe/London');
 // Set headers
 //
 
-// TODO
-//header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: text/html; charset=utf-8');
 
 //
 // Include the libraries and system-files
