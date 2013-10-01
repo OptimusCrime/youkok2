@@ -21,6 +21,7 @@ class Base {
     protected $db; // The PDO-wrapper
     protected $user; // Hold the user-object
     protected $template; // Holds the Smarty-object
+    protected $archivePaths = array(); // Array that holds all paths already cached by the url-reverser
     
     //
     // Constructor
@@ -38,7 +39,7 @@ class Base {
         }
 
         // Authenticate if database-connection was successful
-        if ($this->db) {
+        if (!$this->db) {
             // Error goes here
         }
         
@@ -48,5 +49,15 @@ class Base {
         // Init Smarty
         $this->template = $smarty = new Smarty();
     }
+    
+    //
+    // Close the database-connection and clean up before displaying the template
+    //
+    
+    protected function close() {
+        $this->db = null;
+    }
+    
+    
 }
 ?>
