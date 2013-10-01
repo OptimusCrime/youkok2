@@ -21,12 +21,29 @@ class Base {
     protected $db; // The PDO-wrapper
     protected $user; // Hold the user-object
     protected $template; // Holds the Smarty-object
+    
     //
     // Constructor
     //
 
     public function __construct() {
+        // Trying to connect to the database
+        try {
+            $this->db = new PDO("mysql:host=".DATABASE_HOST.";dbname=".DATABASE_TABLE, DATABASE_USER, DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+        } catch (Exception $e) {
+            $this->db = null;
+        }
+
+        // Authenticate if database-connection was successful
+        if ($this->db) {
+            // Error goes here
+        }
         
+        // Init user
+        $this->user = new User();
+        
+        // Init Smarty
+        $this->template = 'todo';
     }
 }
 ?>
