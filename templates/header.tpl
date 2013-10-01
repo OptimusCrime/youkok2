@@ -3,5 +3,5 @@
 <head>
 <base href="http://dev.optimuscrime.net/youkok2/" />
 <title>Youkok.net</title>
-</script>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 </head>
