@@ -27,6 +27,9 @@ class Base {
     //
 
     public function __construct() {
+        // Starting session
+        session_start();
+        
         // Trying to connect to the database
         try {
             $this->db = new PDO("mysql:host=".DATABASE_HOST.";dbname=".DATABASE_TABLE, DATABASE_USER, DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
@@ -43,7 +46,7 @@ class Base {
         $this->user = new User();
         
         // Init Smarty
-        $this->template = 'todo';
+        $this->template = $smarty = new Smarty();
     }
 }
 ?>

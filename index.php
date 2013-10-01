@@ -29,9 +29,10 @@ date_default_timezone_set('Europe/London');
 //header('Content-Type: application/json; charset=utf-8');
 
 //
-// Include the rest-class, functions, libs etc
+// Include the libraries and system-files
 //
 
+require_once 'libs/smarty/Smarty.class.php';
 require_once 'user.php';
 require_once 'base.php';
 require_once 'local.php';
