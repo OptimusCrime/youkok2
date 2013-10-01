@@ -22,7 +22,9 @@ class HomeController extends Base {
         // Calling Base' constructor
         parent::__construct();
         
-        echo 'Frontpage';
+        // Testing
+        $this->template->assign('OUTPUT','this is the home-screen');
+        $this->template->display('index.tpl');
     }
 }
 
