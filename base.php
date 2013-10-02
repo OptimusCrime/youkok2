@@ -111,7 +111,7 @@ class Base {
         }
         
         // Turn url-friendly and return
-        return $this->frienlyUrl($ret);
+        return $this->frienlyUrl(substr($ret,1));
     }
     
     //

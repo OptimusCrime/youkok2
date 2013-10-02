@@ -61,7 +61,7 @@ class HomeController extends Base {
         $get_newest_query->execute();
         while ($row = $get_newest_query->fetch(PDO::FETCH_ASSOC)) {
             // Build string
-            $ret .= '<li>'.$row['name'].'</li>';
+            $ret .= '<li><a target="_blank" href="last-ned/'.$this->reverseUrl($row['path']).'">'.$row['name'].'</a></li>';
         }
         
         return $ret;
@@ -85,7 +85,7 @@ class HomeController extends Base {
         $get_most_popular_query->execute();
         while ($row = $get_most_popular_query->fetch(PDO::FETCH_ASSOC)) {
             // Build string
-            $ret .= '<li><a target="_blank" href="archive'.$this->reverseUrl($row['path']).'">'.$row['name'].' (lastet ned: '.number_format($row['downloaded_times']).' ganger)</a></li>';
+            $ret .= '<li><a target="_blank" href="last-ned/'.$this->reverseUrl($row['path']).'">'.$row['name'].' (lastet ned: '.number_format($row['downloaded_times']).' ganger)</a></li>';
         }
         
         return $ret;
