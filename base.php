@@ -21,7 +21,8 @@ class Base {
     protected $db; // The PDO-wrapper
     protected $user; // Hold the user-object
     protected $template; // Holds the Smarty-object
-    protected $archivePaths = array(); // Array that holds all paths already cached by the url-reverser
+    protected $archive_paths = array(); // Array that holds all paths already cached by the url-reverser
+    protected $file_directory = ''; // Holds the filedirectory
     
     //
     // Constructor
@@ -48,6 +49,9 @@ class Base {
         
         // Init Smarty
         $this->template = $smarty = new Smarty();
+        
+        // Setting the file-directory
+        $this->file_directory = dirname(__FILE__).'/05d26028b91686045907144f1883fcb1/';
     }
     
     //
