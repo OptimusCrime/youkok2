@@ -22,7 +22,7 @@ class DownloadController extends Base {
         // Calling Base' constructor
         parent::__construct();
         
-        echo '<h1>404: Page not found...</h1>';
+        echo '<h1>Downloading...</h1>';
     }
 }
 
