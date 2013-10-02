@@ -51,7 +51,7 @@ class Base {
         $this->template = $smarty = new Smarty();
         
         // Setting the file-directory
-        $this->file_directory = dirname(__FILE__).'/05d26028b91686045907144f1883fcb1/';
+        $this->file_directory = dirname(__FILE__).'/05d26028b91686045907144f1883fcb1';
     }
     
     //
@@ -59,6 +59,65 @@ class Base {
     //
     
     protected function reverseUrl($url) {
+        // Checking if we got got an empty url
+        if (strlen($url) == 0) {
+            return '';
+        }
+        
+        // Checking if roo
+        if ($url == '/') {
+            return '/';
+        }
+        
+        // Check if multiple levels deep
+        $url_pieces_temp = array();
+        if (strpos($url,'/') !== false) {
+            // Multiple levels
+            $url_pieces_temp = explode('/',$url);
+        } else {
+            // Single level
+            $url_pieces_temp[] = $url;
+        }
+        
+        // Check if we have just root left now
+        if (count($url_pieces_temp) == 1) {
+            return '/';
+        }
+        
+        // Remove all empty pieces
+        $location = '/';
+        $url_pieces = array();
+        for ($i = 1; $i < count($url_pieces_temp); $i++) {
+            if (strlen($url_pieces_temp[$i]) > 0) {
+                $url_pieces[] = array('location' => $location, 'url_friendly' => $url_pieces_temp[$i]);
+                $location .= $url_pieces_temp[$i].'/';
+            }
+        }
+        
+        // Now build the correct string
+        $real_path = '';
+        foreach ($url_pieces as $path) {
+            $get_revese_url = "SELECT path
+            FROM archive 
+            WHERE location = :location
+            AND url_friendly = :url_friendly";
+            
+            $get_revese_url_query = $this->db->prepare($get_revese_url);
+            $get_revese_url_query->execute(array(':location' => $path['location'], ':url_friendly' => $path['url_friendly']));
+            $row = $get_revese_url_query->fetch(PDO::FETCH_ASSOC);
+            
+            $real_path = $row['path'];
+        }
+        
+        // Return the path
+        return $this->file_directory.$real_path;
+    }
+    
+    //
+    // Makes reverse url-lookup
+    //
+    
+    protected function prettifyUrl($url) {
         // Checking if we got got an empty url
         if (strlen($url) == 0) {
             return '';
@@ -102,34 +161,19 @@ class Base {
         // Now build the correct string
         $ret = '';
         foreach ($url_pieces as $path) {
-            $get_revese_url = "SELECT name, path
+            $get_pretty_url = "SELECT url_friendly, path
             FROM archive 
             WHERE path = :path";
             
-            $get_revese_url_query = $this->db->prepare($get_revese_url);
-            $get_revese_url_query->execute(array(':path' => $path));
-            $row = $get_revese_url_query->fetch(PDO::FETCH_ASSOC);
+            $get_pretty_url_query = $this->db->prepare($get_pretty_url);
+            $get_pretty_url_query->execute(array(':path' => $path));
+            $row = $get_pretty_url_query->fetch(PDO::FETCH_ASSOC);
             
-            $ret .= '/'.$row['name'];
+            $ret .= '/'.$row['url_friendly'];
         }
         
-        // Turn url-friendly and return
-        return $this->frienlyUrl(substr($ret,1));
-    }
-    
-    //
-    // Build url-friendly-url
-    //
-    
-    protected function frienlyUrl($url) {
-        // Turn all lowercase
-        $url = strtolower($url);
-        
-        // Replace space with -
-        $url = str_replace(' ','-',$url);
-        
-        // Return all
-        return $url;
+        // Remove first slash and return the url
+        return substr($ret,1);
     }
     
     //
