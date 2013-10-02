@@ -23,6 +23,8 @@ class DownloadController extends Base {
         parent::__construct();
         
         echo '<h1>Downloading...</h1>';
+        
+        // http://php.net/manual/en/function.readfile.php
     }
 }
 
@@ -31,7 +33,7 @@ class DownloadController extends Base {
 //
 
 // Getting the current file-path
-$path = explode('/',__FILE__);
+$path = explode('/', __FILE__);
 
 // Including the run-script to execute it all
 include_once "run.php";

@@ -31,7 +31,7 @@ class ProfileController extends Base {
 //
 
 // Getting the current file-path
-$path = explode('/',__FILE__);
+$path = explode('/', __FILE__);
 
 // Including the run-script to execute it all
 include_once "run.php";

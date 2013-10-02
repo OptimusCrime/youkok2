@@ -9,11 +9,11 @@
 */
 
 // Splitting the file-name, removing the tile-extention
-$name = explode('.',$path[count($path)-1]);
+$name = explode('.', $path[count($path)-1]);
 
 // Uppercasing the first letter to be nice and OOP-ish
-$classToCall = ucfirst($name[0]);
+$class_to_call = ucfirst($name[0]);
 
 // Creating a new instance
-$controller = new $classToCall();
+$controller = new $class_to_call();
 ?>

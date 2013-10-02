@@ -23,17 +23,16 @@ class HomeController extends Base {
         parent::__construct();
         
         // Load newest files
-        $this->template->assign('HOME_NEWEST',$this->loadNewest());
+        $this->template->assign('HOME_NEWEST', $this->loadNewest());
         
         // Load most popular files
-        $this->template->assign('HOME_MOST_POPULAR',$this->loadMostPopular());
+        $this->template->assign('HOME_MOST_POPULAR', $this->loadMostPopular());
         
         // Check if this user is logged in
         if ($this->user->isLoggedIn()) {
-            $this->template->assign('HOME_USER_LATEST','comming');
-        }
-        else {
-            $this->template->assign('HOME_USER_LATEST','');
+            $this->template->assign('HOME_USER_LATEST', 'comming');
+        } else {
+            $this->template->assign('HOME_USER_LATEST', null);
         }
 
         // Kill database-connection and cleanup before displaying
@@ -97,7 +96,7 @@ class HomeController extends Base {
 //
 
 // Getting the current file-path
-$path = explode('/',__FILE__);
+$path = explode('/', __FILE__);
 
 // Including the run-script to execute it all
 include_once "run.php";

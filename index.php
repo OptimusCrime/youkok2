@@ -71,13 +71,11 @@ class Loader {
                 // We have multiple slashed, use the first one as base for path-lookup
                 $path_split = explode('/',$_GET['q']);
                 $path = '/'.$path_split[0];
-            }
-            else {
+            } else {
                 // We don't have any slashes in the url, use what we got
                 $path = '/'.str_replace('/','',$_GET['q']);
             }
-        }
-        else {
+        } else {
             // Clean path, use a single shash to identify home-page
             $path = '/';
         }
@@ -105,8 +103,7 @@ class Loader {
         if (file_exists($file)) {
             // File exists, load it
             require_once $file;
-        }
-        else {
+        } else {
             // Load not found
             require_once $this->buildControllerPath('notfound');
         }

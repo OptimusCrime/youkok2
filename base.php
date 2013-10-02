@@ -70,8 +70,7 @@ class Base {
         if (strpos($url,'/') !== false) {
             // Multiple levels
             $url_pieces_temp = explode('/',$url);
-        }
-        else {
+        } else {
             // Single level
             $url_pieces_temp[] = $url;
         }
