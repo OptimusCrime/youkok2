@@ -75,6 +75,7 @@ class DownloadController extends Base {
     //
     
     private function loadFile($file) {
+        // Todo, update download-count, check if user is logged in, the increase user download too
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename='.basename($file));

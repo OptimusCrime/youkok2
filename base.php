@@ -58,7 +58,7 @@ class Base {
     // Makes reverse url-lookup
     //
     
-    protected function reverseUrl($url) {
+    protected function reverseUrl($url, $include_full_path = true, $is_directory = false) {
         // Checking if we got got an empty url
         if (strlen($url) == 0) {
             return '';
@@ -73,7 +73,7 @@ class Base {
         $url_pieces_temp = array();
         if (strpos($url,'/') !== false) {
             // Multiple levels
-            $url_pieces_temp = explode('/',$url);
+            $url_pieces_temp = explode('/', $url);
         } else {
             // Single level
             $url_pieces_temp[] = $url;
@@ -110,7 +110,7 @@ class Base {
         }
         
         // Return the path
-        return $this->file_directory.$real_path;
+        return (($this->file_directory)?$include_full_path:'').$real_path.(($is_directory)?'/':'');
     }
     
     //
@@ -173,7 +173,21 @@ class Base {
         }
         
         // Remove first slash and return the url
-        return substr($ret,1);
+        return substr($ret, 1);
+    }
+    
+    //
+    // 
+    //
+    
+    protected function fromArchiveToDownload($url) {
+        $split = explode('/', $url);
+        
+        if ($split[0] == 'arkiv') {
+            $split[0] = 'last-ned';
+        }
+        
+        return implode('/', $split);
     }
     
     //
