@@ -118,7 +118,7 @@ class Base {
     }
     
     //
-    // Hm
+    // Returning the parent for a current url
     //
     
     protected function reverseParent($url, $is_directory) {
@@ -169,16 +169,20 @@ class Base {
     }
     
     //
-    // 
+    // Changed params to switch from link in archive to a download-link
     //
     
     protected function fromArchiveToDownload($url) {
+        // Splitting the url
         $split = explode('/', $url);
         
-        if ($split[0] == 'arkiv') {
-            $split[0] = 'last-ned';
+        // Checking for keyword in the first part of the string
+        if ('/' . $split[0] == $this->paths['archive'][0]) {
+            // Replacing the string it we found the archive-path
+            $split[0] = str_replace('/', '', $this->paths['download'][0]);
         }
         
+        // Return the new url
         return implode('/', $split);
     }
     
