@@ -3,7 +3,7 @@
  * File: homeController.php
  * Holds: The HomeController-class
  * Created: 02.10.13
- * Last updated: 02.10.13
+ * Last updated: 05.12.13
  * Project: Youkok2
  * 
 */
@@ -18,9 +18,9 @@ class HomeController extends Base {
     // The constructor for this subclass
     //
 
-    public function __construct() {
+    public function __construct($paths) {
         // Calling Base' constructor
-        parent::__construct();
+        parent::__construct($paths);
         
         // Load newest files
         $this->template->assign('HOME_NEWEST', $this->loadNewest());
@@ -99,5 +99,5 @@ class HomeController extends Base {
 $path = explode('/', __FILE__);
 
 // Including the run-script to execute it all
-include_once "run.php";
+include_once 'run.php';
 ?>

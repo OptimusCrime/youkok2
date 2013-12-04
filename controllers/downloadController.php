@@ -3,7 +3,7 @@
  * File: downloadController.php
  * Holds: The DownloadController-class
  * Created: 02.10.13
- * Last updated: 02.10.13
+ * Last updated: 05.12.13
  * Project: Youkok2
  * 
 */
@@ -18,9 +18,9 @@ class DownloadController extends Base {
     // The constructor for this subclass
     //
 
-    public function __construct() {
+    public function __construct($paths) {
         // Calling Base' constructor
-        parent::__construct();
+        parent::__construct($paths);
         
         // Parse the correct path
         $file_location = $this->getFileRealLocation();
@@ -78,7 +78,7 @@ class DownloadController extends Base {
         // Todo, update download-count, check if user is logged in, the increase user download too
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename='.basename($file));
+        header('Content-Disposition: attachment; filename=' . basename($file));
         header('Content-Transfer-Encoding: binary');
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
@@ -99,5 +99,5 @@ class DownloadController extends Base {
 $path = explode('/', __FILE__);
 
 // Including the run-script to execute it all
-include_once "run.php";
+include_once 'run.php';
 ?>
