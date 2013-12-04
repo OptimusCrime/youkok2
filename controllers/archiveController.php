@@ -45,7 +45,7 @@ class ArchiveController extends Base {
         $get_current_archive_query->execute(array(':parent' => $parent));
         while ($row = $get_current_archive_query->fetch(PDO::FETCH_ASSOC)) {
             // Build string
-            $ret .= '<li><a href="'.(($row['is_directory'])? $real_url . $row['url_friendly'].'/' : $this->fromArchiveToDownload($real_url . $row['url_friendly'])).'">'.$row['name'].(($row['is_directory'])?' [Folder]':'').'</a></li>';
+            $ret .= '<li><a href="' . (($row['is_directory']) ? $real_url . $row['url_friendly']. '/' : $this->fromArchiveToDownload($real_url . $row['url_friendly'])) . '">' . $row['name'] . (($row['is_directory']) ? ' [Folder]' : '') . '</a></li>';
         }
         
         $this->template->assign('ARCHIVE_DISPLAY', $ret);

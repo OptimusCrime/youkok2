@@ -35,7 +35,7 @@ class Base {
         
         // Trying to connect to the database
         try {
-            $this->db = new PDO("mysql:host=".DATABASE_HOST.";dbname=".DATABASE_TABLE, DATABASE_USER, DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+            $this->db = new PDO('mysql:host=' . DATABASE_HOST.';dbname=' . DATABASE_TABLE, DATABASE_USER, DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
         } catch (Exception $e) {
             $this->db = null;
         }
@@ -52,7 +52,7 @@ class Base {
         $this->template = $smarty = new Smarty();
         
         // Setting the file-directory
-        $this->file_directory = dirname(__FILE__).'/05d26028b91686045907144f1883fcb1';
+        $this->file_directory = dirname(__FILE__ ). '/05d26028b91686045907144f1883fcb1';
         
         // Storing paths
         $this->paths = $paths;
@@ -75,7 +75,7 @@ class Base {
         
         // Check if multiple levels deep
         $url_pieces_temp = array();
-        if (strpos($url,'/') !== false) {
+        if (strpos($url, '/') !== false) {
             // Multiple levels
             $url_pieces_temp = explode('/', $url);
         } else {
@@ -114,7 +114,7 @@ class Base {
         }
         
         // Return the path
-        return (($this->file_directory)?$include_full_path:'').$real_path.(($is_directory)?'/':'');
+        return (($this->file_directory) ? $include_full_path : '') . $real_path . (($is_directory) ? '/' : '');
     }
     
     //
@@ -124,7 +124,7 @@ class Base {
     protected function reverseParent($url, $is_directory) {
         // Clear out the parts of the url we don't ned
         $url_pieces_temp = array();
-        if (strpos($url,'/') !== false) {
+        if (strpos($url, '/') !== false) {
             // Multiple levels
             $url_pieces_temp = explode('/', $url);
         } else {

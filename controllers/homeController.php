@@ -46,7 +46,7 @@ class HomeController extends Base {
     //
     //
     
-    private function loadNewest () {
+    private function loadNewest() {
         $ret = '';
         
         // Loading newest files from the system
@@ -60,7 +60,7 @@ class HomeController extends Base {
         $get_newest_query->execute();
         while ($row = $get_newest_query->fetch(PDO::FETCH_ASSOC)) {
             // Build string
-            $ret .= '<li><a href="last-ned/'.$this->prettifyUrl($row['path']).'">'.$row['name'].'</a></li>';
+            $ret .= '<li><a href="last-ned/' . $this->prettifyUrl($row['path']).'">' . $row['name'] . '</a></li>';
         }
         
         return $ret;
@@ -70,7 +70,7 @@ class HomeController extends Base {
     //
     //
     
-    private function loadMostPopular () {
+    private function loadMostPopular() {
         $ret = '';
         
         // Loading newest files from the system
@@ -84,7 +84,7 @@ class HomeController extends Base {
         $get_most_popular_query->execute();
         while ($row = $get_most_popular_query->fetch(PDO::FETCH_ASSOC)) {
             // Build string
-            $ret .= '<li><a href="last-ned/'.$this->prettifyUrl($row['path']).'">'.$row['name'].' (lastet ned: '.number_format($row['downloaded_times']).' ganger)</a></li>';
+            $ret .= '<li><a href="last-ned/' . $this->prettifyUrl($row['path']) . '">' . $row['name'] . ' (lastet ned: ' . number_format($row['downloaded_times']) . ' ganger)</a></li>';
         }
         
         return $ret;

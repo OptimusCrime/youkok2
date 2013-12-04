@@ -67,13 +67,13 @@ class Loader {
         // Checking wether the path is set or not
         if (isset($_GET['q'])) {
             // We have a path, find the base-path to include the correct script
-            if (strpos($_GET['q'],'/') !== false) {
+            if (strpos($_GET['q'], '/') !== false) {
                 // We have multiple slashed, use the first one as base for path-lookup
                 $path_split = explode('/',$_GET['q']);
-                $path = '/'.$path_split[0];
+                $path = '/' . $path_split[0];
             } else {
                 // We don't have any slashes in the url, use what we got
-                $path = '/'.str_replace('/','',$_GET['q']);
+                $path = '/' . str_replace('/', '', $_GET['q']);
             }
         } else {
             // Clean path, use a single shash to identify home-page
@@ -114,7 +114,7 @@ class Loader {
     //
     
     private function buildControllerPath($controller) {
-        return dirname(__FILE__).'/controllers/'.strtolower(str_replace(array('.','/'),'',$controller)).'Controller.php';
+        return dirname(__FILE__) . '/controllers/' . strtolower(str_replace(array('.', '/'), '', $controller)) . 'Controller.php';
     }
     
     //
