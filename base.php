@@ -3,7 +3,7 @@
  * File: rest.php
  * Holds: The base-class intilize most of the common stuff the system needs
  * Created: 02.10.13
- * Last updated: 02.10.13
+ * Last updated: 04.12.13
  * Project: Youkok2
  * 
 */
@@ -111,6 +111,57 @@ class Base {
         
         // Return the path
         return (($this->file_directory)?$include_full_path:'').$real_path.(($is_directory)?'/':'');
+    }
+    
+    //
+    // Hm
+    //
+    
+    protected function reverseParent($url, $is_directory) {
+        // Clear out the parts of the url we don't ned
+        $url_pieces_temp = array();
+        if (strpos($url,'/') !== false) {
+            // Multiple levels
+            $url_pieces_temp = explode('/', $url);
+        } else {
+            // Single level
+            $url_pieces_temp[] = $url;
+        }
+        
+        // Make the corret tree
+        $url_pieces = array();
+        foreach ($url_pieces_temp as $v) {
+            if (strlen($v) > 0 and $v != 'arkiv') {
+                $url_pieces[] = $v;
+            }
+        }
+        
+        // Check if root
+        if (count($url_pieces) == 0) {
+            return 1;
+        }
+        else {
+            // Fetch from the database
+            $current_id = 1;
+            
+            foreach ($url_pieces as $path) {
+                // Todo add caching here!
+                $get_revese_url = "SELECT id
+                FROM archive 
+                WHERE parent = :parent
+                AND url_friendly = :url_friendly";
+                
+                $get_revese_url_query = $this->db->prepare($get_revese_url);
+                $get_revese_url_query->execute(array(':parent' => $current_id, ':url_friendly' => $path));
+                $row = $get_revese_url_query->fetch(PDO::FETCH_ASSOC);
+                
+                // Updating the current id
+                $current_id = $row['id'];
+            }
+            
+            // Returning the current id
+            return $current_id;
+        }
     }
     
     //
