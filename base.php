@@ -23,12 +23,13 @@ class Base {
     protected $template; // Holds the Smarty-object
     protected $archive_paths = array(); // Array that holds all paths already cached by the url-reverser
     protected $file_directory = ''; // Holds the filedirectory
+    private $paths; // Holds the paths served from the Loader-class
     
     //
     // Constructor
     //
 
-    public function __construct() {
+    public function __construct($paths) {
         // Starting session
         session_start();
         
@@ -52,6 +53,9 @@ class Base {
         
         // Setting the file-directory
         $this->file_directory = dirname(__FILE__).'/05d26028b91686045907144f1883fcb1';
+        
+        // Storing paths
+        $this->paths = $paths;
     }
     
     //
@@ -131,7 +135,7 @@ class Base {
         // Make the corret tree
         $url_pieces = array();
         foreach ($url_pieces_temp as $v) {
-            if (strlen($v) > 0 and $v != 'arkiv') {
+            if (strlen($v) > 0 and !in_array('/' . $v, $this->paths['archive'])) {
                 $url_pieces[] = $v;
             }
         }
@@ -165,69 +169,6 @@ class Base {
     }
     
     //
-    // Makes reverse url-lookup
-    //
-    
-    protected function prettifyUrl($url) {
-        // Checking if we got got an empty url
-        if (strlen($url) == 0) {
-            return '';
-        }
-        
-        // Checking if roo
-        if ($url == '/') {
-            return '/';
-        }
-        
-        // Check if multiple levels deep
-        $url_pieces_temp = array();
-        if (strpos($url,'/') !== false) {
-            // Multiple levels
-            $url_pieces_temp = explode('/',$url);
-        } else {
-            // Single level
-            $url_pieces_temp[] = $url;
-        }
-        
-        // Remove all empty pieces
-        $url_pieces = array();
-        for ($i = 0; $i < count($url_pieces_temp); $i++) {
-            if (strlen($url_pieces_temp[$i]) > 0) {
-                $url_pieces[] = '/'.$url_pieces_temp[$i];
-            }
-        }
-        
-        // Check if we have just root left now
-        if (count($url_pieces) == 1 and $url_pieces[0] == '/') {
-            return '/';
-        }
-        
-        // Build correct paths
-        $temp = '';
-        for ($i = 0; $i < count($url_pieces); $i++) {
-            $temp .= $url_pieces[$i];
-            $url_pieces[$i] = $temp;
-        }
-        
-        // Now build the correct string
-        $ret = '';
-        foreach ($url_pieces as $path) {
-            $get_pretty_url = "SELECT url_friendly, path
-            FROM archive 
-            WHERE path = :path";
-            
-            $get_pretty_url_query = $this->db->prepare($get_pretty_url);
-            $get_pretty_url_query->execute(array(':path' => $path));
-            $row = $get_pretty_url_query->fetch(PDO::FETCH_ASSOC);
-            
-            $ret .= '/'.$row['url_friendly'];
-        }
-        
-        // Remove first slash and return the url
-        return substr($ret, 1);
-    }
-    
-    //
     // 
     //
     
@@ -248,7 +189,5 @@ class Base {
     protected function close() {
         $this->db = null;
     }
-    
-    
 }
 ?>
