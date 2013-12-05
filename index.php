@@ -57,6 +57,7 @@ class Loader {
         'download' => array('/last-ned'),
         'flat' => array('/om','/derp'),
         'notfound' => array('/404'),
+        'other' => array('/nytt-fag'),
     );
 
     //

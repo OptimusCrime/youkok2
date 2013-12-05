@@ -1,5 +1,7 @@
 [[+include file="header.tpl"]]
 
+<a href="nytt-fag">Nytt fag</a>
+
 <h2>Nyeste filer</h2>
 [[+$HOME_NEWEST]]
 

@@ -5,3 +5,5 @@
 <title>Youkok.net</title>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 </head>
+<body>
+Søk etter fag: <input type="text" name="search-course" value="" id="search-course" />
