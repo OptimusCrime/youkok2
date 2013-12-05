@@ -118,10 +118,10 @@ class Base {
     }
     
     //
-    //
+    // Generates an url based on the current id
     //
     
-    protected function generateUrlById($id) {
+    protected function generateUrlById($id, $type = 'download', $trailing_slash = false) {
         // Todo, add caching
         $url = array();
         $current_id = $id;
@@ -148,7 +148,7 @@ class Base {
         $url = array_reverse($url);
         
         // Return the complete url
-        return $this->paths['download'][0] . implode('/', $url);
+        return $this->paths[$type][0] . implode('/', $url) . (($trailing_slash) ? '/' : '');
     }
     
     //
