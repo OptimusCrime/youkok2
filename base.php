@@ -59,65 +59,6 @@ class Base {
     }
     
     //
-    // Makes reverse url-lookup
-    //
-    
-    protected function reverseUrl($url, $include_full_path = true, $is_directory = false) {
-        // Checking if we got got an empty url
-        if (strlen($url) == 0) {
-            return '';
-        }
-        
-        // Checking if roo
-        if ($url == '/') {
-            return '/';
-        }
-        
-        // Check if multiple levels deep
-        $url_pieces_temp = array();
-        if (strpos($url, '/') !== false) {
-            // Multiple levels
-            $url_pieces_temp = explode('/', $url);
-        } else {
-            // Single level
-            $url_pieces_temp[] = $url;
-        }
-        
-        // Check if we have just root left now
-        if (count($url_pieces_temp) == 1) {
-            return '/';
-        }
-        
-        // Remove all empty pieces
-        $location = '/';
-        $url_pieces = array();
-        for ($i = 1; $i < count($url_pieces_temp); $i++) {
-            if (strlen($url_pieces_temp[$i]) > 0) {
-                $url_pieces[] = array('location' => $location, 'url_friendly' => $url_pieces_temp[$i]);
-                $location .= $url_pieces_temp[$i].'/';
-            }
-        }
-        
-        // Now build the correct string
-        $real_path = '';
-        foreach ($url_pieces as $path) {
-            $get_revese_url = "SELECT path
-            FROM archive 
-            WHERE location = :location
-            AND url_friendly = :url_friendly";
-            
-            $get_revese_url_query = $this->db->prepare($get_revese_url);
-            $get_revese_url_query->execute(array(':location' => $path['location'], ':url_friendly' => $path['url_friendly']));
-            $row = $get_revese_url_query->fetch(PDO::FETCH_ASSOC);
-            
-            $real_path = $row['path'];
-        }
-        
-        // Return the path
-        return (($this->file_directory) ? $include_full_path : '') . $real_path . (($is_directory) ? '/' : '');
-    }
-    
-    //
     // Generates an url based on the current id
     //
     
@@ -157,22 +98,7 @@ class Base {
     
     protected function reverseParent($url, $is_directory) {
         // Clear out the parts of the url we don't ned
-        $url_pieces_temp = array();
-        if (strpos($url, '/') !== false) {
-            // Multiple levels
-            $url_pieces_temp = explode('/', $url);
-        } else {
-            // Single level
-            $url_pieces_temp[] = $url;
-        }
-        
-        // Make the corret tree
-        $url_pieces = array();
-        foreach ($url_pieces_temp as $v) {
-            if (strlen($v) > 0 and !in_array('/' . $v, $this->paths['archive'])) {
-                $url_pieces[] = $v;
-            }
-        }
+        $url_pieces = $this->cleanRequestUrl($url);
         
         // Check if root
         if (count($url_pieces) == 0) {
@@ -203,6 +129,40 @@ class Base {
     }
     
     //
+    // Returns the physical location of a file based on the pretty-url
+    //
+    
+    protected function reverseFileLocation($url) {
+        // Clear out the parts of the url we don't ned
+        $url_pieces = $this->cleanRequestUrl($url);
+        
+        // Define variables we are going to need for later
+        $current_id = 1;
+        $url = array();
+        
+        foreach ($url_pieces as $path) {
+            // Todo add caching here!
+            $get_revese_url = "SELECT id, location
+            FROM archive 
+            WHERE parent = :parent
+            AND url_friendly = :url_friendly";
+
+            $get_revese_url_query = $this->db->prepare($get_revese_url);
+            $get_revese_url_query->execute(array(':parent' => $current_id, ':url_friendly' => $path));
+            $row = $get_revese_url_query->fetch(PDO::FETCH_ASSOC);
+            
+            // Updating the current id
+            $current_id = $row['id'];
+            
+            // Updating the current url
+            $url[] = $row['location'];
+        }
+
+        // Returning the entire path
+        return $this->file_directory . '/' . implode('/', $url);
+    }
+    
+    //
     // Changed params to switch from link in archive to a download-link
     //
     
@@ -218,6 +178,43 @@ class Base {
         
         // Return the new url
         return implode('/', $split);
+    }
+    
+    //
+    // Returning an 404-page (more to come!)
+    //
+    
+    protected function return404() {
+        return '<h1>Page not found... More to come!</h1>';
+    }
+    
+    //
+    // Return
+    //
+    
+    private function cleanRequestUrl($url) {
+        $url_pieces_temp = array();
+        if (strpos($url, '/') !== false) {
+            // Multiple levels
+            $url_pieces_temp = explode('/', $url);
+        } else {
+            // Single level
+            $url_pieces_temp[] = $url;
+        }
+        
+        // Make array with archive and download-paths
+        $remove_fragments = array_merge((array) $this->paths['download'], (array) $this->paths['archive']);
+        
+        // Make the corret tree
+        $url_pieces = array();
+        foreach ($url_pieces_temp as $v) {
+            if (strlen($v) > 0 and !in_array('/' . $v, $remove_fragments)) {
+                $url_pieces[] = $v;
+            }
+        }
+        
+        // Return the array
+        return $url_pieces;
     }
     
     //

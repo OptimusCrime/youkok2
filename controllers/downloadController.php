@@ -22,33 +22,13 @@ class DownloadController extends Base {
         // Calling Base' constructor
         parent::__construct($paths);
         
-        // Parse the correct path
-        $file_location = $this->getFileRealLocation();
-        
-        // Check if it returned a real file or not
-        if (!$file_location) {
-            // Did not return a real file
-            $this->return404();
-        }
-        else {
-            // Did return a real file
-        }
-        
-        // http://php.net/manual/en/function.readfile.php
-    }
-    
-    //
-    //
-    //
-    
-    private function getFileRealLocation() {
         // Getting the path
         if (!isset($_GET['q'])) {
             return false;
         }
         else {
             // Reverse the url
-            $file = $this->reverseUrl($_GET['q']);
+            $file = $this->reverseFileLocation($_GET['q']);
             
             // Check if the file exists or not
             if (1 == 1) {
@@ -60,18 +40,10 @@ class DownloadController extends Base {
                 $this->return404();
             }
         }
-    }
+    } 
     
     //
-    //
-    //
-    
-    private function return404() {
-        return '<h1>File not found...</h1>';
-    }
-    
-    //
-    //
+    // Loading an actual file from the fileserver
     //
     
     private function loadFile($file) {
@@ -84,9 +56,12 @@ class DownloadController extends Base {
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
         header('Content-Length: ' . filesize($file));
+        
         ob_clean();
         flush();
+        
         readfile($file);
+        
         exit;
     }
 }
