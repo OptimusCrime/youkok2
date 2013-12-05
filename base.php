@@ -3,7 +3,7 @@
  * File: rest.php
  * Holds: The base-class intilize most of the common stuff the system needs
  * Created: 02.10.13
- * Last updated: 04.12.13
+ * Last updated: 05.12.13
  * Project: Youkok2
  * 
 */
@@ -115,6 +115,40 @@ class Base {
         
         // Return the path
         return (($this->file_directory) ? $include_full_path : '') . $real_path . (($is_directory) ? '/' : '');
+    }
+    
+    //
+    //
+    //
+    
+    protected function generateUrlById($id) {
+        // Todo, add caching
+        $url = array();
+        $current_id = $id;
+        
+        // Loop untill we get to root
+        while ($current_id != 0) {
+            // Todo add caching here!
+            $get_revese_url = "SELECT parent, url_friendly
+            FROM archive 
+            WHERE id = :id";
+            
+            $get_revese_url_query = $this->db->prepare($get_revese_url);
+            $get_revese_url_query->execute(array(':id' => $current_id));
+            $row = $get_revese_url_query->fetch(PDO::FETCH_ASSOC);
+            
+            // Updating the current id
+            $current_id = $row['parent'];
+            
+            // Add to the url-array
+            $url[] = $row['url_friendly'];
+        }
+        
+        // Reverse array
+        $url = array_reverse($url);
+        
+        // Return the complete url
+        return $this->paths['download'][0] . implode('/', $url);
     }
     
     //
