@@ -3,10 +3,10 @@
 <a href="nytt-fag">Nytt fag</a>
 
 <h2>Nyeste filer</h2>
-[[+$HOME_NEWEST]]
+<ul>[[+$HOME_NEWEST]]</ul>
 
 <h2>Mest populære</h2>
-[[+$HOME_MOST_POPULAR]]
+<ul>[[+$HOME_MOST_POPULAR]]</ul>
 
 <h2>Mineeee</h2>
 [[+$HOME_USER_LATEST]]

@@ -1,5 +1,21 @@
+body, html {
+    background-color: #999999;
+    height: 100%;
+}
+
 .div-relative {
     position: relative;
+}
+
+#wrapper {
+    padding-top: 51px;
+    height: auto;
+    min-height: 100%;
+}
+#main {
+    background-color: #fff;
+    height: auto;
+    min-height: 100%;
 }
 #nav-search {
     position: absolute;
