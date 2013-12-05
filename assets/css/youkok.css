@@ -1,0 +1,11 @@
+.div-relative {
+    position: relative;
+}
+#nav-search {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+#search {
+    width: 285px;
+}
