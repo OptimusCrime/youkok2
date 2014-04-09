@@ -18,9 +18,9 @@ class NotfoundController extends Base {
     // The constructor for this subclass
     //
 
-    public function __construct($paths) {
+    public function __construct($paths, $base) {
         // Calling Base' constructor
-        parent::__construct($paths);
+        parent::__construct($paths, $base);
         
         echo '<h1>404: Page not found...</h1>';
     }

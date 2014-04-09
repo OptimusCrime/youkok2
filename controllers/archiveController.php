@@ -18,9 +18,9 @@ class ArchiveController extends Base {
     // The constructor for this subclass
     //
 
-    public function __construct($paths) {
+    public function __construct($paths, $base) {
         // Calling Base' constructor
-        parent::__construct($paths);
+        parent::__construct($paths, $base);
         
         // Reverseurl to get the current location
         $real_url = $_GET['q'];

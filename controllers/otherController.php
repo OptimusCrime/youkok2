@@ -18,9 +18,9 @@ class OtherController extends Base {
     // The constructor for this subclass
     //
 
-    public function __construct($paths) {
+    public function __construct($paths, $base) {
         // Calling Base' constructor
-        parent::__construct($paths);
+        parent::__construct($paths, $base);
         
         // Checking what to call
         if ($_GET['q'] == 'nytt-fag') {

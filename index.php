@@ -28,13 +28,19 @@ date_default_timezone_set('Europe/London');
 header('Content-Type: text/html; charset=utf-8');
 
 //
+// Define base for this file
+//
+
+$base_path = dirname(__FILE__);
+
+//
 // Include the libraries and system-files
 //
 
-require_once 'libs/smarty/Smarty.class.php';
-require_once 'user.php';
-require_once 'base.php';
-require_once 'local.php';
+require_once $base_path . '/libs/smarty/Smarty.class.php';
+require_once $base_path . '/elements/user.class.php';
+require_once $base_path . '/base.php';
+require_once $base_path . '/local.php';
 
 //
 // Trying to include local.php
@@ -70,7 +76,7 @@ class Loader {
             // We have a path, find the base-path to include the correct script
             if (strpos($_GET['q'], '/') !== false) {
                 // We have multiple slashed, use the first one as base for path-lookup
-                $path_split = explode('/',$_GET['q']);
+                $path_split = explode('/', $_GET['q']);
                 $path = '/' . $path_split[0];
             } else {
                 // We don't have any slashes in the url, use what we got

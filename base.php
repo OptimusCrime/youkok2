@@ -23,39 +23,41 @@ class Base {
     protected $template; // Holds the Smarty-object
     protected $archive_paths = array(); // Array that holds all paths already cached by the url-reverser
     protected $file_directory = ''; // Holds the filedirectory
+    protected $base_path = ''; // Holds the directory for the index file (defined as base for the project)
     private $paths; // Holds the paths served from the Loader-class
     
     //
     // Constructor
     //
 
-    public function __construct($paths) {
+    public function __construct($paths, $base) {
         // Starting session
         session_start();
         
+        // Stores the base path
+        $this->base_path = $base;
+        
         // Trying to connect to the database
         try {
-            $this->db = new PDO('mysql:host=' . DATABASE_HOST.';dbname=' . DATABASE_TABLE, DATABASE_USER, DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+            $this->db = new PDO('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, DATABASE_USER, DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
         } catch (Exception $e) {
             $this->db = null;
         }
 
         // Authenticate if database-connection was successful
-        if (!$this->db) {
-            // Error goes here
+        if ($this->db) {
+            // Init user
+            $this->user = new User();
+            
+            // Init Smarty
+            $this->template = $smarty = new Smarty();
+            
+            // Setting the file-directory
+            $this->file_directory = dirname(__FILE__ ). '/05d26028b91686045907144f1883fcb1';
+            
+            // Storing paths
+            $this->paths = $paths;
         }
-        
-        // Init user
-        $this->user = new User();
-        
-        // Init Smarty
-        $this->template = $smarty = new Smarty();
-        
-        // Setting the file-directory
-        $this->file_directory = dirname(__FILE__ ). '/05d26028b91686045907144f1883fcb1';
-        
-        // Storing paths
-        $this->paths = $paths;
     }
     
     //
