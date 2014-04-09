@@ -30,7 +30,7 @@ Class User {
     // Returning if the user is logged in or not
     //
     
-    public function isLoggedIn() {
+    public function loggedIn() {
         return 1;
     }
     
@@ -46,7 +46,7 @@ Class User {
     // Returning the current username
     //
     
-    public function getName() {
+    public function getNick() {
         return '<i>Anonym</i>';
     }
     
@@ -54,7 +54,15 @@ Class User {
     // Returning if the current user is NTNU-user or not
     //
     
-    public function getIsNTNU() {
+    public function isNTNU() {
+        return 1;
+    }
+    
+    //
+    //
+    //
+    
+    public function isVerified() {
         return 1;
     }
 }
