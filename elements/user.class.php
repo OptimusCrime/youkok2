@@ -3,10 +3,14 @@
  * File: user.php
  * Holds: Holds all the user-related stuff
  * Created: 02.10.13
- * Last updated: 02.10.13
+ * Last updated: 10.04.14
  * Project: Youkok2
  * 
 */
+
+//
+// Class what represents the user
+//
 
 Class User {
 
@@ -51,7 +55,7 @@ Class User {
     }
     
     //
-    // Returning if the current user is NTNU-user or not
+    // Returning if the current user is NTNU user or not
     //
     
     public function isNTNU() {
@@ -59,7 +63,7 @@ Class User {
     }
     
     //
-    //
+    // Returning if the current user is verified or not
     //
     
     public function isVerified() {

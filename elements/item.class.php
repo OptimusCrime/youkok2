@@ -1,21 +1,21 @@
 <?php
 /*
  * File: item.php
- * Holds: Todo
+ * Holds: Class for either a directory or file in the system
  * Created: 09.04.14
- * Last updated: 05.12.13
+ * Last updated: 10.04.14
  * Project: Youkok2
  * 
 */
 
 //
-// Class goes here
+// Either directory or file in the system
 //
 
 class Item {
     
     //
-    //
+    // Variables for the class
     //
     
     const WEEK = 0;
@@ -23,16 +23,18 @@ class Item {
     const YEAR = 2;
     const ALL = 3;
     
+    private $collection;
+
     //
-    //
+    // Constructor
     //
     
-    public function _construct() {
-        // Derp
+    public function _construct(&$collection) {
+        $this->collection = $collection;
     }
     
     //
-    //
+    // Create methods
     //
     
     public function createById($id) {
@@ -42,6 +44,30 @@ class Item {
     public function createByUrl($url) {
         //
     }
+
+    //
+    // Getters
+    //
+
+    public function getId() {
+        return $this->id;
+    }
+
+    public function getName() {
+        return $this->name;
+    }
+
+    //
+    // Generate url for this item
+    //
+
+    public function generateUrl($path) {
+        //
+    }
+
+    //
+    // Download methods
+    //
     
     public function getDownloadCount($delta) {
         //
