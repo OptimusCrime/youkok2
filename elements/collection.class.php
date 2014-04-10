@@ -3,7 +3,7 @@
  * File: collection.php
  * Holds: Holds the collection of all the items currently loaded (to reduce queries)
  * Created: 09.04.14
- * Last updated: 05.12.13
+ * Last updated: 10.04.14
  * Project: Youkok2
  * 
 */
@@ -37,7 +37,7 @@ class Collection {
     }
 
     //
-    //
+    // Add Item to collection if it is not already there
     //
 
     public function addIfDoesNotExist($elm) {

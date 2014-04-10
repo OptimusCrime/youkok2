@@ -3,13 +3,13 @@
  * File: homeController.php
  * Holds: The HomeController-class
  * Created: 02.10.13
- * Last updated: 05.12.13
+ * Last updated: 10.04.14
  * Project: Youkok2
  * 
 */
 
 //
-// The REST-class doing most of the magic
+// Displaying the Home screen
 //
 
 class HomeController extends Base {

@@ -1,9 +1,9 @@
 <?php
 /*
  * File: item.php
- * Holds: Todo
+ * Holds: Class for either a directory or file in the system
  * Created: 09.04.14
- * Last updated: 05.12.13
+ * Last updated: 10.04.14
  * Project: Youkok2
  * 
 */
