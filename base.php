@@ -24,6 +24,7 @@ class Base {
     protected $archive_paths = array(); // Array that holds all paths already cached by the url-reverser
     protected $file_directory = ''; // Holds the filedirectory
     protected $base_path = ''; // Holds the directory for the index file (defined as base for the project)
+    protected $collection;
     private $paths; // Holds the paths served from the Loader-class
     
     //
@@ -36,6 +37,9 @@ class Base {
         
         // Stores the base path
         $this->base_path = $base;
+
+        // Init the collection
+        $this->collection = new Collection();
         
         // Trying to connect to the database
         try {

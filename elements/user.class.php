@@ -8,6 +8,10 @@
  * 
 */
 
+//
+// Class what represents the user
+//
+
 Class User {
 
     //
@@ -51,7 +55,7 @@ Class User {
     }
     
     //
-    // Returning if the current user is NTNU-user or not
+    // Returning if the current user is NTNU user or not
     //
     
     public function isNTNU() {
@@ -59,7 +63,7 @@ Class User {
     }
     
     //
-    //
+    // Returning if the current user is verified or not
     //
     
     public function isVerified() {

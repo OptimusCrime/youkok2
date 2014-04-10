@@ -21,6 +21,9 @@ class HomeController extends Base {
     public function __construct($paths, $base) {
         // Calling Base' constructor
         parent::__construct($paths, $base);
+
+        // Include item class
+        require_once $this->base . '/elements/user.class.php';
         
         // Load newest files
         $this->template->assign('HOME_NEWEST', $this->loadNewest());
@@ -47,10 +50,11 @@ class HomeController extends Base {
     //
     
     private function loadNewest() {
+        // Declear variable for storing content
         $ret = '';
         
-        // Loading newest files from the system
-        $get_newest = "SELECT id, name, downloaded_times
+        // Loading newest files from the system TODO add filter
+        $get_newest = "SELECT id, name
         FROM archive
         WHERE is_directory = 0
         ORDER BY added DESC
@@ -59,10 +63,23 @@ class HomeController extends Base {
         $get_newest_query = $this->db->prepare($get_newest);
         $get_newest_query->execute();
         while ($row = $get_newest_query->fetch(PDO::FETCH_ASSOC)) {
-            // Build string
-            $ret .= '<li><a href="' . $this->generateUrlById($row['id'], 'download', false) . '">' . $row['name'] . ' [lastet ned: ' . number_format($row['downloaded_times']) . ' ganger]</a></li>';
+            // Create new object
+            $item = new Item($this->collection);
+            $item->createById($row['id']);
+
+            // Add to collection if new
+            $collection->addIfDoesNotExist($item);
+
+            // Load item from collection
+            $element = $collection->get($row['id']);
+
+            // CHeck if element was loaded
+            if ($element != null) {
+                $ret .= '<li><a href="' . $element->generateUrl('download') . '">' . $element->getName() . ' [lastet ned: xxx]</a></li>';
+            }
         }
         
+        // Return the content
         return $ret;
     }
     

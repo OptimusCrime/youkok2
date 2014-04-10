@@ -9,13 +9,13 @@
 */
 
 //
-// Class goes here
+// Either directory or file in the system
 //
 
 class Item {
     
     //
-    //
+    // Variables for the class
     //
     
     const WEEK = 0;
@@ -23,16 +23,18 @@ class Item {
     const YEAR = 2;
     const ALL = 3;
     
+    private $collection;
+
     //
-    //
+    // Constructor
     //
     
-    public function _construct() {
-        // Derp
+    public function _construct(&$collection) {
+        $this->collection = $collection;
     }
     
     //
-    //
+    // Create
     //
     
     public function createById($id) {
