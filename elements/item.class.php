@@ -34,7 +34,7 @@ class Item {
     }
     
     //
-    // Create
+    // Create methods
     //
     
     public function createById($id) {
@@ -44,6 +44,30 @@ class Item {
     public function createByUrl($url) {
         //
     }
+
+    //
+    // Getters
+    //
+
+    public function getId() {
+        return $this->id;
+    }
+
+    public function getName() {
+        return $this->name;
+    }
+
+    //
+    // Generate url for this item
+    //
+
+    public function generateUrl($path) {
+        //
+    }
+
+    //
+    // Download methods
+    //
     
     public function getDownloadCount($delta) {
         //
