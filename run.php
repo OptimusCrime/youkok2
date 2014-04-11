@@ -15,5 +15,5 @@ $name = explode('.', $path[count($path)-1]);
 $class_to_call = ucfirst($name[0]);
 
 // Creating a new instance
-$controller = new $class_to_call($this->getPaths(), $base_path);
+$controller = new $class_to_call($this->getPaths(), $this->getBasePath());
 ?>

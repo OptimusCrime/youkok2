@@ -21,9 +21,8 @@ class Base {
     protected $db; // The PDO-wrapper
     protected $user; // Hold the user-object
     protected $template; // Holds the Smarty-object
-    protected $archive_paths = array(); // Array that holds all paths already cached by the url-reverser
-    protected $file_directory = ''; // Holds the filedirectory
-    protected $base_path = ''; // Holds the directory for the index file (defined as base for the project)
+    protected $file_directory; // Holds the filedirectory
+    protected $base_path; // Holds the directory for the index file (defined as base for the project)
     protected $collection;
     private $paths; // Holds the paths served from the Loader-class
     

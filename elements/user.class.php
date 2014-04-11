@@ -34,7 +34,7 @@ Class User {
     // Returning if the user is logged in or not
     //
     
-    public function loggedIn() {
+    public function isLoggedIn() {
         return 1;
     }
     

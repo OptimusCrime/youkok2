@@ -25,7 +25,7 @@ class Collection {
     //
     
     public function _construct() {
-        $arr = array();
+        $this->arr = array();
     }
     
     //
@@ -33,7 +33,7 @@ class Collection {
     //
     
     public function add($elm) {
-        $arr[$elm->getId()] = $elm;
+        $this->arr[$elm->getId()] = $elm;
     }
 
     //
@@ -45,14 +45,16 @@ class Collection {
         $elm_id = $elm->getId();
 
         // Foreach and check if found
-        foreach ($arr as $k => $v) {
-            if ($k == $elm_id) {
-                return;
+        if (count($this->arr) > 0) {
+            foreach ($this->arr as $k => $v) {
+                if ($k == $elm_id) {
+                    return;
+                }
             }
         }
 
         // Not found, add
-        $arr[$elm_id] = $elm;
+        $this->arr[$elm_id] = $elm;
     }
     
     //
@@ -61,13 +63,13 @@ class Collection {
 
     public function get($id) {
         // Check if found
-        if (!isset($arr[$id])) {
+        if (!isset($this->arr[$id])) {
             // Not found
             return null;
         }
         else {
             // Return object
-            return $arr[$id];
+            return $this->arr[$id];
         }
     }
 }

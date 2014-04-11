@@ -57,6 +57,7 @@ class Loader {
     // Internal variables
     //
     
+    private $base_path;
     private $paths = array(
         'home' => array('/'),
         'archive' => array('/arkiv'),
@@ -71,7 +72,10 @@ class Loader {
     // Constructor
     //
 
-    public function __construct() {
+    public function __construct($base_path) {
+        // Store the base path for the project
+        $this->base_path = $base_path;
+
         // Checking wether the path is set or not
         if (isset($_GET['q'])) {
             // We have a path, find the base-path to include the correct script
@@ -132,11 +136,19 @@ class Loader {
     public function getPaths() {
         return $this->paths;
     }
+
+    //
+    // Returning the base path
+    //
+
+    public function getBasePath() {
+        return $this->base_path;
+    }
 }
 
 //
 // Initiating the loader
 //
 
-$loader = new Loader();
+$loader = new Loader($base_path);
 ?>

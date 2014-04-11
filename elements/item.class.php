@@ -24,6 +24,9 @@ class Item {
     const ALL = 3;
     
     private $collection;
+    private $id;
+    private $url;
+    private $name;
 
     //
     // Constructor
@@ -38,11 +41,11 @@ class Item {
     //
     
     public function createById($id) {
-        //
+        $this->id = $id;
     }
     
     public function createByUrl($url) {
-        //
+        $this->url = $url;
     }
 
     //

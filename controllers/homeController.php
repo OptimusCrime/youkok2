@@ -23,7 +23,7 @@ class HomeController extends Base {
         parent::__construct($paths, $base);
 
         // Include item class
-        require_once $this->base . '/elements/user.class.php';
+        require_once $this->base_path . '/elements/item.class.php';
         
         // Load newest files
         $this->template->assign('HOME_NEWEST', $this->loadNewest());
@@ -68,10 +68,10 @@ class HomeController extends Base {
             $item->createById($row['id']);
 
             // Add to collection if new
-            $collection->addIfDoesNotExist($item);
+            $this->collection->addIfDoesNotExist($item);
 
             // Load item from collection
-            $element = $collection->get($row['id']);
+            $element = $this->collection->get($row['id']);
 
             // CHeck if element was loaded
             if ($element != null) {
@@ -84,7 +84,7 @@ class HomeController extends Base {
     }
     
     //
-    //
+    // SELECT d.file, COUNT(d.id) as 'downloaded_times' FROM download d WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) GROUP BY d.file
     //
     
     private function loadMostPopular() {
