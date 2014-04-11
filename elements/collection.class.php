@@ -3,7 +3,7 @@
  * File: collection.php
  * Holds: Holds the collection of all the items currently loaded (to reduce queries)
  * Created: 09.04.14
- * Last updated: 10.04.14
+ * Last updated: 11.04.14
  * Project: Youkok2
  * 
 */
@@ -24,7 +24,7 @@ class Collection {
     // Constructor
     //
     
-    public function _construct() {
+    public function __construct() {
         $this->arr = array();
     }
     
@@ -34,6 +34,9 @@ class Collection {
     
     public function add($elm) {
         $this->arr[$elm->getId()] = $elm;
+
+        // Do the create process
+        $elm->create();
     }
 
     //
@@ -55,6 +58,9 @@ class Collection {
 
         // Not found, add
         $this->arr[$elm_id] = $elm;
+
+        // Do the create process
+        $elm->create();
     }
     
     //

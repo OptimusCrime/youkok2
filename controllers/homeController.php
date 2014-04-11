@@ -3,7 +3,7 @@
  * File: homeController.php
  * Holds: The HomeController-class
  * Created: 02.10.13
- * Last updated: 10.04.14
+ * Last updated: 11.04.14
  * Project: Youkok2
  * 
 */
@@ -39,7 +39,7 @@ class HomeController extends Base {
         }
 
         // Kill database-connection and cleanup before displaying
-        $this->close();
+        //$this->close();
         
         // Display the template
         $this->template->display('index.tpl');
@@ -64,7 +64,7 @@ class HomeController extends Base {
         $get_newest_query->execute();
         while ($row = $get_newest_query->fetch(PDO::FETCH_ASSOC)) {
             // Create new object
-            $item = new Item($this->collection);
+            $item = new Item($this->collection, $this->db);
             $item->createById($row['id']);
 
             // Add to collection if new
@@ -75,7 +75,7 @@ class HomeController extends Base {
 
             // CHeck if element was loaded
             if ($element != null) {
-                $ret .= '<li><a href="' . $element->generateUrl('download') . '">' . $element->getName() . ' [lastet ned: xxx]</a></li>';
+                $ret .= '<li><a href="' . $element->generateUrl('download') . '">' . $element->getName() . ' [lastet ned: ' . number_format($element->getDownloadCount(Item::DOWNLOADS_MONTH)) . ' gang(er)]</a></li>';
             }
         }
         
@@ -84,24 +84,38 @@ class HomeController extends Base {
     }
     
     //
-    // SELECT d.file, COUNT(d.id) as 'downloaded_times' FROM download d WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) GROUP BY d.file
+    //
     //
     
     private function loadMostPopular() {
         $ret = '';
         
         // Loading newest files from the system
-        $get_most_popular = "SELECT id, name, downloaded_times
-        FROM archive
-        WHERE is_directory = 0
-        ORDER BY downloaded_times DESC
-        LIMIT 0, 20";
+        $get_most_popular = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'
+        FROM download d
+        WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+        GROUP BY d.file";
         
         $get_most_popular_query = $this->db->prepare($get_most_popular);
         $get_most_popular_query->execute();
         while ($row = $get_most_popular_query->fetch(PDO::FETCH_ASSOC)) {
-            // Build string
-            $ret .= '<li><a href="' . $this->generateUrlById($row['id'], 'download', false) . '">' . $row['name'] . ' [lastet ned: ' . number_format($row['downloaded_times']) . ' ganger]</a></li>';
+            // Create new object
+            $item = new Item($this->collection, $this->db);
+            $item->createById($row['id']);
+
+            // Add to collection if new
+            $this->collection->addIfDoesNotExist($item);
+
+            // Load item from collection
+            $element = $this->collection->get($row['id']);
+
+            // Set downloaded
+            $element->setDownloadCount(Item::DOWNLOADS_MONTH, $row['downloaded_times']);
+
+            // CHeck if element was loaded
+            if ($element != null) {
+                $ret .= '<li><a href="' . $element->generateUrl('download') . '">' . $element->getName() . ' [lastet ned: ' . number_format($element->getDownloadCount(Item::DOWNLOADS_MONTH)) . ' gang(er)]</a></li>';
+            }
         }
         
         return $ret;

@@ -3,7 +3,7 @@
  * File: rest.php
  * Holds: The base-class intilize most of the common stuff the system needs
  * Created: 02.10.13
- * Last updated: 10.04.14
+ * Last updated: 11.04.14
  * Project: Youkok2
  * 
 */
@@ -36,7 +36,7 @@ class Base {
         
         // Stores the base path
         $this->base_path = $base;
-
+        
         // Init the collection
         $this->collection = new Collection();
         
@@ -46,7 +46,7 @@ class Base {
         } catch (Exception $e) {
             $this->db = null;
         }
-
+        
         // Authenticate if database-connection was successful
         if ($this->db) {
             // Init user
