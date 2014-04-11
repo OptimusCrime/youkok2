@@ -3,7 +3,7 @@
  * File: homeController.php
  * Holds: The HomeController-class
  * Created: 02.10.13
- * Last updated: 11.04.14
+ * Last updated: 12.04.14
  * Project: Youkok2
  * 
 */
@@ -23,7 +23,7 @@ class HomeController extends Base {
         parent::__construct($paths, $base);
 
         // Include item class
-        require_once $this->base_path . '/elements/item.class.php';
+        require_once $this->basePath . '/elements/item.class.php';
         
         // Load newest files
         $this->template->assign('HOME_NEWEST', $this->loadNewest());
@@ -33,13 +33,15 @@ class HomeController extends Base {
         
         // Check if this user is logged in
         if ($this->user->isLoggedIn()) {
-            $this->template->assign('HOME_USER_LATEST', 'comming');
+            $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item">Kommer!</li>');
+            $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item">Kommer!</li>');
         } else {
-            $this->template->assign('HOME_USER_LATEST', null);
+            $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em>Registrer og/eller logg inn!</em></li>');
+            $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em>Registrer og/eller logg inn!</em></li>');
         }
 
         // Kill database-connection and cleanup before displaying
-        //$this->close();
+        $this->close();
         
         // Display the template
         $this->template->display('index.tpl');
@@ -75,7 +77,7 @@ class HomeController extends Base {
 
             // CHeck if element was loaded
             if ($element != null) {
-                $ret .= '<li><a href="' . $element->generateUrl('download') . '">' . $element->getName() . ' [lastet ned: ' . number_format($element->getDownloadCount(Item::DOWNLOADS_MONTH)) . ' gang(er)]</a></li>';
+                $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['download'][0]) . '">' . $element->getName() . '</a> @ <a href="#">MFEL1010</a> [Opprettet: ' . number_format($element->getDownloadCount(Item::DOWNLOADS_MONTH)) . ']</li>';
             }
         }
         
@@ -114,7 +116,7 @@ class HomeController extends Base {
 
             // CHeck if element was loaded
             if ($element != null) {
-                $ret .= '<li><a href="' . $element->generateUrl('download') . '">' . $element->getName() . ' [lastet ned: ' . number_format($element->getDownloadCount(Item::DOWNLOADS_MONTH)) . ' gang(er)]</a></li>';
+                $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['download'][0]) . '">' . $element->getName() . '</a> @ <a href="#">MFEL1010</a> [Nedlastninger: ' . number_format($element->getDownloadCount(Item::DOWNLOADS_MONTH)) . ']</a></li>';
             }
         }
         

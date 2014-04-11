@@ -3,7 +3,7 @@
  * File: item.php
  * Holds: Class for either a directory or file in the system
  * Created: 09.04.14
- * Last updated: 11.04.14
+ * Last updated: 12.04.14
  * Project: Youkok2
  * 
 */
@@ -33,6 +33,7 @@ class Item {
     private $urlFriendly;
     private $downloadCount;
     private $isDirectory;
+    private $mimeType;
 
     //
     // Constructor
@@ -59,14 +60,60 @@ class Item {
     }
     
     public function createByUrl($url) {
-        $this->url = $url;
+        // Explode the url
+        $url_pieces_temp = explode('/', $url);
+
+        // Clean the pieces
+        $url_pieces = array();
+        foreach ($url_pieces_temp as $k => $v) {
+            if ($k > 0 and strlen($v) > 0) {
+                $url_pieces[] = $v;
+            }
+        }
+
+        // Only continue if we have more than one elements
+        if (count($url_pieces) > 0) {
+            // Set current id to root
+            $current_id = 1;
+            
+            // Loop each fragment
+            foreach ($url_pieces as $url_piece_single) {
+                // Todo add caching here!
+                $get_revese_url = "SELECT id
+                FROM archive 
+                WHERE parent = :parent
+                AND url_friendly = :url_friendly";
+                
+                $get_revese_url_query = $this->db->prepare($get_revese_url);
+                $get_revese_url_query->execute(array(':parent' => $current_id, ':url_friendly' => $url_piece_single));
+                $row = $get_revese_url_query->fetch(PDO::FETCH_ASSOC);
+                
+                // Check if anything was returned
+                if (isset($row['id'])) {
+                    // Was found, update the current id
+                    $current_id = $row['id'];
+
+                    // Add url piece
+                    $this->url[] = $url_piece_single;
+                }
+            }
+
+            // Check if number of fragments are equal
+            if (count($url_pieces) == count($this->url)) {
+                $this->id = $current_id;
+            }
+        }
     }
+
+    //
+    // Do the acutal creation here
+    //
 
     public function create() {
         // Get all info about file
         if ($this->id != null) {
             // Id is set, run a simple query
-            $get_item_info = "SELECT name, parent, is_directory, url_friendly
+            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type
             FROM archive 
             WHERE id = :id";
             
@@ -79,6 +126,20 @@ class Item {
             $this->isDirectory = $row['is_directory'];
             $this->urlFriendly = $row['url_friendly'];
             $this->parent = $row['parent'];
+            $this->mimeType = $row['mime_type'];
+        }
+    }
+
+    //
+    // Check if real or invalid url
+    //
+
+    public function wasFound() {
+        if ($this->id != null and is_numeric($this->id)) {
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
@@ -102,12 +163,12 @@ class Item {
         return $this->parent;
     }
 
-    //
-    // Setters
-    //
+    public function isDirectory() {
+        return $this->isDirectory;
+    }
 
-    public function setName($name) {
-        $this->name = $name;
+    public function getMimeType() {
+        return $this->mimeType;
     }
 
     //
@@ -146,8 +207,33 @@ class Item {
             $this->url = $temp_url;
         }
 
-        // Return goes here! (TODO check if endfix with / if directory!)
-        return $path . implode('/', $this->url);
+        // Return goes here!
+        return substr($path, 1) . implode('/', $this->url) . ($this->isDirectory ? '/' : '');
+    }
+
+    //
+    // Get breadcrumbs for the current item
+    //
+
+    public function getBreadcrumbs() {
+        // Store some variables for later
+        $temp_collection = array($this);
+        $temp_id = $this->parent;
+
+        // Loop untill we reach the root
+        while ($temp_id != 0) {
+            // Check if this object already exists
+            $temp_item = $this->collection->get($temp_id);
+
+            // Get the url piece
+            $temp_collection[] = $temp_item;
+
+            // Update id
+            $temp_id = $temp_item->getParent();
+        }
+
+        // Return breadcrumbs in correct order here
+        return array_reverse($temp_collection);
     }
 
     //

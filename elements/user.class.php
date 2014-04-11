@@ -3,7 +3,7 @@
  * File: user.php
  * Holds: Holds all the user-related stuff
  * Created: 02.10.13
- * Last updated: 11.04.14
+ * Last updated: 12.04.14
  * Project: Youkok2
  * 
 */
@@ -18,16 +18,60 @@ Class User {
     // The internal variables
     //
     
+    private $db;
+    private $template;
+
+    private $loggedIn;
+
     private $id;
-    private $name;
-    private $is_ntnu;
+    private $email;
+    private $nick;
+    private $NTNU;
+    private $karma;
+    private $banned;
     
     //
     // Constructor
     //
 
-    public function __construct() {
-        // TODO
+    public function __construct($db, $template) {
+        // Set pointers
+        $this->db = $db;
+        $this->template = $template;
+
+        // Fetch from database to see if online
+        $get_current_user = "SELECT id, email, nick, ntnu_verified, karma, banned
+        FROM user 
+        WHERE id = :id";
+        
+        $get_current_user_query = $this->db->prepare($get_current_user);
+        $get_current_user_query->execute(array(':id' => 1));
+        $row = $get_current_user_query->fetch(PDO::FETCH_ASSOC);
+
+        // Check if anything want returned
+        if (isset($row['id'])) {
+            // The user is logged in, gogo
+            $this->loggedIn = true;
+
+            // Set attributes
+            $this->id = $row['id'];
+            $this->email = $row['email'];
+            $this->nick = $row['nick'] == null ? '<em>Anonym</em>' : $row['nick'];
+            $this->NTNU = (boolean) $row['ntnu_verified'];
+            $this->karma = $row['karma'];
+            $this->banned = (boolean) $row['banned'];
+
+            // Update last seen TODO
+        }
+        else {
+            // The user is not logged in, yay
+            $this->loggedIn = false;
+            $this->nick = null;
+        }
+
+        // Generate top menu
+        $this->template->assign('BASE_USER_IS_LOGGED_IN', $this->loggedIn);
+        $this->template->assign('BASE_USER_NICK', $this->nick);
     }
     
     //
@@ -35,23 +79,35 @@ Class User {
     //
     
     public function isLoggedIn() {
-        return 1;
+        return $this->loggedIn;
     }
-    
+
     //
-    // Returning the current user-id
+    // Getters
     //
-    
+
     public function getId() {
-        return 1;
+        return $this->id;
     }
-    
-    //
-    // Returning the current username
-    //
     
     public function getNick() {
-        return '<i>Anonym</i>';
+        return $this->nick;
+    }
+
+    public function getEmail() {
+        return $this->email;
+    }
+
+    public function getKarma() {
+        return $this->karma;
+    }
+
+    //
+    // Returns if the user is banned or not
+    //
+
+    public function isBanned() {
+        return $this->banned;
     }
     
     //
@@ -59,7 +115,7 @@ Class User {
     //
     
     public function isNTNU() {
-        return 1;
+        return $this->NTNU;
     }
     
     //
@@ -67,7 +123,7 @@ Class User {
     //
     
     public function isVerified() {
-        return 1;
+        return $this->isVerified;
     }
 }
 ?>

@@ -3,7 +3,7 @@
  * File: index.php
  * Holds: The Loader class that loads the correct class based on the method being called, setting output and including all the stuff we need
  * Created: 02.10.13
- * Last updated: 11.04.14
+ * Last updated: 12.04.14
  * Project: Youkok2
  * 
 */
@@ -57,7 +57,7 @@ class Loader {
     // Internal variables
     //
     
-    private $base_path;
+    private $basePath;
     private $paths = array(
         'home' => array('/'),
         'archive' => array('/arkiv'),
@@ -74,7 +74,7 @@ class Loader {
 
     public function __construct($base_path) {
         // Store the base path for the project
-        $this->base_path = $base_path;
+        $this->basePath = $base_path;
 
         // Checking wether the path is set or not
         if (isset($_GET['q'])) {
@@ -142,7 +142,7 @@ class Loader {
     //
 
     public function getBasePath() {
-        return $this->base_path;
+        return $this->basePath;
     }
 }
 

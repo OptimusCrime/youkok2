@@ -3,7 +3,7 @@
  * File: rest.php
  * Holds: The base-class intilize most of the common stuff the system needs
  * Created: 02.10.13
- * Last updated: 11.04.14
+ * Last updated: 12.04.14
  * Project: Youkok2
  * 
 */
@@ -21,10 +21,10 @@ class Base {
     protected $db; // The PDO-wrapper
     protected $user; // Hold the user-object
     protected $template; // Holds the Smarty-object
-    protected $file_directory; // Holds the filedirectory
-    protected $base_path; // Holds the directory for the index file (defined as base for the project)
+    protected $fileDirectory; // Holds the filedirectory
+    protected $basePath; // Holds the directory for the index file (defined as base for the project)
     protected $collection;
-    private $paths; // Holds the paths served from the Loader-class
+    protected $paths; // Holds the paths served from the Loader-class
     
     //
     // Constructor
@@ -35,7 +35,7 @@ class Base {
         session_start();
         
         // Stores the base path
-        $this->base_path = $base;
+        $this->basePath = $base;
         
         // Init the collection
         $this->collection = new Collection();
@@ -49,87 +49,17 @@ class Base {
         
         // Authenticate if database-connection was successful
         if ($this->db) {
-            // Init user
-            $this->user = new User();
-            
             // Init Smarty
             $this->template = $smarty = new Smarty();
+
+            // Init user
+            $this->user = new User($this->db, $this->template);
             
             // Setting the file-directory
-            $this->file_directory = dirname(__FILE__ ). '/05d26028b91686045907144f1883fcb1';
+            $this->fileDirectory = dirname(__FILE__ ). '/05d26028b91686045907144f1883fcb1';
             
             // Storing paths
             $this->paths = $paths;
-        }
-    }
-    
-    //
-    // Generates an url based on the current id
-    //
-    
-    protected function generateUrlById($id, $type = 'download', $trailing_slash = false) {
-        // Todo, add caching
-        $url = array();
-        $current_id = $id;
-        
-        // Loop untill we get to root
-        while ($current_id != 0) {
-            // Todo add caching here!
-            $get_revese_url = "SELECT parent, url_friendly
-            FROM archive 
-            WHERE id = :id";
-            
-            $get_revese_url_query = $this->db->prepare($get_revese_url);
-            $get_revese_url_query->execute(array(':id' => $current_id));
-            $row = $get_revese_url_query->fetch(PDO::FETCH_ASSOC);
-            
-            // Updating the current id
-            $current_id = $row['parent'];
-            
-            // Add to the url-array
-            $url[] = $row['url_friendly'];
-        }
-        
-        // Reverse array
-        $url = array_reverse($url);
-        
-        // Return the complete url
-        return $this->paths[$type][0] . implode('/', $url) . (($trailing_slash) ? '/' : '');
-    }
-    
-    //
-    // Returning the parent for a current url
-    //
-    
-    protected function reverseParent($url, $is_directory) {
-        // Clear out the parts of the url we don't ned
-        $url_pieces = $this->cleanRequestUrl($url);
-        
-        // Check if root
-        if (count($url_pieces) == 0) {
-            return 1;
-        }
-        else {
-            // Fetch from the database
-            $current_id = 1;
-            
-            foreach ($url_pieces as $path) {
-                // Todo add caching here!
-                $get_revese_url = "SELECT id
-                FROM archive 
-                WHERE parent = :parent
-                AND url_friendly = :url_friendly";
-                
-                $get_revese_url_query = $this->db->prepare($get_revese_url);
-                $get_revese_url_query->execute(array(':parent' => $current_id, ':url_friendly' => $path));
-                $row = $get_revese_url_query->fetch(PDO::FETCH_ASSOC);
-                
-                // Updating the current id
-                $current_id = $row['id'];
-            }
-            
-            // Returning the current id
-            return $current_id;
         }
     }
     
@@ -191,35 +121,6 @@ class Base {
     
     protected function return404() {
         return '<h1>Page not found... More to come!</h1>';
-    }
-    
-    //
-    // Return
-    //
-    
-    private function cleanRequestUrl($url) {
-        $url_pieces_temp = array();
-        if (strpos($url, '/') !== false) {
-            // Multiple levels
-            $url_pieces_temp = explode('/', $url);
-        } else {
-            // Single level
-            $url_pieces_temp[] = $url;
-        }
-        
-        // Make array with archive and download-paths
-        $remove_fragments = array_merge((array) $this->paths['download'], (array) $this->paths['archive']);
-        
-        // Make the corret tree
-        $url_pieces = array();
-        foreach ($url_pieces_temp as $v) {
-            if (strlen($v) > 0 and !in_array('/' . $v, $remove_fragments)) {
-                $url_pieces[] = $v;
-            }
-        }
-        
-        // Return the array
-        return $url_pieces;
     }
     
     //
