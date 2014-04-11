@@ -63,9 +63,9 @@ class Loader {
         'archive' => array('/arkiv'),
         'profile' => array('/profil'),
         'download' => array('/last-ned'),
-        'flat' => array('/om','/derp'),
+        'flat' => array('/om'),
         'notfound' => array('/404'),
-        'other' => array('/nytt-fag'),
+        'other' => array('/kontakt', '/wall-of-shame', '/logg-ut', '/nytt-fag'),
     );
 
     //

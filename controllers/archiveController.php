@@ -25,45 +25,61 @@ class ArchiveController extends Base {
         // Include item class
         require_once $this->basePath . '/elements/item.class.php';
 
-        // Create new object
-        $item = new Item($this->collection, $this->db);
-        $item->createByUrl($_GET['q']);
+        // Check if base
+        if (str_replace('/', '', $_GET['q']) == str_replace('/', '', $this->paths['archive'][0])) {
+            // Currently displaying the base
 
-        // Check if was found or invalid url
-        if ($item->wasFound()) {
-            // Item was found, store id
-            $element_id = $item->getId();
+            $this->template->assign('ARCHIVE_MODE', 'list');
+            $this->template->assign('ARCHIVE_DISPLAY', $this->loadCourses());
 
-            // Add to collection if new
-            $this->collection->addIfDoesNotExist($item);
+            // Get title
+            $this->template->assign('ARCHIVE_TITLE', 'Arkiv');
 
-            // Load item from collection
-            $element = $this->collection->get($element_id);
-
-            // Check if element is null (this should not be possible, but just in case...)
-            if ($element == null) {
-                // 404
-                echo '404....';
-            }
-            else {
-                // Element was found, double check that this is a directory
-                if ($element->isDirectory()) {
-                    // Element was directory, now list every single element that has this element as a parent
-                    $this->template->assign('ARCHIVE_DISPLAY', $this->loadArchive($element->getId()));
-
-                    // Get title
-                    $this->template->assign('ARCHIVE_TITLE', $element->getName());
-
-                    // Get breadcrumbs
-                    $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
-                }
-                else {
-                    echo 'wtf...';
-                }
-            }
+            // Get breadcrumbs
+            $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Arkiv</li>');
         }
         else {
-            echo '404....';
+            // Create new object
+            $item = new Item($this->collection, $this->db);
+            $item->createByUrl($_GET['q']);
+
+            // Check if was found or invalid url
+            if ($item->wasFound()) {
+                // Item was found, store id
+                $element_id = $item->getId();
+
+                // Add to collection if new
+                $this->collection->addIfDoesNotExist($item);
+
+                // Load item from collection
+                $element = $this->collection->get($element_id);
+
+                // Check if element is null (this should not be possible, but just in case...)
+                if ($element == null) {
+                    // 404
+                    echo '404....';
+                }
+                else {
+                    // Element was found, double check that this is a directory
+                    if ($element->isDirectory()) {
+                        // Element was directory, now list every single element that has this element as a parent
+                        $this->template->assign('ARCHIVE_DISPLAY', $this->loadArchive($element->getId()));
+                        $this->template->assign('ARCHIVE_MODE', 'browse');
+
+                        // Get title
+                        $this->template->assign('ARCHIVE_TITLE', $element->getName());
+
+                        // Get breadcrumbs
+                        $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
+                    }
+                    else {
+                        echo 'wtf...';
+                    }
+                }
+            }
+            else {
+                echo '404....';
+            }
         }
 
         // Kill database-connection and cleanup before displaying
@@ -109,6 +125,7 @@ class ArchiveController extends Base {
 
     private function loadArchive($id) {
         $ret = '';
+        
         // Loading newest files from the system
         $get_current_archive = "SELECT id
         FROM archive
@@ -159,6 +176,69 @@ class ArchiveController extends Base {
         // Return the content here
         return $ret;
     }
+
+    //
+    // Load all the course
+    //
+
+    private function loadCourses() {
+        // Variables are nice
+        $ret = '';
+        $letter = null;
+        $container_is_null = true;
+        $archive_url = substr($this->paths['archive'][0], 1);
+        
+        // Load all the courses
+        $get_all_courses = "SELECT c.code, c.name, a.url_friendly
+        FROM course c
+        LEFT JOIN archive AS a ON c.id = a.course
+        ORDER BY c.code ASC";
+        
+        $get_all_courses_query = $this->db->prepare($get_all_courses);
+        $get_all_courses_query->execute();
+        while ($row = $get_all_courses_query->fetch(PDO::FETCH_ASSOC)) {
+            // Store the current letter
+            $current_letter = substr($row['code'], 0, 1);
+
+            // Check how we should parse the course
+            if ($container_is_null) {
+                $ret .= '<div class="archive-course">
+                    <h3>' . $current_letter . '</h3>
+                    <ul>
+                        <li>
+                            <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>
+                        </li>';
+
+                $container_is_null = false;
+            }
+            else {
+                if ($letter != $current_letter) {
+                    $ret .= '</ul></div><div class="archive-course">
+                    <h3>' . $current_letter . '</h3>
+                    <ul>
+                        <li>
+                            <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>
+                        </li>';
+                }
+                else {
+                    $ret .= '<li>
+                                <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>
+                            </li>';
+                }
+            }
+            
+            // Assign new letter
+            $letter = $current_letter;
+        }
+
+        // End container
+        $ret .= '</ul></div>';
+
+        // Return content
+        return $ret;
+    }
+
+
 }
 
 //

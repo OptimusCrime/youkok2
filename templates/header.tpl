@@ -28,11 +28,11 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Hjem</a></li>
-                <li><a href="#">Fag &amp; filer</a></li>
-                <li><a href="#">WoS</a></li>
-                <li><a href="#">Om</a></li>
-                <li><a href="#">Kontakt</a></li>
+                <li class="active"><a href="/">Hjem</a></li>
+                <li><a href="arkiv/">Fag &amp; filer</a></li>
+                <li><a href="wall-of-shame">WoS</a></li>
+                <li><a href="om">Om</a></li>
+                <li><a href="kontakt">Kontakt</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 [[+if $BASE_USER_IS_LOGGED_IN == true]]
@@ -41,8 +41,8 @@
                         <ul class="dropdown-menu">
                             <li role="presentation" class="dropdown-header">[[+$BASE_USER_NICK]]</li>
                             <li class="divider"></li>
-                            <li><a href="#">Innstillinger</a></li>
-                            <li><a href="#">Logg ut</a></li>
+                            <li><a href="profil/innstillinger">Innstillinger</a></li>
+                            <li><a href="logout">Logg ut</a></li>
                         </ul>
                     </li>
                 [[+else]]

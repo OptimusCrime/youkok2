@@ -5,10 +5,14 @@
 		[[+$ARCHIVE_BREADCRUMBS]]
 	</ol>
 
-	<h1>[[+$ARCHIVE_TITLE]] <small><a href="#">Derp123</a></small></h1>
-	<ul id="archive-list">
-	    [[+$ARCHIVE_DISPLAY]]
-	</ul>
+	<h1>[[+$ARCHIVE_TITLE]]</h1>
+	[[+if $ARCHIVE_MODE == 'browse']]
+		<ul id="archive-list">
+		    [[+$ARCHIVE_DISPLAY]]
+		</ul>
+	[[+else]]
+		[[+$ARCHIVE_DISPLAY]]
+	[[+/if]]
 </div>
 <div class="col-md-4">
 	<div id="archive-history">

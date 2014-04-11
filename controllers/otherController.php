@@ -27,6 +27,12 @@ class OtherController extends Base {
             // New course
             $this->newCourse();
         }
+        else if ($_GET['q'] == 'kontakt') {
+            $this->contact();
+        }
+        else if ($_GET['q'] == 'wall-of-shame') {
+            $this->wallOfShame();
+        }
     }
     
     //
@@ -56,6 +62,30 @@ class OtherController extends Base {
             $insert_archive_query = $this->db->prepare($insert_archive);
             $insert_archive_query->execute(array(':name' => $_POST['code'], ':url_friendly' => $_POST['course'], ':parent' => 1, ':course' => $course_id, ':location' => $_POST['course'], ':is_directory' => 1));
         }
+    }
+
+    //
+    // Method for displaying contact form
+    //
+
+    private function contact() {
+        $this->template->display('other_contact.tpl');
+    }
+
+    //
+    // Method for displaying Wall of Shame
+    //
+
+    private function wallOfShame() {
+        $this->template->display('other_wall_of_shame.tpl');
+    }
+
+    //
+    // Logg out
+    //
+
+    private function logOut() {
+        echo "okei";
     }
 }
 
