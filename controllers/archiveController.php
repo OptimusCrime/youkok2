@@ -173,7 +173,7 @@ class ArchiveController extends Base {
                     // This is a file, link should go to download
                     $ret .= '<li>
                                 <a href="' . $element->generateUrl($this->paths['download'][0]) . '">
-                                    <div class="archive-item">
+                                    <div class="archive-item"><div class="archive-badge">2</div>
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . $item->getMimeType() . '.png\');"></div>
                                         <div class="archive-item-label"><p>' . $element->getName() . '</p></div>
                                     </div>
