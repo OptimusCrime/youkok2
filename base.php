@@ -71,58 +71,6 @@ class Base {
     }
     
     //
-    // Returns the physical location of a file based on the pretty-url
-    //
-    
-    protected function reverseFileLocation($url) {
-        // Clear out the parts of the url we don't ned
-        $url_pieces = $this->cleanRequestUrl($url);
-        
-        // Define variables we are going to need for later
-        $current_id = 1;
-        $url = array();
-        
-        foreach ($url_pieces as $path) {
-            // Todo add caching here!
-            $get_revese_url = "SELECT id, location
-            FROM archive 
-            WHERE parent = :parent
-            AND url_friendly = :url_friendly";
-
-            $get_revese_url_query = $this->db->prepare($get_revese_url);
-            $get_revese_url_query->execute(array(':parent' => $current_id, ':url_friendly' => $path));
-            $row = $get_revese_url_query->fetch(PDO::FETCH_ASSOC);
-            
-            // Updating the current id
-            $current_id = $row['id'];
-            
-            // Updating the current url
-            $url[] = $row['location'];
-        }
-
-        // Returning the entire path
-        return $this->file_directory . '/' . implode('/', $url);
-    }
-    
-    //
-    // Changed params to switch from link in archive to a download-link
-    //
-    
-    protected function fromArchiveToDownload($url) {
-        // Splitting the url
-        $split = explode('/', $url);
-        
-        // Checking for keyword in the first part of the string
-        if ('/' . $split[0] == $this->paths['archive'][0]) {
-            // Replacing the string it we found the archive-path
-            $split[0] = str_replace('/', '', $this->paths['download'][0]);
-        }
-        
-        // Return the new url
-        return implode('/', $split);
-    }
-    
-    //
     // Returning an 404-page
     //
     
