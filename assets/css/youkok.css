@@ -55,6 +55,7 @@ body, html {
     width: 75px;
     background-position: top left;
     background-repeat: no-repeat;
+    z-index: 100;
 }
 .archive-item-label {
     width: 100%;
@@ -62,6 +63,7 @@ body, html {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    z-index: 100;
 }
 .archive-badge {
     background-color: #d9534f;
@@ -79,6 +81,18 @@ body, html {
     position: absolute;
     left: 13px;
     top: 0px;
+    z-index: 1000;
+}
+.archive-overlay {
+    background-image: urL('gfx/archive-overlay.png');
+    background-position: top left;
+    background-repeat: repeat;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 200;
 }
 #archive-breadcrumbs {
     margin-top: 20px;
