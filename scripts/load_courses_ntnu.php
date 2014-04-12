@@ -11,6 +11,7 @@ $clean = array();
 $page = 1;
 $db = null;
 $to_json = array();
+$log = array();
 
 // Method for cleaning urls
 function url_friendly($s) {
@@ -41,14 +42,11 @@ if ($db) {
 			$clean[] = array('code' => $v['courseCode'], 'name' => $v['courseName'], 'url_friendly' => $clean_url_path, 'directory' => $clean_url_path);
 		}
 
-		// Arrays for logging
-		$log = array();
-
 		// Loop every single course
 		foreach ($clean as $v) {
 			// Check if course is in database
 			$check_current_course = "SELECT id
-	        FROM courses 
+	        FROM course 
 	        WHERE code = :code
 	        LIMIT 1";
 	        
@@ -125,10 +123,14 @@ if ($db) {
 
 		// Check if more results
 		if (count($clean) == 100) {
+			// More results, increase page
 			$page++;
+
+			// Clear array
 			$clean = array();
 		}
 		else {
+			// No more results, break all :)
 			break;
 		}
 	}
