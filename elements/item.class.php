@@ -294,5 +294,25 @@ class Item {
     public function setDownloadCount($delta, $value) {
         $this->downloadCount[$delta] = $value;
     }
+
+    public function addDownload($user) {
+        // Check if user is logged in
+        if ($user != null and $user->isLoggedIn()) {
+            // User is logged in
+            $insert_user_download = "INSERT INTO download (file, ip, user)
+            VALUES (:file, :ip, :user)";
+            
+            $insert_user_download_query = $this->db->prepare($insert_user_download);
+            $insert_user_download_query->execute(array(':file' => $this->id, ':ip' => $_SERVER['REMOTE_ADDR'], ':user' => $user->getId()));
+        }
+        else {
+            // Is not logged in
+            $insert_anon_download = "INSERT INTO download (file, ip)
+            VALUES (:file, :ip)";
+            
+            $insert_anon_download_query = $this->db->prepare($insert_anon_download);
+            $insert_anon_download_query->execute(array(':file' => $this->id, ':ip' => $_SERVER['REMOTE_ADDR']));
+        }
+    }
 }
 ?>
