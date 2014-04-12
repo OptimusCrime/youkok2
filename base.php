@@ -49,6 +49,11 @@ class Base {
         
         // Authenticate if database-connection was successful
         if ($this->db) {
+            // Add root element to collection
+            $root_element = new Item($this->collection, $this->db);
+            $root_element->createById(1);
+            $this->collection->add($root_element);
+
             // Init Smarty
             $this->template = $smarty = new Smarty();
 

@@ -1,4 +1,3 @@
-
 <?php
 /*
  * File: archiveController.php
@@ -22,8 +21,6 @@ class ArchiveController extends Base {
     public function __construct($paths, $base) {
         // Calling Base' constructor
         parent::__construct($paths, $base);
-        // Include item class
-        require_once $this->basePath . '/elements/item.class.php';
 
         // Check if base
         if (str_replace('/', '', $_GET['q']) == str_replace('/', '', $this->paths['archive'][0])) {
@@ -53,7 +50,7 @@ class ArchiveController extends Base {
 
                 // Load item from collection
                 $element = $this->collection->get($element_id);
-
+                
                 // Check if element is null (this should not be possible, but just in case...)
                 if ($element == null) {
                     // 404
@@ -202,7 +199,7 @@ class ArchiveController extends Base {
 
             // Check how we should parse the course
             if ($container_is_null) {
-                $ret .= '<div class="archive-course">
+                $ret .= '<div class="col-md-6 archive-course">
                     <h3>' . $current_letter . '</h3>
                     <ul>
                         <li>
@@ -213,7 +210,7 @@ class ArchiveController extends Base {
             }
             else {
                 if ($letter != $current_letter) {
-                    $ret .= '</ul></div><div class="archive-course">
+                    $ret .= '</ul></div><div class="col-md-6 archive-course">
                     <h3>' . $current_letter . '</h3>
                     <ul>
                         <li>
@@ -237,8 +234,6 @@ class ArchiveController extends Base {
         // Return content
         return $ret;
     }
-
-
 }
 
 //

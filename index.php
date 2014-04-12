@@ -39,6 +39,7 @@ $base_path = dirname(__FILE__);
 
 require_once $base_path . '/libs/smarty/Smarty.class.php';
 require_once $base_path . '/elements/collection.class.php';
+require_once $base_path . '/elements/item.class.php';
 require_once $base_path . '/elements/user.class.php';
 require_once $base_path . '/base.php';
 require_once $base_path . '/local.php';

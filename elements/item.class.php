@@ -70,7 +70,7 @@ class Item {
                 $url_pieces[] = $v;
             }
         }
-
+        
         // Only continue if we have more than one elements
         if (count($url_pieces) > 0) {
             // Set current id to root
@@ -219,12 +219,12 @@ class Item {
         // Store some variables for later
         $temp_collection = array($this);
         $temp_id = $this->parent;
-
+        
         // Loop untill we reach the root
-        while ($temp_id != 0) {
+        while ($temp_id != null) {
             // Check if this object already exists
             $temp_item = $this->collection->get($temp_id);
-
+            
             // Get the url piece
             $temp_collection[] = $temp_item;
 

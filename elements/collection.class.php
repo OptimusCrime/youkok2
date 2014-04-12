@@ -25,6 +25,7 @@ class Collection {
     //
     
     public function __construct() {
+        // Init array
         $this->arr = array();
     }
     

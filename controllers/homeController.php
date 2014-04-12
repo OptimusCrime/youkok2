@@ -21,9 +21,6 @@ class HomeController extends Base {
     public function __construct($paths, $base) {
         // Calling Base' constructor
         parent::__construct($paths, $base);
-
-        // Include item class
-        require_once $this->basePath . '/elements/item.class.php';
         
         // Load newest files
         $this->template->assign('HOME_NEWEST', $this->loadNewest());
