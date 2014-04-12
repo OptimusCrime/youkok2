@@ -69,6 +69,10 @@ class OtherController extends Base {
     //
 
     private function contact() {
+        // Set menu
+        $this->template->assign('HEADER_MENU', 'CONTACT');
+
+        // Display template
         $this->template->display('other_contact.tpl');
     }
 
@@ -77,6 +81,10 @@ class OtherController extends Base {
     //
 
     private function wallOfShame() {
+        // Set menu
+        $this->template->assign('HEADER_MENU', 'WOS');
+
+        // Display template
         $this->template->display('other_wall_of_shame.tpl');
     }
 

@@ -58,7 +58,7 @@ class DownloadController extends Base {
                     if (file_exists($file_location)) {
                         // Logg download
                         $element->addDownload($this->user);
-                        
+
                         // File exists, download!
                         $this->loadFile($file_location);
                     }
@@ -85,7 +85,6 @@ class DownloadController extends Base {
     //
     
     private function loadFile($file) {
-        // Todo, update download-count, check if user is logged in, the increase user download too
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename=' . basename($file));

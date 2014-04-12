@@ -91,6 +91,9 @@ class ArchiveController extends Base {
             $this->display404();
         }
         else {
+            // Set menu
+            $this->template->assign('HEADER_MENU', 'ARCHIVE');
+
             // Found (yay), display archive tpl
             $this->template->display('archive.tpl');
         }

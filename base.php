@@ -58,6 +58,7 @@ class Base {
 
             // Init Smarty
             $this->template = $smarty = new Smarty();
+            $this->template->assign('HEADER_MENU', 'HOME');
 
             // Init user
             $this->user = new User($this->db, $this->template);
@@ -75,9 +76,10 @@ class Base {
     //
     
     protected function display404() {
-        // Inclyde 404 controller
+        // Include 404 controller
         require_once $this->basePath . '/controllers/notfoundController.php';
 
+        // New instance
         $controller = new NotfoundController($this->paths, $this->basePath);
     }
     

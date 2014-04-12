@@ -22,6 +22,10 @@ class NotfoundController extends Base {
         // Calling Base' constructor
         parent::__construct($paths, $base);
         
+        // Null the menu
+        $this->template->assign('HEADER_MENU', null);
+
+        // Display template
         $this->template->display('404.tpl');
     }
 }

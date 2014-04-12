@@ -28,11 +28,11 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="/">Hjem</a></li>
-                <li><a href="arkiv/">Fag &amp; filer</a></li>
-                <li><a href="wall-of-shame">WoS</a></li>
-                <li><a href="om">Om</a></li>
-                <li><a href="kontakt">Kontakt</a></li>
+                <li[[+if $HEADER_MENU == 'HOME']] class="active"[[+/if]]><a href="/youkok2/">Hjem</a></li>
+                <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="arkiv/">Fag &amp; filer</a></li>
+                <li[[+if $HEADER_MENU == 'WOS']] class="active"[[+/if]]><a href="wall-of-shame">WoS</a></li>
+                <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om</a></li>
+                <li[[+if $HEADER_MENU == 'CONTACTS']] class="active"[[+/if]]><a href="kontakt">Kontakt</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 [[+if $BASE_USER_IS_LOGGED_IN == true]]
