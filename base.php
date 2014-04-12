@@ -58,6 +58,13 @@ class Base {
 
             // Init Smarty
             $this->template = $smarty = new Smarty();
+
+            // Define a few constants in Smarty
+            $this->template->assign('SITE_URL', SITE_URL);
+            $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
+            $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
+
+            // Define the standard menu
             $this->template->assign('HEADER_MENU', 'HOME');
 
             // Init user
