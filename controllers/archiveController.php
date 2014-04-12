@@ -21,6 +21,9 @@ class ArchiveController extends Base {
     public function __construct($paths, $base) {
         // Calling Base' constructor
         parent::__construct($paths, $base);
+        
+        // Displaying 404 or not
+        $should_display_404 = false;
 
         // Check if base
         if (str_replace('/', '', $_GET['q']) == str_replace('/', '', $this->paths['archive'][0])) {
@@ -54,7 +57,7 @@ class ArchiveController extends Base {
                 // Check if element is null (this should not be possible, but just in case...)
                 if ($element == null) {
                     // 404
-                    echo '404....';
+                    $should_display_404 = true;
                 }
                 else {
                     // Element was found, double check that this is a directory
@@ -70,20 +73,27 @@ class ArchiveController extends Base {
                         $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
                     }
                     else {
-                        echo 'wtf...';
+                        $should_display_404 = true;
                     }
                 }
             }
             else {
-                echo '404....';
+                $should_display_404 = true;
             }
         }
 
         // Kill database-connection and cleanup before displaying
         $this->close();
         
-        // Display the template
-        $this->template->display('archive.tpl');
+        // Check if return 404 or not
+        if ($should_display_404) {
+            // Page was not found!
+            $this->display404();
+        }
+        else {
+            // Found (yay), display archive tpl
+            $this->template->display('archive.tpl');
+        }
     }
 
     //

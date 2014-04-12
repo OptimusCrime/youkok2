@@ -3,7 +3,7 @@
  * File: notfoundController.php
  * Holds: The NotfoundController-class that returns 404 error-message to the user
  * Created: 02.10.13
- * Last updated: 05.12.13
+ * Last updated: 12.04.14
  * Project: Youkok2
  * 
 */
@@ -22,7 +22,7 @@ class NotfoundController extends Base {
         // Calling Base' constructor
         parent::__construct($paths, $base);
         
-        echo '<h1>404: Page not found...</h1>';
+        $this->template->display('404.tpl');
     }
 }
 

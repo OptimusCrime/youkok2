@@ -22,23 +22,58 @@ class DownloadController extends Base {
         // Calling Base' constructor
         parent::__construct($paths, $base);
         
+        // Displaying 404 or not
+        $should_display_404 = false;
+
         // Getting the path
         if (!isset($_GET['q'])) {
-            return false;
+            // Not sure if this is even possible?
+            $should_display_404 = true;
         }
         else {
-            // Reverse the url
-            $file = $this->reverseFileLocation($_GET['q']);
-            
-            // Check if the file exists or not
-            if (1 == 1) {
-                // File exists, buffer and load the file
-                $this->loadFile($file);
+            // Create new object
+            $item = new Item($this->collection, $this->db);
+            $item->setShouldLoadPhysicalLocation(true);
+            $item->createByUrl($_GET['q']);
+
+            // Check if was found or invalid url
+            if ($item->wasFound()) {
+                // Item was found, store id
+                $element_id = $item->getId();
+                
+                // Add to collection if new
+                $this->collection->addIfDoesNotExist($item);
+
+                // Fetch back
+                $element = $this->collection->get($element_id);
+
+                // Just for safty
+                if ($element == null) {
+                    // This should in theory never happen...
+                    $should_display_404 = true;
+                }
+                else {
+                    $file_location = $this->fileDirectory . '/'. $element->getFullLocation();
+
+                    if (file_exists($file_location)) {
+                        // File exists, download!
+                        $this->loadFile($file_location);
+                    }
+                    else {
+                        // File was not found, wtf
+                        echo "File is missing!";
+                    }
+                }
             }
             else {
-                // File does not exists, log error and return 404
-                $this->return404();
+                // Retarded url
+                $should_display_404 = true;
             }
+        }
+
+        // Check if we should display 404 or not
+        if ($should_display_404) {
+            $this->display404();
         }
     } 
     

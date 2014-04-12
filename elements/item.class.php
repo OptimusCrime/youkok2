@@ -30,10 +30,13 @@ class Item {
     private $url;
     private $name;
     private $parent;
+    private $location;
     private $urlFriendly;
     private $downloadCount;
     private $isDirectory;
     private $mimeType;
+    private $shouldLoadPhysicalLocation;
+    private $fullLocation;
 
     //
     // Constructor
@@ -44,11 +47,15 @@ class Item {
         $this->collection = $collection;
         $this->db = $db;
 
-        // Create array for url
+        // Create array for url and location
         $this->url = array();
+        $this->fullLocation = array();
 
         // Create array for download numbers
         $this->downloadCount = array(0 => null, 1 => null, 2 => null, 3 => null);
+
+        // Set shouldLoadPhysicalLocation (lol) to false
+        $this->shouldLoadPhysicalLocation = false;
     }
     
     //
@@ -79,14 +86,14 @@ class Item {
             // Loop each fragment
             foreach ($url_pieces as $url_piece_single) {
                 // Todo add caching here!
-                $get_revese_url = "SELECT id
+                $get_reverse_url = "SELECT id". ($this->shouldLoadPhysicalLocation ? ', location' : '') . "
                 FROM archive 
                 WHERE parent = :parent
                 AND url_friendly = :url_friendly";
                 
-                $get_revese_url_query = $this->db->prepare($get_revese_url);
-                $get_revese_url_query->execute(array(':parent' => $current_id, ':url_friendly' => $url_piece_single));
-                $row = $get_revese_url_query->fetch(PDO::FETCH_ASSOC);
+                $get_reverse_url_query = $this->db->prepare($get_reverse_url);
+                $get_reverse_url_query->execute(array(':parent' => $current_id, ':url_friendly' => $url_piece_single));
+                $row = $get_reverse_url_query->fetch(PDO::FETCH_ASSOC);
                 
                 // Check if anything was returned
                 if (isset($row['id'])) {
@@ -95,6 +102,11 @@ class Item {
 
                     // Add url piece
                     $this->url[] = $url_piece_single;
+
+                    // Check if we should add to location array too
+                    if ($this->shouldLoadPhysicalLocation) {
+                        $this->fullLocation[] = $row['location'];
+                    }
                 }
             }
 
@@ -169,6 +181,18 @@ class Item {
 
     public function getMimeType() {
         return $this->mimeType;
+    }
+
+    public function getFullLocation() {
+        return implode('/', $this->fullLocation);
+    }
+
+    //
+    // This variable decides if the location is fetched too
+    //
+
+    public function setShouldLoadPhysicalLocation($b) {
+        $this->shouldLoadPhysicalLocation = $b;
     }
 
     //

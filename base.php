@@ -31,8 +31,10 @@ class Base {
     //
 
     public function __construct($paths, $base) {
-        // Starting session
-        session_start();
+        // Starting session, if not already started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         
         // Stores the base path
         $this->basePath = $base;
@@ -121,11 +123,14 @@ class Base {
     }
     
     //
-    // Returning an 404-page (more to come!)
+    // Returning an 404-page
     //
     
-    protected function return404() {
-        return '<h1>Page not found... More to come!</h1>';
+    protected function display404() {
+        // Inclyde 404 controller
+        require_once $this->basePath . '/controllers/notfoundController.php';
+
+        $controller = new NotfoundController($this->paths, $this->basePath);
     }
     
     //
