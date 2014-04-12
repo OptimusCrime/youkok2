@@ -151,3 +151,9 @@ body, html {
 .tt-suggestion p {
     margin: 0;
 }
+#archive-context-menu {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    display: none;
+}

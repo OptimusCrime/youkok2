@@ -1,5 +1,17 @@
 [[+include file="header.tpl"]]
 
+<ul class="dropdown-menu" id="archive-context-menu">
+    <li id="archive-context-menu-id" role="presentation" class="dropdown-header">Laster</li>
+    <li class="divider"></li>
+    <li><a href="#">Last ned<span id="archive-context-menu-size"></span></a></li>
+    <li><a href="#">Vis info</a></li>
+    <li class="divider"></li>
+    <li><a href="#">xxx</a></li>
+    <li><a href="#">xxx</a></li>
+    <li class="divider"></li>
+    <li><a href="#">Lukk</a></li>
+</ul>
+
 <div class="col-md-8">
 	<ol class="breadcrumb" id="archive-breadcrumbs">
 		<li><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>

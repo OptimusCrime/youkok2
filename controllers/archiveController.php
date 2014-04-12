@@ -162,7 +162,7 @@ class ArchiveController extends Base {
                     // This is a directory, link should go to archive
                     $ret .= '<li>
                                 <a href="' . $element->generateUrl($this->paths['archive'][0]) . '">
-                                    <div class="archive-item"><div class="archive-badge">1</div><div class="archive-overlay"></div>
+                                    <div class="archive-item"><div class="archive-badge">1</div>
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/folder.png\');"></div>
                                         <div class="archive-item-label"><p>' . $element->getName() . '</p></div>
                                     </div>
@@ -173,7 +173,7 @@ class ArchiveController extends Base {
                     // This is a file, link should go to download
                     $ret .= '<li>
                                 <a href="' . $element->generateUrl($this->paths['download'][0]) . '">
-                                    <div class="archive-item"><div class="archive-badge">2</div><div class="archive-overlay"></div>
+                                    <div class="archive-item" data-name="' . $element->getName() . '" data-badge="2" data-size="2.21mb"><div class="archive-badge">2</div><div class="archive-overlay"></div>
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . $item->getMimeType() . '.png\');"></div>
                                         <div class="archive-item-label"><p>' . $element->getName() . '</p></div>
                                     </div>

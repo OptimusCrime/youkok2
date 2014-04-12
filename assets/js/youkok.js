@@ -64,4 +64,26 @@ $(document).ready(function () {
 			check_check_search();
 		}
 	});
+
+	//
+	// Archive context menu
+	//
+
+	var $archive_context_menu = $('#archive-context-menu');
+	$('body').on('contextmenu', '.archive-item', function(e) {
+		// Pointer
+		var $that = $(this);
+
+		// Set info
+		$('#archive-context-menu-id', $archive_context_menu).html($that.data('name'));
+		$('#archive-context-menu-size', $archive_context_menu).html(' (' + $that.data('size') + ')');
+
+		// Set location
+		$archive_context_menu.css({
+			display: 'block',
+			left: e.pageX - 30,
+			top: e.pageY - 40,
+		});
+		return false;
+	});
 });
