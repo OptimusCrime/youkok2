@@ -29,7 +29,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li[[+if $HEADER_MENU == 'HOME']] class="active"[[+/if]]><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
-                <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="arkiv/">Fag &amp; filer</a></li>
+                <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="arkiv/">Filarkiv</a></li>
                 <li[[+if $HEADER_MENU == 'WOS']] class="active"[[+/if]]><a href="wall-of-shame">WoS</a></li>
                 <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om</a></li>
                 <li[[+if $HEADER_MENU == 'CONTACTS']] class="active"[[+/if]]><a href="kontakt">Kontakt</a></li>
