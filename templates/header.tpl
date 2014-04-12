@@ -6,15 +6,17 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
-    <script type="text/javascript" src="assets/js/lib/jquery.min.js"></script>
-    <script type="text/javascript" src="assets/js/lib/jquery-ui.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script type="text/javascript" src="assets/js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="assets/js/lib/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="assets/js/youkok.js"></script>
     <link rel="stylesheet" type="text/css" href="assets/css/lib/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/lib/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/youkok.css" />
 </head>
 <body>
+<input type="hidden" name="search-base" id="search-base" value="[[+$SITE_SEARCH_BASE]]" />
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -55,8 +57,8 @@
                 [[+/if]]
             </ul>
             <form class="navbar-form navbar-right" role="form">
-                <div class="form-group div-relative">
-                    <input type="text" placeholder="Søk etter fag" class="form-control" id="search" />
+                <div class="form-group div-relative" id="prefetch">
+                    <input type="text" placeholder="Søk etter fag" class="form-control typeahead" id="search" />
                     <button class="btn" type="button" id="nav-search">
                         <i class="icon-search"></i>
                     </button>

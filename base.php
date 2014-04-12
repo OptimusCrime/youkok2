@@ -3,7 +3,7 @@
  * File: rest.php
  * Holds: The base-class intilize most of the common stuff the system needs
  * Created: 02.10.13
- * Last updated: 12.04.14
+ * Last updated: 13.04.14
  * Project: Youkok2
  * 
 */
@@ -63,6 +63,7 @@ class Base {
             $this->template->assign('SITE_URL', SITE_URL);
             $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
             $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
+            $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($paths['archive'][0], 1) . '/');
 
             // Define the standard menu
             $this->template->assign('HEADER_MENU', 'HOME');
@@ -71,7 +72,7 @@ class Base {
             $this->user = new User($this->db, $this->template);
             
             // Setting the file-directory
-            $this->fileDirectory = dirname(__FILE__ ). '/05d26028b91686045907144f1883fcb1';
+            $this->fileDirectory = dirname(__FILE__ ). FILE_ROOT;
             
             // Storing paths
             $this->paths = $paths;

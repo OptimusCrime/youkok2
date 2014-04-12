@@ -2,7 +2,7 @@
 
 <div class="col-md-8">
 	<ol class="breadcrumb" id="archive-breadcrumbs">
-		<li><a href="/">Hjem</a></li>
+		<li><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
 		[[+$ARCHIVE_BREADCRUMBS]]
 	</ol>
 
