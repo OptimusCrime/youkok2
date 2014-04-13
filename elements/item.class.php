@@ -265,7 +265,7 @@ class Item {
         // Store some variables for later
         $temp_collection = array($this);
         $temp_id = $this->parent;
-        echo $temp_id;
+        
         // Loop untill we reach the root
         while ($temp_id != null) {
             // Check if this object already exists
@@ -342,7 +342,16 @@ class Item {
     //
 
     public function loadFlags() {
-        $this->flags = array(1, 2, 3, 4);
+        $get_all_flags = "SELECT *
+        FROM flag
+        WHERE file = :file
+        AND active = 1";
+        
+        $get_all_flags_query = $this->db->prepare($get_all_flags);
+        $get_all_flags_query->execute(array(':file' => $this->id));
+        while ($row = $get_all_flags_query->fetch(PDO::FETCH_ASSOC)) {
+            $this->flags[] = $row;
+        }
     }
 
     public function getFlagCount() {

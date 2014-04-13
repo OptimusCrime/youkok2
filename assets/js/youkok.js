@@ -77,6 +77,24 @@ $(document).ready(function () {
 		// Set info
 		$('#archive-context-menu-id', $archive_context_menu).html($that.data('name'));
 		$('#archive-context-menu-size', $archive_context_menu).html(' (' + $that.data('size') + ')');
+		$('#archive-context-menu-flags', $archive_context_menu).html($that.data('flags'));
+		
+		// Get link
+		var link = $that.parent().attr('href');
+
+		// Show/hide
+		if($that.data('type') == 'dir') {
+			$('#archive-context-open', $archive_context_menu).show();
+			$('#archive-context-open a', $archive_context_menu).show().attr('href', link);
+
+			$('#archive-context-download', $archive_context_menu).hide();
+		}
+		else {
+			$('#archive-context-download', $archive_context_menu).show();
+			$('#archive-context-download a', $archive_context_menu).show().attr('href', link);
+			
+			$('#archive-context-open', $archive_context_menu).hide();
+		}
 
 		// Set location
 		$archive_context_menu.css({
@@ -84,6 +102,19 @@ $(document).ready(function () {
 			left: e.pageX - 30,
 			top: e.pageY - 40,
 		});
+
+		// Disable default
 		return false;
+	});
+	$('#archive-context-close').on('click', function(e) {
+		// Prevent # href
+		e.preventDefault();
+
+		// Hide context menu
+		$archive_context_menu.hide();
+	});
+	$('#archive-context-menu-info, #archive-context-menu-flags, #archive-context-menu-report').on('click', function() {
+		// Hide context menu TODO does not work...
+		$archive_context_menu.hide();
 	});
 });

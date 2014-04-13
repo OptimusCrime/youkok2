@@ -97,14 +97,14 @@ body, html {
 #archive-breadcrumbs {
     margin-top: 20px;
 }
-#archive-history {
+.archive-sidebar {
     background-color: #F5F5F5;
     border-radius: 4px;
     padding-left: 15px;
     padding-right: 15px;
     padding-bottom: 15px;
 }
-#archive-history h3 {
+.archive-sidebar h3 {
     padding-top: 8px;
     padding-bottom: 8px;
 }
@@ -156,4 +156,12 @@ body, html {
     left: 0px;
     top: 0px;
     display: none;
+}
+.hidden {
+    display: none;
+}
+#archive-heading-star {
+    color: #F0AD4E;
+    cursor: pointer;
+    user-select: none;
 }

@@ -12,7 +12,7 @@
     <script type="text/javascript" src="assets/js/youkok.js"></script>
     <link rel="stylesheet" type="text/css" href="assets/css/lib/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/lib/bootstrap-theme.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/lib/font-awesome.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/youkok.css" />
 </head>
 <body>
