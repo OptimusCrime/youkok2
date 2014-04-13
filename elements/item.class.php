@@ -34,9 +34,13 @@ class Item {
     private $urlFriendly;
     private $downloadCount;
     private $isDirectory;
+    private $accepted;
+    private $visible;
     private $mimeType;
     private $shouldLoadPhysicalLocation;
     private $fullLocation;
+    private $loadedFlags;
+    private $flags;
 
     //
     // Constructor
@@ -47,15 +51,17 @@ class Item {
         $this->collection = $collection;
         $this->db = $db;
 
-        // Create array for url and location
+        // Create arrays
         $this->url = array();
         $this->fullLocation = array();
+        $this->flags = array();
 
         // Create array for download numbers
         $this->downloadCount = array(0 => null, 1 => null, 2 => null, 3 => null);
 
-        // Set shouldLoadPhysicalLocation (lol) to false
+        // Set shouldLoadPhysicalLocation (lol) to false and other stuff
         $this->shouldLoadPhysicalLocation = false;
+        $this->loadedFlags = false;
     }
     
     //
@@ -89,7 +95,8 @@ class Item {
                 $get_reverse_url = "SELECT id". ($this->shouldLoadPhysicalLocation ? ', location' : '') . "
                 FROM archive 
                 WHERE parent = :parent
-                AND url_friendly = :url_friendly";
+                AND url_friendly = :url_friendly
+                AND is_visible = 1";
                 
                 $get_reverse_url_query = $this->db->prepare($get_reverse_url);
                 $get_reverse_url_query->execute(array(':parent' => $current_id, ':url_friendly' => $url_piece_single));
@@ -102,6 +109,11 @@ class Item {
 
                     // Add url piece
                     $this->url[] = $url_piece_single;
+
+                    // Should cache, just in case
+                    $temp_item = new Item($this->collection, $this->db);
+                    $temp_item->createById($current_id);
+                    $temp_item->collection->addIfDoesNotExist($temp_item);
 
                     // Check if we should add to location array too
                     if ($this->shouldLoadPhysicalLocation) {
@@ -125,7 +137,7 @@ class Item {
         // Get all info about file
         if ($this->id != null) {
             // Id is set, run a simple query
-            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type
+            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, is_accepted, is_visible
             FROM archive 
             WHERE id = :id";
             
@@ -139,6 +151,8 @@ class Item {
             $this->urlFriendly = $row['url_friendly'];
             $this->parent = $row['parent'];
             $this->mimeType = $row['mime_type'];
+            $this->accepted = $row['is_accepted'];
+            $this->visible = $row['is_visible'];
         }
     }
 
@@ -181,6 +195,14 @@ class Item {
 
     public function getMimeType() {
         return $this->mimeType;
+    }
+
+    public function isVisible() {
+        return $this->visible;
+    }
+
+    public function isAccepted() {
+        return $this->accepted;
     }
 
     public function getFullLocation() {
@@ -243,7 +265,7 @@ class Item {
         // Store some variables for later
         $temp_collection = array($this);
         $temp_id = $this->parent;
-        
+        echo $temp_id;
         // Loop untill we reach the root
         while ($temp_id != null) {
             // Check if this object already exists
@@ -253,7 +275,7 @@ class Item {
             $temp_collection[] = $temp_item;
 
             // Update id
-            $temp_id = $temp_item->getParent();
+            $temp_id = $temp_item->getParent(); 
         }
 
         // Return breadcrumbs in correct order here
@@ -313,6 +335,23 @@ class Item {
             $insert_anon_download_query = $this->db->prepare($insert_anon_download);
             $insert_anon_download_query->execute(array(':file' => $this->id, ':ip' => $_SERVER['REMOTE_ADDR']));
         }
+    }
+
+    //
+    // Flags
+    //
+
+    public function loadFlags() {
+        $this->flags = array(1, 2, 3, 4);
+    }
+
+    public function getFlagCount() {
+        if ($this->loadedFlags == false) {
+            // Flags are not loaded, load them first
+            $this->loadFlags();
+        }
+
+        return count($this->flags);
     }
 }
 ?>

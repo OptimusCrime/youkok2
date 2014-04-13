@@ -140,6 +140,7 @@ class ArchiveController extends Base {
         $get_current_archive = "SELECT id
         FROM archive
         WHERE parent = :parent
+        AND is_visible = 1
         ORDER BY is_directory DESC,
         name ASC";
         
@@ -157,12 +158,15 @@ class ArchiveController extends Base {
 
             // CHeck if element was loaded
             if ($element != null) {
+                $flag_count = $element->getFlagCount();
                 // Check if element is file or directory
                 if ($element->isDirectory()) {
                     // This is a directory, link should go to archive
                     $ret .= '<li>
                                 <a href="' . $element->generateUrl($this->paths['archive'][0]) . '">
-                                    <div class="archive-item"><div class="archive-badge">1</div>
+                                    <div class="archive-item" data-type="dir" data-name="' . $element->getName() . '" data-badge="' . $flag_count . '">
+                                        ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
+                                        ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/folder.png\');"></div>
                                         <div class="archive-item-label"><p>' . $element->getName() . '</p></div>
                                     </div>
@@ -173,7 +177,9 @@ class ArchiveController extends Base {
                     // This is a file, link should go to download
                     $ret .= '<li>
                                 <a href="' . $element->generateUrl($this->paths['download'][0]) . '">
-                                    <div class="archive-item" data-name="' . $element->getName() . '" data-badge="2" data-size="2.21mb"><div class="archive-badge">2</div><div class="archive-overlay"></div>
+                                    <div class="archive-item" data-type="file" data-name="' . $element->getName() . '" data-badge="' . $flag_count . '" data-size="2.21mb">
+                                        ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
+                                        ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . $item->getMimeType() . '.png\');"></div>
                                         <div class="archive-item-label"><p>' . $element->getName() . '</p></div>
                                     </div>
@@ -202,6 +208,7 @@ class ArchiveController extends Base {
         $get_all_courses = "SELECT c.code, c.name, a.url_friendly
         FROM course c
         LEFT JOIN archive AS a ON c.id = a.course
+        WHERE a.is_visible = 1
         ORDER BY c.code ASC";
         
         $get_all_courses_query = $this->db->prepare($get_all_courses);

@@ -53,18 +53,25 @@ class DownloadController extends Base {
                     $should_display_404 = true;
                 }
                 else {
-                    $file_location = $this->fileDirectory . '/'. $element->getFullLocation();
+                    // Check if visible
+                    if ($element->isVisible()) {
+                        $file_location = $this->fileDirectory . '/'. $element->getFullLocation();
 
-                    if (file_exists($file_location)) {
-                        // Logg download
-                        $element->addDownload($this->user);
+                        if (file_exists($file_location)) {
+                            // Logg download
+                            $element->addDownload($this->user);
 
-                        // File exists, download!
-                        $this->loadFile($file_location);
+                            // File exists, download!
+                            $this->loadFile($file_location);
+                        }
+                        else {
+                            // File was not found, wtf
+                            $should_display_404 = true;
+                        }
                     }
                     else {
-                        // File was not found, wtf
-                        echo "File is missing!";
+                        // File is not visible
+                        $should_display_404 = true;
                     }
                 }
             }
