@@ -132,13 +132,18 @@ Class User {
     //
 
     private function prettifyKarma($s) {
-        $temp_string = (string) $s;
-        $temp_string_split = explode('.', $temp_string);
-        if ($temp_string_split[1] == '0') {
-            return $temp_string_split[0];
+        if ($s <= 0) {
+            return 0;
         }
         else {
-            return $s;
+            $temp_string = (string) $s;
+            $temp_string_split = explode('.', $temp_string);
+            if ($temp_string_split[1] == '0') {
+                return $temp_string_split[0];
+            }
+            else {
+                return $s;
+            }
         }
     }
 }

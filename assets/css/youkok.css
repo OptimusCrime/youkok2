@@ -165,3 +165,21 @@ body, html {
     cursor: pointer;
     user-select: none;
 }
+.model-flags-collaps-info {
+    width: 60%;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    height: 18px;
+}
+.panel-heading {
+    position: relative;
+}
+.model-flags-collaps-info .progress {
+    width: 85%;
+    float: right;
+    margin-right: 2%;
+}
+.model-flags-collaps-info i {
+    float: right;
+}

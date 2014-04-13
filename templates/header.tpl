@@ -31,7 +31,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li[[+if $HEADER_MENU == 'HOME']] class="active"[[+/if]]><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
-                <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="arkiv/">Filarkiv</a></li>
+                <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="arkiv/">Kokebok</a></li>
                 <li[[+if $HEADER_MENU == 'WOS']] class="active"[[+/if]]><a href="wall-of-shame">WoS</a></li>
                 <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om</a></li>
                 <li[[+if $HEADER_MENU == 'CONTACTS']] class="active"[[+/if]]><a href="kontakt">Kontakt</a></li>
@@ -44,7 +44,9 @@
                             <li role="presentation" class="dropdown-header">[[+$BASE_USER_NICK]]</li>
                             <li class="divider"></li>
                             <li><a href="profil/innstillinger">Innstillinger</a></li>
-                            <li><a href="logout">Logg ut</a></li>
+                            <li><a href="profil/historikk">Historikk</a></li>
+                            <li class="divider"></li>
+                            <li><a href="logg-ut">Logg ut</a></li>
                         </ul>
                     </li>
                 [[+else]]

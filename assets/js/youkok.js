@@ -69,10 +69,14 @@ $(document).ready(function () {
 	// Archive context menu
 	//
 
+	var archive_id = 0;
 	var $archive_context_menu = $('#archive-context-menu');
 	$('body').on('contextmenu', '.archive-item', function(e) {
 		// Pointer
 		var $that = $(this);
+
+		// Set id
+		archive_id = $that.data('id');
 
 		// Set info
 		$('#archive-context-menu-id', $archive_context_menu).html($that.data('name'));
@@ -113,8 +117,48 @@ $(document).ready(function () {
 		// Hide context menu
 		$archive_context_menu.hide();
 	});
-	$('#archive-context-menu-info, #archive-context-menu-flags, #archive-context-menu-report').on('click', function() {
-		// Hide context menu TODO does not work...
+	$('#archive-context-flags,#archive-context-info,#archive-context-report').on('click', function() {
+		// Hide context menu
 		$archive_context_menu.hide();
+	});
+
+	//
+	// Modals
+	//
+
+	$('#archive-context-flags').on('click', function(e) {
+		// Prevent # href
+		e.preventDefault();
+
+		// Show modal
+		$('#modal-flags').modal('show');
+
+		// Ajax request
+
+		$.ajax({
+			cache: false,
+			type: "post",
+			url: "processor/flag/get",
+			data: { id: archive_id },
+			success: function(json) {
+				//
+			},
+		})
+	});
+
+	$('#archive-context-info').on('click', function(e) {
+		// Prevent # href
+		e.preventDefault();
+
+		// Show modal
+		$('#modal-info').modal('show');
+	});
+
+	$('#archive-context-report').on('click', function(e) {
+		// Prevent # href
+		e.preventDefault();
+
+		// Show modal
+		$('#modal-report').modal('show');
 	});
 });

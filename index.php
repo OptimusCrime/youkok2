@@ -3,7 +3,7 @@
  * File: index.php
  * Holds: The Loader class that loads the correct class based on the method being called, setting output and including all the stuff we need
  * Created: 02.10.13
- * Last updated: 12.04.14
+ * Last updated: 14.04.14
  * Project: Youkok2
  * 
 */
@@ -67,6 +67,7 @@ class Loader {
         'flat' => array('/om'),
         'notfound' => array('/404'),
         'other' => array('/kontakt', '/wall-of-shame', '/logg-ut', '/nytt-fag'),
+        'processor' => array('/processor'),
     );
 
     //
