@@ -77,7 +77,7 @@
                 <div class="form-group div-relative" id="prefetch">
                     <input type="text" placeholder="Søk etter fag" class="form-control typeahead" id="search" />
                     <button class="btn" type="button" id="nav-search">
-                        <i class="icon-search"></i>
+                        <i class="fa fa-search"></i>
                     </button>
                 </div>
             </form>
