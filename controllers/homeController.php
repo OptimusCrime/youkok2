@@ -31,7 +31,7 @@ class HomeController extends Base {
         // Check if this user is logged in
         if ($this->user->isLoggedIn()) {
             $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item">Kommer!</li>');
-            $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item">Kommer!</li>');
+            $this->template->assign('HOME_USER_FAVORITES', $this->loadFavorites());
         } else {
             $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em>Registrer og/eller logg inn!</em></li>');
             $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em>Registrer og/eller logg inn!</em></li>');
@@ -53,7 +53,7 @@ class HomeController extends Base {
         $ret = '';
         
         // Loading newest files from the system TODO add filter
-        $get_newest = "SELECT id, name
+        $get_newest = "SELECT id
         FROM archive
         WHERE is_directory = 0
         ORDER BY added DESC
@@ -117,6 +117,52 @@ class HomeController extends Base {
             }
         }
         
+        return $ret;
+    }
+
+    //
+    //
+    //
+    
+    private function loadFavorites() {
+        // Declear variable for storing content
+        $ret = '';
+        
+        // Load all favorites
+        $get_favorites = "SELECT file
+        FROM favorite
+        ORDER BY ordering ASC";
+        
+        $get_favorites_query = $this->db->prepare($get_favorites);
+        $get_favorites_query->execute();
+        while ($row = $get_favorites_query->fetch(PDO::FETCH_ASSOC)) {
+            // Create new object
+            $item = new Item($this->collection, $this->db);
+            $item->createById($row['file']);
+
+            // Add to collection if new
+            $this->collection->addIfDoesNotExist($item);
+
+            // Load item from collection
+            $element = $this->collection->get($row['file']);
+
+            // CHeck if element was loaded
+            if ($element != null) {
+                if ($element->isDirectory()) {
+                    $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['archive'][0]) . '">' . $element->getName() . '</a> @ <a href="#">MFEL1010</a></li>';
+                }
+                else {
+                    $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['download'][0]) . '">' . $element->getName() . '</a> @ <a href="#">MFEL1010</a></li>';
+                }
+            }
+        }
+        
+        // Check if null
+        if ($ret == '') {
+            $ret .= '<li class="list-group-item"><em>Du har ingen favoritter...</em></li>';
+        }
+
+        // Return the content
         return $ret;
     }
 }

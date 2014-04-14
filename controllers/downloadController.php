@@ -56,7 +56,7 @@ class DownloadController extends Base {
                     // Check if visible
                     if ($element->isVisible()) {
                         $file_location = $this->fileDirectory . '/'. $element->getFullLocation();
-
+                        
                         if (file_exists($file_location)) {
                             // Logg download
                             $element->addDownload($this->user);
