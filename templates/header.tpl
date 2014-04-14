@@ -2,7 +2,7 @@
 <html>
 <head>
     <base href="[[+$SITE_URL_FULL]]" />
-    <title>Youkok2.net</title>
+    <title>Youkok2.net :: Den beste kokeboka</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
