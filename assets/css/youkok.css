@@ -204,3 +204,7 @@ body, html {
 #login-dropdown .form-group input[type="email"] {
     margin-bottom: 10px;
 }
+#footer {
+    padding-top: 10px;
+    text-align: center;
+}

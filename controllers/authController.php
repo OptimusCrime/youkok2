@@ -26,7 +26,7 @@ class AuthController extends Base {
         	$this->logIn();
         }
         else if ($_GET['q'] == 'logg-ut') {
-        	//
+        	$this->logOut();
         }
         else {
         	// 404
@@ -87,6 +87,22 @@ class AuthController extends Base {
     			// error
     		}
     	}
+    }
+
+    //
+    // HSHHS
+    //
+
+    private function logOut() {
+        // Check if logged in
+        if ($this->user->isLoggedIn()) {
+            // Log out
+            unset($_SESSION['youkok2']);
+            unset($_COOKIE['youkok2']);
+        }
+
+        // Redirect to frontpage
+        $this->redirect('');
     }
 }
 
