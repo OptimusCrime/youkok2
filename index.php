@@ -62,7 +62,7 @@ class Loader {
     private $basePath;
     private $paths = array(
         'home' => array('/'),
-        'archive' => array('/arkiv'),
+        'archive' => array('/kokebok'),
         'profile' => array('/profil'),
         'download' => array('/last-ned'),
         'flat' => array('/om'),
