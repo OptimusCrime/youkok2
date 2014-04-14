@@ -1,4 +1,26 @@
 //
+// Moment.js
+//
+
+moment.lang('en', {
+    relativeTime : {
+        future: "Om %s",
+        past:   "%s siden",
+        s:  "Noen få sekunder",
+        m:  "Ett minutt",
+        mm: "%d minutter",
+        h:  "En time",
+        hh: "%d timer",
+        d:  "en dag",
+        dd: "%d dager",
+        M:  "En måned",
+        MM: "%d måneder",
+        y:  "Et år",
+        yy: "%d år"
+    }
+});
+
+//
 // Bloodhound
 //
 
@@ -289,4 +311,13 @@ $(document).ready(function () {
 			}
 		}
 	});
+
+	//
+	// Moment.js
+	//
+
+	$('.moment-timestamp').each(function () {
+		$that = $(this);
+        $that.html(moment($(this).data('ts')).fromNow());
+	})
 });

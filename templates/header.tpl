@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.0/moment.min.js"></script>
     <script type="text/javascript" src="assets/js/lib/bootstrap.min.js"></script>
     <script type="text/javascript" src="assets/js/lib/typeahead.bundle.min.js"></script>
     <script type="text/javascript" src="assets/js/youkok.js"></script>
