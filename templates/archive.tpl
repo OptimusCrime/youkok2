@@ -73,6 +73,8 @@
     <li><a href="#" id="archive-context-close">Lukk</a></li>
 </ul>
 
+<input type="hidden" value="[[+$ARCHIVE_ID]]" id="archive-id" name="archive-id" />
+
 <div class="col-md-8">
 	<ol class="breadcrumb" id="archive-breadcrumbs">
 		<li><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
@@ -91,16 +93,37 @@
 <div class="col-md-4">
 	<div id="archive-controlls" class="archive-sidebar">
 		<h3>Kontroller</h3>
-		<p>Herpaderp</p>
+		[[+if $ARCHIVE_USER_VERIFIED == true]]
+			<div id="archive-create-controlls">
+				<button type="button" class="btn btn-default">Last opp fil</button> <button type="button" class="btn btn-default" id="archive-create-folder">Opprett mappe</button>
+			</div>
+
+			<div id="archive-create-folder-div">
+				<form role="form" action="archive-create-folder-form" method="post">
+                    <div class="form-group">
+                    	<label for="archive-create-folder-name">Navn</label>
+                        <input type="text" name="archive-create-folder-name" class="form-control" id="archive-create-folder-name" value="" placeholder="Navn på mappen du ønsker å opprette" />
+                    </div>
+                    <button type="submit" class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
+				</form>
+			</div>
+		[[+else]]
+			<p>Logg inn og/eller registrer din NTNU-bruker for å kunne legge til filer og opprette mapper.</p>
+		[[+/if]]
+	</div>
+
+	<div id="archive-help" class="archive-sidebar">
+		<h3>Hjelp</h3>
+		<p>Kokeboka skal være lett å bruke. Du laster ned filer ved å klikke på dem. Ønsker du å utforske en mappe trykker du enkelt på mappa.</p>
+		<p>Du kan også høyreklikke på en fil eller en mappe for å få opp ytteligere valg. Her kan du favoritisere elementet, se utvidet informasjon, <a href="#">rapportere</a> regelbrudd eller <a href="#">flagge</a> elementet dersom du mener det er på sin plass.</p>
+		<p><a href="#">Se utvidet hjelp</a>.</p>
 	</div>
 
 	<div id="archive-history" class="archive-sidebar">
 		<h3>Historikk</h3>
-		<ul>
-			<li><strong>Path</strong> opprettet i <strong>MFEL1010</strong> av <em>Anonym</em>.</li>
-			<li><strong>MFEL101</strong> endret navn til <strong>MFEL1010</strong> av <em>Anonym</em>.</li>
-			<li><strong>MFEL101</strong> opprettet av <em>Anonym</em>.</li>
-		</ul>
+		<div id="archive-history-inside">
+			<p>Laster...</p>
+		</div>
 	</div>
 
 	<div id="archive-asd" class="archive-sidebar">

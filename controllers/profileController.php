@@ -22,7 +22,36 @@ class ProfileController extends Base {
         // Calling Base' constructor
         parent::__construct($paths, $base);
         
-        echo 'My profile goes here';
+        // Check if online
+        if ($this->user->isLoggedIn()) {
+        	if ($_GET['q'] == 'profil/innstillinger') {
+	        	// Assign email
+	        	$this->template->assign('PROFILE_USER_EMAIL', $this->user->getEmail());
+
+	        	// Assign other stuff
+	        	if ($this->user->isVerified()) {
+	        		$this->template->assign('PROFILE_USER_VERIFIED', 1);
+	        	}
+	        	else {
+	        		$this->template->assign('PROFILE_USER_VERIFIED', 0);
+	        	}
+
+	        	if ($this->user->isBanned()) {
+	        		$this->template->assign('PROFILE_USER_ACTIVE', 0);
+	        	}
+	        	else {
+	        		$this->template->assign('PROFILE_USER_ACTIVE', 1);
+	        	}
+
+	        	$this->template->display('profile_settings.tpl');
+	        }
+	        else {
+	        	// TOOD
+	        }
+        }
+        else {
+        	$this->redirect('');
+        }
     }
 }
 

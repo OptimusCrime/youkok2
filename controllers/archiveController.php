@@ -76,6 +76,9 @@ class ArchiveController extends Base {
                         $this->template->assign('ARCHIVE_TITLE', $archive_title);
                         $this->template->assign('ARCHIVE_ID', $element->getId());
 
+                        // Check if user is verified
+                        $this->template->assign('ARCHIVE_USER_VERIFIED', $this->user->isVerified());
+
                         // Get breadcrumbs
                         $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
                     }

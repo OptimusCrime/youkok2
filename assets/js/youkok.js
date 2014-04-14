@@ -364,4 +364,23 @@ $(document).ready(function () {
 	$('#login-dropdown label, #login-dropdown input').on('click', function(e) {
 		e.stopPropagation();
 	});
+
+	//
+    // Create
+    //
+
+    $('#archive-create-folder').on('click', function () {
+        if ($('#archive-create-folder-div').is(':visible')) {
+            $('#archive-create-folder-div').stop().slideUp();
+        }
+        else {
+            $('#archive-create-folder-div').stop().slideDown();
+        }
+    });
+    $('#archive-create-folder-div a').on('click', function(e) {
+    	e.preventDefault();
+    	$('#archive-create-folder-div').stop().slideUp(400, function () {
+    		$('#archive-create-folder-name').val('');
+    	});
+    });
 });

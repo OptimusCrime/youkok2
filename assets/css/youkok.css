@@ -208,3 +208,14 @@ body, html {
     padding-top: 10px;
     text-align: center;
 }
+#archive-asd {
+    margin-bottom: 20px;
+}
+#archive-create-controlls {
+    padding-bottom: 10px;
+}
+#archive-create-folder-div {
+    display: none;
+    border-top: 1px solid gray;
+    padding-top: 5px;
+}
