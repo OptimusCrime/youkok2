@@ -1,3 +1,7 @@
+/*
+    Stuff
+*/
+
 body, html {
     background-color: #999999;
     height: 100%;
@@ -8,6 +12,14 @@ body, html {
 .clear {
     clear: both;
 }
+.hidden {
+    display: none;
+}
+
+/*
+    Main
+*/
+
 #main {
     background-color: #fff;
     height: auto;
@@ -15,6 +27,11 @@ body, html {
     padding-top: 51px;
     box-shadow: 5px 5px 5px #888;
 }
+
+/*
+    Nav
+*/
+
 #nav-search {
     position: absolute;
     top: 0px;
@@ -30,6 +47,73 @@ body, html {
 .navbar-form {
     width: 40%;
 }
+
+/*
+    Typeahead
+*/
+
+.tt-query,
+.tt-hint {
+    width: 396px;
+    padding: 8px 12px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+}
+.tt-query {
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.tt-hint {
+    color: #999
+}
+.tt-dropdown-menu {
+    width: 422px;
+    margin-top: 12px;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+.tt-suggestion {
+    padding: 3px 20px;
+    font-size: 13px;
+    line-height: 24px;
+}
+.tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #0097cf;
+
+}
+.tt-suggestion p {
+    margin: 0;
+}
+
+/*
+    Login
+*/
+
+#login-dropdown {
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 250px;
+}
+#login-dropdown .form-group {
+    margin-bottom: 0px;
+}
+#login-dropdown .form-group label {
+    display: block;
+}
+#login-dropdown .form-group input[type="email"] {
+    margin-bottom: 10px;
+}
+
+/*
+    Archive
+*/
+
 #archive-list {
     list-style: none;
     list-style-position: inside;
@@ -112,51 +196,10 @@ body, html {
     background-color: #fff;
     border-radius: 4px;
 }
-.tt-query,
-.tt-hint {
-    width: 396px;
-    padding: 8px 12px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
-}
-.tt-query {
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-}
-.tt-hint {
-    color: #999
-}
-.tt-dropdown-menu {
-    width: 422px;
-    margin-top: 12px;
-    padding: 8px 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    box-shadow: 0 5px 10px rgba(0,0,0,.2);
-}
-.tt-suggestion {
-    padding: 3px 20px;
-    font-size: 13px;
-    line-height: 24px;
-}
-.tt-suggestion.tt-cursor {
-    color: #fff;
-    background-color: #0097cf;
-
-}
-.tt-suggestion p {
-    margin: 0;
-}
 #archive-context-menu {
     position: absolute;
     left: 0px;
     top: 0px;
-    display: none;
-}
-.hidden {
     display: none;
 }
 #archive-heading-star {
@@ -165,6 +208,30 @@ body, html {
 }
 .archive-heading-star-1 {
     color: #F0AD4E;
+}
+#archive-asd {
+    margin-bottom: 20px;
+}
+#archive-create-controlls {
+    padding-bottom: 10px;
+}
+#archive-create-folder-div {
+    display: none;
+    border-top: 1px solid gray;
+    padding-top: 5px;
+}
+
+/*
+    Modals
+*/
+
+#modal-report .dropdown {
+    display: inline;
+}
+#modal-report textarea {
+    margin-bottom: 20px;
+    height: 100px;
+    resize: vertical;
 }
 .model-flags-collaps-info {
     width: 60%;
@@ -184,20 +251,11 @@ body, html {
 .model-flags-collaps-info i {
     float: right;
 }
-#login-dropdown {
-    padding-left: 15px;
-    padding-right: 15px;
-    width: 250px;
-}
-#login-dropdown .form-group {
-    margin-bottom: 0px;
-}
-#login-dropdown .form-group label {
-    display: block;
-}
-#login-dropdown .form-group input[type="email"] {
-    margin-bottom: 10px;
-}
+
+/*
+    Footer
+*/
+
 #footer {
     padding-top: 10px;
     text-align: center;
@@ -220,23 +278,4 @@ body, html {
 }
 #footer .last {
     padding-right: 0px;
-}
-#archive-asd {
-    margin-bottom: 20px;
-}
-#archive-create-controlls {
-    padding-bottom: 10px;
-}
-#archive-create-folder-div {
-    display: none;
-    border-top: 1px solid gray;
-    padding-top: 5px;
-}
-#modal-report .dropdown {
-    display: inline;
-}
-#modal-report textarea {
-    margin-bottom: 20px;
-    height: 100px;
-    resize: vertical;
 }
