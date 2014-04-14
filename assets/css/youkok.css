@@ -219,3 +219,11 @@ body, html {
     border-top: 1px solid gray;
     padding-top: 5px;
 }
+#modal-report .dropdown {
+    display: inline;
+}
+#modal-report textarea {
+    margin-bottom: 20px;
+    height: 100px;
+    resize: vertical;
+}

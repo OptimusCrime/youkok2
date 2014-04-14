@@ -233,6 +233,9 @@ $(document).ready(function () {
 		// Prevent # href
 		e.preventDefault();
 
+		// Set name
+		$('#modal-report .modal-title').html('Rapporter: ' + $archive_right_click.data('name'));
+
 		// Show modal
 		$('#modal-report').modal('show');
 	});
@@ -412,6 +415,50 @@ $(document).ready(function () {
 				})
     		}
     	}
+
+    	return false;
+    });
+
+    //
+    // Report
+    //
+
+    $('#modal-report-form > a').on('click', function (e) {
+    	e.preventDefault();
+
+    	$('#modal-report').modal('hide');
+    });
+
+    $('#modal-report .dropdown li').on('click', function(e) {
+		// Default
+		e.preventDefault();
+
+		// Swap content
+		$('#modal-report-selected').html($(this).html());
+
+		// Swap disabled
+		$('#modal-report .dropdown li').removeClass('disabled');
+		$(this).addClass('disabled');
+    });
+
+    $('#modal-report-form').on('submit', function () {
+    	$.ajax({
+			cache: false,
+			type: "post",
+			url: "processor/report/send",
+			data: { id: $('#archive-id').val(), text: $('#modal-report-form textarea').val(), category: $('#modal-report-selected').html() },
+			success: function(json) {
+				if (json.code == 200) {
+					// Yey
+					$('#modal-report').modal('hide');
+					$('#modal-report-form textarea').val('');
+				}
+				else {
+					// Something went wrong
+					alert('Noe gikk visst galt!');
+				}
+			}
+		})
 
     	return false;
     });

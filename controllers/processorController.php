@@ -82,6 +82,11 @@ class ProcessorController extends Base {
                     $response = $this->createFolder();
                 }
             }
+            else if ($url_fragment[1] == 'report') {
+                if ($url_fragment[2] == 'send') {
+                    $response = $this->reportSend();
+                }
+            }
             else {
                 // Not found
                 $response['code'] = 500;
@@ -532,6 +537,47 @@ class ProcessorController extends Base {
         }
 
         // Return
+        return $response;
+    }
+
+    //
+    //
+    //
+
+    private function reportSend() {
+        $response = array();
+
+        // Check stuff
+        if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['category']) and strlen($_POST['category']) > 3) {
+            // Valid id, try to load the object
+            $item = new Item($this->collection, $this->db);
+            $item->createById($_POST['id']);
+            $this->collection->addIfDoesNotExist($item);
+            $element = $this->collection->get($_POST['id']);
+
+            if ($element != null and $this->user->isLoggedIn()) {
+                // Good to go
+                $response['code'] = 200;
+
+                // Run the query and gogo
+                $insert_report = "INSERT INTO report
+                (file, user, reason, comment)
+                VALUES (:file, :user, :reason, :comment)";
+                
+                $insert_report_query = $this->db->prepare($insert_report);
+                $insert_report_query->execute(array(':file' => $element->getId(),
+                    ':user' => $this->user->getId(),
+                    ':reason' => $_POST['category'],
+                    ':comment' => (isset($_POST['text']) ? $_POST['text'] : '')));
+            }
+            else {
+                $response['code'] = 500;
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+
         return $response;
     }
 

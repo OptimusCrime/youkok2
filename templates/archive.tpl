@@ -5,7 +5,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Info om: lalalalala</h4>
+				<h4 class="modal-title">Info om:</h4>
 			</div>
 			<div class="modal-body">
 				<p>One fine body&hellip;</p>
@@ -22,7 +22,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Flagg for: Hello world.txt</h4>
+				<h4 class="modal-title">Flagg for:</h4>
 			</div>
 			<div class="modal-body">
 				<div class="panel-group" id="flags-panel">
@@ -41,10 +41,28 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Rapporter: xxxxx</h4>
+				<h4 class="modal-title">Rapporter:</h4>
 			</div>
 			<div class="modal-body">
-				<p>One fine body&hellip;</p>
+				<form action="" method="post" id="modal-report-form" name="modal-report-form">
+					Velg kategori:
+					<div class="dropdown">
+						<button class="btn dropdown-toggle" type="button" id="model-report-category" data-toggle="dropdown">
+							<span id="modal-report-selected">Brudd på åndsverkloven</span>
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="model-report-category">
+							<li class="disabled"><a href="#">Brudd på åndsverkloven</a></li>
+							<li><a href="#">Spam</a></li>
+							<li><a href="#">Støtende, fornærmende eller hatefulle ytringer</a></li>
+							<li><a href="#">Andre grunner</a></li>
+						</ul>
+					</div>
+					<hr />
+					<label for="model-report-text">Kommentar</label>
+					<textarea class="form-control" id="" name=""></textarea>
+					<button type="submit" class="btn btn-default">Send</button> eller <a href="#">lukk</a>.
+				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
