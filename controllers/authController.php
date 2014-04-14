@@ -1,0 +1,102 @@
+<?php
+/*
+ * File: authController.php
+ * Holds: The AuthController-class
+ * Created: 14.04.14
+ * Last updated: 14.04.14
+ * Project: Youkok2
+ * 
+*/
+
+//
+// Derp
+//
+
+class AuthController extends Base {
+
+    //
+    // The constructor for this subclass
+    //
+
+    public function __construct($paths, $base) {
+        // Calling Base' constructor
+        parent::__construct($paths, $base);
+
+        if ($_GET['q'] == 'logg-inn') {
+        	$this->logIn();
+        }
+        else if ($_GET['q'] == 'logg-ut') {
+        	//
+        }
+        else {
+        	// 404
+        }
+    }
+
+    //
+    // Login
+    //
+
+    private function logIn() {
+    	// Check if logged in
+    	if ($this->user->isLoggedIn()) {
+    		// Just redirect, should be here
+            $this->redirect('');
+    	}
+    	else {
+    		// Okey
+    		if (isset($_POST['login-email']) and isset($_POST['login-pw'])) {
+    			// Try to fetch email
+		        $get_login_user = "SELECT id, email, salt, password
+		        FROM user 
+		        WHERE email = :email";
+		        
+		        $get_login_user_query = $this->db->prepare($get_login_user);
+		        $get_login_user_query->execute(array(':email' => $_POST['login-email']));
+		        $row = $get_login_user_query->fetch(PDO::FETCH_ASSOC);
+
+		        // Check result
+		        if (isset($row['id'])) {
+		        	// Try to match password
+		        	$hash = password_fuckup(password_hash($_POST['login-pw'], PASSWORD_BCRYPT, array('cost' => 12, 'salt' => $row['salt'])));
+		        	
+		        	// Try to match with password from the database
+		        	if ($hash === $row['password']) {
+		        		// Create cookie
+		        		$strg = $_POST['login-email'] . 'asdkashdsajheeeeehehdffhaaaewwaddaaawww' . $hash;
+		        		if (isset($_POST['login-remember']) and $_POST['login-remember'] == 'pizza') {
+		        			setcookie('youkok2', $strg, time() + (60 * 60 * 24 * 31), '/');
+		        		}
+		        		else {
+		        			$_SESSION['youkok2'] = $strg;
+		        		}
+
+		        		// Redirect
+		        		$this->redirect('');
+		        	}
+		        	else {
+		        		// Wrong password
+		        		echo 'nah';
+		        	}
+		        }
+		        else {
+		        	// Wrong username!
+		        }
+    		}
+    		else {
+    			// error
+    		}
+    	}
+    }
+}
+
+//
+// Loading the class-name dynamically and creating an instance doing our magic
+//
+
+// Getting the current file-path
+$path = explode('/', __FILE__);
+
+// Including the run-script to execute it all
+include_once 'run.php';
+?>

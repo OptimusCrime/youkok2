@@ -38,11 +38,14 @@ $base_path = dirname(__FILE__);
 //
 
 require_once $base_path . '/libs/smarty/Smarty.class.php';
+require_once $base_path . '/libs/bcrypt/bcrypt.php';
+
 require_once $base_path . '/elements/collection.class.php';
 require_once $base_path . '/elements/item.class.php';
 require_once $base_path . '/elements/user.class.php';
-require_once $base_path . '/executioner.php';
+
 require_once $base_path . '/base.php';
+require_once $base_path . '/executioner.php';
 require_once $base_path . '/local.php';
 
 //
@@ -69,6 +72,7 @@ class Loader {
         'notfound' => array('/404'),
         'other' => array('/kontakt', '/wall-of-shame', '/logg-ut', '/nytt-fag'),
         'processor' => array('/processor'),
+        'auth' => array('/logg-inn', '/logg-ut', '/registrer', '/glemt-passord'),
     );
 
     //

@@ -98,5 +98,13 @@ class Base {
     protected function close() {
         $this->db = null;
     }
+
+    //
+    // Blah
+    //
+
+    protected function redirect($p) {
+        header('Location: ' . SITE_URL_FULL . $p);
+    }
 }
 ?>

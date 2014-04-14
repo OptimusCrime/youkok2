@@ -356,4 +356,12 @@ $(document).ready(function () {
 			}
 		})
 	});
+
+	//
+	// Login
+	//
+
+	$('#login-dropdown label, #login-dropdown input').on('click', function(e) {
+		e.stopPropagation();
+	});
 });

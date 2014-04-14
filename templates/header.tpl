@@ -53,8 +53,23 @@
                 [[+else]]
                     <li>
                         <a href="#" data-toggle="dropdown">Logg inn<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li>TODO</li>
+                        <ul class="dropdown-menu" id="login-dropdown">
+                            <li>
+                                <form role="form" action="logg-inn" method="post">
+                                    <div class="form-group">
+                                        <label for="login-email">E-post</label>
+                                        <input type="email" name="login-email" class="form-control" id="login-email" value="" placeholder="E-post" />
+                                        <label for="login-pw">Passord</label>
+                                        <input type="password" name="login-pw" class="form-control" id="login-pw" value="" placeholder="Passord" />
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="login-remember" id="login-remember" value="pizza" /> Husk meg
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-default">Logg inn</button> eller <a href="#">Registrer deg</a>.
+                                </form>
+                            </li>
                         </ul>
                     </li>
                 [[+/if]]

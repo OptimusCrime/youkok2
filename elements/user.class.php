@@ -40,33 +40,52 @@ Class User {
         $this->db = $db;
         $this->template = $template;
 
-        // Fetch from database to see if online
-        $get_current_user = "SELECT id, email, nick, ntnu_verified, karma, banned, most_popular_delta
-        FROM user 
-        WHERE id = :id";
-        
-        $get_current_user_query = $this->db->prepare($get_current_user);
-        $get_current_user_query->execute(array(':id' => 1));
-        $row = $get_current_user_query->fetch(PDO::FETCH_ASSOC);
+        // Set initial
+        $this->loggedIn = false;
+        $this->nick = null;
 
-        // Check if anything want returned
-        if (isset($row['id'])) {
-            // The user is logged in, gogo
-            $this->loggedIn = true;
+        // Check if we have anything stored
+        if (isset($_SESSION['youkok2']) or isset($_COOKIE['youkok2'])) {
+            if (isset($_COOKIE['youkok2'])) {
+                $hash = $_COOKIE['youkok2'];
+            }
+            else {
+                $hash = $_SESSION['youkok2'];
+            }
 
-            // Set attributes
-            $this->id = $row['id'];
-            $this->email = $row['email'];
-            $this->nick = $row['nick'] == null ? '<em>Anonym</em>' : $row['nick'];
-            $this->NTNU = (boolean) $row['ntnu_verified'];
-            $this->karma = $row['karma'];
-            $this->banned = (boolean) $row['banned'];
-            $this->mostPopularDelta = $row['most_popular_delta'];
-        }
-        else {
-            // The user is not logged in, yay
-            $this->loggedIn = false;
-            $this->nick = null;
+            // Try to split
+            $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
+            if (count($hash_split) == 2) {
+                // Fetch from database to see if online
+                $get_current_user = "SELECT id, email, nick, ntnu_verified, karma, banned, most_popular_delta
+                FROM user 
+                WHERE email = :email
+                AND password = :password";
+                
+                $get_current_user_query = $this->db->prepare($get_current_user);
+                $get_current_user_query->execute(array(':email' => $hash_split[0], ':password' => $hash_split[1]));
+                $row = $get_current_user_query->fetch(PDO::FETCH_ASSOC);
+
+                // Check if anything want returned
+                if (isset($row['id'])) {
+                    // The user is logged in, gogo
+                    $this->loggedIn = true;
+
+                    // Set attributes
+                    $this->id = $row['id'];
+                    $this->email = $row['email'];
+                    $this->nick = $row['nick'] == null ? '<em>Anonym</em>' : $row['nick'];
+                    $this->NTNU = (boolean) $row['ntnu_verified'];
+                    $this->karma = $row['karma'];
+                    $this->banned = (boolean) $row['banned'];
+                    $this->mostPopularDelta = $row['most_popular_delta'];
+                }
+                else {
+                    // Unset all
+                    unset($_SESSION['youkok2']);
+                    unset($_COOKIE['youkok2']);
+                }
+            }
         }
 
         // Generate top menu
