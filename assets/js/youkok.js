@@ -272,12 +272,13 @@ $(document).ready(function () {
 							// Everything went better than expected :)
 							if (json.status) {
 								$archive_right_click.data('favorite', 1);
-								$('#archive-context-star-inside', $archive_context_menu).html('Fjern favoritt');
 							}
 							else {
 								$archive_right_click.data('favorite', 0);
-								$('#archive-context-star-inside', $archive_context_menu).html('Legg til favoritt');
 							}
+
+							// Hide menu
+							$archive_context_menu.hide();
 						}
 						else {
 							// Something went wrong

@@ -39,6 +39,8 @@ class Item {
     private $visible;
     private $mimeType;
     private $shouldLoadPhysicalLocation;
+    private $shouldLoadRoot;
+    private $rootParent;
     private $fullLocation;
     private $loadedFlags;
     private $flags;
@@ -62,8 +64,10 @@ class Item {
 
         // Set shouldLoadPhysicalLocation (lol) to false and other stuff
         $this->shouldLoadPhysicalLocation = false;
+        $this->shouldLoadRoot = false;
         $this->loadedFlags = false;
         $this->favorite = 'null';
+        $this->rootParent = null;
     }
     
     //
@@ -229,6 +233,7 @@ class Item {
             // Store some variables for later
             $temp_url = array($this->urlFriendly);
             $temp_id = $this->parent;
+            $temp_root_parent = $this;
 
             // Loop untill we reach the root
             while ($temp_id != 0) {
@@ -246,6 +251,15 @@ class Item {
 
                 // Update id
                 $temp_id = $temp_item->getParent();
+
+                if ($temp_item->getId() != 1) {
+                    $temp_root_parent = $temp_item;
+                }
+            }
+
+            // Check if we should store the root
+            if ($this->shouldLoadRoot) {
+                $this->rootParent = $temp_root_parent;
             }
             
             // Reverse array
@@ -412,6 +426,18 @@ class Item {
         else {
             return 'null';
         }
+    }
+
+    //
+    // Root parent
+    //
+
+    public function setShouldLoadRoot($b) {
+        $this->shouldLoadRoot = $b;
+    }
+
+    public function getRootParent() {
+        return $this->rootParent;
     }
 }
 ?>
