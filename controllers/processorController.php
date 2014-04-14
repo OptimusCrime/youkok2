@@ -122,6 +122,10 @@ class ProcessorController extends Base {
             			$response['html'] .= $this->drawFlag($k, $v);
             		}
             	}
+
+                if ($response['html'] == '') {
+                    $response['html'] = '<p>Ingen flagg!</p>';
+                }
             }
             else {
             	// Invalid item
@@ -173,7 +177,7 @@ class ProcessorController extends Base {
 		            	$response['code'] = 500;
 		            }
 		            else {
-		            	if ($row['active'] == 1) {
+		            	if ($row['active'] == 1 and $row['user'] != $this->user->getId()) {
 		            		// Flag returned and is currently active, check if has voted
 		            		$get_vote = "SELECT *
 				            FROM vote 
@@ -267,21 +271,28 @@ class ProcessorController extends Base {
     	if ($this->user->isLoggedIn()) {
     		// User is logged in
   			if ($this->user->isVerified()) {
-  				$display_buttons = true;
-  				if ($has_voted == false) {
-  					$question_status = '<i class="fa fa-question" title="Stemme ikke avlagt."></i>';
-  					$question_status_bottom = 'Du har <em>ikke</em> avgitt din stemme.';
-  				}
-  				else {
-  					if ($user_vote == false) {
-  						$question_status = '<i class="fa fa-times" style="color: red;" title="Stemt for avvisning."></i>';
-  						$question_status_bottom = '<span style="color: red;">Du har stemt for avvisning!</span>';
-  					}
-  					else {
-  						$question_status = '<i class="fa fa-check" style="color: green;" title="Stemt for godkjenning."></i>';
-  						$question_status_bottom = '<span style="color: green;">Du har stemt for godkjenning!</span>';
-  					}
-  				}
+                // Check if user is the owner
+                if ($this->user->getId() == $flag['user']) {
+                    $question_status = '<i class="fa fa-question" title="Stemme kan ikke avlegges."></i>';
+                    $question_status_bottom = '<span style="color: red;">Dette er et flagg opprettet av deg, du kan derfor <em>ikke</em> stemme.</span>';
+                }
+                else {
+                    $display_buttons = true;
+                    if ($has_voted == false) {
+                        $question_status = '<i class="fa fa-question" title="Stemme ikke avlagt."></i>';
+                        $question_status_bottom = 'Du har <em>ikke</em> avgitt din stemme.';
+                    }
+                    else {
+                        if ($user_vote == false) {
+                            $question_status = '<i class="fa fa-times" style="color: red;" title="Stemt for avvisning."></i>';
+                            $question_status_bottom = '<span style="color: red;">Du har stemt for avvisning!</span>';
+                        }
+                        else {
+                            $question_status = '<i class="fa fa-check" style="color: green;" title="Stemt for godkjenning."></i>';
+                            $question_status_bottom = '<span style="color: green;">Du har stemt for godkjenning!</span>';
+                        }
+                    }
+                }
    			}
   			else {
   				$question_status = '<i class="fa fa-question" title="Registrer din NTNU-epost for å stemme."></i>';
@@ -492,7 +503,7 @@ class ProcessorController extends Base {
                         
                         $insert_archive_query = $this->db->prepare($insert_archive);
                         $insert_archive_query->execute(array(':name' => $_POST['name'],
-                            ':url_friendly' => $this->generateUrlFriendly($_POST['name']),
+                            ':url_friendly' => $this->generateUrlFriendly($_POST['name'], true),
                             ':parent' => $element->getId(),
                             ':location' => $this->generateUrlFriendly($_POST['name']),
                             ':is_directory' => 1));
@@ -528,10 +539,18 @@ class ProcessorController extends Base {
     // Derp
     //
 
-    private function generateUrlFriendly($s) {
+    private function generateUrlFriendly($s, $for_url = false) {
         $s = strtolower($s);
         $s = str_replace(array('Æ', 'Ø', 'Å'), array('ae', 'o', 'aa'), $s);
         $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
+
+        if ($for_url) {
+            $s = str_replace(' ', '-', $s);
+        }
+        else {
+            $s = str_replace(' ', '_', $s);
+        }
+        
         return $s;
     }
 }

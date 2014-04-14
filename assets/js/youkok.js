@@ -211,6 +211,9 @@ $(document).ready(function () {
 		// Prevent # href
 		e.preventDefault();
 
+		// Set name
+		$('#modal-flags .modal-title').html('Flagg for: ' + $archive_right_click.data('name'));
+
 		// Show modal
 		$('#modal-flags').modal('show');
 

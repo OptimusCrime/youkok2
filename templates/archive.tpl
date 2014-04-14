@@ -91,26 +91,28 @@
 	[[+/if]]
 </div>
 <div class="col-md-4">
-	<div id="archive-controlls" class="archive-sidebar">
-		<h3>Kontroller</h3>
-		[[+if $ARCHIVE_USER_VERIFIED == true]]
-			<div id="archive-create-controlls">
-				<button type="button" class="btn btn-default">Last opp fil</button> <button type="button" class="btn btn-default" id="archive-create-folder">Opprett mappe</button>
-			</div>
+	[[+if $ARCHIVE_MODE == 'browse']]
+		<div id="archive-controlls" class="archive-sidebar">
+			<h3>Kontroller</h3>
+			[[+if $ARCHIVE_USER_VERIFIED == true]]
+				<div id="archive-create-controlls">
+					<button type="button" class="btn btn-default">Last opp fil</button> <button type="button" class="btn btn-default" id="archive-create-folder">Opprett mappe</button>
+				</div>
 
-			<div id="archive-create-folder-div">
-				<form role="form" action="" id="archive-create-folder-form" method="post">
-                    <div class="form-group">
-                    	<label for="archive-create-folder-name">Navn</label>
-                        <input type="text" name="archive-create-folder-name" class="form-control" id="archive-create-folder-name" value="" placeholder="Navn på mappen du ønsker å opprette" />
-                    </div>
-                    <button type="submit" class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
-				</form>
-			</div>
-		[[+else]]
-			<p>Logg inn og/eller registrer din NTNU-bruker for å kunne legge til filer og opprette mapper.</p>
-		[[+/if]]
-	</div>
+				<div id="archive-create-folder-div">
+					<form role="form" action="" id="archive-create-folder-form" method="post">
+	                    <div class="form-group">
+	                    	<label for="archive-create-folder-name">Navn</label>
+	                        <input type="text" name="archive-create-folder-name" class="form-control" id="archive-create-folder-name" value="" placeholder="Navn på mappen du ønsker å opprette" />
+	                    </div>
+	                    <button type="submit" class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
+					</form>
+				</div>
+			[[+else]]
+				<p>Logg inn og/eller registrer din NTNU-bruker for å kunne legge til filer og opprette mapper.</p>
+			[[+/if]]
+		</div>
+	[[+/if]]
 
 	<div id="archive-help" class="archive-sidebar">
 		<h3>Hjelp</h3>
