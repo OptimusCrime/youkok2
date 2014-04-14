@@ -64,6 +64,14 @@ class ProcessorController extends Base {
         			$response = $this->flagVote();
         		}
         	}
+            else if ($url_fragment[1] == 'favorite') {
+                if ($url_fragment[2] == 'add') {
+                    $response = $this->favorite(true);
+                }
+                else {
+                    $response = $this->favorite(false);
+                }
+            }
         }
 
         // Return the content
@@ -297,6 +305,59 @@ class ProcessorController extends Base {
 						</div>
 					</div>
 				</div>';
+    }
+
+    //
+    // Favorite
+    //
+
+    private function favorite($b) {
+        $response = array();
+
+        // Check stuff
+        if (isset($_POST['id']) and is_numeric($_POST['id'])) {
+            // Valid id, try to load the object
+            $item = new Item($this->collection, $this->db);
+            $item->createById($_POST['id']);
+            $this->collection->addIfDoesNotExist($item);
+            $element = $this->collection->get($_POST['id']);
+
+            if ($element != null) {  
+                // Check if logged in
+                if ($this->user->isLoggedIn()) {
+                    $response['code'] = 200;
+
+                    if ($b and $element->isFavorite($this->user) == 0) {
+                        // Add new favorite
+                        $insert_favorite = "INSERT INTO favorite
+                        (file, user)
+                        VALUES (:file, :user)";
+                        
+                        $insert_favorite_query = $this->db->prepare($insert_favorite);
+                        $insert_favorite_query->execute(array(':file' => $element->getId(), ':user' => $this->user->getId()));
+                    }
+                    else if (!$b) {
+                        // Remove favorite
+                        $remove_favorite = "DELETE FROM favorite
+                        WHERE file = :file
+                        AND user = :user";
+                        
+                        $remove_favorite_query = $this->db->prepare($remove_favorite);
+                        $remove_favorite_query->execute(array(':file' => $element->getId(), ':user' => $this->user->getId()));
+                    }
+
+                    $response['status'] = $b;
+                }
+                else {
+                    $response['code'] = 500;
+                }
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+
+        return $response;
     }
 }
 

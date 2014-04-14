@@ -60,6 +60,7 @@
 
     <li id="archive-context-download"><a href="#">Last ned<span id="archive-context-menu-size"></span></a></li>
     <li id="archive-context-open"><a href="#">Åpne</a></li>
+    <li id="archive-context-star"><a href="#" id="archive-context-star-inside">Legg til favoritt</a></li>
     <li><a href="#" id="archive-context-info">Vis info</a></li>
     
     <li class="divider"></li>
@@ -78,7 +79,7 @@
 		[[+$ARCHIVE_BREADCRUMBS]]
 	</ol>
 
-	<h1>[[+$ARCHIVE_TITLE]] <small><i class="fa fa-star" id="archive-heading-star"></i></small></h1>
+	<h1>[[+$ARCHIVE_TITLE]]</h1>
 	[[+if $ARCHIVE_MODE == 'browse']]
 		<ul id="archive-list">
 		    [[+$ARCHIVE_DISPLAY]]

@@ -67,7 +67,14 @@ class ArchiveController extends Base {
                         $this->template->assign('ARCHIVE_MODE', 'browse');
 
                         // Get title
-                        $this->template->assign('ARCHIVE_TITLE', $element->getName());
+                        $archive_title = $element->getName();
+                        if ($element->isFavorite($this->user) == 1 or $element->isFavorite($this->user) == 0) {
+                            $archive_title .= ' <small><i class="fa fa-star archive-heading-star-' . $element->isFavorite($this->user) . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i></small>';
+                        }
+
+                        // Assign to Smarty
+                        $this->template->assign('ARCHIVE_TITLE', $archive_title);
+                        $this->template->assign('ARCHIVE_ID', $element->getId());
 
                         // Get breadcrumbs
                         $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
@@ -164,7 +171,7 @@ class ArchiveController extends Base {
                     // This is a directory, link should go to archive
                     $ret .= '<li>
                                 <a href="' . $element->generateUrl($this->paths['archive'][0]) . '">
-                                    <div class="archive-item" ata-id="' . $element->getId() . '" data-type="dir" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '">
+                                    <div class="archive-item" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="dir" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/folder.png\');"></div>
@@ -177,7 +184,7 @@ class ArchiveController extends Base {
                     // This is a file, link should go to download
                     $ret .= '<li>
                                 <a href="' . $element->generateUrl($this->paths['download'][0]) . '">
-                                    <div class="archive-item" data-id="' . $element->getId() . '" data-type="file" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '" data-size="2.21mb">
+                                    <div class="archive-item" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="file" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '" data-size="2.21mb">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . $item->getMimeType() . '.png\');"></div>

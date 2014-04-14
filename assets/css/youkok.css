@@ -161,9 +161,11 @@ body, html {
     display: none;
 }
 #archive-heading-star {
-    color: #F0AD4E;
     cursor: pointer;
     user-select: none;
+}
+.archive-heading-star-1 {
+    color: #F0AD4E;
 }
 .model-flags-collaps-info {
     width: 60%;

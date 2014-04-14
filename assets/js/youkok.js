@@ -69,10 +69,12 @@ $(document).ready(function () {
 	//
 
 	var archive_id = 0;
+	var $archive_right_click = null;
 	var $archive_context_menu = $('#archive-context-menu');
 	$('body').on('contextmenu', '.archive-item', function(e) {
 		// Pointer
 		var $that = $(this);
+		$archive_right_click = $that;
 
 		// Set id
 		archive_id = $that.data('id');
@@ -97,6 +99,21 @@ $(document).ready(function () {
 			$('#archive-context-download a', $archive_context_menu).show().attr('href', link);
 			
 			$('#archive-context-open', $archive_context_menu).hide();
+		}
+
+		// Favorite
+		if ($that.data('favorite') == null) {
+			$('#archive-context-star', $archive_context_menu).hide();
+		}
+		else {
+			$('#archive-context-star', $archive_context_menu).show();
+
+			if ($that.data('favorite') == 1) {
+				$('#archive-context-star-inside', $archive_context_menu).html('Fjern favoritt');
+			}
+			else {
+				$('#archive-context-star-inside', $archive_context_menu).html('Legg til favoritt');
+			}
 		}
 
 		// Set location
@@ -193,5 +210,82 @@ $(document).ready(function () {
 
 		// Show modal
 		$('#modal-report').modal('show');
+	});
+
+	//
+	// Favorite
+	//
+
+	$('#archive-heading-star').on('click', function () {
+		// Store
+		var $that = $(this);
+
+		// Check which way to favorite
+		var favorite_type = 'add';
+		if ($that.hasClass('archive-heading-star-1')) {
+			favorite_type = 'remove';
+		}
+
+		// Gogogo request
+		$.ajax({
+			cache: false,
+			type: "post",
+			url: "processor/favorite/" + favorite_type,
+			data: { id: $that.data('archive-id') },
+			success: function(json) {
+				if (json.code == 200) {
+					// Everything went better than expected :)
+					if (json.status) {
+						$that.removeClass('archive-heading-star-0').addClass('archive-heading-star-1');
+					}
+					else {
+						$that.removeClass('archive-heading-star-1').addClass('archive-heading-star-0');
+					}
+				}
+				else {
+					// Something went wrong
+					alert('Noe gikk visst galt her. Ups!');
+				}
+			}
+		})
+	});
+
+	$('#archive-context-star-inside').on('click', function(e) {
+		// Derp
+		e.preventDefault();
+
+		if ($archive_right_click != null) {
+			var favorite_status = $archive_right_click.data('favorite');
+			if (favorite_status == 0 || favorite_status == 1) {
+				var favorite_type = 'add';
+				if (favorite_status == 1) {
+					favorite_type = 'remove';
+				}
+
+				$.ajax({
+					cache: false,
+					type: "post",
+					url: "processor/favorite/" + favorite_type,
+					data: { id: $archive_right_click.data('id') },
+					success: function(json) {
+						if (json.code == 200) {
+							// Everything went better than expected :)
+							if (json.status) {
+								$archive_right_click.data('favorite', 1);
+								$('#archive-context-star-inside', $archive_context_menu).html('Fjern favoritt');
+							}
+							else {
+								$archive_right_click.data('favorite', 0);
+								$('#archive-context-star-inside', $archive_context_menu).html('Legg til favoritt');
+							}
+						}
+						else {
+							// Something went wrong
+							alert('Noe gikk visst galt her. Ups!');
+						}
+					}
+				})
+			}
+		}
 	});
 });

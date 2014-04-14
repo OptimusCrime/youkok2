@@ -33,7 +33,8 @@ class Item {
     private $location;
     private $urlFriendly;
     private $downloadCount;
-    private $isDirectory;
+    private $directory;
+    private $favorite;
     private $accepted;
     private $visible;
     private $mimeType;
@@ -62,6 +63,7 @@ class Item {
         // Set shouldLoadPhysicalLocation (lol) to false and other stuff
         $this->shouldLoadPhysicalLocation = false;
         $this->loadedFlags = false;
+        $this->favorite = 'null';
     }
     
     //
@@ -147,7 +149,7 @@ class Item {
             
             // Set results
             $this->name = $row['name'];
-            $this->isDirectory = $row['is_directory'];
+            $this->directory = $row['is_directory'];
             $this->urlFriendly = $row['url_friendly'];
             $this->parent = $row['parent'];
             $this->mimeType = $row['mime_type'];
@@ -190,7 +192,7 @@ class Item {
     }
 
     public function isDirectory() {
-        return $this->isDirectory;
+        return $this->directory;
     }
 
     public function getMimeType() {
@@ -254,7 +256,7 @@ class Item {
         }
 
         // Return goes here!
-        return substr($path, 1) . implode('/', $this->url) . ($this->isDirectory ? '/' : '');
+        return substr($path, 1) . implode('/', $this->url) . ($this->directory ? '/' : '');
     }
 
     //
@@ -370,6 +372,46 @@ class Item {
         }
         
         return $this->flags;
+    }
+
+    //
+    // Favorite
+    //
+
+    public function isFavorite($user) {
+        // First, check if logged in
+        if ($user->isLoggedIn()) {
+            // Check if fetched
+            if ($this->favorite === 'null') {
+                // Not fetched
+                $get_favorite_status = "SELECT id
+                FROM favorite
+                WHERE file = :file
+                AND user = :user";
+                
+                $get_favorite_status_query = $this->db->prepare($get_favorite_status);
+                $get_favorite_status_query->execute(array(':file' => $this->id, ':user' => $user->getId()));
+                $row = $get_favorite_status_query->fetch(PDO::FETCH_ASSOC);
+                
+                // Cache for later
+                if (isset($row['id'])) {
+                    $this->favorite = 1;
+                }
+                else {
+                    $this->favorite = 0;
+                }
+
+                // Return
+                return $this->favorite;
+            }
+            else {
+                // Fetched, just return
+                return $this->favorite;
+            }
+        }
+        else {
+            return 'null';
+        }
     }
 }
 ?>
