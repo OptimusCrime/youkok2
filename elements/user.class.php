@@ -29,6 +29,7 @@ Class User {
     private $NTNU;
     private $karma;
     private $banned;
+    private $mostPopularDelta;
     
     //
     // Constructor
@@ -40,7 +41,7 @@ Class User {
         $this->template = $template;
 
         // Fetch from database to see if online
-        $get_current_user = "SELECT id, email, nick, ntnu_verified, karma, banned
+        $get_current_user = "SELECT id, email, nick, ntnu_verified, karma, banned, most_popular_delta
         FROM user 
         WHERE id = :id";
         
@@ -60,8 +61,7 @@ Class User {
             $this->NTNU = (boolean) $row['ntnu_verified'];
             $this->karma = $row['karma'];
             $this->banned = (boolean) $row['banned'];
-
-            // Update last seen TODO
+            $this->mostPopularDelta = $row['most_popular_delta'];
         }
         else {
             // The user is not logged in, yay
@@ -101,6 +101,10 @@ Class User {
 
     public function getKarma() {
         return $this->karma;
+    }
+
+    public function getMostPopularDelta() {
+        return $this->mostPopularDelta;
     }
 
     //

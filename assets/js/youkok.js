@@ -269,7 +269,7 @@ $(document).ready(function () {
 					alert('Noe gikk visst galt her. Ups!');
 				}
 			}
-		})
+		});
 	});
 
 	$('#archive-context-star-inside').on('click', function(e) {
@@ -319,5 +319,41 @@ $(document).ready(function () {
 	$('.moment-timestamp').each(function () {
 		$that = $(this);
         $that.html(moment($(this).data('ts')).fromNow());
-	})
+	});
+
+	//
+	// Home
+	//
+
+	$('#home-most-popular-dropdown li').on('click', function (e) {
+		// Default
+		e.preventDefault();
+
+		// Swap content
+		$('#home-most-popular-selected').html($(this).html());
+
+		// Swap disabled
+		$('#home-most-popular-dropdown li').removeClass('disabled');
+		$(this).addClass('disabled');
+
+		// Ajax!
+		$.ajax({
+			cache: false,
+			type: "post",
+			url: "processor/popular/update",
+			data: { delta: $('a', $(this)).data('delta') },
+			success: function(json) {
+				if (json.code == 200) {
+					$('#home-most-popular').slideUp(400, function () {
+						$(this).html(json.html).slideDown(400);
+
+					});
+				}
+				else {
+					// Something went wrong
+					alert('Noe gikk visst galt her. Ups!');
+				}
+			}
+		})
+	});
 });

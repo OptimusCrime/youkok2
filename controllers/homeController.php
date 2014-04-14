@@ -91,11 +91,32 @@ class HomeController extends Base {
     
     private function loadMostPopular() {
         $ret = '';
+
+        // Deltas
+        $delta = array(' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK)', 
+            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', 
+            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR)', 
+            '');
+
+        if ($this->user->isLoggedIn()) {
+            $user_delta = $this->user->getMostPopularDelta();
+        }
+        else {
+            if (isset($_SESSION['home_popular'])) {
+                $user_delta = $_SESSION['home_popular'];
+            }
+            else {
+                $user_delta = 1;
+            }
+        }
+
+        // Assign to Smarty
+        $this->template->assign('HOME_MOST_POPULAR_DELTA', $user_delta);
         
-        // Loading newest files from the system
+        // Load most popular files from the system
         $get_most_popular = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'
         FROM download d
-        WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+        " . $delta[$user_delta] . "
         GROUP BY d.file
         LIMIT 15";
         
@@ -114,13 +135,13 @@ class HomeController extends Base {
             $element = $this->collection->get($row['id']);
 
             // Set downloaded
-            $element->setDownloadCount(Item::DOWNLOADS_MONTH, $row['downloaded_times']);
+            $element->setDownloadCount($user_delta, $row['downloaded_times']);
 
             // CHeck if element was loaded
             if ($element != null) {
                 $element_url = $element->generateUrl($this->paths['download'][0]);
                 $root_parent = $element->getRootParent();
-                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> @ ' . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . ' [Nedlastninger: ' . number_format($element->getDownloadCount(Item::DOWNLOADS_MONTH)) . ']</a></li>';
+                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> @ ' . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . ' [Nedlastninger: ' . number_format($element->getDownloadCount($user_delta)) . ']</a></li>';
             }
         }
         

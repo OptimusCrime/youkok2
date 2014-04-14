@@ -72,6 +72,11 @@ class ProcessorController extends Base {
                     $response = $this->favorite(false);
                 }
             }
+            else if ($url_fragment[1] == 'popular') {
+                if ($url_fragment[2] == 'update') {
+                    $response = $this->homePopularUpdate();
+                }
+            }
         }
 
         // Return the content
@@ -357,6 +362,74 @@ class ProcessorController extends Base {
             $response['code'] = 500;
         }
 
+        return $response;
+    }
+
+    //
+    //
+    //
+
+    private function homePopularUpdate() {
+        $response = array();
+        $delta = array(' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK)', 
+            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', 
+            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR)', 
+            '');
+
+        // Check stuff
+        if (isset($_POST['delta']) and is_numeric($_POST['delta']) and $_POST['delta'] >= 0 and $_POST['delta'] <= 3) {
+            $response['code'] = 200;
+
+            if ($this->user->isLoggedIn()) {
+                $update_user = "UPDATE user
+                SET most_popular_delta = :delta
+                WHERE id = :id";
+                
+                $update_user_query = $this->db->prepare($update_user);
+                $update_user_query->execute(array(':delta' => $_POST['delta'], ':id' => $this->user->getId()));
+            }
+            else {
+                $_SESSION['home_popular'] = $_POST['delta'];
+            }
+
+            // Fetch
+            $response['html'] = '';
+            $get_most_popular = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'
+            FROM download d
+            " . $delta[$_POST['delta']] . "
+            GROUP BY d.file
+            LIMIT 15";
+            
+            $get_most_popular_query = $this->db->prepare($get_most_popular);
+            $get_most_popular_query->execute();
+            while ($row = $get_most_popular_query->fetch(PDO::FETCH_ASSOC)) {
+                // Create new object
+                $item = new Item($this->collection, $this->db);
+                $item->setShouldLoadRoot(true);
+                $item->createById($row['id']);
+
+                // Add to collection if new
+                $this->collection->add($item);
+
+                // Load item from collection
+                $element = $this->collection->get($row['id']);
+
+                // Set downloaded
+                $element->setDownloadCount($_POST['delta'], $row['downloaded_times']);
+
+                // CHeck if element was loaded
+                if ($element != null) {
+                    $element_url = $element->generateUrl($this->paths['download'][0]);
+                    $root_parent = $element->getRootParent();
+                    $response['html'] .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> @ ' . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . ' [Nedlastninger: ' . number_format($element->getDownloadCount($_POST['delta'])) . ']</a></li>';
+                }
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+
+        // Return
         return $response;
     }
 }

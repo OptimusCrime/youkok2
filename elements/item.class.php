@@ -18,11 +18,6 @@ class Item {
     // Variables for the class
     //
     
-    const DOWNLOADS_WEEK = 0;
-    const DOWNLOADS_MONTH = 1;
-    const DOWNLOADS_YEAR = 2;
-    const DOWNLOADS_ALL = 3;
-    
     private $collection;
     private $db;
 
