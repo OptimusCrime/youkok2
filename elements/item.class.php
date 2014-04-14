@@ -362,5 +362,14 @@ class Item {
 
         return count($this->flags);
     }
+
+    public function getFlags() {
+        if ($this->loadedFlags == false) {
+            // Flags are not loaded, load them first
+            $this->loadFlags();
+        }
+        
+        return $this->flags;
+    }
 }
 ?>

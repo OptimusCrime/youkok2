@@ -72,7 +72,7 @@ Class User {
         // Generate top menu
         $this->template->assign('BASE_USER_IS_LOGGED_IN', $this->loggedIn);
         $this->template->assign('BASE_USER_NICK', $this->nick);
-        $this->template->assign('BASE_USER_KARMA', $this->prettifyKarma($this->karma));
+        $this->template->assign('BASE_USER_KARMA', $this->karma);
     }
     
     //
@@ -120,31 +120,11 @@ Class User {
     }
     
     //
-    // Returning if the current user is verified or not
+    // Returning if the current user is verified or not (alias)
     //
     
     public function isVerified() {
-        return $this->isVerified;
-    }
-
-    //
-    // Function for prettifying karma displayed in the header
-    //
-
-    private function prettifyKarma($s) {
-        if ($s <= 0) {
-            return 0;
-        }
-        else {
-            $temp_string = (string) $s;
-            $temp_string_split = explode('.', $temp_string);
-            if ($temp_string_split[1] == '0') {
-                return $temp_string_split[0];
-            }
-            else {
-                return $s;
-            }
-        }
+        return $this->NTNU;
     }
 }
 ?>

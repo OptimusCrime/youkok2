@@ -25,47 +25,8 @@
 				<h4 class="modal-title">Flagg for: Hello world.txt</h4>
 			</div>
 			<div class="modal-body">
-				<div class="panel-group" id="accordion">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-									Godkjenning
-									<div class="model-flags-collaps-info">
-										<i class="fa fa-question" title="Stemme ikke avgitt."></i>
-										<div class="progress">
-											<div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%;">
-												20%
-											</div>
-										</div>
-									</div>
-								</a>
-							</h4>
-						</div>
-						<div id="collapseOne" class="panel-collapse collapse">
-							<div class="panel-body">
-								<p>Denne fila er åpen for godkjenning. Dersom fila hører til på YouKok gjør du en god gjerning ved å stemme for å godkjenne den, slik at andre kan dra nytte av den seinere.</p>
-								<p>Om fila skulle stride mot våre <a href="#">retningslinjer</a> kan du enten stemme for å avvise fila, eller, i store overtrap av reglementet, velge å <a href="#">rapportere</a> den.</p>
-								<hr />
-								<p>1 av 5 godkjenninger. Du har <em>ikke</em> avgitt din stemme.</p>
-								<button type="button" class="btn btn-primary">Godkjenn</button> <button type="button" class="btn btn-danger">Avvis</button>
-							</div>
-						</div>
-					</div>
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-									Endring av navn
-								</a>
-							</h4>
-						</div>
-						<div id="collapseTwo" class="panel-collapse collapse">
-							<div class="panel-body">
-								<p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
-							</div>
-						</div>
-					</div>
+				<div class="panel-group" id="flags-panel">
+					Laster...
 				</div>
 			</div>
 			<div class="modal-footer">

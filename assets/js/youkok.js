@@ -1,7 +1,6 @@
 //
 // Bloodhound
 //
-//localStorage.clear();
 
 var courses = new Bloodhound({
 	datumTokenizer: Bloodhound.tokenizers.obj.whitespace('course'),
@@ -123,6 +122,49 @@ $(document).ready(function () {
 	});
 
 	//
+	// Flags
+	//
+
+	function load_flags() {
+		$.ajax({
+			cache: false,
+			type: "post",
+			url: "processor/flag/get",
+			data: { id: archive_id },
+			success: function(json) {
+				if (json.code == 200) {
+					// Good to go
+					$('#flags-panel').html(json.html);
+				}
+				else {
+					// Something went wrong
+					$('#modal-flags').modal('hide');
+					alert('Noe gikk galt under lastingen av flagg.');
+				}
+			}
+		})
+	}
+
+	$('#flags-panel').on('click', '.flag-button', function () {
+		$.ajax({
+			cache: false,
+			type: "post",
+			url: "processor/flag/vote",
+			data: { id: archive_id, flag: $(this).data('flag'), value: $(this).data('value') },
+			success: function(json) {
+				if (json.code == 200) {
+					// Good to go
+					load_flags();
+				}
+				else {
+					// Something went wrong
+					alert('Noe gikk galt under stemmingen. Prøv igjen!');
+				}
+			}
+		})
+	});
+
+	//
 	// Modals
 	//
 
@@ -134,16 +176,7 @@ $(document).ready(function () {
 		$('#modal-flags').modal('show');
 
 		// Ajax request
-
-		$.ajax({
-			cache: false,
-			type: "post",
-			url: "processor/flag/get",
-			data: { id: archive_id },
-			success: function(json) {
-				//
-			},
-		})
+		load_flags();
 	});
 
 	$('#archive-context-info').on('click', function(e) {
