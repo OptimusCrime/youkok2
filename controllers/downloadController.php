@@ -42,7 +42,7 @@ class DownloadController extends Base {
                 $element_id = $item->getId();
                 
                 // Add to collection if new
-                $this->collection->addIfDoesNotExist($item);
+                $this->collection->add($item);
 
                 // Fetch back
                 $element = $this->collection->get($element_id);
