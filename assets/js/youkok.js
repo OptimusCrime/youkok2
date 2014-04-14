@@ -354,7 +354,7 @@ $(document).ready(function () {
 					alert('Noe gikk visst galt her. Ups!');
 				}
 			}
-		})
+		});
 	});
 
 	//
@@ -382,5 +382,34 @@ $(document).ready(function () {
     	$('#archive-create-folder-div').stop().slideUp(400, function () {
     		$('#archive-create-folder-name').val('');
     	});
+    });
+    var submitting_archive_create_folder_form = false;
+    $('#archive-create-folder-form').on('submit', function () {
+    	if ($('#archive-create-folder-name').val().length == 0) {
+    		alert('Error: Du har ikke gitt mappen noen navn!');
+    	}
+    	else {
+    		if (!submitting_archive_create_folder_form) {
+    			submitting_archive_create_folder_form = true;
+
+    			$.ajax({
+					cache: false,
+					type: "post",
+					url: "processor/create/folder",
+					data: { id: $('#archive-id').val(), name: $('#archive-create-folder-name').val() },
+					success: function(json) {
+						if (json.code == 200) {
+							//
+						}
+						else {
+							// Something went wrong
+							//
+						}
+					}
+				})
+    		}
+    	}
+
+    	return false;
     });
 });

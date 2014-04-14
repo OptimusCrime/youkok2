@@ -99,7 +99,7 @@
 			</div>
 
 			<div id="archive-create-folder-div">
-				<form role="form" action="archive-create-folder-form" method="post">
+				<form role="form" action="" id="archive-create-folder-form" method="post">
                     <div class="form-group">
                     	<label for="archive-create-folder-name">Navn</label>
                         <input type="text" name="archive-create-folder-name" class="form-control" id="archive-create-folder-name" value="" placeholder="Navn på mappen du ønsker å opprette" />

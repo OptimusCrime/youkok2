@@ -3,7 +3,7 @@
  * File: otherController.php
  * Holds: The OtherController-class for misc-stuff
  * Created: 02.10.13
- * Last updated: 05.12.13
+ * Last updated: 12.04.14
  * Project: Youkok2
  * 
 */

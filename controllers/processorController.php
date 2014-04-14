@@ -77,6 +77,15 @@ class ProcessorController extends Base {
                     $response = $this->homePopularUpdate();
                 }
             }
+            else if ($url_fragment[1] == 'create') {
+                if ($url_fragment[2] == 'folder') {
+                    $response = $this->createFolder();
+                }
+            }
+            else {
+                // Not found
+                $response['code'] = 500;
+            }
         }
 
         // Return the content
@@ -431,6 +440,99 @@ class ProcessorController extends Base {
 
         // Return
         return $response;
+    }
+
+    //
+    // Derp
+    //
+
+    private function createFolder() {
+        $response = array();
+
+        // Check stuff
+        if (isset($_POST['id']) and is_numeric($_POST['id']) and $_POST['id'] != 1 and isset($_POST['name']) and strlen($_POST['name']) > 0) {
+            if ($this->user->isLoggedIn() and $this->user->isVerified()) {
+                // Create element
+                $item = new Item($this->collection, $this->db);
+                $item->setShouldLoadPhysicalLocation(true);
+                $item->createById($_POST['id']);
+
+                // Add to collection if new
+                $this->collection->add($item);
+
+                // Load item from collection
+                $element = $this->collection->get($_POST['id']);
+                if ($element == null) {
+                    $response['code'] = 500;
+                }
+                else {
+                    // Check if duplicates
+                    $get_duplicate = "SELECT id
+                    FROM archive 
+                    WHERE parent = :id
+                    AND name = :name";
+                    
+                    $get_duplicate_query = $this->db->prepare($get_duplicate);
+                    $get_duplicate_query->execute(array(':id' => $_POST['id'], ':name' => $_POST['name']));
+                    $row = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
+
+                    if (isset($row['id'])) {
+                        // Duplicate
+                        $response['code'] = 400;
+                    }
+                    else {
+                        // Create directory
+                        $new_directory = $this->fileDirectory . $element->getFullLocation() . '/' . $this->generateUrlFriendly($_POST['name']);
+                        //mkdir($new_directory);
+
+                        // Inser archive
+                        $insert_archive = "INSERT INTO archive
+                        (name, url_friendly, parent, location, is_directory)
+                        VALUES (:name, :url_friendly, :parent, :location, :is_directory)";
+                        
+                        $insert_archive_query = $this->db->prepare($insert_archive);
+                        $insert_archive_query->execute(array(':name' => $_POST['name'],
+                            ':url_friendly' => $this->generateUrlFriendly($_POST['name']),
+                            ':parent' => $element->getId(),
+                            ':location' => $this->generateUrlFriendly($_POST['name']),
+                            ':is_directory' => 1));
+
+                        // Insert flag
+                        $insert_flag = "INSERT INTO flag
+                        (file, user, type)
+                        VALUES (:file, :user, :type)";
+                        
+                        $insert_flag_query = $this->db->prepare($insert_flag);
+                        $insert_flag_query->execute(array(':file' => $this->db->lastInsertId(),
+                            ':user' => $this->user->getId(),
+                            ':type' => 0));
+
+                        // Send code
+                        $response['code'] = 200;
+                    }
+                }
+            }
+            else {
+                $response['code'] = 500;
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+
+        // Return
+        return $response;
+    }
+
+    //
+    // Derp
+    //
+
+    private function generateUrlFriendly($s) {
+        $s = strtolower($s);
+        $s = str_replace(array('Æ', 'Ø', 'Å'), array('ae', 'o', 'aa'), $s);
+        $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
+        return $s;
     }
 }
 

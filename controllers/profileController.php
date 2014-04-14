@@ -3,7 +3,7 @@
  * File: profileController.php
  * Holds: The ProfileController-class
  * Created: 02.10.13
- * Last updated: 05.12.13
+ * Last updated: 14.04.14
  * Project: Youkok2
  * 
 */

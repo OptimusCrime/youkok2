@@ -139,7 +139,7 @@ class Item {
         // Get all info about file
         if ($this->id != null) {
             // Id is set, run a simple query
-            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, is_accepted, is_visible, added
+            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, is_accepted, is_visible, added, location
             FROM archive 
             WHERE id = :id";
             
@@ -155,6 +155,7 @@ class Item {
             $this->mimeType = $row['mime_type'];
             $this->accepted = $row['is_accepted'];
             $this->visible = $row['is_visible'];
+            $this->location = $row['location'];
             $this->added = $row['added'];
         }
     }
@@ -192,6 +193,10 @@ class Item {
         return $this->parent;
     }
 
+    public function getLocation() {
+        return $this->location;
+    }
+
     public function isDirectory() {
         return $this->directory;
     }
@@ -213,6 +218,36 @@ class Item {
     }
 
     public function getFullLocation() {
+        if (count($this->fullLocation) == 0) {
+            $temp_location = array($this->location);
+            $temp_id = $this->parent;
+
+            // Loop untill we reach the root
+            while ($temp_id != 0) {
+                // Check if this object already exists
+                $temp_item = $this->collection->get($temp_id);
+                if ($temp_item == null) {
+                    // Create new object
+                    $temp_item = new Item($this->collection, $this->db);
+                    $temp_item->createById($temp_id);
+                    $temp_item->collection->add($temp_item);
+                }
+
+                // Get the url piece
+                $temp_location[] = $temp_item->getLocation();
+
+                // Update id
+                $temp_id = $temp_item->getParent();
+            }
+
+            
+            // Reverse array
+            $temp_location = array_reverse($temp_location);
+
+            // Assign
+            $this->fullLocation = $temp_location;
+        }
+
         return implode('/', $this->fullLocation);
     }
 
