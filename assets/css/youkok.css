@@ -13,6 +13,7 @@ body, html {
     height: auto;
     min-height: 100%;
     padding-top: 51px;
+    box-shadow: 5px 5px 5px #888;
 }
 #nav-search {
     position: absolute;
@@ -200,6 +201,25 @@ body, html {
 #footer {
     padding-top: 10px;
     text-align: center;
+}
+#footer p span {
+    padding-left: 7.5px;
+    padding-right: 7.5px;
+}
+#footer p, #footer p a {
+    color: #000;
+}
+#footer p a {
+    text-decoration: none;
+}
+#footer p a:hover {
+    text-decoration: underline;
+}
+#footer .first {
+    padding-left: 0px;
+}
+#footer .last {
+    padding-right: 0px;
 }
 #archive-asd {
     margin-bottom: 20px;
