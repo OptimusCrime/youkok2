@@ -3,6 +3,25 @@
 <div class="row">
 	<div class="col-md-6">
 		<div class="list-header">
+			<h2>Mine favoritter</h2>
+		</div>
+		<ul class="list-group">
+			[[+$HOME_USER_FAVORITES]]
+		</ul>
+	</div>
+	<div class="col-md-6">
+		<div class="list-header">
+			<h2>Mine siste nedlastninger</h2>
+		</div>
+		<ul class="list-group">
+			[[+$HOME_USER_LATEST]]
+		</ul>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-6">
+		<div class="list-header">
 			<h2>Nyeste filer</h2>
 		</div>
 		<ul class="list-group">
@@ -35,24 +54,6 @@
 		</div>
 		<ul class="list-group" id="home-most-popular">
 			[[+$HOME_MOST_POPULAR]]
-		</ul>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-6">
-		<div class="list-header">
-			<h2>Mine favoritter</h2>
-		</div>
-		<ul class="list-group">
-			[[+$HOME_USER_FAVORITES]]
-		</ul>
-	</div>
-	<div class="col-md-6">
-		<div class="list-header">
-			<h2>Mine siste</h2>
-		</div>
-		<ul class="list-group">
-			[[+$HOME_USER_LATEST]]
 		</ul>
 	</div>
 </div>

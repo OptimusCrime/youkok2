@@ -121,12 +121,14 @@
 		<p><a href="#">Se utvidet hjelp</a>.</p>
 	</div>
 
-	<div id="archive-history" class="archive-sidebar">
-		<h3>Historikk</h3>
-		<div id="archive-history-inside">
-			<p>Laster...</p>
+	[[+if $ARCHIVE_MODE == 'browse']]
+		<div id="archive-history" class="archive-sidebar">
+			<h3>Historikk</h3>
+			<div id="archive-history-inside">
+				<p>Laster...</p>
+			</div>
 		</div>
-	</div>
+	[[+/if]]
 
 	<div id="archive-asd" class="archive-sidebar">
 		<h3>Reklame</h3>

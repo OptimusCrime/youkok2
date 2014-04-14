@@ -98,7 +98,7 @@ class AuthController extends Base {
         if ($this->user->isLoggedIn()) {
             // Log out
             unset($_SESSION['youkok2']);
-            unset($_COOKIE['youkok2']);
+            setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
         }
 
         // Redirect to frontpage
