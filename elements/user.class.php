@@ -79,6 +79,9 @@ Class User {
                     $this->karma = $row['karma'];
                     $this->banned = (boolean) $row['banned'];
                     $this->mostPopularDelta = $row['most_popular_delta'];
+
+                    // Update last seen
+                    $this->updateLastSeen();
                 }
                 else {
                     // Unset all
@@ -148,6 +151,19 @@ Class User {
     
     public function isVerified() {
         return $this->NTNU;
+    }
+
+    //
+    // Function for updating the last_seen field to the current timestamp
+    //
+
+    private function updateLastSeen() {
+        $update_last_seen = "UPDATE user
+        SET last_seen = NOW()
+        WHERE id = :id";
+        
+        $update_last_seen_query = $this->db->prepare($update_last_seen);
+        $update_last_seen_query->execute(array(':id' => $this->id));
     }
 }
 ?>
