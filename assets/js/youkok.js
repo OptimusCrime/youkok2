@@ -115,12 +115,16 @@ $(document).ready(function () {
 			$('#archive-context-open a', $archive_context_menu).show().attr('href', link);
 
 			$('#archive-context-download', $archive_context_menu).hide();
+
+			$('.archive-context-type').html('mappen');
 		}
 		else {
 			$('#archive-context-download', $archive_context_menu).show();
 			$('#archive-context-download a', $archive_context_menu).show().attr('href', link);
 			
 			$('#archive-context-open', $archive_context_menu).hide();
+
+			$('.archive-context-type').html('fil');
 		}
 
 		// Favorite

@@ -83,6 +83,13 @@
     
     <li class="divider"></li>
 
+    <li class="dropdown-submenu"><a href="#" id="archive-context-newflag">Nytt flagg</a>
+    	<ul class="dropdown-menu">
+    		<li><a href="#">Endre navn</a></li>
+    		<li><a href="#">Sletting av <span class="archive-context-type"></span></a></li>
+    		<li><a href="#">Flytting av <span class="archive-context-type"></span></a></li>
+    	</ul>
+    </li>
     <li><a href="#" id="archive-context-flags">Vis flagg <span class="badge" id="archive-context-menu-flags">0</span></a></li>
     <li><a href="#" id="archive-context-report">Rapporter</a></li>
     
