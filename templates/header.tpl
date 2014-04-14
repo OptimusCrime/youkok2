@@ -27,15 +27,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="[[+$SITE_RELATIVE]]">YouKok2.net</a>
+            <a class="navbar-brand" href="[[+$SITE_RELATIVE]]">Youkok2.net</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li[[+if $HEADER_MENU == 'HOME']] class="active"[[+/if]]><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
                 <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="kokebok/">Kokebok</a></li>
-                <li[[+if $HEADER_MENU == 'WOS']] class="active"[[+/if]]><a href="wall-of-shame">WoS</a></li>
-                <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om</a></li>
-                <li[[+if $HEADER_MENU == 'CONTACTS']] class="active"[[+/if]]><a href="kontakt">Kontakt</a></li>
+                <li[[+if $HEADER_MENU == 'WOS']] class="active"[[+/if]]><a href="wall-of-shame">Wall of Shame</a></li>
+                <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om Youkok2</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 [[+if $BASE_USER_IS_LOGGED_IN == true]]

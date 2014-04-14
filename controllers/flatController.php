@@ -22,7 +22,21 @@ class FlatController extends Base {
         // Calling Base' constructor
         parent::__construct($paths, $base);
         
-        echo 'Flatpage goes ehre';
+        if (str_replace('/', '', $_GET['q']) == 'om') {
+        	$this->template->assign('HEADER_MENU', 'ABOUT');
+        	$this->template->display('flat_about.tpl');
+        }
+        elseif (str_replace('/', '', $_GET['q']) == 'retningslinjer') {
+        	$this->template->assign('HEADER_MENU', null);
+        	$this->template->display('flat_retningslinjer.tpl');
+        }
+        elseif (str_replace('/', '', $_GET['q']) == 'privacy') {
+            $this->template->assign('HEADER_MENU', null);
+            $this->template->display('flat_privacy.tpl');
+        }
+        else {
+        	$this->display404();
+        }
     }
 }
 

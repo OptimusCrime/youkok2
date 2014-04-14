@@ -23,57 +23,13 @@ class OtherController extends Base {
         parent::__construct($paths, $base);
         
         // Checking what to call
-        if ($_GET['q'] == 'nytt-fag') {
-            // New course
-            $this->newCourse();
-        }
-        else if ($_GET['q'] == 'kontakt') {
-            $this->contact();
-        }
-        else if ($_GET['q'] == 'wall-of-shame') {
+        if ($_GET['q'] == 'wall-of-shame') {
             $this->wallOfShame();
         }
-    }
-    
-    //
-    // Create new course
-    //
-    
-    private function newCourse() {
-        if (!isset($_POST['send'])) {
-            $this->template->display('other_new_course.tpl');
-        }
         else {
-            // Todo, security! Check for course that already exists
-            // Insert course
-            $insert_course = "INSERT INTO courses (code, name)
-            VALUES (:code, :name)";
-            
-            $insert_course_query = $this->db->prepare($insert_course);
-            $insert_course_query->execute(array(':code' => strtoupper($_POST['code']), ':name' => $_POST['course']));
-            
-            // Get the course-id
-            $course_id = $this->db->lastInsertId();
-            
-            // Build empty archive
-            $insert_archive = "INSERT INTO archive (name, url_friendly, parent, course, location, is_directory)
-            VALUES (:name, :url_friendly, :parent, :course, :location, :is_directory)";
-            
-            $insert_archive_query = $this->db->prepare($insert_archive);
-            $insert_archive_query->execute(array(':name' => $_POST['code'], ':url_friendly' => $_POST['course'], ':parent' => 1, ':course' => $course_id, ':location' => $_POST['course'], ':is_directory' => 1));
+            // 404
+            $this->display404();
         }
-    }
-
-    //
-    // Method for displaying contact form
-    //
-
-    private function contact() {
-        // Set menu
-        $this->template->assign('HEADER_MENU', 'CONTACT');
-
-        // Display template
-        $this->template->display('other_contact.tpl');
     }
 
     //

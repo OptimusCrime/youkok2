@@ -64,6 +64,7 @@ class Base {
             $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
             $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
             $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($paths['archive'][0], 1) . '/');
+            $this->template->assign('SITE_EMAIL_CONTACT', SITE_EMAIL_CONTACT);
 
             // Define the standard menu
             $this->template->assign('HEADER_MENU', 'HOME');

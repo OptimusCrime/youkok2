@@ -64,15 +64,15 @@ class Loader {
     
     private $basePath;
     private $paths = array(
-        'home' => array('/'),
-        'archive' => array('/kokebok'),
-        'profile' => array('/profil'),
-        'download' => array('/last-ned'),
-        'flat' => array('/om'),
-        'notfound' => array('/404'),
-        'other' => array('/kontakt', '/wall-of-shame', '/logg-ut', '/nytt-fag'),
-        'processor' => array('/processor'),
-        'auth' => array('/logg-inn', '/logg-ut', '/registrer', '/glemt-passord'),
+        'home' => array('/',),
+        'archive' => array('/kokebok',),
+        'profile' => array('/profil',),
+        'download' => array('/last-ned',),
+        'flat' => array('/om', '/retningslinjer', '/privacy',),
+        'notfound' => array('/404',),
+        'other' => array('/wall-of-shame', '/logg-ut',),
+        'processor' => array('/processor',),
+        'auth' => array('/logg-inn', '/logg-ut', '/registrer', '/glemt-passord',),
     );
 
     //
