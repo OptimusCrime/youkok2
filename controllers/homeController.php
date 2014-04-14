@@ -206,10 +206,15 @@ class HomeController extends Base {
         $ret = '';
         
         // Load all favorites
-        $get_last_downloads = "SELECT DISTINCT file
-        FROM download
+        $get_last_downloads = "SELECT file
+        FROM download d
         WHERE user = :user
-        ORDER BY downloaded_time DESC
+        AND d.id = (
+            SELECT dd.id
+            FROM download dd
+            WHERE d.file = dd.file
+            ORDER BY dd.downloaded_time
+            DESC LIMIT 1)
         LIMIT 15";
         
         $get_last_downloads_query = $this->db->prepare($get_last_downloads);
