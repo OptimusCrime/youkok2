@@ -24,7 +24,12 @@ class AuthController extends Base {
 
         // Check query
         if ($_GET['q'] == 'logg-inn') {
-        	$this->logIn();
+            if (isset($_POST['login2-email'])) {
+                //
+            }
+            else {
+                $this->logIn();
+            }
         }
         else if ($_GET['q'] == 'logg-ut') {
         	$this->logOut();
@@ -73,22 +78,40 @@ class AuthController extends Base {
 		        			$_SESSION['youkok2'] = $strg;
 		        		}
 
+                        // Add message
                         $this->addMessage('Du er nå logget inn.', 'success');
+
+                        // Unset post
+                        unset($_POST);
 
 		        		// Redirect
 		        		$this->redirect('');
 		        	}
 		        	else {
-		        		// Wrong password
-		        		echo 'nah';
-		        	}
+                        // Message
+		        		$this->addMessage('Oisann. Feil brukernavn og/eller passord, er jeg redd. Prøv igjen. <a href="glemt-passord">Om du ikke har glemt passordet ditt, da kan du klikke her</a>.', 'danger');
+		        	    
+                        // Unset post
+                        unset($_POST);
+
+                        // Display
+                        $this->displayAndCleanup('login.tpl');
+                    }
 		        }
 		        else {
-		        	// Wrong username!
+		        	// Message
+                    $this->addMessage('Oisann. Feil brukernavn og/eller passord, er jeg redd. Prøv igjen. <a href="glemt-passord">Om du ikke har glemt passordet ditt, da kan du klikke her</a>.', 'danger');
+                    
+                    // Unset post
+                    unset($_POST);
+
+                    // Display
+                    $this->displayAndCleanup('login.tpl');
 		        }
     		}
     		else {
-    			// error
+    			// Not submitted or anything, just redirect
+                $this->redirect('');
     		}
     	}
     }
