@@ -73,6 +73,8 @@ class AuthController extends Base {
 		        			$_SESSION['youkok2'] = $strg;
 		        		}
 
+                        $this->addMessage('Du er nå logget inn.', 'success');
+
 		        		// Redirect
 		        		$this->redirect('');
 		        	}
@@ -102,7 +104,7 @@ class AuthController extends Base {
             setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
 
             // Set message
-            // TODO
+            $this->addMessage('Du har nå logget ut.', 'success');
         }
 
         // Redirect to frontpage
