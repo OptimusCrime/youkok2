@@ -3,13 +3,13 @@
  * File: flatController.php
  * Holds: The FlatController-class
  * Created: 02.10.13
- * Last updated: 05.12.13
+ * Last updated: 15.04.14
  * Project: Youkok2
  * 
 */
 
 //
-// The REST-class doing most of the magic
+// The FlatController class
 //
 
 class FlatController extends Base {
@@ -22,6 +22,7 @@ class FlatController extends Base {
         // Calling Base' constructor
         parent::__construct($paths, $base);
         
+        // Check query
         if (str_replace('/', '', $_GET['q']) == 'om') {
         	$this->template->assign('HEADER_MENU', 'ABOUT');
         	$this->displayAndCleanup('flat_about.tpl');
@@ -40,6 +41,7 @@ class FlatController extends Base {
             $this->displayAndCleanup('flat_help.tpl');
         }
         else {
+            // Page was not found
         	$this->display404();
         }
     }

@@ -3,13 +3,13 @@
  * File: processorController.php
  * Holds: The ProcessorController-class
  * Created: 14.04.14
- * Last updated: 14.04.14
+ * Last updated: 15.04.14
  * Project: Youkok2
  * 
 */
 
 //
-// Todo
+// ProcessorController handles processes of ajax requests
 //
 
 class ProcessorController extends Base {
@@ -51,6 +51,7 @@ class ProcessorController extends Base {
         // Catch what request is comming
         $url_fragment = explode('/', $_GET['q']);
         
+        // Check what we got
         if (count($url_fragment) < 2) {
         	$response['code'] = 500;
         }
@@ -98,7 +99,7 @@ class ProcessorController extends Base {
     }
 
     //
-    // TODO
+    // Method for getting flags for a file
     //
 
     private function flagGet() {
@@ -147,7 +148,7 @@ class ProcessorController extends Base {
     }
 
     //
-    //
+    // Method for voting on a flag
     //
 
     private function flagVote() {
@@ -338,7 +339,7 @@ class ProcessorController extends Base {
     }
 
     //
-    // Favorite
+    // Method for adding or removing a favorite
     //
 
     private function favorite($b) {
@@ -391,7 +392,7 @@ class ProcessorController extends Base {
     }
 
     //
-    //
+    // Method for updating home user delta choice
     //
 
     private function homePopularUpdate() {
@@ -459,7 +460,7 @@ class ProcessorController extends Base {
     }
 
     //
-    // Derp
+    // Method for creating folders in the system
     //
 
     private function createFolder() {
@@ -541,7 +542,7 @@ class ProcessorController extends Base {
     }
 
     //
-    //
+    // Method for filing a report in the system
     //
 
     private function reportSend() {
@@ -582,7 +583,7 @@ class ProcessorController extends Base {
     }
 
     //
-    // Derp
+    // Generic method for generating SEO friendly urls and directory names
     //
 
     private function generateUrlFriendly($s, $for_url = false) {

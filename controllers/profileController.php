@@ -3,13 +3,13 @@
  * File: profileController.php
  * Holds: The ProfileController-class
  * Created: 02.10.13
- * Last updated: 14.04.14
+ * Last updated: 15.04.14
  * Project: Youkok2
  * 
 */
 
 //
-// The REST-class doing most of the magic
+// The ProfileController. Handles different profile stuff
 //
 
 class ProfileController extends Base {
@@ -43,10 +43,12 @@ class ProfileController extends Base {
 	        		$this->template->assign('PROFILE_USER_ACTIVE', 1);
 	        	}
 
+	        	// Displaying and cleaning up
 	        	$this->displayAndCleanup('profile_settings.tpl');
 	        }
 	        else {
-	        	// TOOD
+	        	// Not found
+	        	$this->display404();
 	        }
         }
         else {

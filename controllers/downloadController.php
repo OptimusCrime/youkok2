@@ -3,13 +3,13 @@
  * File: downloadController.php
  * Holds: The DownloadController-class
  * Created: 02.10.13
- * Last updated: 14.04.14
+ * Last updated: 15.04.14
  * Project: Youkok2
  * 
 */
 
 //
-// The REST-class doing most of the magic
+// The DownloadController class
 //
 
 class DownloadController extends Base {
@@ -60,6 +60,9 @@ class DownloadController extends Base {
                         if (file_exists($file_location)) {
                             // Logg download
                             $element->addDownload($this->user);
+
+                            // Close database connection
+                            $this->close();
 
                             // File exists, download!
                             $this->loadFile($file_location);

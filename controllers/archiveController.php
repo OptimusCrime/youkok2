@@ -3,13 +3,13 @@
  * File: archiveController.php
  * Holds: The ArchiveController-class
  * Created: 02.10.13
- * Last updated: 14.04.14
+ * Last updated: 15.04.14
  * Project: Youkok2
  * 
 */
 
 //
-// The REST-class doing most of the magic
+// The ArchiceController
 //
 
 class ArchiveController extends Base {
@@ -94,7 +94,6 @@ class ArchiveController extends Base {
                 
         // Check if return 404 or not
         if ($should_display_404) {
-            // Page was not found!
             $this->display404();
         }
         else {
@@ -116,6 +115,7 @@ class ArchiveController extends Base {
         $collection = $element->getBreadcrumbs();
         $collection_size = count($collection);
         
+        // Build return string
         $ret .= '<li><a href="' . substr($this->paths['archive'][0], 1) . '/">Arkiv</a></li>';
 
         // Loop and build list

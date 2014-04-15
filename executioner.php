@@ -3,13 +3,13 @@
  * File: executioner.php
  * Holds: Executes completed flags
  * Created: 14.04.14
- * Last updated: 14.04.14
+ * Last updated: 15.04.14
  * Project: Youkok2
  * 
 */
 
 //
-// Class
+// Executioner executes the completed flags
 //
 
 class Executioner {
@@ -38,7 +38,7 @@ class Executioner {
     }
 
     //
-    // TODO
+    // Analyze what kind of flag to execute
     //
 
     private function analyze() {
@@ -130,6 +130,7 @@ class Executioner {
         $update_flag_query->execute(array(':id' => $this->flag));
 
         // Update users
+        // TODO
     }
 
     //

@@ -42,7 +42,7 @@ class HomeController extends Base {
     }
     
     //
-    //
+    // Method for loading the newest files in the system
     //
     
     private function loadNewest() {
@@ -83,7 +83,7 @@ class HomeController extends Base {
     }
     
     //
-    //
+    // Method for loading the files with most downloads
     //
     
     private function loadMostPopular() {
@@ -146,7 +146,7 @@ class HomeController extends Base {
     }
 
     //
-    //
+    // Method for loading user favorites
     //
     
     private function loadFavorites() {
@@ -195,7 +195,7 @@ class HomeController extends Base {
     }
 
     //
-    // 
+    // Method for loading user latest downloads 
     //
 
     private function loadLastDownloads() {

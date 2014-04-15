@@ -3,13 +3,13 @@
  * File: otherController.php
  * Holds: The OtherController-class for misc-stuff
  * Created: 02.10.13
- * Last updated: 12.04.14
+ * Last updated: 15.04.14
  * Project: Youkok2
  * 
 */
 
 //
-// The REST-class doing most of the magic
+// The OtherController class. Handles different dynamic pages
 //
 
 class OtherController extends Base {

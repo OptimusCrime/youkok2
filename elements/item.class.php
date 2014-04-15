@@ -3,7 +3,7 @@
  * File: item.php
  * Holds: Class for either a directory or file in the system
  * Created: 09.04.14
- * Last updated: 14.04.14
+ * Last updated: 15.04.14
  * Project: Youkok2
  * 
 */
@@ -216,6 +216,10 @@ class Item {
     public function isAccepted() {
         return $this->accepted;
     }
+
+    //
+    // Returning the full location for the current file
+    //
 
     public function getFullLocation() {
         if (count($this->fullLocation) == 0) {

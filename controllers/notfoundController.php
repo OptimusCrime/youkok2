@@ -3,13 +3,13 @@
  * File: notfoundController.php
  * Holds: The NotfoundController-class that returns 404 error-message to the user
  * Created: 02.10.13
- * Last updated: 12.04.14
+ * Last updated: 15.04.14
  * Project: Youkok2
  * 
 */
 
 //
-// The REST-class doing most of the magic
+// NotfoundController handles 404
 //
 
 class NotfoundController extends Base {

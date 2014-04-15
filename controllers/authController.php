@@ -3,13 +3,13 @@
  * File: authController.php
  * Holds: The AuthController-class
  * Created: 14.04.14
- * Last updated: 14.04.14
+ * Last updated: 15.04.14
  * Project: Youkok2
  * 
 */
 
 //
-// Derp
+// The AuthController class
 //
 
 class AuthController extends Base {
@@ -22,6 +22,7 @@ class AuthController extends Base {
         // Calling Base' constructor
         parent::__construct($paths, $base);
 
+        // Check query
         if ($_GET['q'] == 'logg-inn') {
         	$this->logIn();
         }
@@ -29,12 +30,13 @@ class AuthController extends Base {
         	$this->logOut();
         }
         else {
-        	// 404
+            // Page not found!
+        	$this->display404();
         }
     }
 
     //
-    // Login
+    // Method for logging user in
     //
 
     private function logIn() {
@@ -90,15 +92,17 @@ class AuthController extends Base {
     }
 
     //
-    // HSHHS
+    // Method for logging user out
     //
 
     private function logOut() {
         // Check if logged in
         if ($this->user->isLoggedIn()) {
-            // Log out
             unset($_SESSION['youkok2']);
             setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+
+            // Set message
+            // TODO
         }
 
         // Redirect to frontpage
