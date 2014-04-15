@@ -1,0 +1,4 @@
+Youkok2 - 0.0.1-dev (14. april, 2014)
+=====================================
+
+- Første versjonen av denne fila. De fleste endringer vil ikke logges her helt enda. Mest for å gjøre alt klart.
