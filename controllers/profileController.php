@@ -43,7 +43,7 @@ class ProfileController extends Base {
 	        		$this->template->assign('PROFILE_USER_ACTIVE', 1);
 	        	}
 
-	        	$this->template->display('profile_settings.tpl');
+	        	$this->displayAndCleanup('profile_settings.tpl');
 	        }
 	        else {
 	        	// TOOD

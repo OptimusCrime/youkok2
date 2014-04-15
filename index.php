@@ -68,9 +68,9 @@ class Loader {
         'archive' => array('/kokebok',),
         'profile' => array('/profil',),
         'download' => array('/last-ned',),
-        'flat' => array('/om', '/retningslinjer', '/privacy',),
+        'flat' => array('/om', '/retningslinjer', '/privacy', '/hjelp',),
         'notfound' => array('/404',),
-        'other' => array('/wall-of-shame', '/logg-ut',),
+        'other' => array('/wall-of-shame',),
         'processor' => array('/processor',),
         'auth' => array('/logg-inn', '/logg-ut', '/registrer', '/glemt-passord',),
     );

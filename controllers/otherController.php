@@ -41,15 +41,7 @@ class OtherController extends Base {
         $this->template->assign('HEADER_MENU', 'WOS');
 
         // Display template
-        $this->template->display('other_wall_of_shame.tpl');
-    }
-
-    //
-    // Logg out
-    //
-
-    private function logOut() {
-        echo "okei";
+        $this->displayAndCleanup('other_wall_of_shame.tpl');
     }
 }
 

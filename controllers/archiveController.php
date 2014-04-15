@@ -91,10 +91,7 @@ class ArchiveController extends Base {
                 $should_display_404 = true;
             }
         }
-
-        // Kill database-connection and cleanup before displaying
-        $this->close();
-        
+                
         // Check if return 404 or not
         if ($should_display_404) {
             // Page was not found!
@@ -105,7 +102,7 @@ class ArchiveController extends Base {
             $this->template->assign('HEADER_MENU', 'ARCHIVE');
 
             // Found (yay), display archive tpl
-            $this->template->display('archive.tpl');
+            $this->displayAndCleanup('archive.tpl');
         }
     }
 

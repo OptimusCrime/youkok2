@@ -24,15 +24,20 @@ class FlatController extends Base {
         
         if (str_replace('/', '', $_GET['q']) == 'om') {
         	$this->template->assign('HEADER_MENU', 'ABOUT');
-        	$this->template->display('flat_about.tpl');
+        	$this->displayAndCleanup('flat_about.tpl');
         }
         elseif (str_replace('/', '', $_GET['q']) == 'retningslinjer') {
+            $this->addMessage('Nigger', 'success');
         	$this->template->assign('HEADER_MENU', null);
-        	$this->template->display('flat_retningslinjer.tpl');
+        	$this->displayAndCleanup('flat_retningslinjer.tpl');
         }
         elseif (str_replace('/', '', $_GET['q']) == 'privacy') {
             $this->template->assign('HEADER_MENU', null);
-            $this->template->display('flat_privacy.tpl');
+            $this->displayAndCleanup('flat_privacy.tpl');
+        }
+        elseif (str_replace('/', '', $_GET['q']) == 'hjelp') {
+            $this->template->assign('HEADER_MENU', null);
+            $this->displayAndCleanup('flat_help.tpl');
         }
         else {
         	$this->display404();

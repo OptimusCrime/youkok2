@@ -101,11 +101,58 @@ class Base {
     }
 
     //
-    // Blah
+    // Method for redirecting
     //
 
     protected function redirect($p) {
         header('Location: ' . SITE_URL_FULL . $p);
+    }
+
+    //
+    // Method for displaying message
+    //
+
+    private function showMessages() {
+        // Check if session was set
+        if (isset($_SESSION['youkok2_message']) and count($_SESSION['youkok2_message']) > 0) {
+            // Loop and store in variable
+            $ret = '';
+            foreach ($_SESSION['youkok2_message'] as $v) {
+                $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text'] . '</div>';
+            }
+
+            // Unset the session variable
+            unset($_SESSION['youkok2_message']);
+
+            // Assign final string
+            $this->template->assign('SITE_MESSAGES', $ret);
+        }
+        else {
+            $this->template->assign('SITE_MESSAGES', null);
+        }
+    }
+
+    protected function addMessage($text, $type) {
+        if (!isset($_SESSION['youkok2_message'])) {
+            $_SESSION['youkok2_message'] = array();
+        }
+        
+        $_SESSION['youkok2_message'][] = array('text' => $text, 'type' => $type);
+    }
+
+    //
+    // Override default display method from Smarty
+    //
+
+    protected function displayAndCleanup($template) {
+        // Close database
+        $this->close();
+        
+        // Load message
+        $this->showMessages();
+
+        // Call Smarty
+        $this->template->display($template);
     }
 }
 ?>

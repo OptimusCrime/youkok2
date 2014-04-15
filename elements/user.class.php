@@ -142,7 +142,7 @@ Class User {
     //
     
     public function isNTNU() {
-        return $this->NTNU;
+        return $this->isVerified();
     }
     
     //
@@ -150,7 +150,7 @@ Class User {
     //
     
     public function isVerified() {
-        return $this->NTNU;
+        return $this->NTNU and $this->karma > 0 and $this->banned == false;
     }
 
     //

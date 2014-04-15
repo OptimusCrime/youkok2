@@ -36,12 +36,9 @@ class HomeController extends Base {
             $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em>Registrer og/eller logg inn!</em></li>');
             $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em>Registrer og/eller logg inn!</em></li>');
         }
-
-        // Kill database-connection and cleanup before displaying
-        $this->close();
         
         // Display the template
-        $this->template->display('index.tpl');
+        $this->displayAndCleanup('index.tpl');
     }
     
     //

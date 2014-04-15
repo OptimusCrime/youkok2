@@ -26,7 +26,7 @@ class NotfoundController extends Base {
         $this->template->assign('HEADER_MENU', null);
 
         // Display template
-        $this->template->display('404.tpl');
+        $this->displayAndCleanup('404.tpl');
     }
 }
 
