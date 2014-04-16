@@ -66,7 +66,7 @@
                                             <input type="checkbox" name="login-remember" id="login-remember" value="pizza" /> Husk meg
                                         </label>
                                     </div>
-                                    <button type="submit" class="btn btn-default">Logg inn</button> eller <a href="#">Registrer deg</a>.
+                                    <button type="submit" class="btn btn-default">Logg inn</button> eller <a href="registrer">Registrer deg</a>.
                                 </form>
                             </li>
                         </ul>

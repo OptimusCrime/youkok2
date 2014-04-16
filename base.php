@@ -106,6 +106,10 @@ class Base {
     //
 
     protected function redirect($p) {
+        // Close first
+        $this->close();
+
+        // Redirect
         header('Location: ' . SITE_URL_FULL . $p);
     }
 
