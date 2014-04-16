@@ -141,6 +141,11 @@ class HomeController extends Base {
                 $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> @ ' . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . ' [Nedlastninger: ' . number_format($element->getDownloadCount($user_delta)) . ']</a></li>';
             }
         }
+
+        // Check if null
+        if ($ret == '') {
+            $ret = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet!</li>';
+        }
         
         return $ret;
     }
@@ -156,10 +161,11 @@ class HomeController extends Base {
         // Load all favorites
         $get_favorites = "SELECT file
         FROM favorite
+        WHERE user = :user
         ORDER BY ordering ASC";
         
         $get_favorites_query = $this->db->prepare($get_favorites);
-        $get_favorites_query->execute();
+        $get_favorites_query->execute(array(':user' => $this->user->getId()));
         while ($row = $get_favorites_query->fetch(PDO::FETCH_ASSOC)) {
             // Create new object
             $item = new Item($this->collection, $this->db);
