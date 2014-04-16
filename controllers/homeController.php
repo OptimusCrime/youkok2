@@ -218,6 +218,7 @@ class HomeController extends Base {
             WHERE d.file = dd.file
             ORDER BY dd.downloaded_time
             DESC LIMIT 1)
+        ORDER BY d.downloaded_time DESC
         LIMIT 15";
         
         $get_last_downloads_query = $this->db->prepare($get_last_downloads);
