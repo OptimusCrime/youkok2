@@ -86,7 +86,7 @@ Class User {
                 else {
                     // Unset all
                     unset($_SESSION['youkok2']);
-                    unset($_COOKIE['youkok2']);
+                    setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
                 }
             }
         }
