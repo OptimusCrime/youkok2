@@ -105,6 +105,11 @@ $(document).ready(function () {
 	var archive_id = 0;
 	var $archive_right_click = null;
 	var $archive_context_menu = $('#archive-context-menu');
+	
+	if ($('#archive-pizza').val() != 'pizza') {
+		$('#archive-context-newflag-outer').hide();
+	}
+
 	$('body').on('contextmenu', '.archive-item', function(e) {
 		// Pointer
 		var $that = $(this);
@@ -175,6 +180,9 @@ $(document).ready(function () {
 		// Hide context menu
 		$archive_context_menu.hide();
 	});
+	$('#archive-context-newflag').on('click', function(e) {
+		e.preventDefault();
+	})
 
 	//
 	// Flags

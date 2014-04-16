@@ -75,6 +75,7 @@ class ArchiveController extends Base {
                         // Assign to Smarty
                         $this->template->assign('ARCHIVE_TITLE', $archive_title);
                         $this->template->assign('ARCHIVE_ID', $element->getId());
+                        $this->template->assign('ARCHIVE_USER_ONLINE', ($this->user->isLoggedIn() ? 'pizza' : 'nope'));
 
                         // Check if user is verified
                         $this->template->assign('ARCHIVE_USER_VERIFIED', $this->user->isVerified());

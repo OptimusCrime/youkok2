@@ -83,7 +83,7 @@
     
     <li class="divider"></li>
 
-    <li class="dropdown-submenu"><a href="#" id="archive-context-newflag">Nytt flagg</a>
+    <li class="dropdown-submenu" id="archive-context-newflag-outer"><a href="#" id="archive-context-newflag">Nytt flagg</a>
     	<ul class="dropdown-menu">
     		<li><a href="#">Endre navn</a></li>
     		<li><a href="#">Sletting av <span class="archive-context-type"></span></a></li>
@@ -99,6 +99,7 @@
 </ul>
 
 <input type="hidden" value="[[+$ARCHIVE_ID]]" id="archive-id" name="archive-id" />
+<input type="hidden" value="[[+$ARCHIVE_USER_ONLINE]]" id="archive-pizza" name="archive-pizza" />
 
 <div class="col-md-8">
 	<ol class="breadcrumb" id="archive-breadcrumbs">
