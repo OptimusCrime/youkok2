@@ -490,11 +490,12 @@ $(document).ready(function () {
 
     	if (this.id == 'register-form-email') {
     		if (check_email($that.val())) {
-    			// Ajax
     			if ($that_parent.hasClass('has-error')) {
     				$that_parent.removeClass('has-error');
     			}
     			$('#register-form-email-error1').css('color', '');
+
+    			// TODO AJAX
     		}
     		else {
     			if (!$that_parent.hasClass('has-error')) {
@@ -557,5 +558,4 @@ $(document).ready(function () {
     		$('#register-form-submit').prop('disabled', true);
     	}
     });
-
 });
