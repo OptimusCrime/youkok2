@@ -1,4 +1,16 @@
 //
+// Method for validating email
+//
+
+function check_email(str) {
+	var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+	if (filter.test(str))
+		return true;
+	else
+		return false;
+}
+
+//
 // Moment.js
 //
 
@@ -466,4 +478,84 @@ $(document).ready(function () {
 
     	return false;
     });
+
+    //
+    // Register
+    //
+
+    $('#register-form input').on('keyup', function () {
+    	var $that = $(this);
+    	var $that_parent = $that.parent();
+    	var element_id = this.id;
+
+    	if (this.id == 'register-form-email') {
+    		if (check_email($that.val())) {
+    			// Ajax
+    			if ($that_parent.hasClass('has-error')) {
+    				$that_parent.removeClass('has-error');
+    			}
+    			$('#register-form-email-error1').css('color', '');
+    		}
+    		else {
+    			if (!$that_parent.hasClass('has-error')) {
+    				$that_parent.addClass('has-error');
+    			}
+    			$('#register-form-email-error1').css('color', 'red');
+    		}
+    	}
+    	else if (this.id == 'register-form-password1') {
+    		if ($that.val().length < 7) {
+    			if (!$that_parent.hasClass('has-error')) {
+    				$that_parent.addClass('has-error');
+    			}
+    			$('#register-form-password-error1').css('color', 'red');
+    			$('#register-form-password2').prop('disabled', true).val('').parent().removeClass('has-error');
+    			$('#register-form-password-error2').css('color', '');
+    		}
+    		else {
+    			if ($that_parent.hasClass('has-error')) {
+    				$that_parent.removeClass('has-error');
+    			}
+    			$('#register-form-password-error1').css('color', '');
+    			$('#register-form-password2').prop('disabled', false);
+    		}
+
+    		if ($('#register-form-password2').val().length != 0) {
+    			if ($('#register-form-password1').val() != $('#register-form-password2').val()) {
+					if (!$('#register-form-password2').parent().hasClass('has-error')) {
+	    				$('#register-form-password2').parent().addClass('has-error');
+	    			}
+	    			$('#register-form-password-error2').css('color', 'red');
+				}
+				else {
+					if ($('#register-form-password2').parent().hasClass('has-error')) {
+	    				$('#register-form-password2').parent().removeClass('has-error');
+	    			}
+					$('#register-form-password-error2').css('color', '');
+				}
+    		}
+    	}
+    	else {
+			if ($('#register-form-password1').val() != $('#register-form-password2').val()) {
+				if (!$that_parent.hasClass('has-error')) {
+    				$that_parent.addClass('has-error');
+    			}
+    			$('#register-form-password-error2').css('color', 'red');
+			}
+			else {
+				if ($that_parent.hasClass('has-error')) {
+    				$that_parent.removeClass('has-error');
+    			}
+				$('#register-form-password-error2').css('color', '');
+			}
+    	}
+    	
+    	if ($('#register-form .has-error').length == 0 && check_email($('#register-form-email').val()) && $('#register-form-password1').val().length > 6) {
+    		$('#register-form-submit').prop('disabled', false);
+    	}
+    	else {
+    		$('#register-form-submit').prop('disabled', true);
+    	}
+    });
+
 });
