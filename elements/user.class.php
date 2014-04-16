@@ -74,7 +74,7 @@ Class User {
                     // Set attributes
                     $this->id = $row['id'];
                     $this->email = $row['email'];
-                    $this->nick = $row['nick'] == null ? '<em>Anonym</em>' : $row['nick'];
+                    $this->nick = (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']);
                     $this->NTNU = (boolean) $row['ntnu_verified'];
                     $this->karma = $row['karma'];
                     $this->banned = (boolean) $row['banned'];
