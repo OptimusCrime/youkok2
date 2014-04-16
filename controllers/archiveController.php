@@ -68,7 +68,7 @@ class ArchiveController extends Base {
 
                         // Get title
                         $archive_title = $element->getName();
-                        if ($element->isFavorite($this->user) == 1 or $element->isFavorite($this->user) == 0) {
+                        if ($this->user->isLoggedIn() and ($element->isFavorite($this->user) == 1 or $element->isFavorite($this->user) == 0)) {
                             $archive_title .= ' <small><i class="fa fa-star archive-heading-star-' . $element->isFavorite($this->user) . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i></small>';
                         }
 
