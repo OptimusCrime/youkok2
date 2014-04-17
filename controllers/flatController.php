@@ -23,20 +23,19 @@ class FlatController extends Base {
         parent::__construct($paths, $base);
         
         // Check query
-        if (str_replace('/', '', $_GET['q']) == 'om') {
+        if ($_GET['q'] == 'om') {
         	$this->template->assign('HEADER_MENU', 'ABOUT');
         	$this->displayAndCleanup('flat_about.tpl');
         }
-        elseif (str_replace('/', '', $_GET['q']) == 'retningslinjer') {
-            $this->addMessage('Nigger', 'success');
+        elseif ($_GET['q'] == 'retningslinjer') {
         	$this->template->assign('HEADER_MENU', null);
         	$this->displayAndCleanup('flat_retningslinjer.tpl');
         }
-        elseif (str_replace('/', '', $_GET['q']) == 'privacy') {
+        elseif ($_GET['q'] == 'privacy') {
             $this->template->assign('HEADER_MENU', null);
             $this->displayAndCleanup('flat_privacy.tpl');
         }
-        elseif (str_replace('/', '', $_GET['q']) == 'hjelp') {
+        elseif ($_GET['q'] == 'hjelp') {
             $this->template->assign('HEADER_MENU', null);
             $this->displayAndCleanup('flat_help.tpl');
         }
