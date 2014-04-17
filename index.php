@@ -64,15 +64,48 @@ class Loader {
     
     private $basePath;
     private $paths = array(
-        'home' => array('/',),
-        'archive' => array('/kokebok',),
-        'profile' => array('/profil',),
-        'download' => array('/last-ned',),
-        'flat' => array('/om', '/retningslinjer', '/privacy', '/hjelp',),
-        'notfound' => array('/404',),
-        'other' => array('/wall-of-shame', ),
-        'processor' => array('/processor',),
-        'auth' => array('/logg-inn', '/logg-ut', '/registrer', '/glemt-passord',),
+        'home' => array(
+            '/',
+        ),
+        
+        'archive' => array(
+            '/kokebok',
+        ),
+
+        'profile' => array(
+            '/profil',
+        ),
+
+        'download' => array(
+            '/last-ned',
+        ),
+
+        'flat' => array(
+            '/om',
+            '/retningslinjer',
+            '/privacy',
+            '/hjelp',
+        ),
+
+        'notfound' => array(
+            '/404',
+        ),
+
+        'other' => array(
+            '/wall-of-shame',
+        ),
+
+        'processor' => array(
+            '/processor',
+        ),
+
+        'auth' => array(
+            '/logg-inn',
+            '/logg-ut',
+            '/registrer',
+            '/glemt-passord',
+            '/glemt-passord-nytt',
+        ),
     );
 
     //
