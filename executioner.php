@@ -91,7 +91,7 @@ class Executioner {
                 // See if finished
                 if ($is_finished == true) {
                     // Executeeeee
-                    if ($row['type'] == 0) {
+                    if ($this->flag['type'] == 0) {
                         $this->execute0($finished_type);
                     }
                 }
@@ -182,11 +182,13 @@ class Executioner {
 
         // Update owner karma
         $update_user_karma = "UPDATE user
-        SET karma = karma" . $karma_value_string . "
+        SET karma=karma" . $karma_value_string . "
         WHERE id = :id";
         
         $update_user_karma_query = $this->db->prepare($update_user_karma);
         $update_user_karma_query->execute(array(':id' => $this->flag['user']));
+
+        // Create history
     }
 
     //
