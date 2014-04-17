@@ -137,7 +137,7 @@
 					</form>
 				</div>
 
-				<div id="archive-create-file-div" style="display: block;">
+				<div id="archive-create-file-div">
 					<form role="form" action="" id="archive-create-file-form" method="post" enctype="multipart/form-data">
 	                    <div class="form-group">
 	                    	<p><strong>Velg filer</strong></p>
