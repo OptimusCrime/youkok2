@@ -129,8 +129,18 @@ class Executioner {
         $update_flag_query = $this->db->prepare($update_flag);
         $update_flag_query->execute(array(':id' => $this->flag));
 
-        // Update users
-        // TODO
+        // Get all voters
+        $get_all_votes = "SELECT *
+        FROM vote
+        WHERE flag = :flag";
+        
+        $votes = array();
+        $get_all_votes_query = $this->db->prepare($get_all_votes);
+        $get_all_votes_query->execute(array(':flag' => $this->flag));
+        while ($row = $get_all_votes_query->fetch(PDO::FETCH_ASSOC)) {
+            $votes[] = $row;
+        }
+        
     }
 
     //
