@@ -324,5 +324,30 @@ body, html {
     background: green;
 }
 .fileupload-file {
-
+    width: 100%;
+    background-color: #DFF0D8;
+    position: relative;
+    color: #3C763D;
+}
+.fileupload-file {
+    border-bottom: 1px solid #D6E9C6;
+    padding: 5px;
+}
+.fileupload-add {
+    text-align: right;
+    border-bottom: none;
+}
+.fileupload-add p {
+    font-weight: bold;
+    position: absolute;
+    left: 5px;
+    top: 13px;
+    display: none;
+}
+.fileupload-file-remove {
+    position: absolute;
+    right: 5px;
+    top: 17px;
+    cursor: pointer;
+    font-weight: bold;
 }

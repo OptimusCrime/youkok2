@@ -676,15 +676,48 @@ $(document).ready(function () {
         url: 'processor/create/file',
         acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
         add: function (e, data) {
-            data.context = $('<button/>').text('Upload')
-                .appendTo(document.body)
-                .click(function () {
-                    data.context = $('<p/>').text('Uploading...').replaceAll($(this));
-                    data.submit();
-                });
+        	// Get file object
+        	var file_object = data.files[data.files.length - 1];
+
+        	// The container
+        	var $container = $(' \
+        		<div class="fileupload-file"> \
+					<strong>' + file_object.name + '</strong> \
+					<p>' + file_object.size + '</p> \
+					<div class="fileupload-file-remove"> \
+						<span>Fjern <i class="fa fa-times"></i></span> \
+					</div> \
+				</div>');
+
+        	// The button
+            var $button = $('<button style="display: none;">x</button>');
+
+            // Add button to container
+            $container.append($button);
+
+            // Set button as context for the file
+            data.context = $button;
+
+            // Add listener for the button
+            $button.click(function () {
+                data.submit();
+            });
+
+            // Add container to html
+            $('#fileupload-files-inner').append($container);
         },
         done: function (e, data) {
-            data.context.text('Upload finished.');
+        	// Hide all the containers
+            $('#fileupload-files-inner div').each(function () {
+            	$(this).delay(500).slideUp(400, function () {
+            		$(this).remove();
+            	});
+            });
+
+            // Display success-message
+            $('.fileupload-add p').fadeIn(400).delay(2000).fadeOut(400, function () {
+            	$('#progress .bar').css({'width': '0px'});
+            });
         },
         progressall: function (e, data) {
 	        var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -695,7 +728,16 @@ $(document).ready(function () {
 	    },
     });
     $('#archive-create-file-form').on('submit', function () {
+    	// Loop all the buttons
+    	$('#fileupload-files-inner button').each(function () {
+    		// Trigger click
+    		$(this).trigger('click');
+    	});
+
     	// Avoid submitting the form
     	return false;
+    });
+    $('#fileupload-files').on('click', '.fileupload-file-remove', function () {
+    	$(this).parent().remove();
     });
 });

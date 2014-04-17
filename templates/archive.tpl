@@ -140,7 +140,9 @@
 	                    <div class="form-group">
 	                    	<p><strong>Velg filer</strong></p>
 							<div id="fileupload-files">
+								<div id="fileupload-files-inner"></div>
 								<div class="fileupload-file fileupload-add">
+									<p>Filer opplastet</p>
 									<span class="btn btn-default fileinput-button">
 										<span>Legg til filer</span>
 										<input type="file" name="files[]" multiple>
