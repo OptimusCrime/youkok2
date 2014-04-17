@@ -196,8 +196,8 @@ class AuthController extends Base {
                     $insert_changepassword_query->execute(array(':user' => $row['id'], ':hash' => $hash));
 
                     // Send e-mail
-                    $message = "Hei\n\nKlikk på linken for å kunne endre nytt passord:\n" . SITE_URL_FULL . "/glemt-passord-nytt?hash=" . $hash . "\n\nMvh\nYoukok2";
-                    mail($_POST['forgotten-email'], 'Glemt passord på Youkok2');
+                    $message = "Hei\n\nKlikk på linken for å kunne endre nytt passord:\n" . SITE_URL_FULL . "glemt-passord-nytt?hash=" . $hash . "\n\nMvh\nYoukok2";
+                    mail($_POST['forgotten-email'], 'Glemt passord på Youkok2', $message);
 
                     // Add message
                     $this->addMessage('Det er blitt sendt en e-post til deg. Denne inneholder en link for å velge nytt passord. Denne linken er gyldig i 24 timer.', 'success');
