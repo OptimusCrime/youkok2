@@ -3,7 +3,7 @@
  * File: authController.php
  * Holds: The AuthController-class
  * Created: 14.04.14
- * Last updated: 15.04.14
+ * Last updated: 17.04.14
  * Project: Youkok2
  * 
 */
