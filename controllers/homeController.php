@@ -56,8 +56,7 @@ class HomeController extends Base {
         ORDER BY added DESC
         LIMIT 15";
         
-        $get_newest_query = $this->db->prepare($get_newest);
-        $get_newest_query->execute();
+        $get_newest_query->query($get_newest);
         while ($row = $get_newest_query->fetch(PDO::FETCH_ASSOC)) {
             // Create new object
             $item = new Item($this->collection, $this->db);
