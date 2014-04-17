@@ -155,7 +155,7 @@
 								<div class="bar" style="width: 0%;"></div>
 							</div>
 	                    </div>
-	                    <p><a href="retningslinjer">Se liste over godkjente filtyper</a>.</p>
+	                    <p><a href="retningslinjer" target="_blank">Se liste over godkjente filtyper</a>.</p>
 	                    <button type="submit" class="btn btn-default">Last opp</button> eller <a href="#">avbryt</a>.
 					</form>
 				</div>
