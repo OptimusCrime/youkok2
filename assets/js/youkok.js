@@ -224,7 +224,7 @@ $(document).ready(function () {
 					alert('Noe gikk galt under stemmingen. Prøv igjen!');
 				}
 			}
-		})
+		});
 	});
 
 	//
@@ -491,6 +491,8 @@ $(document).ready(function () {
     // Register
     //
 
+    var register_email_checked = false;
+    var register_email_value = "";
     $('#register-form input').on('keyup', function () {
     	var $that = $(this);
     	var $that_parent = $that.parent();
@@ -503,7 +505,27 @@ $(document).ready(function () {
     			}
     			$('#register-form-email-error1').css('color', '');
 
-    			// TODO AJAX
+    			if (register_email_value != $('#register-form-email').val()) {
+    				register_email_value = $('#register-form-email').val();
+    				register_email_checked = false;
+
+	    			$.ajax({
+						cache: false,
+						type: "post",
+						url: "processor/register/check",
+						data: { email: $('#register-form-email').val() },
+						success: function(json) {
+							if (json.code == 200) {
+								register_email_checked = true;
+								$('#register-form-email-error2').css('color', '');
+								$('#register-form-email').trigger('keyup');
+							}
+							else {
+								$('#register-form-email-error2').css('color', 'red');
+							}
+						}
+					});
+    			}
     		}
     		else {
     			if (!$that_parent.hasClass('has-error')) {
@@ -559,7 +581,7 @@ $(document).ready(function () {
 			}
     	}
     	
-    	if ($('#register-form .has-error').length == 0 && check_email($('#register-form-email').val()) && $('#register-form-password1').val().length > 6) {
+    	if ($('#register-form .has-error').length == 0 && register_email_checked == true && check_email($('#register-form-email').val()) && $('#register-form-password1').val().length > 6) {
     		$('#register-form-submit').prop('disabled', false);
     	}
     	else {

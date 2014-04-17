@@ -88,6 +88,11 @@ class ProcessorController extends Base {
                     $response = $this->reportSend();
                 }
             }
+            else if ($url_fragment[1] == 'register') {
+                if ($url_fragment[2] == 'check') {
+                    $response = $this->registerCheckDuplicate();
+                }
+            }
             else {
                 // Not found
                 $response['code'] = 500;
@@ -573,6 +578,37 @@ class ProcessorController extends Base {
             }
             else {
                 $response['code'] = 500;
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+
+        return $response;
+    }
+
+    //
+    // Method for checking duplicate email
+    //
+
+    private function registerCheckDuplicate() {
+        $response = array();
+
+        if (isset($_POST['email']) and !$this->user->isLoggedIn()) {
+            $check_email = "SELECT id
+            FROM user 
+            WHERE email = :email";
+            
+            $check_email_query = $this->db->prepare($check_email);
+            $check_email_query->execute(array(':email' => $_POST['email']));
+            $row = $check_email_query->fetch(PDO::FETCH_ASSOC);
+            
+            // Check if flag was returned
+            if (isset($row['id'])) {
+                $response['code'] = 500;
+            }
+            else {
+                $response['code'] = 200;
             }
         }
         else {
