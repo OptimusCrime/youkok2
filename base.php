@@ -78,6 +78,11 @@ class Base {
             
             // Storing paths
             $this->paths = $paths;
+
+            // Check if we should validate login
+            if (isset($_POST['login-email'])) {
+                $this->logIn();
+            }
         }
     }
     
@@ -158,6 +163,88 @@ class Base {
 
         // Call Smarty
         $this->template->display($template);
+    }
+
+    //
+    // Login
+    //
+
+    protected function logIn() {
+        // Check if logged in
+        if (!$this->user->isLoggedIn()) {
+            // Okey
+            if (isset($_POST['login-email']) and isset($_POST['login-pw'])) {
+                // Try to fetch email
+                $get_login_user = "SELECT id, email, salt, password
+                FROM user 
+                WHERE email = :email";
+                
+                $get_login_user_query = $this->db->prepare($get_login_user);
+                $get_login_user_query->execute(array(':email' => $_POST['login-email']));
+                $row = $get_login_user_query->fetch(PDO::FETCH_ASSOC);
+
+                // Check result
+                if (isset($row['id'])) {
+                    // Try to match password
+                    $hash = $this->hashPassword($_POST['login-pw'], $row['salt']);
+                    
+                    // Try to match with password from the database
+                    if ($hash === $row['password']) {
+                        // Check remember me
+                        if (isset($_POST['login-remember']) and $_POST['login-remember'] == 'pizza') {
+                            $remember_me = true;
+                        }
+                        else {
+                            $remember_me = true;
+                        }
+
+                        // Set login
+                        $this->setLogin($hash, $_POST['login-email'], $remember_me);
+
+                        // Add message
+                        $this->addMessage('Du er nå logget inn.', 'success');
+
+                        // Redirect
+                        $this->redirect('');
+                    }
+                    else {
+                        // Message
+                        $this->addMessage('Oisann. Feil brukernavn og/eller passord, er jeg redd. Prøv igjen. <a href="glemt-passord">Om du ikke har glemt passordet ditt, da kan du klikke her</a>.', 'danger');
+                        
+                        $this->redirect('logg-inn');
+                    }
+                }
+                else {
+                    // Message
+                    $this->addMessage('Oisann. Feil brukernavn og/eller passord, er jeg redd. Prøv igjen. <a href="glemt-passord">Om du ikke har glemt passordet ditt, da kan du klikke her</a>.', 'danger');
+                    
+                    // Display
+                    $this->redirect('logg-inn');
+                }
+            }
+            else {
+                // Not submitted or anything, just redirect
+                $this->redirect('');
+            }
+        }
+    }
+
+    //
+    // Hash password
+    //
+
+    protected function hashPassword($pass, $salt) {
+        return password_fuckup(password_hash($pass, PASSWORD_BCRYPT, array('cost' => 12, 'salt' => $salt)));
+    }
+
+    protected function setLogin($hash, $email, $cookie = false) {
+        $strg = $email . 'asdkashdsajheeeeehehdffhaaaewwaddaaawww' . $hash;
+        if ($cookie) {
+            setcookie('youkok2', $strg, time() + (60 * 60 * 24 * 31), '/');
+        }
+        else {
+            $_SESSION['youkok2'] = $strg;
+        }
     }
 }
 ?>
