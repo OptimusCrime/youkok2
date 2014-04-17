@@ -668,9 +668,12 @@ $(document).ready(function () {
         }
     });
     $('#archive-create-file-div a').on('click', function(e) {
-    	e.preventDefault();
-    	$('#archive-create-file-div').stop().slideUp(400);
+    	if ($(this).attr('href') == '#') {
+    		e.preventDefault();
+    		$('#archive-create-file-div').stop().slideUp(400);
+    	}
     });
+    var accepted_filetypes = [];
     $('#archive-create-file-form').fileupload({
         dataType: 'json',
         url: 'processor/create/file',
@@ -679,32 +682,49 @@ $(document).ready(function () {
         	// Get file object
         	var file_object = data.files[data.files.length - 1];
 
-        	// The container
-        	var $container = $(' \
-        		<div class="fileupload-file"> \
-					<strong>' + file_object.name + '</strong> \
-					<p>' + file_object.size + '</p> \
-					<div class="fileupload-file-remove"> \
-						<span>Fjern <i class="fa fa-times"></i></span> \
-					</div> \
-				</div>');
+        	// Test for valid filetype
+        	var found = false;
+        	var mimetype = file_object.type;
+        	for (var i = 0; i < accepted_filetypes.length; i++) {
+        		if (accepted_filetypes[i] == mimetype) {
+        			found = true;
+        			break;
+        		}
+        	}
 
-        	// The button
-            var $button = $('<button style="display: none;">x</button>');
+        	// Check if valid or not
+        	if (found) {
+        		// The container
+	        	var $container = $(' \
+	        		<div class="fileupload-file"> \
+						<strong>' + file_object.name + '</strong> \
+						<p>' + file_object.size + '</p> \
+						<div class="fileupload-file-remove"> \
+							<span>Fjern <i class="fa fa-times"></i></span> \
+						</div> \
+					</div>');
 
-            // Add button to container
-            $container.append($button);
+	        	// The button
+	            var $button = $('<button style="display: none;">x</button>');
 
-            // Set button as context for the file
-            data.context = $button;
+	            // Add button to container
+	            $container.append($button);
 
-            // Add listener for the button
-            $button.click(function () {
-                data.submit();
-            });
+	            // Set button as context for the file
+	            data.context = $button;
 
-            // Add container to html
-            $('#fileupload-files-inner').append($container);
+	            // Add listener for the button
+	            $button.click(function () {
+	                data.submit();
+	            });
+
+	            // Add container to html
+	            $('#fileupload-files-inner').append($container);
+        	}
+        	else {
+        		// Display error, wrong filetype
+        		alert('Ikke godkjent filtype.');
+        	}
         },
         done: function (e, data) {
         	// Hide all the containers
@@ -740,4 +760,8 @@ $(document).ready(function () {
     $('#fileupload-files').on('click', '.fileupload-file-remove', function () {
     	$(this).parent().remove();
     });
+    //accepted_filetypes
+    if ($('#archive_accepted_filetypes').length > 0) {
+    	accepted_filetypes= jQuery.parseJSON($('#archive_accepted_filetypes').html());
+    }
 });

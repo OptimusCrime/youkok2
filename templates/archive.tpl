@@ -1,5 +1,7 @@
 [[+include file="header.tpl"]]
 
+<div id="archive_accepted_filetypes">[[+$ARCHIVE_ACCEPTED_FILETYPES]]</div>
+
 <div class="modal fade" id="modal-info">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -153,6 +155,7 @@
 								<div class="bar" style="width: 0%;"></div>
 							</div>
 	                    </div>
+	                    <p><a href="retningslinjer">Se liste over godkjente filtyper</a>.</p>
 	                    <button type="submit" class="btn btn-default">Last opp</button> eller <a href="#">avbryt</a>.
 					</form>
 				</div>

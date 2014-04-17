@@ -82,6 +82,10 @@ class ArchiveController extends Base {
 
                         // Get breadcrumbs
                         $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
+
+                        // Find accepted filetypes
+                        $accepted_files = explode(',', SITE_ACCEPTED_FILETYPES);
+                        $this->template->assign('ARCHIVE_ACCEPTED_FILETYPES', json_encode($accepted_files));
                     }
                     else {
                         $should_display_404 = true;

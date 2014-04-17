@@ -351,3 +351,6 @@ body, html {
     cursor: pointer;
     font-weight: bold;
 }
+#archive_accepted_filetypes {
+    display: none;
+}
