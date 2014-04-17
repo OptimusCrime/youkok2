@@ -49,14 +49,14 @@ class Executioner {
         
         $get_flag_query = $this->db->prepare($get_flag);
         $get_flag_query->execute(array(':id' => $this->flag));
-        $row = $get_flag_query->fetch(PDO::FETCH_ASSOC);
+        $this->flag = $get_flag_query->fetch(PDO::FETCH_ASSOC);
         
         // Check if flag was returned
-        if (!isset($row['id'])) {
+        if (!isset($this->flag['id'])) {
             $response['code'] = 500;
         }
         else {
-            if ($row['active'] == 1) {
+            if ($this->flag['active'] == 1) {
                 // Flag okey, check if reach 5 votes
                 $get_votes1 = "SELECT COUNT(id) as 'votes'
                 FROM vote 
@@ -64,7 +64,7 @@ class Executioner {
                 AND value = 1";
                 
                 $get_votes1_query = $this->db->prepare($get_votes1);
-                $get_votes1_query->execute(array(':flag' => $this->flag));
+                $get_votes1_query->execute(array(':flag' => $this->flag['id']));
                 $votes1 = $get_votes1_query->fetch(PDO::FETCH_ASSOC);
 
                 $get_votes2 = "SELECT COUNT(id) as 'votes'
@@ -73,7 +73,7 @@ class Executioner {
                 AND value = 0";
                 
                 $get_votes2_query = $this->db->prepare($get_votes2);
-                $get_votes2_query->execute(array(':flag' => $this->flag));
+                $get_votes2_query->execute(array(':flag' => $this->flag['id']));
                 $votes2 = $get_votes2_query->fetch(PDO::FETCH_ASSOC);
 
                 // See which way to go
@@ -127,7 +127,7 @@ class Executioner {
         WHERE id = :id";
         
         $update_flag_query = $this->db->prepare($update_flag);
-        $update_flag_query->execute(array(':id' => $this->flag));
+        $update_flag_query->execute(array(':id' => $this->flag['id']));
 
         // Get all voters
         $get_all_votes = "SELECT *
@@ -136,11 +136,57 @@ class Executioner {
         
         $votes = array();
         $get_all_votes_query = $this->db->prepare($get_all_votes);
-        $get_all_votes_query->execute(array(':flag' => $this->flag));
+        $get_all_votes_query->execute(array(':flag' => $this->flag['id']));
         while ($row = $get_all_votes_query->fetch(PDO::FETCH_ASSOC)) {
             $votes[] = $row;
         }
+
+        // Loop all votes
+        foreach ($votes as $v) {
+            // Check what values to update
+            $karma_value_string = '';
+            if ($v['value'] == $type) {
+                $karma_value_string = '+1';
+            }
+            else {
+                $karma_value_string = '-1';
+            }
+
+            // Run the actual query
+            $update_user_karma = "UPDATE user
+            SET karma = karma" . $karma_value_string . "
+            WHERE id = :id";
+            
+            $update_user_karma_query = $this->db->prepare($update_user_karma);
+            $update_user_karma_query->execute(array(':id' => $v['user']));
+        }
         
+        // Update karma for the owner
+        $karma_value_string = '';
+        if ($this->element->isDirectory()) {
+            if ($type) {
+                $karma_value_string = '+1';
+            }
+            else {
+                $karma_value_string = '-3';
+            }
+        }
+        else {
+            if ($type) {
+                $karma_value_string = '+3';
+            }
+            else {
+                $karma_value_string = '-3';
+            }
+        }
+
+        // Update owner karma
+        $update_user_karma = "UPDATE user
+        SET karma = karma" . $karma_value_string . "
+        WHERE id = :id";
+        
+        $update_user_karma_query = $this->db->prepare($update_user_karma);
+        $update_user_karma_query->execute(array(':id' => $this->flag['user']));
     }
 
     //
