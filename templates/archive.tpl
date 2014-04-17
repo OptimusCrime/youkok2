@@ -122,7 +122,7 @@
 			<h3>Kontroller</h3>
 			[[+if $ARCHIVE_USER_VERIFIED == true]]
 				<div id="archive-create-controlls">
-					<button type="button" class="btn btn-default">Last opp fil</button> <button type="button" class="btn btn-default" id="archive-create-folder">Opprett mappe</button>
+					<button type="button" id="archive-create-file" class="btn btn-default">Last opp fil</button> <button type="button" class="btn btn-default" id="archive-create-folder">Opprett mappe</button>
 				</div>
 
 				<div id="archive-create-folder-div">
@@ -132,6 +132,26 @@
 	                        <input type="text" name="archive-create-folder-name" class="form-control" id="archive-create-folder-name" value="" placeholder="Navn på mappen du ønsker å opprette" />
 	                    </div>
 	                    <button type="submit" class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
+					</form>
+				</div>
+
+				<div id="archive-create-file-div" style="display: block;">
+					<form role="form" action="" id="archive-create-file-form" method="post" enctype="multipart/form-data">
+	                    <div class="form-group">
+	                    	<p><strong>Velg filer</strong></p>
+							<div id="fileupload-files">
+								<div class="fileupload-file fileupload-add">
+									<span class="btn btn-default fileinput-button">
+										<span>Legg til filer</span>
+										<input type="file" name="files[]" multiple>
+									</span>
+								</div>
+							</div>
+							<div id="progress">
+								<div class="bar" style="width: 0%;"></div>
+							</div>
+	                    </div>
+	                    <button type="submit" class="btn btn-default">Last opp</button> eller <a href="#">avbryt</a>.
 					</form>
 				</div>
 			[[+else]]

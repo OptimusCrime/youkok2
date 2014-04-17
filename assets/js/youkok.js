@@ -396,7 +396,7 @@ $(document).ready(function () {
 	});
 
 	//
-    // Create
+    // Create directory
     //
 
     $('#archive-create-folder').on('click', function () {
@@ -405,6 +405,7 @@ $(document).ready(function () {
         }
         else {
             $('#archive-create-folder-div').stop().slideDown();
+            $('#archive-create-file-div').stop().slideUp();
         }
     });
     $('#archive-create-folder-div a').on('click', function(e) {
@@ -651,5 +652,50 @@ $(document).ready(function () {
     	else {
     		$('#forgotten-password-new-form-submit').prop('disabled', true);
     	}
+    });
+
+    //
+    // Create file
+    //
+
+    $('#archive-create-file').on('click', function () {
+        if ($('#archive-create-file-div').is(':visible')) {
+            $('#archive-create-file-div').stop().slideUp();
+        }
+        else {
+        	$('#archive-create-folder-div').stop().slideUp();
+            $('#archive-create-file-div').stop().slideDown();
+        }
+    });
+    $('#archive-create-file-div a').on('click', function(e) {
+    	e.preventDefault();
+    	$('#archive-create-file-div').stop().slideUp(400);
+    });
+    $('#archive-create-file-form').fileupload({
+        dataType: 'json',
+        url: 'processor/create/file',
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+        add: function (e, data) {
+            data.context = $('<button/>').text('Upload')
+                .appendTo(document.body)
+                .click(function () {
+                    data.context = $('<p/>').text('Uploading...').replaceAll($(this));
+                    data.submit();
+                });
+        },
+        done: function (e, data) {
+            data.context.text('Upload finished.');
+        },
+        progressall: function (e, data) {
+	        var progress = parseInt(data.loaded / data.total * 100, 10);
+	        $('#progress .bar').css(
+	            'width',
+	            progress + '%'
+	        );
+	    },
+    });
+    $('#archive-create-file-form').on('submit', function () {
+    	// Avoid submitting the form
+    	return false;
     });
 });
