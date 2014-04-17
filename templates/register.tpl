@@ -32,7 +32,7 @@
 			<p id="register-form-password-error2">Det er en fordel om de to passord-feltene er like.</p>
 		</div>
 
-		<button type="submit" disabled id="register-form-submit" class="btn btn-default">Send</button> <span id="">Vennligst rett feilene i skjemaet før du fortsetter.</span>
+		<button type="submit" disabled id="register-form-submit" class="btn btn-default">Send</button>
 	</form>
 </div>
 

@@ -43,6 +43,12 @@ class AuthController extends Base {
         else if ($_GET['q'] == 'registrer') {
             $this->register();
         }
+        else if ($_GET['q'] == 'glemt-passord') {
+            $this->forgottenPassword();
+        }
+        else if ($_GET['q'] == 'glemt-passord-nytt') {
+            $this->forgottenPasswordNew();
+        }
         else {
             // Page not found!
         	$this->display404();
@@ -152,6 +158,152 @@ class AuthController extends Base {
 
                     $this->redirect('');
                 }
+            }
+        }
+    }
+
+    //
+    // Method for forgotten password
+    //
+
+    private function forgottenPassword() {
+        // Check if offline
+        if ($this->user->isLoggedIn()) {
+            $this->redirect('');
+        }
+        else {
+            if (isset($_POST['forgotten-email'])) {
+                // Handle stuff here
+                $get_login_user = "SELECT id
+                FROM user 
+                WHERE email = :email";
+                
+                $get_login_user_query = $this->db->prepare($get_login_user);
+                $get_login_user_query->execute(array(':email' => $_POST['forgotten-email']));
+                $row = $get_login_user_query->fetch(PDO::FETCH_ASSOC);
+
+                // Check result
+                if (isset($row['id'])) {
+                    // Create hash
+                    $hash = $this->hashPassword(md5(rand(0, 100000) . md5(time()) . $row['id']), sha1(rand(0, 1000)), false);
+
+                    // Create database entry
+                    $insert_changepassword = "INSERT INTO changepassword
+                    (user, hash, timeout) 
+                    VALUES (:user, :hash, NOW() + INTERVAL 1 DAY)";
+                    
+                    $insert_changepassword_query = $this->db->prepare($insert_changepassword);
+                    $insert_changepassword_query->execute(array(':user' => $row['id'], ':hash' => $hash));
+
+                    // Send e-mail
+                    $message = "Hei\n\nKlikk på linken for å kunne endre nytt passord:\n" . SITE_URL_FULL . "/glemt-passord-nytt?hash=" . $hash . "\n\nMvh\nYoukok2";
+                    mail($_POST['forgotten-email'], 'Glemt passord på Youkok2');
+
+                    // Add message
+                    $this->addMessage('Det er blitt sendt en e-post til deg. Denne inneholder en link for å velge nytt passord. Denne linken er gyldig i 24 timer.', 'success');
+                }
+                else {
+                    $this->addMessage('E-posten du oppga ble ikke funnet i systemet. Prøv igjen.', 'danger');
+                }
+
+                // Redirect back to form
+                $this->redirect('glemt-passord');
+            }
+            else {
+                $this->displayAndCleanup('forgotten_password.tpl');
+            }
+        }
+    }
+
+    //
+    // Method for changing password
+    //
+
+    private function forgottenPasswordNew() {
+        // Check if offline
+        if ($this->user->isLoggedIn()) {
+            $this->redirect('');
+        }
+        else {
+            // Check if changepassword was found
+            $validate_hash = "SELECT id, user
+            FROM changepassword 
+            WHERE hash = :hash
+            AND timeout > NOW()";
+            
+            $validate_hash_query = $this->db->prepare($validate_hash);
+            $validate_hash_query->execute(array(':hash' => $_GET['hash']));
+            $row = $validate_hash_query->fetch(PDO::FETCH_ASSOC);
+
+            // Check if valid or not
+            if (isset($row['id'])) {
+                // Check if submitted
+                if (!isset($_POST['forgotten-password-new-form-password1'])) {
+                    // Display
+                    $this->displayAndCleanup('forgotten_password_new.tpl');
+                }
+                else {
+                    if ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2']) {
+                        // Get salt
+                        $get_user_salt = "SELECT salt, email
+                        FROM user 
+                        WHERE id = :user";
+                        
+                        $get_user_salt_query = $this->db->prepare($get_user_salt);
+                        $get_user_salt_query->execute(array(':user' => $row['user']));
+                        $row2 = $get_user_salt_query->fetch(PDO::FETCH_ASSOC);
+
+                        // Check if user was found
+                        if (isset($row2['salt'])) {
+                            // Generate new hash
+                            $hash = $this->hashPassword($_POST['forgotten-password-new-form-password1'], $row2['salt']);
+                            
+                            // Insert
+                            $insert_user_new_password = "UPDATE user
+                            SET password = :password
+                            WHERE id = :user";
+                            
+                            $insert_user_new_password_query = $this->db->prepare($insert_user_new_password);
+                            $insert_user_new_password_query->execute(array(':password' => $hash, ':user' => $row['user']));
+
+                            // Delete from changepassword
+                            $delete_changepassword = "DELETE FROM changepassword
+                            WHERE user = :user";
+                            
+                            $delete_changepassword_query = $this->db->prepare($delete_changepassword);
+                            $delete_changepassword_query->execute(array(':user' => $row['user'])); 
+
+                            // Add message
+                            $this->addMessage('Passordet er endret!', 'success');
+
+                            // Log in (only session)
+                            $this->setLogin($hash, $row2['email']);
+
+                            $this->redirect('');
+                        }
+                        else {
+                            // Add error message
+                            $this->addMessage('Her gikk visst noe galt...', 'danger');
+
+                            // Redirect
+                            $this->redirect('');
+                        }
+                    }
+                    else {
+                        // Add error message
+                        $this->addMessage('De to passordene er ikke like.', 'danger');
+
+                        // Redirect
+                        $this->redirect('glemt-passord-nytt?hash=' . $_GET['hash']);
+                    }
+                }
+            }
+            else {
+                // Add error message
+                $this->addMessage('Feil hash...', 'danger');
+
+                // Redirect
+                $this->redirect('');
             }
         }
     }

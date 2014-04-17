@@ -233,8 +233,17 @@ class Base {
     // Hash password
     //
 
-    protected function hashPassword($pass, $salt) {
-        return password_fuckup(password_hash($pass, PASSWORD_BCRYPT, array('cost' => 12, 'salt' => $salt)));
+    protected function hashPassword($pass, $salt, $hard = true) {
+        // Create hash
+        $hash = password_hash($pass, PASSWORD_BCRYPT, array('cost' => 12, 'salt' => $salt));
+
+        // Check if the hash should be fucked up in addition
+        if ($hard) {
+            return password_fuckup($hash);
+        }
+        else {
+            return $hash;
+        }
     }
 
     protected function setLogin($hash, $email, $cookie = false) {
