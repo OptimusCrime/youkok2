@@ -118,11 +118,13 @@ body, html {
     list-style: none;
     list-style-position: inside;
     padding: 0px;
+    background-color: #F5F5F5;
+    border-radius: 4px;
 }
 #archive-list li {
     height: 100px;
     width: 100px;
-    float: left;
+    display: inline-block;
     cursor: pointer;
     margin: 6px;
 }
