@@ -175,7 +175,7 @@ class ArchiveController extends Base {
                 if ($element->isDirectory()) {
                     // This is a directory, link should go to archive
                     $ret .= '<li>
-                                <a href="' . $element->generateUrl($this->paths['archive'][0]) . '">
+                                <a title="' . $element->getName() . '" href="' . $element->generateUrl($this->paths['archive'][0]) . '">
                                     <div class="archive-item" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="dir" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
@@ -188,7 +188,7 @@ class ArchiveController extends Base {
                 else {
                     // This is a file, link should go to download
                     $ret .= '<li>
-                                <a href="' . $element->generateUrl($this->paths['download'][0]) . '">
+                                <a title="' . $element->getName() . '" href="' . $element->generateUrl($this->paths['download'][0]) . '">
                                     <div class="archive-item" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="file" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '" data-size="2.21mb">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '

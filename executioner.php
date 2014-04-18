@@ -3,7 +3,7 @@
  * File: executioner.php
  * Holds: Executes completed flags
  * Created: 14.04.14
- * Last updated: 15.04.14
+ * Last updated: 18.04.14
  * Project: Youkok2
  * 
 */
@@ -189,6 +189,8 @@ class Executioner {
         $update_user_karma_query->execute(array(':id' => $this->flag['user']));
 
         // Create history
+        $this->addHistory($this->flag['user'], $this->element->getId(), '%u opprettet ' . $this->element->getName() . '.');
+
     }
 
     //
@@ -197,6 +199,19 @@ class Executioner {
 
     private function execute1() {
 
+    }
+
+    //
+    //
+    //
+
+    private function addHistory($user, $file, $text) {
+        $insert_history = "INSERT INTO history
+        (user, file, history_text)
+        VALUES (:user, :file, :text)";
+        
+        $insert_history_query = $this->db->prepare($insert_history);
+        $insert_history_query->execute(array(':user' => $user, ':file' => $file, ':text' => $text));
     }
 }
 ?>

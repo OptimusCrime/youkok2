@@ -1,7 +1,5 @@
 [[+include file="header.tpl"]]
 
-<div id="archive_accepted_filetypes">[[+$ARCHIVE_ACCEPTED_FILETYPES]]</div>
-
 <div class="modal fade" id="modal-info">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -111,6 +109,7 @@
 
 	<h1>[[+$ARCHIVE_TITLE]]</h1>
 	[[+if $ARCHIVE_MODE == 'browse']]
+		<div id="archive_accepted_filetypes">[[+$ARCHIVE_ACCEPTED_FILETYPES]]</div>
 		<ul id="archive-list">
 		    [[+$ARCHIVE_DISPLAY]]
 		</ul>

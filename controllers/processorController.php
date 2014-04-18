@@ -3,7 +3,7 @@
  * File: processorController.php
  * Holds: The ProcessorController-class
  * Created: 14.04.14
- * Last updated: 17.04.14
+ * Last updated: 18.04.14
  * Project: Youkok2
  * 
 */
@@ -94,6 +94,11 @@ class ProcessorController extends Base {
             else if ($url_fragment[1] == 'register') {
                 if ($url_fragment[2] == 'check') {
                     $response = $this->registerCheckDuplicate();
+                }
+            }
+            else if ($url_fragment[1] == 'history') {
+                if ($url_fragment[2] == 'get') {
+                    $response = $this->getHistory();
                 }
             }
             else {
@@ -658,7 +663,7 @@ class ProcessorController extends Base {
                         $insert_flag_query->execute(array(':file' => $this->db->lastInsertId(),
                             ':user' => $this->user->getId(),
                             ':type' => 0));
-                        
+
                         // Move the file
                         move_uploaded_file($_FILES['files']['tmp_name'][0], $upload_full_location);
                         
@@ -752,6 +757,33 @@ class ProcessorController extends Base {
         }
         else {
             $response['code'] = 500;
+        }
+
+        return $response;
+    }
+
+    //
+    // Method for getting the current history
+    //
+
+    private function getHistory() {
+        $response = array();
+        $response['html'] = '';
+
+        if (isset($_POST['id']) and is_numeric($_POST['id'])) {
+            $get_history = "SELECT h.history_text, u.nick from archive a 
+            right join history as h on a.id = h.file
+            right join user as u on h.user = u.id
+            where a.parent = :id";
+            
+            $get_history_query = $this->db->prepare($get_history);
+            $get_history_query->execute(array(':id' => $_POST['id']));
+            while ($row = $get_history_query->fetch(PDO::FETCH_ASSOC)) {
+                $response['html'] .= '<p>' . str_replace('%u', (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']), $row['history_text']) . '</p>';
+            }
+        }
+        else {
+            $response['html'] = '<em>Ingen historikk å hente</em>';
         }
 
         return $response;

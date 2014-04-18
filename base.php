@@ -3,7 +3,7 @@
  * File: rest.php
  * Holds: The base-class intilize most of the common stuff the system needs
  * Created: 02.10.13
- * Last updated: 17.04.14
+ * Last updated: 18.04.14
  * Project: Youkok2
  * 
 */
@@ -23,7 +23,7 @@ class Base {
     protected $template; // Holds the Smarty-object
     protected $fileDirectory; // Holds the filedirectory
     protected $basePath; // Holds the directory for the index file (defined as base for the project)
-    protected $collection;
+    protected $collection; // Holds the collection of items
     protected $paths; // Holds the paths served from the Loader-class
     
     //

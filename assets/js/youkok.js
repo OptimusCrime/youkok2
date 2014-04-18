@@ -784,4 +784,21 @@ $(document).ready(function () {
     if ($('#archive_accepted_filetypes').length > 0) {
     	accepted_filetypes = jQuery.parseJSON($('#archive_accepted_filetypes').html());
     }
+
+    //
+    // History
+    //
+
+    if ($('#archive-history').length > 0) {
+    	
+    	$.ajax({
+			cache: false,
+			type: "post",
+			url: "processor/history/get",
+			data: { id: $('#archive-id').val() },
+			success: function(json) {
+				$('#archive-history-inside').html(json.html);
+			}
+		});
+    }
 });
