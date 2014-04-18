@@ -24,7 +24,8 @@ body, html {
     background-color: #fff;
     height: auto;
     min-height: 100%;
-    padding-top: 51px;
+    margin-top: 51px;
+    padding-top: 15px;
     box-shadow: 5px 5px 5px #888;
 }
 
@@ -179,18 +180,17 @@ body, html {
     top: 0px;
     z-index: 200;
 }
-#archive-breadcrumbs {
-    margin-top: 20px;
-}
 .archive-sidebar {
     background-color: #F5F5F5;
     border-radius: 4px;
     padding-left: 15px;
     padding-right: 15px;
     padding-bottom: 15px;
+    margin-bottom: 20px;
 }
 .archive-sidebar h3 {
     padding-top: 8px;
+    margin-top: 0px;
     padding-bottom: 8px;
 }
 .twitter-typeahead {
@@ -355,4 +355,19 @@ body, html {
 }
 #archive_accepted_filetypes {
     display: none;
+}
+
+/*
+    Alerts
+*/
+.alert {
+    position: relative;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+.alert-close {
+    position: absolute;
+    right: 15px;
+    top: 13px;
+    cursor: pointer;
 }

@@ -770,7 +770,9 @@ class ProcessorController extends Base {
         $response = array();
         $response['html'] = '';
 
+        // Check if valid request
         if (isset($_POST['id']) and is_numeric($_POST['id'])) {
+            // Get all history
             $get_history = "SELECT h.history_text, u.nick from archive a 
             right join history as h on a.id = h.file
             right join user as u on h.user = u.id
@@ -781,9 +783,14 @@ class ProcessorController extends Base {
             while ($row = $get_history_query->fetch(PDO::FETCH_ASSOC)) {
                 $response['html'] .= '<p>' . str_replace('%u', (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']), $row['history_text']) . '</p>';
             }
+
+            // Check if no history
+            if ($response['html'] == '') {
+                $response['html'] = '<em>Ingen historikk å vise.</em>';
+            }
         }
         else {
-            $response['html'] = '<em>Ingen historikk å hente</em>';
+            $response['html'] = '<em>Ingen historikk å vise.</em>';
         }
 
         return $response;

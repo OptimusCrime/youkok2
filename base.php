@@ -128,7 +128,7 @@ class Base {
             // Loop and store in variable
             $ret = '';
             foreach ($_SESSION['youkok2_message'] as $v) {
-                $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text'] . '</div>';
+                $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text'] . '<div class="alert-close"><i class="fa fa-times"></i></div></div>';
             }
 
             // Unset the session variable
@@ -157,6 +157,8 @@ class Base {
     protected function displayAndCleanup($template) {
         // Close database
         $this->close();
+
+        $this->addMessage('fuck', 'danger');
         
         // Load message
         $this->showMessages();

@@ -801,4 +801,21 @@ $(document).ready(function () {
 			}
 		});
     }
+
+    //
+    // Alerts
+    //
+
+    $('.alert-close').on('click', function () {
+    	// Remove
+    	$(this).parent().fadeOut(400, function () {
+    		$(this).remove();
+    	});
+    });
+    if ($('.alert').length > 0) {
+    	setTimeout(function () {
+    		// Close all messages
+    		$('.alert-close').trigger('click');
+    	}, 10000);
+    }
 });

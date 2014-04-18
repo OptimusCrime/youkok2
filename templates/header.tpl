@@ -88,7 +88,11 @@
 </div>
 <div class="container" id="main">
     [[+if $SITE_MESSAGES != '']]
-        [[+$SITE_MESSAGES]]
+        <div class="row">
+            <div class="col-md-12">
+                [[+$SITE_MESSAGES]]
+            </div>
+        </div>
     [[+/if]]
     <div class="row">
         <div class="col-md-12">
