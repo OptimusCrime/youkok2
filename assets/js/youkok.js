@@ -8,7 +8,29 @@ function check_email(str) {
 		return true;
 	else
 		return false;
-}
+};
+
+//
+// Function for prettifying filesize (http://stackoverflow.com/a/14919494/921563)
+//
+
+function human_file_size(bytes, si) {
+	var thresh = si ? 1000 : 1024;
+
+	if(bytes < thresh) {
+		return bytes + ' B';
+	}
+
+	var units = si ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+	var u = -1;
+	
+	do {
+		bytes /= thresh;
+		++u;
+	} while(bytes >= thresh);
+	
+	return bytes.toFixed(1)+' '+units[u];
+};
 
 //
 // Moment.js
@@ -697,7 +719,7 @@ $(document).ready(function () {
 	        	var $container = $(' \
 	        		<div class="fileupload-file"> \
 						<strong>' + file_object.name + '</strong> \
-						<p>' + file_object.size + '</p> \
+						<p>' + human_file_size(file_object.size, true) + '</p> \
 						<div class="fileupload-file-remove"> \
 							<span>Fjern <i class="fa fa-times"></i></span> \
 						</div> \
