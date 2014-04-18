@@ -817,5 +817,55 @@ $(document).ready(function () {
     		// Close all messages
     		$('.alert-close').trigger('click');
     	}, 10000);
-    }
+    };
+
+    //
+    // New flags
+    //
+
+    $('#archive-context-new-flag-name').on('click', function(e) {
+    	e.preventDefault();
+
+    	// Title
+    	$('#modal-new-flag .modal-title').html('Endre navn på: ' + $archive_right_click.data('name'));
+
+    	// Set filetype
+    	var filetype_index = $archive_right_click.data('name').lastIndexOf('.');
+    	$('#modal-new-flag-name .input-group .input-group-addon').html($archive_right_click.data('name').substr(filetype_index));
+
+    	// Show modal
+		$('#modal-new-flag').modal('show');
+
+		// Hide all inners
+		$('.modal-new-flag-container').hide();
+		$('#modal-new-flag-name').show();
+    });
+    $('#modal-new-flag-name-form').on('submit', function () {
+    	// Check if valid
+    	if ($('#modal-new-flag-name-name').val().length == 0) {
+    		alert('Du glemte å skrive inn et navn...');
+    	}
+    	else {
+    		$.ajax({
+				cache: false,
+				type: "post",
+				url: "processor/flag/name",
+				data: { id: $archive_right_click.data('id'),
+					name: $('#modal-new-flag-name-name').val(),
+					filetype: $('#modal-new-flag-name .input-group .input-group-addon').html(),
+					comment:  $('#modal-new-flag-name-comment').val()},
+				success: function(json) {
+					if (json.code == 200) {
+						$('#modal-new-flag').modal('hide');
+						alert('Flagg er sendt');
+					}
+					else {
+						alert('Noe gikk visst galt her!');
+					}
+				}
+			});
+    	}
+
+    	return false;
+    });
 });

@@ -25,10 +25,10 @@ class ProcessorController extends Base {
 		'Fjerning av duplikat');
 
 	private $flagText = array(
-		'<p>Denne fila er åpen for godkjenning. Dersom fila hører til på YouKok gjør du en god gjerning ved å stemme for å godkjenne den, slik at andre kan dra nytte av den seinere.</p>
-		<p>Om fila skulle stride mot våre <a href="#">retningslinjer</a> kan du enten stemme for å avvise den, eller, i store overtrap av reglementet, velge å <a href="#">rapportere</a> tilfellet.</p>',
+		'<p>Dette elementet er åpen for godkjenning. Dersom elementet hører til på YouKok gjør du en god gjerning ved å stemme for å godkjenne den, slik at andre kan dra nytte av den seinere.</p>
+		<p>Om elementet skulle stride mot våre <a href="#">retningslinjer</a> kan du enten stemme for å avvise den, eller, i store overtrap av reglementet, velge å <a href="#">rapportere</a> tilfellet.</p>',
 
-		'1',
+		'<p>Dette flagget er et forslag på navnendring av elementet. Dersom du syntes at denne navnendringen er en forbedring kan du velge å godkjenne den. Om dette ikke er tilfellet kan du velge å avvise forslaget.</p>',
 
 		'2',
 
@@ -64,6 +64,9 @@ class ProcessorController extends Base {
         		else if ($url_fragment[2] == 'vote') {
         			$response = $this->flagVote();
         		}
+                else if ($url_fragment[2] == 'name') {
+                    $response = $this->flagName();
+                }
         	}
             else if ($url_fragment[1] == 'favorite') {
                 if ($url_fragment[2] == 'add') {
@@ -138,7 +141,7 @@ class ProcessorController extends Base {
             	if (count($flags) > 0) {
             		// Flags
             		foreach ($flags as $k => $v) {
-            			$response['html'] .= $this->drawFlag($k, $v);
+            			$response['html'] .= $this->drawFlag($k, $v, $element);
             		}
             	}
 
@@ -255,13 +258,14 @@ class ProcessorController extends Base {
     // Method for drawing each flag
     //
 
-    private function drawFlag($k, $flag) {
+    private function drawFlag($k, $flag, $element) {
     	// Some variables
     	$has_voted = false;
     	$num_voted = 0;
     	$user_vote = null;
     	$num_votes_needed = 5;
     	$display_buttons = false;
+        $additional = '';
 
     	// Get votes
     	$get_all_votes = "SELECT *
@@ -282,9 +286,31 @@ class ProcessorController extends Base {
             	$num_voted++;
             }
         }
+        // Handles for different special flags
+        if ($flag['type'] == 1) {
+            // Change name
+            $additional_inner = '';
+            $data = json_decode($flag['data'], true);
+            $additional = '<hr /><p>Nåværende navn: ' . $element->getName() . '</p>';
+            $additional .= '<p>Endres til: ' . $data['name'] . '</p>';
+            if ($data['comment'] == '') {
+                $additional_inner .= '<p><em>Ingen kommentar</em></p>';
+            }
+            else {
+                
+                $additional_comment = explode("<br />", nl2br($data['comment']));
+                foreach ($additional_comment as $v) {
+                    if ($v != '') {
+                        $additional_inner .= '<p>' . $v . '</p>';
+                    }
+                }
+                
+            }
+            $additional .= '<div class="givegrayaround">' . $additional_inner . '</div>';
+        }
 
         // Calculate percent
-        $percent = ($num_voted/5)*100;
+        $percent = ($num_voted / 5) * 100;
 
     	// Check if status
     	if ($this->user->isLoggedIn()) {
@@ -342,7 +368,7 @@ class ProcessorController extends Base {
 					</div>
 					<div id="collapse' . $k . '" class="panel-collapse collapse">
 						<div class="panel-body">
-							' . $this->flagText[$flag['type']] . '
+							' . $this->flagText[$flag['type']] . $additional . '
 							<hr />
 							<p>' . $num_voted . ' av ' . $num_votes_needed . ' godkjenninger. ' . $question_status_bottom . '</p>
 							' . ($display_buttons ? '<button type="button" data-flag="' . $flag['id'] . '" data-value="1" class="btn btn-primary flag-button">Godkjenn</button> <button type="button" data-flag="' . $flag['id'] . '" data-value="0" class="btn btn-danger flag-button">Avvis</button>' : '') . '
@@ -793,6 +819,55 @@ class ProcessorController extends Base {
             $response['html'] = '<em>Ingen historikk å vise.</em>';
         }
 
+        return $response;
+    }
+
+    //
+    //
+    //
+
+    private function flagName() {
+        $response = array();
+        
+        // First, check if logged in
+        if ($this->user->isLoggedIn() and $this->user->isVerified()) {
+            // Can vote
+            if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['comment']) and isset($_POST['filetype']) and isset($_POST['name']) and strlen($_POST['name'].$_POST['filetype']) > 0) {
+                // Valid id, try to load the object
+                $item = new Item($this->collection, $this->db);
+                $item->createById($_POST['id']);
+                $this->collection->addIfDoesNotExist($item);
+                $element = $this->collection->get($_POST['id']);
+                
+                if ($element == null) {
+                    // WTF
+                    $response['code'] = 500;
+                }
+                else {
+                    // Insert
+                    $insert_flag = "INSERT INTO flag
+                    (file, user, type, data)
+                    VALUES (:file, :user, :type, :data)";
+                    
+                    $insert_flag_query = $this->db->prepare($insert_flag);
+                    $insert_flag_query->execute(array(':file' => $_POST['id'],
+                        ':user' => $this->user->getId(),
+                        ':type' => 1,
+                        ':data' => json_encode(array('name' => $_POST['name'].$_POST['filetype'], 'comment' => $_POST['comment']))));
+
+                    // Code
+                    $response['code'] = 200;
+                }
+            }
+            else {
+                $response['code'] = 500;
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+
+        // Return
         return $response;
     }
 

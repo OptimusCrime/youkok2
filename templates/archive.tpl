@@ -1,14 +1,27 @@
 [[+include file="header.tpl"]]
 
-<div class="modal fade" id="modal-info">
+<div class="modal fade" id="modal-new-flag">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Info om:</h4>
+				<h4 class="modal-title">Laster...</h4>
 			</div>
 			<div class="modal-body">
-				<p>One fine body&hellip;</p>
+				<div id="modal-new-flag-name" class="modal-new-flag-container">
+					<p>Dersom du syntes dette elementet burde ha et nytt navn kan du foreslå det her.</p> 
+					<form action="" method="post" name="modal-new-flag-name-form" id="modal-new-flag-name-form">
+						<label for="modal-new-flag-name-name">Nytt navn</label>
+	                    <div class="input-group">
+							<input type="text" name="modal-new-flag-name-name" class="form-control" id="modal-new-flag-name-name" value="" placeholder="Skriv inn ditt forslag her" />
+							<span class="input-group-addon">.laster</span>
+						</div>
+						<label for="model-report-text">Kommentar</label>
+						<textarea class="form-control" id="modal-new-flag-name-comment" name="modal-new-flag-name-comment"></textarea>
+						<button type="submit" class="btn btn-default">Send</button> eller <a href="#">lukk</a>.
+					</form>
+				</div>
+
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
@@ -79,15 +92,14 @@
     <li id="archive-context-download"><a href="#">Last ned<span id="archive-context-menu-size"></span></a></li>
     <li id="archive-context-open"><a href="#">Åpne</a></li>
     <li id="archive-context-star"><a href="#" id="archive-context-star-inside">Legg til favoritt</a></li>
-    <li><a href="#" id="archive-context-info">Vis info</a></li>
     
     <li class="divider"></li>
 
     <li class="dropdown-submenu" id="archive-context-newflag-outer"><a href="#" id="archive-context-newflag">Nytt flagg</a>
     	<ul class="dropdown-menu">
-    		<li><a href="#">Endre navn</a></li>
-    		<li><a href="#">Sletting av <span class="archive-context-type"></span></a></li>
-    		<li><a href="#">Flytting av <span class="archive-context-type"></span></a></li>
+    		<li><a href="#" id="archive-context-new-flag-name">Endre navn</a></li>
+    		<li><a href="#" id="archive-context-new-flag-delete">Sletting av <span class="archive-context-type"></span></a></li>
+    		<li><a href="#" id="archive-context-new-flag-move">Flytting av <span class="archive-context-type"></span></a></li>
     	</ul>
     </li>
     <li><a href="#" id="archive-context-flags">Vis flagg <span class="badge" id="archive-context-menu-flags">0</span></a></li>
