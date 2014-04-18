@@ -114,6 +114,7 @@ class HomeController extends Base {
         FROM download d
         " . $delta[$user_delta] . "
         GROUP BY d.file
+        ORDER BY downloaded_times DESC
         LIMIT 15";
         
         $get_most_popular_query = $this->db->prepare($get_most_popular);
