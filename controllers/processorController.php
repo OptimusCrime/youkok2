@@ -796,10 +796,12 @@ class ProcessorController extends Base {
         // Check if valid request
         if (isset($_POST['id']) and is_numeric($_POST['id'])) {
             // Get all history
-            $get_history = "SELECT h.history_text, u.nick from archive a 
-            right join history as h on a.id = h.file
-            right join user as u on h.user = u.id
-            where a.parent = :id";
+            $get_history = "SELECT h.history_text, u.nick FROM archive a 
+            RIGHT JOIN history AS h ON a.id = h.file
+            RIGHT JOIN user AS u ON h.user = u.id
+            WHERE a.parent = :id
+            ORDER BY h.added DESC
+            LIMIT 30";
             
             $get_history_query = $this->db->prepare($get_history);
             $get_history_query->execute(array(':id' => $_POST['id']));
