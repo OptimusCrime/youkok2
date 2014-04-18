@@ -1,4 +1,23 @@
+Youkok2 - 0.0.1-a (18. april, 2014)
+=====================================
+
+- [Info] Closed Alpha Version
+- [Fixed] Context meny i arkivet viste valg man ikke hadde rettigheter til å benytte.
+- [Fixed] Navnet på et arkiv hadde stjerne ved siden av seg når man ikke var logget inn.
+- [New] Mulighet til å lage mapper.
+- [New] Mulighet til å laste opp filer.
+- [New] Historikk hentes for arkivet.
+- [New] Glemt passord-funksjonalitet.
+- [New] Når et flagg blir godkjent/avvist gis det nå karma til alle brukere som skal ha de.
+- [Enhanced] Måten login-formen blir submitta på.
+- [Enhanced] Design på meldings-boksene, samt kryss for å lukke meldingen og autoclose etter x antall sekunder.
+- [New] Mulighet for å registrere seg på siden.
+- [Fixed] 'Mine siste nedlastninger' og 'Mest populære' arrangerte filer i feil rekkefølge.
+- [New] Implementasjon av 'Slett'- og 'Nytt navn'-flagg.
+- [Other] Masse, masse andre fixes og forbedringer.
+
 Youkok2 - 0.0.1-dev (14. april, 2014)
 =====================================
 
-- Første versjonen av denne fila. De fleste endringer vil ikke logges her helt enda. Mest for å gjøre alt klart.
+- [Info] Closed Developer Version
+- [New] Denne fila.
