@@ -91,6 +91,11 @@ body, html {
 .tt-suggestion p {
     margin: 0;
 }
+.twitter-typeahead {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+}
 
 /*
     Login
@@ -193,10 +198,9 @@ body, html {
     margin-top: 0px;
     padding-bottom: 8px;
 }
-.twitter-typeahead {
-    width: 100%;
-    background-color: #fff;
-    border-radius: 4px;
+#archive-history-inside {
+    max-height: 500px;
+    overflow-y: scroll;
 }
 #archive-context-menu {
     position: absolute;
