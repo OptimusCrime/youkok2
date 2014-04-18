@@ -781,8 +781,7 @@ $(document).ready(function () {
     $('#fileupload-files').on('click', '.fileupload-file-remove', function () {
     	$(this).parent().remove();
     });
-    //accepted_filetypes
     if ($('#archive_accepted_filetypes').length > 0) {
-    	accepted_filetypes= jQuery.parseJSON($('#archive_accepted_filetypes').html());
+    	accepted_filetypes = jQuery.parseJSON($('#archive_accepted_filetypes').html());
     }
 });
