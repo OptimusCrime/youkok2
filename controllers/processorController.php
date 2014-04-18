@@ -82,6 +82,9 @@ class ProcessorController extends Base {
                 if ($url_fragment[2] == 'folder') {
                     $response = $this->createFolder();
                 }
+                else {
+                    $response = $this->createFile();
+                }
             }
             else if ($url_fragment[1] == 'report') {
                 if ($url_fragment[2] == 'send') {
@@ -532,6 +535,142 @@ class ProcessorController extends Base {
                         // Send code
                         $response['code'] = 200;
                     }
+                }
+            }
+            else {
+                $response['code'] = 500;
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+
+        // Return
+        return $response;
+    }
+
+    //
+    // Method for uploading files
+    //
+
+    private function createFile() {
+        $response = array();
+
+        // Check if online
+        if ($this->user->isLoggedIn() and $this->user->isVerified()) {
+            // Check referer
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                // Get base
+                $referer_base = str_replace(SITE_URL_FULL, '', $_SERVER['HTTP_REFERER']);
+
+                // Create object out of the base
+                $item = new Item($this->collection, $this->db);
+                $item->setShouldLoadPhysicalLocation(true);
+                $item->createByUrl($referer_base);
+                $item_id = $item->getId();
+
+                // Check if valid id
+                if (is_numeric($item_id)) {
+                    // Check if any files was sent
+                    if (isset($_FILES['files'])) {
+                        // Find what the physical location should be
+                        $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
+                        $this_file_name = $_FILES['files']['name'][0];
+                        while(true) {
+                            if (file_exists($this->fileDirectory . '/' . $item->getFullLocation() . '/' . $this->generateUrlFriendly($this_file_name))) {
+                                $this_file_name = $letters[rand(0, count($letters) - 1)] . $this_file_name;
+                                echo "found file \n";
+                            }
+                            else {
+                                // Gogog
+                                break;
+                            }
+                        }
+                        $upload_full_location = $this->fileDirectory . '/' . $item->getFullLocation() . '/' . $this->generateUrlFriendly($this_file_name);
+                        
+                        // Check duplicates for url friendly
+                        $url_friendly = $this->generateUrlFriendly($_FILES['files']['name'][0], true);
+                        $num = 2;
+                        while (true) {
+                            $get_duplicate = "SELECT id
+                            FROM archive 
+                            WHERE parent = :id
+                            AND url_friendly = :url_friendly";
+                            
+                            $get_duplicate_query = $this->db->prepare($get_duplicate);
+                            $get_duplicate_query->execute(array(':id' => $item->getId(), ':url_friendly' => $url_friendly));
+                            $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
+                            if (isset($row_duplicate['id'])) {
+                                $url_friendly = $this->generateUrlFriendly($letters[rand(0, count($letters) - 1)] . $url_friendly);
+                                $num++;
+                                echo "found url friendly \n";
+                            }
+                            else {
+                                // Gogog
+                                break;
+                            }
+                        }
+
+                        // Check duplicates for name
+                        $real_name = $_FILES['files']['name'][0];
+                        $name = $_FILES['files']['name'][0];
+                        $num = 2;
+                        while (true) {
+                            $get_duplicate = "SELECT id
+                            FROM archive 
+                            WHERE parent = :id
+                            AND name = :name";
+                            
+                            $get_duplicate_query = $this->db->prepare($get_duplicate);
+                            $get_duplicate_query->execute(array(':id' => $item->getId(), ':name' => $name));
+                            $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
+                            if (isset($row_duplicate['id'])) {
+                                $name = $real_name . ' (' . $num . ')';
+                                $num++;
+                                echo "found name \n";
+                                break;
+                            }
+                            else {
+                                // Gogog
+                                break;
+                            }
+                        }
+
+                        // Insert into archive
+                        $insert_archive = "INSERT INTO archive
+                        (name, url_friendly, mime_type, parent, location, size)
+                        VALUES (:name, :url_friendly, :mime_type, :parent, :location, :size)";
+                        
+                        $insert_archive_query = $this->db->prepare($insert_archive);
+                        $insert_archive_query->execute(array(':name' => $name,
+                            ':url_friendly' => $url_friendly,
+                            ':mime_type' => str_replace('/', '_', $_FILES['files']['type'][0]),
+                            ':parent' => $item->getId(),
+                            ':location' => $this_file_name,
+                            ':size' => $_FILES['files']['size'][0]));
+
+                        // Insert flag
+                        $insert_flag = "INSERT INTO flag
+                        (file, user, type)
+                        VALUES (:file, :user, :type)";
+                        
+                        $insert_flag_query = $this->db->prepare($insert_flag);
+                        $insert_flag_query->execute(array(':file' => $this->db->lastInsertId(),
+                            ':user' => $this->user->getId(),
+                            ':type' => 0));
+                        
+                        // Move the file
+                        move_uploaded_file($_FILES['files']['tmp_name'][0], $upload_full_location);
+                        
+                        // Finally, success code
+                        $response['code'] = 200;
+                    }
+                    else {
+                        $response['code'] = 500;
+                    }
+                }
+                else {
+                    $response['code'] = 500;
                 }
             }
             else {

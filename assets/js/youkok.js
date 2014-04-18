@@ -675,7 +675,6 @@ $(document).ready(function () {
     });
     var accepted_filetypes = [];
     $('#archive-create-file-form').fileupload({
-        dataType: 'json',
         url: 'processor/create/file',
         acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
         add: function (e, data) {
