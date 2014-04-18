@@ -153,7 +153,7 @@ $(document).ready(function () {
 			$('#archive-context-open', $archive_context_menu).show();
 			$('#archive-context-open a', $archive_context_menu).show().attr('href', link);
 
-			$('#archive-context-download', $archive_context_menu).hide();
+			$('#archive-context-download,#archive-context-new-flag-delete,#archive-context-new-flag-move', $archive_context_menu).hide();
 
 			$('.archive-context-type').html('mappen');
 		}
@@ -161,7 +161,7 @@ $(document).ready(function () {
 			$('#archive-context-download', $archive_context_menu).show();
 			$('#archive-context-download a', $archive_context_menu).show().attr('href', link);
 			
-			$('#archive-context-open', $archive_context_menu).hide();
+			$('#archive-context-download,#archive-context-new-flag-delete,#archive-context-new-flag-move', $archive_context_menu).show();
 
 			$('.archive-context-type').html('fil');
 		}
@@ -867,5 +867,39 @@ $(document).ready(function () {
     	}
 
     	return false;
+    });
+
+    $('#archive-context-new-flag-delete').on('click', function(e) {
+    	e.preventDefault();
+
+    	// Title
+    	$('#modal-new-flag .modal-title').html('Sletting av: ' + $archive_right_click.data('name'));
+
+    	// Show modal
+		$('#modal-new-flag').modal('show');
+
+		// Hide all inners
+		$('.modal-new-flag-container').hide();
+		$('#modal-new-flag-delete').show();
+    });
+    $('#modal-new-flag-delete-form').on('submit', function () {
+    	$.ajax({
+			cache: false,
+			type: "post",
+			url: "processor/flag/delete",
+			data: { id: $archive_right_click.data('id'),
+				comment:  $('#modal-new-flag-delete-comment').val()},
+			success: function(json) {
+				if (json.code == 200) {
+					$('#modal-new-flag').modal('hide');
+					alert('Flagg er sendt');
+				}
+				else {
+					alert('Noe gikk visst galt her!');
+				}
+			}
+		});
+
+		return false;
     });
 });

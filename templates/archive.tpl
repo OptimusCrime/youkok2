@@ -16,8 +16,17 @@
 							<input type="text" name="modal-new-flag-name-name" class="form-control" id="modal-new-flag-name-name" value="" placeholder="Skriv inn ditt forslag her" />
 							<span class="input-group-addon">.laster</span>
 						</div>
-						<label for="model-report-text">Kommentar</label>
+						<label for="modal-new-flag-name-comment">Kommentar</label>
 						<textarea class="form-control" id="modal-new-flag-name-comment" name="modal-new-flag-name-comment"></textarea>
+						<button type="submit" class="btn btn-default">Send</button> eller <a href="#">lukk</a>.
+					</form>
+				</div>
+
+				<div id="modal-new-flag-delete" class="modal-new-flag-container">
+					<p>Dersom du syntes dette elementet burde slettes kan du foreslå det her.</p> 
+					<form action="" method="post" name="modal-new-flag-delete-form" id="modal-new-flag-delete-form">
+						<label for="modal-new-flag-delete-comment">Kommentar</label>
+						<textarea class="form-control" id="modal-new-flag-delete-comment" name="modal-new-flag-delete-comment"></textarea>
 						<button type="submit" class="btn btn-default">Send</button> eller <a href="#">lukk</a>.
 					</form>
 				</div>
