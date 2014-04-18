@@ -157,8 +157,6 @@ class Base {
     protected function displayAndCleanup($template) {
         // Close database
         $this->close();
-
-        $this->addMessage('fuck', 'danger');
         
         // Load message
         $this->showMessages();
