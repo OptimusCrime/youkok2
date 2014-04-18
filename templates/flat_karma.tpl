@@ -26,20 +26,20 @@ Endre navn, *, avvist
 
 ---------------------------------
 
-Sletting av fil, *, godkjent
+Sletting, fil, godkjent
 - Eier +3
 - Votes +2
 
-Sletting av fil, *, avvist
+Sletting, fil, avvist
 - Eier -3
 - Votes -2
 
 ---------------------------------
 
-Flytting av fil, *, godkjent
+Flytting, fil, godkjent
 - Eier +2
 - Votes +1
 
-Flytting av fil, *, avvist
+Flytting, fil, avvist
 - Eier -2
 - Votes -1

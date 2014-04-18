@@ -20,9 +20,8 @@ class ProcessorController extends Base {
 
 	private $flagType = array('Godkjenning',
 		'Endring av navn',
-		'Sletting av fil/mappe',
-		'Flytting av fil/mappe',
-		'Fjerning av duplikat');
+		'Sletting av element',
+		'Flytting av element');
 
 	private $flagText = array(
 		'<p>Dette elementet er åpen for godkjenning. Dersom elementet hører til på YouKok gjør du en god gjerning ved å stemme for å godkjenne den, slik at andre kan dra nytte av den seinere.</p>
@@ -30,7 +29,8 @@ class ProcessorController extends Base {
 
 		'<p>Dette flagget er et forslag på navnendring av elementet. Dersom du syntes at denne navnendringen er en forbedring kan du velge å godkjenne den. Om dette ikke er tilfellet kan du velge å avvise forslaget.</p>',
 
-		'2',
+		'<p>Dette flagget er et forslag om å permanent slette elementet. Dersom du syntes dette er på sin plass kan du stemme for å godkjenne dette forslaget, eller så kan du stemme for å avvise det.</p>
+        <p>Legg merke til at misbruk av slettefunksjonen vil bli slått ned på!</p>',
 
 		'3',);
 
@@ -66,6 +66,9 @@ class ProcessorController extends Base {
         		}
                 else if ($url_fragment[2] == 'name') {
                     $response = $this->flagName();
+                }
+                else if ($url_fragment[2] == 'delete') {
+                    $response = $this->flagDelete();
                 }
         	}
             else if ($url_fragment[1] == 'favorite') {
@@ -287,12 +290,19 @@ class ProcessorController extends Base {
             }
         }
         // Handles for different special flags
-        if ($flag['type'] == 1) {
-            // Change name
+        if ($flag['type'] != 0) {
+            // Some variables
             $additional_inner = '';
             $data = json_decode($flag['data'], true);
-            $additional = '<hr /><p>Nåværende navn: ' . $element->getName() . '</p>';
-            $additional .= '<p>Endres til: ' . $data['name'] . '</p>';
+            
+            // Fix flag independent
+            if ($flag['type'] == 1) {
+                // Change name
+                $additional = '<hr /><p>Nåværende navn: ' . $element->getName() . '</p>';
+                $additional .= '<p>Endres til: ' . $data['name'] . '</p>';
+            }
+
+            // Add comment
             if ($data['comment'] == '') {
                 $additional_inner .= '<p><em>Ingen kommentar</em></p>';
             }
@@ -823,7 +833,7 @@ class ProcessorController extends Base {
     }
 
     //
-    //
+    // Flagging for changing name
     //
 
     private function flagName() {
@@ -854,6 +864,55 @@ class ProcessorController extends Base {
                         ':user' => $this->user->getId(),
                         ':type' => 1,
                         ':data' => json_encode(array('name' => $_POST['name'].$_POST['filetype'], 'comment' => $_POST['comment']))));
+
+                    // Code
+                    $response['code'] = 200;
+                }
+            }
+            else {
+                $response['code'] = 500;
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+
+        // Return
+        return $response;
+    }
+
+    //
+    // Flagging for deleting file
+    //
+
+    private function flagDelete() {
+        $response = array();
+        
+        // First, check if logged in
+        if ($this->user->isLoggedIn() and $this->user->isVerified()) {
+            // Can vote
+            if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['comment'])) {
+                // Valid id, try to load the object
+                $item = new Item($this->collection, $this->db);
+                $item->createById($_POST['id']);
+                $this->collection->addIfDoesNotExist($item);
+                $element = $this->collection->get($_POST['id']);
+                
+                if ($element == null) {
+                    // WTF
+                    $response['code'] = 500;
+                }
+                else {
+                    // Insert
+                    $insert_flag = "INSERT INTO flag
+                    (file, user, type, data)
+                    VALUES (:file, :user, :type, :data)";
+                    
+                    $insert_flag_query = $this->db->prepare($insert_flag);
+                    $insert_flag_query->execute(array(':file' => $_POST['id'],
+                        ':user' => $this->user->getId(),
+                        ':type' => 2,
+                        ':data' => json_encode(array('comment' => $_POST['comment']))));
 
                     // Code
                     $response['code'] = 200;

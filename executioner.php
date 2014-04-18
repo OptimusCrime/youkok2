@@ -100,6 +100,9 @@ class Executioner {
                     else if ($this->flag['type'] == 1) {
                         $this->execute1($finished_type);
                     }
+                    else if ($this->flag['type'] == 2) {
+                        $this->execute2($finished_type);
+                    }
                 }
             }
         }
@@ -300,6 +303,83 @@ class Executioner {
 
         // Create history
         $this->addHistory($this->flag['user'], $this->element->getId(), '%u endret navn fra <b>' . $this->element->getName() . '</b> til <b>' . $flag_data['name'] . '</b>.');
+    }
+
+
+    //
+    // Execute - Slett
+    //
+
+    private function execute2($type) {
+        if ($type == true) {
+            // "Delete"
+            $update_element = "UPDATE archive
+            SET is_visible = 0
+            WHERE id = :id";
+
+            $update_element_query = $this->db->prepare($update_element);
+            $update_element_query->execute(array(':id' => $this->element->getId()));
+        }
+
+        // Update flag
+        $update_flag = "UPDATE flag
+        SET active = 0
+        WHERE id = :id";
+        
+        $update_flag_query = $this->db->prepare($update_flag);
+        $update_flag_query->execute(array(':id' => $this->flag['id']));
+
+        // Get all voters
+        $get_all_votes = "SELECT *
+        FROM vote
+        WHERE flag = :flag";
+        
+        $votes = array();
+        $get_all_votes_query = $this->db->prepare($get_all_votes);
+        $get_all_votes_query->execute(array(':flag' => $this->flag['id']));
+        while ($row = $get_all_votes_query->fetch(PDO::FETCH_ASSOC)) {
+            $votes[] = $row;
+        }
+
+        // Loop all votes
+        foreach ($votes as $v) {
+            // Check what values to update
+            $karma_value_string = '';
+            if ($v['value'] == $type) {
+                $karma_value_string = '+2';
+            }
+            else {
+                $karma_value_string = '-2';
+            }
+
+            // Run the actual query
+            $update_user_karma = "UPDATE user
+            SET karma = karma" . $karma_value_string . "
+            WHERE id = :id";
+            
+            $update_user_karma_query = $this->db->prepare($update_user_karma);
+            $update_user_karma_query->execute(array(':id' => $v['user']));
+        }
+        
+        // Update karma for the owner
+        $karma_value_string = '';
+        if ($type) {
+            $karma_value_string = '+3';
+        }
+        else {
+            $karma_value_string = '-3';
+        }
+
+        // Update owner karma
+        $update_user_karma = "UPDATE user
+        SET karma=karma" . $karma_value_string . "
+        WHERE id = :id";
+        
+        $update_user_karma_query = $this->db->prepare($update_user_karma);
+        $update_user_karma_query->execute(array(':id' => $this->flag['user']));
+
+        // Create history
+        $this->addHistory($this->flag['user'], $this->element->getId(), '%u slettet <b>' . $this->element->getName() . '</b>.');
     }
 
     //
