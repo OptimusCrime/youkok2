@@ -142,7 +142,7 @@ $(document).ready(function () {
 
 		// Set info
 		$('#archive-context-menu-id', $archive_context_menu).html($that.data('name'));
-		$('#archive-context-menu-size', $archive_context_menu).html(' (' + $that.data('size') + ')');
+		$('#archive-context-menu-size', $archive_context_menu).html(' (' + human_file_size($that.data('size'), true) + ')');
 		$('#archive-context-menu-flags', $archive_context_menu).html($that.data('flags'));
 		
 		// Get link

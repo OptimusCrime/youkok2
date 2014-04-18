@@ -27,6 +27,7 @@ class Item {
     private $parent;
     private $location;
     private $added;
+    private $size;
     private $urlFriendly;
     private $downloadCount;
     private $directory;
@@ -64,6 +65,7 @@ class Item {
         $this->loadedFlags = false;
         $this->favorite = 'null';
         $this->rootParent = null;
+        $this->size = 0;
     }
     
     //
@@ -139,7 +141,7 @@ class Item {
         // Get all info about file
         if ($this->id != null) {
             // Id is set, run a simple query
-            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, is_accepted, is_visible, added, location
+            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, is_accepted, is_visible, added, location, size
             FROM archive 
             WHERE id = :id";
             
@@ -157,6 +159,7 @@ class Item {
             $this->visible = $row['is_visible'];
             $this->location = $row['location'];
             $this->added = $row['added'];
+            $this->size = $row['size'];
         }
     }
 
@@ -207,6 +210,10 @@ class Item {
 
     public function getAdded() {
         return $this->added;
+    }
+
+    public function getSize() {
+        return $this->size;
     }
 
     public function isVisible() {

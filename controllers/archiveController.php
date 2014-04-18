@@ -189,7 +189,7 @@ class ArchiveController extends Base {
                     // This is a file, link should go to download
                     $ret .= '<li>
                                 <a title="' . $element->getName() . '" href="' . $element->generateUrl($this->paths['download'][0]) . '">
-                                    <div class="archive-item" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="file" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '" data-size="2.21mb">
+                                    <div class="archive-item" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="file" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '" data-size="' . $element->getSize() . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . $item->getMimeType() . '.png\');"></div>
