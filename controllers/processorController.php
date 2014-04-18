@@ -550,7 +550,7 @@ class ProcessorController extends Base {
                     else {
                         // Create directory
                         $new_directory = $this->fileDirectory . $element->getFullLocation() . '/' . $this->generateUrlFriendly($_POST['name']);
-                        //mkdir($new_directory);
+                        mkdir($new_directory);
 
                         // Inser archive
                         $insert_archive = "INSERT INTO archive
