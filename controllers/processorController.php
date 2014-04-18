@@ -610,7 +610,6 @@ class ProcessorController extends Base {
                         while(true) {
                             if (file_exists($this->fileDirectory . '/' . $item->getFullLocation() . '/' . $this->generateUrlFriendly($this_file_name))) {
                                 $this_file_name = $letters[rand(0, count($letters) - 1)] . $this_file_name;
-                                echo "found file \n";
                             }
                             else {
                                 // Gogog
@@ -634,7 +633,6 @@ class ProcessorController extends Base {
                             if (isset($row_duplicate['id'])) {
                                 $url_friendly = $this->generateUrlFriendly($letters[rand(0, count($letters) - 1)] . $url_friendly);
                                 $num++;
-                                echo "found url friendly \n";
                             }
                             else {
                                 // Gogog
@@ -658,7 +656,6 @@ class ProcessorController extends Base {
                             if (isset($row_duplicate['id'])) {
                                 $name = $real_name . ' (' . $num . ')';
                                 $num++;
-                                echo "found name \n";
                                 break;
                             }
                             else {
