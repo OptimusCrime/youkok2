@@ -53,22 +53,28 @@
                     </li>
                 [[+else]]
                     <li>
-                        <a href="#" data-toggle="dropdown">Logg inn<b class="caret"></b></a>
+                        <a id="dropdown-menu-opener" href="#" data-toggle="dropdown">Logg inn<b class="caret"></b></a>
                         <ul class="dropdown-menu" id="login-dropdown">
                             <li>
                                 <form role="form" action="" method="post">
                                     <div class="form-group">
                                         <label for="login-email">E-post</label>
-                                        <input type="email" name="login-email" class="form-control" id="login-email" value="" placeholder="E-post" />
+                                        <input type="email" name="login-email" class="form-control" id="login-email" value="" placeholder="" />
                                         <label for="login-pw">Passord</label>
-                                        <input type="password" name="login-pw" class="form-control" id="login-pw" value="" placeholder="Passord" />
+                                        <input type="password" name="login-pw" class="form-control" id="login-pw" value="" placeholder="" />
                                     </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="login-remember" id="login-remember" value="pizza" /> Husk meg
-                                        </label>
+                                    <div id="login-float-container">
+                                        <button type="submit" class="btn btn-primary">Logg inn</button>
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="login-remember" id="login-remember" value="pizza" /> Husk meg
+                                            </label>
+                                        </div>
+                                        <div class="clear"></div>
                                     </div>
-                                    <button type="submit" class="btn btn-default">Logg inn</button> eller <a href="registrer">Registrer deg</a>.
+                                    <hr />
+                                    <button type="button" href="registrer" class="btn btn-default">Registrer</button>
+                                    <button type="button" href="glemt-passord" class="btn btn-default">Glemt passord</button>
                                 </form>
                             </li>
                         </ul>

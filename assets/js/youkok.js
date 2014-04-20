@@ -902,4 +902,14 @@ $(document).ready(function () {
 
 		return false;
     });
+
+    //
+    // Stuff
+    //
+
+    $('#dropdown-menu-opener').on('click', function(e) {
+    	setTimeout(function() {
+    		$('#login-email').focus();
+    	}, 100);
+    });
 });

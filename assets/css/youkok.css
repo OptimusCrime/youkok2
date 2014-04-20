@@ -101,19 +101,39 @@ body, html {
     Login
 */
 
+#dropdown-menu-opener {
+    margin-left: 15px;
+}
 #login-dropdown {
     padding-left: 15px;
     padding-right: 15px;
     width: 250px;
+    padding-top: 10px;
+    padding-bottom: 15px;
 }
 #login-dropdown .form-group {
     margin-bottom: 0px;
 }
+#login-dropdown hr {
+    margin-top: 12px;
+    margin-bottom: 15px;
+}
 #login-dropdown .form-group label {
     display: block;
 }
-#login-dropdown .form-group input[type="email"] {
+#login-dropdown .form-group input {
     margin-bottom: 10px;
+}
+#login-float-container {
+    padding-top: 5px;
+}
+#login-float-container .checkbox {
+    float: left;
+    margin-left: 12px;
+    margin-top: 7px;
+}
+#login-float-container button {
+    float: left;
 }
 
 /*
