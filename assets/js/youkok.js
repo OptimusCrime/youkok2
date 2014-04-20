@@ -912,4 +912,11 @@ $(document).ready(function () {
     		$('#login-email').focus();
     	}, 100);
     });
+    $('.login-opener').on('click', function(e) {
+    	e.stopPropagation();
+    	$('#login-dropdown').dropdown('toggle');
+    	setTimeout(function() {
+    		$('#login-email').focus();
+    	}, 100);
+    });
 });

@@ -33,8 +33,8 @@ class HomeController extends Base {
             $this->template->assign('HOME_USER_LATEST', $this->loadLastDownloads());
             $this->template->assign('HOME_USER_FAVORITES', $this->loadFavorites());
         } else {
-            $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="registrer">Registrer</a> og/eller logg inn!</em></li>');
-            $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="registrer">Registrer</a> og/eller logg inn!</em></li>');
+            $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
+            $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
         }
         
         // Display the template
