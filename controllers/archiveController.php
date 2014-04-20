@@ -232,7 +232,7 @@ class ArchiveController extends Base {
             // Check how we should parse the course
             if ($container_is_null) {
                 $ret .= '<div class="col-md-6 archive-course">
-                    <h3>' . $current_letter . '</h3>
+                    <h3><a name="' . $current_letter . '">' . $current_letter . '</a></h3>
                     <ul>
                         <li>
                             <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>
@@ -243,7 +243,7 @@ class ArchiveController extends Base {
             else {
                 if ($letter != $current_letter) {
                     $ret .= '</ul></div><div class="col-md-6 archive-course">
-                    <h3>' . $current_letter . '</h3>
+                    <h3><a name="' . $current_letter . '">' . $current_letter . '</a></h3>
                     <ul>
                         <li>
                             <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>

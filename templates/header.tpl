@@ -33,7 +33,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li[[+if $HEADER_MENU == 'HOME']] class="active"[[+/if]]><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
-                <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="kokebok/">Kokebok</a></li>
+                <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="kokeboka/">Kokebok</a></li>
                 <li[[+if $HEADER_MENU == 'WOS']] class="active"[[+/if]]><a href="wall-of-shame">Wall of Shame</a></li>
                 <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om Youkok2</a></li>
             </ul>

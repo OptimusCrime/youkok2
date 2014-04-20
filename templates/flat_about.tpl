@@ -29,6 +29,7 @@
 	</ul>
 	<ul>
 		<li><b>Bootstrap:</b> Styling av siden. Responsive design osv.</li>
+		<li><b>Bootstrap theme Lumen</b></li>
 		<li><b>jQuery &amp; jQuery UI:</b> Fordi pure js er slitsomt.</li>
 		<li><b>Moment.js:</b> Stress å regne med tid.</li>
 		<li><b>Typeahead.js:</b> For autocomplete av fag og fagkoder i søkefeltet.</li>

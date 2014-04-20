@@ -166,11 +166,19 @@ a, a:focus, a:active, a:visited {
     Archive
 */
 
+.archive-course ul {
+    background-color: #ededed;
+    border-radius: 4px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 10px;
+}
 #archive-list {
     list-style: none;
     list-style-position: inside;
     padding: 0px;
-    background-color: #F5F5F5;
+    background-color: #ededed;
     border-radius: 4px;
 }
 #archive-list li {
@@ -232,7 +240,7 @@ a, a:focus, a:active, a:visited {
     z-index: 200;
 }
 .archive-sidebar {
-    background-color: #F5F5F5;
+    background-color: #ededed;
     border-radius: 4px;
     padding-left: 15px;
     padding-right: 15px;
@@ -427,7 +435,7 @@ a, a:focus, a:active, a:visited {
 */
 
 .givegrayaround {
-    background-color: #F5F5F5;
+    background-color: #ededed;
     border-radius: 4px;
     padding: 15px;
 }

@@ -69,7 +69,7 @@ class Loader {
         ),
 
         'archive' => array(
-            '/kokebok',
+            '/kokeboka',
         ),
 
         'profile' => array(
