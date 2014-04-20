@@ -14,13 +14,12 @@
     <script type="text/javascript" src="assets/js/lib/jquery.fileupload.js"></script>
     <script type="text/javascript" src="assets/js/youkok.js"></script>
     <link rel="stylesheet" type="text/css" href="assets/css/lib/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/lib/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/lib/font-awesome.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/youkok.css" />
 </head>
 <body>
 <input type="hidden" name="search-base" id="search-base" value="[[+$SITE_SEARCH_BASE]]" />
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
