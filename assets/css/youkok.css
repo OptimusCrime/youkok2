@@ -63,6 +63,10 @@ a, a:focus, a:active, a:visited {
     right: 0px;
     height: 100%;
 }
+#nav-search:hover {
+    margin-top: 0px;
+    border-bottom-width: 4px;
+}
 .navbar-brand {
     padding-right: 20%;
 }
