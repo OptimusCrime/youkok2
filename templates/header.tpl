@@ -41,7 +41,7 @@
                 [[+if $BASE_USER_IS_LOGGED_IN == true]]
                     <li>
                         <a href="#" data-toggle="dropdown">Min bruker <span title="Din karma: [[+$BASE_USER_KARMA]]" class="badge">[[+$BASE_USER_KARMA]]</span> <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" id="user-dropdown">
                             <li role="presentation" class="dropdown-header">[[+$BASE_USER_NICK]]</li>
                             <li class="divider"></li>
                             <li><a href="profil/innstillinger">Innstillinger</a></li>
