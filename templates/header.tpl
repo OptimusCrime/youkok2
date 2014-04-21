@@ -31,9 +31,10 @@
             <a class="navbar-brand" href="[[+$SITE_RELATIVE]]">Youkok2.net</a>
         </div>
         <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
+            <ul id="main-nav" class="nav navbar-nav">
                 <li[[+if $HEADER_MENU == 'HOME']] class="active"[[+/if]]><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
-                <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="kokeboka/">Kokebok</a></li>
+                <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="kokeboka/">Kokeboka</a></li>
+                <li class="hidden[[+if $HEADER_MENU == 'SEARCH']] active[[+/if]]"><a href="sok">Søk</a></li>
                 <li[[+if $HEADER_MENU == 'WOS']] class="active"[[+/if]]><a href="wall-of-shame">Wall of Shame</a></li>
                 <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om Youkok2</a></li>
             </ul>
