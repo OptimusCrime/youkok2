@@ -3,7 +3,7 @@
  * File: authController.php
  * Holds: The AuthController-class
  * Created: 14.04.14
- * Last updated: 17.04.14
+ * Last updated: 22.04.14
  * Project: Youkok2
  * 
 */
@@ -21,6 +21,9 @@ class AuthController extends Base {
     public function __construct($paths, $base) {
         // Calling Base' constructor
         parent::__construct($paths, $base);
+
+        // Reset menu
+        $this->template->assign('HEADER_MENU', null);
 
         // Check query
         if ($_GET['q'] == 'logg-inn') {

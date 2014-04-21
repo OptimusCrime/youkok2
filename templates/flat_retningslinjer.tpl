@@ -4,7 +4,7 @@
 	<h1>Retningslinjer</h1>
 	<p>Både skaperne og bidragsyterne av Youkok2 jobber mot et felles mål.</p>
 
-	<div class="well"><p><em>Vårt mål er å lage den største og beste kokeboka på nettet. Vi ønsket et stort bibliotek og god kvalitet. Vi ønsker også at Youkok2 kan bli en ressurs man kan stole på.</em></p></div>
+	<div class="well"><p><em>Vårt mål er å lage den største og beste kokeboka på nettet. Vi ønsket et stort bibliotek av god kvalitet. Vi ønsker også at Youkok2 kan bli en ressurs man kan stole på.</em></p></div>
 
 	<p>For å gjøre dette mulig har vi noen regler og retningslinjer for som hjelper oss å bedre definere hva dette betyr.</p>
 

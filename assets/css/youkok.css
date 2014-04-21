@@ -29,6 +29,9 @@ body, html {
 #main-nav a, .navbar-default .navbar-brand, .navbar-default .navbar-nav > li > a {
     color: #fff;
 }
+#main-nav a:hover {
+    color: #333333;
+}
 #main-nav .active a {
     color: #999999;
 }
@@ -78,7 +81,7 @@ a, a:focus, a:active, a:visited {
 }
 .open .caret {
     border-top-width: 0;
-    border-bottom: 4px solid #fff;
+    border-bottom: 4px solid #333333;
 }
 
 /*
