@@ -185,12 +185,21 @@
 		</div>
 	[[+/if]]
 
-	<div id="archive-help" class="archive-sidebar">
-		<h3>Hjelp</h3>
-		<p>Kokeboka skal være lett å bruke. Du laster ned filer ved å klikke på dem. Ønsker du å utforske en mappe trykker du enkelt på mappa.</p>
-		<p>Du kan også høyreklikke på en fil eller en mappe for å få opp ytteligere valg. Her kan du favoritisere elementet, se utvidet informasjon, <a href="#">rapportere</a> regelbrudd eller <a href="#">flagge</a> elementet dersom du mener det er på sin plass.</p>
-		<p><a href="hjelp">Se utvidet hjelp</a>.</p>
-	</div>
+	[[+if $ARCHIVE_MODE == 'browse']]
+		<div id="archive-help" class="archive-sidebar">
+			<h3>Hjelp</h3>
+			<p>Kokeboka skal være lett å bruke. Du laster ned filer ved å klikke på dem. Ønsker du å utforske en mappe trykker du enkelt på mappa.</p>
+			<p>Du kan også høyreklikke på en fil eller en mappe for å få opp ytteligere valg. Her kan du favoritisere elementet, se utvidet informasjon, <a href="hjelp">rapportere</a> regelbrudd eller <a href="hjelp">flagge</a> elementet dersom du mener det er på sin plass. Les deg opp på forskjellen mellom å rapportere og å flagge før du gjør noe.</p>
+			<p><a href="hjelp">Se utvidet hjelp for mer informasjon</a>.</p>
+		</div>
+	[[+else]]
+		<div id="archive-help" class="archive-sidebar">
+			<h3>Hjelp</h3>
+			<p>Fagene står alfabetisk sortert etter fagkode.</p>
+			<p>Du kan også bruke søkefeltet for å søke etter fagkoder og fagnavn.</p>
+			<p>Dersom du savner et fag i listen kan du <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">kontakte oss</a>, så legger vi det til.</p>
+		</div>
+	[[+/if]]
 
 	[[+if $ARCHIVE_MODE == 'browse']]
 		<div id="archive-history" class="archive-sidebar">

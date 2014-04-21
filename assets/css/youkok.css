@@ -181,6 +181,7 @@ a, a:focus, a:active, a:visited {
     padding: 0px;
     background-color: #ededed;
     border-radius: 4px;
+    padding-bottom: 7px;
 }
 #archive-list li {
     height: 100px;
@@ -188,11 +189,18 @@ a, a:focus, a:active, a:visited {
     display: inline-block;
     cursor: pointer;
     margin: 6px;
+    border: 1px solid #EDEDED;
+}
+#archive-list li:hover {
+    border-color: #b4b4b4;
 }
 .archive-item {
     width: 100px;
     height: 100px;
     position: relative;
+}
+.archive-item.has-overlay {
+    background-color: #e1e1e1;
 }
 .archive-item-icon {
     height: 70px;
@@ -210,6 +218,7 @@ a, a:focus, a:active, a:visited {
     text-overflow: ellipsis;
     white-space: nowrap;
     z-index: 100;
+    font-size: 13px;
 }
 .archive-badge {
     background-color: #d9534f;
@@ -439,6 +448,9 @@ a, a:focus, a:active, a:visited {
     background-color: #ededed;
     border-radius: 4px;
     padding: 15px;
+}
+.breadcrumb {
+    border-width: 1px 1px 4px;
 }
 
 /*

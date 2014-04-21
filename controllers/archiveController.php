@@ -176,7 +176,7 @@ class ArchiveController extends Base {
                     // This is a directory, link should go to archive
                     $ret .= '<li>
                                 <a title="' . $element->getName() . '" href="' . $element->generateUrl($this->paths['archive'][0]) . '">
-                                    <div class="archive-item" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="dir" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '">
+                                    <div class="archive-item' . ($element->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="dir" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/folder.png\');"></div>
@@ -189,7 +189,7 @@ class ArchiveController extends Base {
                     // This is a file, link should go to download
                     $ret .= '<li>
                                 <a title="' . $element->getName() . '" href="' . $element->generateUrl($this->paths['download'][0]) . '">
-                                    <div class="archive-item" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="file" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '" data-size="' . $element->getSize() . '">
+                                    <div class="archive-item' . ($element->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="file" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '" data-size="' . $element->getSize() . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . $item->getMimeType() . '.png\');"></div>
@@ -232,7 +232,7 @@ class ArchiveController extends Base {
             // Check how we should parse the course
             if ($container_is_null) {
                 $ret .= '<div class="col-md-6 archive-course">
-                    <h3><a name="' . $current_letter . '">' . $current_letter . '</a></h3>
+                    <h3>' . $current_letter . '</h3>
                     <ul>
                         <li>
                             <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>
@@ -243,7 +243,7 @@ class ArchiveController extends Base {
             else {
                 if ($letter != $current_letter) {
                     $ret .= '</ul></div><div class="col-md-6 archive-course">
-                    <h3><a name="' . $current_letter . '">' . $current_letter . '</a></h3>
+                    <h3>' . $current_letter . '</h3>
                     <ul>
                         <li>
                             <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>
