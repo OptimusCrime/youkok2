@@ -169,6 +169,17 @@ a, a:focus, a:active, a:visited {
 }
 
 /*
+    Home
+*/
+
+.dropdown-menu > li > a {
+    color: #555555;
+}
+.dropdown-menu .disabled a, .dropdown-menu .disabled a:hover {
+    color: #999999;
+}
+
+/*
     Archive
 */
 

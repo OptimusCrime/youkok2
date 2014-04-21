@@ -382,7 +382,7 @@ $(document).ready(function () {
 		e.preventDefault();
 
 		// Swap content
-		$('#home-most-popular-selected').html($(this).html());
+		$('#home-most-popular-selected').html($('a', this).html());
 
 		// Swap disabled
 		$('#home-most-popular-dropdown li').removeClass('disabled');
