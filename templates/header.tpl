@@ -53,7 +53,7 @@
                     </li>
                 [[+else]]
                     <li>
-                        <a id="dropdown-menu-opener" href="#" data-toggle="dropdown">Logg inn<b class="caret"></b></a>
+                        <a id="dropdown-menu-opener" href="#" data-toggle="dropdown">Logg inn <b class="caret"></b></a>
                         <ul class="dropdown-menu" id="login-dropdown">
                             <li>
                                 <form role="form" action="" method="post">

@@ -76,6 +76,10 @@ a, a:focus, a:active, a:visited {
 .navbar-form {
     width: 375px;
 }
+.open .caret {
+    border-top-width: 0;
+    border-bottom: 4px solid #fff;
+}
 
 /*
     Typeahead
@@ -480,7 +484,7 @@ a, a:focus, a:active, a:visited {
     Header hax
 */
 
-@media all and (max-width: 982px) {
+@media all and (max-width: 990px) {
     .navbar-form {
         display: none;
     }
@@ -489,8 +493,8 @@ a, a:focus, a:active, a:visited {
         visibility: visible !important;
     }
 }
-@media all and (max-width: 1195px) {
+@media all and (max-width: 1199px) {
     .navbar-form {
-        width: 368px;
+        width: 365px;
     }
 }
