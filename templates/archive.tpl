@@ -82,7 +82,7 @@
 					</div>
 					<hr />
 					<label for="model-report-text">Kommentar</label>
-					<textarea class="form-control" id="" name=""></textarea>
+					<textarea class="form-control" id="model-report-text" name="model-report-text"></textarea>
 					<button type="submit" class="btn btn-default">Send</button> eller <a href="#">lukk</a>.
 				</form>
 			</div>

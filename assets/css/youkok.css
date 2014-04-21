@@ -479,6 +479,11 @@ a, a:focus, a:active, a:visited {
 .well {
     padding-bottom: 12px;
 }
+.can-i-be-inline {
+    display: inline-block;
+    padding-right: 10px;
+    position: relative;
+}
 
 /*
     Header hax
