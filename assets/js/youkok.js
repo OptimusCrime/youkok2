@@ -913,6 +913,7 @@ $(document).ready(function () {
     	}, 100);
     });
     $('.login-opener').on('click', function(e) {
+    	e.preventDefault();
     	e.stopPropagation();
     	$('#login-dropdown').dropdown('toggle');
     	setTimeout(function() {
