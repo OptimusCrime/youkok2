@@ -7,38 +7,43 @@
 
 	<h3>Den originale Kokeboka</h3>
 	<p>Som student ved NTNU har du mest sannsynlig hørt om begrepet å <em>koke</em>. Dette kommer fra Kristians Kokebok, bedre kjent som <a href="http://www.youkok.com" target="_blank">Youkok.com</a>. Denne nettsiden har vært en fantastisk ressurs for flere tusen studenter i en knipen studenthverdag.</p>
-	<p>Jeg liker konseptet med Youkok veldig godt, men syntes det er flere elementer som kan forbedres mye. For det første er det kun en person som driver nettsiden. Vedkommende er ikke lenger student ved NTNU og det er logisk at det blir mye kjedelig arbeid å holde den oppdatert da. Min idé var derfor å relansere Kokeboka i ny form.</p>
+	<p>Vi har selv vært store fan av denne kokeboka, men følte at den kunne forbedres ytterligere. Denne idéen markerte starten på Youkok2.</p>
 	
-	<h3>Alle kan bidra</h3>
-	<p>Om du programmerer og/eller er litt bevandret på Internett har du uten vil vært innom <a href="http://www.stackoverflow.com" target="_blank">StackOverflow.com</a>. Nettsiden har blitt kjempepopulær fordi den bygger på community-prinsippet.  Alle kan bidra! Idioter blir luket ut, og de som er flinke får mulighet til å hjelpe til mer og mer. Jeg ville bruke denne modellen sammen med Kokeboka.</p>
-	
-	<h3>Krav til bidragelse</h3>
-	<p>Dersom det skulle være mulig å ha en slik modell måtte det innføres restriksjoner og straff for brukere som brøt med <a href="retningslinjer">retningslinjene</a> til siden. Ettersom hvem som helt kan laste opp filer må man være nøye med å luke ut filer som er beskyttet av opphavsrett osv. På grunn av dette ble det bestemt at man måtte verifisere seg gjennom en NTNU-epost. Disse e-postene slutter på <strong>@stud.ntnu.no</strong>, og gjør det dermed enkelt å identifisere de som hjelper til (selv om de selvsagt er helt anonyme om de oppfører seg).
+	<h3>Å definere bidragsmodellen</h3>
+	<p>Vi følte vi kunne forbedre hvordan "gamle" Youkok la ut sine ressurser. På "gamle" Youkok er det Kristian som administrerer og legger ut filer til nedlastning. Selv om dette i og for seg fungerer bra, er det naturlig at det ikke er like aktuelt å holde alt oppdatert lenge etter at sin egen studietid er forbi.</p>
+	<p>Vi så på <a href="http://www.stackoverflow.com" target="_blank">StackOverflow.com</a> og hvordan deres modell gjør det mulig for hele communitiet å bidra med spørsmål, svar og administrering. Mye av vår modell er direkte stjålet eller inspirtert fra dem.</p>
 
-	<h3>Karma &amp; Wall of Shame</h3>
-	<p>Kun brukere som har registrert seg med sin NTNU-epost får mulighet til å bidra og stemme på siden. Man vil fortsatt være helt anonym selv om man har gjort dette.
-	<p>Når man registrerer seg får man 5 karma-poeng. For hver "gode" gjerning man gjør får man 3 karmapoeng. Dersom man har stemt på feil valg mister man 1 karmapoeng. Om man har null poeng får man ikke lenger mulighet til å bidra på nettsiden.</p>
-	<p>Ved store overtrap av reglementet kan man også bli direkte utestengt av siden. Ved særskilte store overtrapt kan man havne i Wall of Shame. Dette er veggen for de som ikke har klart å oppføre seg. På denne veggen vil det publiseres NTNU-brukernavnet til vedkommende og årsaken til at han eller hun ble utestengt. Vi har valgt å gjøre dette for å forsikre oss om at ingen bruker nettsidene og systemet våres til dritt og ugang.</p>
+	<h3>Bidragsmodellen</h3>
+	<p>Modellen vi til slutt endte opp med er i bunn og grunn svært enkel. Alle som skal gjøre noe som helst på nettsiden må <a href="registrer">registrere</a> seg på Youkok2. Vi ønsket også å identifisere brukere mot NTNU for å holde idioter og troll unna. Mer om dette i neste seksjon.</p>
+	<p>Når man er identifisert står man fritt til å laste opp filer (så lenge det ikke bryter med våre <a href="retningslinjer">retningslinjer</a>, så klart), opprette mapper og stemme på aktive flagg. Flagg er enten forslag om godkjenning, sletting, flytting eller navnendring av filer og mapper. Når man oppretter en fil eller mappe i systemet blir et flagg for godkjenning automatisk opprettet. De andre flaggene blir manuelt opprettet av brukere dersom de syntes det er på sin plass.</p>
+	<p>Du kan stemme på flagg som ikke er opprettet av seg selv. Antall stemmer for godkjenning vises som en progressbar, og antall stemmer for avvisning er skjult. Dersom et flagg får fem stemmer for avvisning går ikke forslaget igjennom, og personen som foreslo det vil motta negativ karma. Ved fem stemmer for godkjenning blir forslaget utført av systemet. Les mer om <a href="karma">karma</a> og hvilke ting som gir deg positiv og negativ uttelling.</p>
+	
+	<h3>Identifisering mot NTNU &amp; Wall of Shame</h3>
+	<p>Når en side er åpen slik som Youkok2 er, tiltrekkes idioter og troll fra alle hjørner av Bartebyen. Vi ønsker å gjøre Youkok2 til en ordentlig og respektert side, ikke ett sted fylt til randen av virus, kopibeskyttet materiell og feilaktig informasjon. På grunn av dette har vi innført identifisering mot NTNU for alle som skal bidra.</p>
+	<p>Så lenge man oppfører seg på siden vil dette aldri ha noe å si for deg som bruker. Skulle du derimot gjøre store brudd på våre <a href="retningslinjer">retningslinjer</a>, kan man risikere å havne på Wall of Shame. Her publiseres brukere med deres NTNU-brukernavn, samt årsaken til at han eller hun har mottatt denne straffen.</p>
+	<p>Igjen så er dette kun for å ta de som ønsker å ødelegge, og de som aktivt går inn for å bryte loven på Youkok2s nettsider.</p>
 
 	<h3>Teknisk om nettsiden</h3>
-	<p>Nettsiden i sin helhet er skrevet i PHP. Det ble vurdert noen rammeverk, men valget falt til slutt på å skrive et eget system fra bunnen av. Av andre ting og tang har vi følgende:</p>
+	<p>Backend er skrevet i sin helthet i PHP. Av rammeverk, snippets og annet har vi følgende:</p>
 	<ul>
-		<li><b>PDO:</b> PHP Data Objects, for å snakke med databasen.</li>
-		<li><b>Smarty:</b> Template engine skrevet i PHP.</li>
-		<li><b>Custom Bcrypt Lib:</b> For å kryptere passord.</li>
+		<li><a href="http://www.php.net/manual/en/book.pdo.php" target="_blank">PHP Data Objects</a></li>
+		<li><a href="http://www.smarty.net" target="_blank">Smarty</a></li>
 	</ul>
 	<ul>
-		<li><b>Bootstrap:</b> Styling av siden. Responsive design osv.</li>
-		<li><b>Bootstrap theme Lumen</b></li>
-		<li><b>jQuery &amp; jQuery UI:</b> Fordi pure js er slitsomt.</li>
-		<li><b>Moment.js:</b> Stress å regne med tid.</li>
-		<li><b>Typeahead.js:</b> For autocomplete av fag og fagkoder i søkefeltet.</li>
-		<li><b>FontAwesome:</b> Fordi bra ikoner.</li>
+		<li><a href="http://getbootstrap.com" target="_blank">Bootstrap</a></li>
+		<li><a href="http://bootswatch.com" target="_blank">Bootswatch Lumen</a></li>
+		<li><a href="http://jquery.com" target="_blank">jQuery</a> &amp; <a href="https://jqueryui.com" target="_blank">jQuery UI</a></li>
+		<li><a href="http://momentjs.com" target="_blank">Moment.js</a></li>
+		<li><a href="http://twitter.github.io/typeahead.js/" target="_blank">Typeahead.js</a></li>
+		<li><a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">FontAwesome</a></li>
+		<li><a href="https://github.com/blueimp/jQuery-File-Upload" target="_blank">jQuery-File-Upload</a></li>
 	</ul>
-
-	<h3>Utviklingsprosess</h3>
-	<p>Systemet i sin helhet ble programmert av en enkeltperson i løpet av påsken 2014 under varierende mengder bakfyll. Ideen til siden ble klekket mange måneder i forveien, og de første linjene med kode daterer faktisk tilbake til 1. oktober 2013. Mer eller mindre hele kildekoden har riktignok blitt skrevet om siden den gang.</p>
-	<p>Gjennom hele prosessen har Git og GitHub blitt flittig brukt.</p>
+</div>
+<div class="col-md-4">
+	<div id="archive-asd" class="archive-sidebar">
+		<h3>Reklame</h3>
+		<p>Herpaderp</p>
+	</div>
 </div>
 
 [[+include file="footer.tpl"]]

@@ -73,8 +73,8 @@
                                         <div class="clear"></div>
                                     </div>
                                     <hr />
-                                    <button type="button" href="registrer" class="btn btn-default">Registrer</button>
-                                    <button type="button" href="glemt-passord" class="btn btn-default">Glemt passord</button>
+                                    <a role="button" href="registrer" class="btn btn-default">Registrer</a>
+                                    <a role="button" href="glemt-passord" class="btn btn-default">Glemt passord</a>
                                 </form>
                             </li>
                         </ul>
