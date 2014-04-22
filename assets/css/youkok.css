@@ -511,9 +511,12 @@ a, a:focus, a:active, a:visited {
         display: block !important;
         visibility: visible !important;
     }
+    #navbar-dropdown-outer {
+        display: none;
+    }
 }
 @media all and (max-width: 1199px) {
     .navbar-form {
-        width: 365px;
+        width: 300px;
     }
 }
