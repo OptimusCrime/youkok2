@@ -751,7 +751,6 @@ $(document).ready(function () {
     var accepted_filetypes = [];
     $('#archive-create-file-form').fileupload({
         url: 'processor/create/file',
-        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
         add: function (e, data) {
         	// Get file object
         	var file_object = data.files[data.files.length - 1];
