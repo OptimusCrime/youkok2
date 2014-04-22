@@ -219,8 +219,8 @@ a, a:focus, a:active, a:visited {
     padding-bottom: 7px;
 }
 #archive-list li {
-    height: 100px;
-    width: 100px;
+    height: 106px;
+    width: 102px;
     display: inline-block;
     cursor: pointer;
     margin: 6px;
