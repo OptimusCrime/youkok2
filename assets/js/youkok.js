@@ -154,6 +154,7 @@ $(document).ready(function () {
 	var archive_id = 0;
 	var $archive_right_click = null;
 	var $archive_context_menu = $('#archive-context-menu');
+	var ignore_click_outside = false;
 	
 	if ($('#archive-pizza').val() != 'pizza') {
 		$('#archive-context-newflag-outer').hide();
@@ -162,7 +163,19 @@ $(document).ready(function () {
 		$('#archive-context-report').parent().hide();
 	}
 
+	$archive_context_menu.bind('clickoutside', function(e) {
+		if (ignore_click_outside) {
+			ignore_click_outside = false;
+		}
+		else {
+			if ($archive_context_menu.is(':visible')) {
+				$archive_context_menu.hide();
+			}
+		}
+	});
 	$('body').on('contextmenu', '.archive-item', function(e) {
+		ignore_click_outside = true;
+
 		// Pointer
 		var $that = $(this);
 		$archive_right_click = $that;
