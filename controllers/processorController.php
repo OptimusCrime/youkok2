@@ -350,8 +350,18 @@ class ProcessorController extends Base {
                 }
    			}
   			else {
-  				$question_status = '<i class="fa fa-question" title="Registrer din NTNU-epost for å stemme."></i>';
-  				$question_status_bottom = 'Registrer din NTNU-epost for å stemme.';
+                if (!$this->user->hasKarma()) {
+                    $question_status = '<i class="fa fa-question" title="Din konto er stengt."></i>';
+                    $question_status_bottom = 'Du kan ikke lenger bidra på denne siden fordi din karma er <strong>0</strong>.';
+                }
+                else if ($this->user->isBanned()) {
+                    $question_status = '<i class="fa fa-question" title="Din konto er stengt."></i>';
+                    $question_status_bottom = 'Du kan ikke lenger bidra på denne siden fordi du er bannet.';
+                }
+                else {
+                    $question_status = '<i class="fa fa-question" title="Din konto er stengt."></i>';
+                    $question_status_bottom = 'Du kan ikke lenger bidra på denne siden fordi din karma er <strong>0</strong>.';
+                }
   			}
     	}
     	else {
