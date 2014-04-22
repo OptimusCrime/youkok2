@@ -3,7 +3,7 @@
  * File: processorController.php
  * Holds: The ProcessorController-class
  * Created: 14.04.14
- * Last updated: 18.04.14
+ * Last updated: 22.04.14
  * Project: Youkok2
  * 
 */
@@ -25,7 +25,7 @@ class ProcessorController extends Base {
 
 	private $flagText = array(
 		'<p>Dette elementet er åpen for godkjenning. Dersom elementet hører til på YouKok gjør du en god gjerning ved å stemme for å godkjenne den, slik at andre kan dra nytte av den seinere.</p>
-		<p>Om elementet skulle stride mot våre <a href="#">retningslinjer</a> kan du enten stemme for å avvise den, eller, i store overtrap av reglementet, velge å <a href="#">rapportere</a> tilfellet.</p>',
+		<p>Om elementet skulle stride mot våre <a href="retningslinjer">retningslinjer</a> kan du enten stemme for å avvise den, eller, i store overtrap av reglementet, velge å <a href="hjelp">rapportere</a> tilfellet.</p>',
 
 		'<p>Dette flagget er et forslag på navnendring av elementet. Dersom du syntes at denne navnendringen er en forbedring kan du velge å godkjenne den. Om dette ikke er tilfellet kan du velge å avvise forslaget.</p>',
 

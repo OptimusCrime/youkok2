@@ -131,6 +131,9 @@ $(document).ready(function () {
 	if ($('#archive-pizza').val() != 'pizza') {
 		$('#archive-context-newflag-outer').hide();
 	}
+	if ($('#login-dropdown').length > 0) {
+		$('#archive-context-report').parent().hide();
+	}
 
 	$('body').on('contextmenu', '.archive-item', function(e) {
 		// Pointer
@@ -162,6 +165,7 @@ $(document).ready(function () {
 			$('#archive-context-download a', $archive_context_menu).show().attr('href', link);
 			
 			$('#archive-context-download,#archive-context-new-flag-delete,#archive-context-new-flag-move', $archive_context_menu).show();
+			$('#archive-context-open', $archive_context_menu).hide();
 
 			$('.archive-context-type').html('fil');
 		}
