@@ -25,7 +25,7 @@ class ProcessorController extends Base {
 
 	private $flagText = array(
 		'<p>Dette elementet er åpen for godkjenning. Dersom elementet hører til på YouKok gjør du en god gjerning ved å stemme for å godkjenne den, slik at andre kan dra nytte av den seinere.</p>
-		<p>Om elementet skulle stride mot våre <a href="retningslinjer">retningslinjer</a> kan du enten stemme for å avvise den, eller, i store overtrap av reglementet, velge å <a href="hjelp">rapportere</a> tilfellet.</p>',
+		<p>Om elementet skulle stride mot våre <a href="retningslinjer" target="_blank">retningslinjer</a> kan du enten stemme for å avvise den, eller, i store overtrap av reglementet, velge å <a href="hjelp" target="_blank">rapportere</a> tilfellet.</p>',
 
 		'<p>Dette flagget er et forslag på navnendring av elementet. Dersom du syntes at denne navnendringen er en forbedring kan du velge å godkjenne den. Om dette ikke er tilfellet kan du velge å avvise forslaget.</p>',
 
@@ -359,8 +359,8 @@ class ProcessorController extends Base {
                     $question_status_bottom = 'Du kan ikke lenger bidra på denne siden fordi du er bannet.';
                 }
                 else {
-                    $question_status = '<i class="fa fa-question" title="Din konto er stengt."></i>';
-                    $question_status_bottom = 'Du kan ikke lenger bidra på denne siden fordi din karma er <strong>0</strong>.';
+                    $question_status = '<i class="fa fa-question" title="Registrer din NTNU-epost for å stemme."></i>';
+                    $question_status_bottom = 'Registrer din NTNU-epost for å stemme.';
                 }
   			}
     	}

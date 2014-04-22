@@ -107,8 +107,8 @@
     <li class="dropdown-submenu" id="archive-context-newflag-outer"><a href="#" id="archive-context-newflag">Nytt flagg</a>
     	<ul class="dropdown-menu">
     		<li><a href="#" id="archive-context-new-flag-name">Endre navn</a></li>
-    		<li><a href="#" id="archive-context-new-flag-delete">Sletting av <span class="archive-context-type"></span></a></li>
-    		<li><a href="#" id="archive-context-new-flag-move">Flytting av <span class="archive-context-type"></span></a></li>
+    		<li><a href="#" id="archive-context-new-flag-delete">Sletting av fil</a></li>
+    		<li><a href="#" id="archive-context-new-flag-move">Flytting av fil</a></li>
     	</ul>
     </li>
     <li><a href="#" id="archive-context-flags">Vis flagg <span class="badge" id="archive-context-menu-flags">0</span></a></li>

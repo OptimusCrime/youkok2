@@ -156,11 +156,12 @@ $(document).ready(function () {
 	var $archive_context_menu = $('#archive-context-menu');
 	var ignore_click_outside = false;
 	
-	if ($('#archive-pizza').val() != 'pizza') {
+	if ($('#archive-online').val() != 1) {
 		$('#archive-context-newflag-outer').hide();
-	}
-	if ($('#login-dropdown').length > 0) {
 		$('#archive-context-report').parent().hide();
+	}
+	if ($('#archive-can-c').val() != 1) {
+		$('#archive-context-newflag-outer').hide();
 	}
 
 	$archive_context_menu.bind('clickoutside', function(e) {
@@ -197,8 +198,6 @@ $(document).ready(function () {
 			$('#archive-context-open a', $archive_context_menu).show().attr('href', link);
 
 			$('#archive-context-download,#archive-context-new-flag-delete,#archive-context-new-flag-move', $archive_context_menu).hide();
-
-			$('.archive-context-type').html('mappen');
 		}
 		else {
 			$('#archive-context-download', $archive_context_menu).show();
@@ -206,8 +205,6 @@ $(document).ready(function () {
 			
 			$('#archive-context-download,#archive-context-new-flag-delete,#archive-context-new-flag-move', $archive_context_menu).show();
 			$('#archive-context-open', $archive_context_menu).hide();
-
-			$('.archive-context-type').html('fil');
 		}
 
 		// Favorite
