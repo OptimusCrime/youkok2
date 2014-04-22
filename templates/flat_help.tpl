@@ -21,7 +21,7 @@
 	<p>Du må identifisere deg for å gjøre dette. Du gjør det ved å gå <a href="#">her</a> i din profil og følge trinnene som står beskrevet. Legg merke til at dette krever en e-post fra NTNU.</p>
 
 	<h3>Hva betyr tallet som står på enkelte filer og mapper?</h3>
-	<p>Dette betyr at elementet har et aktivt flagg. Høyreklikk på elementet og velg "Vis flagg". Om du er identifisert bruker kan du stemme på disse flaggene.</p>
+	<p>Dette betyr at elementet har et (eller flere) aktivt flagg. Høyreklikk på elementet og velg "Vis flagg". Om du er identifisert bruker kan du stemme på disse flaggene.</p>
 
 	<h3>Hvordan kan jeg opprette et nytt flagg?</h3>
 	<p>Om du er identifisert bruker kan du gjøre dette ved å høyreklikke på elementet du ønsker å flagge. I menyen som dukker opp velger du "Nytt flagg" og deretter typen flagg du ønsker å opprette.</p>

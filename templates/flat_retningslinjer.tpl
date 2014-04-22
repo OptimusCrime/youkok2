@@ -9,7 +9,7 @@
 	<p>For å gjøre dette mulig har vi noen regler og retningslinjer for som hjelper oss å bedre definere hva dette betyr.</p>
 
 	<h3>Opphavsrett</h3>
-	<p>Dette er det viktigste punktet. På Youkok2 ønsker vi ikke å ha innhold som bryter med opphavsretten. Dette kan potensielt føre til Youkok2s nedleggelse. Legg derfor aldri ut filer av bøker, tekster, eller annet materiell hvor det er tydelig (eller usikkert) om opphavsretten brytes. Dersom du ser slike filer ønsker vi at du <a href="hjelp">rapporterer</a> filen så fort som mulig.</p>
+	<p>Dette er det viktigste punktet. På Youkok2 ønsker vi ikke å ha innhold som bryter med opphavsretten. Dette kan potensielt føre til Youkok2s nedleggelse. Legg derfor aldri ut filer av bøker, tekster, eller annet materiell hvor opphavsretten brytes. Dersom du ser slike filer ønsker vi at du <a href="hjelp">rapporterer</a> den så fort som mulig.</p>
 
 	<h3>Vær hjelpsom</h3>
 	<p>Legg ut gode løsningsforslag, fasiter, tips og ressurser. Ikke fyll opp siden med nisjeting, feilaktig informasjon eller annet uønsket materiell. Styr unna ting av lav kvalitet. Gjennom prosessen med å godkjenne filer kan det tenkes disse filene også blir avvist.</p>
