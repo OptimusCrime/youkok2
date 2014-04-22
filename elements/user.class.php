@@ -27,6 +27,7 @@ Class User {
     private $email;
     private $nick;
     private $NTNU;
+    private $NTNUEmail;
     private $karma;
     private $banned;
     private $mostPopularDelta;
@@ -57,7 +58,7 @@ Class User {
             $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
             if (count($hash_split) == 2) {
                 // Fetch from database to see if online
-                $get_current_user = "SELECT id, email, nick, ntnu_verified, karma, banned, most_popular_delta
+                $get_current_user = "SELECT id, email, nick, ntnu_email, ntnu_verified, karma, banned, most_popular_delta
                 FROM user 
                 WHERE email = :email
                 AND password = :password";
@@ -79,6 +80,7 @@ Class User {
                     $this->karma = $row['karma'];
                     $this->banned = (boolean) $row['banned'];
                     $this->mostPopularDelta = $row['most_popular_delta'];
+                    $this->NTNUEmail = $row['ntnu_email'];
 
                     // Update last seen
                     $this->updateLastSeen();
@@ -127,6 +129,10 @@ Class User {
 
     public function getMostPopularDelta() {
         return $this->mostPopularDelta;
+    }
+
+    public function getNTNUEmail() {
+        return $this->NTNUEmail;
     }
 
     //

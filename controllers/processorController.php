@@ -801,7 +801,7 @@ class ProcessorController extends Base {
     private function registerCheckDuplicate() {
         $response = array();
 
-        if (isset($_POST['email']) and !$this->user->isLoggedIn()) {
+        if (isset($_POST['email']) and (isset($_POST['ignore']) or !$this->user->isLoggedIn())) {
             $check_email = "SELECT id
             FROM user 
             WHERE email = :email";

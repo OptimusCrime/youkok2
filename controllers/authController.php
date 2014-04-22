@@ -52,6 +52,9 @@ class AuthController extends Base {
         else if ($_GET['q'] == 'nytt-passord') {
             $this->forgottenPasswordNew();
         }
+        else if ($_GET['q'] == 'verifiser') {
+            $this->verify();
+        }
         else {
             // Page not found!
         	$this->display404();
@@ -117,7 +120,7 @@ class AuthController extends Base {
                     $row = $check_email_query->fetch(PDO::FETCH_ASSOC);
                     
                     // Check if flag was returned
-                    if (isset($row['id'])) {
+                    if (isset($row['id']) or filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL) == false) {
                         $should_error = true;
                     }
                     else {
@@ -308,6 +311,61 @@ class AuthController extends Base {
                 // Redirect
                 $this->redirect('');
             }
+        }
+    }
+
+    //
+    // Method for verifying a user
+    //
+
+    private function verify() {
+        if (isset($_GET['hash'])) {
+            // Got hash
+            $get_verify_info = "SELECT *
+            FROM verify 
+            WHERE hash = :hash";
+            
+            $get_verify_info_query = $this->db->prepare($get_verify_info);
+            $get_verify_info_query->execute(array(':hash' => $_GET['hash']));
+            $row = $get_verify_info_query->fetch(PDO::FETCH_ASSOC);
+
+            if (isset($row['id'])) {
+                // Got good hash
+                $update_user_setverified = "UPDATE user
+                SET ntnu_email = :ntnu_email,
+                ntnu_verified = 1
+                WHERE id = :user";
+                
+                $update_user_setverified_query = $this->db->prepare($update_user_setverified);
+                $update_user_setverified_query->execute(array(':ntnu_email' => $row['username'], ':user' => $row['user']));
+
+                // Delete all other verifies
+                $delete_verify = "DELETE FROM verify
+                WHERE user = :user";
+                
+                $delete_verify_query = $this->db->prepare($delete_verify);
+                $delete_verify_query->execute(array(':user' => $row['user'])); 
+
+                // Add message
+                $this->addMessage('Din bruker har nå blitt verifisert på Youkok2!', 'success');
+
+                // Redirect
+                $this->redirect('');
+            }
+            else {
+                // Add error message
+                $this->addMessage('Denne linken er ikke lenger gyldig.', 'danger');
+
+                // Redirect
+                $this->redirect('');
+            }
+        }
+        else {
+            // Add error message
+            $this->addMessage('Her gikk visst noe galt.', 'danger');
+
+            // Redirect
+            $this->redirect('');
         }
     }
 }

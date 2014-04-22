@@ -106,6 +106,7 @@ class Loader {
             '/registrer',
             '/glemt-passord',
             '/nytt-passord',
+            '/verifiser',
         ),
     );
 

@@ -21,7 +21,7 @@ class ProfileController extends Base {
     public function __construct($paths, $base) {
         // Calling Base' constructor
         parent::__construct($paths, $base);
-        
+
         // Check if online
         if ($this->user->isLoggedIn()) {
         	if ($_GET['q'] == 'profil/innstillinger') {
@@ -44,12 +44,23 @@ class ProfileController extends Base {
 		        		$this->template->assign('PROFILE_USER_ACTIVE', 1);
 		        	}
 
+		        	// For info
+		        	$this->template->assign('PROFILE_USER_EMAIL', $this->user->getEmail());
+		        	$this->template->assign('PROFILE_USER_NICK', $this->user->getNick());
+		        	$this->template->assign('PROFILE_USER_NTNU', $this->user->getNTNUEmail() . '@stud.ntnu.no');
+
 		        	// Displaying and cleaning up
 		        	$this->displayAndCleanup('profile_settings.tpl');
         		}
         		else {
         			if ($_POST['source'] == 'password') {
         				$this->profilePassword();
+        			}
+        			else if ($_POST['source'] == 'verify') {
+        				$this->profileVerify();
+        			}
+        			else if ($_POST['source'] == 'info') {
+        				$this->profileInfo();
         			}
         			else {
         				$this->redirect('');
@@ -142,6 +153,103 @@ class ProfileController extends Base {
 	        $this->redirect('profil/innstillinger');
 	    }
 	}
+
+	//
+    // Method for verifying
+    //
+
+    private function profileVerify() {
+    	if ($this->user->isLoggedIn() and $this->user->isVerified() == false and isset($_POST['verify-username'])) {
+    		// Create hash
+    		$hash_salt = md5(rand(0, 10000000000)) . "-" . md5(time()) . "niggernigerrerer";
+            $hash = $this->hashPassword(md5(rand(0, 10000000000) . 'DKHJDHDDHGDHGJDGHJDGHJDGHJ'), $hash_salt);
+
+            // Send mail
+            $message = "Hei\n\nKlikk på linken for å verifisere din bruker:\n" . SITE_URL_FULL . "verifiser?hash=" . $hash . "\n\nMvh\nYoukok2";
+            mail($_POST['verify-username'] . '@stud.ntnu.no', 'Verifiser din bruker på Youkok2', $message);
+
+            // Insert to database
+            $insert_verify = "INSERT INTO verify
+            (user, hash, username) 
+            VALUES (:user, :hash, :username)";
+            
+            $insert_verify_query = $this->db->prepare($insert_verify);
+            $insert_verify_query->execute(array(':user' => $this->user->getId(), ':hash' => $hash, ':username' => $_POST['verify-username']));
+
+            // Add messag
+    		$this->addMessage('En e-post er sendt til ' . $_POST['verify-username'] . '@stud.ntnu.no. Her finnes en link for å verifisere din bruker.', 'success');
+
+	        // Redirect
+	        $this->redirect('profil/innstillinger');
+    	}
+    	else {
+    		// Add messag
+    		$this->addMessage('Her gikk visst noe galt...', 'danger');
+
+	        // Redirect
+	        $this->redirect('profil/innstillinger');
+    	}
+    }
+
+    //
+    // Update profile info
+    //
+
+    private function profileInfo() {
+    	if ($this->user->isLoggedIn() and isset($_POST['register-form-email']) and isset($_POST['register-form-nick'])) {
+    		// Check if we should update e-mail
+    		if ($_POST['register-form-email'] != $this->user->getEmail() and strlen($_POST['register-form-email']) > 0 and filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL)) {
+    			$check_email = "SELECT id
+                FROM user 
+                WHERE email = :email";
+                
+                $check_email_query = $this->db->prepare($check_email);
+                $check_email_query->execute(array(':email' => $_POST['register-form-email']));
+                $row = $check_email_query->fetch(PDO::FETCH_ASSOC);
+                
+                // Check if flag was returned
+                if (isset($row['id'])) {
+                    // Add messag
+		    		$this->addMessage('Her gikk visst noe galt...', 'danger');
+
+			        // Redirect
+			        $this->redirect('profil/innstillinger');
+                }
+                else {
+                	// Store new email
+                	$update_user_email = "UPDATE user
+		            SET email = :email
+		            WHERE id = :user";
+		            
+		            $update_user_email_query = $this->db->prepare($update_user_email);
+		            $update_user_email_query->execute(array(':email' => $_POST['register-form-email'], ':user' => $this->user->getId()));
+                }
+    		}
+
+    		// Check if we sould update nick
+    		if (isset($_POST['register-form-nick'])) {
+    			$update_user_nick = "UPDATE user
+	            SET nick = :nick
+	            WHERE id = :user";
+	            
+	            $update_user_nick_query = $this->db->prepare($update_user_nick);
+	            $update_user_nick_query->execute(array(':nick' => $_POST['register-form-nick'], ':user' => $this->user->getId()));
+    		}
+
+    		// Add messag
+    		$this->addMessage('Dine endringer er lagret!', 'success');
+
+	        // Redirect
+	        $this->redirect('profil/innstillinger');
+    	}
+    	else {
+    		// Add messag
+    		$this->addMessage('Her gikk visst noe galt...22', 'danger');
+
+	        // Redirect
+	        $this->redirect('profil/innstillinger');
+    	}
+    }
 }
 
 //

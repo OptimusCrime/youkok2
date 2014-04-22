@@ -40,7 +40,24 @@
 		<div class="clear"></div>
 	</div>
 	<div class="tab-pane" id="informasjon">
-		
+		<div class="col-md-6">
+			<form action="" method="post" id="profile-edit-info-form">
+				<input type="hidden" value="info" name="source" />
+				<div class="form-group">
+					<label for="register-form-email">E-post <span style="color: red;">*</span></label>
+					<input type="email" class="form-control" id="register-form-email" name="register-form-email" placeholder="Skriv din e-post her" value="[[+$PROFILE_USER_EMAIL]]" />
+					<p><span id="register-form-email-error1">Dette krever en gyldig e-post</span> og <span id="register-form-email-error2">e-posten kan ikke være i våre systemer fra før.</span></p>
+				</div>
+
+				<div class="form-group">
+					<label for="register-form-nick">Kallenavn</label>
+					<input type="text" class="form-control" id="register-form-nick" name="register-form-nick" placeholder="Skriv ønsket kallenavn her" value="[[+if $PROFILE_USER_NICK != '<em>Anonym</em>']][[+$PROFILE_USER_NICK]][[+/if]]" />
+					<p>La det stå tom for <em>Anonym</em>.</p>
+				</div>
+
+				<button type="submit" id="profile-edit-info-form-submit" class="btn btn-default">Lagre</button>
+			</form>
+		</div>
 	</div>
 	<div class="tab-pane" id="passord">
 		<div class="col-md-6">
@@ -67,7 +84,23 @@
 		<div class="clear"></div>
 	</div>
 	<div class="tab-pane" id="identifiser">
-		<p>KOmmer</p>
+		<div class="col-md-6">
+			[[+if $PROFILE_USER_VERIFIED == true]]
+				<p>Du har allerede identifisert din bruker.</p>
+				<p>Din NTNU-epost er [[+$PROFILE_USER_NTNU]].</p>
+			[[+else]]
+				<form action="" method="post">
+					<input type="hidden" value="verify" name="source" />
+					<p>Ved å trykke på 'Send' godkjenner du at du har lest <a href="retningslinjer">retningslinjene</a> og er kjent med <a href="wall-of-shame">Wall of Shame</a>-systemet vårt.</p>
+
+					 <div class="input-group" id="verify-username-outer">
+						<input type="text" name="verify-username" class="form-control" id="verify-username" value="" placeholder="Skriv inn ditt NTNU-brukernavn her" />
+						<span class="input-group-addon">@stud.ntnu.no</span>
+					</div>
+				<button type="submit" id="verify-button" class="btn btn-default">Send</button>
+				</form>
+			[[+/if]]
+		</div>
 	</div>
 </div>
 

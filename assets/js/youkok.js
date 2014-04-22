@@ -973,4 +973,49 @@ $(document).ready(function () {
     		$('#login-email').focus();
     	}, 100);
     });
+
+    //
+    // Profile
+    //
+
+    var profile_email_value = "";
+    $('#profile-edit-info-form input').on('keyup', function () {
+    	var $that = $(this);
+    	var $that_parent = $that.parent();
+    	var element_id = this.id;
+
+    	if (this.id == 'register-form-email') {
+    		if (check_email($that.val())) {
+    			if ($that_parent.hasClass('has-error')) {
+    				$that_parent.removeClass('has-error');
+    			}
+    			$('#register-form-email-error1').css('color', '');
+
+    			if (profile_email_value != $('#register-form-email').val()) {
+    				profile_email_value = $('#register-form-email').val();
+
+	    			$.ajax({
+						cache: false,
+						type: "post",
+						url: "processor/register/check",
+						data: { email: $('#register-form-email').val(), ignore: true },
+						success: function(json) {
+							if (json.code == 200) {
+								$('#register-form-email-error2').css('color', '');
+							}
+							else {
+								$('#register-form-email-error2').css('color', 'red');
+							}
+						}
+					});
+    			}
+    		}
+    		else {
+    			if (!$that_parent.hasClass('has-error')) {
+    				$that_parent.addClass('has-error');
+    			}
+    			$('#register-form-email-error1').css('color', 'red');
+    		}
+    	}
+    });
 });

@@ -497,7 +497,7 @@ a, a:focus, a:active, a:visited {
     padding-right: 10px;
     position: relative;
 }
-#forgotten-email, #login2-pw, #login2-email, #forgotten-password-new-form-oldpassword {
+#forgotten-email, #login2-pw, #login2-email, #forgotten-password-new-form-oldpassword, #verify-username-outer {
     margin-bottom: 10px;
 }
 #modal-new-flag-name-comment, #modal-new-flag-delete-comment {
