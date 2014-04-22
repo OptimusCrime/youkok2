@@ -130,27 +130,28 @@ Class User {
     }
 
     //
-    // Returns if the user is banned or not
+    // Multiple states
     //
 
     public function isBanned() {
         return $this->banned;
     }
     
-    //
-    // Returning if the current user is NTNU user or not
-    //
-    
-    public function isNTNU() {
-        return $this->isVerified();
-    }
-    
-    //
-    // Returning if the current user is verified or not (alias)
-    //
-    
     public function isVerified() {
-        return $this->NTNU and $this->karma > 0 and $this->banned == false;
+        return $this->NTNU;
+    }
+
+    public function hasKarma() {
+        if ($this->karma > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function canContribute() {
+        return $this->karma > 0 and $this->NTNU and !$this->banned;
     }
 
     //

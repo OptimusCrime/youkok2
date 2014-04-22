@@ -75,10 +75,13 @@ class ArchiveController extends Base {
                         // Assign to Smarty
                         $this->template->assign('ARCHIVE_TITLE', $archive_title);
                         $this->template->assign('ARCHIVE_ID', $element->getId());
-                        $this->template->assign('ARCHIVE_USER_ONLINE', ($this->user->isLoggedIn() ? 'pizza' : 'nope'));
-
+                        
                         // Check if user is verified
                         $this->template->assign('ARCHIVE_USER_VERIFIED', $this->user->isVerified());
+                        $this->template->assign('ARCHIVE_USER_BANNED', $this->user->isBanned());
+                        $this->template->assign('ARCHIVE_USER_HAS_KARMA', $this->user->hasKarma());
+                        $this->template->assign('ARCHIVE_USER_CAN_CONTRIBUTE', $this->user->canContribute());
+                        $this->template->assign('ARCHIVE_USER_ONLINE', $this->user->isLoggedIn());
 
                         // Get breadcrumbs
                         $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));

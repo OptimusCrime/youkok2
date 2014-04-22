@@ -119,8 +119,11 @@
     <li><a href="#" id="archive-context-close">Lukk</a></li>
 </ul>
 
-<input type="hidden" value="[[+$ARCHIVE_ID]]" id="archive-id" name="archive-id" />
-<input type="hidden" value="[[+$ARCHIVE_USER_ONLINE]]" id="archive-pizza" name="archive-pizza" />
+[[+if $ARCHIVE_MODE == 'browse']]
+	<input type="hidden" value="[[+$ARCHIVE_ID]]" id="archive-id" name="archive-id" />
+	<input type="hidden" value="[[+$ARCHIVE_USER_ONLINE]]" id="archive-online" name="archive-online" />
+	<input type="hidden" value="[[+$ARCHIVE_USER_CAN_CONTRIBUTE]]" id="archive-can-c" name="archive-can-c" />
+[[+/if]]
 
 <div class="col-md-8">
 	<ol class="breadcrumb" id="archive-breadcrumbs">
@@ -142,7 +145,7 @@
 	[[+if $ARCHIVE_MODE == 'browse']]
 		<div id="archive-controlls" class="archive-sidebar">
 			<h3>Kontroller</h3>
-			[[+if $ARCHIVE_USER_VERIFIED == true]]
+			[[+if $ARCHIVE_USER_CAN_CONTRIBUTE == true]]
 				<div id="archive-create-controlls">
 					<button type="button" id="archive-create-file" class="btn btn-default">Last opp fil</button> <button type="button" class="btn btn-default" id="archive-create-folder">Opprett mappe</button>
 				</div>
@@ -180,7 +183,17 @@
 					</form>
 				</div>
 			[[+else]]
-				<p>Logg inn og/eller registrer din NTNU-bruker for å kunne legge til filer og opprette mapper.</p>
+				[[+if $ARCHIVE_USER_ONLINE == true]]
+					[[+if $ARCHIVE_USER_BANNED == true]]
+						<p>Du et bannet fra siden og kan dermed ikke bidra på Youkok2 lenger.</p>
+					[[+elseif $ARCHIVE_USER_HAS_KARMA == false]]
+						<p>Du har <strong>0</strong> i karma. På grunn av dette kan du ikke lenger bidra på Youok2.</p>
+					[[+else]]
+						<p>Registrer din NTNU-bruker for å kunne legge til filer og opprette mapper. Dette gjøres i din profil</p>
+					[[+/if]]
+				[[+else]]
+					<p>Logg inn og registrer din NTNU-bruker for å kunne bidra på Youkok2.</p>
+				[[+/if]]
 			[[+/if]]
 		</div>
 	[[+/if]]
