@@ -86,9 +86,9 @@
                     </li>
                 [[+/if]]
             </ul>
-            <form class="navbar-form navbar-right" role="form">
+            <form class="navbar-form navbar-right" id="search-form" name="search-form" role="form" action="sok" method="get">
                 <div class="form-group div-relative" id="prefetch">
-                    <input type="text" placeholder="Søk etter fag" class="form-control typeahead" id="search" />
+                    <input type="text" placeholder="Søk etter fag" class="form-control typeahead" id="s" name="s" />
                     <button class="btn" type="button" id="nav-search">
                         <i class="fa fa-search"></i>
                     </button>

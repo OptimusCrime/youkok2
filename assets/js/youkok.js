@@ -88,9 +88,10 @@ courses.initialize();
 
 function check_check_search() {
 	// Some variables
-	var val = $('#search').val();
+	var val = $('#s').val();
 	var datums = courses.index.datums;
 	var datums_size = datums.length;
+	var was_found = false;
 	
 	// Now loop 'em
 	for (var i = 0; i < datums_size; i++) {
@@ -100,8 +101,15 @@ function check_check_search() {
 		// Check if match
 		if (current_datum.course == val) {
 			// Match!
+			was_found = true;
 			window.location = $('#search-base').val() + current_datum.url;
+			break;
 		}
+	}
+
+	// Check if was found or not
+	if (!was_found) {
+		$('#search-form').submit();
 	}
 }
 
@@ -130,10 +138,13 @@ $(document).ready(function () {
 	// Search
 	//
 
-	$('#search').on('keyup', function(e) {
+	$('#s').on('keyup', function(e) {
 		if (e.keyCode == 13) {
 			check_check_search();
 		}
+	});
+	$('#nav-search').on('click', function() {
+		check_check_search();
 	});
 
 	//
