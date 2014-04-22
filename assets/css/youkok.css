@@ -498,6 +498,10 @@ a, a:focus, a:active, a:visited {
 #forgotten-email, #login2-pw, #login2-email {
     margin-bottom: 10px;
 }
+#modal-new-flag-name-comment, #modal-new-flag-delete-comment {
+    resize: vertical;
+    margin-bottom: 10px;
+}
 
 /*
     Header hax
