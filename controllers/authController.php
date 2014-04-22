@@ -303,7 +303,7 @@ class AuthController extends Base {
             }
             else {
                 // Add error message
-                $this->addMessage('Feil hash...', 'danger');
+                $this->addMessage('Denne linken er ikke lenger gyldig.', 'danger');
 
                 // Redirect
                 $this->redirect('');
