@@ -497,7 +497,7 @@ a, a:focus, a:active, a:visited {
     padding-right: 10px;
     position: relative;
 }
-#forgotten-email, #login2-pw, #login2-email {
+#forgotten-email, #login2-pw, #login2-email, #forgotten-password-new-form-oldpassword {
     margin-bottom: 10px;
 }
 #modal-new-flag-name-comment, #modal-new-flag-delete-comment {
@@ -525,4 +525,12 @@ a, a:focus, a:active, a:visited {
     .navbar-form {
         width: 300px;
     }
+}
+
+/*
+    Profile
+*/
+
+.tab-pane {
+    margin-top: 10px;
 }

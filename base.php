@@ -247,6 +247,11 @@ class Base {
     }
 
     protected function setLogin($hash, $email, $cookie = false) {
+        // Remove old login (just in case)
+        unset($_SESSION['youkok2']);
+        setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+
+        // Set new login
         $strg = $email . 'asdkashdsajheeeeehehdffhaaaewwaddaaawww' . $hash;
         if ($cookie) {
             setcookie('youkok2', $strg, time() + (60 * 60 * 24 * 31), '/');

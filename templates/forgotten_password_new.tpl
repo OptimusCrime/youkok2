@@ -21,7 +21,6 @@
 
 		<button type="submit" disabled id="forgotten-password-new-form-submit" class="btn btn-default">Send</button>
 	</form>
-	</form>
 </div>
 
 [[+include file="footer.tpl"]]
