@@ -346,6 +346,9 @@ $(document).ready(function () {
 					else {
 						$that.removeClass('archive-heading-star-1').addClass('archive-heading-star-0');
 					}
+
+					// Display message
+					display_message(json.msg);
 				}
 				else {
 					// Something went wrong
@@ -381,6 +384,9 @@ $(document).ready(function () {
 							else {
 								$archive_right_click.data('favorite', 0);
 							}
+
+							// Display message
+							display_message(json.msg);
 
 							// Hide menu
 							$archive_context_menu.hide();

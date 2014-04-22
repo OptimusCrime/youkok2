@@ -415,6 +415,11 @@ class ProcessorController extends Base {
                         
                         $insert_favorite_query = $this->db->prepare($insert_favorite);
                         $insert_favorite_query->execute(array(':file' => $element->getId(), ':user' => $this->user->getId()));
+                    
+                        $response['msg'] = array(
+                            array(
+                                'text' => $element->getName() . ' er langt til i dine favoritter.',
+                                'type' => 'success'));
                     }
                     else if (!$b) {
                         // Remove favorite
@@ -424,6 +429,11 @@ class ProcessorController extends Base {
                         
                         $remove_favorite_query = $this->db->prepare($remove_favorite);
                         $remove_favorite_query->execute(array(':file' => $element->getId(), ':user' => $this->user->getId()));
+                        
+                        $response['msg'] = array(
+                            array(
+                                'text' => $element->getName() . ' er fjernet fra dine favoritter.',
+                                'type' => 'success'));
                     }
 
                     $response['status'] = $b;
