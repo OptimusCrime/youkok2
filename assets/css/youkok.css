@@ -217,6 +217,7 @@ a, a:focus, a:active, a:visited {
     background-color: #ededed;
     border-radius: 4px;
     padding-bottom: 7px;
+    position: relative;
 }
 #archive-list li {
     height: 106px;
@@ -463,6 +464,7 @@ a, a:focus, a:active, a:visited {
 /*
     Alerts
 */
+
 .alert {
     position: relative;
     margin-left: 15px;

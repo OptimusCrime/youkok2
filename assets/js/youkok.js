@@ -222,11 +222,12 @@ $(document).ready(function () {
 			}
 		}
 
+		console.log($('#archive-top').offset().top);
 		// Set location
 		$archive_context_menu.css({
 			display: 'block',
-			left: e.pageX - 30,
-			top: e.pageY - 40,
+			left: e.pageX - 20,
+			top: e.pageY - $('#archive-top').offset().top + 10,
 		});
 
 		// Disable default

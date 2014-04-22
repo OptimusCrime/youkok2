@@ -128,7 +128,7 @@
 	<input type="hidden" value="[[+$ARCHIVE_USER_CAN_CONTRIBUTE]]" id="archive-can-c" name="archive-can-c" />
 [[+/if]]
 
-<div class="col-md-8">
+<div class="col-md-8" id="archive-top">
 	<ol class="breadcrumb" id="archive-breadcrumbs">
 		<li><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
 		[[+$ARCHIVE_BREADCRUMBS]]
