@@ -49,7 +49,7 @@ class AuthController extends Base {
         else if ($_GET['q'] == 'glemt-passord') {
             $this->forgottenPassword();
         }
-        else if ($_GET['q'] == 'glemt-passord-nytt') {
+        else if ($_GET['q'] == 'nytt-passord') {
             $this->forgottenPasswordNew();
         }
         else {
@@ -199,7 +199,7 @@ class AuthController extends Base {
                     $insert_changepassword_query->execute(array(':user' => $row['id'], ':hash' => $hash));
 
                     // Send e-mail
-                    $message = "Hei\n\nKlikk på linken for å kunne endre nytt passord:\n" . SITE_URL_FULL . "glemt-passord-nytt?hash=" . $hash . "\n\nMvh\nYoukok2";
+                    $message = "Hei\n\nKlikk på linken for å kunne endre nytt passord:\n" . SITE_URL_FULL . "nytt-passord?hash=" . $hash . "\n\nMvh\nYoukok2";
                     mail($_POST['forgotten-email'], 'Glemt passord på Youkok2', $message);
 
                     // Add message
@@ -297,7 +297,7 @@ class AuthController extends Base {
                         $this->addMessage('De to passordene er ikke like.', 'danger');
 
                         // Redirect
-                        $this->redirect('glemt-passord-nytt?hash=' . $_GET['hash']);
+                        $this->redirect('nytt-passord?hash=' . $_GET['hash']);
                     }
                 }
             }

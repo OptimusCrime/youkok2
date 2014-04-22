@@ -495,6 +495,9 @@ a, a:focus, a:active, a:visited {
     padding-right: 10px;
     position: relative;
 }
+#forgotten-email, #login2-pw, #login2-email {
+    margin-bottom: 10px;
+}
 
 /*
     Header hax

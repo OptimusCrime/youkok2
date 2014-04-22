@@ -209,14 +209,14 @@ class Base {
                     }
                     else {
                         // Message
-                        $this->addMessage('Oisann. Feil brukernavn og/eller passord, er jeg redd. Prøv igjen. <a href="glemt-passord">Om du ikke har glemt passordet ditt, da kan du klikke her</a>.', 'danger');
+                        $this->addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
                         
                         $this->redirect('logg-inn');
                     }
                 }
                 else {
                     // Message
-                    $this->addMessage('Oisann. Feil brukernavn og/eller passord, er jeg redd. Prøv igjen. <a href="glemt-passord">Om du ikke har glemt passordet ditt, da kan du klikke her</a>.', 'danger');
+                    $this->addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
                     
                     // Display
                     $this->redirect('logg-inn');

@@ -1,9 +1,9 @@
 [[+include file="header.tpl"]]
 
-<div class="col-md-6">
+<div class="col-md-8">
 	<h1>Registrer</h1>
-	<p>Hei på deg. Ønsker du å registrere deg en konto på Youkok2?</p>
-	<p>Fyll ut feltene under, så er du good to go.</p>
+	<p>Registrering på Youkok2 er gratis og åpen for alle. Bare fyll ut feltene under, så har du din egen konto</p>
+	<p>Legg riktignok merke til at det krever en e-post som ikke finnes i systemet vårt fra før.</p>
 
 	<hr />
 
@@ -32,8 +32,28 @@
 			<p id="register-form-password-error2">Det er en fordel om de to passord-feltene er like.</p>
 		</div>
 
-		<button type="submit" disabled id="register-form-submit" class="btn btn-default">Send</button>
+		<button type="submit" disabled id="register-form-submit" class="btn btn-default">Registrer</button>  eller <a href="">gå tilbake til forsiden</a>.
 	</form>
+</div>
+<div class="col-md-4">
+	<div class="archive-sidebar">
+		<h3>Visste du at?</h3>
+		<p>Det skal mye til for å lage en kortere registreringsprosess enn dette her!</p>
+	</div>
+
+	<div id="archive-sidebar-newest" class="archive-sidebar">
+		<h3>Nyeste filer</h3>
+		<div id="archive-sidebar-newest-inner">
+			<p>Laster...</p>
+		</div>
+	</div>
+
+	<div id="archive-sidebar-last-downloads" class="archive-sidebar">
+		<h3>Siste nedlastninger</h3>
+		<div id="archive-sidebar-last-downloads-inner">
+			<p>Laster...</p>
+		</div>
+	</div>
 </div>
 
 [[+include file="footer.tpl"]]

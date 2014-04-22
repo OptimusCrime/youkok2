@@ -104,7 +104,7 @@ class Loader {
             '/logg-ut',
             '/registrer',
             '/glemt-passord',
-            '/glemt-passord-nytt',
+            '/nytt-passord',
         ),
     );
 

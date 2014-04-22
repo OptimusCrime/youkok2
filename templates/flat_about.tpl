@@ -44,6 +44,27 @@
 		<h3>Reklame</h3>
 		<p>Herpaderp</p>
 	</div>
+	
+	<div id="archive-sidebar-numbers" class="archive-sidebar">
+		<h3>Artige tall</h3>
+		<div id="archive-sidebar-numbers-inner">
+			<p>Laster...</p>
+		</div>
+	</div>
+
+	<div id="archive-sidebar-newest" class="archive-sidebar">
+		<h3>Nyeste filer</h3>
+		<div id="archive-sidebar-newest-inner">
+			<p>Laster...</p>
+		</div>
+	</div>
+
+	<div id="archive-sidebar-last-downloads" class="archive-sidebar">
+		<h3>Siste nedlastninger</h3>
+		<div id="archive-sidebar-last-downloads-inner">
+			<p>Laster...</p>
+		</div>
+	</div>
 </div>
 
 [[+include file="footer.tpl"]]
