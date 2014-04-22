@@ -174,7 +174,7 @@ class ProcessorController extends Base {
     	$response = array();
     	
     	// First, check if logged in
-    	if ($this->user->isLoggedIn() and $this->user->isVerified()) {
+    	if ($this->user->isLoggedIn() and $this->user->canContribute()) {
     		// Can vote
     		if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['flag']) and is_numeric($_POST['flag']) and ($_POST['value'] == 1 or $_POST['value'] == 0)) {
 	        	// Valid id, try to load the object
@@ -325,7 +325,7 @@ class ProcessorController extends Base {
     	// Check if status
     	if ($this->user->isLoggedIn()) {
     		// User is logged in
-  			if ($this->user->isVerified()) {
+  			if ($this->user->canContribute()) {
                 // Check if user is the owner
                 if ($this->user->getId() == $flag['user']) {
                     $question_status = '<i class="fa fa-question" title="Stemme kan ikke avlegges."></i>';
@@ -528,7 +528,7 @@ class ProcessorController extends Base {
 
         // Check stuff
         if (isset($_POST['id']) and is_numeric($_POST['id']) and $_POST['id'] != 1 and isset($_POST['name']) and strlen($_POST['name']) > 0) {
-            if ($this->user->isLoggedIn() and $this->user->isVerified()) {
+            if ($this->user->isLoggedIn() and $this->user->canContribute()) {
                 // Trim
                 $_POST['name'] = trim($_POST['name']);
                 
@@ -615,7 +615,7 @@ class ProcessorController extends Base {
         $response = array();
 
         // Check if online
-        if ($this->user->isLoggedIn() and $this->user->isVerified()) {
+        if ($this->user->isLoggedIn() and $this->user->canContribute()) {
             // Check referer
             if (isset($_SERVER['HTTP_REFERER'])) {
                 // Get base
@@ -856,7 +856,7 @@ class ProcessorController extends Base {
         $response = array();
         
         // First, check if logged in
-        if ($this->user->isLoggedIn() and $this->user->isVerified()) {
+        if ($this->user->isLoggedIn() and $this->user->canContribute()) {
             // Can vote
             if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['comment']) and isset($_POST['filetype']) and isset($_POST['name']) and strlen($_POST['name'].$_POST['filetype']) > 0) {
                 // Valid id, try to load the object
@@ -905,7 +905,7 @@ class ProcessorController extends Base {
         $response = array();
         
         // First, check if logged in
-        if ($this->user->isLoggedIn() and $this->user->isVerified()) {
+        if ($this->user->isLoggedIn() and $this->user->canContribute()) {
             // Can vote
             if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['comment'])) {
                 // Valid id, try to load the object
