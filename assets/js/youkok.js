@@ -531,7 +531,7 @@ $(document).ready(function () {
 		e.preventDefault();
 
 		// Swap content
-		$('#modal-report-selected').html($(this).html());
+		$('#modal-report-selected').html($('a', this).html());
 
 		// Swap disabled
 		$('#modal-report .dropdown li').removeClass('disabled');
@@ -543,12 +543,11 @@ $(document).ready(function () {
 			cache: false,
 			type: "post",
 			url: "processor/report/send",
-			data: { id: $('#archive-id').val(), text: $('#modal-report-form textarea').val(), category: $('#modal-report-selected').html() },
+			data: { id: $archive_right_click.data('id'), text: $('#modal-report-form textarea').val(), category: $('#modal-report-selected').html() },
 			success: function(json) {
 				if (json.code == 200) {
-					// Yey
-					$('#modal-report').modal('hide');
-					$('#modal-report-form textarea').val('');
+					// Refresh
+					window.location.reload();
 				}
 				else {
 					// Something went wrong
@@ -909,8 +908,8 @@ $(document).ready(function () {
 					comment:  $('#modal-new-flag-name-comment').val()},
 				success: function(json) {
 					if (json.code == 200) {
-						$('#modal-new-flag').modal('hide');
-						alert('Flagg er sendt');
+						// Refresh
+						window.location.reload();
 					}
 					else {
 						alert('Noe gikk visst galt her!');
@@ -944,8 +943,8 @@ $(document).ready(function () {
 				comment:  $('#modal-new-flag-delete-comment').val()},
 			success: function(json) {
 				if (json.code == 200) {
-					$('#modal-new-flag').modal('hide');
-					alert('Flagg er sendt');
+					// Refresh
+					window.location.reload();
 				}
 				else {
 					alert('Noe gikk visst galt her!');

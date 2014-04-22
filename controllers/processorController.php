@@ -352,11 +352,11 @@ class ProcessorController extends Base {
   			else {
                 if (!$this->user->hasKarma()) {
                     $question_status = '<i class="fa fa-question" title="Din konto er stengt."></i>';
-                    $question_status_bottom = 'Du kan ikke lenger bidra på denne siden fordi din karma er <strong>0</strong>.';
+                    $question_status_bottom = '<span style="color: red;">Du kan ikke lenger bidra på denne siden fordi din karma er <strong>0</strong>.</span>';
                 }
                 else if ($this->user->isBanned()) {
                     $question_status = '<i class="fa fa-question" title="Din konto er stengt."></i>';
-                    $question_status_bottom = 'Du kan ikke lenger bidra på denne siden fordi du er bannet.';
+                    $question_status_bottom = '<span style="color: red;">Du kan ikke lenger bidra på denne siden fordi du er bannet.</span>';
                 }
                 else {
                     $question_status = '<i class="fa fa-question" title="Registrer din NTNU-epost for å stemme."></i>';
@@ -779,6 +779,9 @@ class ProcessorController extends Base {
                     ':user' => $this->user->getId(),
                     ':reason' => $_POST['category'],
                     ':comment' => (isset($_POST['text']) ? $_POST['text'] : '')));
+
+                // Add message
+                $this->addMessage('\'' . $element->getName() . '\' er rapportert til administratorene. Takk skal du ha.', 'success');
             }
             else {
                 $response['code'] = 500;
@@ -893,6 +896,9 @@ class ProcessorController extends Base {
 
                     // Code
                     $response['code'] = 200;
+
+                    // Add message
+                    $this->addMessage('Ditt flagg på \'' . $element->getName() . '\' ble opprettet. Takk for hjelpen.', 'success');
                 }
             }
             else {
@@ -942,6 +948,9 @@ class ProcessorController extends Base {
 
                     // Code
                     $response['code'] = 200;
+
+                    // Add message
+                    $this->addMessage('Ditt flagg på \'' . $element->getName() . '\' ble opprettet. Takk for hjelpen.', 'success');
                 }
             }
             else {

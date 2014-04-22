@@ -76,7 +76,10 @@
 						<ul class="dropdown-menu" role="menu" aria-labelledby="model-report-category">
 							<li class="disabled"><a href="#">Brudd på åndsverkloven</a></li>
 							<li><a href="#">Spam</a></li>
+							<li><a href="#">Denne fila er min</a></li>
 							<li><a href="#">Støtende, fornærmende eller hatefulle ytringer</a></li>
+							<li><a href="#">Denne fila inneholder virus, malware og lignende</a></li>
+							<li class="divider"></li>
 							<li><a href="#">Andre grunner</a></li>
 						</ul>
 					</div>
