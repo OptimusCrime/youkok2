@@ -39,6 +39,10 @@ class FlatController extends Base {
             $this->template->assign('HEADER_MENU', null);
             $this->displayAndCleanup('flat_help.tpl');
         }
+        elseif ($_GET['q'] == 'karma') {
+            $this->template->assign('HEADER_MENU', null);
+            $this->displayAndCleanup('flat_karma.tpl');
+        }
         else {
             // Page was not found
         	$this->display404();

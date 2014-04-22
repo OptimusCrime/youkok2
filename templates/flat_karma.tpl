@@ -1,45 +1,86 @@
-Alle begynner med 5 karma
+[[+include file="header.tpl"]]
 
----------------------------------
+<div class="col-md-8">
+	<h1>Karma</h1>
+	<p>Vi bruker konseptet med karma for å holde styr på hvor hjelpsomme og oppriktige brukere er. Alle brukere på Youkok2 begynner med <strong>5</strong> i karma. Dersom man <a href="hjelp">identifiserer</a> seg har man mulighet til å bidra på siden og dermed tjene/miste karmapoeng.</p>
+	<p>Man kan tjene/miste karmapoeng ved å opprette og å stemme på flagg i systemet. Dersom man oppretter et flagg og flagget blir stemt for avvisning vil du og alle de som stemte for godkjenning miste karma. Dersom et flagg blir godkjent mister de som har stemt for avvisning karma.</p>
+	<p>Under er en komplett oversikt over hva som gir/tar karmapoeng fra deg:</p>
 
-Opprett, fil, godkjent
-- Eier +3
-- Votes +1
+	<h3>Opprette</h3>
+	<strong>Fil, godkjent:</strong>
+	<ul>
+		<li>Eier +3</li>
+		<li>Stemmer +1</li>
+	</ul>
+	<strong>Mappe, godkjent:</strong>
+	<ul>
+		<li>Eier +1</li>
+		<li>Stemmer +1</li>
+	</ul>
+	<strong>Fil/mappe, avvist:</strong>
+	<ul>
+		<li>Eier -3</li>
+		<li>Stemmer -1</li>
+	</ul>
 
-Opprett, mappe, godkjent
-- Eier +1
-- Votes +1
+	<h3>Endre navn</h3>
+	<strong>Fil/mappe, godkjent:</strong>
+	<ul>
+		<li>Eier +3</li>
+		<li>Stemmer +1</li>
+	</ul>
+	<strong>Fil/mappe, avvist:</strong>
+	<ul>
+		<li>Eier -2</li>
+		<li>Stemmer -1</li>
+	</ul>
 
-Opprett, *, avvist
-- Eier -3
-- Votes -1
+	<h3>Sletting</h3>
+	<strong>Fil, godkjent:</strong>
+	<ul>
+		<li>Eier +3</li>
+		<li>Stemmer +2</li>
+	</ul>
+	<strong>Fil, avvist:</strong>
+	<ul>
+		<li>Eier -3</li>
+		<li>Stemmer -2</li>
+	</ul>
 
----------------------------------
+	<h3>Flytting</h3>
+	<strong>Fil, godkjent:</strong>
+	<ul>
+		<li>Eier +2</li>
+		<li>Stemmer +1</li>
+	</ul>
+	<strong>Fil, avvist:</strong>
+	<ul>
+		<li>Eier -2</li>
+		<li>Stemmer -1</li>
+	</ul>
+	<p>Legg merke til at disse verdiene kan endre seg.</p>
+</div>
+<div class="col-md-4">
+	<div id="archive-sidebar-numbers" class="archive-sidebar">
+		<h3>Artige tall</h3>
+		<div id="archive-sidebar-numbers-inner">
+			<p>Laster...</p>
+		</div>
+	</div>
 
-Endre navn, *, godkjent
-- Eier +3
-- Votes +1
+	<div id="archive-sidebar-newest" class="archive-sidebar">
+		<h3>Nyeste filer</h3>
+		<div id="archive-sidebar-newest-inner">
+			<p>Laster...</p>
+		</div>
+	</div>
 
-Endre navn, *, avvist
-- Eier -2
-- Votes -1
+	<div id="archive-sidebar-last-downloads" class="archive-sidebar">
+		<h3>Siste nedlastninger</h3>
+		<div id="archive-sidebar-last-downloads-inner">
+			<p>Laster...</p>
+		</div>
+	</div>
+</div>
 
----------------------------------
-
-Sletting, fil, godkjent
-- Eier +3
-- Votes +2
-
-Sletting, fil, avvist
-- Eier -3
-- Votes -2
-
----------------------------------
-
-Flytting, fil, godkjent
-- Eier +2
-- Votes +1
-
-Flytting, fil, avvist
-- Eier -2
-- Votes -1
+[[+include file="footer.tpl"]]

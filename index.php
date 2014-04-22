@@ -85,6 +85,7 @@ class Loader {
             '/retningslinjer',
             '/privacy',
             '/hjelp',
+            '/karma',
         ),
 
         'notfound' => array(
