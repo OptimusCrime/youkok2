@@ -638,16 +638,19 @@ $(document).ready(function () {
 			}
     	}
     	
-    	if ($('#register-form .has-error').length == 0 && register_email_checked == true && check_email($('#register-form-email').val()) && $('#register-form-password1').val().length > 6) {
+    	if ($('#register-form .has-error').length == 0 && register_email_checked == true && check_email($('#register-form-email').val()) && $('#register-form-password1').val().length > 6 && $('#register-form-ret').is(':checked')) {
     		$('#register-form-submit').prop('disabled', false);
     	}
     	else {
     		$('#register-form-submit').prop('disabled', true);
     	}
     });
+	$('#register-form-ret').on('change', function() {
+		$('#register-form-password1').trigger('keyup');
+	})
 
 	//
-	// 
+	// Forgotten password stuff
 	//
 
 	$('#forgotten-password-new-form input').on('keyup', function () {

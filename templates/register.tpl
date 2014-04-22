@@ -32,6 +32,16 @@
 			<p id="register-form-password-error2">Det er en fordel om de to passord-feltene er like.</p>
 		</div>
 
+		<hr />
+		
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" name="register-form-ret" id="register-form-ret"> Jeg har lest og godkjenner <a href="retningslinjer" id="register-form-ret-link" target="_blank">retningslinjene</a>.
+			</label>
+		</div>
+
+		<hr />
+
 		<button type="submit" disabled id="register-form-submit" class="btn btn-default">Registrer</button>  eller <a href="">gå tilbake til forsiden</a>.
 	</form>
 </div>
