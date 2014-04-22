@@ -519,6 +519,9 @@ class ProcessorController extends Base {
         // Check stuff
         if (isset($_POST['id']) and is_numeric($_POST['id']) and $_POST['id'] != 1 and isset($_POST['name']) and strlen($_POST['name']) > 0) {
             if ($this->user->isLoggedIn() and $this->user->isVerified()) {
+                // Trim
+                $_POST['name'] = trim($_POST['name']);
+                
                 // Create element
                 $item = new Item($this->collection, $this->db);
                 $item->setShouldLoadPhysicalLocation(true);
@@ -576,6 +579,9 @@ class ProcessorController extends Base {
 
                         // Send code
                         $response['code'] = 200;
+
+                        // Add message
+                        $this->addMessage('Din mappe ble opprettet!', 'success');
                     }
                 }
             }

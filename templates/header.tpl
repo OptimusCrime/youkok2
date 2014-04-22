@@ -92,12 +92,12 @@
     </div>  
 </div>
 <div class="container" id="main">
-    [[+if $SITE_MESSAGES != '']]
-        <div class="row">
-            <div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12" id="main_messages">
+            [[+if $SITE_MESSAGES != '']]
                 [[+$SITE_MESSAGES]]
-            </div>
+            [[+/if]]
         </div>
-    [[+/if]]
+    </div>
     <div class="row">
         <div class="col-md-12">

@@ -33,6 +33,22 @@ function human_file_size(bytes, si) {
 };
 
 //
+// Message
+//
+
+function display_message(msg) {
+	var $msg_obj;
+	for (var i = 0; i < msg.length; i++) {
+		$msg_obj = $('<div class="alert alert-' + msg[i].type + '">' + msg[i].text + '<div class="alert-close"><i class="fa fa-times"></i></div></div>');
+		$('#main_messages').append($msg_obj);
+		
+		setTimeout(function($msg_obj_inner) {
+			$('.alert-close', $msg_obj_inner).trigger('click');
+		}, 10000, $msg_obj);
+	}
+}
+
+//
 // Moment.js
 //
 
@@ -402,7 +418,6 @@ $(document).ready(function () {
 				if (json.code == 200) {
 					$('#home-most-popular').slideUp(400, function () {
 						$(this).html(json.html).slideDown(400);
-
 					});
 				}
 				else {
@@ -455,12 +470,16 @@ $(document).ready(function () {
 					url: "processor/create/folder",
 					data: { id: $('#archive-id').val(), name: $('#archive-create-folder-name').val() },
 					success: function(json) {
+						submitting_archive_create_folder_form = false;
 						if (json.code == 200) {
-							//
+							// Refresh
+							window.location.reload();
+						}
+						else if (json.code == 400) {
+							display_message([{'text': 'Et element med dette navnet finnes fra før!', 'type': 'danger'}]);
 						}
 						else {
-							// Something went wrong
-							//
+							display_message([{'text': 'Noe gikk visst galt her!', 'type': 'danger'}]);
 						}
 					}
 				})
@@ -810,7 +829,7 @@ $(document).ready(function () {
     // Alerts
     //
 
-    $('.alert-close').on('click', function () {
+    $('#main_messages').on('click', '.alert-close', function () {
     	// Remove
     	$(this).parent().fadeOut(400, function () {
     		$(this).remove();
