@@ -2,7 +2,7 @@
 <html>
 <head>
     <base href="[[+$SITE_URL_FULL]]" />
-    <title>Youkok2.net :: Den beste kokeboka</title>
+    <title>Youkok2.com :: Den beste kokeboka</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -28,7 +28,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="[[+$SITE_RELATIVE]]">Youkok2.net</a>
+            <a class="navbar-brand" href="[[+$SITE_RELATIVE]]">Youkok2.com</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul id="main-nav" class="nav navbar-nav">
