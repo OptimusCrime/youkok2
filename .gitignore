@@ -1,5 +1,21 @@
+# Ignore all direcotires
+/*
+
+# Except these
+!/assets/
+!/controllers/
+!/libs/
+!/processor/
+!/scripts/
+!/templates/
+!/templates_c/
+
+# But ignore local settings
 local.php
+
+# And all cached templates
 templates_c/*
-05d26028b91686045907144f1883fcb1/*
+
+# And those fuckings DS_Stores
 .DS_Store
 ._.DS_Store
