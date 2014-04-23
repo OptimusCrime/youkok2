@@ -3,7 +3,7 @@
  * File: index.php
  * Holds: The Loader class that loads the correct class based on the method being called, setting output and including all the stuff we need
  * Created: 02.10.13
- * Last updated: 22.04.14
+ * Last updated: 23.04.14
  * Project: Youkok2
  * 
 */
@@ -39,6 +39,7 @@ $base_path = dirname(__FILE__);
 
 require_once $base_path . '/libs/smarty/Smarty.class.php';
 require_once $base_path . '/libs/bcrypt/bcrypt.php';
+require_once $base_path . '/libs/phpmailer/class.phpmailer.php';
 
 require_once $base_path . '/elements/collection.class.php';
 require_once $base_path . '/elements/item.class.php';
