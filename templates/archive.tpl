@@ -137,6 +137,7 @@
 	<h1>[[+$ARCHIVE_TITLE]]</h1>
 	[[+if $ARCHIVE_MODE == 'browse']]
 		<div id="archive_accepted_filetypes">[[+$ARCHIVE_ACCEPTED_FILETYPES]]</div>
+		<div id="archive_accepted_fileendings">[[+$ARCHIVE_ACCEPTED_FILEENDINGS]]</div>
 		<ul id="archive-list">
 		    [[+$ARCHIVE_DISPLAY]]
 		</ul>
@@ -159,7 +160,7 @@
 	                    	<label for="archive-create-folder-name">Navn</label>
 	                        <input type="text" name="archive-create-folder-name" class="form-control" id="archive-create-folder-name" value="" placeholder="Navn på mappen du ønsker å opprette" />
 	                    </div>
-	                    <button type="submit" class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
+	                    <button id="archive-create-folder-form-submit" type="submit" class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
 					</form>
 				</div>
 
@@ -182,7 +183,7 @@
 							</div>
 	                    </div>
 	                    <p><a href="retningslinjer" target="_blank">Se liste over godkjente filtyper</a>.</p>
-	                    <button type="submit" class="btn btn-default">Last opp</button> eller <a href="#">avbryt</a>.
+	                    <button id="archive-create-file-form-submit" type="submit" class="btn btn-default">Last opp</button> eller <a href="#">avbryt</a>.
 					</form>
 				</div>
 			[[+else]]

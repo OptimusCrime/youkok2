@@ -1,4 +1,14 @@
 //
+// Prototypes
+//
+
+if (typeof String.prototype.endsWith !== 'function') {
+	String.prototype.endsWith = function(suffix) {
+		return this.indexOf(suffix, this.length - suffix.length) !== -1;
+	};
+}
+
+//
 // Method for validating email
 //
 
@@ -473,7 +483,9 @@ $(document).ready(function () {
             $('#archive-create-folder-div').stop().slideUp();
         }
         else {
-            $('#archive-create-folder-div').stop().slideDown();
+            $('#archive-create-folder-div').stop().slideDown(400, function () {
+            	$('#archive-create-folder-name').focus();
+            });
             $('#archive-create-file-div').stop().slideUp();
         }
     });
@@ -489,8 +501,12 @@ $(document).ready(function () {
     		alert('Error: Du har ikke gitt mappen noen navn!');
     	}
     	else {
+    		// Update queue
     		if (!submitting_archive_create_folder_form) {
     			submitting_archive_create_folder_form = true;
+
+    			// Update working
+    			$('#archive-create-folder-form').html('Jobber...').prop('disabled', true);
 
     			$.ajax({
 					cache: false,
@@ -748,29 +764,51 @@ $(document).ready(function () {
     		$('#archive-create-file-div').stop().slideUp(400);
     	}
     });
+    var num_of_files = 0;
+    var num_of_files_uploaded = 0;
     var accepted_filetypes = [];
+    var accepted_fileendings = [];
     $('#archive-create-file-form').fileupload({
         url: 'processor/create/file',
         add: function (e, data) {
+        	// Update number of files going to be uploaded
+        	num_of_files = data.files.length;
+
         	// Get file object
         	var file_object = data.files[data.files.length - 1];
 
         	// Test for valid filetype
         	var found = false;
+        	var name = file_object.name;
         	var mimetype = file_object.type;
-        	for (var i = 0; i < accepted_filetypes.length; i++) {
-        		if (accepted_filetypes[i] == mimetype) {
-        			found = true;
-        			break;
-        		}
+
+        	// Check with mimetype first (is better)
+        	if (mimetype != null) {
+        		for (var i = 0; i < accepted_filetypes.length; i++) {
+	        		if (accepted_filetypes[i] == mimetype) {
+	        			found = true;
+	        			break;
+	        		}
+	        	}
         	}
+
+        	// Mimetype was not found, okey then, try fileendings
+        	if (!found) {
+        		for (var i = 0; i < accepted_fileendings.length; i++) {
+	        		if (name.endsWith('.' + accepted_fileendings[i])) {
+	        			found = true;
+	        			break;
+	        		}
+	        	}
+        	}
+        	
 
         	// Check if valid or not
         	if (found) {
         		// The container
 	        	var $container = $(' \
 	        		<div class="fileupload-file"> \
-						<strong>' + file_object.name + '</strong> \
+						<strong>' + name + '</strong> \
 						<p>' + human_file_size(file_object.size, true) + '</p> \
 						<div class="fileupload-file-remove"> \
 							<span>Fjern <i class="fa fa-times"></i></span> \
@@ -800,17 +838,14 @@ $(document).ready(function () {
         	}
         },
         done: function (e, data) {
-        	// Hide all the containers
-            $('#fileupload-files-inner div').each(function () {
-            	$(this).delay(500).slideUp(400, function () {
-            		$(this).remove();
-            	});
-            });
+        	// Update number of finished uploads
+        	num_of_files_uploaded++;
 
-            // Display success-message
-            $('.fileupload-add p').fadeIn(400).delay(2000).fadeOut(400, function () {
-            	$('#progress .bar').css({'width': '0px'});
-            });
+        	// Check if all done
+        	if (num_of_files_uploaded == num_of_files) {
+        		// Reload page
+        		window.location.reload();
+        	}
         },
         progressall: function (e, data) {
 	        var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -827,6 +862,9 @@ $(document).ready(function () {
     		$(this).trigger('click');
     	});
 
+    	// Update submit button
+    	$('#archive-create-file-form-submit').html('Laster opp....').prop('disabled', true);
+
     	// Avoid submitting the form
     	return false;
     });
@@ -835,6 +873,7 @@ $(document).ready(function () {
     });
     if ($('#archive_accepted_filetypes').length > 0) {
     	accepted_filetypes = jQuery.parseJSON($('#archive_accepted_filetypes').html());
+    	accepted_fileendings = jQuery.parseJSON($('#archive_accepted_fileendings').html());
     }
 
     //
