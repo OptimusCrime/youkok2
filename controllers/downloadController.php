@@ -65,7 +65,7 @@ class DownloadController extends Base {
                             $this->close();
 
                             // File exists, download!
-                            $this->loadFile($file_location);
+                            $this->loadFile($file_location, $element->getName());
                         }
                         else {
                             // File was not found, wtf
@@ -94,10 +94,10 @@ class DownloadController extends Base {
     // Loading an actual file from the fileserver
     //
     
-    private function loadFile($file) {
+    private function loadFile($file, $name) {
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename=' . basename($file));
+        header('Content-Disposition: attachment; filename="' . $name . '"');
         header('Content-Transfer-Encoding: binary');
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
