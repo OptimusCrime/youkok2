@@ -12,6 +12,7 @@
 
 # But ignore local settings
 local.php
+.htaccess
 
 # And all cached templates
 templates_c/*

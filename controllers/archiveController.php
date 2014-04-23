@@ -89,7 +89,7 @@ class ArchiveController extends Base {
                         // Find accepted filetypes
                         $accepted_filetypes = explode(',', SITE_ACCEPTED_FILETYPES);
                         $this->template->assign('ARCHIVE_ACCEPTED_FILETYPES', json_encode($accepted_filetypes));
-                        $accepted_fileending = explode(',', SITE_ACCEPTED_FILEENDINGS)
+                        $accepted_fileending = explode(',', SITE_ACCEPTED_FILEENDINGS);
                         $this->template->assign('ARCHIVE_ACCEPTED_FILEENDINGS', json_encode($accepted_fileending));
                     }
                     else {
