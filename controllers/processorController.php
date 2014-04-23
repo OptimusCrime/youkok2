@@ -711,7 +711,7 @@ class ProcessorController extends Base {
                             ':url_friendly' => $url_friendly,
                             ':mime_type' => str_replace('/', '_', $_FILES['files']['type'][0]),
                             ':parent' => $item->getId(),
-                            ':location' => $this_file_name,
+                            ':location' =>  $this->generateUrlFriendly($this_file_name),
                             ':size' => $_FILES['files']['size'][0]));
 
                         // Insert flag
