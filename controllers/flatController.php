@@ -29,6 +29,23 @@ class FlatController extends Base {
         }
         elseif ($_GET['q'] == 'retningslinjer') {
         	$this->template->assign('HEADER_MENU', null);
+            
+            // Fix lists for filtypes and endings
+            $mime_types = explode(',', SITE_ACCEPTED_FILETYPES);
+            $mime_types_string = '';
+            foreach ($mime_types as $v) {
+                $mime_types_string .= '<li>' . $v . '</li>';
+            }
+            $this->template->assign('SITE_ACCEPTED_FILETYPES', $mime_types_string);
+            
+            $endings = explode(',', SITE_ACCEPTED_FILEENDINGS);
+            $endings_string = '';
+            foreach ($endings as $v) {
+                $endings_string .= '<li>.' . $v . '</li>';
+            }
+            $this->template->assign('SITE_ACCEPTED_FILEENDINGS', $endings_string);
+            
+            // Display the page
         	$this->displayAndCleanup('flat_retningslinjer.tpl');
         }
         elseif ($_GET['q'] == 'privacy') {

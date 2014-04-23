@@ -457,7 +457,7 @@ a, a:focus, a:active, a:visited {
     cursor: pointer;
     font-weight: bold;
 }
-#archive_accepted_filetypes {
+#archive_accepted_filetypes, #archive_accepted_fileendings {
     display: none;
 }
 
