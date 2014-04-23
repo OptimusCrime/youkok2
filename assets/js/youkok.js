@@ -506,7 +506,7 @@ $(document).ready(function () {
     			submitting_archive_create_folder_form = true;
 
     			// Update working
-    			$('#archive-create-folder-form').html('Jobber...').prop('disabled', true);
+    			$('#archive-create-folder-form-submit').html('Jobber...').prop('disabled', true);
 
     			$.ajax({
 					cache: false,
