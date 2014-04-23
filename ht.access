@@ -2,8 +2,8 @@ RewriteEngine On
 RewriteBase /
 
 #RewriteCond %{HTTP_HOST} .
-#RewriteCond %{HTTP_HOST} !^example-domain-please-change\.com [NC]
-#RewriteRule (.*) http://example-domain-please-change.com/$1 [R=301,L]
+#RewriteCond %{HTTP_HOST} !^www\.example-domain-please-change\.com [NC]
+#RewriteRule (.*) http://www.example-domain-please-change.com/$1 [R=301,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
