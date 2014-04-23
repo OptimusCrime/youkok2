@@ -970,10 +970,14 @@ class ProcessorController extends Base {
     //
 
     private function generateUrlFriendly($s, $for_url = false) {
-        $s = strtolower($s);
+        // Replace first here to keep "norwegian" names in a way
         $s = str_replace(array('Æ', 'Ø', 'Å'), array('ae', 'o', 'aa'), $s);
         $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
-
+        
+        // Remove all non-alphanumeric, keep spaces and dots, also remove whitespace if more than one space
+        $s = preg_replace('/\s\s+/', ' ', preg_replace("/[^a-z0-9 \.]/", '', strtolower($s)));
+        
+        // Decide how to deal with spaces
         if ($for_url) {
             $s = str_replace(' ', '-', $s);
         }
