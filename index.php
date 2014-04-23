@@ -109,6 +109,10 @@ class Loader {
             '/nytt-passord',
             '/verifiser',
         ),
+        
+        'graybox' => array(
+            '/graybox',
+        ),
     );
 
     //

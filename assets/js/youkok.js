@@ -1056,4 +1056,25 @@ $(document).ready(function () {
     		}
     	}
     });
+    
+    //
+    // Grayboxes
+    //
+    
+    if ($('#archive-sidebar-newest-inner').length > 0) {
+        $.ajax({
+            cache: false,
+            url: "graybox/newest",
+            success: function(html) {
+               // Set content
+               $('#archive-sidebar-newest-inner').html(html);
+               
+               // Load moment
+               $('#archive-sidebar-newest-inner .moment-timestamp').each(function () {
+                    $that = $(this);
+                    $that.html(moment($(this).data('ts')).fromNow());
+                });
+            }
+        });
+    }
 });
