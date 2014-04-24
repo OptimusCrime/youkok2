@@ -41,6 +41,8 @@ class Item {
     private $fullLocation;
     private $loadedFlags;
     private $flags;
+    private $course;
+    private $courseName;
 
     //
     // Constructor
@@ -66,6 +68,8 @@ class Item {
         $this->favorite = 'null';
         $this->rootParent = null;
         $this->size = 0;
+        $this->course = null;
+        $this->courseName = '';
     }
     
     //
@@ -141,7 +145,7 @@ class Item {
         // Get all info about file
         if ($this->id != null) {
             // Id is set, run a simple query
-            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, is_accepted, is_visible, added, location, size
+            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, is_accepted, is_visible, added, location, size, course
             FROM archive 
             WHERE id = :id";
             
@@ -160,6 +164,7 @@ class Item {
             $this->location = $row['location'];
             $this->added = $row['added'];
             $this->size = $row['size'];
+            $this->course = $row['course'];
         }
     }
 
@@ -485,6 +490,34 @@ class Item {
 
     public function getRootParent() {
         return $this->rootParent;
+    }
+
+    //
+    // Course
+    //
+
+    public function hasCourse() {
+        return (($this->course == null) ? false : true);
+    }
+
+    public function getCouseName() {
+        if ($this->courseName == '') {
+            $get_course = "SELECT name
+            FROM course
+            WHERE id = :id";
+            
+            $get_course_query = $this->db->prepare($get_course);
+            $get_course_query->execute(array(':id' => $this->course));
+            $row = $get_course_query->fetch(PDO::FETCH_ASSOC);
+
+            if (isset($row['name'])) {
+                // Set name
+                $this->courseName = $row['name'];
+            }
+        }
+
+        // Finally return
+        return $this->courseName;
     }
 }
 ?>
