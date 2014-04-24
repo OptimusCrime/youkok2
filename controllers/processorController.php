@@ -727,6 +727,9 @@ class ProcessorController extends Base {
                         // Move the file
                         move_uploaded_file($_FILES['files']['tmp_name'][0], $upload_full_location);
                         
+                        // Add message
+                        $this->addMessage('Fila ble lastet opp. Takk for ditt bidrag', 'success');
+
                         // Finally, success code
                         $response['code'] = 200;
                     }
