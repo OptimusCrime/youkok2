@@ -13,6 +13,7 @@
 # But ignore local settings
 local.php
 .htaccess
+/processor/search/*
 
 # And all cached templates
 templates_c/*
