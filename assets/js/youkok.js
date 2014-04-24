@@ -771,9 +771,6 @@ $(document).ready(function () {
     $('#archive-create-file-form').fileupload({
         url: 'processor/create/file',
         add: function (e, data) {
-        	// Update number of files going to be uploaded
-        	num_of_files = data.files.length;
-
         	// Get file object
         	var file_object = data.files[data.files.length - 1];
 
@@ -836,10 +833,18 @@ $(document).ready(function () {
         		// Display error, wrong filetype
         		alert('Ikke godkjent filtype.');
         	}
+
+        	// Update number of files going to be uploaded
+        	num_of_files = $('.fileupload-file').length - 1;
         },
         done: function (e, data) {
         	// Update number of finished uploads
         	num_of_files_uploaded++;
+
+        	console.log("Antall filer = " + num_of_files + ". Antall nå = " + num_of_files_uploaded);
+        	console.log(e);
+        	console.log(data);
+        	console.log("-----");
 
         	// Check if all done
         	if (num_of_files_uploaded == num_of_files) {
