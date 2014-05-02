@@ -30,7 +30,7 @@ class Base {
     // Constructor
     //
 
-    public function __construct($paths, $base) {
+    public function __construct($paths, $base, $kill = false) {
         // Starting session, if not already started
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -49,39 +49,52 @@ class Base {
             $this->db = null;
         }
         
-        // Authenticate if database-connection was successful
-        if ($this->db) {
-            // Add root element to collection
-            $root_element = new Item($this->collection, $this->db);
-            $root_element->createById(1);
-            $this->collection->add($root_element);
+        // Init Smarty
+        $this->template = $smarty = new Smarty();
+        
+        // Define a few constants in Smarty
+        $this->template->assign('VERSION', VERSION);
+        $this->template->assign('SITE_URL', SITE_URL);
+        $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
+        $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
+        $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($paths['archive'][0], 1) . '/');
+        $this->template->assign('SITE_EMAIL_CONTACT', SITE_EMAIL_CONTACT);
+        
+        // Check if in panic mode or not
+        if ($kill == false) {
+            // Authenticate if database-connection was successful
+            if ($this->db !== NULL) {
+                // Add root element to collection
+                $root_element = new Item($this->collection, $this->db);
+                $root_element->createById(1);
+                $this->collection->add($root_element);
+                
+                // Define the standard menu
+                $this->template->assign('HEADER_MENU', 'HOME');
 
-            // Init Smarty
-            $this->template = $smarty = new Smarty();
+                // Init user
+                $this->user = new User($this->db, $this->template);
+                
+                // Setting the file-directory
+                $this->fileDirectory = dirname(__FILE__ ). FILE_ROOT;
+                
+                // Storing paths
+                $this->paths = $paths;
 
-            // Define a few constants in Smarty
-            $this->template->assign('VERSION', VERSION);
-            $this->template->assign('SITE_URL', SITE_URL);
-            $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
-            $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
-            $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($paths['archive'][0], 1) . '/');
-            $this->template->assign('SITE_EMAIL_CONTACT', SITE_EMAIL_CONTACT);
+                // Check if we should validate login
+                if (isset($_POST['login-email'])) {
+                    $this->logIn();
+                }
+            }
+            else {
+                // Include 404 controller
+                require_once $this->basePath . '/controllers/errorController.php';
 
-            // Define the standard menu
-            $this->template->assign('HEADER_MENU', 'HOME');
-
-            // Init user
-            $this->user = new User($this->db, $this->template);
-            
-            // Setting the file-directory
-            $this->fileDirectory = dirname(__FILE__ ). FILE_ROOT;
-            
-            // Storing paths
-            $this->paths = $paths;
-
-            // Check if we should validate login
-            if (isset($_POST['login-email'])) {
-                $this->logIn();
+                // New instance
+                $controller = new ErrorController($this->paths, $this->basePath, 'db');
+                
+                // Kill this off
+                die();
             }
         }
     }
