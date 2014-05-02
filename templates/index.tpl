@@ -1,5 +1,15 @@
 [[+include file="header.tpl"]]
 
+[[+if $HOME_INFOBOX != '']]
+    <div class="row">
+        <div class="col-md-12">
+            <div class="well">
+                [[+$HOME_INFOBOX]]
+            </div>
+        </div>
+    </div>
+[[+/if]]
+
 <div class="row">
 	<div class="col-md-6">
 		<div class="list-header">

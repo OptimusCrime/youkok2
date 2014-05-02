@@ -34,7 +34,7 @@ class HomeController extends Base {
             $this->template->assign('HOME_USER_LATEST', $this->loadLastDownloads());
             $this->template->assign('HOME_USER_FAVORITES', $this->loadFavorites());
         } else {
-            $this->template->assign('HOME_INFOBOX', null);
+            $this->template->assign('HOME_INFOBOX', '<p>Her kommer info</p>');
             $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
             $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
         }

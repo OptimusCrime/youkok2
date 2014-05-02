@@ -492,6 +492,7 @@ a, a:focus, a:active, a:visited {
 }
 .well {
     padding-bottom: 12px;
+    background-color: #fff;
 }
 .can-i-be-inline {
     display: inline-block;
