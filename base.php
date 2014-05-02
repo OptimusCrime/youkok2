@@ -231,9 +231,26 @@ class Base {
 
                         // Add message
                         $this->addMessage('Du er nå logget inn.', 'success');
-
-                        // Redirect
-                        $this->redirect('');
+                        
+                        // Check if we should redirect the user back to the previous page
+                        if (strstr($_SERVER['HTTP_REFERER'], SITE_URL) !== false) {
+                            // Has referer, remove base
+                            $clean_referer = str_replace(SITE_URL_FULL, '', $_SERVER['HTTP_REFERER']);
+                            
+                            // Check if anything left
+                            if (strlen($clean_referer) > 0) {
+                                // Refirect to whatever we have left
+                                $this->redirect($clean_referer);
+                            }
+                            else {
+                                // Send to frontpage
+                                
+                            }
+                        }
+                        else {
+                            // Does not have referer
+                            $this->redirect('');
+                        }
                     }
                     else {
                         // Message
