@@ -26,17 +26,19 @@ class GrayboxController extends Base {
         if ($_GET['q'] == 'graybox/newest') {
         	$this->generateNewest();
         }
+        else if ($_GET['q'] == 'graybox/downloads') {
+        	$this->generateDownloads();
+        }
     }
     
     //
-    // Method for generating graybox for newest downloads
+    // Method for generating graybox for newest files
     //
     
     private function generateNewest() {
         // Declear variable for storing content
         $ret = '<ul class="list-group">';
         
-        // Loading newest files from the system TODO add filter
         $get_newest = "SELECT id
         FROM archive
         WHERE is_directory = 0
@@ -60,6 +62,46 @@ class GrayboxController extends Base {
             if ($element != null) {
                 $element_url = $element->generateUrl($this->paths['download'][0]);
                 $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
+            }
+        }
+        
+        // End
+        $ret .= '</ul>';
+        
+        // Echo the pure content
+        echo $ret;
+    }
+    
+     //
+    // Method for generating graybox for newest downloads
+    //
+    
+    private function generateDownloads() {
+        // Declear variable for storing content
+        $ret = '<ul class="list-group">';
+        
+        $get_downloads = "SELECT file, downloaded_time
+        FROM download
+        ORDER BY id DESC
+        LIMIT 15";
+        
+        $get_downloads_query = $this->db->query($get_downloads);
+        while ($row = $get_downloads_query->fetch(PDO::FETCH_ASSOC)) {
+            // Create new object
+            $item = new Item($this->collection, $this->db);
+            $item->setShouldLoadRoot(true);
+            $item->createById($row['file']);
+
+            // Add to collection if new
+            $this->collection->add($item);
+
+            // Load item from collection
+            $element = $this->collection->get($row['file']);
+
+            // CHeck if element was loaded
+            if ($element != null) {
+                $element_url = $element->generateUrl($this->paths['download'][0]);
+                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($row['downloaded_time']) . '" data-ts="' . $row['downloaded_time'] . '">Laster...</span>]</li>';
             }
         }
         

@@ -1116,13 +1116,30 @@ $(document).ready(function () {
     if ($('#archive-sidebar-newest-inner').length > 0) {
         $.ajax({
             cache: false,
-            url: "graybox/newest",
+            url: 'graybox/newest',
             success: function(html) {
                 // Set content
                 $('#archive-sidebar-newest-inner').html(html);
 
                 // Load moment
                 $('#archive-sidebar-newest-inner .moment-timestamp').each(function () {
+                    $that = $(this);
+                    $that.html(moment($(this).data('ts')).fromNow());
+                });
+            }
+        });
+    }
+    
+    if ($('#archive-sidebar-last-downloads-inner').length > 0) {
+        $.ajax({
+            cache: false,
+            url: 'graybox/downloads',
+            success: function(html) {
+                // Set content
+                $('#archive-sidebar-last-downloads-inner').html(html);
+
+                // Load moment
+                $('#archive-sidebar-last-downloads-inner .moment-timestamp').each(function () {
                     $that = $(this);
                     $that.html(moment($(this).data('ts')).fromNow());
                 });
