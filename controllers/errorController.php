@@ -23,9 +23,12 @@ class ErrorController extends Base {
         parent::__construct($paths, $base, true);
 
         if ($reason == 'db') {
+            $this->template->assign('SITE_TITLE', 'Noe gikk galt');
             $this->template->display('error_db.tpl');
         }
         else {
+            // Dette er ikke implementert enda
+            $this->template->assign('SITE_TITLE', 'Noe gikk galt');
             $this->template->display('error_generic.tpl');
         }
     }

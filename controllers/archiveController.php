@@ -28,7 +28,7 @@ class ArchiveController extends Base {
         // Check if base
         if (str_replace('/', '', $_GET['q']) == str_replace('/', '', $this->paths['archive'][0])) {
             // Currently displaying the base
-
+            $this->template->assign('SITE_TITLE', 'Kokeboka');
             $this->template->assign('ARCHIVE_MODE', 'list');
             $this->template->assign('ARCHIVE_DISPLAY', $this->loadCourses());
 
@@ -95,6 +95,9 @@ class ArchiveController extends Base {
                         $this->template->assign('ARCHIVE_ACCEPTED_FILETYPES', json_encode($accepted_filetypes));
                         $accepted_fileending = explode(',', SITE_ACCEPTED_FILEENDINGS);
                         $this->template->assign('ARCHIVE_ACCEPTED_FILEENDINGS', json_encode($accepted_fileending));
+                        
+                        // Add title
+                        $this->template->assign('SITE_TITLE', 'Kokeboka :: ' . $this->loadBredcrumbsTitle($element));
                     }
                     else {
                         $should_display_404 = true;
@@ -148,6 +151,23 @@ class ArchiveController extends Base {
 
         // Return breadcrumbs
         return $ret;
+    }
+    
+    private function loadBredcrumbsTitle($element) {
+        $ret = '';
+        $arr = $element->getBreadcrumbs();
+        foreach ($arr as $k => $v) {
+            if ($k > 0) {
+                if ($k == 1) {
+                    $ret .= $v->getName() . ' :: ';
+                }
+                else {
+                    $ret .= $v->getName() . ' / ';
+                }
+            }
+        }
+        
+        return substr($ret, 0, strlen($ret) - 3);
     }
 
     //

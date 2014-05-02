@@ -37,6 +37,7 @@ class AuthController extends Base {
                 $this->logIn();
             }
             else {
+                $this->template->assign('SITE_TITLE', 'Logg inn');
                 $this->displayAndCleanup('login.tpl');
             }
         }
@@ -44,12 +45,15 @@ class AuthController extends Base {
         	$this->logOut();
         }
         else if ($_GET['q'] == 'registrer') {
+            $this->template->assign('SITE_TITLE', 'Registrer');
             $this->register();
         }
         else if ($_GET['q'] == 'glemt-passord') {
+            $this->template->assign('SITE_TITLE', 'Glemt passord');
             $this->forgottenPassword();
         }
         else if ($_GET['q'] == 'nytt-passord') {
+            $this->template->assign('SITE_TITLE', 'Nytt passord');
             $this->forgottenPasswordNew();
         }
         else if ($_GET['q'] == 'verifiser') {

@@ -25,6 +25,7 @@ class FlatController extends Base {
         // Check query
         if ($_GET['q'] == 'om') {
         	$this->template->assign('HEADER_MENU', 'ABOUT');
+            $this->template->assign('SITE_TITLE', 'Om Youkok2');
         	$this->displayAndCleanup('flat_about.tpl');
         }
         elseif ($_GET['q'] == 'retningslinjer') {
@@ -46,18 +47,22 @@ class FlatController extends Base {
             $this->template->assign('SITE_ACCEPTED_FILEENDINGS', $endings_string);
             
             // Display the page
+            $this->template->assign('SITE_TITLE', 'Retningslinjer for Youkok2');
         	$this->displayAndCleanup('flat_retningslinjer.tpl');
         }
         elseif ($_GET['q'] == 'privacy') {
             $this->template->assign('HEADER_MENU', null);
+            $this->template->assign('SITE_TITLE', 'Privacy');
             $this->displayAndCleanup('flat_privacy.tpl');
         }
         elseif ($_GET['q'] == 'hjelp') {
             $this->template->assign('HEADER_MENU', 'HELP');
+            $this->template->assign('SITE_TITLE', 'Hjelp');
             $this->displayAndCleanup('flat_help.tpl');
         }
         elseif ($_GET['q'] == 'karma') {
             $this->template->assign('HEADER_MENU', null);
+            $this->template->assign('SITE_TITLE', 'Karma');
             $this->displayAndCleanup('flat_karma.tpl');
         }
         elseif ($_GET['q'] == 'changelog.txt') {

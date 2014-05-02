@@ -41,6 +41,7 @@ class OtherController extends Base {
         $this->template->assign('HEADER_MENU', 'WOS');
 
         // Display template
+        $this->template->assign('SITE_TITLE', 'Wall of Shame');
         $this->displayAndCleanup('other_wall_of_shame.tpl');
     }
 }

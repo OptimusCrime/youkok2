@@ -26,6 +26,7 @@ class NotfoundController extends Base {
         $this->template->assign('HEADER_MENU', null);
 
         // Display template
+        $this->template->assign('SITE_TITLE', 'Siden ble ikke funnet');
         $this->displayAndCleanup('404.tpl');
     }
 }

@@ -50,6 +50,7 @@ class ProfileController extends Base {
 		        	$this->template->assign('PROFILE_USER_NTNU', $this->user->getNTNUEmail() . '@stud.ntnu.no');
 
 		        	// Displaying and cleaning up
+                    $this->template->assign('SITE_TITLE', 'Mine innstillinger');
 		        	$this->displayAndCleanup('profile_settings.tpl');
         		}
         		else {
