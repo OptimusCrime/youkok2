@@ -160,11 +160,39 @@ class Base {
         
         // Load message
         $this->showMessages();
+        
+        // Load cache
+        $this->loadCache();
 
         // Call Smarty
         $this->template->display($template);
     }
-
+    
+    //
+    // Loading cache for typeahad
+    //
+    
+    private function loadCache() {
+        if (file_exists($this->basePath . '/cache.php')) {
+            // File exists
+            $content = json_decode(file_get_contents($this->basePath . '/cache.php'), true);
+            
+            // Check content
+            if (!isset($content['ts'])) {
+                // Assign random cache
+                $this->template->assign('CACHE_TIME', rand());
+            }
+            else {
+                // Assign corret cache
+                $this->template->assign('CACHE_TIME', $content['ts']);
+            }
+        }
+        else {
+            // Assign random cache
+            $this->template->assign('CACHE_TIME', rand());
+        }
+    }
+    
     //
     // Login
     //
