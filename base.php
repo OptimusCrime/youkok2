@@ -244,7 +244,7 @@ class Base {
                             }
                             else {
                                 // Send to frontpage
-                                
+                                $this->redirect('');
                             }
                         }
                         else {
