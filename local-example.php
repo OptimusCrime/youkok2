@@ -15,6 +15,9 @@ define('VERSION', '0.0.1-b');
 define('SITE_ERROR_REPORTING', E_ALL); 
 define('SITE_ERROR_DISPLAY', 1); 
 
+// Timezone
+define('SITE_TIMEZONE', 'Europe/London');
+
 // Site url (no trailing slash)
 define('SITE_URL', 'http://my-site.tld');
 

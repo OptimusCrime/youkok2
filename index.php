@@ -9,12 +9,6 @@
 */
 
 //
-// Timezone GMT+0
-//
-
-date_default_timezone_set('Europe/London');
-
-//
 // Set headers
 //
 
@@ -48,6 +42,12 @@ require_once $base_path . '/local.php';
 
 error_reporting(SITE_ERROR_REPORTING);
 ini_set('display_errors', SITE_ERROR_DISPLAY);
+
+//
+// Timezone
+//
+
+date_default_timezone_set(SITE_TIMEZONE);
 
 //
 // The Loader-class, loads the correct class extended from REST depending on the method being called
