@@ -35,6 +35,7 @@ class Item {
     private $accepted;
     private $visible;
     private $mimeType;
+    private $missingImage;
     private $shouldLoadPhysicalLocation;
     private $shouldLoadRoot;
     private $rootParent;
@@ -70,6 +71,7 @@ class Item {
         $this->size = 0;
         $this->course = null;
         $this->courseName = '';
+        $this->missingImage = false;
     }
     
     //
@@ -145,7 +147,7 @@ class Item {
         // Get all info about file
         if ($this->id != null) {
             // Id is set, run a simple query
-            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, is_accepted, is_visible, added, location, size, course
+            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, missing_image, is_accepted, is_visible, added, location, size, course
             FROM archive 
             WHERE id = :id";
             
@@ -159,6 +161,7 @@ class Item {
             $this->urlFriendly = $row['url_friendly'];
             $this->parent = $row['parent'];
             $this->mimeType = $row['mime_type'];
+            $this->missingImage = $row['missing_image'];
             $this->accepted = $row['is_accepted'];
             $this->visible = $row['is_visible'];
             $this->location = $row['location'];
@@ -211,6 +214,10 @@ class Item {
 
     public function getMimeType() {
         return $this->mimeType;
+    }
+    
+    public function getMissingImage() {
+        return $this->missingImage;
     }
 
     public function getAdded() {

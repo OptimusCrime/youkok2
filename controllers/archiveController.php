@@ -201,7 +201,7 @@ class ArchiveController extends Base {
                                     <div class="archive-item' . ($element->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="file" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '" data-size="' . $element->getSize() . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
-                                        <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . $item->getMimeType() . '.png\');"></div>
+                                        <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . ($item->getMissingImage() ? 'unknown' : $item->getMimeType()) . '.png\');"></div>
                                         <div class="archive-item-label"><p>' . $element->getName() . '</p></div>
                                     </div>
                                 </a>

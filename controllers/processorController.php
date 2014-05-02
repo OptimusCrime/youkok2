@@ -700,16 +700,25 @@ class ProcessorController extends Base {
                                 break;
                             }
                         }
+                        
+                        // Test for missing image
+                        if (file_exists($this->basePath . '/assets/css/lib/images/mimetypes128/' . str_replace('/', '_', $_FILES['files']['type'][0]) . '.png')) {
+                            $has_missing_image = 0;
+                        }
+                        else {
+                            $has_missing_image = 1;
+                        }
 
                         // Insert into archive
                         $insert_archive = "INSERT INTO archive
-                        (name, url_friendly, mime_type, parent, location, size)
-                        VALUES (:name, :url_friendly, :mime_type, :parent, :location, :size)";
+                        (name, url_friendly, mime_type, missing_image, parent, location, size)
+                        VALUES (:name, :url_friendly, :mime_type, :missing_image, :parent, :location, :size)";
                         
                         $insert_archive_query = $this->db->prepare($insert_archive);
                         $insert_archive_query->execute(array(':name' => $name,
                             ':url_friendly' => $url_friendly,
                             ':mime_type' => str_replace('/', '_', $_FILES['files']['type'][0]),
+                            ':missing_image' => $has_missing_image,
                             ':parent' => $item->getId(),
                             ':location' =>  $this->generateUrlFriendly($this_file_name),
                             ':size' => $_FILES['files']['size'][0]));
@@ -978,7 +987,7 @@ class ProcessorController extends Base {
         $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
         
         // Remove all non-alphanumeric, keep spaces and dots, also remove whitespace if more than one space
-        $s = preg_replace('/\s\s+/', ' ', preg_replace("/[^a-z0-9 \.]/", '', strtolower($s)));
+        $s = preg_replace('/\s\s+/', ' ', preg_replace("/[^a-z0-9 -_\.]/", '', strtolower($s)));
         
         // Decide how to deal with spaces
         if ($for_url) {
