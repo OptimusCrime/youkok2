@@ -495,7 +495,7 @@ $(document).ready(function () {
         }
         else {
             $('#archive-create-folder-div').stop().slideDown(400, function () {
-                chive-create-folder-name').focus();
+                $('archive-create-folder-name').focus();
             });
             $('#archive-create-file-div').stop().slideUp();
         }
