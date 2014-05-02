@@ -141,6 +141,12 @@
 		<ul id="archive-list">
 		    [[+$ARCHIVE_DISPLAY]]
 		</ul>
+        
+        <div id="archive-empty" class="well">
+            <p>Huffa!</p>
+            <p>Det er visst ingen filer her. Du kan bidra ved å laste opp filer til Youkok2! Dette krever en identifisert brukerkonto, dersom du ikke allerede har dette. Les mer om prosessen <a href="hjelp">her</a> under seksjonen 'Hvordan kan jeg bidra?'. Om du allerede har en verifisert bruker kan du laste opp filer i kontrollpanelet til høyre.</p>
+            <p>- YouKok2</p>
+        </div>
 	[[+else]]
 		[[+$ARCHIVE_DISPLAY]]
 	[[+/if]]

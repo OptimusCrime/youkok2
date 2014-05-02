@@ -770,6 +770,15 @@ $(document).ready(function () {
             $('#forgotten-password-new-form-submit').prop('disabled', true);
         }
     });
+    
+    //
+    // Check for empty archive
+    //
+    
+    if ($('#archive-list').length > 0 && $('#archive-list li').length == 0) {
+        $('#archive-list').hide();
+        $('#archive-empty').show();
+    }
 
     //
     // Create file
