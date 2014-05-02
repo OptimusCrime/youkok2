@@ -7,6 +7,17 @@
 	<p>Bortsett fra det lagrer vi "Husk meg"-informasjonen i cookies. Dersom du ikke ønsker dette får du hoppe over å huke av den checkboksen!</p>
 </div>
 <div class="col-md-4">
+    <div id="archive-sidebar-readalso" class="archive-sidebar">
+		<h3>Les også</h3>
+		<ul>
+            <li><a href="om">Om YouKok2</li>
+            <li><a href="retningslinjer">Retningslinjer</li>
+            <li><a href="karma">Karma</li>
+            <li><a href="hjelp">Hjelp</li>
+            <li><a href="wall-of-shame">Wall of Shame</li>
+        </ul>
+	</div>
+    
 	<div id="archive-sidebar-numbers" class="archive-sidebar">
 		<h3>Artige tall</h3>
 		<div id="archive-sidebar-numbers-inner">
