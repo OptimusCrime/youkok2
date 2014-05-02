@@ -12,6 +12,7 @@
 
 # But ignore local settings
 local.php
+cache.php
 .htaccess
 /processor/search/*
 
