@@ -56,6 +56,7 @@ class Base {
         $this->template->assign('VERSION', VERSION);
         $this->template->assign('SITE_URL', SITE_URL);
         $this->template->assign('SITE_TITLE', 'Den beste kokeboka');
+        $this->template->assign('SITE_USE_GA', SITE_USE_GA);
         $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
         $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
         $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($paths['archive'][0], 1) . '/');

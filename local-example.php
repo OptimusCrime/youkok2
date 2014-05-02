@@ -3,7 +3,7 @@
  * File: local-example.php / local.php
  * Holds: Holds the database-information
  * Created: 02.10.13
- * Last updated: 23.04.14
+ * Last updated: 02.05.14
  * Project: Youkok2
  * 
 */
@@ -23,6 +23,9 @@ define('SITE_RELATIVE', '/');
 // Accepted filetypes
 define('SITE_ACCEPTED_FILETYPES', 'application/pdf,text/plain,text/x-java-source,application/x-python,text/html');
 define('SITE_ACCEPTED_FILEENDINGS', 'pdf,txt,java,py,html,htm');
+
+// Google analytics
+define('SITE_USE_GA', false);
 
 // Email
 define('SITE_EMAIL_CONTACT', 'post@my-site.tld');
