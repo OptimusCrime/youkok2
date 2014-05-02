@@ -1,3 +1,31 @@
+Youkok2 - 0.0.1-c (2. mai, 2014)
+================================
+
+- [Info] Closed Charlie Version.
+- [Enhanced] Meldinger ser penere ut.
+- [Enhanced] Flere meldinger er skrevet om.
+- [Enhanced] Om man prøver å laste opp fil med filtype som ikke er støttet får man en penere tilbakemelding om dette.
+- [Enhanced] Graybox med linker til andre seksjoner av Youkok2 som man kanskje burde lese.
+- [Enhanced] Dersom en mappe i kokeboka er tom får man en fin tilbakemelding om dette.
+- [Enhanced] Tab-indenting gjort om til space-identing i javascript-filer.
+- [Enhanced] 404-side.
+- [New] Man mottar nå e-post ved registrering.
+- [New] Dersom det ikke er mulig å koble til databasen får man en fin melding om dette.
+- [New] Filer av filtyper som vi ikke har ikoner for vil nå ha et "Unknown"-ikon istede for ingenting.
+- [New] Dynamiske titler for hele nettsiden.
+- [New] Google Analytics!
+- [Fixed] Flere feil tilknyttet filer og url-encoding.
+- [Fixed] Understeker og bindestreker i filnavn blir nå bevart korrekt.
+- [Fixed] Dersom fagnavn og fagkoder blir lastet på nytt blir localStoreage tømt, slik at man ikke har mellomlagret gamle verdier.
+- [Fixed] Fikset feil hvor nettleseren ville oppdatere siden før alle filene var ferdige med å bli lastet opp.
+- [Fixed] Dersom en fil hadde null som mimetype ble opplastningen avsluttet. Nå sjekkes filtyper før feilmelding returneres.
+- [Fixed] Unicode-problemer i denne fila.
+- [Fixed] Unicode-problemer i e-poster.
+- [Changed] Datoer er nå pene og norske, ikke lenger SQL-format.
+- [Changed] Når man logger inn blir man ikke lenger sendt til forsiden.
+- [Changed] Rekkefølgen og innholdet i headeren.
+- [Other] Masse andre mindre greier.
+
 Youkok2 - 0.0.1-b (22. april, 2014)
 ===================================
 

@@ -9,7 +9,7 @@
 */
 
 // Version
-define('VERSION', '0.0.1-b');
+define('VERSION', '0.0.1-c');
 
 // Errors
 define('SITE_ERROR_REPORTING', E_ALL); 
