@@ -36,8 +36,8 @@
                 <li[[+if $HEADER_MENU == 'HOME']] class="active"[[+/if]]><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
                 <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="kokeboka/">Kokeboka</a></li>
                 <li class="hidden[[+if $HEADER_MENU == 'SEARCH']] active[[+/if]]"><a href="sok">Søk</a></li>
-                <li[[+if $HEADER_MENU == 'WOS']] class="active"[[+/if]]><a href="wall-of-shame">Wall of Shame</a></li>
                 <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om Youkok2</a></li>
+                <li[[+if $HEADER_MENU == 'HELP']] class="active"[[+/if]]><a href="hjelp">Hjelp</a></li>
                 [[+if $BASE_USER_IS_LOGGED_IN == true]]
                     <li class="hidden"><a href="profil/innstillinger">Min bruker</a></li>
                     <li class="hidden"><a href="logg-ut">Logg ut</a></li>

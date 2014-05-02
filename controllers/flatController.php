@@ -53,7 +53,7 @@ class FlatController extends Base {
             $this->displayAndCleanup('flat_privacy.tpl');
         }
         elseif ($_GET['q'] == 'hjelp') {
-            $this->template->assign('HEADER_MENU', null);
+            $this->template->assign('HEADER_MENU', 'HELP');
             $this->displayAndCleanup('flat_help.tpl');
         }
         elseif ($_GET['q'] == 'karma') {
