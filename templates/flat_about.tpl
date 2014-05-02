@@ -46,11 +46,11 @@
     <div id="archive-sidebar-readalso" class="archive-sidebar">
 		<h3>Les også</h3>
 		<ul>
-            <li><a href="retningslinjer">Retningslinjer</li>
-            <li><a href="karma">Karma</li>
-            <li><a href="hjelp">Hjelp</li>
-            <li><a href="privacy">Privacy</li>
-            <li><a href="wall-of-shame">Wall of Shame</li>
+            <li><a href="retningslinjer">Retningslinjer</a></li>
+            <li><a href="karma">Karma</a></li>
+            <li><a href="hjelp">Hjelp</a></li>
+            <li><a href="privacy">Privacy</a></li>
+            <li><a href="wall-of-shame">Wall of Shame</a></li>
         </ul>
 	</div>
     
