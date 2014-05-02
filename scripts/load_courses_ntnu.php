@@ -2,9 +2,6 @@
 // Set headers
 header('Content-Type: text/html; charset=utf-8');
 
-// Includes
-require_once $base_path . '../local.php';
-
 // Variables
 $base_path = dirname(dirname(__FILE__));
 $clean = array();
@@ -12,6 +9,9 @@ $page = 1;
 $db = null;
 $to_json = array();
 $log = array();
+
+// Includes
+require_once $base_path . '/local.php';
 
 // Method for cleaning urls
 function url_friendly($s) {
