@@ -9,13 +9,6 @@
 */
 
 //
-// Debug
-//
-
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-
-//
 // Timezone GMT+0
 //
 
@@ -48,6 +41,13 @@ require_once $base_path . '/elements/user.class.php';
 require_once $base_path . '/base.php';
 require_once $base_path . '/executioner.php';
 require_once $base_path . '/local.php';
+
+//
+// Debug
+//
+
+error_reporting(SITE_ERROR_REPORTING);
+ini_set('display_errors', SITE_ERROR_DISPLAY);
 
 //
 // The Loader-class, loads the correct class extended from REST depending on the method being called

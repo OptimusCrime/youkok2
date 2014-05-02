@@ -11,6 +11,10 @@
 // Version
 define('VERSION', '0.0.1-b');
 
+// Errors
+define('SITE_ERROR_REPORTING', E_ALL); 
+define('SITE_ERROR_DISPLAY', 1); 
+
 // Site url (no trailing slash)
 define('SITE_URL', 'http://my-site.tld');
 
