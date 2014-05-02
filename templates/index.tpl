@@ -1,10 +1,22 @@
 [[+include file="header.tpl"]]
 
 [[+if $HOME_INFOBOX != '']]
-    <div class="row">
-        <div class="col-md-12">
+    <div class="row" id="frontpage-wellholder">
+        <div class="col-md-9">
             <div class="well">
                 [[+$HOME_INFOBOX]]
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="well">
+                <h3>Kjappe linker</h3>
+                <a class="login-opener" data-toggle="dropdown" href="logg-inn">Logg inn</a><br />
+                <a href="registrer">Registrer</a><br />
+                <a href="glemt-passord">Glemt passord</a><br />
+                <br />
+                <a href="retningslinjer">Retningslinjer</a><br />
+                <a href="hjelp">Hjelp</a><br />
+                <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a>
             </div>
         </div>
     </div>

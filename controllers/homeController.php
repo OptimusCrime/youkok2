@@ -34,7 +34,7 @@ class HomeController extends Base {
             $this->template->assign('HOME_USER_LATEST', $this->loadLastDownloads());
             $this->template->assign('HOME_USER_FAVORITES', $this->loadFavorites());
         } else {
-            $this->template->assign('HOME_INFOBOX', '<p>Her kommer info</p>');
+            $this->template->assign('HOME_INFOBOX', $this->loadInfobox());
             $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
             $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
         }
@@ -252,6 +252,32 @@ class HomeController extends Base {
 
         // Return the content
         return $ret;
+    }
+    
+    //
+    // Method for loading infobox (users not logged in)
+    //
+    
+    private function loadInfobox() {
+        // Load users
+        $get_user_number = "SELECT COUNT(id) as 'antall_brukere'
+        FROM user";
+        
+        $get_user_number_query = $this->db->prepare($get_user_number);
+        $get_user_number_query->execute();
+        $get_user_number_result = $get_user_number_query->fetch(PDO::FETCH_ASSOC);
+        
+        // Load files
+        $get_file_number = "SELECT COUNT(id) as 'antall_filer'
+        FROM archive
+        WHERE is_directory = 0";
+        
+        $get_file_number_query = $this->db->prepare($get_file_number);
+        $get_file_number_query->execute();
+        $get_file_number_result = $get_file_number_query->fetch(PDO::FETCH_ASSOC);
+        
+        // Return text
+        return '<h3>Hei og velkommen til Youkok2. Den beste kokeboka på nettet!</h3><p>Vi har for tiden <b>' . number_format($get_user_number_result['antall_brukere']) . '</b> registrerte brukere og <b>' . number_format($get_file_number_result['antall_filer']) . '</b> filer i vårt system.</p><p>Youkok2 er selvsagt helt gratis og registrerte brukere får mulighet til å lagre favoritter, se sine siste nedlastninger og mye mer. Dersom man velger å verifisere sin bruker mot NTNU kan du også laste opp filer og bidra til å gjøre Youkok2 enda bedre. Du kan lese mer om dette i <a href="om">om-seksjonen</a> vår.</p><p>La oss gjøre studiehverdagen enklere, sammen!</p><p>- Youkok2</p>';
     }
 }
 

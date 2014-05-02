@@ -1129,4 +1129,20 @@ $(document).ready(function () {
             }
         });
     }
+    
+    //
+    // Frontpage hax (soooo ugly omdgfomgofgo
+    //
+    
+    if ($('#frontpage-wellholder').length > 0) {
+        var height1 = $('#frontpage-wellholder .col-md-9 .well').outerHeight();
+        var height2 = $('#frontpage-wellholder .col-md-3 .well').outerHeight();
+        
+        if (height1 > height2) {
+            $('#frontpage-wellholder .col-md-3 .well').css({height: height1});
+        }
+        else {
+            $('#frontpage-wellholder .col-md-9 .well').css({height: height2});
+        }
+    }
 });
