@@ -1,0 +1,11 @@
+Hei.
+
+Du mottar denne e-posten fordi du har benyttet seg av 'Glemt passord'-funksjonen på Youkok2. Dersom dette ikke var deg kan du se bort i fra denne e-posten.
+
+Klikk på linken for å få tilgang til å endre ditt passord:
+{{SITE_URL}}nytt-passord?hash={{HASH}}
+
+Dersom du ikke kan klikke på linken kan du kopiere den og lime den inn i nettleseren din.
+
+Med vennlig hilsen
+Youkok2
