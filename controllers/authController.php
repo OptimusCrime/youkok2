@@ -144,6 +144,20 @@ class AuthController extends Base {
                                 ':password' => $hash,
                                 ':salt' => $hash_salt,
                                 ':nick' => $_POST['register-form-nick']));
+                            
+                            // Send e-mail here
+                            $mail = new PHPMailer;
+                            $mail->From = 'donotreply@' . SITE_DOMAIN;
+                            $mail->FromName = 'Youkok2';
+                            $mail->addAddress($_POST['register-form-email']);
+                            $mail->addReplyTo(SITE_EMAIL_CONTACT);
+                            
+                            $mail->WordWrap = 75;
+                            $mail->isHTML(false);
+                            
+                            $mail->Subject = utf8_decode('Velkommen til Youkok2');
+                            $mail->Body = utf8_decode(file_get_contents($this->basePath . '/mail/register.txt'));
+                            $mail->send();
                         }
                         else {
                             $should_error = true;
@@ -205,9 +219,23 @@ class AuthController extends Base {
                     $insert_changepassword_query = $this->db->prepare($insert_changepassword);
                     $insert_changepassword_query->execute(array(':user' => $row['id'], ':hash' => $hash));
 
-                    // Send e-mail
-                    $message = "Hei\n\nKlikk på linken for å kunne endre nytt passord:\n" . SITE_URL_FULL . "nytt-passord?hash=" . $hash . "\n\nMvh\nYoukok2";
-                    mail($_POST['forgotten-email'], 'Glemt passord på Youkok2', $message);
+                    // Send mail
+                    $mail = new PHPMailer;
+                    $mail->From = 'donotreply@' . SITE_DOMAIN;
+                    $mail->FromName = 'Youkok2';
+                    $mail->addAddress($_POST['forgotten-email']);
+                    $mail->addReplyTo(SITE_EMAIL_CONTACT);
+
+                    $mail->WordWrap = 75;
+                    $mail->isHTML(false);
+
+                    $mail->Subject = utf8_decode('Glemt passord på Youkok2');
+                    $message = utf8_decode(file_get_contents($this->basePath . '/mail/forgotten.txt'));
+                    $message_keys = array(
+                        '{{SITE_URL}}' => SITE_URL_FULL,
+                        '{{HASH}}' => $hash);
+                    $mail->Body = str_replace(array_keys($message_keys), $message_keys, $message);
+                    $mail->send();
 
                     // Add message
                     $this->addMessage('Det er blitt sendt en e-post til deg. Denne inneholder en link for å velge nytt passord. Denne linken er gyldig i 24 timer.', 'success');
@@ -351,7 +379,7 @@ class AuthController extends Base {
                 $delete_verify_query->execute(array(':user' => $row['user'])); 
 
                 // Add message
-                $this->addMessage('Din bruker har nå blitt verifisert på Youkok2!', 'success');
+                $this->addMessage('Din bruker har nå blitt verifisert!', 'success');
 
                 // Redirect
                 $this->redirect('');

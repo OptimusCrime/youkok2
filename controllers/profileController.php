@@ -166,8 +166,22 @@ class ProfileController extends Base {
             $hash = $this->hashPassword(md5(rand(0, 10000000000) . 'DKHJDHDDHGDHGJDGHJDGHJDGHJ'), $hash_salt);
 
             // Send mail
-            $message = "Hei\n\nKlikk på linken for å verifisere din bruker:\n" . SITE_URL_FULL . "verifiser?hash=" . $hash . "\n\nMvh\nYoukok2";
-            mail($_POST['verify-username'] . '@stud.ntnu.no', 'Verifiser din bruker på Youkok2', $message);
+            $mail = new PHPMailer;
+            $mail->From = 'donotreply@' . SITE_DOMAIN;
+            $mail->FromName = 'Youkok2';
+            $mail->addAddress($_POST['verify-username'] . '@stud.ntnu.no');
+            $mail->addReplyTo(SITE_EMAIL_CONTACT);
+
+            $mail->WordWrap = 75;
+            $mail->isHTML(false);
+
+            $mail->Subject = utf8_decode('Verifiser din bruker på Youkok2');
+            $message = utf8_decode(file_get_contents($this->basePath . '/mail/verify.txt'));
+            $message_keys = array(
+                '{{SITE_URL}}' => SITE_URL_FULL,
+                '{{HASH}}' => $hash);
+            $mail->Body = str_replace(array_keys($message_keys), $message_keys, $message);
+            $mail->send();
 
             // Insert to database
             $insert_verify = "INSERT INTO verify

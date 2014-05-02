@@ -18,6 +18,9 @@ define('SITE_ERROR_DISPLAY', 1);
 // Timezone
 define('SITE_TIMEZONE', 'Europe/London');
 
+// Define domain
+define('SITE_DOMAIN', 'my-site.tld');
+
 // Site url (no trailing slash)
 define('SITE_URL', 'http://my-site.tld');
 
