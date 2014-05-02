@@ -7,10 +7,10 @@
 
 	<h3>Den originale Kokeboka</h3>
 	<p>Som student ved NTNU har du mest sannsynlig hørt om begrepet å <em>koke</em>. Dette kommer fra Kristians Kokebok, bedre kjent som <a href="http://www.youkok.com" target="_blank">Youkok.com</a>. Denne nettsiden har vært en fantastisk ressurs for flere tusen studenter i en knipen studenthverdag.</p>
-	<p>Vi har selv vært store fan av denne kokeboka, men følte at den kunne forbedres ytterligere..</p>
+	<p>Vi har selv vært store fan av denne kokeboka, men følte at den kunne forbedres ytterligere.</p>
 	
 	<h3>Å definere bidragsmodellen</h3>
-	<p>Vi følte vi kunne forbedre hvordan "gamle" Youkok la ut sine ressurser. På "gamle" Youkok er det Kristian som administrerer og legger ut filer til nedlastning. Selv om dette i og for seg fungerer bra, er det naturlig at det ikke er like aktuelt å holde alt oppdatert lenge etter at sin egen studietid er forbi.</p>
+	<p>Vi følte vi kunne forbedre hvordan "gamle" Youkok la ut sine ressurser. På "gamle" Youkok er det Christian som administrerer og legger ut filer til nedlastning. Selv om dette i og for seg fungerer bra, er det naturlig at det ikke er like aktuelt å holde alt oppdatert lenge etter at sin egen studietid er forbi.</p>
 	<p>Vi så på <a href="http://www.stackoverflow.com" target="_blank">StackOverflow.com</a> og hvordan deres modell gjør det mulig for hele communitiet å bidra med spørsmål, svar og administrering. Mye av vår modell er direkte stjålet eller inspirtert fra dem.</p>
 
 	<h3>Bidragsmodellen</h3>
@@ -29,6 +29,7 @@
 	<ul>
 		<li><a href="http://www.php.net/manual/en/book.pdo.php" target="_blank">PHP Data Objects</a></li>
 		<li><a href="http://www.smarty.net" target="_blank">Smarty</a></li>
+		<li><a href="https://github.com/Synchro/PHPMailer" target="_blank">PHPMailer</a></li>
 	</ul>
 	<ul>
 		<li><a href="http://getbootstrap.com" target="_blank">Bootstrap</a></li>
