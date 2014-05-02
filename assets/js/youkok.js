@@ -3,9 +3,9 @@
 //
 
 if (typeof String.prototype.endsWith !== 'function') {
-	String.prototype.endsWith = function(suffix) {
-		return this.indexOf(suffix, this.length - suffix.length) !== -1;
-	};
+    String.prototype.endsWith = function(suffix) {
+        return this.indexOf(suffix, this.length - suffix.length) !== -1;
+    };
 }
 
 //
@@ -13,11 +13,14 @@ if (typeof String.prototype.endsWith !== 'function') {
 //
 
 function check_email(str) {
-	var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
-	if (filter.test(str))
-		return true;
-	else
-		return false;
+    var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+    
+    if (filter.test(str)) {
+        return true;
+    }
+    else {
+        return false;
+    }
 };
 
 //
@@ -25,21 +28,21 @@ function check_email(str) {
 //
 
 function human_file_size(bytes, si) {
-	var thresh = si ? 1000 : 1024;
+    var thresh = si ? 1000 : 1024;
 
-	if(bytes < thresh) {
-		return bytes + ' B';
-	}
+    if(bytes < thresh) {
+        return bytes + ' B';
+    }
 
-	var units = si ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
-	var u = -1;
-	
-	do {
-		bytes /= thresh;
-		++u;
-	} while(bytes >= thresh);
-	
-	return bytes.toFixed(1)+' '+units[u];
+    var units = si ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+    var u = -1;
+
+    do {
+        bytes /= thresh;
+        ++u;
+    } while(bytes >= thresh);
+
+    return bytes.toFixed(1) + ' ' + units[u];
 };
 
 //
@@ -47,15 +50,15 @@ function human_file_size(bytes, si) {
 //
 
 function display_message(msg) {
-	var $msg_obj;
-	for (var i = 0; i < msg.length; i++) {
-		$msg_obj = $('<div class="alert alert-' + msg[i].type + '">' + msg[i].text + '<div class="alert-close"><i class="fa fa-times"></i></div></div>');
-		$('#main_messages').append($msg_obj);
-		
-		setTimeout(function($msg_obj_inner) {
-			$('.alert-close', $msg_obj_inner).trigger('click');
-		}, 10000, $msg_obj);
-	}
+    var $msg_obj;
+    for (var i = 0; i < msg.length; i++) {
+        $msg_obj = $('<div class="alert alert-' + msg[i].type + '">' + msg[i].text + '<div class="alert-close"><i class="fa fa-times"></i></div></div>');
+        $('#main_messages').append($msg_obj);
+
+        setTimeout(function($msg_obj_inner) {
+            $('.alert-close', $msg_obj_inner).trigger('click');
+        }, 10000, $msg_obj);
+    }
 }
 
 //
@@ -85,10 +88,10 @@ moment.lang('en', {
 //
 
 var courses = new Bloodhound({
-	datumTokenizer: Bloodhound.tokenizers.obj.whitespace('course'),
-	queryTokenizer: Bloodhound.tokenizers.whitespace,
-	limit: 10,
-	prefetch: 'processor/search/courses.json',
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('course'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    limit: 10,
+    prefetch: 'processor/search/courses.json',
 });
 courses.initialize();
 
@@ -97,30 +100,30 @@ courses.initialize();
 //
 
 function check_check_search() {
-	// Some variables
-	var val = $('#s').val();
-	var datums = courses.index.datums;
-	var datums_size = datums.length;
-	var was_found = false;
-	
-	// Now loop 'em
-	for (var i = 0; i < datums_size; i++) {
-		// Store reference
-		var current_datum = datums[i];
+    // Some variables
+    var val = $('#s').val();
+    var datums = courses.index.datums;
+    var datums_size = datums.length;
+    var was_found = false;
 
-		// Check if match
-		if (current_datum.course == val) {
-			// Match!
-			was_found = true;
-			window.location = $('#search-base').val() + current_datum.url;
-			break;
-		}
-	}
+    // Now loop 'em
+    for (var i = 0; i < datums_size; i++) {
+        // Store reference
+        var current_datum = datums[i];
 
-	// Check if was found or not
-	if (!was_found) {
-		$('#search-form').submit();
-	}
+        // Check if match
+        if (current_datum.course == val) {
+            // Match!
+            was_found = true;
+            window.location = $('#search-base').val() + current_datum.url;
+            break;
+        }
+    }
+
+    // Check if was found or not
+    if (!was_found) {
+        $('#search-form').submit();
+    }
 }
 
 //
@@ -128,353 +131,361 @@ function check_check_search() {
 //
 
 $(document).ready(function () {
-	
-	//
-	// Typeahead
-	//
 
-	$('#prefetch .typeahead').typeahead({
-		hint: true,
-  		highlight: true,
-	}, {
-		name: 'courses',
-		displayKey: 'course',
-		source: courses.ttAdapter(),	
-	}).on('typeahead:selected', function($e, datum){
-		check_check_search();
-	});
+    //
+    // Typeahead
+    //
 
-	//
-	// Search
-	//
+    $('#prefetch .typeahead').typeahead({
+        hint: true,
+        highlight: true,
+    }, {
+        name: 'courses',
+        displayKey: 'course',
+        source: courses.ttAdapter(),	
+    }).on('typeahead:selected', function($e, datum){
+        check_check_search();
+    });
 
-	$('#s').on('keyup', function(e) {
-		if (e.keyCode == 13) {
-			check_check_search();
-		}
-	});
-	$('#nav-search').on('click', function() {
-		check_check_search();
-	});
+    //
+    // Search
+    //
 
-	//
-	// Archive context menu
-	//
+    $('#s').on('keyup', function(e) {
+        if (e.keyCode == 13) {
+            check_check_search();
+        }
+    });
+    $('#nav-search').on('click', function() {
+        check_check_search();
+    });
 
-	var archive_id = 0;
-	var $archive_right_click = null;
-	var $archive_context_menu = $('#archive-context-menu');
-	var ignore_click_outside = false;
-	
-	if ($('#archive-online').val() != 1) {
-		$('#archive-context-newflag-outer').hide();
-		$('#archive-context-report').parent().hide();
-	}
-	if ($('#archive-can-c').val() != 1) {
-		$('#archive-context-newflag-outer').hide();
-	}
+    //
+    // Archive context menu
+    //
 
-	$archive_context_menu.bind('clickoutside', function(e) {
-		if (ignore_click_outside) {
-			ignore_click_outside = false;
-		}
-		else {
-			if ($archive_context_menu.is(':visible')) {
-				$archive_context_menu.hide();
-			}
-		}
-	});
-	$('body').on('contextmenu', '.archive-item', function(e) {
-		ignore_click_outside = true;
+    var archive_id = 0;
+    var $archive_right_click = null;
+    var $archive_context_menu = $('#archive-context-menu');
+    var ignore_click_outside = false;
 
-		// Pointer
-		var $that = $(this);
-		$archive_right_click = $that;
+    if ($('#archive-online').val() != 1) {
+        $('#archive-context-newflag-outer').hide();
+        $('#archive-context-report').parent().hide();
+    }
+    if ($('#archive-can-c').val() != 1) {
+        $('#archive-context-newflag-outer').hide();
+    }
 
-		// Set id
-		archive_id = $that.data('id');
+    $archive_context_menu.bind('clickoutside', function(e) {
+        if (ignore_click_outside) {
+            ignore_click_outside = false;
+        }
+        else {
+            if ($archive_context_menu.is(':visible')) {
+                $archive_context_menu.hide();
+            }
+        }
+    });
+    $('body').on('contextmenu', '.archive-item', function(e) {
+        ignore_click_outside = true;
 
-		// Set info
-		$('#archive-context-menu-id', $archive_context_menu).html($that.data('name'));
-		$('#archive-context-menu-size', $archive_context_menu).html(' (' + human_file_size($that.data('size'), true) + ')');
-		$('#archive-context-menu-flags', $archive_context_menu).html($that.data('flags'));
-		
-		// Get link
-		var link = $that.parent().attr('href');
+        // Pointer
+        var $that = $(this);
+        $archive_right_click = $that;
 
-		// Show/hide
-		if($that.data('type') == 'dir') {
-			$('#archive-context-open', $archive_context_menu).show();
-			$('#archive-context-open a', $archive_context_menu).show().attr('href', link);
+        // Set id
+        archive_id = $that.data('id');
 
-			$('#archive-context-download,#archive-context-new-flag-delete,#archive-context-new-flag-move', $archive_context_menu).hide();
-		}
-		else {
-			$('#archive-context-download', $archive_context_menu).show();
-			$('#archive-context-download a', $archive_context_menu).show().attr('href', link);
-			
-			$('#archive-context-download,#archive-context-new-flag-delete,#archive-context-new-flag-move', $archive_context_menu).show();
-			$('#archive-context-open', $archive_context_menu).hide();
-		}
+        // Set info
+        $('#archive-context-menu-id', $archive_context_menu).html($that.data('name'));
+        $('#archive-context-menu-size', $archive_context_menu).html(' (' + human_file_size($that.data('size'), true) + ')');
+        $('#archive-context-menu-flags', $archive_context_menu).html($that.data('flags'));
 
-		// Favorite
-		if ($that.data('favorite') == null) {
-			$('#archive-context-star', $archive_context_menu).hide();
-		}
-		else {
-			$('#archive-context-star', $archive_context_menu).show();
+        // Get link
+        var link = $that.parent().attr('href');
 
-			if ($that.data('favorite') == 1) {
-				$('#archive-context-star-inside', $archive_context_menu).html('Fjern favoritt');
-			}
-			else {
-				$('#archive-context-star-inside', $archive_context_menu).html('Legg til favoritt');
-			}
-		}
+        // Show/hide
+        if ($that.data('type') == 'dir') {
+            $('#archive-context-open', $archive_context_menu).show();
+            $('#archive-context-open a', $archive_context_menu).show().attr('href', link);
 
-		console.log($('#archive-top').offset().top);
-		// Set location
-		$archive_context_menu.css({
-			display: 'block',
-			left: e.pageX - 20,
-			top: e.pageY - $('#archive-top').offset().top + 10,
-		});
+            $('#archive-context-download,#archive-context-new-flag-delete,#archive-context-new-flag-move', $archive_context_menu).hide();
+        }
+        else {
+            $('#archive-context-download', $archive_context_menu).show();
+            $('#archive-context-download a', $archive_context_menu).show().attr('href', link);
 
-		// Disable default
-		return false;
-	});
-	$('#archive-context-close').on('click', function(e) {
-		// Prevent # href
-		e.preventDefault();
+            $('#archive-context-download,#archive-context-new-flag-delete,#archive-context-new-flag-move', $archive_context_menu).show();
+            $('#archive-context-open', $archive_context_menu).hide();
+        }
 
-		// Hide context menu
-		$archive_context_menu.hide();
-	});
-	$('#archive-context-flags,#archive-context-info,#archive-context-report').on('click', function() {
-		// Hide context menu
-		$archive_context_menu.hide();
-	});
-	$('#archive-context-newflag').on('click', function(e) {
-		e.preventDefault();
-	})
+        // Favorite
+        if ($that.data('favorite') == null) {
+            $('#archive-context-star', $archive_context_menu).hide();
+        }
+        else {
+            $('#archive-context-star', $archive_context_menu).show();
 
-	//
-	// Flags
-	//
+            if ($that.data('favorite') == 1) {
+                $('#archive-context-star-inside', $archive_context_menu).html('Fjern favoritt');
+            }
+            else {
+                $('#archive-context-star-inside', $archive_context_menu).html('Legg til favoritt');
+            }
+        }
+        
+        // Set location
+        $archive_context_menu.css({
+            display: 'block',
+            left: e.pageX - 20,
+            top: e.pageY - $('#archive-top').offset().top + 10,
+        });
 
-	function load_flags() {
-		$.ajax({
-			cache: false,
-			type: "post",
-			url: "processor/flag/get",
-			data: { id: archive_id },
-			success: function(json) {
-				if (json.code == 200) {
-					// Good to go
-					$('#flags-panel').html(json.html);
-				}
-				else {
-					// Something went wrong
-					$('#modal-flags').modal('hide');
-					alert('Noe gikk galt under lastingen av flagg.');
-				}
-			}
-		})
-	}
+        // Disable default
+        return false;
+    });
+    $('#archive-context-close').on('click', function(e) {
+        // Prevent # href
+        e.preventDefault();
 
-	$('#flags-panel').on('click', '.flag-button', function () {
-		$.ajax({
-			cache: false,
-			type: "post",
-			url: "processor/flag/vote",
-			data: { id: archive_id, flag: $(this).data('flag'), value: $(this).data('value') },
-			success: function(json) {
-				if (json.code == 200) {
-					// Good to go
-					load_flags();
-				}
-				else {
-					// Something went wrong
-					alert('Noe gikk galt under stemmingen. Prøv igjen!');
-				}
-			}
-		});
-	});
+        // Hide context menu
+        $archive_context_menu.hide();
+    });
+    $('#archive-context-flags,#archive-context-info,#archive-context-report').on('click', function() {
+        // Hide context menu
+        $archive_context_menu.hide();
+    });
+    $('#archive-context-newflag').on('click', function(e) {
+        e.preventDefault();
+    })
 
-	//
-	// Modals
-	//
+    //
+    // Flags
+    //
 
-	$('#archive-context-flags').on('click', function(e) {
-		// Prevent # href
-		e.preventDefault();
+    function load_flags() {
+        $.ajax({
+            cache: false,
+            type: "post",
+            url: "processor/flag/get",
+            data: { 
+                id: archive_id 
+            },
+            success: function(json) {
+                if (json.code == 200) {
+                    // Good to go
+                    $('#flags-panel').html(json.html);
+                }
+                else {
+                    // Something went wrong
+                    $('#modal-flags').modal('hide');
+                    alert('Noe gikk galt under lastingen av flagg.');
+                }
+            }
+        });
+    }
+    $('#flags-panel').on('click', '.flag-button', function () {
+        $.ajax({
+            cache: false,
+            type: "post",
+            url: "processor/flag/vote",
+            data: { 
+                id: archive_id, 
+                flag: $(this).data('flag'), 
+                value: $(this).data('value') 
+            },
+            success: function(json) {
+                if (json.code == 200) {
+                    // Good to go
+                    load_flags();
+                }
+                else {
+                    // Something went wrong
+                    alert('Noe gikk galt under stemmingen. Prøv igjen!');
+                }
+            }
+        });
+    });
 
-		// Set name
-		$('#modal-flags .modal-title').html('Flagg for: ' + $archive_right_click.data('name'));
+    //
+    // Modals
+    //
 
-		// Show modal
-		$('#modal-flags').modal('show');
+    $('#archive-context-flags').on('click', function(e) {
+        // Prevent # href
+        e.preventDefault();
 
-		// Ajax request
-		load_flags();
-	});
+        // Set name
+        $('#modal-flags .modal-title').html('Flagg for: ' + $archive_right_click.data('name'));
 
-	$('#archive-context-info').on('click', function(e) {
-		// Prevent # href
-		e.preventDefault();
+        // Show modal
+        $('#modal-flags').modal('show');
 
-		// Show modal
-		$('#modal-info').modal('show');
-	});
+        // Ajax request
+        load_flags();
+    });
+    $('#archive-context-info').on('click', function(e) {
+        // Prevent # href
+        e.preventDefault();
 
-	$('#archive-context-report').on('click', function(e) {
-		// Prevent # href
-		e.preventDefault();
+        // Show modal
+        $('#modal-info').modal('show');
+    });
+    $('#archive-context-report').on('click', function(e) {
+        // Prevent # href
+        e.preventDefault();
 
-		// Set name
-		$('#modal-report .modal-title').html('Rapporter: ' + $archive_right_click.data('name'));
+        // Set name
+        $('#modal-report .modal-title').html('Rapporter: ' + $archive_right_click.data('name'));
 
-		// Show modal
-		$('#modal-report').modal('show');
-	});
+        // Show modal
+        $('#modal-report').modal('show');
+    });
 
-	//
-	// Favorite
-	//
+    //
+    // Favorite
+    //
 
-	$('#archive-heading-star').on('click', function () {
-		// Store
-		var $that = $(this);
+    $('#archive-heading-star').on('click', function () {
+        // Store
+        var $that = $(this);
 
-		// Check which way to favorite
-		var favorite_type = 'add';
-		if ($that.hasClass('archive-heading-star-1')) {
-			favorite_type = 'remove';
-		}
+        // Check which way to favorite
+        var favorite_type = 'add';
+        
+        if ($that.hasClass('archive-heading-star-1')) {
+            favorite_type = 'remove';
+        }
 
-		// Gogogo request
-		$.ajax({
-			cache: false,
-			type: "post",
-			url: "processor/favorite/" + favorite_type,
-			data: { id: $that.data('archive-id') },
-			success: function(json) {
-				if (json.code == 200) {
-					// Everything went better than expected :)
-					if (json.status) {
-						$that.removeClass('archive-heading-star-0').addClass('archive-heading-star-1');
-					}
-					else {
-						$that.removeClass('archive-heading-star-1').addClass('archive-heading-star-0');
-					}
+        // Gogogo request
+        $.ajax({
+            cache: false,
+            type: "post",
+            url: "processor/favorite/" + favorite_type,
+            data: { 
+                id: $that.data('archive-id') 
+            },
+            success: function(json) {
+                if (json.code == 200) {
+                    // Everything went better than expected :)
+                    if (json.status) {
+                        $that.removeClass('archive-heading-star-0').addClass('archive-heading-star-1');
+                    }
+                    else {
+                        $that.removeClass('archive-heading-star-1').addClass('archive-heading-star-0');
+                    }
 
-					// Display message
-					display_message(json.msg);
-				}
-				else {
-					// Something went wrong
-					alert('Noe gikk visst galt her. Ups!');
-				}
-			}
-		});
-	});
+                    // Display message
+                    display_message(json.msg);
+                }
+                else {
+                    // Something went wrong
+                    alert('Noe gikk visst galt her. Ups!');
+                }
+            }
+        });
+    });
+    $('#archive-context-star-inside').on('click', function(e) {
+        // Derp
+        e.preventDefault();
 
-	$('#archive-context-star-inside').on('click', function(e) {
-		// Derp
-		e.preventDefault();
+        if ($archive_right_click != null) {
+            var favorite_status = $archive_right_click.data('favorite');
+            if (favorite_status == 0 || favorite_status == 1) {
+                var favorite_type = 'add';
+                if (favorite_status == 1) {
+                    favorite_type = 'remove';
+                }
 
-		if ($archive_right_click != null) {
-			var favorite_status = $archive_right_click.data('favorite');
-			if (favorite_status == 0 || favorite_status == 1) {
-				var favorite_type = 'add';
-				if (favorite_status == 1) {
-					favorite_type = 'remove';
-				}
+                $.ajax({
+                    cache: false,
+                    type: "post",
+                    url: "processor/favorite/" + favorite_type,
+                    data: { 
+                        id: $archive_right_click.data('id') 
+                    },
+                    success: function(json) {
+                        if (json.code == 200) {
+                            // Everything went better than expected :)
+                            if (json.status) {
+                                $archive_right_click.data('favorite', 1);
+                            }
+                            else {
+                                $archive_right_click.data('favorite', 0);
+                            }
 
-				$.ajax({
-					cache: false,
-					type: "post",
-					url: "processor/favorite/" + favorite_type,
-					data: { id: $archive_right_click.data('id') },
-					success: function(json) {
-						if (json.code == 200) {
-							// Everything went better than expected :)
-							if (json.status) {
-								$archive_right_click.data('favorite', 1);
-							}
-							else {
-								$archive_right_click.data('favorite', 0);
-							}
+                            // Display message
+                            display_message(json.msg);
 
-							// Display message
-							display_message(json.msg);
+                            // Hide menu
+                            $archive_context_menu.hide();
+                        }
+                        else {
+                            // Something went wrong
+                            alert('Noe gikk visst galt her. Ups!');
+                        }
+                    }
+                });
+            }
+        }
+    });
 
-							// Hide menu
-							$archive_context_menu.hide();
-						}
-						else {
-							// Something went wrong
-							alert('Noe gikk visst galt her. Ups!');
-						}
-					}
-				})
-			}
-		}
-	});
+    //
+    // Moment.js
+    //
 
-	//
-	// Moment.js
-	//
-
-	$('.moment-timestamp').each(function () {
-		$that = $(this);
+    $('.moment-timestamp').each(function () {
+        $that = $(this);
         $that.html(moment($(this).data('ts')).fromNow());
-	});
+    });
 
-	//
-	// Home
-	//
+    //
+    // Home
+    //
 
-	$('#home-most-popular-dropdown li').on('click', function (e) {
-		// Default
-		e.preventDefault();
+    $('#home-most-popular-dropdown li').on('click', function (e) {
+        // Default
+        e.preventDefault();
 
-		// Swap content
-		$('#home-most-popular-selected').html($('a', this).html());
+        // Swap content
+        $('#home-most-popular-selected').html($('a', this).html());
 
-		// Swap disabled
-		$('#home-most-popular-dropdown li').removeClass('disabled');
-		$(this).addClass('disabled');
+        // Swap disabled
+        $('#home-most-popular-dropdown li').removeClass('disabled');
+        $(this).addClass('disabled');
 
-		// Ajax!
-		$.ajax({
-			cache: false,
-			type: "post",
-			url: "processor/popular/update",
-			data: { delta: $('a', $(this)).data('delta') },
-			success: function(json) {
-				if (json.code == 200) {
-					$('#home-most-popular').slideUp(400, function () {
-						$(this).html(json.html).slideDown(400);
-					});
-				}
-				else {
-					// Something went wrong
-					alert('Noe gikk visst galt her. Ups!');
-				}
-			}
-		});
-	});
+        // Ajax!
+        $.ajax({
+            cache: false,
+            type: "post",
+            url: "processor/popular/update",
+            data: { 
+                delta: $('a', $(this)).data('delta') 
+            },
+            success: function(json) {
+                if (json.code == 200) {
+                    $('#home-most-popular').slideUp(400, function () {
+                        $(this).html(json.html).slideDown(400);
+                    });
+                }
+                else {
+                    // Something went wrong
+                    alert('Noe gikk visst galt her. Ups!');
+                }
+            }
+        });
+    });
 
-	//
-	// Login
-	//
+    //
+    // Login
+    //
 
-	$('#login-dropdown label, #login-dropdown input').on('click', function(e) {
-		e.stopPropagation();
-	});
+    $('#login-dropdown label, #login-dropdown input').on('click', function(e) {
+        e.stopPropagation();
+    });
 
-	//
+    //
     // Create directory
     //
 
@@ -484,53 +495,56 @@ $(document).ready(function () {
         }
         else {
             $('#archive-create-folder-div').stop().slideDown(400, function () {
-            	$('#archive-create-folder-name').focus();
+                chive-create-folder-name').focus();
             });
             $('#archive-create-file-div').stop().slideUp();
         }
     });
     $('#archive-create-folder-div a').on('click', function(e) {
-    	e.preventDefault();
-    	$('#archive-create-folder-div').stop().slideUp(400, function () {
-    		$('#archive-create-folder-name').val('');
-    	});
+        e.preventDefault();
+        $('#archive-create-folder-div').stop().slideUp(400, function () {
+            $('#archive-create-folder-name').val('');
+        });
     });
     var submitting_archive_create_folder_form = false;
     $('#archive-create-folder-form').on('submit', function () {
-    	if ($('#archive-create-folder-name').val().length == 0) {
-    		alert('Error: Du har ikke gitt mappen noen navn!');
-    	}
-    	else {
-    		// Update queue
-    		if (!submitting_archive_create_folder_form) {
-    			submitting_archive_create_folder_form = true;
+        if ($('#archive-create-folder-name').val().length == 0) {
+            alert('Error: Du har ikke gitt mappen noen navn!');
+        }
+        else {
+            // Update queue
+            if (!submitting_archive_create_folder_form) {
+                submitting_archive_create_folder_form = true;
 
-    			// Update working
-    			$('#archive-create-folder-form-submit').html('Jobber...').prop('disabled', true);
+                // Update working
+                $('#archive-create-folder-form-submit').html('Jobber...').prop('disabled', true);
 
-    			$.ajax({
-					cache: false,
-					type: "post",
-					url: "processor/create/folder",
-					data: { id: $('#archive-id').val(), name: $('#archive-create-folder-name').val() },
-					success: function(json) {
-						submitting_archive_create_folder_form = false;
-						if (json.code == 200) {
-							// Refresh
-							window.location.reload();
-						}
-						else if (json.code == 400) {
-							display_message([{'text': 'Et element med dette navnet finnes fra før!', 'type': 'danger'}]);
-						}
-						else {
-							display_message([{'text': 'Noe gikk visst galt her!', 'type': 'danger'}]);
-						}
-					}
-				})
-    		}
-    	}
+                $.ajax({
+                    cache: false,
+                    type: "post",
+                    url: "processor/create/folder",
+                    data: { 
+                        id: $('#archive-id').val(), 
+                        name: $('#archive-create-folder-name').val() 
+                    },
+                    success: function(json) {
+                        submitting_archive_create_folder_form = false;
+                        if (json.code == 200) {
+                            // Refresh
+                            window.location.reload();
+                        }
+                        else if (json.code == 400) {
+                            display_message([{'text': 'Et element med dette navnet finnes fra før!', 'type': 'danger'}]);
+                        }
+                        else {
+                            display_message([{'text': 'Noe gikk visst galt her!', 'type': 'danger'}]);
+                        }
+                    }
+                });
+            }
+        }
 
-    	return false;
+        return false;
     });
 
     //
@@ -538,42 +552,44 @@ $(document).ready(function () {
     //
 
     $('#modal-report-form > a').on('click', function (e) {
-    	e.preventDefault();
+        e.preventDefault();
 
-    	$('#modal-report').modal('hide');
+        $('#modal-report').modal('hide');
     });
-
     $('#modal-report .dropdown li').on('click', function(e) {
-		// Default
-		e.preventDefault();
+        // Default
+        e.preventDefault();
 
-		// Swap content
-		$('#modal-report-selected').html($('a', this).html());
+        // Swap content
+        $('#modal-report-selected').html($('a', this).html());
 
-		// Swap disabled
-		$('#modal-report .dropdown li').removeClass('disabled');
-		$(this).addClass('disabled');
+        // Swap disabled
+        $('#modal-report .dropdown li').removeClass('disabled');
+        $(this).addClass('disabled');
     });
-
     $('#modal-report-form').on('submit', function () {
-    	$.ajax({
-			cache: false,
-			type: "post",
-			url: "processor/report/send",
-			data: { id: $archive_right_click.data('id'), text: $('#modal-report-form textarea').val(), category: $('#modal-report-selected').html() },
-			success: function(json) {
-				if (json.code == 200) {
-					// Refresh
-					window.location.reload();
-				}
-				else {
-					// Something went wrong
-					alert('Noe gikk visst galt!');
-				}
-			}
-		})
+        $.ajax({
+            cache: false,
+            type: "post",
+            url: "processor/report/send",
+            data: { 
+                id: $archive_right_click.data('id'), 
+                text: $('#modal-report-form textarea').val(), 
+                category: $('#modal-report-selected').html() 
+            },
+            success: function(json) {
+                if (json.code == 200) {
+                    // Refresh
+                    window.location.reload();
+                }
+                else {
+                    // Something went wrong
+                    alert('Noe gikk visst galt!');
+                }
+            }
+        });
 
-    	return false;
+        return false;
     });
 
     //
@@ -583,166 +599,168 @@ $(document).ready(function () {
     var register_email_checked = false;
     var register_email_value = "";
     $('#register-form input').on('keyup', function () {
-    	var $that = $(this);
-    	var $that_parent = $that.parent();
-    	var element_id = this.id;
+        var $that = $(this);
+        var $that_parent = $that.parent();
+        var element_id = this.id;
 
-    	if (this.id == 'register-form-email') {
-    		if (check_email($that.val())) {
-    			if ($that_parent.hasClass('has-error')) {
-    				$that_parent.removeClass('has-error');
-    			}
-    			$('#register-form-email-error1').css('color', '');
+        if (this.id == 'register-form-email') {
+            if (check_email($that.val())) {
+                if ($that_parent.hasClass('has-error')) {
+                    $that_parent.removeClass('has-error');
+                }
+                $('#register-form-email-error1').css('color', '');
 
-    			if (register_email_value != $('#register-form-email').val()) {
-    				register_email_value = $('#register-form-email').val();
-    				register_email_checked = false;
+                if (register_email_value != $('#register-form-email').val()) {
+                    register_email_value = $('#register-form-email').val();
+                    register_email_checked = false;
 
-	    			$.ajax({
-						cache: false,
-						type: "post",
-						url: "processor/register/check",
-						data: { email: $('#register-form-email').val() },
-						success: function(json) {
-							if (json.code == 200) {
-								register_email_checked = true;
-								$('#register-form-email-error2').css('color', '');
-								$('#register-form-email').trigger('keyup');
-							}
-							else {
-								$('#register-form-email-error2').css('color', 'red');
-							}
-						}
-					});
-    			}
-    		}
-    		else {
-    			if (!$that_parent.hasClass('has-error')) {
-    				$that_parent.addClass('has-error');
-    			}
-    			$('#register-form-email-error1').css('color', 'red');
-    		}
-    	}
-    	else if (this.id == 'register-form-password1') {
-    		if ($that.val().length < 7) {
-    			if (!$that_parent.hasClass('has-error')) {
-    				$that_parent.addClass('has-error');
-    			}
-    			$('#register-form-password-error1').css('color', 'red');
-    			$('#register-form-password2').prop('disabled', true).val('').parent().removeClass('has-error');
-    			$('#register-form-password-error2').css('color', '');
-    		}
-    		else {
-    			if ($that_parent.hasClass('has-error')) {
-    				$that_parent.removeClass('has-error');
-    			}
-    			$('#register-form-password-error1').css('color', '');
-    			$('#register-form-password2').prop('disabled', false);
-    		}
+                    $.ajax({
+                        cache: false,
+                        type: "post",
+                        url: "processor/register/check",
+                        data: { 
+                            email: $('#register-form-email').val() 
+                        },
+                        success: function(json) {
+                            if (json.code == 200) {
+                                register_email_checked = true;
+                                $('#register-form-email-error2').css('color', '');
+                                $('#register-form-email').trigger('keyup');
+                            }
+                            else {
+                                $('#register-form-email-error2').css('color', 'red');
+                            }
+                        }
+                    });
+                }
+            }
+            else {
+                if (!$that_parent.hasClass('has-error')) {
+                    $that_parent.addClass('has-error');
+                }
+                $('#register-form-email-error1').css('color', 'red');
+            }
+        }
+        else if (this.id == 'register-form-password1') {
+            if ($that.val().length < 7) {
+                if (!$that_parent.hasClass('has-error')) {
+                    $that_parent.addClass('has-error');
+                }
+                $('#register-form-password-error1').css('color', 'red');
+                $('#register-form-password2').prop('disabled', true).val('').parent().removeClass('has-error');
+                $('#register-form-password-error2').css('color', '');
+            }
+            else {
+                if ($that_parent.hasClass('has-error')) {
+                    $that_parent.removeClass('has-error');
+                }
+                $('#register-form-password-error1').css('color', '');
+                $('#register-form-password2').prop('disabled', false);
+            }
 
-    		if ($('#register-form-password2').val().length != 0) {
-    			if ($('#register-form-password1').val() != $('#register-form-password2').val()) {
-					if (!$('#register-form-password2').parent().hasClass('has-error')) {
-	    				$('#register-form-password2').parent().addClass('has-error');
-	    			}
-	    			$('#register-form-password-error2').css('color', 'red');
-				}
-				else {
-					if ($('#register-form-password2').parent().hasClass('has-error')) {
-	    				$('#register-form-password2').parent().removeClass('has-error');
-	    			}
-					$('#register-form-password-error2').css('color', '');
-				}
-    		}
-    	}
-    	else {
-			if ($('#register-form-password1').val() != $('#register-form-password2').val()) {
-				if (!$that_parent.hasClass('has-error')) {
-    				$that_parent.addClass('has-error');
-    			}
-    			$('#register-form-password-error2').css('color', 'red');
-			}
-			else {
-				if ($that_parent.hasClass('has-error')) {
-    				$that_parent.removeClass('has-error');
-    			}
-				$('#register-form-password-error2').css('color', '');
-			}
-    	}
-    	
-    	if ($('#register-form .has-error').length == 0 && register_email_checked == true && check_email($('#register-form-email').val()) && $('#register-form-password1').val().length > 6 && $('#register-form-ret').is(':checked')) {
-    		$('#register-form-submit').prop('disabled', false);
-    	}
-    	else {
-    		$('#register-form-submit').prop('disabled', true);
-    	}
+            if ($('#register-form-password2').val().length != 0) {
+                if ($('#register-form-password1').val() != $('#register-form-password2').val()) {
+                    if (!$('#register-form-password2').parent().hasClass('has-error')) {
+                        $('#register-form-password2').parent().addClass('has-error');
+                    }
+                    $('#register-form-password-error2').css('color', 'red');
+                }
+                else {
+                    if ($('#register-form-password2').parent().hasClass('has-error')) {
+                        $('#register-form-password2').parent().removeClass('has-error');
+                    }
+                    $('#register-form-password-error2').css('color', '');
+                }
+            }
+        }
+        else {
+            if ($('#register-form-password1').val() != $('#register-form-password2').val()) {
+                if (!$that_parent.hasClass('has-error')) {
+                    $that_parent.addClass('has-error');
+                }
+                $('#register-form-password-error2').css('color', 'red');
+            }
+            else {
+                if ($that_parent.hasClass('has-error')) {
+                    $that_parent.removeClass('has-error');
+                }
+                $('#register-form-password-error2').css('color', '');
+            }
+        }
+
+        if ($('#register-form .has-error').length == 0 && register_email_checked == true && check_email($('#register-form-email').val()) && $('#register-form-password1').val().length > 6 && $('#register-form-ret').is(':checked')) {
+            $('#register-form-submit').prop('disabled', false);
+        }
+        else {
+            $('#register-form-submit').prop('disabled', true);
+        }
     });
-	$('#register-form-ret').on('change', function() {
-		$('#register-form-password1').trigger('keyup');
-	})
+    $('#register-form-ret').on('change', function() {
+        $('#register-form-password1').trigger('keyup');
+    })
 
-	//
-	// Forgotten password stuff
-	//
+    //
+    // Forgotten password stuff
+    //
 
-	$('#forgotten-password-new-form input').on('keyup', function () {
-    	var $that = $(this);
-    	var $that_parent = $that.parent();
-    	var element_id = this.id;
+    $('#forgotten-password-new-form input').on('keyup', function () {
+        var $that = $(this);
+        var $that_parent = $that.parent();
+        var element_id = this.id;
 
-    	if (this.id == 'forgotten-password-new-form-password1') {
-    		if ($that.val().length < 7) {
-    			if (!$that_parent.hasClass('has-error')) {
-    				$that_parent.addClass('has-error');
-    			}
-    			$('#forgotten-password-new-form-password-error1').css('color', 'red');
-    			$('#forgotten-password-new-form-password2').prop('disabled', true).val('').parent().removeClass('has-error');
-    			$('#forgotten-password-new-form-password-error2').css('color', '');
-    		}
-    		else {
-    			if ($that_parent.hasClass('has-error')) {
-    				$that_parent.removeClass('has-error');
-    			}
-    			$('#forgotten-password-new-form-password-error1').css('color', '');
-    			$('#forgotten-password-new-form-password2').prop('disabled', false);
-    		}
+        if (this.id == 'forgotten-password-new-form-password1') {
+            if ($that.val().length < 7) {
+                if (!$that_parent.hasClass('has-error')) {
+                    $that_parent.addClass('has-error');
+                }
+                $('#forgotten-password-new-form-password-error1').css('color', 'red');
+                $('#forgotten-password-new-form-password2').prop('disabled', true).val('').parent().removeClass('has-error');
+                $('#forgotten-password-new-form-password-error2').css('color', '');
+            }
+            else {
+                if ($that_parent.hasClass('has-error')) {
+                    $that_parent.removeClass('has-error');
+                }
+                $('#forgotten-password-new-form-password-error1').css('color', '');
+                $('#forgotten-password-new-form-password2').prop('disabled', false);
+            }
 
-    		if ($('#forgotten-password-new-form-password2').val().length != 0) {
-    			if ($('#forgotten-password-new-form-password1').val() != $('#forgotten-password-new-form-password2').val()) {
-					if (!$('#forgotten-password-new-form-password2').parent().hasClass('has-error')) {
-	    				$('#forgotten-password-new-form-password2').parent().addClass('has-error');
-	    			}
-	    			$('#forgotten-password-new-form-password-error2').css('color', 'red');
-				}
-				else {
-					if ($('#forgotten-password-new-form-password2').parent().hasClass('has-error')) {
-	    				$('#forgotten-password-new-form-password2').parent().removeClass('has-error');
-	    			}
-					$('#forgotten-password-new-form-password-error2').css('color', '');
-				}
-    		}
-    	}
-    	else {
-			if ($('#forgotten-password-new-form-password1').val() != $('#forgotten-password-new-form-password2').val()) {
-				if (!$that_parent.hasClass('has-error')) {
-    				$that_parent.addClass('has-error');
-    			}
-    			$('#forgotten-password-new-form-password-error2').css('color', 'red');
-			}
-			else {
-				if ($that_parent.hasClass('has-error')) {
-    				$that_parent.removeClass('has-error');
-    			}
-				$('#forgotten-password-new-form-password-error2').css('color', '');
-			}
-    	}
-    	
-    	if ($('#forgotten-password-new-form .has-error').length == 0 && $('#forgotten-password-new-form-password1').val().length > 6) {
-    		$('#forgotten-password-new-form-submit').prop('disabled', false);
-    	}
-    	else {
-    		$('#forgotten-password-new-form-submit').prop('disabled', true);
-    	}
+            if ($('#forgotten-password-new-form-password2').val().length != 0) {
+                if ($('#forgotten-password-new-form-password1').val() != $('#forgotten-password-new-form-password2').val()) {
+                    if (!$('#forgotten-password-new-form-password2').parent().hasClass('has-error')) {
+                        $('#forgotten-password-new-form-password2').parent().addClass('has-error');
+                    }
+                    $('#forgotten-password-new-form-password-error2').css('color', 'red');
+                }
+                else {
+                    if ($('#forgotten-password-new-form-password2').parent().hasClass('has-error')) {
+                        $('#forgotten-password-new-form-password2').parent().removeClass('has-error');
+                    }
+                    $('#forgotten-password-new-form-password-error2').css('color', '');
+                }
+            }
+        }
+        else {
+            if ($('#forgotten-password-new-form-password1').val() != $('#forgotten-password-new-form-password2').val()) {
+                if (!$that_parent.hasClass('has-error')) {
+                    $that_parent.addClass('has-error');
+                }
+                $('#forgotten-password-new-form-password-error2').css('color', 'red');
+            }
+            else {
+                if ($that_parent.hasClass('has-error')) {
+                    $that_parent.removeClass('has-error');
+                }
+                $('#forgotten-password-new-form-password-error2').css('color', '');
+            }
+        }
+
+        if ($('#forgotten-password-new-form .has-error').length == 0 && $('#forgotten-password-new-form-password1').val().length > 6) {
+            $('#forgotten-password-new-form-submit').prop('disabled', false);
+        }
+        else {
+            $('#forgotten-password-new-form-submit').prop('disabled', true);
+        }
     });
 
     //
@@ -754,15 +772,15 @@ $(document).ready(function () {
             $('#archive-create-file-div').stop().slideUp();
         }
         else {
-        	$('#archive-create-folder-div').stop().slideUp();
+            $('#archive-create-folder-div').stop().slideUp();
             $('#archive-create-file-div').stop().slideDown();
         }
     });
     $('#archive-create-file-div a').on('click', function(e) {
-    	if ($(this).attr('href') == '#') {
-    		e.preventDefault();
-    		$('#archive-create-file-div').stop().slideUp(400);
-    	}
+        if ($(this).attr('href') == '#') {
+            e.preventDefault();
+            $('#archive-create-file-div').stop().slideUp(400);
+        }
     });
     var num_of_files = 0;
     var num_of_files_uploaded = 0;
@@ -771,114 +789,109 @@ $(document).ready(function () {
     $('#archive-create-file-form').fileupload({
         url: 'processor/create/file',
         add: function (e, data) {
-        	// Get file object
-        	var file_object = data.files[data.files.length - 1];
+            // Get file object
+            var file_object = data.files[data.files.length - 1];
 
-        	// Test for valid filetype
-        	var found = false;
-        	var name = file_object.name;
-        	var mimetype = file_object.type;
+            // Test for valid filetype
+            var found = false;
+            var name = file_object.name;
+            var mimetype = file_object.type;
 
-        	// Check with mimetype first (is better)
-        	if (mimetype != null) {
-        		for (var i = 0; i < accepted_filetypes.length; i++) {
-	        		if (accepted_filetypes[i] == mimetype) {
-	        			found = true;
-	        			break;
-	        		}
-	        	}
-        	}
+            // Check with mimetype first (is better)
+            if (mimetype != null) {
+                for (var i = 0; i < accepted_filetypes.length; i++) {
+                    if (accepted_filetypes[i] == mimetype) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
 
-        	// Mimetype was not found, okey then, try fileendings
-        	if (!found) {
-        		for (var i = 0; i < accepted_fileendings.length; i++) {
-	        		if (name.endsWith('.' + accepted_fileendings[i])) {
-	        			found = true;
-	        			break;
-	        		}
-	        	}
-        	}
-        	
+            // Mimetype was not found, okey then, try fileendings
+            if (!found) {
+                for (var i = 0; i < accepted_fileendings.length; i++) {
+                    if (name.endsWith('.' + accepted_fileendings[i])) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
 
-        	// Check if valid or not
-        	if (found) {
-        		// The container
-	        	var $container = $(' \
-	        		<div class="fileupload-file"> \
-						<strong>' + name + '</strong> \
-						<p>' + human_file_size(file_object.size, true) + '</p> \
-						<div class="fileupload-file-remove"> \
-							<span>Fjern <i class="fa fa-times"></i></span> \
-						</div> \
-					</div>');
 
-	        	// The button
-	            var $button = $('<button style="display: none;">x</button>');
+            // Check if valid or not
+            if (found) {
+                // The container
+                var $container = $(' \
+                    <div class="fileupload-file"> \
+                    <strong>' + name + '</strong> \
+                    <p>' + human_file_size(file_object.size, true) + '</p> \
+                    <div class="fileupload-file-remove"> \
+                    <span>Fjern <i class="fa fa-times"></i></span> \
+                    </div> \
+                    </div>');
 
-	            // Add button to container
-	            $container.append($button);
+                // The button
+                var $button = $('<button style="display: none;">x</button>');
 
-	            // Set button as context for the file
-	            data.context = $button;
+                // Add button to container
+                $container.append($button);
 
-	            // Add listener for the button
-	            $button.click(function () {
-	                data.submit();
-	            });
+                // Set button as context for the file
+                data.context = $button;
 
-	            // Add container to html
-	            $('#fileupload-files-inner').append($container);
-        	}
-        	else {
-        		// Display error, wrong filetype
-        		alert('Ikke godkjent filtype.');
-        	}
+                // Add listener for the button
+                $button.click(function () {
+                    data.submit();
+                });
 
-        	// Update number of files going to be uploaded
-        	num_of_files = $('.fileupload-file').length - 1;
+                // Add container to html
+                $('#fileupload-files-inner').append($container);
+            }
+            else {
+                // Display error, wrong filetype
+                alert('Ikke godkjent filtype.');
+            }
+
+            // Update number of files going to be uploaded
+            num_of_files = $('.fileupload-file').length - 1;
         },
         done: function (e, data) {
-        	// Update number of finished uploads
-        	num_of_files_uploaded++;
-
-        	console.log("Antall filer = " + num_of_files + ". Antall nå = " + num_of_files_uploaded);
-        	console.log(e);
-        	console.log(data);
-        	console.log("-----");
-
-        	// Check if all done
-        	if (num_of_files_uploaded == num_of_files) {
-        		// Reload page
-        		window.location.reload();
-        	}
+            // Update number of finished uploads
+            num_of_files_uploaded++;
+            
+            // Check if all done
+            if (num_of_files_uploaded == num_of_files) {
+                // Reload page
+                window.location.reload();
+            }
         },
         progressall: function (e, data) {
-	        var progress = parseInt(data.loaded / data.total * 100, 10);
-	        $('#progress .bar').css(
-	            'width',
-	            progress + '%'
-	        );
-	    },
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .bar').css(
+                'width',
+                progress + '%'
+            );
+        },
     });
     $('#archive-create-file-form').on('submit', function () {
-    	// Loop all the buttons
-    	$('#fileupload-files-inner button').each(function () {
-    		// Trigger click
-    		$(this).trigger('click');
-    	});
+        // Loop all the buttons
+        $('#fileupload-files-inner button').each(function () {
+            // Trigger click
+            $(this).trigger('click');
+        });
 
-    	// Update submit button
-    	$('#archive-create-file-form-submit').html('Laster opp....').prop('disabled', true);
+        // Update submit button
+        $('#archive-create-file-form-submit').html('Laster opp....').prop('disabled', true);
 
-    	// Avoid submitting the form
-    	return false;
+        // Avoid submitting the form
+        return false;
     });
     $('#fileupload-files').on('click', '.fileupload-file-remove', function () {
-    	$(this).parent().remove();
+        $(this).parent().remove();
     });
     if ($('#archive_accepted_filetypes').length > 0) {
-    	accepted_filetypes = jQuery.parseJSON($('#archive_accepted_filetypes').html());
-    	accepted_fileendings = jQuery.parseJSON($('#archive_accepted_fileendings').html());
+        accepted_filetypes = jQuery.parseJSON($('#archive_accepted_filetypes').html());
+        accepted_fileendings = jQuery.parseJSON($('#archive_accepted_fileendings').html());
     }
 
     //
@@ -886,16 +899,17 @@ $(document).ready(function () {
     //
 
     if ($('#archive-history').length > 0) {
-    	
-    	$.ajax({
-			cache: false,
-			type: "post",
-			url: "processor/history/get",
-			data: { id: $('#archive-id').val() },
-			success: function(json) {
-				$('#archive-history-inside').html(json.html);
-			}
-		});
+        $.ajax({
+            cache: false,
+            type: "post",
+            url: "processor/history/get",
+            data: {
+                id: $('#archive-id').val() 
+            },
+            success: function(json) {
+                $('#archive-history-inside').html(json.html);
+            }
+        });
     }
 
     //
@@ -903,16 +917,16 @@ $(document).ready(function () {
     //
 
     $('#main_messages').on('click', '.alert-close', function () {
-    	// Remove
-    	$(this).parent().fadeOut(400, function () {
-    		$(this).remove();
-    	});
+        // Remove
+        $(this).parent().fadeOut(400, function () {
+        $(this).remove();
+        });
     });
     if ($('.alert').length > 0) {
-    	setTimeout(function () {
-    		// Close all messages
-    		$('.alert-close').trigger('click');
-    	}, 10000);
+        setTimeout(function () {
+            // Close all messages
+            $('.alert-close').trigger('click');
+        }, 10000);
     };
 
     //
@@ -920,83 +934,86 @@ $(document).ready(function () {
     //
 
     $('#archive-context-new-flag-name').on('click', function(e) {
-    	e.preventDefault();
+        e.preventDefault();
 
-    	// Title
-    	$('#modal-new-flag .modal-title').html('Endre navn på: ' + $archive_right_click.data('name'));
+        // Title
+        $('#modal-new-flag .modal-title').html('Endre navn på: ' + $archive_right_click.data('name'));
 
-    	// Set filetype
-    	var filetype_index = $archive_right_click.data('name').lastIndexOf('.');
-    	$('#modal-new-flag-name .input-group .input-group-addon').html($archive_right_click.data('name').substr(filetype_index));
+        // Set filetype
+        var filetype_index = $archive_right_click.data('name').lastIndexOf('.');
+        $('#modal-new-flag-name .input-group .input-group-addon').html($archive_right_click.data('name').substr(filetype_index));
 
-    	// Show modal
-		$('#modal-new-flag').modal('show');
+        // Show modal
+        $('#modal-new-flag').modal('show');
 
-		// Hide all inners
-		$('.modal-new-flag-container').hide();
-		$('#modal-new-flag-name').show();
+        // Hide all inners
+        $('.modal-new-flag-container').hide();
+        $('#modal-new-flag-name').show();
     });
     $('#modal-new-flag-name-form').on('submit', function () {
-    	// Check if valid
-    	if ($('#modal-new-flag-name-name').val().length == 0) {
-    		alert('Du glemte å skrive inn et navn...');
-    	}
-    	else {
-    		$.ajax({
-				cache: false,
-				type: "post",
-				url: "processor/flag/name",
-				data: { id: $archive_right_click.data('id'),
-					name: $('#modal-new-flag-name-name').val(),
-					filetype: $('#modal-new-flag-name .input-group .input-group-addon').html(),
-					comment:  $('#modal-new-flag-name-comment').val()},
-				success: function(json) {
-					if (json.code == 200) {
-						// Refresh
-						window.location.reload();
-					}
-					else {
-						alert('Noe gikk visst galt her!');
-					}
-				}
-			});
-    	}
+        // Check if valid
+        if ($('#modal-new-flag-name-name').val().length == 0) {
+            alert('Du glemte å skrive inn et navn...');
+        }
+        else {
+            $.ajax({
+                cache: false,
+                type: "post",
+                url: "processor/flag/name",
+                data: { 
+                    id: $archive_right_click.data('id'),
+                    name: $('#modal-new-flag-name-name').val(),
+                    filetype: $('#modal-new-flag-name .input-group .input-group-addon').html(),
+                    comment:  $('#modal-new-flag-name-comment').val()
+                },
+                success: function(json) {
+                    if (json.code == 200) {
+                        // Refresh
+                        window.location.reload();
+                    }
+                    else {
+                        alert('Noe gikk visst galt her!');
+                    }
+                }
+            });
+        }
 
-    	return false;
+        return false;
     });
-
     $('#archive-context-new-flag-delete').on('click', function(e) {
-    	e.preventDefault();
+        e.preventDefault();
 
-    	// Title
-    	$('#modal-new-flag .modal-title').html('Sletting av: ' + $archive_right_click.data('name'));
+        // Title
+        $('#modal-new-flag .modal-title').html('Sletting av: ' + $archive_right_click.data('name'));
 
-    	// Show modal
-		$('#modal-new-flag').modal('show');
+        // Show modal
+        $('#modal-new-flag').modal('show');
 
-		// Hide all inners
-		$('.modal-new-flag-container').hide();
-		$('#modal-new-flag-delete').show();
+        // Hide all inners
+        $('.modal-new-flag-container').hide();
+        $('#modal-new-flag-delete').show();
     });
     $('#modal-new-flag-delete-form').on('submit', function () {
-    	$.ajax({
-			cache: false,
-			type: "post",
-			url: "processor/flag/delete",
-			data: { id: $archive_right_click.data('id'),
-				comment:  $('#modal-new-flag-delete-comment').val()},
-			success: function(json) {
-				if (json.code == 200) {
-					// Refresh
-					window.location.reload();
-				}
-				else {
-					alert('Noe gikk visst galt her!');
-				}
-			}
-		});
+        $.ajax({
+            cache: false,
+            type: "post",
+            url: "processor/flag/delete",
+            data: { 
+                id: $archive_right_click.data('id'),
+                comment:  $('#modal-new-flag-delete-comment').val()
+            },
+            success: function(json) {
+                if (json.code == 200) {
+                    // Refresh
+                    window.location.reload();
+                }
+                else {
+                    alert('Noe gikk visst galt her!');
+                }
+            }
+        });
 
-		return false;
+        return false;
     });
 
     //
@@ -1004,17 +1021,19 @@ $(document).ready(function () {
     //
 
     $('#dropdown-menu-opener').on('click', function(e) {
-    	setTimeout(function() {
-    		$('#login-email').focus();
-    	}, 100);
+        setTimeout(function() {
+            $('#login-email').focus();
+        }, 100);
     });
     $('.login-opener').on('click', function(e) {
-    	e.preventDefault();
-    	e.stopPropagation();
-    	$('#login-dropdown').dropdown('toggle');
-    	setTimeout(function() {
-    		$('#login-email').focus();
-    	}, 100);
+        e.preventDefault();
+        e.stopPropagation();
+        
+        $('#login-dropdown').dropdown('toggle');
+        
+        setTimeout(function() {
+            $('#login-email').focus();
+        }, 100);
     });
 
     //
@@ -1023,59 +1042,62 @@ $(document).ready(function () {
 
     var profile_email_value = "";
     $('#profile-edit-info-form input').on('keyup', function () {
-    	var $that = $(this);
-    	var $that_parent = $that.parent();
-    	var element_id = this.id;
+        var $that = $(this);
+        var $that_parent = $that.parent();
+        var element_id = this.id;
 
-    	if (this.id == 'register-form-email') {
-    		if (check_email($that.val())) {
-    			if ($that_parent.hasClass('has-error')) {
-    				$that_parent.removeClass('has-error');
-    			}
-    			$('#register-form-email-error1').css('color', '');
+        if (this.id == 'register-form-email') {
+            if (check_email($that.val())) {
+                if ($that_parent.hasClass('has-error')) {
+                    $that_parent.removeClass('has-error');
+                }
+                $('#register-form-email-error1').css('color', '');
 
-    			if (profile_email_value != $('#register-form-email').val()) {
-    				profile_email_value = $('#register-form-email').val();
+                if (profile_email_value != $('#register-form-email').val()) {
+                    profile_email_value = $('#register-form-email').val();
 
-	    			$.ajax({
-						cache: false,
-						type: "post",
-						url: "processor/register/check",
-						data: { email: $('#register-form-email').val(), ignore: true },
-						success: function(json) {
-							if (json.code == 200) {
-								$('#register-form-email-error2').css('color', '');
-							}
-							else {
-								$('#register-form-email-error2').css('color', 'red');
-							}
-						}
-					});
-    			}
-    		}
-    		else {
-    			if (!$that_parent.hasClass('has-error')) {
-    				$that_parent.addClass('has-error');
-    			}
-    			$('#register-form-email-error1').css('color', 'red');
-    		}
-    	}
+                    $.ajax({
+                        cache: false,
+                        type: "post",
+                        url: "processor/register/check",
+                        data: { 
+                            email: $('#register-form-email').val(), 
+                            ignore: true 
+                        },
+                        success: function(json) {
+                            if (json.code == 200) {
+                                $('#register-form-email-error2').css('color', '');
+                            }
+                            else {
+                                $('#register-form-email-error2').css('color', 'red');
+                            }
+                        }
+                    });
+                }
+            }
+            else {
+                if (!$that_parent.hasClass('has-error')) {
+                    $that_parent.addClass('has-error');
+                }
+                $('#register-form-email-error1').css('color', 'red');
+            }
+        }
     });
-    
+
     //
     // Grayboxes
     //
-    
+
     if ($('#archive-sidebar-newest-inner').length > 0) {
         $.ajax({
             cache: false,
             url: "graybox/newest",
             success: function(html) {
-               // Set content
-               $('#archive-sidebar-newest-inner').html(html);
-               
-               // Load moment
-               $('#archive-sidebar-newest-inner .moment-timestamp').each(function () {
+                // Set content
+                $('#archive-sidebar-newest-inner').html(html);
+
+                // Load moment
+                $('#archive-sidebar-newest-inner .moment-timestamp').each(function () {
                     $that = $(this);
                     $that.html(moment($(this).data('ts')).fromNow());
                 });

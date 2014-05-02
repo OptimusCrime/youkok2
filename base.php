@@ -3,7 +3,7 @@
  * File: rest.php
  * Holds: The base-class intilize most of the common stuff the system needs
  * Created: 02.10.13
- * Last updated: 22.04.14
+ * Last updated: 02.05.14
  * Project: Youkok2
  * 
 */
@@ -249,6 +249,8 @@ class Base {
     protected function setLogin($hash, $email, $cookie = false) {
         // Remove old login (just in case)
         unset($_SESSION['youkok2']);
+        
+        // Set the cookie
         setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
 
         // Set new login

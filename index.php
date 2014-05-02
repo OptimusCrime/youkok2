@@ -3,7 +3,7 @@
  * File: index.php
  * Holds: The Loader class that loads the correct class based on the method being called, setting output and including all the stuff we need
  * Created: 02.10.13
- * Last updated: 23.04.14
+ * Last updated: 02.05.14
  * Project: Youkok2
  * 
 */
@@ -48,10 +48,6 @@ require_once $base_path . '/elements/user.class.php';
 require_once $base_path . '/base.php';
 require_once $base_path . '/executioner.php';
 require_once $base_path . '/local.php';
-
-//
-// Trying to include local.php
-//
 
 //
 // The Loader-class, loads the correct class extended from REST depending on the method being called

@@ -419,8 +419,6 @@ a, a:focus, a:active, a:visited {
   direction: ltr;
   cursor: pointer;
 }
-
-/* Fixes for IE < 8 */
 @media screen\9 {
   .fileinput-button input {
     filter: alpha(opacity=0);

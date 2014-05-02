@@ -3,7 +3,7 @@
  * File: executioner.php
  * Holds: Executes completed flags
  * Created: 14.04.14
- * Last updated: 18.04.14
+ * Last updated: 02.05.14
  * Project: Youkok2
  * 
 */
@@ -213,6 +213,7 @@ class Executioner {
             // Check duplicates for url friendly
             $url_friendly = $this->generateUrlFriendly($flag_data['name'], true);
             $num = 2;
+            
             while (true) {
                 $get_duplicate = "SELECT id
                 FROM archive 
@@ -222,6 +223,7 @@ class Executioner {
                 $get_duplicate_query = $this->db->prepare($get_duplicate);
                 $get_duplicate_query->execute(array(':id' => $this->element->getId(), ':url_friendly' => $url_friendly));
                 $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
+                
                 if (isset($row_duplicate['id'])) {
                     $url_friendly = $this->generateUrlFriendly($this->letters[rand(0, count($this->letters) - 1)] . $url_friendly);
                     $num++;
@@ -268,6 +270,7 @@ class Executioner {
         foreach ($votes as $v) {
             // Check what values to update
             $karma_value_string = '';
+            
             if ($v['value'] == $type) {
                 $karma_value_string = '+1';
             }
@@ -345,6 +348,7 @@ class Executioner {
         foreach ($votes as $v) {
             // Check what values to update
             $karma_value_string = '';
+            
             if ($v['value'] == $type) {
                 $karma_value_string = '+2';
             }
