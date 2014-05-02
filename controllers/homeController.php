@@ -276,8 +276,16 @@ class HomeController extends Base {
         $get_file_number_query->execute();
         $get_file_number_result = $get_file_number_query->fetch(PDO::FETCH_ASSOC);
         
+        // Load downloads
+        $get_download_number = "SELECT COUNT(id) as 'antall_nedlastninger'
+        FROM download";
+        
+        $get_download_number_query = $this->db->prepare($get_download_number);
+        $get_download_number_query->execute();
+        $get_dowload_number_result = $get_download_number_query->fetch(PDO::FETCH_ASSOC);
+        
         // Return text
-        return '<h3>Hei og velkommen til Youkok2. Den beste kokeboka på nettet!</h3><p>Vi har for tiden <b>' . number_format($get_user_number_result['antall_brukere']) . '</b> registrerte brukere og <b>' . number_format($get_file_number_result['antall_filer']) . '</b> filer i vårt system.</p><p>Youkok2 er selvsagt helt gratis og registrerte brukere får mulighet til å lagre favoritter, se sine siste nedlastninger og mye mer. Dersom man velger å verifisere sin bruker mot NTNU kan du også laste opp filer og bidra til å gjøre Youkok2 enda bedre. Du kan lese mer om dette i <a href="om">om-seksjonen</a> vår.</p><p>La oss gjøre studiehverdagen enklere, sammen!</p><p>- Youkok2</p>';
+        return '<h3>Hei og velkommen til Youkok2. Den beste kokeboka på nettet!</h3><p>Vi har for tiden <b>' . number_format($get_user_number_result['antall_brukere']) . '</b> registrerte brukere, <b>' . number_format($get_file_number_result['antall_filer']) . '</b> filer og totalt <b>' . number_format($get_dowload_number_result['antall_nedlastninger']) . '</b> nedlastninger i vårt system.</p><p>Youkok2 er selvsagt helt gratis og registrerte brukere får mulighet til å lagre favoritter, se sine siste nedlastninger og mye mer. Dersom man velger å verifisere sin bruker mot NTNU kan du også laste opp filer og bidra til å gjøre Youkok2 enda bedre. Du kan lese mer om dette i <a href="om">om-seksjonen</a> vår.</p><p>La oss gjøre studiehverdagen enklere, sammen!</p><p>- Youkok2</p>';
     }
 }
 
