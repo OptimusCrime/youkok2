@@ -83,6 +83,7 @@ class Loader {
             '/privacy',
             '/hjelp',
             '/karma',
+            '/changelog.txt',
         ),
 
         'notfound' => array(

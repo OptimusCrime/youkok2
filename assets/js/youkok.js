@@ -151,7 +151,7 @@ $(document).ready(function () {
         name: 'courses',
         displayKey: 'course',
         source: courses.ttAdapter(),	
-    }).on('typeahead:selected', function($e, datum){
+    }).on('typeahead:selected', function($e, datum) {
         check_check_search();
     });
 

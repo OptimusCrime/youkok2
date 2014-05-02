@@ -60,6 +60,19 @@ class FlatController extends Base {
             $this->template->assign('HEADER_MENU', null);
             $this->displayAndCleanup('flat_karma.tpl');
         }
+        elseif ($_GET['q'] == 'changelog.txt') {
+            // Get changelog content
+            $content = file_get_contents($this->basePath . '/changelog.md');
+            
+            // Assign content to placeholder
+            $this->template->assign('CHANGELOG_CONTENT', $content);
+            
+            // Set headers (to fix unicode fuckup)
+            header('Content-Type: text/plain; charset=utf-8');
+            
+            // Render
+            $this->displayAndCleanup('changelog.tpl');
+        }
         else {
             // Page was not found
         	$this->display404();
