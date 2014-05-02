@@ -857,7 +857,15 @@ $(document).ready(function () {
             }
             else {
                 // Display error, wrong filetype
-                alert('Ikke godkjent filtype.');
+                var this_filetype = file_object.name.split('.');
+                var error = [
+                    {
+                        'text' : '<p>Filtypen \'.' + this_filetype[this_filetype.length - 1] + '\' er ikke godkjent på Youkok2. Dersom du syntes denne filtypen burde godkjennes, kan du ta kontakt.</p>',
+                        'type' : 'danger',
+                    },
+                ]
+                
+                display_message(error);
             }
 
             // Update number of files going to be uploaded
