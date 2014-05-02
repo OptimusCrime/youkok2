@@ -320,5 +320,17 @@ class Base {
             $_SESSION['youkok2'] = $strg;
         }
     }
+    
+    //
+    // Prettify dates
+    //
+    
+    private $norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'des');
+    protected function prettifySQLDate($d) {
+        $split1 = explode(' ', $d);
+        $split2 = explode('-', $split1[0]);
+        
+        return (int) $split2[2] . '. ' . $this->norwegianMonths[$split2[1] - 1] . ' ' . $split2[0] . ' @ ' . $split1[1];
+    }
 }
 ?>

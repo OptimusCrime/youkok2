@@ -59,7 +59,7 @@ class GrayboxController extends Base {
             // CHeck if element was loaded
             if ($element != null) {
                 $element_url = $element->generateUrl($this->paths['download'][0]);
-                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $element->getAdded() . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
+                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
             }
         }
         
