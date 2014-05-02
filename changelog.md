@@ -21,6 +21,7 @@ Youkok2 - 0.0.1-c (2. mai, 2014)
 - [Fixed] Dersom en fil hadde null som mimetype ble opplastningen avsluttet. Nå sjekkes filtyper før feilmelding returneres.
 - [Fixed] Unicode-problemer i denne fila.
 - [Fixed] Unicode-problemer i e-poster.
+- [Fixed] En 404-side gir nå 404 HTTP status også.
 - [Changed] Datoer er nå pene og norske, ikke lenger SQL-format.
 - [Changed] Når man logger inn blir man ikke lenger sendt til forsiden.
 - [Changed] Rekkefølgen og innholdet i headeren.
