@@ -539,3 +539,11 @@ a, a:focus, a:active, a:visited {
 .tab-pane {
     margin-top: 10px;
 }
+
+/*
+    Other stuff
+*/
+
+#archive-asd {
+    display: none;
+}
