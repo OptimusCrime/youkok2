@@ -3,7 +3,7 @@
  * File: item.php
  * Holds: Class for either a directory or file in the system
  * Created: 09.04.14
- * Last updated: 15.04.14
+ * Last updated: 02.05.14
  * Project: Youkok2
  * 
 */
