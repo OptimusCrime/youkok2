@@ -22,6 +22,9 @@ class NotfoundController extends Base {
         // Calling Base' constructor
         parent::__construct($paths, $base);
         
+        // Set 404 header
+        header('HTTP/1.0 404 Not Found');
+        
         // Null the menu
         $this->template->assign('HEADER_MENU', null);
 
