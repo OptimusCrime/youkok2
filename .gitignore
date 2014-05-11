@@ -4,6 +4,7 @@
 # Except these
 !/assets/
 !/controllers/
+!/elements/
 !/libs/
 !/mail/
 !/processor/
