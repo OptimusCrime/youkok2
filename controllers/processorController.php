@@ -518,7 +518,7 @@ class ProcessorController extends Base {
                 if ($element != null) {
                     $element_url = $element->generateUrl($this->paths['download'][0]);
                     $root_parent = $element->getRootParent();
-                    $response['html'] .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> @ ' . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . ' [Nedlastninger: ' . number_format($element->getDownloadCount($_POST['delta'])) . ']</a></li>';
+                    $response['html'] .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> @ ' . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->getDownloadCount($_POST['delta'])) . ']</a></li>';
                 }
             }
         }
