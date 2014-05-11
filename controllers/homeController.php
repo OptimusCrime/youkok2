@@ -3,7 +3,7 @@
  * File: homeController.php
  * Holds: The HomeController-class
  * Created: 02.10.13
- * Last updated: 02.05.14
+ * Last updated: 11.05.14
  * Project: Youkok2
  * 
 */
@@ -75,7 +75,15 @@ class HomeController extends Base {
             if ($element != null) {
                 $element_url = $element->generateUrl($this->paths['download'][0]);
                 $root_parent = $element->getRootParent();
-                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> @ ' . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . ' [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
+                
+                // Check if we should load local dir for element
+                $local_dir_str = '';
+                if ($element->getParent() != $root_parent->getId()) {
+                    $local_dir_element = $this->collection->get($element->getParent());
+                    $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->paths['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
+                }
+                
+                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . ' [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
             }
         }
         
@@ -140,7 +148,15 @@ class HomeController extends Base {
             if ($element != null) {
                 $element_url = $element->generateUrl($this->paths['download'][0]);
                 $root_parent = $element->getRootParent();
-                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> @ ' . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->getDownloadCount($user_delta)) . ']</li>';
+                
+                // Check if we should load local dir for element
+                $local_dir_str = '';
+                if ($element->getParent() != $root_parent->getId()) {
+                    $local_dir_element = $this->collection->get($element->getParent());
+                    $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->paths['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
+                }
+                
+                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->getDownloadCount($user_delta)) . ']</li>';
             }
         }
 
@@ -188,7 +204,14 @@ class HomeController extends Base {
                     $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['archive'][0]) . '">' . $element->getName() . '</a>' . (($root_parent == null or $element->getId() == $root_parent->getId()) ? '' : ' @ <a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . '</li>';
                 }
                 else {
-                    $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['download'][0]) . '">' . $element->getName() . '</a> @ ' . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . '</li>';
+                    // Check if we should load local dir for element
+                    $local_dir_str = '';
+                    if ($element->getParent() != $root_parent->getId()) {
+                        $local_dir_element = $this->collection->get($element->getParent());
+                        $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->paths['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
+                    }
+                
+                    $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['download'][0]) . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . '</li>';
                 }
             }
         }
@@ -241,7 +264,15 @@ class HomeController extends Base {
             if ($element != null) {
                 $element_url = $element->generateUrl($this->paths['download'][0]);
                 $root_parent = $element->getRootParent();
-                $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['download'][0]) . '">' . $element->getName() . '</a> @ ' . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . '</li>';
+                
+                // Check if we should load local dir for element
+                $local_dir_str = '';
+                if ($element->getParent() != $root_parent->getId()) {
+                    $local_dir_element = $this->collection->get($element->getParent());
+                    $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->paths['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
+                }
+                
+                $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['download'][0]) . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . '</li>';
             }
         }
         
