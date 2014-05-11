@@ -73,7 +73,7 @@
 	</div>
     
 	<div id="archive-sidebar-numbers" class="archive-sidebar">
-		<h3>Artige tall</h3>
+		<h3>Ting</h3>
 		<div id="archive-sidebar-numbers-inner">
 			<p>Laster...</p>
 		</div>

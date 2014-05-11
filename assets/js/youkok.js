@@ -1147,6 +1147,17 @@ $(document).ready(function () {
         });
     }
     
+    if ($('#archive-sidebar-numbers-inner').length > 0) {
+        $.ajax({
+            cache: false,
+            url: 'graybox/numbers',
+            success: function(html) {
+                // Set content
+                $('#archive-sidebar-numbers-inner').html(html);
+            }
+        });
+    }
+    
     //
     // Frontpage hax (soooo ugly omdgfomgofgo
     //
