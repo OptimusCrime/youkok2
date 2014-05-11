@@ -3,7 +3,7 @@
  * File: local-example.php / local.php
  * Holds: Holds the database-information
  * Created: 02.10.13
- * Last updated: 02.05.14
+ * Last updated: 11.05.14
  * Project: Youkok2
  * 
 */
@@ -41,7 +41,7 @@ define('SITE_USE_GA', false);
 define('SITE_EMAIL_CONTACT', 'post@my-site.tld');
 
 // Folder for downloads
-define('FILE_ROOT', '/relative-path-to-file-root');
+define('FILE_ROOT', dirname(__FILE__ ) . '/path-to-file-root');
 
 // The host where the database is located
 define('DATABASE_HOST', 'localhost');

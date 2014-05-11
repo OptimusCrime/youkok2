@@ -3,7 +3,7 @@
  * File: rest.php
  * Holds: The base-class intilize most of the common stuff the system needs
  * Created: 02.10.13
- * Last updated: 02.05.14
+ * Last updated: 11.05.14
  * Project: Youkok2
  * 
 */
@@ -78,7 +78,7 @@ class Base {
                 $this->user = new User($this->db, $this->template);
                 
                 // Setting the file-directory
-                $this->fileDirectory = dirname(__FILE__ ). FILE_ROOT;
+                $this->fileDirectory = FILE_ROOT;
                 
                 // Storing paths
                 $this->paths = $paths;
