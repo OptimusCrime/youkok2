@@ -3,7 +3,7 @@
  * File: processorController.php
  * Holds: The ProcessorController-class
  * Created: 14.04.14
- * Last updated: 02.05.14
+ * Last updated: 11.05.14
  * Project: Youkok2
  * 
 */
@@ -737,7 +737,7 @@ class ProcessorController extends Base {
                         move_uploaded_file($_FILES['files']['tmp_name'][0], $upload_full_location);
                         
                         // Add message
-                        $this->addMessage('Fila ble lastet opp. Takk for ditt bidrag', 'success');
+                        $this->addFileMessage($name);
 
                         // Finally, success code
                         $response['code'] = 200;

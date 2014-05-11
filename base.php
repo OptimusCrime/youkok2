@@ -138,18 +138,54 @@ class Base {
     //
 
     private function showMessages() {
-        // Check if session was set
+        // Keep the string here
+        $ret = '';
+        
+        // Check for files
+        if (isset($_SESSION['youkok2_files']) and count($_SESSION['youkok2_files']) > 0) {
+            $file_msg = '';
+            foreach ($_SESSION['youkok2_files'] as $k => $v) {
+                if (count($_SESSION['youkok2_files']) == 1) {
+                    $file_msg .= $v;
+                }
+                else if (count($_SESSION['youkok2_files']) == 2 and $k == 1) {
+                    $file_msg .= ' og ' . $v;
+                }
+                else {
+                    if ((count($_SESSION['youkok2_files']) - 1) == $k) {
+                        $file_msg .= ' og ' . $v;
+                    }
+                    else {
+                        $file_msg .= ', ' . $v;
+                    }
+                }
+            }
+            
+            // Remove the ugly part
+            if (count($_SESSION['youkok2_files']) > 1) {
+                $file_msg = substr($file_msg, 2);
+            }
+            
+            // Build final string
+            $ret .= '<div class="alert alert-success">' . $file_msg . ' ble lastet opp til Youkok2. Takk for ditt bidrag!<div class="alert-close"><i class="fa fa-times"></i></div></div>';
+            
+            // Unset the session variable
+            unset($_SESSION['youkok2_files']);
+        }
+        
+        // Check for normal messages
         if (isset($_SESSION['youkok2_message']) and count($_SESSION['youkok2_message']) > 0) {
-            // Loop and store in variable
-            $ret = '';
+            
             foreach ($_SESSION['youkok2_message'] as $v) {
                 $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text'] . '<div class="alert-close"><i class="fa fa-times"></i></div></div>';
             }
-
+            
             // Unset the session variable
             unset($_SESSION['youkok2_message']);
-
-            // Assign final string
+        }
+        
+        // Check if any message was found
+        if (strlen($ret) > 0) {
             $this->template->assign('SITE_MESSAGES', $ret);
         }
         else {
@@ -163,6 +199,14 @@ class Base {
         }
         
         $_SESSION['youkok2_message'][] = array('text' => $text, 'type' => $type);
+    }
+    
+    protected function addFileMessage($name) {
+        if (!isset($_SESSION['youkok2_files'])) {
+            $_SESSION['youkok2_files'] = array();
+        }
+        
+        $_SESSION['youkok2_files'][] = $name;
     }
 
     //
