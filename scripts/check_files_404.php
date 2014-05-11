@@ -47,7 +47,7 @@ if ($db) {
         $collection->add($element);
         
         // Generate full url
-        $url = SITE_URL_FULL . $element->generateUrl('/last-ned');
+        $url = SITE_URL_FULL . $element->generateUrl('/last-ned') . '?donotlogthisdownload';
         
         // Init curl
         $handle = curl_init($url);

@@ -3,7 +3,7 @@
  * File: downloadController.php
  * Holds: The DownloadController-class
  * Created: 02.10.13
- * Last updated: 15.04.14
+ * Last updated: 11.05.14
  * Project: Youkok2
  * 
 */
@@ -58,8 +58,11 @@ class DownloadController extends Base {
                         $file_location = $this->fileDirectory . '/'. $element->getFullLocation();
                         
                         if (file_exists($file_location)) {
-                            // Logg download
-                            $element->addDownload($this->user);
+                            // Check if we should log download
+                            if (!isset($_GET['donotlogthisdownload'])) {
+                                // Logg download
+                                $element->addDownload($this->user);
+                            }
 
                             // Close database connection
                             $this->close();
