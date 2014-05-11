@@ -61,11 +61,14 @@
 					Denne måneden
 				[[+else if $HOME_MOST_POPULAR_DELTA == 2]]
 					Dette året
+                [[+else if $HOME_MOST_POPULAR_DELTA == 4]]
+					I dag
 				[[+else]]
 					Alltid
 				[[+/if]]</span> <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" id="home-most-popular-dropdown">
+					<li[[+if $HOME_MOST_POPULAR_DELTA == -1]] class="disabled"[[+/if]]><a data-delta="4" href="#">I dag</a></li>
 					<li[[+if $HOME_MOST_POPULAR_DELTA == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Denne uka</a></li>
 					<li[[+if $HOME_MOST_POPULAR_DELTA == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">Denne måneden</a></li>
 					<li[[+if $HOME_MOST_POPULAR_DELTA == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Dette året</a></li>

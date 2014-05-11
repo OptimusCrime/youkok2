@@ -469,10 +469,11 @@ class ProcessorController extends Base {
         $delta = array(' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK)', 
             ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', 
             ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR)', 
-            '');
+            '',
+            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY)');
 
         // Check stuff
-        if (isset($_POST['delta']) and is_numeric($_POST['delta']) and $_POST['delta'] >= 0 and $_POST['delta'] <= 3) {
+        if (isset($_POST['delta']) and is_numeric($_POST['delta']) and $_POST['delta'] >= 0 and $_POST['delta'] <= 4) {
             $response['code'] = 200;
 
             if ($this->user->isLoggedIn()) {
@@ -523,6 +524,11 @@ class ProcessorController extends Base {
         }
         else {
             $response['code'] = 500;
+        }
+        
+        // Check if null
+        if ($ret == '') {
+            $ret = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet!</li>';
         }
 
         // Return

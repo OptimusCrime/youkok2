@@ -102,7 +102,8 @@ class HomeController extends Base {
         $delta = array(' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK)', 
             ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', 
             ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR)', 
-            '');
+            '',
+            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY)');
 
         if ($this->user->isLoggedIn()) {
             $user_delta = $this->user->getMostPopularDelta();
