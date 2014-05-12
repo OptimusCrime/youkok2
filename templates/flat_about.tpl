@@ -30,6 +30,7 @@
 		<li><a href="http://www.php.net/manual/en/book.pdo.php" target="_blank">PHP Data Objects</a></li>
 		<li><a href="http://www.smarty.net" target="_blank">Smarty</a></li>
 		<li><a href="https://github.com/Synchro/PHPMailer" target="_blank">PHPMailer</a></li>
+		<li><a href="https://github.com/matthiasmullie/minify" target="_blank">Minify</a></li>
 	</ul>
 	<ul>
 		<li><a href="http://getbootstrap.com" target="_blank">Bootstrap</a></li>
