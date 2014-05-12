@@ -2,6 +2,7 @@
 /*/
 
 # Except these
+!/_build/
 !/assets/
 !/controllers/
 !/elements/
