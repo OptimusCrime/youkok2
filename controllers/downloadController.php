@@ -56,7 +56,6 @@ class DownloadController extends Base {
                     // Check if visible
                     if ($element->isVisible()) {
                         $file_location = $this->fileDirectory . '/'. $element->getFullLocation();
-                        
                         if (file_exists($file_location)) {
                             // Check if we should log download
                             if (!isset($_GET['donotlogthisdownload'])) {
