@@ -3,13 +3,16 @@
  * File: local-example.php / local.php
  * Holds: Holds the database-information
  * Created: 02.10.13
- * Last updated: 11.05.14
+ * Last updated: 13.05.14
  * Project: Youkok2
  * 
 */
 
 // Version
 define('VERSION', '0.0.1-c');
+
+// Base path
+define('BASE_PATH', dirname(__FILE__));
 
 // Errors
 define('SITE_ERROR_REPORTING', E_ALL); 

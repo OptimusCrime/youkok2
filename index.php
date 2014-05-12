@@ -15,28 +15,23 @@
 header('Content-Type: text/html; charset=utf-8');
 
 //
-// Define base for this file
-//
-
-$base_path = dirname(__FILE__);
-
-//
 // Include the libraries and system-files
 //
 
-require_once $base_path . '/libs/smarty/Smarty.class.php';
-require_once $base_path . '/libs/bcrypt/bcrypt.php';
-require_once $base_path . '/libs/phpmailer/class.phpmailer.php';
+require_once 'local.php';
 
-require_once $base_path . '/elements/collection.class.php';
-require_once $base_path . '/elements/item.class.php';
-require_once $base_path . '/elements/flag.class.php';
-require_once $base_path . '/elements/user.class.php';
-require_once $base_path . '/elements/vote.class.php';
+require_once BASE_PATH . '/libs/smarty/Smarty.class.php';
+require_once BASE_PATH . '/libs/bcrypt/bcrypt.php';
+require_once BASE_PATH . '/libs/phpmailer/class.phpmailer.php';
 
-require_once $base_path . '/base.php';
-require_once $base_path . '/executioner.php';
-require_once $base_path . '/local.php';
+require_once BASE_PATH . '/elements/collection.class.php';
+require_once BASE_PATH . '/elements/item.class.php';
+require_once BASE_PATH . '/elements/flag.class.php';
+require_once BASE_PATH . '/elements/user.class.php';
+require_once BASE_PATH . '/elements/vote.class.php';
+
+require_once BASE_PATH . '/base.php';
+require_once BASE_PATH . '/executioner.php';
 
 //
 // Debug
@@ -196,5 +191,5 @@ class Loader {
 // Initiating the loader
 //
 
-$loader = new Loader($base_path);
+$loader = new Loader(BASE_PATH);
 ?>
