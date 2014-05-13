@@ -310,6 +310,7 @@ a, a:focus, a:active, a:visited {
     left: 0px;
     top: 0px;
     display: none;
+    z-index: 99999;
 }
 #archive-heading-star {
     cursor: pointer;
