@@ -254,7 +254,7 @@ $(document).ready(function () {
         // Set location
         $archive_context_menu.css({
             display: 'block',
-            left: e.pageX - 20,
+            left: e.pageX - $('#archive-list').offset().left + 45,
             top: e.pageY - $('#archive-top').offset().top + 10,
         });
 
