@@ -10,6 +10,7 @@
 
 // Version
 define('VERSION', '0.0.1-c');
+define('DEV', false);
 
 // Base path
 define('BASE_PATH', dirname(__FILE__));

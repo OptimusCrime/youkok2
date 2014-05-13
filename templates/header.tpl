@@ -14,10 +14,10 @@
     <script type="text/javascript" src="assets/js/lib/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="assets/js/lib/jquery.fileupload.js"></script>
     <script type="text/javascript" src="assets/js/lib/jquery.ba-outside-events.min.js"></script>
-    <script type="text/javascript" src="assets/js/youkok.min.js?v=[[+$VERSION]]"></script>
+    <script type="text/javascript" src="assets/js/youkok[[+if !$DEV]].min[[+/if]].js?v=[[+$VERSION]]"></script>
     <link rel="stylesheet" type="text/css" href="assets/css/lib/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/lib/font-awesome.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/youkok.min.css?v=[[+$VERSION]]" />
+    <link rel="stylesheet" type="text/css" href="assets/css/youkok[[+if !$DEV]].min[[+/if]].css?v=[[+$VERSION]]" />
 </head>
 <body>
 <input type="hidden" name="cache-time" id="cache-time" value="[[+$CACHE_TIME]]" />

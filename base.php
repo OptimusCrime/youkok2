@@ -54,6 +54,7 @@ class Base {
         
         // Define a few constants in Smarty
         $this->template->assign('VERSION', VERSION);
+        $this->template->assign('DEV', DEV);
         $this->template->assign('SITE_URL', SITE_URL);
         $this->template->assign('SITE_TITLE', 'Den beste kokeboka');
         $this->template->assign('SITE_USE_GA', SITE_USE_GA);
