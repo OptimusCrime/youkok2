@@ -24,6 +24,14 @@ function check_email(str) {
 };
 
 //
+//
+//
+
+function division (i, j) {
+    return i * Math.pow(j, -1);
+}
+
+//
 // Function for prettifying filesize (http://stackoverflow.com/a/14919494/921563)
 //
 
@@ -38,7 +46,7 @@ function human_file_size(bytes, si) {
     var u = -1;
 
     do {
-        bytes /= thresh;
+        bytes = division(bytes, thresh);
         ++u;
     } while(bytes >= thresh);
 
@@ -838,14 +846,7 @@ $(document).ready(function () {
             // Check if valid or not
             if (found) {
                 // The container
-                var $container = $(' \
-                    <div class="fileupload-file"> \
-                    <strong>' + name + '</strong> \
-                    <p>' + human_file_size(file_object.size, true) + '</p> \
-                    <div class="fileupload-file-remove"> \
-                    <span>Fjern <i class="fa fa-times"></i></span> \
-                    </div> \
-                    </div>');
+                var $container = $('<div class="fileupload-file"><strong>' + name + '</strong><p>' + human_file_size(file_object.size, true) + '</p><div class="fileupload-file-remove"><span>Fjern <i class="fa fa-times"></i></span></div></div>');
 
                 // The button
                 var $button = $('<button style="display: none;">x</button>');
@@ -872,7 +873,7 @@ $(document).ready(function () {
                         'text' : '<p>Filtypen \'.' + this_filetype[this_filetype.length - 1] + '\' er ikke godkjent på Youkok2. Dersom du syntes denne filtypen burde godkjennes, kan du ta kontakt.</p>',
                         'type' : 'danger',
                     },
-                ]
+                ];
                 
                 display_message(error);
             }
@@ -891,7 +892,7 @@ $(document).ready(function () {
             }
         },
         progressall: function (e, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
+            var progress = parseInt(division(data.loaded, data.total) * 100, 10);
             $('#progress .bar').css(
                 'width',
                 progress + '%'
