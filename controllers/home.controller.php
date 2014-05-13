@@ -1,9 +1,9 @@
 <?php
 /*
- * File: homeController.php
+ * File: home.controller.php
  * Holds: The HomeController-class
  * Created: 02.10.13
- * Last updated: 11.05.14
+ * Last updated: 13.05.14
  * Project: Youkok2
  * 
 */

@@ -1,9 +1,9 @@
 <?php
 /*
- * File: otherController.php
+ * File: other.controller.php
  * Holds: The OtherController-class for misc-stuff
  * Created: 02.10.13
- * Last updated: 15.04.14
+ * Last updated: 13.05.14
  * Project: Youkok2
  * 
 */

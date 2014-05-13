@@ -1,9 +1,9 @@
 <?php
 /*
- * File: flatController.php
+ * File: flat.controller.php
  * Holds: The FlatController-class
  * Created: 02.10.13
- * Last updated: 22.04.14
+ * Last updated: 13.05.14
  * Project: Youkok2
  * 
 */

@@ -3,7 +3,7 @@
  * File: run.php
  * Holds: Method to initiate the different controllers dynamically
  * Created: 02.10.13
- * Last updated: 11.04.14
+ * Last updated: 13.05.14
  * Project: Youkok2
  * 
 */
@@ -12,7 +12,7 @@
 $name = explode('.', $path[count($path)-1]);
 
 // Uppercasing the first letter to be nice and OOP-ish
-$class_to_call = ucfirst($name[0]);
+$class_to_call = ucfirst($name[0]) . ucfirst($name[1]);
 
 // Creating a new instance
 $controller = new $class_to_call($this->getPaths(), $this->getBasePath());

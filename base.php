@@ -3,7 +3,7 @@
  * File: rest.php
  * Holds: The base-class intilize most of the common stuff the system needs
  * Created: 02.10.13
- * Last updated: 11.05.14
+ * Last updated: 13.05.14
  * Project: Youkok2
  * 
 */
@@ -91,7 +91,7 @@ class Base {
             }
             else {
                 // Include 404 controller
-                require_once $this->basePath . '/controllers/errorController.php';
+                require_once $this->basePath . '/controllers/error.controller.php';
 
                 // New instance
                 $controller = new ErrorController($this->paths, $this->basePath, 'db');
@@ -108,7 +108,7 @@ class Base {
     
     protected function display404() {
         // Include 404 controller
-        require_once $this->basePath . '/controllers/notfoundController.php';
+        require_once $this->basePath . '/controllers/notfound.controller.php';
 
         // New instance
         $controller = new NotfoundController($this->paths, $this->basePath);

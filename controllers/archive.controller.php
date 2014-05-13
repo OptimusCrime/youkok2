@@ -1,9 +1,9 @@
 <?php
 /*
- * File: archiveController.php
+ * File: archive.controller.php
  * Holds: The ArchiveController-class
  * Created: 02.10.13
- * Last updated: 02.05.14
+ * Last updated: 13.05.14
  * Project: Youkok2
  * 
 */

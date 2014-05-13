@@ -1,9 +1,9 @@
 <?php
 /*
- * File: errorController.php
+ * File: error.controller.php
  * Holds: The ErrorController-class
  * Created: 02.05.14
- * Last updated: 02.05.14
+ * Last updated: 13.05.14
  * Project: Youkok2
  * 
 */
