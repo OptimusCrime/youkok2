@@ -14,6 +14,7 @@
                 <a href="registrer">Registrer</a><br />
                 <a href="glemt-passord">Glemt passord</a><br />
                 <br />
+                <a href="om">Om</a><br />
                 <a href="retningslinjer">Retningslinjer</a><br />
                 <a href="hjelp">Hjelp</a><br />
                 <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a>
