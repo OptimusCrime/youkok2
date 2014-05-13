@@ -28,8 +28,9 @@ use MatthiasMullie\Minify;
 // Minify CSS
 //
 
-$js_minifier = new Minify\CSS(BASE_PATH . '/assets/css/youkok.css');
-$js_minifier->minify(BASE_PATH . '/assets/css/youkok.min.css');
+$css_minifier = new Minify\CSS(BASE_PATH . '/assets/css/youkok.css');
+$css_minifier->minify(BASE_PATH . '/assets/css/youkok.min.css');
+$css_minifier = null;
 echo '<span style="color: green;">Minified CSS</span><br />';
 
 //

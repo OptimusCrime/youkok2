@@ -28,8 +28,6 @@ namespace MatthiasMullie\Minify;
  */
 abstract class Minify
 {
-    const ALL = 2047;
-
     /**
      * The data to be minified
      *
@@ -43,13 +41,6 @@ abstract class Minify
      * @var array
      */
     protected $patterns = array();
-
-    /**
-     * Array of replacement values (or callbacks) for matching $patterns.
-     *
-     * @var array
-     */
-    protected $replacements = array();
 
     /**
      * Init the minify class - optionally, css may be passed along already.
@@ -127,10 +118,9 @@ abstract class Minify
      * Minify the data.
      *
      * @param  string[optional] $path    The path the data should be written to.
-     * @param  int[optional]    $options The minify options to be applied.
      * @return string           The minified data.
      */
-    abstract public function minify($path = false, $options = self::ALL);
+    abstract public function minify($path = false);
 
     /**
      * Register a pattern to execute against the source content.
@@ -140,17 +130,17 @@ abstract class Minify
      * exactly at the first character of the content at that point.
      *
      * @param string $pattern             PCRE pattern.
-     * @param string|Closure $replacement Replacement value for matched pattern.
+     * @param string|Closure[optional] $replacement Replacement value for matched pattern.
+     * @param bool[optional] $skip Identifies if this match should be skipped by the rest of the patterns, once matched.
      * @throws Exception
      */
-    protected function registerPattern($pattern, $replacement = '') {
+    protected function registerPattern($pattern, $replacement = '', $skip = false) {
         // doublecheck if pattern actually starts at beginning of content
         if(substr($pattern, 1, 1) !== '^') {
             throw new Exception('Pattern "' . $pattern . '" should start processing at the beginning of the string.');
         }
 
-        $this->patterns[] = $pattern;
-        $this->replacements[] = $replacement;
+        $this->patterns[] = array($pattern, $replacement, $skip);
     }
 
     /**
@@ -172,25 +162,52 @@ abstract class Minify
         // update will keep shrinking, character by character, until all of it
         // has been processed
         while($content) {
-            foreach($this->patterns as $i => $pattern) {
-                $replacement = $this->replacements[$i];
+            $ignore = -1;
 
-                // replace pattern occurrences starting at this characters
+            for($i = 0; $i < count($this->patterns); $i++) {
+                // pattern to ignore (if it was previously matched)
+                if($i === $ignore) continue;
+
+                list($pattern, $replacement, $skip) = $this->patterns[$i];
+if($pattern === '/^\s*?;?\s*?$\s+/m') {
+	var_dump('start');
+	var_dump($content);
+}
+
+                // replace pattern occurrences starting at this character
                 list($content, $replacement, $match) = $this->replacePattern($pattern, $content, $replacement);
-
-                // if a pattern was replaceed out of the content, move the
-                // replacement to $processed & remove it from $content
+if($pattern === '/^\s*?;?\s*?$\s+/m') {
+	var_dump($content);
+	var_dump($match);
+	var_dump($replacement);
+}
+                // pattern matched & content replaced; save replacement value
                 if($match != '' || $replacement != '') {
-                    $processed .= $replacement;
-                    $content = substr($content, strlen($replacement));
-                    continue 2;
+                    // some patterns will want to make sure that the replaced
+                    // content is not touched by any other patterns (like
+                    // strings are comments)
+                    if($skip) {
+                        $processed .= $replacement;
+                        $content = (string) substr($content, strlen($replacement));
+                        continue 2;
+                    }
+
+                    // since there's been a change in the content, let's re-run
+                    // all patterns at the start of the new content, but make
+                    // sure the same pattern is ignored time
+                    $ignore = $i;
+                    $i = -1;
                 }
             }
 
-            // character processed: add it to $processed & strip from $content
+            // add this character to $processed & strip it from $content, moving
+            // on to the next character
             $processed .= $content[0];
             $content = substr($content, 1);
         }
+
+        // clear registered patterns
+        $this->patterns = array();
 
         return $processed;
     }
