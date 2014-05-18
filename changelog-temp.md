@@ -2,10 +2,12 @@ Youkok2 - 0.0.1-pl (xx. mai, 2014)
 ==================================
 
 - [Info] First Public Release
-- [Enhanced] Opplastning av flere filer gir nå bare en melding.
-- [Fixed] Context meny er nå korrekt sentert på x-aksen.
 - [New] På forsiden står det nå hvilke mappe filer ligger i, ikke bare hvilke fag det tilhører.
-- [New] .js- &amp; .css-filer er nå minifiserte.
+- [New] Linker til nedlastninger har nå rel="nofollow", for å unngå at botter besøker dem titt og ofte.
+- [New] .js- & .css-filer er nå minifiserte.
+- [Fixed] Context meny er nå korrekt sentert på x-aksen.
+- [Enhanced] Opplastning av flere filer gir nå bare en melding.
+- [Enhanced] Nedlastning av filer logger nå UA.
 - [Other] Mange mindre tekstlige endringer.
 
 Youkok2 - 0.0.1-c (2. mai, 2014)

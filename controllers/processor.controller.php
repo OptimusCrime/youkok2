@@ -527,8 +527,8 @@ class ProcessorController extends Base {
         }
         
         // Check if null
-        if ($ret == '') {
-            $ret = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet!</li>';
+        if ($response['html'] == '') {
+            $response['html'] = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet!</li>';
         }
 
         // Return
