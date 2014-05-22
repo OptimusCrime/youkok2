@@ -1,3 +1,3 @@
-﻿#!/bin/bash
-echo "git pull"
-echo "git fetch origin master"
+#!/bin/bash
+
+git pull --progress
