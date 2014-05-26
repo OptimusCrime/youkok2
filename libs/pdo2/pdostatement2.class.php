@@ -35,8 +35,13 @@ class PDOStatement2 extends PDOStatement {
     // Override
     //
     
-    public function execute($arr) {
-        $this->log[] = array('execute' => $arr);
-        parent::execute($arr);
+    public function execute($arr = null) {
+        if ($arr == null) {
+            parent::execute();
+        }
+        else {
+            $this->log[] = array('execute' => $arr);
+            parent::execute($arr);
+        }
     }
 }
