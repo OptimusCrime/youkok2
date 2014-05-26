@@ -3,7 +3,7 @@
  * File: rest.php
  * Holds: The base-class intilize most of the common stuff the system needs
  * Created: 02.10.13
- * Last updated: 13.05.14
+ * Last updated: 27.05.14
  * Project: Youkok2
  * 
 */
@@ -25,14 +25,21 @@ class Base {
     protected $basePath; // Holds the directory for the index file (defined as base for the project)
     protected $collection; // Holds the collection of items
     protected $paths; // Holds the paths served from the Loader-class
-    private $norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
-                                 'okt', 'nov', 'des');
+    private $norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'des');
+    private $startTime; // Keeps track of load time
+    private $endTime; // Keeps track of load time
+    private $sqlLog;
     
     //
     // Constructor
     //
 
     public function __construct($paths, $base, $kill = false) {
+        // If development, start time here
+        if (DEV) {
+            $this->startTime = MICROTIME(TRUE);
+        }
+        
         // Starting session, if not already started
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -46,16 +53,22 @@ class Base {
         
         // Trying to connect to the database
         try {
-            $this->db = new PDO('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, 
-                                DATABASE_USER, 
-                                DATABASE_PASSWORD, 
-                                array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+            $this->db = new PDO2('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, DATABASE_USER, DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+            
+            // Set debug log
+            if (DEV) {
+                $this->sqlLog = array();
+                $this->db->setLog($this->sqlLog);
+            }
         } catch (Exception $e) {
             $this->db = null;
         }
         
         // Init Smarty
         $this->template = $smarty = new Smarty();
+        
+        // Set caching
+        $this->template->setCacheDir($this->basePath . '/cache/');
         
         // Define a few constants in Smarty
         $this->template->assign('VERSION', VERSION);
@@ -221,7 +234,15 @@ class Base {
     // Override default display method from Smarty
     //
 
-    protected function displayAndCleanup($template) {
+    protected function displayAndCleanup($template, $sid = null) {
+        // If develop, assign dev variables
+        if (DEV) {
+            $this->endTime = MICROTIME(TRUE);
+            $this->template->assign('DEV_TIME', $this->endTime - $this->startTime);
+            $this->template->assign('DEV_QUERIES', number_format($this->db->getCount()));
+            var_dump($this->sqlLog);
+        }
+        
         // Close database
         $this->close();
         
@@ -230,9 +251,9 @@ class Base {
         
         // Load cache
         $this->loadCache();
-
+        
         // Call Smarty
-        $this->template->display($template);
+        $this->template->display($template, $sid);
     }
     
     //
