@@ -3,7 +3,7 @@
  * File: executioner.php
  * Holds: Executes completed flags
  * Created: 14.04.14
- * Last updated: 02.05.14
+ * Last updated: 27.05.14
  * Project: Youkok2
  * 
 */
@@ -37,7 +37,8 @@ class Executioner {
             $this->analyze();
         }
 
-        $this->letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');                   
+        $this->letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
+                               'w','x','y','z');                   
     }
 
     //
@@ -198,8 +199,9 @@ class Executioner {
         $update_user_karma_query->execute(array(':id' => $this->flag['user']));
 
         // Create history
-        $this->addHistory($this->flag['user'], $this->element->getId(), '%u opprettet ' . $this->element->getName() . '.');
-
+        $this->addHistory($this->flag['user'], 
+                          $this->element->getId(),
+                          '%u opprettet ' . $this->element->getName() . '.');
     }
 
     //
@@ -221,11 +223,13 @@ class Executioner {
                 AND url_friendly = :url_friendly";
                 
                 $get_duplicate_query = $this->db->prepare($get_duplicate);
-                $get_duplicate_query->execute(array(':id' => $this->element->getId(), ':url_friendly' => $url_friendly));
+                $get_duplicate_query->execute(array(':id' => $this->element->getId(), 
+                                                    ':url_friendly' => $url_friendly));
                 $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
                 
                 if (isset($row_duplicate['id'])) {
-                    $url_friendly = $this->generateUrlFriendly($this->letters[rand(0, count($this->letters) - 1)] . $url_friendly);
+                    $url_friendly = $this->generateUrlFriendly($this->letters[rand(0, count($this->letters) - 1)] . 
+                                                               $url_friendly);
                     $num++;
                 }
                 else {
@@ -242,8 +246,8 @@ class Executioner {
 
             $update_element_query = $this->db->prepare($update_element);
             $update_element_query->execute(array(':id' => $this->element->getId(),
-                ':name' => $flag_data['name'],
-                'url_friendly' => $url_friendly));
+                                                 ':name' => $flag_data['name'],
+                                                 ':url_friendly' => $url_friendly));
         }
 
         // Update flag
@@ -305,7 +309,9 @@ class Executioner {
         $update_user_karma_query->execute(array(':id' => $this->flag['user']));
 
         // Create history
-        $this->addHistory($this->flag['user'], $this->element->getId(), '%u endret navn fra <b>' . $this->element->getName() . '</b> til <b>' . $flag_data['name'] . '</b>.');
+        $this->addHistory($this->flag['user'], 
+                          $this->element->getId(), 
+                          '%u endret navn fra <b>' . $this->element->getName() . '</b> til <b>' . $flag_data['name'] . '</b>.');
     }
 
 
@@ -383,7 +389,9 @@ class Executioner {
         $update_user_karma_query->execute(array(':id' => $this->flag['user']));
 
         // Create history
-        $this->addHistory($this->flag['user'], $this->element->getId(), '%u slettet <b>' . $this->element->getName() . '</b>.');
+        $this->addHistory($this->flag['user'],
+                          $this->element->getId(), 
+                          '%u slettet <b>' . $this->element->getName() . '</b>.');
     }
 
     //
@@ -396,7 +404,9 @@ class Executioner {
         VALUES (:user, :file, :text)";
         
         $insert_history_query = $this->db->prepare($insert_history);
-        $insert_history_query->execute(array(':user' => $user, ':file' => $file, ':text' => $text));
+        $insert_history_query->execute(array(':user' => $user, 
+                                             ':file' => $file, 
+                                             ':text' => $text));
     }
 
     //

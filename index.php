@@ -1,9 +1,10 @@
 <?php
 /*
  * File: index.php
- * Holds: The Loader class that loads the correct class based on the method being called, setting output and including all the stuff we need
+ * Holds: The Loader class that loads the correct class based on the method being called, setting output and including 
+ *        all the stuff we need
  * Created: 02.10.13
- * Last updated: 13.05.14
+ * Last updated: 27.05.14
  * Project: Youkok2
  * 
 */
@@ -167,7 +168,10 @@ class Loader {
     //
     
     private function buildControllerPath($controller) {
-        return dirname(__FILE__) . '/controllers/' . strtolower(str_replace(array('.', '/'), '', $controller)) . '.controller.php';
+        return dirname(__FILE__) . 
+               '/controllers/' . 
+               strtolower(str_replace(array('.', '/'), '', $controller)) . 
+               '.controller.php';
     }
     
     //

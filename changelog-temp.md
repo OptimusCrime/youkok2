@@ -28,9 +28,11 @@ Youkok2 - 0.0.1-c (2. mai, 2014)
 - [New] Google Analytics!
 - [Fixed] Flere feil tilknyttet filer og url-encoding.
 - [Fixed] Understeker og bindestreker i filnavn blir nå bevart korrekt.
-- [Fixed] Dersom fagnavn og fagkoder blir lastet på nytt blir localStoreage tømt, slik at man ikke har mellomlagret gamle verdier.
+- [Fixed] Dersom fagnavn og fagkoder blir lastet på nytt blir localStoreage tømt, slik at man ikke har mellomlagret 
+          gamle verdier.
 - [Fixed] Fikset feil hvor nettleseren ville oppdatere siden før alle filene var ferdige med å bli lastet opp.
-- [Fixed] Dersom en fil hadde null som mimetype ble opplastningen avsluttet. Nå sjekkes filtyper før feilmelding returneres.
+- [Fixed] Dersom en fil hadde null som mimetype ble opplastningen avsluttet. Nå sjekkes filtyper før feilmelding 
+          returneres.
 - [Fixed] Unicode-problemer i denne fila.
 - [Fixed] Unicode-problemer i e-poster.
 - [Fixed] En 404-side gir nå 404 HTTP status også.

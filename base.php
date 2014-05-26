@@ -25,6 +25,8 @@ class Base {
     protected $basePath; // Holds the directory for the index file (defined as base for the project)
     protected $collection; // Holds the collection of items
     protected $paths; // Holds the paths served from the Loader-class
+    private $norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
+                                 'okt', 'nov', 'des');
     
     //
     // Constructor
@@ -44,7 +46,10 @@ class Base {
         
         // Trying to connect to the database
         try {
-            $this->db = new PDO('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, DATABASE_USER, DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+            $this->db = new PDO('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, 
+                                DATABASE_USER, 
+                                DATABASE_PASSWORD, 
+                                array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
         } catch (Exception $e) {
             $this->db = null;
         }
@@ -168,7 +173,8 @@ class Base {
             }
             
             // Build final string
-            $ret .= '<div class="alert alert-success">' . $file_msg . ' ble lastet opp til Youkok2. Takk for ditt bidrag!<div class="alert-close"><i class="fa fa-times"></i></div></div>';
+            $ret .= '<div class="alert alert-success">' . $file_msg . ' ble lastet opp til Youkok2. \
+                     Takk for ditt bidrag!<div class="alert-close"><i class="fa fa-times"></i></div></div>';
             
             // Unset the session variable
             unset($_SESSION['youkok2_files']);
@@ -178,7 +184,8 @@ class Base {
         if (isset($_SESSION['youkok2_message']) and count($_SESSION['youkok2_message']) > 0) {
             
             foreach ($_SESSION['youkok2_message'] as $v) {
-                $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text'] . '<div class="alert-close"><i class="fa fa-times"></i></div></div>';
+                $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text'] . 
+                        '<div class="alert-close"><i class="fa fa-times"></i></div></div>';
             }
             
             // Unset the session variable
@@ -372,7 +379,6 @@ class Base {
     // Prettify dates
     //
     
-    private $norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'des');
     protected function prettifySQLDate($d) {
         $split1 = explode(' ', $d);
         $split2 = explode('-', $split1[0]);
