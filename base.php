@@ -239,8 +239,8 @@ class Base {
         if (DEV) {
             $this->endTime = MICROTIME(TRUE);
             $this->template->assign('DEV_TIME', $this->endTime - $this->startTime);
-            $this->template->assign('DEV_QUERIES', number_format($this->db->getCount()));
-            var_dump($this->sqlLog);
+            $this->template->assign('DEV_QUERIES_NUM', number_format($this->db->getCount()));
+            $this->template->assign('DEV_QUERIES', $this->washSqlLog($this->sqlLog));
         }
         
         // Close database
@@ -254,6 +254,57 @@ class Base {
         
         // Call Smarty
         $this->template->display($template, $sid);
+    }
+    
+    //
+    // Washes and cleans up the sql log
+    //
+    
+    private function washSqlLog($arr) {
+        // Some variables
+        $clean = array();
+        $has_prepare = false;
+        $prepare_val = array();
+        
+        // Loop each post
+        foreach ($arr as $v) {
+            // Check what kind of query we're dealing with
+            if (isset($v['query'])) {
+                // Normal query (no binds)
+                $clean[] = $v['query'];
+            }
+            else if (isset($v['exec'])) {
+                // Normal exec (no binds)
+                $clean[] = $v['exec'];
+            }
+            else {
+                // Either bind or prepare
+                if (isset($v['prepare'])) {
+                    // Query is being preared
+                    $has_prepare = true;
+                    $prepare_val = $v['prepare'];
+                }
+                else if (isset($v['execute'])) {
+                    // Query is executed with binds, check if binds are found
+                    if ($has_prepare) {
+                        // Binds are found, replace keys with bind values
+                        $clean[] = str_replace(array_keys($v['execute']), $v['execute'], $prepare_val);
+                        
+                        // Reset prepare-value
+                        $has_prepare = false;
+                    }
+                }
+            }
+        }
+        
+        // Turn into string
+        $str = '';
+        foreach ($clean as $v) {
+            $str .= '<pre>' . str_replace('    ', '', $v) . '</pre>';
+        }
+        
+        // Return resulting string
+        return $str;
     }
     
     //

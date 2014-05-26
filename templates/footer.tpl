@@ -13,7 +13,21 @@
                 <span><a href="hjelp">Hjelp</a></span> ::
                 <span class="last"><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>
         	</p>
+            [[+nocache]]
+                [[+if DEV]]
+                    <p>
+                        <span class="first">Parse time: [[+$DEV_TIME]]</span> ::
+                        <span>Antall queries: [[+$DEV_QUERIES_NUM]]</span> ::
+                        <span class="last"><a id="toggle-queries" href="#">Vis alle queries</a></span>
+                    </p>
+                    
+                    <div id="queries">
+                        [[+$DEV_QUERIES]]
+                    </div>
+                [[+/if]]
+            [[+/nocache]]
         </div>
+        
     </div>
 </div>
 [[+if $SITE_USE_GA == true]]
@@ -26,13 +40,5 @@
     ga('send', 'pageview');
     </script>
 [[+/if]]
-[[+nocache]]
-    [[+if DEV]]
-        <div id="dev">
-            <p><b>Parse time:</b> [[+$DEV_TIME]]</p>
-            <p><b>Antall queries:</b> [[+$DEV_QUERIES]]</p>
-        </div>
-    [[+/if]]
-[[+/nocache]]
 </body>
 </html>
