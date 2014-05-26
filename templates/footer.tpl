@@ -26,5 +26,13 @@
     ga('send', 'pageview');
     </script>
 [[+/if]]
+[[+nocache]]
+    [[+if DEV]]
+        <div id="dev">
+            <p><b>Parse time:</b> [[+$DEV_TIME]]</p>
+            <p><b>Antall queries:</b> [[+$DEV_QUERIES]]</p>
+        </div>
+    [[+/if]]
+[[+/nocache]]
 </body>
 </html>
