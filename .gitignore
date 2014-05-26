@@ -4,6 +4,7 @@
 # Except these
 !/_build/
 !/assets/
+!/cache/
 !/controllers/
 !/elements/
 !/libs/
@@ -21,6 +22,7 @@ cache.php
 
 # And all cached templates
 templates_c/*
+cache/*
 
 # And those fuckings DS_Stores
 .DS_Store
