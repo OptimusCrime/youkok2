@@ -24,19 +24,25 @@ class ArchiveController extends Base {
         
         // Displaying 404 or not
         $should_display_404 = false;
-
+    
+        // Turn on caching
+        $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+        
         // Check if base
         if (str_replace('/', '', $_GET['q']) == str_replace('/', '', $this->paths['archive'][0])) {
-            // Currently displaying the base
-            $this->template->assign('SITE_TITLE', 'Kokeboka');
-            $this->template->assign('ARCHIVE_MODE', 'list');
-            $this->template->assign('ARCHIVE_DISPLAY', $this->loadCourses());
+            // Check if cached
+            if (!$this->template->isCached('archive.tpl', $_GET['q'])) {
+                // Not cached, load courses
+                $this->template->assign('SITE_TITLE', 'Kokeboka');
+                $this->template->assign('ARCHIVE_MODE', 'list');
+                $this->template->assign('ARCHIVE_DISPLAY', $this->loadCourses());
 
-            // Get title
-            $this->template->assign('ARCHIVE_TITLE', 'Arkiv');
+                // Get title
+                $this->template->assign('ARCHIVE_TITLE', 'Arkiv');
 
-            // Get breadcrumbs
-            $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Arkiv</li>');
+                // Get breadcrumbs
+                $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Arkiv</li>');
+            }
         }
         else {
             // Create new object
@@ -62,42 +68,47 @@ class ArchiveController extends Base {
                 else {
                     // Element was found, double check that this is a directory
                     if ($element->isDirectory()) {
-                        // Element was directory, now list every single element that has this element as a parent
-                        $this->template->assign('ARCHIVE_DISPLAY', $this->loadArchive($element->getId()));
-                        $this->template->assign('ARCHIVE_MODE', 'browse');
-
-                        // Get title
-                        $archive_title = $element->getName();
-                        if ($element->hasCourse()) {
-
-                            $archive_title .= ' - <span class="archive-title-smaller">' . $element->getCouseName() . '</span>';
-                        }
-                        if ($this->user->isLoggedIn() and ($element->isFavorite($this->user) == 1 or $element->isFavorite($this->user) == 0)) {
-                            $archive_title .= ' <small><i class="fa fa-star archive-heading-star-' . $element->isFavorite($this->user) . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i></small>';
-                        }
-
-                        // Assign to Smarty
-                        $this->template->assign('ARCHIVE_TITLE', $archive_title);
+                        // Assign variables we need no matter if the page is cached or not
                         $this->template->assign('ARCHIVE_ID', $element->getId());
                         
-                        // Check if user is verified
+                        // User status
                         $this->template->assign('ARCHIVE_USER_VERIFIED', $this->user->isVerified());
                         $this->template->assign('ARCHIVE_USER_BANNED', $this->user->isBanned());
                         $this->template->assign('ARCHIVE_USER_HAS_KARMA', $this->user->hasKarma());
                         $this->template->assign('ARCHIVE_USER_CAN_CONTRIBUTE', $this->user->canContribute());
                         $this->template->assign('ARCHIVE_USER_ONLINE', $this->user->isLoggedIn());
-
-                        // Get breadcrumbs
-                        $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
-
-                        // Find accepted filetypes
+                        
+                        // File types
                         $accepted_filetypes = explode(',', SITE_ACCEPTED_FILETYPES);
                         $this->template->assign('ARCHIVE_ACCEPTED_FILETYPES', json_encode($accepted_filetypes));
                         $accepted_fileending = explode(',', SITE_ACCEPTED_FILEENDINGS);
                         $this->template->assign('ARCHIVE_ACCEPTED_FILEENDINGS', json_encode($accepted_fileending));
-                        
-                        // Add title
-                        $this->template->assign('SITE_TITLE', 'Kokeboka :: ' . $this->loadBredcrumbsTitle($element));
+                            
+                        // Element was directory, check if cached
+                        if (!$this->template->isCached('archive.tpl', $_GET['q'])) {
+                            // Is not cached list every single element that has this element as a parent
+                            $this->template->assign('ARCHIVE_DISPLAY', $this->loadArchive($element->getId()));
+                            $this->template->assign('ARCHIVE_MODE', 'browse');
+
+                            // Get title
+                            $archive_title = $element->getName();
+                            if ($element->hasCourse()) {
+
+                                $archive_title .= ' - <span class="archive-title-smaller">' . $element->getCouseName() . '</span>';
+                            }
+                            if ($this->user->isLoggedIn() and ($element->isFavorite($this->user) == 1 or $element->isFavorite($this->user) == 0)) {
+                                $archive_title .= ' <small><i class="fa fa-star archive-heading-star-' . $element->isFavorite($this->user) . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i></small>';
+                            }
+                            
+                            // Assign to Smarty
+                            $this->template->assign('ARCHIVE_TITLE', $archive_title);
+                            
+                            // Get breadcrumbs
+                            $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
+                            
+                            // Add title
+                            $this->template->assign('SITE_TITLE', 'Kokeboka :: ' . $this->loadBredcrumbsTitle($element));
+                        }
                     }
                     else {
                         $should_display_404 = true;
@@ -108,7 +119,7 @@ class ArchiveController extends Base {
                 $should_display_404 = true;
             }
         }
-                
+        
         // Check if return 404 or not
         if ($should_display_404) {
             $this->display404();
@@ -118,7 +129,7 @@ class ArchiveController extends Base {
             $this->template->assign('HEADER_MENU', 'ARCHIVE');
 
             // Found (yay), display archive tpl
-            $this->displayAndCleanup('archive.tpl');
+            $this->displayAndCleanup('archive.tpl', $_GET['q']);
         }
     }
 
