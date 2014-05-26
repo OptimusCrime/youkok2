@@ -1174,4 +1174,20 @@ $(document).ready(function () {
             $('#frontpage-wellholder .col-md-9 .well').css({height: height2});
         }
     }
+    
+    //
+    // Debug
+    //
+    
+    $('#toggle-queries').on('click', function (e) {
+        e.preventDefault();
+        
+        if ($('#queries').is(':visible')) {
+            $('#queries').slideUp(400);
+        }
+        else {
+            $('#queries').slideDown(400);
+        }
+    });
+    
 });

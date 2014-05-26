@@ -548,3 +548,14 @@ a, a:focus, a:active, a:visited {
 #archive-asd {
     display: none;
 }
+
+/*
+    Debug
+*/
+
+#queries {
+    display: none;
+}
+#queries {
+    text-align: left;
+}
