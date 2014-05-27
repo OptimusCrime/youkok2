@@ -43,7 +43,7 @@ class PDO2 extends PDO {
         
         // Do logging?
         if ($this->debug) {
-            $this->log[] = array('query' => $query);
+            $this->log[] = array('query' => $query, 'backtrace' => debug_backtrace());
         }
         
         // Call parent
@@ -60,7 +60,7 @@ class PDO2 extends PDO {
         
         // Do logging?
         if ($this->debug) {
-            $this->log[] = array('exec' => $statement);
+            $this->log[] = array('exec' => $statement, 'backtrace' => debug_backtrace());
         }
         
         // Call parent
@@ -77,7 +77,7 @@ class PDO2 extends PDO {
         
         // Do logging?
         if ($this->debug) {
-            $this->log[] = array('prepare' => $statement);
+            $this->log[] = array('prepare' => $statement, 'backtrace' => debug_backtrace());
         }
         
         // Call parent

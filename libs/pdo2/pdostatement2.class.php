@@ -40,7 +40,7 @@ class PDOStatement2 extends PDOStatement {
             parent::execute();
         }
         else {
-            $this->log[] = array('execute' => $arr);
+            $this->log[] = array('execute' => $arr, 'backtrace' => debug_backtrace());
             parent::execute($arr);
         }
     }
