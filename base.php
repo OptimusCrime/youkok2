@@ -321,7 +321,7 @@ class Base {
                 
                 for ($i = 1; $i <= $lim; $i++) {
                     $trace_temp = $arr[$i];
-                    $tooltip .= $trace_temp['file'] . ' @ line ' . $trace_temp['line'] . "&#xA;";
+                    $tooltip .= ($i + 1) . '. ' . $trace_temp['file'] . ' @ line ' . $trace_temp['line'] . "&#xA;";
                 }
                 return '<p style="cursor: help;" title="' . $tooltip . '">' . $trace['file'] . ' @ line ' . $trace['line'] . ':</p>';
             }
