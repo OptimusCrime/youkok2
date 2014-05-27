@@ -1181,12 +1181,16 @@ $(document).ready(function () {
     
     $('#toggle-queries').on('click', function (e) {
         e.preventDefault();
-        
+        var $that = $(this);
         if ($('#queries').is(':visible')) {
-            $('#queries').slideUp(400);
+            $('#queries').slideUp(400, function () {
+                $('span', $that).html('Vis');
+            });
         }
         else {
-            $('#queries').slideDown(400);
+            $('#queries').slideDown(400, function () {
+                $('span', $that).html('Skjul');
+            });
         }
     });
     

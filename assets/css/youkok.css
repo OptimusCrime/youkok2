@@ -559,3 +559,6 @@ a, a:focus, a:active, a:visited {
 #queries {
     text-align: left;
 }
+#footer span.nopadd {
+    padding: 0px;
+}
