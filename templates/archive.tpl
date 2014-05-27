@@ -137,8 +137,10 @@
 		<li><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
 		[[+$ARCHIVE_BREADCRUMBS]]
 	</ol>
-
-	<h1>[[+$ARCHIVE_TITLE]]</h1>
+    
+    [[+nocache]]
+        <h1>[[+$ARCHIVE_TITLE]]</h1>
+    [[+/nocache]]
 	[[+if $ARCHIVE_MODE == 'browse']]
         [[+nocache]]
             <div id="archive_accepted_filetypes">[[+$ARCHIVE_ACCEPTED_FILETYPES]]</div>

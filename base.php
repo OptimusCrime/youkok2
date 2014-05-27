@@ -48,12 +48,12 @@ class Base {
         // Stores the base path
         $this->basePath = $base;
         
-        // Init the collection
-        $this->collection = new Collection();
-        
         // Trying to connect to the database
         try {
             $this->db = new PDO2('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, DATABASE_USER, DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+            
+            // Init the collection
+            $this->collection = new Collection($this->db);
             
             // Set debug log
             if (DEV) {
@@ -85,11 +85,6 @@ class Base {
         if ($kill == false) {
             // Authenticate if database-connection was successful
             if ($this->db !== NULL) {
-                // Add root element to collection
-                $root_element = new Item($this->collection, $this->db);
-                $root_element->createById(1);
-                $this->collection->add($root_element);
-                
                 // Define the standard menu
                 $this->template->assign('HEADER_MENU', 'HOME');
 

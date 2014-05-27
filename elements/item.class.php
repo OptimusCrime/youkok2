@@ -20,6 +20,7 @@ class Item {
     
     private $collection;
     private $db;
+    private $user;
 
     private $id;
     private $url;
@@ -38,6 +39,8 @@ class Item {
     private $missingImage;
     private $shouldLoadPhysicalLocation;
     private $shouldLoadRoot;
+    private $shouldLoadFavorites;
+    private $shouldLoadFlags;
     private $rootParent;
     private $fullLocation;
     private $loadedFlags;
@@ -53,6 +56,7 @@ class Item {
         // Set pointer to collection and db
         $this->collection = $collection;
         $this->db = $db;
+        $this->user = null;
 
         // Create arrays
         $this->url = array();
@@ -65,12 +69,14 @@ class Item {
         // Set shouldLoadPhysicalLocation (lol) to false and other stuff
         $this->shouldLoadPhysicalLocation = false;
         $this->shouldLoadRoot = false;
+        $this->shouldLoadFavorites = false;
+        $this->shouldLoadFlags = false;
         $this->loadedFlags = false;
-        $this->favorite = 'null';
+        $this->favorite = null;
         $this->rootParent = null;
         $this->size = 0;
         $this->course = null;
-        $this->courseName = '';
+        $this->courseName = null;
         $this->missingImage = false;
     }
     
@@ -122,6 +128,9 @@ class Item {
 
                     // Should cache, just in case
                     $temp_item = new Item($this->collection, $this->db);
+                    if ($this->user != null and $this->user->isLoggedIn()) {
+                        $temp_item->setShouldLoadFavorites(true, $this->user);
+                    }
                     $temp_item->createById($current_id);
                     $temp_item->collection->addIfDoesNotExist($temp_item);
 
@@ -146,14 +155,51 @@ class Item {
     public function create() {
         // Get all info about file
         if ($this->id != null) {
-            // Id is set, run a simple query
-            $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, missing_image, is_accepted, is_visible, added, location, size, course
-            FROM archive 
-            WHERE id = :id";
-            
-            $get_item_info_query = $this->db->prepare($get_item_info);
-            $get_item_info_query->execute(array(':id' => $this->id));
-            $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
+            if ($this->shouldLoadFavorites) {
+                if ($this->shouldLoadFlags) {
+                    $get_item_info = "SELECT a.name, a.parent, a.is_directory, a.url_friendly, a.mime_type, a.missing_image, a.is_accepted, a.is_visible, a.added, a.location, a.size, a.course, f.id AS 'favorite', count(fl.id) as 'flags'
+                    FROM archive AS a
+                    LEFT JOIN favorite AS f ON f.file = a.id
+                    AND f.user = :user
+                    LEFT JOIN flag as fl on a.id = fl.file
+                    WHERE a.id = :id
+                    group by a.id";
+                    
+                    $get_item_info_query = $this->db->prepare($get_item_info);
+                    $get_item_info_query->execute(array(':id' => $this->id, ':user' => $this->user->getId()));
+                    $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
+                    
+                    // Set flagcount
+                    $this->flags = $row['flags'];
+                    $this->loadedFlags = true;
+                }
+                else {
+                    // Id is set, run a simple query
+                    $get_item_info = "SELECT a.name, a.parent, a.is_directory, a.url_friendly, a.mime_type, a.missing_image, a.is_accepted, a.is_visible, a.added, a.location, a.size, a.course, f.id AS 'favorite'
+                    FROM archive AS a
+                    LEFT JOIN favorite AS f ON f.file = a.id
+                    AND f.user = :user
+                    WHERE a.id = :id";
+                    
+                    $get_item_info_query = $this->db->prepare($get_item_info);
+                    $get_item_info_query->execute(array(':id' => $this->id, ':user' => $this->user->getId()));
+                    $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
+                }
+
+                
+                // Set favorite
+                $this->favorite = ($row['favorite'] == null) ? false : true;
+            }
+            else {
+                // Id is set, run a simple query
+                $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, missing_image, is_accepted, is_visible, added, location, size, course
+                FROM archive 
+                WHERE id = :id";
+                
+                $get_item_info_query = $this->db->prepare($get_item_info);
+                $get_item_info_query->execute(array(':id' => $this->id));
+                $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
+            }
             
             // Set results
             $this->name = $row['name'];
@@ -280,6 +326,23 @@ class Item {
 
     public function setShouldLoadPhysicalLocation($b) {
         $this->shouldLoadPhysicalLocation = $b;
+    }
+    
+    //
+    // This variable decides if favorite should fetched too
+    //
+
+    public function setShouldLoadFavorites($b, $user) {
+        $this->shouldLoadFavorites = $b;
+        $this->user = $user;
+    }
+    
+    //
+    // This variable decides if favorite should fetch flags
+    //
+
+    public function setShouldLoadFlags($b) {
+        $this->shouldLoadFlags = $b;
     }
 
     //
@@ -455,7 +518,7 @@ class Item {
         // First, check if logged in
         if ($user->isLoggedIn()) {
             // Check if fetched
-            if ($this->favorite === 'null') {
+            if ($this->favorite === null) {
                 // Not fetched
                 $get_favorite_status = "SELECT id
                 FROM favorite
@@ -468,10 +531,10 @@ class Item {
                 
                 // Cache for later
                 if (isset($row['id'])) {
-                    $this->favorite = 1;
+                    $this->favorite = true;
                 }
                 else {
-                    $this->favorite = 0;
+                    $this->favorite = false;
                 }
 
                 // Return
@@ -508,7 +571,7 @@ class Item {
     }
 
     public function getCouseName() {
-        if ($this->courseName == '') {
+        if ($this->courseName == null) {
             $get_course = "SELECT name
             FROM course
             WHERE id = :id";

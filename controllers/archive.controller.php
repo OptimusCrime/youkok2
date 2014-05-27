@@ -47,8 +47,14 @@ class ArchiveController extends Base {
         else {
             // Create new object
             $item = new Item($this->collection, $this->db);
+            
+            // Decide if we should load favorites
+            if ($this->user->isLoggedIn()) {
+                $item->setShouldLoadFavorites(true, $this->user);
+            }
+            
             $item->createByUrl($_GET['q']);
-
+            
             // Check if was found or invalid url
             if ($item->wasFound()) {
                 // Item was found, store id
@@ -83,32 +89,28 @@ class ArchiveController extends Base {
                         $this->template->assign('ARCHIVE_ACCEPTED_FILETYPES', json_encode($accepted_filetypes));
                         $accepted_fileending = explode(',', SITE_ACCEPTED_FILEENDINGS);
                         $this->template->assign('ARCHIVE_ACCEPTED_FILEENDINGS', json_encode($accepted_fileending));
-                            
-                        // Element was directory, check if cached
-                        if (!$this->template->isCached('archive.tpl', $_GET['q'])) {
-                            // Is not cached list every single element that has this element as a parent
-                            $this->template->assign('ARCHIVE_DISPLAY', $this->loadArchive($element->getId()));
-                            $this->template->assign('ARCHIVE_MODE', 'browse');
-
-                            // Get title
-                            $archive_title = $element->getName();
-                            if ($element->hasCourse()) {
-
-                                $archive_title .= ' - <span class="archive-title-smaller">' . $element->getCouseName() . '</span>';
-                            }
-                            if ($this->user->isLoggedIn() and ($element->isFavorite($this->user) == 1 or $element->isFavorite($this->user) == 0)) {
-                                $archive_title .= ' <small><i class="fa fa-star archive-heading-star-' . $element->isFavorite($this->user) . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i></small>';
-                            }
-                            
-                            // Assign to Smarty
-                            $this->template->assign('ARCHIVE_TITLE', $archive_title);
-                            
-                            // Get breadcrumbs
-                            $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
-                            
-                            // Add title
-                            $this->template->assign('SITE_TITLE', 'Kokeboka :: ' . $this->loadBredcrumbsTitle($element));
+                        
+                        // Get title
+                        $archive_title = $element->getName();
+                        if ($element->hasCourse()) {
+                            $archive_title .= ' - <span class="archive-title-smaller">' . $element->getCouseName() . '</span>';
                         }
+                        if ($this->user->isLoggedIn() and ($element->isFavorite($this->user) == 1 or $element->isFavorite($this->user) == 0)) {
+                            $archive_title .= ' <small><i class="fa fa-star archive-heading-star-' . $element->isFavorite($this->user) . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i></small>';
+                        }
+                        
+                        // Assign to Smarty
+                        $this->template->assign('ARCHIVE_TITLE', $archive_title);
+                        
+                        // List every single element that has this element as a parent
+                        $this->template->assign('ARCHIVE_DISPLAY', $this->loadArchive($element->getId()));
+                        $this->template->assign('ARCHIVE_MODE', 'browse');
+                        
+                        // Get breadcrumbs
+                        $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
+                        
+                        // Add title
+                        $this->template->assign('SITE_TITLE', 'Kokeboka :: ' . $this->loadBredcrumbsTitle($element));
                     }
                     else {
                         $should_display_404 = true;
@@ -200,8 +202,18 @@ class ArchiveController extends Base {
         $get_current_archive_query->execute(array(':parent' => $id));
         while ($row = $get_current_archive_query->fetch(PDO::FETCH_ASSOC)) {
             $item = new Item($this->collection, $this->db);
+            
+            // Decide if we should load favorites
+            if ($this->user->isLoggedIn()) {
+                $item->setShouldLoadFavorites(true, $this->user);
+            }
+            
+            // Set load flags
+            $item->setShouldLoadFlags(true);
+            
+            // Create item
             $item->createById($row['id']);
-
+            
             // Add to collection if new
             $this->collection->addIfDoesNotExist($item);
 

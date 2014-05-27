@@ -18,15 +18,23 @@ class Collection {
     // Variables
     //
     
+    private $db;
     private $arr;
+    private $isInited;
     
     //
     // Constructor
     //
     
-    public function __construct() {
+    public function __construct($db) {
+        // Set database
+        $this->db = $db;
+        
         // Init array
         $this->arr = array();
+        
+        // Init collection
+        $this->isInited = false;
     }
     
     //
@@ -34,6 +42,11 @@ class Collection {
     //
     
     public function add($elm) {
+        // Check if should init self
+        if (!$this->isInited) {
+            $this->addInitial();
+        }
+        
         $this->arr[$elm->getId()] = $elm;
 
         // Do the create process
@@ -45,6 +58,11 @@ class Collection {
     //
 
     public function addIfDoesNotExist($elm) {
+        // Check if should init self
+        if (!$this->isInited) {
+            $this->addInitial();
+        }
+        
         // Get element id
         $elm_id = $elm->getId();
 
@@ -78,6 +96,20 @@ class Collection {
             // Return object
             return $this->arr[$id];
         }
+    }
+    
+    //
+    //
+    //
+    
+    private function addInitial() {
+        // Reset variable
+        $this->isInited = true;
+        
+        // Add root element to collection
+        $root_element = new Item($this, $this->db);
+        $root_element->createById(1);
+        $this->add($root_element);
     }
 }
 ?>
