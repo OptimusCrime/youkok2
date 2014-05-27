@@ -240,7 +240,7 @@ class Base {
             $this->endTime = MICROTIME(TRUE);
             $this->template->assign('DEV_TIME', $this->endTime - $this->startTime);
             $this->template->assign('DEV_QUERIES_NUM', number_format($this->db->getCount()));
-            $this->template->assign('DEV_QUERIES', $this->washSqlLog($this->sqlLog));
+            $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->sqlLog));
         }
         
         // Close database
@@ -257,25 +257,29 @@ class Base {
     }
     
     //
-    // Washes and cleans up the sql log
+    // Cleans up the sql log
     //
     
-    private function washSqlLog($arr) {
+    private function cleanSqlLog($arr) {
         // Some variables
-        $clean = array();
+        $str = '';
         $has_prepare = false;
         $prepare_val = array();
         
         // Loop each post
         foreach ($arr as $v) {
+            // Temp variables
+            $temp_loc = $temp_loc = $this->cleanSqlBacktrace($v['backtrace']);
+            $temp_query = '';
+            
             // Check what kind of query we're dealing with
             if (isset($v['query'])) {
                 // Normal query (no binds)
-                $clean[] = $v['query'];
+                $temp_query = $v['query'];
             }
             else if (isset($v['exec'])) {
                 // Normal exec (no binds)
-                $clean[] = $v['exec'];
+                $temp_query = $v['exec'];
             }
             else {
                 // Either bind or prepare
@@ -288,23 +292,40 @@ class Base {
                     // Query is executed with binds, check if binds are found
                     if ($has_prepare) {
                         // Binds are found, replace keys with bind values
-                        $clean[] = str_replace(array_keys($v['execute']), $v['execute'], $prepare_val);
+                        $temp_query = str_replace(array_keys($v['execute']), $v['execute'], $prepare_val);
                         
                         // Reset prepare-value
                         $has_prepare = false;
                     }
                 }
             }
-        }
-        
-        // Turn into string
-        $str = '';
-        foreach ($clean as $v) {
-            $str .= '<pre>' . str_replace('    ', '', $v) . '</pre>';
+            
+            // Clean up n stuff
+            if (!$has_prepare) {
+                $str .= $temp_loc . '<pre>' . str_replace('    ', '', $temp_query) . '</pre>';
+            }
         }
         
         // Return resulting string
         return $str;
+    }
+    private function cleanSqlBacktrace($arr) {
+        if (count($arr) > 0) {
+            $trace = $arr[0];
+            if (count($arr) == 1) {
+                return '<p>' . $trace['file'] . ' @ line ' . $trace['line'] . ':</p>';
+            }
+            else {
+                $tooltip = '';
+                $lim = ((count($arr) > 15) ? 14 : (count($arr) - 1));
+                
+                for ($i = 1; $i <= $lim; $i++) {
+                    $trace_temp = $arr[$i];
+                    $tooltip .= $trace_temp['file'] . ' @ line ' . $trace_temp['line'] . "&#xA;";
+                }
+                return '<p style="cursor: help;" title="' . $tooltip . '">' . $trace['file'] . ' @ line ' . $trace['line'] . ':</p>';
+            }
+        }
     }
     
     //
