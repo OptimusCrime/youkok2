@@ -378,9 +378,9 @@ class Base {
     //
     
     private function loadCache() {
-        if (file_exists($this->basePath . '/cache.php')) {
+        if (file_exists($this->basePath . '/cache/cache.json')) {
             // File exists
-            $content = json_decode(file_get_contents($this->basePath . '/cache.php'), true);
+            $content = json_decode(file_get_contents($this->basePath . '/cache/cache.json'), true);
             
             // Check content
             if (!isset($content['ts'])) {

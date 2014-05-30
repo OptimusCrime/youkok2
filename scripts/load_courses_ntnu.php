@@ -151,15 +151,15 @@ if ($db) {
     file_put_contents($base_path . '/processor/search/courses.json', json_encode($to_json));
     
     // Update cache settings
-    if (file_exists($base_path . '/cache.php')) {
+    if (file_exists($base_path . '/cache/cache.json')) {
         // File in place
         $cache_content = json_encode(array('ts' => time()));
         
-        file_put_contents($base_path . '/cache.php', $cache_content);
+        file_put_contents($base_path . '/cache/cache.json', $cache_content);
     }
     else {
         // Missing cache file, return error
-        die('Could not find cache.php in project root');
+        die('Could not find cache.json in cache directory');
     }
     
 	// Clean db-connection
