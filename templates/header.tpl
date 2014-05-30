@@ -2,9 +2,7 @@
 <html>
 <head>
     <base href="[[+$SITE_URL_FULL]]" />
-    [[+nocache]]
-        <title>Youkok2.com :: [[+$SITE_TITLE]]</title>
-    [[+/nocache]]
+    <title>Youkok2.com :: [[+$SITE_TITLE]]</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="description" content="Youkok2 er den beste kokeboka for studenter på NTNU i en knipen studiehverdag." />
