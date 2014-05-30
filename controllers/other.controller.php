@@ -22,7 +22,7 @@ class OtherController extends Base {
         parent::__construct($paths, $base);
         
         // Checking what to call
-        if ($_GET['q'] == 'wall-of-shame') {
+        if ($this->queryGet(0) == 'wall-of-shame') {
             $this->wallOfShame();
         }
         else {

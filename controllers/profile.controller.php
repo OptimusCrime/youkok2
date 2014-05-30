@@ -23,7 +23,7 @@ class ProfileController extends Base {
 
         // Check if online
         if ($this->user->isLoggedIn()) {
-        	if ($_GET['q'] == 'profil/innstillinger') {
+        	if ($this->queryGetClean() == 'profil/innstillinger') {
         		if (!isset($_POST['source'])) {
         			// Assign email
 		        	$this->template->assign('PROFILE_USER_EMAIL', $this->user->getEmail());

@@ -47,62 +47,78 @@ class ProcessorController extends Base {
         // Variable for storing the json array
         $response = array();
 
-        // Catch what request is comming
-        $url_fragment = explode('/', $_GET['q']);
-        
         // Check what we got
-        if (count($url_fragment) < 2) {
+        if ($this->queryGetSize() < 2) {
         	$response['code'] = 500;
         }
         else {
         	// Flag
-        	if ($url_fragment[1] == 'flag') {
-        		if ($url_fragment[2] == 'get') {
+        	if ($this->queryGet(1) == 'flag') {
+                // Everything to do with flags
+        		if ($this->queryGet(2) == 'get') {
+                    // Get flag
         			$response = $this->flagGet();
         		}
-        		else if ($url_fragment[2] == 'vote') {
+        		else if ($this->queryGet(2) == 'vote') {
+                    // Vote flag
         			$response = $this->flagVote();
         		}
-                else if ($url_fragment[2] == 'name') {
+                else if ($this->queryGet(2) == 'name') {
+                    // New flag - new name
                     $response = $this->flagName();
                 }
-                else if ($url_fragment[2] == 'delete') {
+                else if ($this->queryGet(2) == 'delete') {
+                    // New flag - delete
                     $response = $this->flagDelete();
                 }
         	}
-            else if ($url_fragment[1] == 'favorite') {
-                if ($url_fragment[2] == 'add') {
+            else if ($this->queryGet(1) == 'favorite') {
+                // Everything to do with favorite
+                if ($this->queryGet(2) == 'add') {
+                    // Add favorite
                     $response = $this->favorite(true);
                 }
                 else {
+                    // Remove favorite
                     $response = $this->favorite(false);
                 }
             }
-            else if ($url_fragment[1] == 'popular') {
-                if ($url_fragment[2] == 'update') {
+            else if ($this->queryGet(1) == 'popular') {
+                // Everything to do with frontpage ajax calls
+                if ($this->queryGet(2) == 'update') {
+                    // Update populare download delta
                     $response = $this->homePopularUpdate();
                 }
             }
-            else if ($url_fragment[1] == 'create') {
-                if ($url_fragment[2] == 'folder') {
+            else if ($this->queryGet(1) == 'create') {
+                // Everything to do with creating stuff
+                if ($this->queryGet(2) == 'folder') {
+                    // New folder
                     $response = $this->createFolder();
                 }
                 else {
+                    // New file
                     $response = $this->createFile();
                 }
             }
-            else if ($url_fragment[1] == 'report') {
-                if ($url_fragment[2] == 'send') {
+            else if ($this->queryGet(1) == 'report') {
+                // Reports
+                if ($this->queryGet(2) == 'send') {
+                    // Send new report
                     $response = $this->reportSend();
                 }
             }
-            else if ($url_fragment[1] == 'register') {
-                if ($url_fragment[2] == 'check') {
+            else if ($this->queryGet(1) == 'register') {
+                // Ajax call for register
+                if ($this->queryGet(2) == 'check') {
+                    // Check if email is already in use in the system
                     $response = $this->registerCheckDuplicate();
                 }
             }
-            else if ($url_fragment[1] == 'history') {
-                if ($url_fragment[2] == 'get') {
+            else if ($this->queryGet(1) == 'history') {
+                // Ajax calls for fetching histories
+                if ($this->queryGet(2) == 'get') {
+                    // Fetch history
                     $response = $this->getHistory();
                 }
             }

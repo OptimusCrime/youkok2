@@ -51,13 +51,13 @@ class GrayboxController extends Base {
         parent::__construct($paths, $base);
         
         // Check query
-        if ($_GET['q'] == 'graybox/newest') {
+        if ($this->queryGetClean() == 'graybox/newest') {
         	$this->generateNewest();
         }
-        else if ($_GET['q'] == 'graybox/downloads') {
+        else if ($this->queryGetClean() == 'graybox/downloads') {
         	$this->generateDownloads();
         }
-        else if ($_GET['q'] == 'graybox/numbers') {
+        else if ($this->queryGetClean() == 'graybox/numbers') {
         	$this->generateNumbers();
         }
     }

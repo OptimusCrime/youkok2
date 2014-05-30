@@ -26,6 +26,9 @@ class NotfoundController extends Base {
         
         // Null the menu
         $this->template->assign('HEADER_MENU', null);
+        
+        // Turn on caching
+        $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
         // Display template
         $this->template->assign('SITE_TITLE', 'Siden ble ikke funnet');

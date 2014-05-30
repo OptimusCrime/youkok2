@@ -25,7 +25,7 @@ class AuthController extends Base {
         $this->template->assign('HEADER_MENU', null);
 
         // Check query
-        if ($_GET['q'] == 'logg-inn') {
+        if ($this->queryGet(0) == 'logg-inn') {
             // Check if submitted
             if (isset($_POST['login2-email'])) {
                 // Change post vars
@@ -40,22 +40,22 @@ class AuthController extends Base {
                 $this->displayAndCleanup('login.tpl');
             }
         }
-        else if ($_GET['q'] == 'logg-ut') {
+        else if ($this->queryGet(0) == 'logg-ut') {
         	$this->logOut();
         }
-        else if ($_GET['q'] == 'registrer') {
+        else if ($this->queryGet(0) == 'registrer') {
             $this->template->assign('SITE_TITLE', 'Registrer');
             $this->register();
         }
-        else if ($_GET['q'] == 'glemt-passord') {
+        else if ($this->queryGet(0) == 'glemt-passord') {
             $this->template->assign('SITE_TITLE', 'Glemt passord');
             $this->forgottenPassword();
         }
-        else if ($_GET['q'] == 'nytt-passord') {
+        else if ($this->queryGet(0) == 'nytt-passord') {
             $this->template->assign('SITE_TITLE', 'Nytt passord');
             $this->forgottenPasswordNew();
         }
-        else if ($_GET['q'] == 'verifiser') {
+        else if ($this->queryGet(0) == 'verifiser') {
             $this->verify();
         }
         else {

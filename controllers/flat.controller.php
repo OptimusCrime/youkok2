@@ -22,15 +22,23 @@ class FlatController extends Base {
         parent::__construct($paths, $base);
         
         // Check query
-        if ($_GET['q'] == 'om') {
+        if ($this->queryGet(0) == 'om') {
+            // Turn on caching
+            $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+            
+            // Assign header and title
         	$this->template->assign('HEADER_MENU', 'ABOUT');
             $this->template->assign('SITE_TITLE', 'Om Youkok2');
+            
+            // Display
         	$this->displayAndCleanup('flat_about.tpl');
         }
-        elseif ($_GET['q'] == 'retningslinjer') {
+        elseif ($this->queryGet(0) == 'retningslinjer') {
+            // Assign header and title
         	$this->template->assign('HEADER_MENU', null);
+            $this->template->assign('SITE_TITLE', 'Retningslinjer for Youkok2');
             
-            // Fix lists for filtypes and endings
+            // Fix list for filtypes
             $mime_types = explode(',', SITE_ACCEPTED_FILETYPES);
             $mime_types_string = '';
             foreach ($mime_types as $v) {
@@ -38,6 +46,7 @@ class FlatController extends Base {
             }
             $this->template->assign('SITE_ACCEPTED_FILETYPES', $mime_types_string);
             
+            // Fix list for filendings
             $endings = explode(',', SITE_ACCEPTED_FILEENDINGS);
             $endings_string = '';
             foreach ($endings as $v) {
@@ -46,25 +55,42 @@ class FlatController extends Base {
             $this->template->assign('SITE_ACCEPTED_FILEENDINGS', $endings_string);
             
             // Display the page
-            $this->template->assign('SITE_TITLE', 'Retningslinjer for Youkok2');
         	$this->displayAndCleanup('flat_retningslinjer.tpl');
         }
-        elseif ($_GET['q'] == 'privacy') {
+        elseif ($this->queryGet(0) == 'privacy') {
+            // Turn on caching
+            $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+            
+            // Assign header and title
             $this->template->assign('HEADER_MENU', null);
             $this->template->assign('SITE_TITLE', 'Privacy');
+            
+            // Display the page
             $this->displayAndCleanup('flat_privacy.tpl');
         }
-        elseif ($_GET['q'] == 'hjelp') {
+        elseif ($this->queryGet(0) == 'hjelp') {
+            // Turn on caching
+            $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+            
+            // Assign header and title
             $this->template->assign('HEADER_MENU', 'HELP');
             $this->template->assign('SITE_TITLE', 'Hjelp');
+            
+            // Display the page
             $this->displayAndCleanup('flat_help.tpl');
         }
-        elseif ($_GET['q'] == 'karma') {
+        elseif ($this->queryGet(0) == 'karma') {
+            // Turn on caching
+            $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+            
+            // Assign header and title
             $this->template->assign('HEADER_MENU', null);
             $this->template->assign('SITE_TITLE', 'Karma');
+            
+            // Display the page
             $this->displayAndCleanup('flat_karma.tpl');
         }
-        elseif ($_GET['q'] == 'changelog.txt') {
+        elseif ($this->queryGet(0) == 'changelog.txt') {
             // Get changelog content
             $content = file_get_contents($this->basePath . '/files/changelog.md');
             
