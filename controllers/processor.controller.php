@@ -565,7 +565,7 @@ class ProcessorController extends Base {
                 
                 // Create element
                 $item = new Item($this->collection, $this->db);
-                $item->setShouldLoadPhysicalLocation(true);
+                $item->setLoadFullLocation(true);
                 $item->createById($_POST['id']);
 
                 // Add to collection if new
@@ -654,7 +654,7 @@ class ProcessorController extends Base {
 
                 // Create object out of the base
                 $item = new Item($this->collection, $this->db);
-                $item->setShouldLoadPhysicalLocation(true);
+                $item->setLoadFullLocation(true);
                 $item->createByUrl($referer_base);
                 $item_id = $item->getId();
 
