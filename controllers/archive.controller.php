@@ -29,17 +29,17 @@ class ArchiveController extends Base {
         $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
         
         // Check if base
-        echo $this->queryGetClean();
-        if ($this->queryGet(0, '/') == $this->paths['archive'][0]) {
+        if ($this->queryGetClean('/') == $this->paths['archive'][0]) {
+            echo 'here';
+            // Get title
+            $this->template->assign('ARCHIVE_TITLE', 'Arkiv');
+            
             // Check if cached
-            if (!$this->template->isCached('archive.tpl', $_GET['q'])) {
+            if (!$this->template->isCached('archive.tpl', $this->queryGetClean())) {
                 // Not cached, load courses
                 $this->template->assign('SITE_TITLE', 'Kokeboka');
                 $this->template->assign('ARCHIVE_MODE', 'list');
                 $this->template->assign('ARCHIVE_DISPLAY', $this->loadCourses());
-
-                // Get title
-                $this->template->assign('ARCHIVE_TITLE', 'Arkiv');
 
                 // Get breadcrumbs
                 $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Arkiv</li>');
@@ -54,7 +54,7 @@ class ArchiveController extends Base {
                 $item->setShouldLoadFavorites(true, $this->user);
             }
             
-            $item->createByUrl($this->queryGetAll());
+            $item->createByUrl($this->queryGetClean());
             
             // Check if was found or invalid url
             if ($item->wasFound()) {

@@ -38,10 +38,12 @@ class Item {
     private $visible;
     private $mimeType;
     private $missingImage;
+    
     private $shouldLoadPhysicalLocation;
     private $shouldLoadRoot;
     private $shouldLoadFavorites;
     private $shouldLoadFlags;
+    
     private $rootParent;
     private $fullLocation;
     private $loadedFlags;
@@ -177,12 +179,8 @@ class Item {
             }
             if ($this->shouldLoadFlags) {
                 $this->query['select'][] = "count(fl.id) as 'flags'";
-                $this->query['join'][] = PHP_EOL . 'LEFT JOIN favorite AS f ON f.file = a.id AND f.user = :user';
+                $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file';
                 $this->query['groupby'][] = 'a.id';
-                
-                if (!isset($this->query['execute'][':user'])) {
-                    $this->query['execute'][':user'] = $this->user->getId();
-                }
             }
             
             // Create the actual query
