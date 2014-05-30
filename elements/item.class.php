@@ -190,6 +190,11 @@ class Item {
         $this->added = $row['added'];
         $this->size = $row['size'];
         $this->course = $row['course'];
+        
+        // If we are fetching the full location, this should be the last fragment
+        if ($this->loadFullLocation) {
+            $this->fullLocation[] = $row['location'];
+        }
     }
     
     public function createByUrl($url) {
