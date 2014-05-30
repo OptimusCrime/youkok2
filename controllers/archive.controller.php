@@ -29,7 +29,8 @@ class ArchiveController extends Base {
         $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
         
         // Check if base
-        if (str_replace('/', '', $_GET['q']) == str_replace('/', '', $this->paths['archive'][0])) {
+        echo $this->queryGetClean();
+        if ($this->queryGet(0, '/') == $this->paths['archive'][0]) {
             // Check if cached
             if (!$this->template->isCached('archive.tpl', $_GET['q'])) {
                 // Not cached, load courses
@@ -53,7 +54,7 @@ class ArchiveController extends Base {
                 $item->setShouldLoadFavorites(true, $this->user);
             }
             
-            $item->createByUrl($_GET['q']);
+            $item->createByUrl($this->queryGetAll());
             
             // Check if was found or invalid url
             if ($item->wasFound()) {
@@ -131,7 +132,7 @@ class ArchiveController extends Base {
             $this->template->assign('HEADER_MENU', 'ARCHIVE');
 
             // Found (yay), display archive tpl
-            $this->displayAndCleanup('archive.tpl', $_GET['q']);
+            $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
         }
     }
 
