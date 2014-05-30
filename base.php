@@ -28,7 +28,8 @@ class Base {
     private $norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'des');
     private $startTime; // Keeps track of load time
     private $endTime; // Keeps track of load time
-    private $sqlLog;
+    private $sqlLog; // Holds the sqllog
+    private $query;
     
     //
     // Constructor
@@ -112,6 +113,38 @@ class Base {
                 // Kill this off
                 die();
             }
+        }
+        
+        // Analyze query
+        $this->queryAnalyze();
+    }
+    
+    //
+    // Methods for analyzing, reading and returning the query
+    //
+    
+    private function queryAnalyze() {
+        // Init array
+        $this->query = array();
+        
+        // Split query
+        $q = explode('/', $_GET['q']);
+        
+        // Read fragments
+        if (count($q) > 0) {
+            foreach ($q as $v) {
+                if (strlen($v) > 0) {
+                    $this->query[] = $v;
+                }
+            }
+        }
+    }
+    protected function queryGetSize() {
+        return count($this->query);
+    }
+    protected function queryGet($i) {
+        if (count($this->query) >= $i) {
+            return $this->query[$i];
         }
     }
     
