@@ -231,8 +231,8 @@ class Base {
             }
             
             // Build final string
-            $ret .= '<div class="alert alert-success">' . $file_msg . ' ble lastet opp til Youkok2. \
-                     Takk for ditt bidrag!<div class="alert-close"><i class="fa fa-times"></i></div></div>';
+            $ret .= '<div class="alert alert-success">' . $file_msg . ' ble lastet opp til Youkok2. '
+                  . 'Takk for ditt bidrag!<div class="alert-close"><i class="fa fa-times"></i></div></div>';
             
             // Unset the session variable
             unset($_SESSION['youkok2_files']);
@@ -242,8 +242,8 @@ class Base {
         if (isset($_SESSION['youkok2_message']) and count($_SESSION['youkok2_message']) > 0) {
             
             foreach ($_SESSION['youkok2_message'] as $v) {
-                $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text'] . 
-                        '<div class="alert-close"><i class="fa fa-times"></i></div></div>';
+                $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text']
+                      . '<div class="alert-close"><i class="fa fa-times"></i></div></div>';
             }
             
             // Unset the session variable
