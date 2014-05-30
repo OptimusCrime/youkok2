@@ -97,8 +97,11 @@ class DownloadController extends Base {
     //
     
     private function loadFile($file, $name) {
+        // Fetch mime type
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $file_info = finfo_file($finfo, $file);
         header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
+        header('Content-Type: ' . $file_info);
         header('Content-Disposition: attachment; filename="' . $name . '"');
         header('Content-Transfer-Encoding: binary');
         header('Expires: 0');
