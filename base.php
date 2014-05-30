@@ -126,15 +126,17 @@ class Base {
     private function queryAnalyze() {
         // Init array
         $this->query = array();
-        
+
         // Split query
-        $q = explode('/', $_GET['q']);
-        
-        // Read fragments
-        if (count($q) > 0) {
-            foreach ($q as $v) {
-                if (strlen($v) > 0) {
-                    $this->query[] = $v;
+        if (isset($_GET['q'])) {
+            $q = explode('/', $_GET['q']);
+
+            // Read fragments
+            if (count($q) > 0) {
+                foreach ($q as $v) {
+                    if (strlen($v) > 0) {
+                        $this->query[] = $v;
+                    }
                 }
             }
         }
@@ -142,9 +144,25 @@ class Base {
     protected function queryGetSize() {
         return count($this->query);
     }
-    protected function queryGet($i) {
+    protected function queryGet($i, $prefix = '', $endfix = '') {
         if (count($this->query) >= $i) {
-            return $this->query[$i];
+            return $prefix . $this->query[$i] . $endfix;
+        }
+    }
+    protected function queryGetAll() {
+        if (isset($_GET['q'])) {
+            return $_GET['q'];
+        }
+        else {
+            return null;
+        }
+    }
+    protected function queryGetClean() {
+        if (count($this->query) > 0) {
+            return implode('/', $this->query);
+        }
+        else {
+            return null;
         }
     }
     
