@@ -20,14 +20,6 @@ cache.php
 .htaccess
 /processor/search/*
 
-# And all cached templates
-templates_c/*
-
-# Stuff in cache
-cache/*
-!cache/elements/
-cache/elements/*
-
 # And those fuckings DS_Stores
 .DS_Store
 ._.DS_Store
