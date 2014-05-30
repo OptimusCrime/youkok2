@@ -8,6 +8,7 @@ Youkok2 - 0.0.1-pl (xx. mai, 2014)
 - [Fixed] Context meny er nå korrekt sentert på x-aksen.
 - [Enhanced] Opplastning av flere filer gir nå bare en melding.
 - [Enhanced] Nedlastning av filer logger nå UA.
+- [Enhanced] Nedlastning av filer gir korrekt Mimetype i stede for 'octet/stream'
 - [Other] Mange mindre tekstlige endringer.
 
 Youkok2 - 0.0.1-c (2. mai, 2014)
