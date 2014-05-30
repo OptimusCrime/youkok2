@@ -157,9 +157,9 @@ class Base {
             return null;
         }
     }
-    protected function queryGetClean() {
+    protected function queryGetClean($prefix = '', $endfix = '') {
         if (count($this->query) > 0) {
-            return implode('/', $this->query);
+            return $prefix . implode('/', $this->query) . $endfix;
         }
         else {
             return null;
