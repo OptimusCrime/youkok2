@@ -409,7 +409,7 @@ class ProcessorController extends Base {
             // Valid id, try to load the object
             $item = new Item($this->collection, $this->db);
             $item->createById($_POST['id']);
-            $this->collection->addIfDoesNotExist($item);
+            $this->collection->add($item);
             $element = $this->collection->get($_POST['id']);
 
             if ($element != null) {  
