@@ -3,7 +3,6 @@
  * File: cache-example.php
  * Holds: Cache
  * Created: 02.05.14
- * Last updated: 02.05.14
  * Project: Youkok2
  * 
 */

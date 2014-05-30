@@ -3,7 +3,6 @@
  * File: index.php
  * Holds: Creates new builds for the system
  * Created: 13.05.13
- * Last updated: 13.05.13
  * Project: Youkok2
  * 
 */

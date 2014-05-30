@@ -3,7 +3,6 @@
  * File: flat.controller.php
  * Holds: The FlatController-class
  * Created: 02.10.13
- * Last updated: 30.05.14
  * Project: Youkok2
  * 
 */

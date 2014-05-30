@@ -3,7 +3,6 @@
  * File: user.php
  * Holds: Holds all the user-related stuff
  * Created: 02.10.13
- * Last updated: 22.04.14
  * Project: Youkok2
  * 
 */

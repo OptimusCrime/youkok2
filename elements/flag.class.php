@@ -3,7 +3,6 @@
  * File: flag.php
  * Holds: Class for a flag belonging to an item
  * Created: 11.05.14
- * Last updated: 11.05.14
  * Project: Youkok2
  * 
 */

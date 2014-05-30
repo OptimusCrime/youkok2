@@ -3,7 +3,6 @@
  * File: executioner.php
  * Holds: Executes completed flags
  * Created: 14.04.14
- * Last updated: 27.05.14
  * Project: Youkok2
  * 
 */

@@ -3,7 +3,6 @@
  * File: graybox.controller.php
  * Holds: The GrayboxController-class
  * Created: 23.04.14
- * Last updated: 13.05.14
  * Project: Youkok2
  * 
 */

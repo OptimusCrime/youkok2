@@ -3,7 +3,6 @@
  * File: notfound.controller.php
  * Holds: The NotfoundController-class that returns 404 error-message to the user
  * Created: 02.10.13
- * Last updated: 13.05.14
  * Project: Youkok2
  * 
 */

@@ -3,7 +3,6 @@
  * File: download.controller.php
  * Holds: The DownloadController-class
  * Created: 02.10.13
- * Last updated: 18.05.14
  * Project: Youkok2
  * 
 */

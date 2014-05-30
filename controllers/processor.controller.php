@@ -3,7 +3,6 @@
  * File: processor.controller.php
  * Holds: The ProcessorController-class
  * Created: 14.04.14
- * Last updated: 13.05.14
  * Project: Youkok2
  * 
 */

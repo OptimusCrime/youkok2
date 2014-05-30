@@ -3,7 +3,6 @@
  * File: pdostatement2.class.php
  * Holds: Class that overrides the normal PDO-class to log queries etc
  * Created: 27.05.14
- * Last updated: 27.05.14
  * Project: Youkok2
  * 
 */
