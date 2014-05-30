@@ -35,7 +35,7 @@ require_once BASE_PATH . '/elements/user.class.php';
 require_once BASE_PATH . '/elements/vote.class.php';
 
 require_once BASE_PATH . '/base.php';
-require_once BASE_PATH . '/executioner.php';
+require_once BASE_PATH . '/libs/executioner.php';
 
 //
 // Debug

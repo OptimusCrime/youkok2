@@ -3,7 +3,7 @@
  * File: flat.controller.php
  * Holds: The FlatController-class
  * Created: 02.10.13
- * Last updated: 13.05.14
+ * Last updated: 30.05.14
  * Project: Youkok2
  * 
 */
@@ -67,7 +67,7 @@ class FlatController extends Base {
         }
         elseif ($_GET['q'] == 'changelog.txt') {
             // Get changelog content
-            $content = file_get_contents($this->basePath . '/changelog.md');
+            $content = file_get_contents($this->basePath . '/files/changelog.md');
             
             // Assign content to placeholder
             $this->template->assign('CHANGELOG_CONTENT', $content);
