@@ -28,6 +28,7 @@ require_once BASE_PATH . '/libs/bcrypt/bcrypt.php';
 require_once BASE_PATH . '/libs/phpmailer/class.phpmailer.php';
 
 require_once BASE_PATH . '/elements/collection.class.php';
+require_once BASE_PATH . '/elements/course.class.php';
 require_once BASE_PATH . '/elements/item.class.php';
 require_once BASE_PATH . '/elements/flag.class.php';
 require_once BASE_PATH . '/elements/user.class.php';
