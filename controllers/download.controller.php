@@ -33,7 +33,7 @@ class DownloadController extends Base {
         else {
             // Create new object
             $item = new Item($this->collection, $this->db);
-            $item->setShouldLoadPhysicalLocation(true);
+            $item->setLoadFullLocation(true);
             $item->createByUrl($_GET['q']);
 
             // Check if was found or invalid url

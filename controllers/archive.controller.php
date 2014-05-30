@@ -25,12 +25,11 @@ class ArchiveController extends Base {
         // Displaying 404 or not
         $should_display_404 = false;
     
-        // Turn on caching
-        $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-        
         // Check if base
         if ($this->queryGetClean('/') == $this->paths['archive'][0]) {
-            echo 'here';
+            // Turn on caching
+            $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+        
             // Get title
             $this->template->assign('ARCHIVE_TITLE', 'Arkiv');
             
@@ -51,72 +50,60 @@ class ArchiveController extends Base {
             
             // Decide if we should load favorites
             if ($this->user->isLoggedIn()) {
-                $item->setShouldLoadFavorites(true, $this->user);
+                $item->setLoadFavorite(true, $this->user);
             }
             
+            // Create the object
             $item->createByUrl($this->queryGetClean());
             
             // Check if was found or invalid url
             if ($item->wasFound()) {
-                // Item was found, store id
-                $element_id = $item->getId();
-
                 // Add to collection if new
-                $this->collection->addIfDoesNotExist($item);
-
-                // Load item from collection
-                $element = $this->collection->get($element_id);
+                $this->collection->add($item);
                 
-                // Check if element is null (this should not be possible, but just in case...)
-                if ($element == null) {
-                    // 404
-                    $should_display_404 = true;
+                // Element was found, double check that this is a directory
+                if ($item->isDirectory()) {
+                    // Assign variables we need no matter if the page is cached or not
+                    $this->template->assign('ARCHIVE_ID', $item->getId());
+                    
+                    // User status
+                    $this->template->assign('ARCHIVE_USER_VERIFIED', $this->user->isVerified());
+                    $this->template->assign('ARCHIVE_USER_BANNED', $this->user->isBanned());
+                    $this->template->assign('ARCHIVE_USER_HAS_KARMA', $this->user->hasKarma());
+                    $this->template->assign('ARCHIVE_USER_CAN_CONTRIBUTE', $this->user->canContribute());
+                    $this->template->assign('ARCHIVE_USER_ONLINE', $this->user->isLoggedIn());
+                    
+                    // File types
+                    $accepted_filetypes = explode(',', SITE_ACCEPTED_FILETYPES);
+                    $this->template->assign('ARCHIVE_ACCEPTED_FILETYPES', json_encode($accepted_filetypes));
+                    $accepted_fileending = explode(',', SITE_ACCEPTED_FILEENDINGS);
+                    $this->template->assign('ARCHIVE_ACCEPTED_FILEENDINGS', json_encode($accepted_fileending));
+                    
+                    // Get title
+                    $archive_title = $item->getName();
+                    if ($item->hasCourse()) {
+                        $archive_title .= ' - <span class="archive-title-smaller">' . $item->getCouseName() . '</span>';
+                    }
+                    if ($this->user->isLoggedIn()) {
+                        $archive_title .= ' <small><i class="fa fa-star archive-heading-star-' . $item->isFavorite() . '" data-archive-id="' . $item->getId() . '" id="archive-heading-star"></i></small>';
+                    }
+                    
+                    // Assign to Smarty
+                    $this->template->assign('ARCHIVE_TITLE', $archive_title);
+                    
+                    // List every single element that has this element as a parent
+                    $this->template->assign('ARCHIVE_DISPLAY', $this->loadArchive($item->getId()));
+                    $this->template->assign('ARCHIVE_MODE', 'browse');
+                    
+                    // Get breadcrumbs
+                    $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($item));
+                    
+                    // Add title
+                    $this->template->assign('SITE_TITLE', 'Kokeboka :: ' . $this->loadBredcrumbsTitle($item));
                 }
                 else {
-                    // Element was found, double check that this is a directory
-                    if ($element->isDirectory()) {
-                        // Assign variables we need no matter if the page is cached or not
-                        $this->template->assign('ARCHIVE_ID', $element->getId());
-                        
-                        // User status
-                        $this->template->assign('ARCHIVE_USER_VERIFIED', $this->user->isVerified());
-                        $this->template->assign('ARCHIVE_USER_BANNED', $this->user->isBanned());
-                        $this->template->assign('ARCHIVE_USER_HAS_KARMA', $this->user->hasKarma());
-                        $this->template->assign('ARCHIVE_USER_CAN_CONTRIBUTE', $this->user->canContribute());
-                        $this->template->assign('ARCHIVE_USER_ONLINE', $this->user->isLoggedIn());
-                        
-                        // File types
-                        $accepted_filetypes = explode(',', SITE_ACCEPTED_FILETYPES);
-                        $this->template->assign('ARCHIVE_ACCEPTED_FILETYPES', json_encode($accepted_filetypes));
-                        $accepted_fileending = explode(',', SITE_ACCEPTED_FILEENDINGS);
-                        $this->template->assign('ARCHIVE_ACCEPTED_FILEENDINGS', json_encode($accepted_fileending));
-                        
-                        // Get title
-                        $archive_title = $element->getName();
-                        if ($element->hasCourse()) {
-                            $archive_title .= ' - <span class="archive-title-smaller">' . $element->getCouseName() . '</span>';
-                        }
-                        if ($this->user->isLoggedIn() and ($element->isFavorite($this->user) == 1 or $element->isFavorite($this->user) == 0)) {
-                            $archive_title .= ' <small><i class="fa fa-star archive-heading-star-' . $element->isFavorite($this->user) . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i></small>';
-                        }
-                        
-                        // Assign to Smarty
-                        $this->template->assign('ARCHIVE_TITLE', $archive_title);
-                        
-                        // List every single element that has this element as a parent
-                        $this->template->assign('ARCHIVE_DISPLAY', $this->loadArchive($element->getId()));
-                        $this->template->assign('ARCHIVE_MODE', 'browse');
-                        
-                        // Get breadcrumbs
-                        $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
-                        
-                        // Add title
-                        $this->template->assign('SITE_TITLE', 'Kokeboka :: ' . $this->loadBredcrumbsTitle($element));
-                    }
-                    else {
-                        $should_display_404 = true;
-                    }
-                }
+                    $should_display_404 = true;
+               }
             }
             else {
                 $should_display_404 = true;
@@ -206,7 +193,7 @@ class ArchiveController extends Base {
             
             // Decide if we should load favorites
             if ($this->user->isLoggedIn()) {
-                $item->setShouldLoadFavorites(true, $this->user);
+                $item->setLoadFavorite(true, $this->user);
             }
             
             // Set load flags
@@ -218,22 +205,19 @@ class ArchiveController extends Base {
             // Add to collection if new
             $this->collection->addIfDoesNotExist($item);
 
-            // Load item from collection
-            $element = $this->collection->get($row['id']);
-
             // CHeck if element was loaded
-            if ($element != null) {
-                $flag_count = $element->getFlagCount();
+            if ($item != null) {
+                $flag_count = $item->getFlagCount();
                 // Check if element is file or directory
-                if ($element->isDirectory()) {
+                if ($item->isDirectory()) {
                     // This is a directory, link should go to archive
                     $ret .= '<li>
-                                <a title="' . $element->getName() . '" href="' . $element->generateUrl($this->paths['archive'][0]) . '">
-                                    <div class="archive-item' . ($element->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="dir" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '">
+                                <a title="' . $item->getName() . '" href="' . $item->generateUrl($this->paths['archive'][0]) . '">
+                                    <div class="archive-item' . ($item->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $item->isFavorite($this->user) . '" data-id="' . $item->getId() . '" data-type="dir" data-name="' . $item->getName() . '" data-flags="' . $flag_count . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
-                                        ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
+                                        ' . ($item->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/folder.png\');"></div>
-                                        <div class="archive-item-label"><p>' . $element->getName() . '</p></div>
+                                        <div class="archive-item-label"><p>' . $item->getName() . '</p></div>
                                     </div>
                                 </a>
                             </li>';
@@ -241,12 +225,12 @@ class ArchiveController extends Base {
                 else {
                     // This is a file, link should go to download
                     $ret .= '<li>
-                                <a title="' . $element->getName() . '" rel="nofollow" href="' . $element->generateUrl($this->paths['download'][0]) . '">
-                                    <div class="archive-item' . ($element->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $element->isFavorite($this->user) . '" data-id="' . $element->getId() . '" data-type="file" data-name="' . $element->getName() . '" data-flags="' . $flag_count . '" data-size="' . $element->getSize() . '">
+                                <a title="' . $item->getName() . '" rel="nofollow" href="' . $item->generateUrl($this->paths['download'][0]) . '">
+                                    <div class="archive-item' . ($item->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $item->isFavorite($this->user) . '" data-id="' . $item->getId() . '" data-type="file" data-name="' . $item->getName() . '" data-flags="' . $flag_count . '" data-size="' . $item->getSize() . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
-                                        ' . ($element->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
+                                        ' . ($item->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . ($item->getMissingImage() ? 'unknown' : $item->getMimeType()) . '.png\');"></div>
-                                        <div class="archive-item-label"><p>' . $element->getName() . '</p></div>
+                                        <div class="archive-item-label"><p>' . $item->getName() . '</p></div>
                                     </div>
                                 </a>
                             </li>';

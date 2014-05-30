@@ -48,9 +48,6 @@ class Collection {
         }
         
         $this->arr[$elm->getId()] = $elm;
-
-        // Do the create process
-        $elm->create();
     }
 
     //
@@ -77,9 +74,6 @@ class Collection {
 
         // Not found, add
         $this->arr[$elm_id] = $elm;
-
-        // Do the create process
-        $elm->create();
     }
     
     //

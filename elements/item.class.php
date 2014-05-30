@@ -18,37 +18,65 @@ class Item {
     // Variables for the class
     //
     
+    // Pointers, other classes etc
     private $collection;
     private $db;
     private $user;
     private $query;
-
+    
+    // Fields in the table
     private $id;
-    private $url;
     private $name;
-    private $parent;
-    private $location;
-    private $added;
-    private $size;
     private $urlFriendly;
-    private $downloadCount;
-    private $directory;
-    private $favorite;
-    private $accepted;
-    private $visible;
+    private $parent;
+    private $course;
+    private $location;
     private $mimeType;
     private $missingImage;
+    private $size;
+    private $directory;
+    private $accepted;
+    private $visible;
+    private $added;
     
-    private $shouldLoadPhysicalLocation;
+    
+    // Full paths
+    private $fullUrl;
+    private $fullLocation;
+    
+    // Load additional informaiton
+    private $loadFullLocation;
+    private $loadFavorite;
+    
+    // Other stuff
+    private $favorite;
+    private $rootParent;
+    
+    
+    
+    
+    
+    
+    private $downloadCount;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     private $shouldLoadRoot;
-    private $shouldLoadFavorites;
+    
     private $shouldLoadFlags;
     
-    private $rootParent;
-    private $fullLocation;
+    
+    
     private $loadedFlags;
     private $flags;
-    private $course;
+    
     private $courseName;
 
     //
@@ -68,26 +96,31 @@ class Item {
                              'groupby' => array(),
                              'execute' => array());
 
-        // Create arrays
-        $this->url = array();
+        // Create arrays for full locations
+        $this->fullUrl = array();
         $this->fullLocation = array();
+        
+        // Set initial values for all fields in the database
+        
         $this->flags = array();
 
         // Create array for download numbers
         $this->downloadCount = array(0 => null, 1 => null, 2 => null, 3 => null);
-
-        // Set shouldLoadPhysicalLocation (lol) to false and other stuff
-        $this->shouldLoadPhysicalLocation = false;
+        
+        // Variables to keep track of what should be loaded at creation
+        $this->loadFullLocation = false;
+        $this->loadFavorite = false;
+        
+        // Other stuff
+        $this->favorite = null;
+        
+        
         $this->shouldLoadRoot = false;
-        $this->shouldLoadFavorites = false;
+        
         $this->shouldLoadFlags = false;
         $this->loadedFlags = false;
-        $this->favorite = null;
-        $this->rootParent = null;
-        $this->size = 0;
-        $this->course = null;
+        
         $this->courseName = null;
-        $this->missingImage = false;
     }
     
     //
@@ -96,6 +129,68 @@ class Item {
     
     public function createById($id) {
         $this->id = $id;
+        
+         // Add id to dynamic query
+        $this->query['execute'][':id'] = $this->id;
+        
+        // Create dynamic query
+        if ($this->loadFavorite) {
+            $this->query['select'][] = "f.id AS 'favorite'";
+            $this->query['join'][] = PHP_EOL . 'LEFT JOIN favorite AS f ON f.file = a.id AND f.user = :user';
+            
+            if (!isset($this->query['execute'][':user'])) {
+                $this->query['execute'][':user'] = $this->user->getId();
+            }
+        }
+        if ($this->shouldLoadFlags) {
+            $this->query['select'][] = "count(fl.id) as 'flags'";
+            $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file';
+            $this->query['groupby'][] = 'a.id';
+        }
+        
+        // Create the actual query
+        $get_item_info = 'SELECT ' . implode(', ', $this->query['select']) . PHP_EOL . 'FROM archive AS a ';
+        
+        // Add joins (if there are any)
+        if (count($this->query['join']) > 0) {
+            $get_item_info .= implode(' ', $this->query['join']);
+        }
+        
+        // Add where
+        $get_item_info .= PHP_EOL . 'WHERE a.id = :id ';
+        
+        // Add group by (again, if there are any)
+        if (count($this->query['groupby']) > 0) {
+            $get_item_info .= PHP_EOL . 'GROUP BY ' . implode(', ', $this->query['groupby']);
+        }
+        
+        // Run the actual query
+        $get_item_info_query = $this->db->prepare($get_item_info);
+        $get_item_info_query->execute($this->query['execute']);
+        $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
+        
+        // Set special fields
+        if ($this->loadFavorite) {
+            $this->favorite = (!isset($row['favorite']) or $row['favorite'] == null) ? false : true;
+        }
+        if (isset($row['flags'])) {
+            $this->flags = $row['flags'];
+            $this->loadedFlags = true;
+        }
+        
+        // Set results
+        $this->name = $row['name'];
+        $this->directory = $row['is_directory'];
+        $this->urlFriendly = $row['url_friendly'];
+        $this->parent = $row['parent'];
+        $this->mimeType = $row['mime_type'];
+        $this->missingImage = $row['missing_image'];
+        $this->accepted = $row['is_accepted'];
+        $this->visible = $row['is_visible'];
+        $this->location = $row['location'];
+        $this->added = $row['added'];
+        $this->size = $row['size'];
+        $this->course = $row['course'];
     }
     
     public function createByUrl($url) {
@@ -110,125 +205,63 @@ class Item {
             }
         }
         
+        // Count number of fragments
+        $num_pieces = count($url_pieces);
+        
         // Only continue if we have more than one elements
-        if (count($url_pieces) > 0) {
+        if ($num_pieces > 0) {
             // Set current id to root
-            $current_id = 1;
+            $temp_id = 1;
             
             // Loop each fragment
-            foreach ($url_pieces as $url_piece_single) {
-                // Todo add caching here!
-                $get_reverse_url = "SELECT id". ($this->shouldLoadPhysicalLocation ? ', location' : '') . "
+            foreach ($url_pieces as $k => $url_piece_single) {
+                // Run query for this fragment
+                $get_reverse_url = "SELECT id
                 FROM archive 
                 WHERE parent = :parent
                 AND url_friendly = :url_friendly
                 AND is_visible = 1";
                 
                 $get_reverse_url_query = $this->db->prepare($get_reverse_url);
-                $get_reverse_url_query->execute(array(':parent' => $current_id, ':url_friendly' => $url_piece_single));
+                $get_reverse_url_query->execute(array(':parent' => $temp_id, 
+                                                      ':url_friendly' => $url_piece_single));
                 $row = $get_reverse_url_query->fetch(PDO::FETCH_ASSOC);
                 
                 // Check if anything was returned
                 if (isset($row['id'])) {
-                    // Was found, update the current id
-                    $current_id = $row['id'];
-
-                    // Add url piece
-                    $this->url[] = $url_piece_single;
-
-                    // Should cache, just in case
-                    $temp_item = new Item($this->collection, $this->db);
-                    if ($this->user != null and $this->user->isLoggedIn()) {
-                        $temp_item->setShouldLoadFavorites(true, $this->user);
+                    // Check if this is the last element
+                    if ($k == ($num_pieces - 1)) {
+                        // Last element, just use createById
+                        $this->createById($row['id']);
                     }
-                    $temp_item->createById($current_id);
-                    $temp_item->collection->addIfDoesNotExist($temp_item);
+                    else {
+                        // Was found, update the current id
+                        $temp_id = $row['id'];
 
-                    // Check if we should add to location array too
-                    if ($this->shouldLoadPhysicalLocation) {
-                        $this->fullLocation[] = $row['location'];
+                        // Add url piece
+                        $this->fullUrl[] = $url_piece_single;
+                        
+                        // Check if this object already exists
+                        $temp_item = $this->collection->get($temp_id);
+                        
+                        // Check if already cached, or not
+                        if ($temp_item == null) {
+                            // Should cache, just in case
+                            $temp_item = new Item($this->collection, $this->db);
+                            $temp_item->createById($temp_id);
+                            $temp_item->collection->add($temp_item);
+                        }
+
+                        // Check if we should add to location array too
+                        if ($this->loadFullLocation) {
+                            $this->fullLocation[] = $temp_item->getLocation();
+                        }
                     }
                 }
             }
-
-            // Check if number of fragments are equal
-            if (count($url_pieces) == count($this->url)) {
-                $this->id = $current_id;
-            }
         }
     }
-
-    //
-    // Do the acutal creation here
-    //
-
-    public function create() {
-        // Get all info about file
-        if ($this->id != null) {
-            // Add id to dynamic query
-            $this->query['execute'][':id'] = $this->id;
-            
-            // Create dynamic query
-            if ($this->shouldLoadFavorites) {
-                $this->query['select'][] = "f.id AS 'favorite'";
-                $this->query['join'][] = PHP_EOL . 'LEFT JOIN favorite AS f ON f.file = a.id AND f.user = :user';
-                
-                if (!isset($this->query['execute'][':user'])) {
-                    $this->query['execute'][':user'] = $this->user->getId();
-                }
-            }
-            if ($this->shouldLoadFlags) {
-                $this->query['select'][] = "count(fl.id) as 'flags'";
-                $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file';
-                $this->query['groupby'][] = 'a.id';
-            }
-            
-            // Create the actual query
-            $get_item_info = 'SELECT ' . implode(', ', $this->query['select']) . PHP_EOL . 'FROM archive AS a ';
-            
-            // Add joins (if there are any)
-            if (count($this->query['join']) > 0) {
-                $get_item_info .= implode(' ', $this->query['join']);
-            }
-            
-            // Add where
-            $get_item_info .= PHP_EOL . 'WHERE a.id = :id ';
-            
-            // Add group by (again, if there are any)
-            if (count($this->query['groupby']) > 0) {
-                $get_item_info .= PHP_EOL . 'GROUP BY ' . implode(', ', $this->query['groupby']);
-            }
-            
-            // Run the actual query
-            $get_item_info_query = $this->db->prepare($get_item_info);
-            $get_item_info_query->execute($this->query['execute']);
-            $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
-            
-            // Set special fields
-            if (isset($row['favorite'])) {
-                $this->favorite = ($row['favorite'] == null) ? false : true;
-            }
-            if (isset($row['flags'])) {
-                $this->flags = $row['flags'];
-                $this->loadedFlags = true;
-            }
-            
-            // Set results
-            $this->name = $row['name'];
-            $this->directory = $row['is_directory'];
-            $this->urlFriendly = $row['url_friendly'];
-            $this->parent = $row['parent'];
-            $this->mimeType = $row['mime_type'];
-            $this->missingImage = $row['missing_image'];
-            $this->accepted = $row['is_accepted'];
-            $this->visible = $row['is_visible'];
-            $this->location = $row['location'];
-            $this->added = $row['added'];
-            $this->size = $row['size'];
-            $this->course = $row['course'];
-        }
-    }
-
+    
     //
     // Check if real or invalid url
     //
@@ -307,6 +340,8 @@ class Item {
             while ($temp_id != 0) {
                 // Check if this object already exists
                 $temp_item = $this->collection->get($temp_id);
+                
+                // Check if already cached, or not
                 if ($temp_item == null) {
                     // Create new object
                     $temp_item = new Item($this->collection, $this->db);
@@ -333,19 +368,14 @@ class Item {
     }
 
     //
-    // This variable decides if the location is fetched too
+    // Setters for loading additional information
     //
 
-    public function setShouldLoadPhysicalLocation($b) {
-        $this->shouldLoadPhysicalLocation = $b;
+    public function setLoadFullLocation($b) {
+        $this->loadFullLocation = $b;
     }
-    
-    //
-    // This variable decides if favorite should fetched too
-    //
-
-    public function setShouldLoadFavorites($b, $user) {
-        $this->shouldLoadFavorites = $b;
+    public function setLoadFavorite($b, $user) {
+        $this->loadFavorite = $b;
         $this->user = $user;
     }
     
@@ -363,7 +393,7 @@ class Item {
 
     public function generateUrl($path) {
         // Check if the url is already cached!
-        if (count($this->url) == 0) {
+        if (count($this->fullUrl) == 0) {
             // Store some variables for later
             $temp_url = array($this->urlFriendly);
             $temp_id = $this->parent;
@@ -373,6 +403,8 @@ class Item {
             while ($temp_id != 0) {
                 // Check if this object already exists
                 $temp_item = $this->collection->get($temp_id);
+                
+                // Check if already cached
                 if ($temp_item == null) {
                     // Create new object
                     $temp_item = new Item($this->collection, $this->db);
@@ -390,21 +422,19 @@ class Item {
                     $temp_root_parent = $temp_item;
                 }
             }
-
-            // Check if we should store the root
-            if ($this->shouldLoadRoot) {
-                $this->rootParent = $temp_root_parent;
-            }
+            
+            // Store the root
+            $this->rootParent = $temp_root_parent;
             
             // Reverse array
             $temp_url = array_reverse($temp_url);
             
             // Store in real variable
-            $this->url = $temp_url;
+            $this->fullUrl = $temp_url;
         }
 
         // Return goes here!
-        return substr($path, 1) . implode('/', $this->url) . ($this->directory ? '/' : '');
+        return substr($path, 1) . implode('/', $this->fullUrl) . ($this->directory ? '/' : '');
     }
 
     //
@@ -526,9 +556,12 @@ class Item {
     // Favorite
     //
 
-    public function isFavorite($user) {
+    public function isFavorite() {
+        var_dump($this->loadFavorite);
+        var_dump($this->favorite);
+        echo PHP_EOL;
         // First, check if logged in
-        if ($user->isLoggedIn()) {
+        if ($this->user->isLoggedIn()) {
             // Check if fetched
             if ($this->favorite === null) {
                 // Not fetched
@@ -538,7 +571,7 @@ class Item {
                 AND user = :user";
                 
                 $get_favorite_status_query = $this->db->prepare($get_favorite_status);
-                $get_favorite_status_query->execute(array(':file' => $this->id, ':user' => $user->getId()));
+                $get_favorite_status_query->execute(array(':file' => $this->id, ':user' => $this->user->getId()));
                 $row = $get_favorite_status_query->fetch(PDO::FETCH_ASSOC);
                 
                 // Cache for later
