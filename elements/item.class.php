@@ -21,6 +21,7 @@ class Item {
     private $collection;
     private $db;
     private $user;
+    private $query;
 
     private $id;
     private $url;
@@ -57,6 +58,13 @@ class Item {
         $this->collection = $collection;
         $this->db = $db;
         $this->user = null;
+        
+        // Init array for the query
+        $this->query = array('select' => array('a.name', 'a.parent', 'a.is_directory', 'a.url_friendly', 'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 'a.added', 'a.location', 'a.size', 'a.course'), 
+                             'join' => array(), 
+                             'where' => array('WHERE a.id = :id'),
+                             'groupby' => array(),
+                             'execute' => array());
 
         // Create arrays
         $this->url = array();
@@ -155,50 +163,56 @@ class Item {
     public function create() {
         // Get all info about file
         if ($this->id != null) {
+            // Add id to dynamic query
+            $this->query['execute'][':id'] = $this->id;
+            
+            // Create dynamic query
             if ($this->shouldLoadFavorites) {
-                if ($this->shouldLoadFlags) {
-                    $get_item_info = "SELECT a.name, a.parent, a.is_directory, a.url_friendly, a.mime_type, a.missing_image, a.is_accepted, a.is_visible, a.added, a.location, a.size, a.course, f.id AS 'favorite', count(fl.id) as 'flags'
-                    FROM archive AS a
-                    LEFT JOIN favorite AS f ON f.file = a.id
-                    AND f.user = :user
-                    LEFT JOIN flag as fl on a.id = fl.file
-                    WHERE a.id = :id
-                    group by a.id";
-                    
-                    $get_item_info_query = $this->db->prepare($get_item_info);
-                    $get_item_info_query->execute(array(':id' => $this->id, ':user' => $this->user->getId()));
-                    $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
-                    
-                    // Set flagcount
-                    $this->flags = $row['flags'];
-                    $this->loadedFlags = true;
-                }
-                else {
-                    // Id is set, run a simple query
-                    $get_item_info = "SELECT a.name, a.parent, a.is_directory, a.url_friendly, a.mime_type, a.missing_image, a.is_accepted, a.is_visible, a.added, a.location, a.size, a.course, f.id AS 'favorite'
-                    FROM archive AS a
-                    LEFT JOIN favorite AS f ON f.file = a.id
-                    AND f.user = :user
-                    WHERE a.id = :id";
-                    
-                    $get_item_info_query = $this->db->prepare($get_item_info);
-                    $get_item_info_query->execute(array(':id' => $this->id, ':user' => $this->user->getId()));
-                    $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
-                }
-
+                $this->query['select'][] = "f.id AS 'favorite'";
+                $this->query['join'][] = PHP_EOL . 'LEFT JOIN favorite AS f ON f.file = a.id AND f.user = :user';
                 
-                // Set favorite
+                if (!isset($this->query['execute'][':user'])) {
+                    $this->query['execute'][':user'] = $this->user->getId();
+                }
+            }
+            if ($this->shouldLoadFlags) {
+                $this->query['select'][] = "count(fl.id) as 'flags'";
+                $this->query['join'][] = PHP_EOL . 'LEFT JOIN favorite AS f ON f.file = a.id AND f.user = :user';
+                $this->query['groupby'][] = 'a.id';
+                
+                if (!isset($this->query['execute'][':user'])) {
+                    $this->query['execute'][':user'] = $this->user->getId();
+                }
+            }
+            
+            // Create the actual query
+            $get_item_info = 'SELECT ' . implode(', ', $this->query['select']) . PHP_EOL . 'FROM archive AS a ';
+            
+            // Add joins (if there are any)
+            if (count($this->query['join']) > 0) {
+                $get_item_info .= implode(' ', $this->query['join']);
+            }
+            
+            // Add where
+            $get_item_info .= PHP_EOL . 'WHERE a.id = :id ';
+            
+            // Add group by (again, if there are any)
+            if (count($this->query['groupby']) > 0) {
+                $get_item_info .= PHP_EOL . 'GROUP BY ' . implode(', ', $this->query['groupby']);
+            }
+            
+            // Run the actual query
+            $get_item_info_query = $this->db->prepare($get_item_info);
+            $get_item_info_query->execute($this->query['execute']);
+            $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
+            
+            // Set special fields
+            if (isset($row['favorite'])) {
                 $this->favorite = ($row['favorite'] == null) ? false : true;
             }
-            else {
-                // Id is set, run a simple query
-                $get_item_info = "SELECT name, parent, is_directory, url_friendly, mime_type, missing_image, is_accepted, is_visible, added, location, size, course
-                FROM archive 
-                WHERE id = :id";
-                
-                $get_item_info_query = $this->db->prepare($get_item_info);
-                $get_item_info_query->execute(array(':id' => $this->id));
-                $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
+            if (isset($row['flags'])) {
+                $this->flags = $row['flags'];
+                $this->loadedFlags = true;
             }
             
             // Set results
