@@ -556,12 +556,17 @@ class Item {
     // Favorite
     //
 
-    public function isFavorite() {
-        var_dump($this->loadFavorite);
-        var_dump($this->favorite);
-        echo PHP_EOL;
+    public function isFavorite($user = null) {
+        // Find what user we should use
+        if ($this->user == null) {
+            $correct_user = $user;
+        }
+        else {
+            $correct_user = $this->user;
+        }
+        
         // First, check if logged in
-        if ($this->user->isLoggedIn()) {
+        if ($correct_user->isLoggedIn()) {
             // Check if fetched
             if ($this->favorite === null) {
                 // Not fetched
@@ -571,7 +576,7 @@ class Item {
                 AND user = :user";
                 
                 $get_favorite_status_query = $this->db->prepare($get_favorite_status);
-                $get_favorite_status_query->execute(array(':file' => $this->id, ':user' => $this->user->getId()));
+                $get_favorite_status_query->execute(array(':file' => $this->id, ':user' => $correct_user->getId()));
                 $row = $get_favorite_status_query->fetch(PDO::FETCH_ASSOC);
                 
                 // Cache for later
