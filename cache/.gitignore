@@ -3,3 +3,6 @@
 
 # Except this
 !.gitignore
+
+# And element directory
+!/elements/
