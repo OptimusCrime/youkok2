@@ -25,6 +25,7 @@ require_once BASE_PATH . '/libs/pdo2/pdostatement2.class.php';
 require_once BASE_PATH . '/libs/smarty/Smarty.class.php';
 require_once BASE_PATH . '/libs/bcrypt/bcrypt.php';
 require_once BASE_PATH . '/libs/phpmailer/class.phpmailer.php';
+require_once BASE_PATH . '/libs/executioner.php';
 
 require_once BASE_PATH . '/elements/collection.class.php';
 require_once BASE_PATH . '/elements/course.class.php';
@@ -34,7 +35,7 @@ require_once BASE_PATH . '/elements/user.class.php';
 require_once BASE_PATH . '/elements/vote.class.php';
 
 require_once BASE_PATH . '/base.php';
-require_once BASE_PATH . '/libs/executioner.php';
+
 
 //
 // Debug
