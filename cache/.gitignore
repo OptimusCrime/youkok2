@@ -3,7 +3,7 @@
 
 # Except this
 !.gitignore
-!cache-example.json
+!typeahead-example.json
 
 # And element directory
 !/elements/

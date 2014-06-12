@@ -295,7 +295,7 @@ class Youkok2 {
         $this->showMessages();
         
         // Load cache
-        $this->loadCache();
+        $this->loadTypeaheadCache();
         
         // Call Smarty
         $this->template->display($template, $sid);
@@ -377,24 +377,24 @@ class Youkok2 {
     // Loading cache for typeahad
     //
     
-    private function loadCache() {
-        if (file_exists($this->basePath . '/cache/cache.json')) {
+    private function loadTypeaheadCache() {
+        if (file_exists($this->basePath . '/cache/typeahead.json')) {
             // File exists
-            $content = json_decode(file_get_contents($this->basePath . '/cache/cache.json'), true);
+            $content = json_decode(file_get_contents($this->basePath . '/cache/typeahead.json'), true);
             
             // Check content
             if (!isset($content['ts'])) {
                 // Assign random cache
-                $this->template->assign('CACHE_TIME', rand());
+                $this->template->assign('TYPEAHEAD_CACHE_TIME', rand());
             }
             else {
                 // Assign corret cache
-                $this->template->assign('CACHE_TIME', $content['ts']);
+                $this->template->assign('TYPEAHEAD_CACHE_TIME', $content['ts']);
             }
         }
         else {
             // Assign random cache
-            $this->template->assign('CACHE_TIME', rand());
+            $this->template->assign('TYPEAHEAD_CACHE_TIME', rand());
         }
     }
     

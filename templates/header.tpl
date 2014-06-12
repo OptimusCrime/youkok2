@@ -25,7 +25,7 @@
 </head>
 <body>
 [[+nocache]]
-    <input type="hidden" name="cache-time" id="cache-time" value="[[+$CACHE_TIME]]" />
+    <input type="hidden" name="cache-time" id="cache-time" value="[[+$TYPEAHEAD_CACHE_TIME]]" />
     <input type="hidden" name="search-base" id="search-base" value="[[+$SITE_SEARCH_BASE]]" />
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
