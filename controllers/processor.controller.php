@@ -481,13 +481,8 @@ class ProcessorController extends Youkok2 {
 
     private function homePopularUpdate() {
         $response = array();
-        $delta = array(' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK)', 
-            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', 
-            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR)', 
-            '',
-            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY)');
 
-        // Check stuff
+        // Update preference
         if (isset($_POST['delta']) and is_numeric($_POST['delta']) and $_POST['delta'] >= 0 and $_POST['delta'] <= 4) {
             $response['code'] = 200;
 
@@ -501,49 +496,25 @@ class ProcessorController extends Youkok2 {
             }
             else {
                 $_SESSION['home_popular'] = $_POST['delta'];
-            }
+            }          
 
-            // Fetch
-            $response['html'] = '';
-            $get_most_popular = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'
-            FROM download d
-            " . $delta[$_POST['delta']] . "
-            GROUP BY d.file
-            ORDER BY downloaded_times DESC
-            LIMIT 15";
-            
-            $get_most_popular_query = $this->db->prepare($get_most_popular);
-            $get_most_popular_query->execute();
-            while ($row = $get_most_popular_query->fetch(PDO::FETCH_ASSOC)) {
-                // Create new object
-                $item = new Item($this->collection, $this->db);
-                $item->setShouldLoadRoot(true);
-                $item->createById($row['id']);
+            // Include the home controller
+            include_once $this->basePath . '/controllers/home.controller.php';
 
-                // Add to collection if new
-                $this->collection->add($item);
+            // New instance
+            $home_controller = new HomeController($this->paths, $this->basePath, true);
 
-                // Load item from collection
-                $element = $this->collection->get($row['id']);
+            // Get service
+            $response['html'] = $home_controller->getService('loadMostPopular', array());
 
-                // Set downloaded
-                $element->setDownloadCount($_POST['delta'], $row['downloaded_times']);
-
-                // CHeck if element was loaded
-                if ($element != null) {
-                    $element_url = $element->generateUrl($this->paths['download'][0]);
-                    $root_parent = $element->getRootParent();
-                    $response['html'] .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> @ ' . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->getDownloadCount($_POST['delta'])) . ']</a></li>';
-                }
+            // Check if null
+            if ($response['html'] == '') {
+                $response['html'] = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet!</li>';
             }
         }
         else {
-            $response['code'] = 500;
-        }
-        
-        // Check if null
-        if ($response['html'] == '') {
-            $response['html'] = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet!</li>';
+            // Invalid data
+            $response['code'] = 200;
         }
 
         // Return

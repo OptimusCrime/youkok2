@@ -171,10 +171,10 @@ class Loader {
     //
     
     private function buildControllerPath($controller) {
-        return dirname(__FILE__) . 
-               '/controllers/' . 
-               strtolower(str_replace(array('.', '/'), '', $controller)) . 
-               '.controller.php';
+        return dirname(__FILE__)
+             . '/controllers/'
+             . strtolower(str_replace(array('.', '/'), '', $controller))
+             . '.controller.php';
     }
     
     //

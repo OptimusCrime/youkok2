@@ -514,6 +514,14 @@ class Youkok2 {
     }
     
     //
+    // Get service (call method from a class)
+    //
+
+    public function getService ($method, $args) {
+        return call_user_func_array(array($this, $method), $args);
+    }
+
+    //
     // Prettify dates
     //
     

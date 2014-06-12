@@ -17,29 +17,32 @@ class HomeController extends Youkok2 {
     // The constructor for this subclass
     //
 
-    public function __construct($paths, $base) {
+    public function __construct($paths, $base, $kill = false) {
         // Calling Base' constructor
         parent::__construct($paths, $base);
         
-        // Load newest files
-        $this->template->assign('HOME_NEWEST', $this->loadNewest());
-        
-        // Load most popular files
-        $this->template->assign('HOME_MOST_POPULAR', $this->loadMostPopular());
-        
-        // Check if this user is logged in
-        if ($this->user->isLoggedIn()) {
-            $this->template->assign('HOME_INFOBOX', null);
-            $this->template->assign('HOME_USER_LATEST', $this->loadLastDownloads());
-            $this->template->assign('HOME_USER_FAVORITES', $this->loadFavorites());
-        } else {
-            $this->template->assign('HOME_INFOBOX', $this->loadInfobox());
-            $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
-            $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
+        // Check if we should autodisplay or not
+        if ($kill == false) {
+            // Load newest files
+            $this->template->assign('HOME_NEWEST', $this->loadNewest());
+            
+            // Load most popular files
+            $this->template->assign('HOME_MOST_POPULAR', $this->loadMostPopular());
+            
+            // Check if this user is logged in
+            if ($this->user->isLoggedIn()) {
+                $this->template->assign('HOME_INFOBOX', null);
+                $this->template->assign('HOME_USER_LATEST', $this->loadLastDownloads());
+                $this->template->assign('HOME_USER_FAVORITES', $this->loadFavorites());
+            } else {
+                $this->template->assign('HOME_INFOBOX', $this->loadInfobox());
+                $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
+                $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
+            }
+            
+            // Display the template
+            $this->displayAndCleanup('index.tpl');
         }
-        
-        // Display the template
-        $this->displayAndCleanup('index.tpl');
     }
     
     //
@@ -93,7 +96,7 @@ class HomeController extends Youkok2 {
     // Method for loading the files with most downloads
     //
     
-    private function loadMostPopular() {
+    public function loadMostPopular() {
         $ret = '';
 
         // Deltas
