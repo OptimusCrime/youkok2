@@ -145,12 +145,12 @@ $(document).ready(function () {
     //
     
     // Check if we should clear cache first
-    if ($('#cache-time').val() != localStorage.getItem('ts')) {
+    if ($('#typehead-cache-time').val() != localStorage.getItem('ts')) {
         // Clear first
         localStorage.clear();
         
         // Assign ts
-        localStorage.setItem('ts', $('#cache-time').val());
+        localStorage.setItem('ts', $('#typehead-cache-time').val());
     }
     $('#prefetch .typeahead').typeahead({
         hint: true,
