@@ -11,7 +11,7 @@
 // The FlatController class
 //
 
-class FlatController extends Base {
+class FlatController extends Youkok2 {
 
     //
     // The constructor for this subclass

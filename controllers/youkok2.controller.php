@@ -1,17 +1,17 @@
 <?php
 /*
- * File: rest.php
- * Holds: The base-class intilize most of the common stuff the system needs
+ * File: youkok2.class.php
+ * Holds: The class that all the controllers extends
  * Created: 02.10.13
  * Project: Youkok2
  * 
 */
 
 //
-// The Base-class initializing most of the common stuff
+// The class that all the controllers extends
 //
 
-class Base {
+class Youkok2 {
 
     //
     // The internal variables

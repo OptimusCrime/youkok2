@@ -11,7 +11,7 @@
 // NotfoundController handles 404
 //
 
-class NotfoundController extends Base {
+class NotfoundController extends Youkok2 {
 
     //
     // The constructor for this subclass

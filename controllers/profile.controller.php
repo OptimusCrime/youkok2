@@ -11,7 +11,7 @@
 // The ProfileController. Handles different profile stuff
 //
 
-class ProfileController extends Base {
+class ProfileController extends Youkok2 {
 
     //
     // The constructor for this subclass

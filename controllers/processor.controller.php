@@ -11,7 +11,7 @@
 // ProcessorController handles processes of ajax requests
 //
 
-class ProcessorController extends Base {
+class ProcessorController extends Youkok2 {
 
 	//
 	// A few variables

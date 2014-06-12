@@ -11,7 +11,7 @@
 // The FlatController class
 //
 
-class GrayboxController extends Base {
+class GrayboxController extends Youkok2 {
 
     //
     // Some variables

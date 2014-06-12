@@ -11,7 +11,7 @@
 // The ArchiceController
 //
 
-class ArchiveController extends Base {
+class ArchiveController extends Youkok2 {
 
     //
     // The constructor for this subclass

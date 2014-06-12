@@ -11,7 +11,7 @@
 // Displaying the Home screen
 //
 
-class HomeController extends Base {
+class HomeController extends Youkok2 {
 
     //
     // The constructor for this subclass

@@ -11,7 +11,7 @@
 // The DownloadController class
 //
 
-class DownloadController extends Base {
+class DownloadController extends Youkok2 {
 
     //
     // The constructor for this subclass

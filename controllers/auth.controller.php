@@ -11,7 +11,7 @@
 // The AuthController class
 //
 
-class AuthController extends Base {
+class AuthController extends Youkok2 {
 
     //
     // The constructor for this subclass

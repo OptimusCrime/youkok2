@@ -11,7 +11,7 @@
 // The OtherController class. Handles different dynamic pages
 //
 
-class OtherController extends Base {
+class OtherController extends Youkok2 {
 
     //
     // The constructor for this subclass
