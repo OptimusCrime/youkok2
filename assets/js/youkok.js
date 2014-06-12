@@ -1174,6 +1174,12 @@ $(document).ready(function () {
             $('#frontpage-wellholder .col-md-9 .well').css({height: height2});
         }
     }
+
+    //
+    // Tooltips
+    //
+
+    $('.list-group-item a').tooltip();
     
     //
     // Debug
