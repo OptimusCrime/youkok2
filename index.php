@@ -20,12 +20,13 @@ header('Content-Type: text/html; charset=utf-8');
 
 require_once 'local.php';
 
+require_once BASE_PATH . '/libs/bcrypt/bcrypt.php';
 require_once BASE_PATH . '/libs/pdo2/pdo2.class.php';
 require_once BASE_PATH . '/libs/pdo2/pdostatement2.class.php';
-require_once BASE_PATH . '/libs/smarty/Smarty.class.php';
-require_once BASE_PATH . '/libs/bcrypt/bcrypt.php';
 require_once BASE_PATH . '/libs/phpmailer/class.phpmailer.php';
-require_once BASE_PATH . '/libs/executioner.php';
+require_once BASE_PATH . '/libs/smarty/Smarty.class.php';
+require_once BASE_PATH . '/libs/youkok2/executioner.php';
+require_once BASE_PATH . '/libs/youkok2/cachemanager.php';
 
 require_once BASE_PATH . '/elements/collection.class.php';
 require_once BASE_PATH . '/elements/course.class.php';
