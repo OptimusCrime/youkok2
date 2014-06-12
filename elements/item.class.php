@@ -613,7 +613,40 @@ class Item {
     }
 
     public function getRootParent() {
-        return $this->rootParent;
+        if ($this->rootParent != null) {
+            return $this->rootParent;
+        }
+        else {
+            // Temp variables
+            $temp_id = $this->parent;
+            $temp_root_parent = $this;
+
+            // Loop untill we reach the root
+            while ($temp_id != 0) {
+                // Check if this object already exists
+                $temp_item = $this->collection->get($temp_id);
+                
+                // Check if already cached
+                if ($temp_item == null) {
+                    // Create new object
+                    $temp_item = new Item($this->collection, $this->db);
+                    $temp_item->createById($temp_id);
+                    $temp_item->collection->add($temp_item);
+                }
+
+                // Update id
+                $temp_id = $temp_item->getParent();
+
+                if ($temp_item->getId() != 1) {
+                    $temp_root_parent = $temp_item;
+                }
+            }
+            
+            // Store the root
+            $this->rootParent = $temp_root_parent;
+
+            return $this->rootParent;
+        }
     }
 
     //

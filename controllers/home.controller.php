@@ -60,15 +60,14 @@ class HomeController extends Base {
         $get_newest_query = $this->db->query($get_newest);
         while ($row = $get_newest_query->fetch(PDO::FETCH_ASSOC)) {
             // Create new object
-            $item = new Item($this->collection, $this->db);
-            $item->setShouldLoadRoot(true);
-            $item->createById($row['id']);
-
-            // Add to collection if new
-            $this->collection->add($item);
-
-            // Load item from collection
             $element = $this->collection->get($row['id']);
+
+            if ($element == null) {
+                $element = new Item($this->collection, $this->db);
+                $element->setShouldLoadRoot(true);
+                $element->createById($row['id']);
+                $this->collection->add($element);
+            }
 
             // CHeck if element was loaded
             if ($element != null) {
@@ -130,16 +129,16 @@ class HomeController extends Base {
         $get_most_popular_query = $this->db->prepare($get_most_popular);
         $get_most_popular_query->execute();
         while ($row = $get_most_popular_query->fetch(PDO::FETCH_ASSOC)) {
-            // Create new object
-            $item = new Item($this->collection, $this->db);
-            $item->setShouldLoadRoot(true);
-            $item->createById($row['id']);
-
-            // Add to collection if new
-            $this->collection->add($item);
-
-            // Load item from collection
+            // Get element
             $element = $this->collection->get($row['id']);
+
+            // Get file if not cached
+            if ($element == null) {
+                $element = new Item($this->collection, $this->db);
+                $element->setShouldLoadRoot(true);
+                $element->createById($row['id']);
+                $this->collection->add($element);
+            }
 
             // Set downloaded
             $element->setDownloadCount($user_delta, $row['downloaded_times']);
@@ -185,16 +184,16 @@ class HomeController extends Base {
         $get_favorites_query = $this->db->prepare($get_favorites);
         $get_favorites_query->execute(array(':user' => $this->user->getId()));
         while ($row = $get_favorites_query->fetch(PDO::FETCH_ASSOC)) {
-            // Create new object
-            $item = new Item($this->collection, $this->db);
-            $item->setShouldLoadRoot(true);
-            $item->createById($row['file']);
-
-            // Add to collection if new
-            $this->collection->add($item);
-
-            // Load item from collection
+            // Get element
             $element = $this->collection->get($row['file']);
+
+            // Get file if not cached
+            if ($element == null) {
+                $element = new Item($this->collection, $this->db);
+                $element->setShouldLoadRoot(true);
+                $element->createById($row['file']);
+                $this->collection->add($element);
+            }
 
             // CHeck if element was loaded
             if ($element != null) {
@@ -249,16 +248,16 @@ class HomeController extends Base {
         $get_last_downloads_query = $this->db->prepare($get_last_downloads);
         $get_last_downloads_query->execute(array(':user' => $this->user->getId()));
         while ($row = $get_last_downloads_query->fetch(PDO::FETCH_ASSOC)) {
-            // Create new object
-            $item = new Item($this->collection, $this->db);
-            $item->setShouldLoadRoot(true);
-            $item->createById($row['file']);
-
-            // Add to collection if new
-            $this->collection->add($item);
-
-            // Load item from collection
+            // Get element
             $element = $this->collection->get($row['file']);
+
+            // Get file if not cached
+            if ($element == null) {
+                $element = new Item($this->collection, $this->db);
+                $element->setShouldLoadRoot(true);
+                $element->createById($row['file']);
+                $this->collection->add($element);
+            }
 
             // CHeck if element was loaded
             if ($element != null) {
