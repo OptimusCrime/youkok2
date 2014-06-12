@@ -81,7 +81,7 @@ class ArchiveController extends Youkok2 {
                     // Get title
                     $archive_title = $item->getName();
                     if ($item->hasCourse()) {
-                        $archive_title .= ' - <span class="archive-title-smaller">' . $item->getCouseName() . '</span>';
+                        $archive_title .= ' - <span class="archive-title-smaller">' . $item->getCourse()->getName() . '</span>';
                     }
                     if ($this->user->isLoggedIn()) {
                         $archive_title .= ' <small><i class="fa fa-star archive-heading-star-' . $item->isFavorite() . '" data-archive-id="' . $item->getId() . '" id="archive-heading-star"></i></small>';

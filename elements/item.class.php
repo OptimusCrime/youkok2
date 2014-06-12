@@ -38,7 +38,6 @@ class Item {
     private $visible;
     private $added;
     
-    
     // Full paths
     private $fullUrl;
     private $fullLocation;
@@ -51,7 +50,8 @@ class Item {
     private $favorite;
     private $rootParent;
     
-    
+    // Pointers to other objects related to this item
+    private $courseObj;
     
     
     
@@ -120,6 +120,9 @@ class Item {
         $this->loadedFlags = false;
         
         $this->courseName = null;
+
+        // Set pointers to other objects to null
+        $this->courseObj = null;
     }
     
     //
@@ -657,24 +660,16 @@ class Item {
         return (($this->course == null) ? false : true);
     }
 
-    public function getCouseName() {
-        if ($this->courseName == null) {
-            $get_course = "SELECT name
-            FROM course
-            WHERE id = :id";
-            
-            $get_course_query = $this->db->prepare($get_course);
-            $get_course_query->execute(array(':id' => $this->course));
-            $row = $get_course_query->fetch(PDO::FETCH_ASSOC);
-
-            if (isset($row['name'])) {
-                // Set name
-                $this->courseName = $row['name'];
-            }
+    public function getCourse() {
+        // Check if course object is set
+        if ($this->courseObj == null) {
+            // Create object and set id
+            $this->courseObj = new Course($this->db);
+            $this->courseObj->setId($this->course);
         }
 
-        // Finally return
-        return $this->courseName;
+        // Fetch name
+        return $this->courseObj;
     }
 }
 ?>
