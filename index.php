@@ -37,7 +37,6 @@ require_once BASE_PATH . '/elements/vote.class.php';
 
 require_once BASE_PATH . '/controllers/youkok2.controller.php';
 
-
 //
 // Debug
 //

@@ -18,6 +18,8 @@ class Collection {
     //
     
     private $db;
+    private $cacheManager;
+
     private $arr;
     private $isInited;
     
@@ -25,9 +27,10 @@ class Collection {
     // Constructor
     //
     
-    public function __construct($db) {
-        // Set database
+    public function __construct($db, $cache) {
+        // Set references
         $this->db = $db;
+        $this->cacheManager = $cache;
         
         // Init array
         $this->arr = array();
@@ -90,9 +93,17 @@ class Collection {
             return $this->arr[$id];
         }
     }
+
+    //
+    // Return the cacheManager
+    //
+
+    public function getCacheManager() {
+        return $this->cacheManager;
+    }
     
     //
-    //
+    // Init the entire list
     //
     
     private function addInitial() {

@@ -53,7 +53,8 @@ class Item {
     // Pointers to other objects related to this item
     private $courseObj;
     
-    
+    // Cache
+    private $cache;
     
     
     private $downloadCount;
@@ -76,8 +77,6 @@ class Item {
     private $loadedFlags;
     private $flags;
     
-    private $courseName;
-
     //
     // Constructor
     //
@@ -119,10 +118,11 @@ class Item {
         $this->shouldLoadFlags = false;
         $this->loadedFlags = false;
         
-        $this->courseName = null;
-
         // Set pointers to other objects to null
         $this->courseObj = null;
+
+        // Set caching to true as default
+        $this->cache = true;
     }
     
     //
@@ -131,72 +131,90 @@ class Item {
     
     public function createById($id) {
         $this->id = $id;
-        
-         // Add id to dynamic query
-        $this->query['execute'][':id'] = $this->id;
-        
-        // Create dynamic query
-        if ($this->loadFavorite) {
-            $this->query['select'][] = "f.id AS 'favorite'";
-            $this->query['join'][] = PHP_EOL . 'LEFT JOIN favorite AS f ON f.file = a.id AND f.user = :user';
+
+        // Check if we should check the cache and if it is cached
+        if ($this->cache and $this->collection->getCacheManager()->isCached($id)) {
+            // This Item is cached, go ahead and fetch data
+            $temp_cache_data = $this->collection->getCacheManager()->getCache($id);
+            $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 'accepted', 'visible', 'location', 'added', 'size', 'course');
             
-            if (!isset($this->query['execute'][':user'])) {
-                $this->query['execute'][':user'] = $this->user->getId();
+            // Loop all the fields and apply data
+            foreach ($temp_cache_data as $k => $v) {
+                $this->$k = $v;
             }
         }
-        if ($this->shouldLoadFlags) {
-            $this->query['select'][] = "count(fl.id) as 'flags'";
-            $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file';
-            $this->query['groupby'][] = 'a.id';
-        }
-        
-        // Create the actual query
-        $get_item_info = 'SELECT ' . implode(', ', $this->query['select']) . PHP_EOL . 'FROM archive AS a ';
-        
-        // Add joins (if there are any)
-        if (count($this->query['join']) > 0) {
-            $get_item_info .= implode(' ', $this->query['join']);
-        }
-        
-        // Add where
-        $get_item_info .= PHP_EOL . 'WHERE a.id = :id ';
-        
-        // Add group by (again, if there are any)
-        if (count($this->query['groupby']) > 0) {
-            $get_item_info .= PHP_EOL . 'GROUP BY ' . implode(', ', $this->query['groupby']);
-        }
-        
-        // Run the actual query
-        $get_item_info_query = $this->db->prepare($get_item_info);
-        $get_item_info_query->execute($this->query['execute']);
-        $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
-        
-        // Set special fields
-        if ($this->loadFavorite) {
-            $this->favorite = (!isset($row['favorite']) or $row['favorite'] == null) ? false : true;
-        }
-        if (isset($row['flags'])) {
-            $this->flags = $row['flags'];
-            $this->loadedFlags = true;
-        }
-        
-        // Set results
-        $this->name = $row['name'];
-        $this->directory = $row['is_directory'];
-        $this->urlFriendly = $row['url_friendly'];
-        $this->parent = $row['parent'];
-        $this->mimeType = $row['mime_type'];
-        $this->missingImage = $row['missing_image'];
-        $this->accepted = $row['is_accepted'];
-        $this->visible = $row['is_visible'];
-        $this->location = $row['location'];
-        $this->added = $row['added'];
-        $this->size = $row['size'];
-        $this->course = $row['course'];
-        
-        // If we are fetching the full location, this should be the last fragment
-        if ($this->loadFullLocation) {
-            $this->fullLocation[] = $row['location'];
+        else {
+            // Add id to dynamic query
+            $this->query['execute'][':id'] = $this->id;
+            
+            // Create dynamic query
+            if ($this->loadFavorite) {
+                $this->query['select'][] = "f.id AS 'favorite'";
+                $this->query['join'][] = PHP_EOL . 'LEFT JOIN favorite AS f ON f.file = a.id AND f.user = :user';
+                
+                if (!isset($this->query['execute'][':user'])) {
+                    $this->query['execute'][':user'] = $this->user->getId();
+                }
+            }
+            if ($this->shouldLoadFlags) {
+                $this->query['select'][] = "count(fl.id) as 'flags'";
+                $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file';
+                $this->query['groupby'][] = 'a.id';
+            }
+            
+            // Create the actual query
+            $get_item_info = 'SELECT ' . implode(', ', $this->query['select']) . PHP_EOL . 'FROM archive AS a ';
+            
+            // Add joins (if there are any)
+            if (count($this->query['join']) > 0) {
+                $get_item_info .= implode(' ', $this->query['join']);
+            }
+            
+            // Add where
+            $get_item_info .= PHP_EOL . 'WHERE a.id = :id ';
+            
+            // Add group by (again, if there are any)
+            if (count($this->query['groupby']) > 0) {
+                $get_item_info .= PHP_EOL . 'GROUP BY ' . implode(', ', $this->query['groupby']);
+            }
+            
+            // Run the actual query
+            $get_item_info_query = $this->db->prepare($get_item_info);
+            $get_item_info_query->execute($this->query['execute']);
+            $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
+            
+            // Set special fields
+            if ($this->loadFavorite) {
+                $this->favorite = (!isset($row['favorite']) or $row['favorite'] == null) ? false : true;
+            }
+            if (isset($row['flags'])) {
+                $this->flags = $row['flags'];
+                $this->loadedFlags = true;
+            }
+            
+            // Set results
+            $this->name = $row['name'];
+            $this->directory = $row['is_directory'];
+            $this->urlFriendly = $row['url_friendly'];
+            $this->parent = $row['parent'];
+            $this->mimeType = $row['mime_type'];
+            $this->missingImage = $row['missing_image'];
+            $this->accepted = $row['is_accepted'];
+            $this->visible = $row['is_visible'];
+            $this->location = $row['location'];
+            $this->added = $row['added'];
+            $this->size = $row['size'];
+            $this->course = $row['course'];
+            
+            // If we are fetching the full location, this should be the last fragment
+            if ($this->loadFullLocation) {
+                $this->fullLocation[] = $row['location'];
+            }
+
+            // Check if we should cache this Item
+            if ($this->cache) {
+                $this->collection->getCacheManager()->setCache($id, $this->cacheFormat());
+            }
         }
     }
     
@@ -381,6 +399,7 @@ class Item {
     public function setLoadFullLocation($b) {
         $this->loadFullLocation = $b;
     }
+
     public function setLoadFavorite($b, $user) {
         $this->loadFavorite = $b;
         $this->user = $user;
@@ -670,6 +689,33 @@ class Item {
 
         // Fetch name
         return $this->courseObj;
+    }
+
+    //
+    // Setter for cache lookup
+    //
+
+    public function getCache($b) {
+        $this->cache = $b;
+    }
+
+    //
+    // Create cache string for this Item
+    //
+
+    private function cacheFormat() {
+        $cache_temp = array();
+        $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 'accepted', 'visible', 'location', 'added', 'size', 'course');
+        
+        // Loop each field
+        foreach ($fields as $v) {
+            if ($this->$v != null) {
+                $cache_temp[] = "'" . $v . "' => '" . addslashes($this->$v) . "'";
+            }
+        }
+
+        // Implode and return
+        return implode(', ', $cache_temp);
     }
 }
 ?>

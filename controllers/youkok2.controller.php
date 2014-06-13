@@ -22,6 +22,7 @@ class Youkok2 {
     protected $template; // Holds the Smarty-object
     protected $fileDirectory; // Holds the filedirectory
     protected $basePath; // Holds the directory for the index file (defined as base for the project)
+    protected $cacheManager; // Holds the CacheManager-instance
     protected $collection; // Holds the collection of items
     protected $paths; // Holds the paths served from the Loader-class
     private $norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'des');
@@ -52,8 +53,11 @@ class Youkok2 {
         try {
             $this->db = new PDO2('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, DATABASE_USER, DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
             
+            // Init the CacheManager
+            $this->cacheManager = new CacheManager($this->basePath);
+
             // Init the collection
-            $this->collection = new Collection($this->db);
+            $this->collection = new Collection($this->db, $this->cacheManager);
             
             // Set debug log
             if (DEV) {
