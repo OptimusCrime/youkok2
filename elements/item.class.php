@@ -42,40 +42,26 @@ class Item {
     private $fullUrl;
     private $fullLocation;
     
-    // Load additional informaiton
+    // Load additional information
     private $loadFullLocation;
     private $loadFavorite;
+    private $loadFlagCount;
     
     // Other stuff
     private $favorite;
     private $rootParent;
+    private $flagCount;
+    private $downloadCount;
     
     // Pointers to other objects related to this item
     private $courseObj;
+    private $flags;
     
     // Cache
     private $cache;
-    
-    
-    private $downloadCount;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    // TODO
     private $shouldLoadRoot;
-    
-    private $shouldLoadFlags;
-    
-    
-    
-    private $loadedFlags;
-    private $flags;
     
     //
     // Constructor
@@ -88,38 +74,36 @@ class Item {
         $this->user = null;
         
         // Init array for the query
-        $this->query = array('select' => array('a.name', 'a.parent', 'a.is_directory', 'a.url_friendly', 'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 'a.added', 'a.location', 'a.size', 'a.course'), 
+        $this->query = array('select' => array('a.name', 'a.parent', 'a.is_directory', 'a.url_friendly', 
+                                               'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 
+                                               'a.added', 'a.location', 'a.size', 'a.course'), 
                              'join' => array(), 
                              'where' => array('WHERE a.id = :id'),
                              'groupby' => array(),
                              'execute' => array());
 
+        // Variables to keep track of what should be loaded at creation
+        $this->loadFullLocation = false;
+        $this->loadFavorite = false;
+        $this->loadFlagCount = false;
+        $this->shouldLoadRoot = false; // TODO
+
         // Create arrays for full locations
         $this->fullUrl = array();
         $this->fullLocation = array();
         
-        // Set initial values for all fields in the database
-        
-        $this->flags = array();
-
-        // Create array for download numbers
-        $this->downloadCount = array(0 => null, 1 => null, 2 => null, 3 => null);
-        
-        // Variables to keep track of what should be loaded at creation
-        $this->loadFullLocation = false;
-        $this->loadFavorite = false;
-        
         // Other stuff
         $this->favorite = null;
+        $this->rootParent = null;
+        $this->flagCount = null;
+        $this->downloadCount = array(0 => null, 
+                                     1 => null, 
+                                     2 => null, 
+                                     3 => null);
         
-        
-        $this->shouldLoadRoot = false;
-        
-        $this->shouldLoadFlags = false;
-        $this->loadedFlags = false;
-        
-        // Set pointers to other objects to null
+        // Set pointers to other objects
         $this->courseObj = null;
+        $this->flags = array();
 
         // Set caching to true as default
         $this->cache = true;
@@ -136,7 +120,8 @@ class Item {
         if ($this->cache and $this->collection->getCacheManager()->isCached($id)) {
             // This Item is cached, go ahead and fetch data
             $temp_cache_data = $this->collection->getCacheManager()->getCache($id);
-            $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 'accepted', 'visible', 'location', 'added', 'size', 'course');
+            $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 
+                            'accepted', 'visible', 'location', 'added', 'size', 'course');
             
             // Loop all the fields and apply data
             foreach ($temp_cache_data as $k => $v) {
@@ -156,7 +141,7 @@ class Item {
                     $this->query['execute'][':user'] = $this->user->getId();
                 }
             }
-            if ($this->shouldLoadFlags) {
+            if ($this->loadFlagCount) {
                 $this->query['select'][] = "count(fl.id) as 'flags'";
                 $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file';
                 $this->query['groupby'][] = 'a.id';
@@ -188,8 +173,7 @@ class Item {
                 $this->favorite = (!isset($row['favorite']) or $row['favorite'] == null) ? false : true;
             }
             if (isset($row['flags'])) {
-                $this->flags = $row['flags'];
-                $this->loadedFlags = true;
+                $this->flagCount = $row['flags'];
             }
             
             // Set results
@@ -405,12 +389,8 @@ class Item {
         $this->user = $user;
     }
     
-    //
-    // This variable decides if favorite should fetch flags
-    //
-
-    public function setShouldLoadFlags($b) {
-        $this->shouldLoadFlags = $b;
+    public function setLoadFlagCount($b) {
+        $this->loadFlagCount = $b;
     }
 
     //
@@ -531,7 +511,10 @@ class Item {
             VALUES (:file, :ip, :agent, :user)";
             
             $insert_user_download_query = $this->db->prepare($insert_user_download);
-            $insert_user_download_query->execute(array(':file' => $this->id, ':ip' => $_SERVER['REMOTE_ADDR'], ':agent' => $_SERVER['HTTP_USER_AGENT'], ':user' => $user->getId()));
+            $insert_user_download_query->execute(array(':file' => $this->id, 
+                                                       ':ip' => $_SERVER['REMOTE_ADDR'], 
+                                                       ':agent' => $_SERVER['HTTP_USER_AGENT'], 
+                                                       ':user' => $user->getId()));
         }
         else {
             // Is not logged in
@@ -539,12 +522,14 @@ class Item {
             VALUES (:file, :ip, :agent)";
             
             $insert_anon_download_query = $this->db->prepare($insert_anon_download);
-            $insert_anon_download_query->execute(array(':file' => $this->id, ':ip' => $_SERVER['REMOTE_ADDR'], ':agent' => $_SERVER['HTTP_USER_AGENT']));
+            $insert_anon_download_query->execute(array(':file' => $this->id, 
+                                                        ':ip' => $_SERVER['REMOTE_ADDR'], 
+                                                        ':agent' => $_SERVER['HTTP_USER_AGENT']));
         }
     }
 
     //
-    // Flags
+    // Flags TODO
     //
 
     public function loadFlags() {
@@ -558,21 +543,28 @@ class Item {
         while ($row = $get_all_flags_query->fetch(PDO::FETCH_ASSOC)) {
             $this->flags[] = $row;
         }
+
+        $this->flagCount = count($this->flags);
+
+        // Check if we should cache this Item
+        if ($this->cache) {
+            $this->collection->getCacheManager()->setCache($id, $this->cacheFormat());
+        }
     }
 
     public function getFlagCount() {
-        if ($this->loadedFlags == false) {
+        if ($this->flagCount === false) {
             // Flags are not loaded, load them first
-            $this->loadFlags();
+            $this->loadFlags(false);
         }
 
-        return count($this->flags);
+        return $this->flagCount;
     }
 
     public function getFlags() {
-        if ($this->loadedFlags == false) {
+        if ($this->flagCount === false) {
             // Flags are not loaded, load them first
-            $this->loadFlags();
+            $this->loadFlags(true);
         }
         
         return $this->flags;
@@ -602,7 +594,8 @@ class Item {
                 AND user = :user";
                 
                 $get_favorite_status_query = $this->db->prepare($get_favorite_status);
-                $get_favorite_status_query->execute(array(':file' => $this->id, ':user' => $correct_user->getId()));
+                $get_favorite_status_query->execute(array(':file' => $this->id, 
+                                                          ':user' => $correct_user->getId()));
                 $row = $get_favorite_status_query->fetch(PDO::FETCH_ASSOC);
                 
                 // Cache for later
@@ -622,7 +615,7 @@ class Item {
             }
         }
         else {
-            return 'null';
+            return null;
         }
     }
 
@@ -705,7 +698,8 @@ class Item {
 
     private function cacheFormat() {
         $cache_temp = array();
-        $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 'accepted', 'visible', 'location', 'added', 'size', 'course');
+        $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 'accepted', 
+                        'visible', 'location', 'added', 'size', 'course', 'flagCount');
         
         // Loop each field
         foreach ($fields as $v) {

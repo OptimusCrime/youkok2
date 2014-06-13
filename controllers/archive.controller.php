@@ -196,7 +196,7 @@ class ArchiveController extends Youkok2 {
             }
             
             // Set load flags
-            $item->setShouldLoadFlags(true);
+            $item->setLoadFlagCount(true);
             
             // Create item
             $item->createById($row['id']);
