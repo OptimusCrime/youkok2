@@ -91,7 +91,7 @@ class GrayboxController extends Youkok2 {
 
             // CHeck if element was loaded
             if ($element != null) {
-                $element_url = $element->generateUrl($this->paths['download'][0]);
+                $element_url = $element->generateUrl($this->routes['download'][0]);
                 $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
             }
         }
@@ -131,7 +131,7 @@ class GrayboxController extends Youkok2 {
 
             // CHeck if element was loaded
             if ($element != null) {
-                $element_url = $element->generateUrl($this->paths['download'][0]);
+                $element_url = $element->generateUrl($this->routes['download'][0]);
                 $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($row['downloaded_time']) . '" data-ts="' . $row['downloaded_time'] . '">Laster...</span>]</li>';
             }
         }

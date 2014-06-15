@@ -145,7 +145,7 @@ class Youkok2 {
     }
 
     protected function queryGet($i, $prefix = '', $endfix = '') {
-        if (count($this->_query) >= $i) {
+        if (count($this->query) >= $i) {
             return $prefix . $this->query[$i] . $endfix;
         }
     }
