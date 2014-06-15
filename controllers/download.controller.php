@@ -17,9 +17,9 @@ class DownloadController extends Youkok2 {
     // The constructor for this subclass
     //
 
-    public function __construct($paths, $base) {
+    public function __construct($routes) {
         // Calling Base' constructor
-        parent::__construct($paths, $base);
+        parent::__construct($routes);
         
         // Displaying 404 or not
         $should_display_404 = false;

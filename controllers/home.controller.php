@@ -17,9 +17,9 @@ class HomeController extends Youkok2 {
     // The constructor for this subclass
     //
 
-    public function __construct($paths, $base, $kill = false) {
+    public function __construct($routes, $kill = false) {
         // Calling Base' constructor
-        parent::__construct($paths, $base);
+        parent::__construct($routes);
         
         // Check if we should autodisplay or not
         if ($kill == false) {

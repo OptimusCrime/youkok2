@@ -124,7 +124,8 @@ class Loader {
                 // We have multiple slashed, use the first one as base for path-lookup
                 $path_split = explode('/', $_GET['q']);
                 $path = '/' . $path_split[0];
-            } else {
+            }
+            else {
                 // We don't have any slashes in the url, use what we got
                 $path = '/' . str_replace('/', '', $_GET['q']);
             }
@@ -156,13 +157,14 @@ class Loader {
         if (file_exists($file)) {
             // File exists, load it
             $controller = require_once $file;
-        } else {
+        }
+        else {
             // Load not found
             $controller = require_once $this->buildControllerPath('notfound');
         }
 
         // Run instance
-        new $controller();
+        new $controller($this->_routes);
     }
     
     //
@@ -174,14 +176,6 @@ class Loader {
              . '/controllers/'
              . strtolower(str_replace(array('.', '/'), '', $name))
              . '.controller.php';
-    }
-    
-    //
-    // Returning the routes
-    //
-    
-    public function getRoutes() {
-        return $this->_routes;
     }
 }
 

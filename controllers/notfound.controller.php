@@ -17,9 +17,9 @@ class NotfoundController extends Youkok2 {
     // The constructor for this subclass
     //
 
-    public function __construct($paths, $base) {
+    public function __construct($routes) {
         // Calling Base' constructor
-        parent::__construct($paths, $base);
+        parent::__construct($routes);
         
         // Set 404 header
         header('HTTP/1.0 404 Not Found');

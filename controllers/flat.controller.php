@@ -17,9 +17,9 @@ class FlatController extends Youkok2 {
     // The constructor for this subclass
     //
 
-    public function __construct($paths, $base) {
+    public function __construct($routes) {
         // Calling Base' constructor
-        parent::__construct($paths, $base);
+        parent::__construct($routes);
         
         // Check query
         if ($this->queryGet(0) == 'om') {

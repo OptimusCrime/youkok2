@@ -17,9 +17,9 @@ class ErrorController extends Youkok2 {
     // The constructor for this subclass
     //
 
-    public function __construct($paths, $base, $reason) {
+    public function __construct($routes, $reason) {
         // Calling Base' constructor
-        parent::__construct($paths, $base, true);
+        parent::__construct($routes, true);
 
         if ($reason == 'db') {
             $this->template->assign('SITE_TITLE', 'Noe gikk galt');

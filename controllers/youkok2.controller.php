@@ -17,25 +17,26 @@ class Youkok2 {
     // The internal variables
     //
 
-    protected $db; // The PDO-wrapper
-    protected $user; // Hold the user-object
-    protected $template; // Holds the Smarty-object
-    protected $fileDirectory; // Holds the filedirectory
-    protected $basePath; // Holds the directory for the index file (defined as base for the project)
-    protected $cacheManager; // Holds the CacheManager-instance
-    protected $collection; // Holds the collection of items
-    protected $paths; // Holds the paths served from the Loader-class
-    private $norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'des');
-    private $startTime; // Keeps track of load time
-    private $endTime; // Keeps track of load time
-    private $sqlLog; // Holds the sqllog
-    private $query;
+    public $db;
+    public $user;
+    public $template;
+    public $cacheManager;
+    public $collection;
+
+    protected $_routes;
+
+    private $_norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
+                                      'okt', 'nov', 'des');
+    private $_startTime;
+    private $_endTime;
+    private $_sqlLog;
+    private $_query;
     
     //
     // Constructor
     //
 
-    public function __construct($paths, $base, $kill = false) {
+    public function __construct($routes, $kill = false) {
         // If development, start time here
         if (DEV) {
             $this->startTime = MICROTIME(TRUE);
@@ -45,26 +46,28 @@ class Youkok2 {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        
-        // Stores the base path
-        $this->basePath = $base;
+
+        // Store routes
+        $this->_routes = $routes;
         
         // Trying to connect to the database
         try {
-            $this->db = new PDO2('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, DATABASE_USER, DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+            $this->db = new PDO2('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, DATABASE_USER, 
+                                DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
             
             // Init the CacheManager
-            $this->cacheManager = new CacheManager($this->basePath);
+            $this->cacheManager = new CacheManager($this);
 
             // Init the collection
-            $this->collection = new Collection($this->db, $this->cacheManager);
+            $this->collection = new Collection($this);
             
             // Set debug log
             if (DEV) {
                 $this->sqlLog = array();
                 $this->db->setLog($this->sqlLog);
             }
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             $this->db = null;
         }
         
@@ -72,7 +75,7 @@ class Youkok2 {
         $this->template = $smarty = new Smarty();
         
         // Set caching
-        $this->template->setCacheDir($this->basePath . '/cache/');
+        $this->template->setCacheDir(BASE_PATH . '/cache/');
         
         // Define a few constants in Smarty
         $this->template->assign('VERSION', VERSION);
@@ -82,7 +85,7 @@ class Youkok2 {
         $this->template->assign('SITE_USE_GA', SITE_USE_GA);
         $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
         $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
-        $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($paths['archive'][0], 1) . '/');
+        $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($this->_routes['archive'][0], 1) . '/');
         $this->template->assign('SITE_EMAIL_CONTACT', SITE_EMAIL_CONTACT);
         
         // Check if in panic mode or not
@@ -93,14 +96,8 @@ class Youkok2 {
                 $this->template->assign('HEADER_MENU', 'HOME');
 
                 // Init user
-                $this->user = new User($this->db, $this->template);
+                $this->user = new User($this);
                 
-                // Setting the file-directory
-                $this->fileDirectory = FILE_ROOT;
-                
-                // Storing paths
-                $this->paths = $paths;
-
                 // Check if we should validate login
                 if (isset($_POST['login-email'])) {
                     $this->logIn();
@@ -108,10 +105,10 @@ class Youkok2 {
             }
             else {
                 // Include 404 controller
-                require_once $this->basePath . '/controllers/error.controller.php';
+                require_once BASE_PATH . '/controllers/error.controller.php';
 
                 // New instance
-                $controller = new ErrorController($this->paths, $this->basePath, 'db');
+                $controller = new ErrorController('db');
                 
                 // Kill this off
                 die();
@@ -128,7 +125,7 @@ class Youkok2 {
     
     private function queryAnalyze() {
         // Init array
-        $this->query = array();
+        $this->_query = array();
 
         // Split query
         if (isset($_GET['q'])) {
@@ -138,20 +135,23 @@ class Youkok2 {
             if (count($q) > 0) {
                 foreach ($q as $v) {
                     if (strlen($v) > 0) {
-                        $this->query[] = $v;
+                        $this->_query[] = $v;
                     }
                 }
             }
         }
     }
+    
     protected function queryGetSize() {
-        return count($this->query);
+        return count($this->_query);
     }
+
     protected function queryGet($i, $prefix = '', $endfix = '') {
-        if (count($this->query) >= $i) {
-            return $prefix . $this->query[$i] . $endfix;
+        if (count($this->_query) >= $i) {
+            return $prefix . $this->_query[$i] . $endfix;
         }
     }
+
     protected function queryGetAll() {
         if (isset($_GET['q'])) {
             return $_GET['q'];
@@ -160,9 +160,10 @@ class Youkok2 {
             return null;
         }
     }
+
     protected function queryGetClean($prefix = '', $endfix = '') {
-        if (count($this->query) > 0) {
-            return $prefix . implode('/', $this->query) . $endfix;
+        if (count($this->_query) > 0) {
+            return $prefix . implode('/', $this->_query) . $endfix;
         }
         else {
             return null;
@@ -175,10 +176,10 @@ class Youkok2 {
     
     protected function display404() {
         // Include 404 controller
-        require_once $this->basePath . '/controllers/notfound.controller.php';
+        require_once BASE_PATH . '/controllers/notfound.controller.php';
 
         // New instance
-        $controller = new NotfoundController($this->paths, $this->basePath);
+        $controller = new NotfoundController();
     }
     
     //
@@ -287,9 +288,9 @@ class Youkok2 {
         // If develop, assign dev variables
         if (DEV) {
             $this->endTime = MICROTIME(TRUE);
-            $this->template->assign('DEV_TIME', $this->endTime - $this->startTime);
+            $this->template->assign('DEV_TIME', $this->_endTime - $this->_startTime);
             $this->template->assign('DEV_QUERIES_NUM', number_format($this->db->getCount()));
-            $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->sqlLog));
+            $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->_sqlLog));
         }
         
         // Close database
@@ -358,6 +359,7 @@ class Youkok2 {
         // Return resulting string
         return $str;
     }
+
     private function cleanSqlBacktrace($arr) {
         if (count($arr) > 0) {
             $trace = $arr[0];
@@ -382,9 +384,9 @@ class Youkok2 {
     //
     
     private function loadTypeaheadCache() {
-        if (file_exists($this->basePath . '/cache/typeahead.json')) {
+        if (file_exists(BASE_PATH . '/cache/typeahead.json')) {
             // File exists
-            $content = json_decode(file_get_contents($this->basePath . '/cache/typeahead.json'), true);
+            $content = json_decode(file_get_contents(BASE_PATH . '/cache/typeahead.json'), true);
             
             // Check content
             if (!isset($content['ts'])) {
