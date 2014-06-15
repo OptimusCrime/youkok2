@@ -142,24 +142,24 @@ class ProcessorController extends Youkok2 {
     	// Check stuff
     	if (isset($_POST['id']) and is_numeric($_POST['id'])) {
         	// Valid id, try to load the object
-        	$item = new Item($this->collection, $this->db);
+        	$item = new Item($this);
         	$item->createById($_POST['id']);
-        	$this->collection->addIfDoesNotExist($item);
-            $element = $this->collection->get($_POST['id']);
-
-            if ($element != null) {
+        	
+            // Check if valid id
+            if ($item->wasFound()) {
             	// Good to go
             	$response['code'] = 200;
 
             	// Load all flags
-            	$flags = $element->getFlags();
+            	$flags = $item->getFlags();
+
             	$response['html'] = '';
 
             	// Loop and create html
             	if (count($flags) > 0) {
             		// Flags
             		foreach ($flags as $k => $v) {
-            			$response['html'] .= $this->drawFlag($k, $v, $element);
+            			$response['html'] .= $this->drawFlag($k, $v, $item);
             		}
             	}
 
@@ -291,7 +291,7 @@ class ProcessorController extends Youkok2 {
         WHERE flag = :flag";
         
         $get_all_votes_query = $this->db->prepare($get_all_votes);
-        $get_all_votes_query->execute(array(':flag' => $flag['id']));
+        $get_all_votes_query->execute(array(':flag' => $flag->getId()));
         while ($row = $get_all_votes_query->fetch(PDO::FETCH_ASSOC)) {
             // Check if voted
             if ($this->user->isLoggedIn() and $row['user'] == $this->user->getId()) {
@@ -305,13 +305,13 @@ class ProcessorController extends Youkok2 {
             }
         }
         // Handles for different special flags
-        if ($flag['type'] != 0) {
+        if ($flag->getType() != 0) {
             // Some variables
             $additional_inner = '';
-            $data = json_decode($flag['data'], true);
+            $data = json_decode($flag->getData(), true);
             
             // Fix flag independent
-            if ($flag['type'] == 1) {
+            if ($flag->getType() == 1) {
                 // Change name
                 $additional = '<hr /><p>Nåværende navn: ' . $element->getName() . '</p>';
                 $additional .= '<p>Endres til: ' . $data['name'] . '</p>';
@@ -342,7 +342,7 @@ class ProcessorController extends Youkok2 {
     		// User is logged in
   			if ($this->user->canContribute()) {
                 // Check if user is the owner
-                if ($this->user->getId() == $flag['user']) {
+                if ($this->user->getId() == $flag->getUser()) {
                     $question_status = '<i class="fa fa-question" title="Stemme kan ikke avlegges."></i>';
                     $question_status_bottom = '<span style="color: red;">Dette er et flagg opprettet av deg, du kan derfor <em>ikke</em> stemme.</span>';
                 }
@@ -389,7 +389,7 @@ class ProcessorController extends Youkok2 {
 					<div class="panel-heading">
 						<h4 class="panel-title">
 							<a data-toggle="collapse" data-parent="#flags-panel" href="#collapse' . $k . '">
-								' . $this->flagType[$flag['type']] . '
+								' . $this->flagType[$flag->getType()] . '
 								<div class="model-flags-collaps-info">
 									' . $question_status . '
 									<div class="progress">
@@ -403,10 +403,10 @@ class ProcessorController extends Youkok2 {
 					</div>
 					<div id="collapse' . $k . '" class="panel-collapse collapse">
 						<div class="panel-body">
-							' . $this->flagText[$flag['type']] . $additional . '
+							' . $this->flagText[$flag->getType()] . $additional . '
 							<hr />
 							<p>' . $num_voted . ' av ' . $num_votes_needed . ' godkjenninger. ' . $question_status_bottom . '</p>
-							' . ($display_buttons ? '<button type="button" data-flag="' . $flag['id'] . '" data-value="1" class="btn btn-primary flag-button">Godkjenn</button> <button type="button" data-flag="' . $flag['id'] . '" data-value="0" class="btn btn-danger flag-button">Avvis</button>' : '') . '
+							' . ($display_buttons ? '<button type="button" data-flag="' . $flag->getId() . '" data-value="1" class="btn btn-primary flag-button">Godkjenn</button> <button type="button" data-flag="' . $flag->getId() . '" data-value="0" class="btn btn-danger flag-button">Avvis</button>' : '') . '
 						</div>
 					</div>
 				</div>';

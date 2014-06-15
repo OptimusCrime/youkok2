@@ -101,7 +101,7 @@ class Item {
         
         // Set pointers to other objects
         $this->courseObj = null;
-        $this->flags = array();
+        $this->flags = null;
 
         // Set caching to true as default
         $this->cache = true;
@@ -536,7 +536,7 @@ class Item {
     }
 
     //
-    // Flags TODO
+    // Flags
     //
 
     public function loadFlags() {
@@ -548,30 +548,38 @@ class Item {
         $get_all_flags_query = $this->controller->db->prepare($get_all_flags);
         $get_all_flags_query->execute(array(':file' => $this->id));
         while ($row = $get_all_flags_query->fetch(PDO::FETCH_ASSOC)) {
-            $this->flags[] = $row;
+            // Create new flag
+            $flag = new Flag($this->controller);
+
+            // Set all fields
+            $flag->setAll($row);
+
+            // Add object to array
+            $this->flags[] = $flag;
         }
 
         $this->flagCount = count($this->flags);
 
         // Check if we should cache this Item
         if ($this->cache) {
-            $this->controller->cacheManager->setCache($id, $this->cacheFormat());
+            $this->controller->cacheManager->setCache($this->id, $this->cacheFormat(), 'i');
         }
     }
 
     public function getFlagCount() {
-        if ($this->flagCount === false) {
+        if ($this->flagCount === null) {
             // Flags are not loaded, load them first
-            $this->loadFlags(false);
+            $this->loadFlags();
         }
 
         return $this->flagCount;
     }
 
     public function getFlags() {
-        if ($this->flagCount === false) {
+        if ($this->flags === null) {
             // Flags are not loaded, load them first
-            $this->loadFlags(true);
+            $this->flags = array();
+            $this->loadFlags();
         }
         
         return $this->flags;
