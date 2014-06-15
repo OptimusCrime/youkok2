@@ -23,58 +23,43 @@ class DownloadController extends Youkok2 {
         
         // Displaying 404 or not
         $should_display_404 = false;
-        
+
         // Create new object
-        $item = new Item($this->collection, $this->db);
+        $item = new Item($this);
         $item->setLoadFullLocation(true);
         $item->createByUrl($this->queryGetClean());
 
         // Check if was found or invalid url
         if ($item->wasFound()) {
-            // Item was found, store id
-            $element_id = $item->getId();
-            
-            // Add to collection if new
-            $this->collection->add($item);
+            // Check if visible
+            if ($item->isVisible()) {
+                $file_location = FILE_ROOT . '/'. $item->getFullLocation();
 
-            // Fetch back
-            $element = $this->collection->get($element_id);
-
-            // Just for safty
-            if ($element == null) {
-                // This should in theory never happen...
-                $should_display_404 = true;
-            }
-            else {
-                // Check if visible
-                if ($element->isVisible()) {
-                    $file_location = $this->fileDirectory . '/'. $element->getFullLocation();
-                    if (file_exists($file_location)) {
-                        // Check if we should log download
-                        if (!isset($_GET['donotlogthisdownload'])) {
-                            // Logg download
-                            $element->addDownload($this->user);
-                        }
-
-                        // Close database connection
-                        $this->close();
-
-                        // File exists, download!
-                        $this->loadFile($file_location, $element->getName());
+                if (file_exists($file_location)) {
+                    // Check if we should log download
+                    if (!isset($_GET['donotlogthisdownload'])) {
+                        // Logg download
+                        $item->addDownload();
                     }
-                    else {
-                        // File was not found, wtf
-                        $should_display_404 = true;
-                    }
+
+                    // Close database connection
+                    $this->close();
+
+                    // File exists, download!
+                    $this->loadFile($file_location, $item->getName());
                 }
                 else {
-                    // File is not visible
+                    // File was not found, wtf
                     $should_display_404 = true;
                 }
             }
+            else {
+                // File is not visible
+                $should_display_404 = true;
+            }
         }
         else {
-            // Retarded url
+            // File is not visible
             $should_display_404 = true;
         }
 
@@ -120,4 +105,3 @@ class DownloadController extends Youkok2 {
 //
 
 return 'DownloadController';
-?>
