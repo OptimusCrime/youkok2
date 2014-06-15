@@ -181,10 +181,14 @@ class Youkok2 {
     }
     
     //
-    // Close the database-connection and clean up before displaying the template
+    // Close the database-connection and process queued cache
     //
     
     protected function close() {
+        // Process cache
+        $this->cacheManager->store();
+        
+        // Close connection
         $this->db = null;
     }
 

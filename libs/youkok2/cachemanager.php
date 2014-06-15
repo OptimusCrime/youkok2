@@ -15,6 +15,7 @@ Class CacheManager {
 
 	private $controller;
 
+	private $cacheArr;
 	private $currentChecking;
 	private $currentContent;
 	
@@ -25,6 +26,9 @@ Class CacheManager {
 	public function __construct($controller) {
 		// Store base path
 		$this->controller = &$controller;
+
+		// Set array empty
+		$this->cacheArr = array();
 
 		// Set current to all nulls
 		$this->currentChecking = null;
@@ -94,26 +98,35 @@ Class CacheManager {
 	// Set cache
 	//
 
-	public function setCache($id, $type, $s) {
+	public function setCache($id, $type, $content, $force = false) {
 		// Get file name
 		$file = $this->getFileName($id, $type);
 		
 		// Build content
-		$data = '<?php return array(' . $s . '); ?>';
+		$data = '<?php return array(' . $content . '); ?>';
 
-		// Check if directory exists
-		$hash = $this->getHash($id, $type);
-		$parent_dir = BASE_PATH . '/cache/elements/' . substr($hash, 0, 1);
-		if (!file_exists($parent_dir)) {
-			mkdir($parent_dir);
+		// Check if we should store to disk at once
+		if ($force) {
+			// Check if directory exists
+			$hash = $this->getHash($id, $type);
+			$parent_dir = BASE_PATH . '/cache/elements/' . substr($hash, 0, 1);
+			if (!file_exists($parent_dir)) {
+				mkdir($parent_dir);
+			}
+
+			// Store content in file
+			file_put_contents($file, $data);
 		}
-
-		// Store content in file
-		file_put_contents($file, $data);
+		else {
+			// Queue storing for later
+			$this->cacheArr[$id . '-' . $type] = array('id' => $id,
+													   'type' => $type,
+													   'content' => $content);
+		}
 	}
 
 	//
-	//
+	// Delete cache file
 	//
 
 	public function deleteCache($id, $type) {
@@ -122,6 +135,23 @@ Class CacheManager {
 
 		// Delete
 		unlink($file);
+	}
+
+	//
+	// Store all cache on disk
+	//
+
+	public function store() {
+		// Check if we got something queued
+		if (count($this->cacheArr) > 0) {
+			// Loop all cache items
+			foreach ($this->cacheArr as $k => $v) {
+				$this->setCache($v['id'], $v['type'], $v['content'], true);
+			}
+
+			// Clear array
+			$this->cacheArr = array();
+		}
 	}
 
 	//
