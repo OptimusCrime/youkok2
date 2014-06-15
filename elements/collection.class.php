@@ -17,8 +17,7 @@ class Collection {
     // Variables
     //
     
-    private $db;
-    private $cacheManager;
+    private $controller;
 
     private $arr;
     private $isInited;
@@ -27,10 +26,9 @@ class Collection {
     // Constructor
     //
     
-    public function __construct($db, $cache) {
+    public function __construct($controller) {
         // Set references
-        $this->db = $db;
-        $this->cacheManager = $cache;
+        $this->controller = &$controller;
         
         // Init array
         $this->arr = array();
@@ -93,14 +91,6 @@ class Collection {
             return $this->arr[$id];
         }
     }
-
-    //
-    // Return the cacheManager
-    //
-
-    public function getCacheManager() {
-        return $this->cacheManager;
-    }
     
     //
     // Init the entire list
@@ -111,7 +101,7 @@ class Collection {
         $this->isInited = true;
         
         // Add root element to collection
-        $root_element = new Item($this, $this->db);
+        $root_element = new Item($this->controller);
         $root_element->createById(1);
         $this->add($root_element);
     }

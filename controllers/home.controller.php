@@ -66,7 +66,7 @@ class HomeController extends Youkok2 {
             $element = $this->collection->get($row['id']);
 
             if ($element == null) {
-                $element = new Item($this->collection, $this->db);
+                $element = new Item($this);
                 $element->setShouldLoadRoot(true);
                 $element->createById($row['id']);
                 $this->collection->add($element);
@@ -74,17 +74,17 @@ class HomeController extends Youkok2 {
 
             // CHeck if element was loaded
             if ($element != null) {
-                $element_url = $element->generateUrl($this->paths['download'][0]);
+                $element_url = $element->generateUrl($this->routes['download'][0]);
                 $root_parent = $element->getRootParent();
                 
                 // Check if we should load local dir for element
                 $local_dir_str = '';
                 if ($element->getParent() != $root_parent->getId()) {
                     $local_dir_element = $this->collection->get($element->getParent());
-                    $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->paths['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
+                    $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->routes['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
                 }
                 
-                $ret .= '<li class="list-group-item"><a rel="nofollow" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
+                $ret .= '<li class="list-group-item"><a rel="nofollow" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
             }
         }
         
@@ -137,7 +137,7 @@ class HomeController extends Youkok2 {
 
             // Get file if not cached
             if ($element == null) {
-                $element = new Item($this->collection, $this->db);
+                $element = new Item($this);
                 $element->setShouldLoadRoot(true);
                 $element->createById($row['id']);
                 $this->collection->add($element);
@@ -148,17 +148,17 @@ class HomeController extends Youkok2 {
 
             // CHeck if element was loaded
             if ($element != null) {
-                $element_url = $element->generateUrl($this->paths['download'][0]);
+                $element_url = $element->generateUrl($this->routes['download'][0]);
                 $root_parent = $element->getRootParent();
                 
                 // Check if we should load local dir for element
                 $local_dir_str = '';
                 if ($element->getParent() != $root_parent->getId()) {
                     $local_dir_element = $this->collection->get($element->getParent());
-                    $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->paths['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
+                    $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->routes['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
                 }
                 
-                $ret .= '<li class="list-group-item"><a rel="nofollow" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->getDownloadCount($user_delta)) . ']</li>';
+                $ret .= '<li class="list-group-item"><a rel="nofollow" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->getDownloadCount($user_delta)) . ']</li>';
             }
         }
 
@@ -192,7 +192,7 @@ class HomeController extends Youkok2 {
 
             // Get file if not cached
             if ($element == null) {
-                $element = new Item($this->collection, $this->db);
+                $element = new Item($this);
                 $element->setShouldLoadRoot(true);
                 $element->createById($row['file']);
                 $this->collection->add($element);
@@ -200,20 +200,20 @@ class HomeController extends Youkok2 {
 
             // CHeck if element was loaded
             if ($element != null) {
-                $element_url = $element->generateUrl($this->paths['download'][0]);
+                $element_url = $element->generateUrl($this->routes['download'][0]);
                 $root_parent = $element->getRootParent();
                 if ($element->isDirectory()) {
-                    $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['archive'][0]) . '">' . $element->getName() . '</a>' . (($root_parent == null or $element->getId() == $root_parent->getId()) ? '' : ' @ <a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . '</li>';
+                    $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->routes['archive'][0]) . '">' . $element->getName() . '</a>' . (($root_parent == null or $element->getId() == $root_parent->getId()) ? '' : ' @ <a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . '</li>';
                 }
                 else {
                     // Check if we should load local dir for element
                     $local_dir_str = '';
                     if ($element->getParent() != $root_parent->getId()) {
                         $local_dir_element = $this->collection->get($element->getParent());
-                        $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->paths['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
+                        $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->routes['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
                     }
                 
-                    $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['download'][0]) . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . '</li>';
+                    $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->routes['download'][0]) . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . '</li>';
                 }
             }
         }
@@ -256,7 +256,7 @@ class HomeController extends Youkok2 {
 
             // Get file if not cached
             if ($element == null) {
-                $element = new Item($this->collection, $this->db);
+                $element = new Item($this);
                 $element->setShouldLoadRoot(true);
                 $element->createById($row['file']);
                 $this->collection->add($element);
@@ -264,17 +264,17 @@ class HomeController extends Youkok2 {
 
             // CHeck if element was loaded
             if ($element != null) {
-                $element_url = $element->generateUrl($this->paths['download'][0]);
+                $element_url = $element->generateUrl($this->routes['download'][0]);
                 $root_parent = $element->getRootParent();
                 
                 // Check if we should load local dir for element
                 $local_dir_str = '';
                 if ($element->getParent() != $root_parent->getId()) {
                     $local_dir_element = $this->collection->get($element->getParent());
-                    $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->paths['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
+                    $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->routes['archive'][0]) . '">' . $local_dir_element->getName() . '</a>, ';
                 }
                 
-                $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->paths['download'][0]) . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->paths['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . '</li>';
+                $ret .= '<li class="list-group-item"><a href="' . $element->generateUrl($this->routes['download'][0]) . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . '</li>';
             }
         }
         

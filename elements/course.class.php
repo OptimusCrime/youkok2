@@ -17,7 +17,7 @@ class Course {
     // Some variables
     //
     
-    private $db;
+    private $controller;
 
     private $id;
     private $code;
@@ -27,9 +27,9 @@ class Course {
     // Constructor
     //
     
-    public function __construct($db) {
+    public function __construct($controller) {
     	// Store db reference
-    	$this->db = $db;
+    	$this->controller = &$controller;
 
     	// Set all fields to null first
     	$this->id = null;
@@ -60,7 +60,7 @@ class Course {
         FROM course
         WHERE id = :id";
         
-        $get_course_query = $this->db->prepare($get_course);
+        $get_course_query = $this->controller->db->prepare($get_course);
         $get_course_query->execute(array(':id' => $this->id));
         $row = $get_course_query->fetch(PDO::FETCH_ASSOC);
 

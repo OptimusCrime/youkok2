@@ -17,8 +17,7 @@ Class User {
     // The internal variables
     //
     
-    private $db;
-    private $template;
+    private $controller;
 
     private $loggedIn;
 
@@ -35,10 +34,9 @@ Class User {
     // Constructor
     //
 
-    public function __construct($db, $template) {
+    public function __construct($controller) {
         // Set pointers
-        $this->db = $db;
-        $this->template = $template;
+        $this->controller = &$controller;
 
         // Set initial
         $this->loggedIn = false;
@@ -62,7 +60,7 @@ Class User {
                 WHERE email = :email
                 AND password = :password";
                 
-                $get_current_user_query = $this->db->prepare($get_current_user);
+                $get_current_user_query = $this->controller->db->prepare($get_current_user);
                 $get_current_user_query->execute(array(':email' => $hash_split[0], ':password' => $hash_split[1]));
                 $row = $get_current_user_query->fetch(PDO::FETCH_ASSOC);
 
@@ -93,9 +91,9 @@ Class User {
         }
 
         // Generate top menu
-        $this->template->assign('BASE_USER_IS_LOGGED_IN', $this->loggedIn);
-        $this->template->assign('BASE_USER_NICK', $this->nick);
-        $this->template->assign('BASE_USER_KARMA', $this->karma);
+        $this->controller->template->assign('BASE_USER_IS_LOGGED_IN', $this->loggedIn);
+        $this->controller->template->assign('BASE_USER_NICK', $this->nick);
+        $this->controller->template->assign('BASE_USER_KARMA', $this->karma);
     }
     
     //
@@ -168,7 +166,7 @@ Class User {
         SET last_seen = NOW()
         WHERE id = :id";
         
-        $update_last_seen_query = $this->db->prepare($update_last_seen);
+        $update_last_seen_query = $this->controller->db->prepare($update_last_seen);
         $update_last_seen_query->execute(array(':id' => $this->id));
     }
 }

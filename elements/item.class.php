@@ -17,10 +17,10 @@ class Item {
     // Variables for the class
     //
     
-    // Pointers, other classes etc
-    private $collection;
-    private $db;
-    private $user;
+    // Pointer to the controller
+    private $controller;
+
+    // The query
     private $query;
     
     // Fields in the table
@@ -67,11 +67,9 @@ class Item {
     // Constructor
     //
     
-    public function __construct($collection, $db) {
-        // Set pointer to collection and db
-        $this->collection = $collection;
-        $this->db = $db;
-        $this->user = null;
+    public function __construct($controller) {
+        // Set pointer to the controller
+        $this->controller = &$controller;
         
         // Init array for the query
         $this->query = array('select' => array('a.name', 'a.parent', 'a.is_directory', 'a.url_friendly', 
@@ -117,9 +115,9 @@ class Item {
         $this->id = $id;
 
         // Check if we should check the cache and if it is cached
-        if ($this->cache and $this->collection->getCacheManager()->isCached($id)) {
+        if ($this->cache and $this->controller->cacheManager->isCached($id)) {
             // This Item is cached, go ahead and fetch data
-            $temp_cache_data = $this->collection->getCacheManager()->getCache($id);
+            $temp_cache_data = $this->controller->cacheManager->getCache($id);
             $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 
                             'accepted', 'visible', 'location', 'added', 'size', 'course');
             
@@ -138,7 +136,7 @@ class Item {
                 $this->query['join'][] = PHP_EOL . 'LEFT JOIN favorite AS f ON f.file = a.id AND f.user = :user';
                 
                 if (!isset($this->query['execute'][':user'])) {
-                    $this->query['execute'][':user'] = $this->user->getId();
+                    $this->query['execute'][':user'] = $this->controller->user->getId();
                 }
             }
             if ($this->loadFlagCount) {
@@ -164,7 +162,7 @@ class Item {
             }
             
             // Run the actual query
-            $get_item_info_query = $this->db->prepare($get_item_info);
+            $get_item_info_query = $this->controller->db->prepare($get_item_info);
             $get_item_info_query->execute($this->query['execute']);
             $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
             
@@ -197,7 +195,7 @@ class Item {
 
             // Check if we should cache this Item
             if ($this->cache) {
-                $this->collection->getCacheManager()->setCache($id, $this->cacheFormat());
+                $this->controller->cacheManager->setCache($id, $this->cacheFormat());
             }
         }
     }
@@ -231,7 +229,7 @@ class Item {
                 AND url_friendly = :url_friendly
                 AND is_visible = 1";
                 
-                $get_reverse_url_query = $this->db->prepare($get_reverse_url);
+                $get_reverse_url_query = $this->controller->db->prepare($get_reverse_url);
                 $get_reverse_url_query->execute(array(':parent' => $temp_id, 
                                                       ':url_friendly' => $url_piece_single));
                 $row = $get_reverse_url_query->fetch(PDO::FETCH_ASSOC);
@@ -251,14 +249,14 @@ class Item {
                         $this->fullUrl[] = $url_piece_single;
                         
                         // Check if this object already exists
-                        $temp_item = $this->collection->get($temp_id);
+                        $temp_item = $this->controller->collection->get($temp_id);
                         
                         // Check if already cached, or not
                         if ($temp_item == null) {
                             // Should cache, just in case
-                            $temp_item = new Item($this->collection, $this->db);
+                            $temp_item = new Item($this->controller);
                             $temp_item->createById($temp_id);
-                            $temp_item->collection->add($temp_item);
+                            $temp_item->controller->collection->add($temp_item);
                         }
 
                         // Check if we should add to location array too
@@ -348,14 +346,14 @@ class Item {
             // Loop untill we reach the root
             while ($temp_id != 0) {
                 // Check if this object already exists
-                $temp_item = $this->collection->get($temp_id);
+                $temp_item = $this->controller->collection->get($temp_id);
                 
                 // Check if already cached, or not
                 if ($temp_item == null) {
                     // Create new object
-                    $temp_item = new Item($this->collection, $this->db);
+                    $temp_item = new Item($this->controller);
                     $temp_item->createById($temp_id);
-                    $temp_item->collection->add($temp_item);
+                    $this->controller->collection->add($temp_item);
                 }
 
                 // Get the url piece
@@ -384,9 +382,8 @@ class Item {
         $this->loadFullLocation = $b;
     }
 
-    public function setLoadFavorite($b, $user) {
+    public function setLoadFavorite($b) {
         $this->loadFavorite = $b;
-        $this->user = $user;
     }
     
     public function setLoadFlagCount($b) {
@@ -408,14 +405,14 @@ class Item {
             // Loop untill we reach the root
             while ($temp_id != 0) {
                 // Check if this object already exists
-                $temp_item = $this->collection->get($temp_id);
+                $temp_item = $this->controller->collection->get($temp_id);
                 
                 // Check if already cached
                 if ($temp_item == null) {
                     // Create new object
-                    $temp_item = new Item($this->collection, $this->db);
+                    $temp_item = new Item($this->controller);
                     $temp_item->createById($temp_id);
-                    $temp_item->collection->add($temp_item);
+                    $temp_item->controller->collection->add($temp_item);
                 }
 
                 // Get the url piece
@@ -455,7 +452,7 @@ class Item {
         // Loop untill we reach the root
         while ($temp_id != null) {
             // Check if this object already exists
-            $temp_item = $this->collection->get($temp_id);
+            $temp_item = $this->controller->collection->get($temp_id);
             
             // Get the url piece
             $temp_collection[] = $temp_item;
@@ -483,7 +480,7 @@ class Item {
             WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
             AND d.file = :file";
             
-            $get_download_count_query = $this->db->prepare($get_download_count);
+            $get_download_count_query = $this->controller->db->prepare($get_download_count);
             $get_download_count_query->execute(array(':file' => $this->id));
             $row = $get_download_count_query->fetch(PDO::FETCH_ASSOC);
 
@@ -503,25 +500,25 @@ class Item {
         $this->downloadCount[$delta] = $value;
     }
 
-    public function addDownload($user) {
+    public function addDownload() {
         // Check if user is logged in
-        if ($user != null and $user->isLoggedIn()) {
+        if ($this->controller->user != null and $this->controller->user->isLoggedIn()) {
             // User is logged in
             $insert_user_download = "INSERT INTO download (file, ip, agent, user)
             VALUES (:file, :ip, :agent, :user)";
             
-            $insert_user_download_query = $this->db->prepare($insert_user_download);
+            $insert_user_download_query = $this->controller->db->prepare($insert_user_download);
             $insert_user_download_query->execute(array(':file' => $this->id, 
                                                        ':ip' => $_SERVER['REMOTE_ADDR'], 
                                                        ':agent' => $_SERVER['HTTP_USER_AGENT'], 
-                                                       ':user' => $user->getId()));
+                                                       ':user' => $this->user->getId()));
         }
         else {
             // Is not logged in
             $insert_anon_download = "INSERT INTO download (file, ip, agent)
             VALUES (:file, :ip, :agent)";
             
-            $insert_anon_download_query = $this->db->prepare($insert_anon_download);
+            $insert_anon_download_query = $this->controller->db->prepare($insert_anon_download);
             $insert_anon_download_query->execute(array(':file' => $this->id, 
                                                         ':ip' => $_SERVER['REMOTE_ADDR'], 
                                                         ':agent' => $_SERVER['HTTP_USER_AGENT']));
@@ -538,7 +535,7 @@ class Item {
         WHERE file = :file
         AND active = 1";
         
-        $get_all_flags_query = $this->db->prepare($get_all_flags);
+        $get_all_flags_query = $this->controller->db->prepare($get_all_flags);
         $get_all_flags_query->execute(array(':file' => $this->id));
         while ($row = $get_all_flags_query->fetch(PDO::FETCH_ASSOC)) {
             $this->flags[] = $row;
@@ -548,7 +545,7 @@ class Item {
 
         // Check if we should cache this Item
         if ($this->cache) {
-            $this->collection->getCacheManager()->setCache($id, $this->cacheFormat());
+            $this->controller->cacheManager->setCache($id, $this->cacheFormat());
         }
     }
 
@@ -574,15 +571,7 @@ class Item {
     // Favorite
     //
 
-    public function isFavorite($user = null) {
-        // Find what user we should use
-        if ($this->user == null) {
-            $correct_user = $user;
-        }
-        else {
-            $correct_user = $this->user;
-        }
-        
+    public function isFavorite() {
         // First, check if logged in
         if ($correct_user->isLoggedIn()) {
             // Check if fetched
@@ -593,9 +582,9 @@ class Item {
                 WHERE file = :file
                 AND user = :user";
                 
-                $get_favorite_status_query = $this->db->prepare($get_favorite_status);
+                $get_favorite_status_query = $this->controller->db->prepare($get_favorite_status);
                 $get_favorite_status_query->execute(array(':file' => $this->id, 
-                                                          ':user' => $correct_user->getId()));
+                                                          ':user' => $this->controller->user->getId()));
                 $row = $get_favorite_status_query->fetch(PDO::FETCH_ASSOC);
                 
                 // Cache for later
@@ -639,14 +628,14 @@ class Item {
             // Loop untill we reach the root
             while ($temp_id != 0) {
                 // Check if this object already exists
-                $temp_item = $this->collection->get($temp_id);
+                $temp_item = $this->controller->collection->get($temp_id);
                 
                 // Check if already cached
                 if ($temp_item == null) {
                     // Create new object
-                    $temp_item = new Item($this->collection, $this->db);
+                    $temp_item = new Item($this->controller);
                     $temp_item->createById($temp_id);
-                    $temp_item->collection->add($temp_item);
+                    $temp_item->controller->collection->add($temp_item);
                 }
 
                 // Update id
@@ -676,7 +665,7 @@ class Item {
         // Check if course object is set
         if ($this->courseObj == null) {
             // Create object and set id
-            $this->courseObj = new Course($this->db);
+            $this->courseObj = new Course($this->controller);
             $this->courseObj->setId($this->course);
         }
 

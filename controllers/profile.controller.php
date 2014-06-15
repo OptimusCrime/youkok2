@@ -19,7 +19,7 @@ class ProfileController extends Youkok2 {
 
     public function __construct($routes) {
         // Calling Base' constructor
-        parent::__construct()$routes;
+        parent::__construct($routes);
 
         // Check if online
         if ($this->user->isLoggedIn()) {
@@ -83,7 +83,10 @@ class ProfileController extends Youkok2 {
     //
 
     private function profilePassword() {
-    	if ($this->user->isLoggedIn() and isset($_POST['forgotten-password-new-form-oldpassword']) and isset($_POST['forgotten-password-new-form-password1']) and isset($_POST['forgotten-password-new-form-password2'])) {
+    	if ($this->user->isLoggedIn() and isset($_POST['forgotten-password-new-form-oldpassword']) 
+    		and isset($_POST['forgotten-password-new-form-password1']) 
+    		and isset($_POST['forgotten-password-new-form-password2'])) {
+
     		if ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2']) {
 		        // Get salt
 		        $get_user_salt = "SELECT salt, password
@@ -110,7 +113,8 @@ class ProfileController extends Youkok2 {
 			            WHERE id = :user";
 			            
 			            $insert_user_new_password_query = $this->db->prepare($insert_user_new_password);
-			            $insert_user_new_password_query->execute(array(':password' => $hash, ':user' => $this->user->getId()));
+			            $insert_user_new_password_query->execute(array(':password' => $hash, 
+			            											   ':user' => $this->user->getId()));
 
 			            // Add message
 			            $this->addMessage('Passordet er endret!', 'success');
@@ -175,10 +179,12 @@ class ProfileController extends Youkok2 {
             $mail->isHTML(false);
 
             $mail->Subject = utf8_decode('Verifiser din bruker på Youkok2');
-            $message = utf8_decode(file_get_contents($this->basePath . '/mail/verify.txt'));
+            $message = utf8_decode(file_get_contents(BASE_PATH . '/mail/verify.txt'));
+            
             $message_keys = array(
                 '{{SITE_URL}}' => SITE_URL_FULL,
                 '{{HASH}}' => $hash);
+            
             $mail->Body = str_replace(array_keys($message_keys), $message_keys, $message);
             $mail->send();
 
@@ -188,7 +194,9 @@ class ProfileController extends Youkok2 {
             VALUES (:user, :hash, :username)";
             
             $insert_verify_query = $this->db->prepare($insert_verify);
-            $insert_verify_query->execute(array(':user' => $this->user->getId(), ':hash' => $hash, ':username' => $_POST['verify-username']));
+            $insert_verify_query->execute(array(':user' => $this->user->getId(), 
+            									':hash' => $hash, 
+            									':username' => $_POST['verify-username']));
 
             // Add messag
     		$this->addMessage('En e-post er sendt til ' . $_POST['verify-username'] . '@stud.ntnu.no. Her finnes en link for å verifisere din bruker.', 'success');
@@ -212,7 +220,10 @@ class ProfileController extends Youkok2 {
     private function profileInfo() {
     	if ($this->user->isLoggedIn() and isset($_POST['register-form-email']) and isset($_POST['register-form-nick'])) {
     		// Check if we should update e-mail
-    		if ($_POST['register-form-email'] != $this->user->getEmail() and strlen($_POST['register-form-email']) > 0 and filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL)) {
+    		if ($_POST['register-form-email'] != $this->user->getEmail() 
+    			and strlen($_POST['register-form-email']) > 0 
+    			and filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL)) {
+
     			$check_email = "SELECT id
                 FROM user 
                 WHERE email = :email";
@@ -236,7 +247,8 @@ class ProfileController extends Youkok2 {
 		            WHERE id = :user";
 		            
 		            $update_user_email_query = $this->db->prepare($update_user_email);
-		            $update_user_email_query->execute(array(':email' => $_POST['register-form-email'], ':user' => $this->user->getId()));
+		            $update_user_email_query->execute(array(':email' => $_POST['register-form-email'], 
+		            									    ':user' => $this->user->getId()));
                 }
     		}
 
@@ -247,7 +259,8 @@ class ProfileController extends Youkok2 {
 	            WHERE id = :user";
 	            
 	            $update_user_nick_query = $this->db->prepare($update_user_nick);
-	            $update_user_nick_query->execute(array(':nick' => $_POST['register-form-nick'], ':user' => $this->user->getId()));
+	            $update_user_nick_query->execute(array(':nick' => $_POST['register-form-nick'], 
+	            									   ':user' => $this->user->getId()));
     		}
 
     		// Add messag
@@ -258,7 +271,7 @@ class ProfileController extends Youkok2 {
     	}
     	else {
     		// Add messag
-    		$this->addMessage('Her gikk visst noe galt...22', 'danger');
+    		$this->addMessage('Her gikk visst noe galt...', 'danger');
 
 	        // Redirect
 	        $this->redirect('profil/innstillinger');
@@ -271,4 +284,3 @@ class ProfileController extends Youkok2 {
 //
 
 return 'ProfileController';
-?>

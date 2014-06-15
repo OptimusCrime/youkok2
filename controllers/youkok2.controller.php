@@ -23,14 +23,12 @@ class Youkok2 {
     public $cacheManager;
     public $collection;
 
-    protected $_routes;
+    protected $routes;
 
-    private $_norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
-                                      'okt', 'nov', 'des');
-    private $_startTime;
-    private $_endTime;
-    private $_sqlLog;
-    private $_query;
+    private $startTime;
+    private $endTime;
+    private $sqlLog;
+    private $query;
     
     //
     // Constructor
@@ -85,7 +83,7 @@ class Youkok2 {
         $this->template->assign('SITE_USE_GA', SITE_USE_GA);
         $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
         $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
-        $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($this->_routes['archive'][0], 1) . '/');
+        $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($this->routes['archive'][0], 1) . '/');
         $this->template->assign('SITE_EMAIL_CONTACT', SITE_EMAIL_CONTACT);
         
         // Check if in panic mode or not
@@ -125,7 +123,7 @@ class Youkok2 {
     
     private function queryAnalyze() {
         // Init array
-        $this->_query = array();
+        $this->query = array();
 
         // Split query
         if (isset($_GET['q'])) {
@@ -135,7 +133,7 @@ class Youkok2 {
             if (count($q) > 0) {
                 foreach ($q as $v) {
                     if (strlen($v) > 0) {
-                        $this->_query[] = $v;
+                        $this->query[] = $v;
                     }
                 }
             }
@@ -143,12 +141,12 @@ class Youkok2 {
     }
     
     protected function queryGetSize() {
-        return count($this->_query);
+        return count($this->query);
     }
 
     protected function queryGet($i, $prefix = '', $endfix = '') {
         if (count($this->_query) >= $i) {
-            return $prefix . $this->_query[$i] . $endfix;
+            return $prefix . $this->query[$i] . $endfix;
         }
     }
 
@@ -162,8 +160,8 @@ class Youkok2 {
     }
 
     protected function queryGetClean($prefix = '', $endfix = '') {
-        if (count($this->_query) > 0) {
-            return $prefix . implode('/', $this->_query) . $endfix;
+        if (count($this->query) > 0) {
+            return $prefix . implode('/', $this->query) . $endfix;
         }
         else {
             return null;
@@ -288,9 +286,9 @@ class Youkok2 {
         // If develop, assign dev variables
         if (DEV) {
             $this->endTime = MICROTIME(TRUE);
-            $this->template->assign('DEV_TIME', $this->_endTime - $this->_startTime);
+            $this->template->assign('DEV_TIME', $this->endTime - $this->startTime);
             $this->template->assign('DEV_QUERIES_NUM', number_format($this->db->getCount()));
-            $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->_sqlLog));
+            $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->sqlLog));
         }
         
         // Close database
@@ -316,43 +314,46 @@ class Youkok2 {
         $has_prepare = false;
         $prepare_val = array();
         
-        // Loop each post
-        foreach ($arr as $v) {
-            // Temp variables
-            $temp_loc = $temp_loc = $this->cleanSqlBacktrace($v['backtrace']);
-            $temp_query = '';
-            
-            // Check what kind of query we're dealing with
-            if (isset($v['query'])) {
-                // Normal query (no binds)
-                $temp_query = $v['query'];
-            }
-            else if (isset($v['exec'])) {
-                // Normal exec (no binds)
-                $temp_query = $v['exec'];
-            }
-            else {
-                // Either bind or prepare
-                if (isset($v['prepare'])) {
-                    // Query is being preared
-                    $has_prepare = true;
-                    $prepare_val = $v['prepare'];
+        // Check that we have some acutal queries here
+        if (count($arr) > 0) {
+            // Loop each post
+            foreach ($arr as $v) {
+                // Temp variables
+                $temp_loc = $temp_loc = $this->cleanSqlBacktrace($v['backtrace']);
+                $temp_query = '';
+                
+                // Check what kind of query we're dealing with
+                if (isset($v['query'])) {
+                    // Normal query (no binds)
+                    $temp_query = $v['query'];
                 }
-                else if (isset($v['execute'])) {
-                    // Query is executed with binds, check if binds are found
-                    if ($has_prepare) {
-                        // Binds are found, replace keys with bind values
-                        $temp_query = str_replace(array_keys($v['execute']), $v['execute'], $prepare_val);
-                        
-                        // Reset prepare-value
-                        $has_prepare = false;
+                else if (isset($v['exec'])) {
+                    // Normal exec (no binds)
+                    $temp_query = $v['exec'];
+                }
+                else {
+                    // Either bind or prepare
+                    if (isset($v['prepare'])) {
+                        // Query is being preared
+                        $has_prepare = true;
+                        $prepare_val = $v['prepare'];
+                    }
+                    else if (isset($v['execute'])) {
+                        // Query is executed with binds, check if binds are found
+                        if ($has_prepare) {
+                            // Binds are found, replace keys with bind values
+                            $temp_query = str_replace(array_keys($v['execute']), $v['execute'], $prepare_val);
+                            
+                            // Reset prepare-value
+                            $has_prepare = false;
+                        }
                     }
                 }
-            }
-            
-            // Clean up n stuff
-            if (!$has_prepare) {
-                $str .= $temp_loc . '<pre>' . str_replace('    ', '', $temp_query) . '</pre>';
+                
+                // Clean up n stuff
+                if (!$has_prepare) {
+                    $str .= $temp_loc . '<pre>' . str_replace('    ', '', $temp_query) . '</pre>';
+                }
             }
         }
         
@@ -532,10 +533,12 @@ class Youkok2 {
     //
     
     protected function prettifySQLDate($d) {
+        $norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
+                                 'okt', 'nov', 'des');
         $split1 = explode(' ', $d);
         $split2 = explode('-', $split1[0]);
         
-        return (int) $split2[2] . '. ' . $this->norwegianMonths[$split2[1] - 1] . ' ' . $split2[0] . ' @ ' . $split1[1];
+        return (int) $split2[2] . '. ' . $norwegianMonths[$split2[1] - 1] . ' ' . $split2[0] . ' @ ' . $split1[1];
     }
 }
 ?>

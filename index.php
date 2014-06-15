@@ -60,7 +60,7 @@ class Loader {
     // Internal variables
     //
     
-    private $_routes = array(
+    private $routes = array(
         'home' => array(
             '/',
         ),
@@ -89,11 +89,7 @@ class Loader {
         'notfound' => array(
             '/404',
         ),
-
-        'other' => array(
-            '/wall-of-shame',
-        ),
-
+        
         'processor' => array(
             '/processor',
         ),
@@ -138,7 +134,7 @@ class Loader {
         $controller_filename = '';
         
         // Loop the path-array and find what controller to load
-        foreach ($this->_routes as $k => $v) {
+        foreach ($this->routes as $k => $v) {
             // Loop the inner array
             foreach ($v as $iv) {
                 // Check for match
@@ -164,7 +160,7 @@ class Loader {
         }
 
         // Run instance
-        new $controller($this->_routes);
+        new $controller($this->routes);
     }
     
     //

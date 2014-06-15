@@ -13,7 +13,8 @@ Class CacheManager {
 	// Some variables
 	//
 
-	private $base;
+	private $controller;
+
 	private $currentChecking;
 	private $currentContent;
 	
@@ -21,9 +22,9 @@ Class CacheManager {
 	// The constructor
 	//
 
-	public function __construct($base) {
+	public function __construct($controller) {
 		// Store base path
-		$this->base = $base;
+		$this->controller = &$controller;
 
 		// Set current to all nulls
 		$this->currentChecking = null;
@@ -117,7 +118,7 @@ Class CacheManager {
 
 	private function getFileName($id) {
 		$hash = substr(md5('lorem ipsum' . $id . md5($id)), 0, 22);
-		return $this->base . '/cache/elements/' . $hash . '_' . $id . '_c.php';
+		return BASE_PATH . '/cache/elements/' . $hash . '_' . $id . '_c.php';
 	}
 }
 ?>
