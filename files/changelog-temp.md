@@ -1,10 +1,11 @@
-Youkok2 - 0.0.1-pl (xx. mai, 2014)
-==================================
+Youkok2 - 0.0.1-pl (xx. juni, 2014)
+===================================
 
 - [Info] First Public Release
 - [New] På forsiden står det nå hvilke mappe filer ligger i, ikke bare hvilke fag det tilhører.
 - [New] Linker til nedlastninger har nå rel="nofollow", for å unngå at botter besøker dem titt og ofte.
 - [New] .js- & .css-filer er nå minifiserte.
+- [New] Implementert heftig caching av hele siden, som reduserer antall queries drastisk.
 - [Fixed] Context meny er nå korrekt sentert på x-aksen.
 - [Enhanced] Opplastning av flere filer gir nå bare en melding.
 - [Enhanced] Nedlastning av filer logger nå UA.
