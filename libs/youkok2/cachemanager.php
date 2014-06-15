@@ -54,7 +54,8 @@ Class CacheManager {
 				return true;
 			}
 			else {
-				// TODO delete cache
+				// Delete invalid cache
+				$this->deleteCache($id, $type);
 			}
 		}
 		else {
@@ -109,6 +110,18 @@ Class CacheManager {
 
 		// Store content in file
 		file_put_contents($file, $data);
+	}
+
+	//
+	//
+	//
+
+	public function deleteCache($id, $type) {
+		// Get file name
+		$file = $this->getFileName($id, $type);
+
+		// Delete
+		unlink($file);
 	}
 
 	//
