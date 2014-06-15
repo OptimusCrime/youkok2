@@ -60,8 +60,7 @@ class Loader {
     // Internal variables
     //
     
-    private $basePath;
-    private $paths = array(
+    private $_routes = array(
         'home' => array(
             '/',
         ),
@@ -117,10 +116,7 @@ class Loader {
     // Constructor
     //
 
-    public function __construct($base_path) {
-        // Store the base path for the project
-        $this->basePath = $base_path;
-
+    public function __construct() {
         // Checking wether the path is set or not
         if (isset($_GET['q'])) {
             // We have a path, find the base-path to include the correct script
@@ -138,23 +134,23 @@ class Loader {
         }
         
         // Storing the controller to load
-        $controller = null;
+        $controller_filename = '';
         
         // Loop the path-array and find what controller to load
-        foreach ($this->paths as $k => $v) {
+        foreach ($this->_routes as $k => $v) {
             // Loop the inner array
             foreach ($v as $iv) {
                 // Check for match
                 if ($iv == $path) {
                     // We found matching url-pattern, store controllername
-                    $controller = $k;
+                    $controller_filename = $k;
                     break;
                 }
             }
         }
         
         // Build controller path
-        $file = $this->buildControllerPath($controller);
+        $file = $this->buildControllerPath($controller_filename);
         
         // Checking to see if the file exsists
         if (file_exists($file)) {
@@ -166,34 +162,26 @@ class Loader {
         }
 
         // Run instance
-        new $controller($this->paths, $this->basePath);
+        new $controller();
     }
     
     //
     // Return full path for a controller
     //
     
-    private function buildControllerPath($controller) {
-        return dirname(__FILE__)
+    private function buildControllerPath($name) {
+        return BASE_PATH
              . '/controllers/'
-             . strtolower(str_replace(array('.', '/'), '', $controller))
+             . strtolower(str_replace(array('.', '/'), '', $name))
              . '.controller.php';
     }
     
     //
-    // Returning the paths
+    // Returning the routes
     //
     
-    public function getPaths() {
-        return $this->paths;
-    }
-
-    //
-    // Returning the base path
-    //
-
-    public function getBasePath() {
-        return $this->basePath;
+    public function getRoutes() {
+        return $this->_routes;
     }
 }
 
@@ -201,5 +189,5 @@ class Loader {
 // Initiating the loader
 //
 
-$loader = new Loader(BASE_PATH);
+$loader = new Loader();
 ?>
