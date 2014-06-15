@@ -115,9 +115,9 @@ class Item {
         $this->id = $id;
 
         // Check if we should check the cache and if it is cached
-        if ($this->cache and $this->controller->cacheManager->isCached($id)) {
+        if ($this->cache and $this->controller->cacheManager->isCached($id, 'i')) {
             // This Item is cached, go ahead and fetch data
-            $temp_cache_data = $this->controller->cacheManager->getCache($id);
+            $temp_cache_data = $this->controller->cacheManager->getCache($id, 'i');
             $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 
                             'accepted', 'visible', 'location', 'added', 'size', 'course');
             
@@ -200,7 +200,7 @@ class Item {
 
             // Check if we should cache this Item
             if ($this->cache) {
-                $this->controller->cacheManager->setCache($id, $this->cacheFormat());
+                $this->controller->cacheManager->setCache($id, 'i', $this->cacheFormat());
             }
         }
     }

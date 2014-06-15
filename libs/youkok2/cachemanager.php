@@ -35,9 +35,9 @@ Class CacheManager {
 	// Check if Item is cached or not
 	//
 
-	public function isCached($id) {
+	public function isCached($id, $type) {
 		// Generate full path for item
-		$file = $this->getFileName($id);
+		$file = $this->getFileName($id, $type);
 		
 		// Check if file exists
 		if (file_exists($file)) {
@@ -71,7 +71,7 @@ Class CacheManager {
 	// Return cache
 	//
 
-	public function getCache($id) {
+	public function getCache($id, $type) {
 		// Check if already validated
 		if ($this->currentChecking == $id) {
 			return $this->evalAndClean($this->currentContent);
@@ -93,15 +93,15 @@ Class CacheManager {
 	// Set cache
 	//
 
-	public function setCache($id, $s) {
+	public function setCache($id, $type, $s) {
 		// Get file name
-		$file = $this->getFileName($id);
+		$file = $this->getFileName($id, $type);
 		
 		// Build content
 		$data = '<?php return array(' . $s . '); ?>';
 
 		// Check if directory exists
-		$hash = $this->getHash($id);
+		$hash = $this->getHash($id, $type);
 		$parent_dir = BASE_PATH . '/cache/elements/' . substr($hash, 0, 1);
 		if (!file_exists($parent_dir)) {
 			mkdir($parent_dir);
@@ -123,17 +123,17 @@ Class CacheManager {
 	// Private method for generating hashes used by the cache
 	//
 
-	private function getFileName($id) {
-		$hash = $this->getHash($id);
-		return BASE_PATH . '/cache/elements/' . substr($hash, 0, 1) . '/' . $hash . '_' . $id . '_c.php';
+	private function getFileName($id, $type) {
+		$hash = $this->getHash($id, $type);
+		return BASE_PATH . '/cache/elements/' . substr($hash, 0, 1) . '/' . $hash . '_' . $type . '_' . $id . '_c.php';
 	}
 
 	//
 	// Private method that returns that hash
 	//
 
-	private function getHash($id) {
-		return $hash = substr(md5('lorem ipsum' . $id . md5($id)), 0, 22);
+	private function getHash($id, $type) {
+		return $hash = substr(md5('lorem ' . $type . ' ipsum' . $id . md5($id)), 0, 22);
 	}
 }
 ?>
