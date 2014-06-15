@@ -100,6 +100,13 @@ Class CacheManager {
 		// Build content
 		$data = '<?php return array(' . $s . '); ?>';
 
+		// Check if directory exists
+		$hash = $this->getHash($id);
+		$parent_dir = BASE_PATH . '/cache/elements/' . substr($hash, 0, 1);
+		if (!file_exists($parent_dir)) {
+			mkdir($parent_dir);
+		}
+
 		// Store content in file
 		file_put_contents($file, $data);
 	}
@@ -117,8 +124,16 @@ Class CacheManager {
 	//
 
 	private function getFileName($id) {
-		$hash = substr(md5('lorem ipsum' . $id . md5($id)), 0, 22);
-		return BASE_PATH . '/cache/elements/' . $hash . '_' . $id . '_c.php';
+		$hash = $this->getHash($id);
+		return BASE_PATH . '/cache/elements/' . substr($hash, 0, 1) . '/' . $hash . '_' . $id . '_c.php';
+	}
+
+	//
+	// Private method that returns that hash
+	//
+
+	private function getHash($id) {
+		return $hash = substr(md5('lorem ipsum' . $id . md5($id)), 0, 22);
 	}
 }
 ?>
