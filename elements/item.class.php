@@ -130,6 +130,11 @@ class Item {
             if ($this->loadFullLocation) {
                 $this->fullLocation[] = $temp_cache_data['location'];
             }
+
+            // Cached flagcount?
+            if (isset($temp_cache_data['flagCount'])) {
+                $this->flagCount = $temp_cache_data['flagCount'];
+            }
         }
         else {
             // Add id to dynamic query
