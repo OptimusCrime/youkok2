@@ -187,7 +187,7 @@ class Youkok2 {
     protected function close() {
         // Process cache
         $this->cacheManager->store();
-        
+
         // Close connection
         $this->db = null;
     }
@@ -215,6 +215,8 @@ class Youkok2 {
         // Check for files
         if (isset($_SESSION['youkok2_files']) and count($_SESSION['youkok2_files']) > 0) {
             $file_msg = '';
+
+            // Loop all files and make the message "pretty"
             foreach ($_SESSION['youkok2_files'] as $k => $v) {
                 if (count($_SESSION['youkok2_files']) == 1) {
                     $file_msg .= $v;
@@ -247,7 +249,6 @@ class Youkok2 {
         
         // Check for normal messages
         if (isset($_SESSION['youkok2_message']) and count($_SESSION['youkok2_message']) > 0) {
-            
             foreach ($_SESSION['youkok2_message'] as $v) {
                 $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text']
                       . '<div class="alert-close"><i class="fa fa-times"></i></div></div>';
@@ -295,7 +296,7 @@ class Youkok2 {
             $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->sqlLog));
         }
         
-        // Close database
+        // Close database and process cache
         $this->close();
         
         // Load message
@@ -528,7 +529,7 @@ class Youkok2 {
     // Get service (call method from a class)
     //
 
-    public function getService ($method, $args) {
+    public function getService($method, $args) {
         return call_user_func_array(array($this, $method), $args);
     }
 
