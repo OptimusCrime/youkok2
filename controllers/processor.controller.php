@@ -193,7 +193,7 @@ class ProcessorController extends Youkok2 {
     		// Can vote
     		if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['flag']) and is_numeric($_POST['flag']) and ($_POST['value'] == 1 or $_POST['value'] == 0)) {
 	        	// Valid id, try to load the object
-	        	$item = new Item($this->collection, $this->db);
+	        	$item = new Item($this);
 	        	$item->createById($_POST['id']);
 	        	$this->collection->addIfDoesNotExist($item);
 	            $element = $this->collection->get($_POST['id']);
@@ -422,7 +422,7 @@ class ProcessorController extends Youkok2 {
         // Check stuff
         if (isset($_POST['id']) and is_numeric($_POST['id'])) {
             // Valid id, try to load the object
-            $item = new Item($this->collection, $this->db);
+            $item = new Item($this);
             $item->createById($_POST['id']);
             $this->collection->add($item);
             $element = $this->collection->get($_POST['id']);
@@ -535,7 +535,7 @@ class ProcessorController extends Youkok2 {
                 $_POST['name'] = trim($_POST['name']);
                 
                 // Create element
-                $item = new Item($this->collection, $this->db);
+                $item = new Item($this);
                 $item->setLoadFullLocation(true);
                 $item->createById($_POST['id']);
 
@@ -624,7 +624,7 @@ class ProcessorController extends Youkok2 {
                 $referer_base = str_replace(SITE_URL_FULL, '', $_SERVER['HTTP_REFERER']);
 
                 // Create object out of the base
-                $item = new Item($this->collection, $this->db);
+                $item = new Item($this);
                 $item->setLoadFullLocation(true);
                 $item->createByUrl($referer_base);
                 $item_id = $item->getId();
@@ -764,7 +764,7 @@ class ProcessorController extends Youkok2 {
         // Check stuff
         if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['category']) and strlen($_POST['category']) > 3) {
             // Valid id, try to load the object
-            $item = new Item($this->collection, $this->db);
+            $item = new Item($this);
             $item->createById($_POST['id']);
             $this->collection->addIfDoesNotExist($item);
             $element = $this->collection->get($_POST['id']);
@@ -877,7 +877,7 @@ class ProcessorController extends Youkok2 {
             // Can vote
             if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['comment']) and isset($_POST['filetype']) and isset($_POST['name']) and strlen($_POST['name'].$_POST['filetype']) > 0) {
                 // Valid id, try to load the object
-                $item = new Item($this->collection, $this->db);
+                $item = new Item($this);
                 $item->createById($_POST['id']);
                 $this->collection->addIfDoesNotExist($item);
                 $element = $this->collection->get($_POST['id']);
@@ -929,7 +929,7 @@ class ProcessorController extends Youkok2 {
             // Can vote
             if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['comment'])) {
                 // Valid id, try to load the object
-                $item = new Item($this->collection, $this->db);
+                $item = new Item($this);
                 $item->createById($_POST['id']);
                 $this->collection->addIfDoesNotExist($item);
                 $element = $this->collection->get($_POST['id']);

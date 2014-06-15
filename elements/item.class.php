@@ -578,7 +578,7 @@ class Item {
 
     public function isFavorite() {
         // First, check if logged in
-        if ($correct_user->isLoggedIn()) {
+        if ($this->controller->user != null and $this->controller->user->isLoggedIn()) {
             // Check if fetched
             if ($this->favorite === null) {
                 // Not fetched
