@@ -79,7 +79,7 @@ class GrayboxController extends Youkok2 {
         $get_newest_query = $this->db->query($get_newest);
         while ($row = $get_newest_query->fetch(PDO::FETCH_ASSOC)) {
             // Create new object
-            $item = new Item($this->collection, $this->db);
+            $item = new Item($this);
             $item->setShouldLoadRoot(true);
             $item->createById($row['id']);
 
@@ -119,7 +119,7 @@ class GrayboxController extends Youkok2 {
         $get_downloads_query = $this->db->query($get_downloads);
         while ($row = $get_downloads_query->fetch(PDO::FETCH_ASSOC)) {
             // Create new object
-            $item = new Item($this->collection, $this->db);
+            $item = new Item($this);
             $item->setShouldLoadRoot(true);
             $item->createById($row['file']);
 
@@ -157,4 +157,3 @@ class GrayboxController extends Youkok2 {
 //
 
 return 'GrayboxController';
-?>

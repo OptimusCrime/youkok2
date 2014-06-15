@@ -41,4 +41,3 @@ class NotfoundController extends Youkok2 {
 //
 
 return 'NotFoundController';
-?>

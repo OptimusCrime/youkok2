@@ -125,6 +125,11 @@ class Item {
             foreach ($temp_cache_data as $k => $v) {
                 $this->$k = $v;
             }
+
+            // If we are fetching the full location, this should be the last fragment
+            if ($this->loadFullLocation) {
+                $this->fullLocation[] = $temp_cache_data['location'];
+            }
         }
         else {
             // Add id to dynamic query
@@ -244,7 +249,7 @@ class Item {
                     else {
                         // Was found, update the current id
                         $temp_id = $row['id'];
-
+                        
                         // Add url piece
                         $this->fullUrl[] = $url_piece_single;
                         
@@ -701,4 +706,3 @@ class Item {
         return implode(', ', $cache_temp);
     }
 }
-?>

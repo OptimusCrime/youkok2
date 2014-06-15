@@ -25,7 +25,7 @@ class ArchiveController extends Youkok2 {
         $should_display_404 = false;
     
         // Check if base
-        if ($this->queryGetClean('/') == $this->paths['archive'][0]) {
+        if ($this->queryGetClean('/') == $this->routes['archive'][0]) {
             // Turn on caching
             $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
         
@@ -45,11 +45,11 @@ class ArchiveController extends Youkok2 {
         }
         else {
             // Create new object
-            $item = new Item($this->collection, $this->db);
+            $item = new Item($this);
             
             // Decide if we should load favorites
             if ($this->user->isLoggedIn()) {
-                $item->setLoadFavorite(true, $this->user);
+                $item->setLoadFavorite(true);
             }
             
             // Create the object
@@ -133,7 +133,7 @@ class ArchiveController extends Youkok2 {
         $collection_size = count($collection);
         
         // Build return string
-        $ret .= '<li><a href="' . substr($this->paths['archive'][0], 1) . '/">Arkiv</a></li>';
+        $ret .= '<li><a href="' . substr($this->routes['archive'][0], 1) . '/">Arkiv</a></li>';
 
         // Loop and build list
         for ($i = 1; $i < $collection_size; $i++) {
@@ -144,7 +144,7 @@ class ArchiveController extends Youkok2 {
             }
             else {
                 // Is not final element
-                $ret .= '<li><a href="' . $collection[$i]->generateUrl($this->paths['archive'][0]) . '">' . $collection[$i]->getName() . '</a></li>';
+                $ret .= '<li><a href="' . $collection[$i]->generateUrl($this->routes['archive'][0]) . '">' . $collection[$i]->getName() . '</a></li>';
             }
             
         }
@@ -188,11 +188,11 @@ class ArchiveController extends Youkok2 {
         $get_current_archive_query = $this->db->prepare($get_current_archive);
         $get_current_archive_query->execute(array(':parent' => $id));
         while ($row = $get_current_archive_query->fetch(PDO::FETCH_ASSOC)) {
-            $item = new Item($this->collection, $this->db);
+            $item = new Item($this);
             
             // Decide if we should load favorites
             if ($this->user->isLoggedIn()) {
-                $item->setLoadFavorite(true, $this->user);
+                $item->setLoadFavorite(true);
             }
             
             // Set load flags
@@ -211,7 +211,7 @@ class ArchiveController extends Youkok2 {
                 if ($item->isDirectory()) {
                     // This is a directory, link should go to archive
                     $ret .= '<li>
-                                <a title="' . $item->getName() . '" href="' . $item->generateUrl($this->paths['archive'][0]) . '">
+                                <a title="' . $item->getName() . '" href="' . $item->generateUrl($this->routes['archive'][0]) . '">
                                     <div class="archive-item' . ($item->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $item->isFavorite($this->user) . '" data-id="' . $item->getId() . '" data-type="dir" data-name="' . $item->getName() . '" data-flags="' . $flag_count . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($item->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
@@ -224,7 +224,7 @@ class ArchiveController extends Youkok2 {
                 else {
                     // This is a file, link should go to download
                     $ret .= '<li>
-                                <a title="' . $item->getName() . '" rel="nofollow" href="' . $item->generateUrl($this->paths['download'][0]) . '">
+                                <a title="' . $item->getName() . '" rel="nofollow" href="' . $item->generateUrl($this->routes['download'][0]) . '">
                                     <div class="archive-item' . ($item->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $item->isFavorite($this->user) . '" data-id="' . $item->getId() . '" data-type="file" data-name="' . $item->getName() . '" data-flags="' . $flag_count . '" data-size="' . $item->getSize() . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($item->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
@@ -250,7 +250,7 @@ class ArchiveController extends Youkok2 {
         $ret = '';
         $letter = null;
         $container_is_null = true;
-        $archive_url = substr($this->paths['archive'][0], 1);
+        $archive_url = substr($this->routes['archive'][0], 1);
         
         // Load all the courses
         $get_all_courses = "SELECT c.code, c.name, a.url_friendly
@@ -309,4 +309,3 @@ class ArchiveController extends Youkok2 {
 //
 
 return 'ArchiveController';
-?>

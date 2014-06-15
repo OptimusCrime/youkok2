@@ -327,4 +327,3 @@ class HomeController extends Youkok2 {
 //
 
 return 'HomeController';
-?>

@@ -170,4 +170,3 @@ Class User {
         $update_last_seen_query->execute(array(':id' => $this->id));
     }
 }
-?>

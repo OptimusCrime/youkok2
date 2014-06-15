@@ -106,4 +106,3 @@ class Collection {
         $this->add($root_element);
     }
 }
-?>

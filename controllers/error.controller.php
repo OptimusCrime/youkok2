@@ -38,4 +38,3 @@ class ErrorController extends Youkok2 {
 //
 
 return 'ErrorController';
-?>

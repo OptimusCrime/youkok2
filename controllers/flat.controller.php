@@ -115,4 +115,3 @@ class FlatController extends Youkok2 {
 //
 
 return 'FlatController';
-?>

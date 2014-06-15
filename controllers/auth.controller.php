@@ -406,4 +406,3 @@ class AuthController extends Youkok2 {
 //
 
 return 'AuthController';
-?>

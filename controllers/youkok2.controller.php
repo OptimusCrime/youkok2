@@ -46,7 +46,7 @@ class Youkok2 {
         }
 
         // Store routes
-        $this->_routes = $routes;
+        $this->routes = $routes;
         
         // Trying to connect to the database
         try {
@@ -177,7 +177,7 @@ class Youkok2 {
         require_once BASE_PATH . '/controllers/notfound.controller.php';
 
         // New instance
-        $controller = new NotfoundController();
+        $controller = new NotfoundController($this->routes);
     }
     
     //
@@ -541,4 +541,3 @@ class Youkok2 {
         return (int) $split2[2] . '. ' . $norwegianMonths[$split2[1] - 1] . ' ' . $split2[0] . ' @ ' . $split1[1];
     }
 }
-?>
