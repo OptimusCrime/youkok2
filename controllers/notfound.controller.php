@@ -37,12 +37,8 @@ class NotfoundController extends Youkok2 {
 }
 
 //
-// Loading the class-name dynamically and creating an instance doing our magic
+// Return the class name
 //
 
-// Getting the current file-path
-$path = explode('/', __FILE__);
-
-// Including the run-script to execute it all
-include_once 'run.php';
+return 'NotFoundController';
 ?>

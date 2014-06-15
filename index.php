@@ -159,11 +159,14 @@ class Loader {
         // Checking to see if the file exsists
         if (file_exists($file)) {
             // File exists, load it
-            require_once $file;
+            $controller = require_once $file;
         } else {
             // Load not found
-            require_once $this->buildControllerPath('notfound');
+            $controller = require_once $this->buildControllerPath('notfound');
         }
+
+        // Run instance
+        new $controller($this->paths, $this->basePath);
     }
     
     //
