@@ -42,11 +42,28 @@ class Course {
     //
 
     public function setId($id) {
+        // Store id
     	$this->id = $id;
+
+        // Check if cached
+        if ($this->controller->cacheManager->isCached($id, 'c')) {
+            // Get the cached array
+            $temp_cache_data = $this->controller->cacheManager->getCache($id, 'c');
+
+            // Fields to look up
+            $fields = array('name', 'code');
+            
+            // Loop all the fields and apply data
+            foreach ($temp_cache_data as $k => $v) {
+                $this->$k = $v;
+            }
+        }
     }
+
     public function setCode($code) {
     	$this->code = $code;
     }
+
     public function setName($name) {
     	$this->name = $name;
     }
@@ -69,6 +86,9 @@ class Course {
         		$this->$v = $row[$v];
         	}
         }
+
+        // Cache the new result
+        $this->controller->cacheManager->setCache($this->id, 'c', $this->cacheFormat());
     }
 
     //
@@ -78,16 +98,37 @@ class Course {
     public function getId() {
     	return $this->id;
     }
+
     public function getCode() {
     	if ($this->code == null) {
     		$this->fetch(array('code'));
     	}
     	return $this->code;
     }
+
     public function getName() {
     	if ($this->name == null) {
     		$this->fetch(array('name'));
     	}
     	return $this->name;
+    }
+
+    //
+    // Create cache string for this Course
+    //
+
+    private function cacheFormat() {
+        $cache_temp = array();
+        $fields = array('name', 'code');
+        
+        // Loop each field
+        foreach ($fields as $v) {
+            if ($this->$v != null) {
+                $cache_temp[] = "'" . $v . "' => '" . addslashes($this->$v) . "'";
+            }
+        }
+
+        // Implode and return
+        return implode(', ', $cache_temp);
     }
 }
