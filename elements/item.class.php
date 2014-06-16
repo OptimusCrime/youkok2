@@ -562,7 +562,7 @@ class Item {
 
         // Check if we should cache this Item
         if ($this->cache) {
-            $this->controller->cacheManager->setCache($this->id, $this->cacheFormat(), 'i');
+            $this->controller->cacheManager->setCache($this->id, 'i', $this->cacheFormat());
         }
     }
 
