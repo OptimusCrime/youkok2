@@ -336,6 +336,20 @@ class Item {
         return $this->size;
     }
 
+    public function getSizePretty() {
+        $bytes = $this->size;
+        if ($bytes > 0) {
+            $unit = intval(log($bytes, 1024));
+            $units = array('B', 'KB', 'MB', 'GB');
+
+            if (array_key_exists($unit, $units) === true) {
+            return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);
+            }
+        }
+
+        return $bytes;
+    }
+
     public function isVisible() {
         return $this->visible;
     }
@@ -521,7 +535,7 @@ class Item {
             $insert_user_download_query->execute(array(':file' => $this->id, 
                                                        ':ip' => $_SERVER['REMOTE_ADDR'], 
                                                        ':agent' => $_SERVER['HTTP_USER_AGENT'], 
-                                                       ':user' => $this->user->getId()));
+                                                       ':user' => $this->controller->user->getId()));
         }
         else {
             // Is not logged in

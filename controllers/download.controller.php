@@ -27,6 +27,7 @@ class DownloadController extends Youkok2 {
         // Create new object
         $item = new Item($this);
         $item->setLoadFullLocation(true);
+        $item->setShouldLoadRoot(true);
         $item->createByUrl($this->queryGetClean());
 
         // Check if was found or invalid url
@@ -42,11 +43,36 @@ class DownloadController extends Youkok2 {
                         $item->addDownload();
                     }
 
-                    // Close database connection
-                    $this->close();
+                    // Check if we should return fake http response to facebook crawler
+                    if (strpos($_SERVER['HTTP_USER_AGENT'], 'facebook') !== false) {
+                        // Facebook crawler
+                        $this->template->assign('DOWNLOAD_FILE', $item->getName());
+                        $this->template->assign('DOWNLOAD_SIZE', $item->getSizePretty());
+                        $this->template->assign('DOWNLOAD_URL', $_SERVER['REQUEST_URI']);
 
-                    // File exists, download!
-                    $this->loadFile($file_location, $item->getName());
+                        // Get item parent information
+                        $download_parent = '';
+                        $root_parent = $item->getRootParent();
+                        if ($item->getParent() != $root_parent->getId()) {
+                            $local_dir_element = $this->collection->get($item->getParent());
+                            $download_parent = $local_dir_element->getName() . ', ';
+                        }
+                        if ($root_parent != null) {
+                            $download_parent .= $root_parent->getName() . ' ';
+                        }
+
+                        $this->template->assign('DOWNLOAD_PARENT', $download_parent);
+
+                        // Display fake http response for Facebook
+                        $this->displayAndCleanup('download.tpl');
+                    }
+                    else {
+                        // Close database connection
+                        $this->close();
+
+                        // File exists, download!
+                        $this->loadFile($file_location, $item->getName());
+                    }
                 }
                 else {
                     // File was not found, wtf
