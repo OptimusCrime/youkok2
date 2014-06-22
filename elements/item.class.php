@@ -46,6 +46,7 @@ class Item {
     private $loadFullLocation;
     private $loadFavorite;
     private $loadFlagCount;
+    private $loadRootParent;
     
     // Other stuff
     private $favorite;
@@ -59,9 +60,6 @@ class Item {
     
     // Cache
     private $cache;
-
-    // TODO
-    private $shouldLoadRoot;
     
     //
     // Constructor
@@ -84,7 +82,7 @@ class Item {
         $this->loadFullLocation = false;
         $this->loadFavorite = false;
         $this->loadFlagCount = false;
-        $this->shouldLoadRoot = false; // TODO
+        $this->loadRootParent = false;
 
         // Create arrays for full locations
         $this->fullUrl = array();
@@ -246,6 +244,11 @@ class Item {
                 
                 // Check if anything was returned
                 if (isset($row['id'])) {
+                    // Check if we should load root parent
+                    if ($this->loadRootParent and $k == 0) {
+                        $this->rootParent = $row['id'];
+                    }
+
                     // Check if this is the last element
                     if ($k == ($num_pieces - 1)) {
                         // Last element, just use createById
@@ -412,6 +415,10 @@ class Item {
     
     public function setLoadFlagCount($b) {
         $this->loadFlagCount = $b;
+    }
+
+    public function setLoadRootParent($b) {
+        $this->loadRoot = $b;
     }
 
     //
@@ -643,10 +650,6 @@ class Item {
     //
     // Root parent
     //
-
-    public function setShouldLoadRoot($b) {
-        $this->shouldLoadRoot = $b;
-    }
 
     public function getRootParent() {
         if ($this->rootParent != null) {

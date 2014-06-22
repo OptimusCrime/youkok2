@@ -80,19 +80,15 @@ class GrayboxController extends Youkok2 {
         while ($row = $get_newest_query->fetch(PDO::FETCH_ASSOC)) {
             // Create new object
             $item = new Item($this);
-            $item->setShouldLoadRoot(true);
             $item->createById($row['id']);
 
             // Add to collection if new
             $this->collection->add($item);
-
-            // Load item from collection
-            $element = $this->collection->get($row['id']);
-
+            
             // CHeck if element was loaded
-            if ($element != null) {
-                $element_url = $element->generateUrl($this->routes['download'][0]);
-                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
+            if ($item != null) {
+                $element_url = $item->generateUrl($this->routes['download'][0]);
+                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $item->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($item->getAdded()) . '" data-ts="' . $item->getAdded() . '">Laster...</span>]</li>';
             }
         }
         
@@ -126,13 +122,10 @@ class GrayboxController extends Youkok2 {
             // Add to collection if new
             $this->collection->add($item);
 
-            // Load item from collection
-            $element = $this->collection->get($row['file']);
-
             // CHeck if element was loaded
-            if ($element != null) {
-                $element_url = $element->generateUrl($this->routes['download'][0]);
-                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $element->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($row['downloaded_time']) . '" data-ts="' . $row['downloaded_time'] . '">Laster...</span>]</li>';
+            if ($item != null) {
+                $element_url = $item->generateUrl($this->routes['download'][0]);
+                $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $item->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->prettifySQLDate($row['downloaded_time']) . '" data-ts="' . $row['downloaded_time'] . '">Laster...</span>]</li>';
             }
         }
         

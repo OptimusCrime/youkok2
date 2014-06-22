@@ -27,7 +27,7 @@ class DownloadController extends Youkok2 {
         // Create new object
         $item = new Item($this);
         $item->setLoadFullLocation(true);
-        $item->setShouldLoadRoot(true);
+        $item->setLoadRootParent(true);
         $item->createByUrl($this->queryGetClean());
 
         // Check if was found or invalid url

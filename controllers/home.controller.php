@@ -67,7 +67,7 @@ class HomeController extends Youkok2 {
 
             if ($element == null) {
                 $element = new Item($this);
-                $element->setShouldLoadRoot(true);
+                $element->setLoadRootParent(true);
                 $element->createById($row['id']);
                 $this->collection->add($element);
             }
@@ -138,7 +138,7 @@ class HomeController extends Youkok2 {
             // Get file if not cached
             if ($element == null) {
                 $element = new Item($this);
-                $element->setShouldLoadRoot(true);
+                $element->setLoadRootParent(true);
                 $element->createById($row['id']);
                 $this->collection->add($element);
             }
@@ -193,7 +193,7 @@ class HomeController extends Youkok2 {
             // Get file if not cached
             if ($element == null) {
                 $element = new Item($this);
-                $element->setShouldLoadRoot(true);
+                $element->setLoadRootParent(true);
                 $element->createById($row['file']);
                 $this->collection->add($element);
             }
@@ -257,7 +257,7 @@ class HomeController extends Youkok2 {
             // Get file if not cached
             if ($element == null) {
                 $element = new Item($this);
-                $element->setShouldLoadRoot(true);
+                $element->setLoadRootParent(true);
                 $element->createById($row['file']);
                 $this->collection->add($element);
             }
