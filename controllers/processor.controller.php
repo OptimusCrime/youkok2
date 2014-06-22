@@ -495,14 +495,14 @@ class ProcessorController extends Youkok2 {
                 $update_user_query->execute(array(':delta' => $_POST['delta'], ':id' => $this->user->getId()));
             }
             else {
-                $_SESSION['home_popular'] = $_POST['delta'];
+                setcookie('home_popular', $_POST['delta'], time() + (60 * 60 * 24 * 7), '/');
             }          
 
             // Include the home controller
-            include_once $this->basePath . '/controllers/home.controller.php';
+            include_once BASE_PATH . '/controllers/home.controller.php';
 
             // New instance
-            $home_controller = new HomeController($this->paths, $this->basePath, true);
+            $home_controller = new HomeController($this->routes, true);
 
             // Get service
             $response['html'] = $home_controller->getService('loadMostPopular', array());

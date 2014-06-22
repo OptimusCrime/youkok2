@@ -110,8 +110,8 @@ class HomeController extends Youkok2 {
             $user_delta = $this->user->getMostPopularDelta();
         }
         else {
-            if (isset($_SESSION['home_popular'])) {
-                $user_delta = $_SESSION['home_popular'];
+            if (isset($_COOKIE['home_popular'])) {
+                $user_delta = $_COOKIE['home_popular'];
             }
             else {
                 $user_delta = 1;

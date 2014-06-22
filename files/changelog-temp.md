@@ -6,6 +6,7 @@ Youkok2 - 0.0.1-pl (xx. juni, 2014)
 - [New] Linker til nedlastninger har nå rel="nofollow", for å unngå at botter besøker dem titt og ofte.
 - [New] .js- & .css-filer er nå minifiserte.
 - [New] Implementert heftig caching av hele siden, som reduserer antall queries drastisk.
+- [New] Når man linker til nedlastning av filer på Facebook får man nå opp informasjon om fila.
 - [Fixed] Context meny er nå korrekt sentert på x-aksen.
 - [Enhanced] Opplastning av flere filer gir nå bare en melding.
 - [Enhanced] Nedlastning av filer logger nå UA.
