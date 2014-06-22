@@ -121,7 +121,11 @@ class Item {
             
             // Loop all the fields and apply data
             foreach ($temp_cache_data as $k => $v) {
-                $this->$k = $v;
+                // Check that the field exists as a property/attribute in this class
+                if (property_exists('Item', $k)) {
+                    // Set value
+                    $this->$k = $v;
+                }
             }
 
             // If we are fetching the full location, this should be the last fragment
