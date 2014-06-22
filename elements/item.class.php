@@ -340,7 +340,7 @@ class Item {
         $bytes = $this->size;
         if ($bytes > 0) {
             $unit = intval(log($bytes, 1024));
-            $units = array('B', 'KB', 'MB', 'GB');
+            $units = array('B', 'kB', 'MB', 'GB');
 
             if (array_key_exists($unit, $units) === true) {
             return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);
