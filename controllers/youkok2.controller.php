@@ -17,14 +17,17 @@ class Youkok2 {
     // The internal variables
     //
 
+    // Public pointers
     public $db;
     public $user;
     public $template;
     public $cacheManager;
     public $collection;
 
+    // Array that contains all the routes for the system
     protected $routes;
 
+    // Some private variables for debugging and development
     private $startTime;
     private $endTime;
     private $sqlLog;
