@@ -28,14 +28,6 @@ class ProfileController extends Youkok2 {
         			// Assign email
 		        	$this->template->assign('PROFILE_USER_EMAIL', $this->user->getEmail());
 
-		        	// Assign other stuff
-		        	if ($this->user->isVerified()) {
-		        		$this->template->assign('PROFILE_USER_VERIFIED', 1);
-		        	}
-		        	else {
-		        		$this->template->assign('PROFILE_USER_VERIFIED', 0);
-		        	}
-
 		        	if ($this->user->isBanned()) {
 		        		$this->template->assign('PROFILE_USER_ACTIVE', 0);
 		        	}
@@ -43,10 +35,16 @@ class ProfileController extends Youkok2 {
 		        		$this->template->assign('PROFILE_USER_ACTIVE', 1);
 		        	}
 
+                    if ($this->user->canContribute()) {
+                        $this->template->assign('PROFILE_USER_CAN_CONTRIBUTE', 1);
+                    }
+                    else {
+                        $this->template->assign('PROFILE_USER_CAN_CONTRIBUTE', 0);
+                    }
+
 		        	// For info
 		        	$this->template->assign('PROFILE_USER_EMAIL', $this->user->getEmail());
 		        	$this->template->assign('PROFILE_USER_NICK', $this->user->getNick());
-		        	$this->template->assign('PROFILE_USER_NTNU', $this->user->getNTNUEmail() . '@stud.ntnu.no');
 
 		        	// Displaying and cleaning up
                     $this->template->assign('SITE_TITLE', 'Mine innstillinger');
@@ -55,9 +53,6 @@ class ProfileController extends Youkok2 {
         		else {
         			if ($_POST['source'] == 'password') {
         				$this->profilePassword();
-        			}
-        			else if ($_POST['source'] == 'verify') {
-        				$this->profileVerify();
         			}
         			else if ($_POST['source'] == 'info') {
         				$this->profileInfo();
@@ -157,61 +152,6 @@ class ProfileController extends Youkok2 {
 	        $this->redirect('profil/innstillinger');
 	    }
 	}
-
-	//
-    // Method for verifying
-    //
-
-    private function profileVerify() {
-    	if ($this->user->isLoggedIn() and $this->user->isVerified() == false and isset($_POST['verify-username'])) {
-    		// Create hash
-    		$hash_salt = md5(rand(0, 10000000000)) . "-" . md5(time()) . "niggernigerrerer";
-            $hash = $this->hashPassword(md5(rand(0, 10000000000) . 'DKHJDHDDHGDHGJDGHJDGHJDGHJ'), $hash_salt);
-
-            // Send mail
-            $mail = new PHPMailer;
-            $mail->From = 'donotreply@' . SITE_DOMAIN;
-            $mail->FromName = 'Youkok2';
-            $mail->addAddress($_POST['verify-username'] . '@stud.ntnu.no');
-            $mail->addReplyTo(SITE_EMAIL_CONTACT);
-
-            $mail->WordWrap = 75;
-            $mail->isHTML(false);
-
-            $mail->Subject = utf8_decode('Verifiser din bruker på Youkok2');
-            $message = utf8_decode(file_get_contents(BASE_PATH . '/mail/verify.txt'));
-            
-            $message_keys = array(
-                '{{SITE_URL}}' => SITE_URL_FULL,
-                '{{HASH}}' => $hash);
-            
-            $mail->Body = str_replace(array_keys($message_keys), $message_keys, $message);
-            $mail->send();
-
-            // Insert to database
-            $insert_verify = "INSERT INTO verify
-            (user, hash, username) 
-            VALUES (:user, :hash, :username)";
-            
-            $insert_verify_query = $this->db->prepare($insert_verify);
-            $insert_verify_query->execute(array(':user' => $this->user->getId(), 
-            									':hash' => $hash, 
-            									':username' => $_POST['verify-username']));
-
-            // Add messag
-    		$this->addMessage('En e-post er sendt til ' . $_POST['verify-username'] . '@stud.ntnu.no. Her finnes en link for å verifisere din bruker.', 'success');
-
-	        // Redirect
-	        $this->redirect('profil/innstillinger');
-    	}
-    	else {
-    		// Add messag
-    		$this->addMessage('Her gikk visst noe galt...', 'danger');
-
-	        // Redirect
-	        $this->redirect('profil/innstillinger');
-    	}
-    }
 
     //
     // Update profile info

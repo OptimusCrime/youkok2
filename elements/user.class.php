@@ -17,19 +17,20 @@ Class User {
     // The internal variables
     //
     
+    // Pointer to the controller
     private $controller;
 
-    private $loggedIn;
-
+    // Fields in the database
     private $id;
     private $email;
     private $nick;
-    private $NTNU;
-    private $NTNUEmail;
+    private $mostPopularDelta;
     private $karma;
     private $banned;
-    private $mostPopularDelta;
     
+    // Other variables
+    private $loggedIn;
+
     //
     // Constructor
     //
@@ -55,7 +56,7 @@ Class User {
             $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
             if (count($hash_split) == 2) {
                 // Fetch from database to see if online
-                $get_current_user = "SELECT id, email, nick, ntnu_email, ntnu_verified, karma, banned, most_popular_delta
+                $get_current_user = "SELECT id, email, nick, karma, banned, most_popular_delta
                 FROM user 
                 WHERE email = :email
                 AND password = :password";
@@ -73,11 +74,9 @@ Class User {
                     $this->id = $row['id'];
                     $this->email = $row['email'];
                     $this->nick = (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']);
-                    $this->NTNU = (boolean) $row['ntnu_verified'];
                     $this->karma = $row['karma'];
                     $this->banned = (boolean) $row['banned'];
                     $this->mostPopularDelta = $row['most_popular_delta'];
-                    $this->NTNUEmail = $row['ntnu_email'];
 
                     // Update last seen
                     $this->updateLastSeen();
@@ -128,10 +127,6 @@ Class User {
         return $this->mostPopularDelta;
     }
 
-    public function getNTNUEmail() {
-        return $this->NTNUEmail;
-    }
-
     //
     // Multiple states
     //
@@ -140,21 +135,12 @@ Class User {
         return $this->banned;
     }
     
-    public function isVerified() {
-        return $this->NTNU;
-    }
-
     public function hasKarma() {
-        if ($this->karma > 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return $this->karma > 0;
     }
 
     public function canContribute() {
-        return $this->karma > 0 and $this->NTNU and !$this->banned;
+        return $this->karma > 0 and !$this->banned;
     }
 
     //

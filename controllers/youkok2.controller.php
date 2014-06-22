@@ -419,7 +419,7 @@ class Youkok2 {
 
     protected function logIn() {
         // Check if logged in
-        if (!$this->user->isLoggedIn()) {
+        if (!$this->user == null or !$this->user->isLoggedIn()) {
             // Okey
             if (isset($_POST['login-email']) and isset($_POST['login-pw'])) {
                 // Try to fetch email

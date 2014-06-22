@@ -6,7 +6,6 @@
 		<li class="active"><a href="#oversikt" data-toggle="tab">Oversikt</a></li>
 		<li><a href="#informasjon" data-toggle="tab">Endre informasjon</a></li>
 		<li><a href="#passord" data-toggle="tab">Endre passord</a></li>
-		<li><a href="#identifiser" data-toggle="tab">Aktiver NTNU-bruker</a></li>
 	</ul>
 </div>
 
@@ -33,7 +32,7 @@
 				</div>
 				<div class="panel-body">
 					<p><b>Aktiv konto:</b> [[+if $PROFILE_USER_ACTIVE == 1]]<i class="fa fa-check" style="color: green;"></i>[[+else]]<i class="fa fa-times" style="color: red;"></i>[[+/if]]</p>
-					<p><b>NTNU-aktivert:</b> [[+if $PROFILE_USER_VERIFIED == 1]]<i class="fa fa-check" style="color: green;"></i>[[+else]]<i class="fa fa-times" style="color: red;"></i>[[+/if]]</p>
+					<p><b>Kan bidra:</b> [[+if $PROFILE_USER_CAN_CONTRIBUTE == 1]]<i class="fa fa-check" style="color: green;"></i>[[+else]]<i class="fa fa-times" style="color: red;"></i>[[+/if]]</p>
 				</div>
 			</div>
 		</div>
@@ -82,25 +81,6 @@
 			</form>
 		</div>
 		<div class="clear"></div>
-	</div>
-	<div class="tab-pane" id="identifiser">
-		<div class="col-md-6">
-			[[+if $PROFILE_USER_VERIFIED == true]]
-				<p>Du har allerede identifisert din bruker.</p>
-				<p>Din NTNU-epost er [[+$PROFILE_USER_NTNU]].</p>
-			[[+else]]
-				<form action="" method="post">
-					<input type="hidden" value="verify" name="source" />
-					<p>Ved å trykke på 'Send' godkjenner du at du har lest <a href="retningslinjer">retningslinjene</a> og er kjent med <a href="wall-of-shame">Wall of Shame</a>-systemet vårt.</p>
-
-					 <div class="input-group" id="verify-username-outer">
-						<input type="text" name="verify-username" class="form-control" id="verify-username" value="" placeholder="Skriv inn ditt NTNU-brukernavn her" />
-						<span class="input-group-addon">@stud.ntnu.no</span>
-					</div>
-				<button type="submit" id="verify-button" class="btn btn-default">Send</button>
-				</form>
-			[[+/if]]
-		</div>
 	</div>
 </div>
 
