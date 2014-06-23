@@ -92,7 +92,7 @@ class FlatController extends Youkok2 {
         }
         elseif ($this->queryGet(0) == 'changelog.txt') {
             // Get changelog content
-            $content = file_get_contents($this->basePath . '/files/changelog.md');
+            $content = file_get_contents(BASE_PATH . '/files/changelog.md');
             
             // Assign content to placeholder
             $this->template->assign('CHANGELOG_CONTENT', $content);
