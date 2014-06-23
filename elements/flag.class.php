@@ -21,8 +21,10 @@ class Flag {
     // Some variables
     //
     
+    // Pointer to the controller
     private $controller;
 
+    // Database fields
     private $id;
     private $file;
     private $user;
@@ -31,13 +33,41 @@ class Flag {
     private $active;
     private $data;
     private $message;
+
+    // Other stuff
+    private $votes;
+    private $userHasVoted;
+    private $userVotedValue;
+    private $voteValues;
+
+
+    //
+    // Information
+    //
+
+    public static $flagType = array('Godkjenning',
+        'Endring av navn',
+        'Sletting av element',
+        'Flytting av element');
+
+    public static $flagText = array(
+        '<p>Dette elementet er åpen for godkjenning. Dersom elementet hører til på Youkok2 gjør du en god gjerning ved å stemme for å godkjenne den, slik at andre kan dra nytte av den seinere.</p>
+        <p>Om elementet skulle stride mot våre <a href="retningslinjer" target="_blank">retningslinjer</a> kan du enten stemme for å avvise den, eller, i store overtrap av reglementet, velge å <a href="hjelp" target="_blank">rapportere</a> tilfellet.</p>',
+
+        '<p>Dette flagget er et forslag på navnendring av elementet. Dersom du syntes at denne navnendringen er en forbedring kan du velge å godkjenne den. Om dette ikke er tilfellet kan du velge å avvise forslaget.</p>',
+
+        '<p>Dette flagget er et forslag om å permanent slette elementet. Dersom du syntes dette er på sin plass kan du stemme for å godkjenne dette forslaget, eller så kan du stemme for å avvise det.</p>
+        <p>Legg merke til at misbruk av slettefunksjonen vil bli slått ned på!</p>',
+
+        '3',);
+    public static $VotesNeeded = 5;
     
     //
     // Constructor
     //
     
     public function __construct($controller) {
-    	// Store db reference
+    	// Store controller reference
     	$this->controller = &$controller;
 
     	// Set all fields to null first
@@ -49,6 +79,11 @@ class Flag {
     	$this->active = null;
     	$this->data = null;
     	$this->message = null;
+
+        $this->votes = null;
+        $this->userHasVoted = false;
+        $this->userVotedValue = false;
+        $this->voteValues = array(0 => 0, 1 => 0);
     }
 
     //
@@ -127,10 +162,109 @@ class Flag {
     }
 
     public function getData() {
-    	return $this->data;
+    	return json_decode($this->data, true);
     }
 
     public function getMessage() {
     	return $this->message;
+    }
+
+    //
+    // Votes
+    //
+
+    public function getVotes() {
+        // Check if votes are already fetched
+        if ($this->votes == null) {
+            // Init array
+            $this->votes = array();
+
+            // Load all votes
+            $get_all_votes = "SELECT *
+            FROM vote
+            WHERE file = :file";
+            
+            $get_all_votes_query = $this->controller->db->prepare($get_all_votes);
+            $get_all_votes_query->execute(array(':file' => $this->id));
+            while ($row = $get_all_votes_query->fetch(PDO::FETCH_ASSOC)) {
+                // Create new flag
+                $vote = new Vote($this->controller, $this);
+
+                // Set all fields
+                $vote->setAll($row);
+
+                // Add object to array
+                $this->votes[] = $vote;
+
+                // Set all information for this flag and user
+                if ($this->controller->user->isLoggedIn()) {
+                    if ($vote->getUser() == $this->controller->user->getId()) {
+                        $this->userHasVoted = true;
+                        $this->userVotedValue = $vote->getValue();
+                    }
+                }
+
+                // Add vote value
+                $this->voteValue[$vote->getValue()]++;
+            }
+        }
+        
+        // Return the array
+        return $this->votes;
+    }
+
+    //
+    // Method to check if the current user has voted or not
+    //
+
+    public function userHasVoted() {
+        // Check if fetched
+        if ($this->votes == null) {
+            $this->getVotes();
+        }
+
+        // Return
+        return $this->userHasVoted;
+    }
+
+    //
+    // Method for returning what the user has voted (if he/she has voted)
+    //
+
+    public function getUserVotedValue() {
+        // Check if fetched
+        if ($this->votes == null) {
+            $this->getVotes();
+        }
+
+        // Return
+        return $this->userVotedValue;
+    }
+
+    //
+    // Get vote values
+    //
+
+    public function getVoteValues($type = 1) {
+        // Check if fetched
+        if ($this->votes == null) {
+            $this->getVotes();
+        }
+
+        // Return
+        return $this->voteValues[$type];
+    }
+
+    //
+    // Get progress percent
+    //
+
+    public function getVoteProgressPercent() {
+        // Check if fetched
+        if ($this->votes == null) {
+            $this->getVotes();
+        }
+
+        return ($this->voteValues[1] / Flag::$VotesNeeded) * 100;
     }
 }

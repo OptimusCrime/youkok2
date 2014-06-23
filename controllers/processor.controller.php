@@ -13,26 +13,6 @@
 
 class ProcessorController extends Youkok2 {
 
-	//
-	// A few variables
-	//
-
-	private $flagType = array('Godkjenning',
-		'Endring av navn',
-		'Sletting av element',
-		'Flytting av element');
-
-	private $flagText = array(
-		'<p>Dette elementet er åpen for godkjenning. Dersom elementet hører til på Youkok2 gjør du en god gjerning ved å stemme for å godkjenne den, slik at andre kan dra nytte av den seinere.</p>
-		<p>Om elementet skulle stride mot våre <a href="retningslinjer" target="_blank">retningslinjer</a> kan du enten stemme for å avvise den, eller, i store overtrap av reglementet, velge å <a href="hjelp" target="_blank">rapportere</a> tilfellet.</p>',
-
-		'<p>Dette flagget er et forslag på navnendring av elementet. Dersom du syntes at denne navnendringen er en forbedring kan du velge å godkjenne den. Om dette ikke er tilfellet kan du velge å avvise forslaget.</p>',
-
-		'<p>Dette flagget er et forslag om å permanent slette elementet. Dersom du syntes dette er på sin plass kan du stemme for å godkjenne dette forslaget, eller så kan du stemme for å avvise det.</p>
-        <p>Legg merke til at misbruk av slettefunksjonen vil bli slått ned på!</p>',
-
-		'3',);
-
     //
     // The constructor for this subclass
     //
@@ -159,7 +139,7 @@ class ProcessorController extends Youkok2 {
             	if (count($flags) > 0) {
             		// Flags
             		foreach ($flags as $k => $v) {
-            			$response['html'] .= $this->drawFlag($k, $v, $item);
+            			$response['html'] .= $this->drawFlag($k, $v);
             		}
             	}
 
@@ -179,6 +159,129 @@ class ProcessorController extends Youkok2 {
 
         // Return
         return $response;
+    }
+
+    //
+    // Method for drawing each flag
+    //
+
+    private function drawFlag($k, $flag) {
+        // Load votes
+        $flag->getVotes();
+
+        // Fetch vote information
+        $has_voted = $flag->userHasVoted();
+        $user_vote = $flag->getUserVotedValue();
+        $num_voted = $flag->getVoteValues();
+        $percent = $flag->getVoteProgressPercent();
+
+        // Variables for the markup
+        $display_buttons = false;
+        $additional = '';
+
+        // Handles for different special flags
+        if ($flag->getType() != 0) {
+            // Some variables
+            $additional_inner = '';
+            $data = $flag->getData();
+            
+            // Fix flag independent
+            if ($flag->getType() == 1) {
+                // Change name
+                $additional = '<hr /><p>Nåværende navn: ' . $element->getName() . '</p>';
+                $additional .= '<p>Endres til: ' . $data['name'] . '</p>';
+            }
+
+            // Add comment
+            if ($data['comment'] == '') {
+                $additional_inner .= '<p><em>Ingen kommentar</em></p>';
+            }
+            else {
+                
+                $additional_comment = explode("<br />", nl2br($data['comment']));
+                foreach ($additional_comment as $v) {
+                    if ($v != '') {
+                        $additional_inner .= '<p>' . $v . '</p>';
+                    }
+                }
+                
+            }
+            $additional .= '<div class="givegrayaround">' . $additional_inner . '</div>';
+        }
+
+        // Check if status
+        if ($this->user->isLoggedIn()) {
+            // User is logged in
+            if ($this->user->canContribute()) {
+                // Check if user is the owner
+                if ($this->user->getId() == $flag->getUser()) {
+                    $question_status = '<i class="fa fa-question" title="Stemme kan ikke avlegges."></i>';
+                    $question_status_bottom = '<span style="color: red;">Dette er et flagg opprettet av deg, du kan derfor <em>ikke</em> stemme.</span>';
+                }
+                else {
+                    $display_buttons = true;
+                    if ($has_voted == false) {
+                        $question_status = '<i class="fa fa-question" title="Stemme ikke avlagt."></i>';
+                        $question_status_bottom = 'Du har <em>ikke</em> avgitt din stemme.';
+                    }
+                    else {
+                        if ($user_vote == false) {
+                            $question_status = '<i class="fa fa-times" style="color: red;" title="Stemt for avvisning."></i>';
+                            $question_status_bottom = '<span style="color: red;">Du har stemt for avvisning!</span>';
+                        }
+                        else {
+                            $question_status = '<i class="fa fa-check" style="color: green;" title="Stemt for godkjenning."></i>';
+                            $question_status_bottom = '<span style="color: green;">Du har stemt for godkjenning!</span>';
+                        }
+                    }
+                }
+            }
+            else {
+                if (!$this->user->hasKarma()) {
+                    $question_status = '<i class="fa fa-question" title="Din konto er stengt."></i>';
+                    $question_status_bottom = '<span style="color: red;">Du kan ikke lenger bidra på denne siden fordi din karma er <strong>0</strong>.</span>';
+                }
+                else if ($this->user->isBanned()) {
+                    $question_status = '<i class="fa fa-question" title="Din konto er stengt."></i>';
+                    $question_status_bottom = '<span style="color: red;">Du kan ikke lenger bidra på denne siden fordi du er bannet.</span>';
+                }
+                else {
+                    $question_status = '<i class="fa fa-question" title="Registrer din NTNU-epost for å stemme."></i>';
+                    $question_status_bottom = 'Registrer din NTNU-epost for å stemme.';
+                }
+            }
+        }
+        else {
+            // User is not logged in
+            $question_status = '<i class="fa fa-question" title="Logg inn og registrer din NTNU-epost for å stemme."></i>';
+            $question_status_bottom = 'Logg inn og registrer din NTNU-epost for å stemme.';
+        }
+        
+        return '<div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#flags-panel" href="#collapse' . $k . '">
+                                ' . Flag::$flagType[$flag->getType()] . '
+                                <div class="model-flags-collaps-info">
+                                    ' . $question_status . '
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="' . $percent . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . $percent . '%;">
+                                            ' . $percent . '%
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse' . $k . '" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            ' . Flag::$flagText[$flag->getType()] . $additional . '
+                            <hr />
+                            <p>' . $num_voted . ' av ' . Flag::$VotesNeeded . ' godkjenninger. ' . $question_status_bottom . '</p>
+                            ' . ($display_buttons ? '<button type="button" data-flag="' . $flag->getId() . '" data-value="1" class="btn btn-primary flag-button">Godkjenn</button> <button type="button" data-flag="' . $flag->getId() . '" data-value="0" class="btn btn-danger flag-button">Avvis</button>' : '') . '
+                        </div>
+                    </div>
+                </div>';
     }
 
     //
@@ -270,146 +373,6 @@ class ProcessorController extends Youkok2 {
 
     	// Return
     	return $response;
-    }
-
-    //
-    // Method for drawing each flag
-    //
-
-    private function drawFlag($k, $flag, $element) {
-    	// Some variables
-    	$has_voted = false;
-    	$num_voted = 0;
-    	$user_vote = null;
-    	$num_votes_needed = 5;
-    	$display_buttons = false;
-        $additional = '';
-
-    	// Get votes
-    	$get_all_votes = "SELECT *
-        FROM vote
-        WHERE flag = :flag";
-        
-        $get_all_votes_query = $this->db->prepare($get_all_votes);
-        $get_all_votes_query->execute(array(':flag' => $flag->getId()));
-        while ($row = $get_all_votes_query->fetch(PDO::FETCH_ASSOC)) {
-            // Check if voted
-            if ($this->user->isLoggedIn() and $row['user'] == $this->user->getId()) {
-            	$has_voted = true;
-            	$user_vote = $row['value'];
-            }
-
-            // Count new vote
-            if ($row['value'] == 1) {
-            	$num_voted++;
-            }
-        }
-        // Handles for different special flags
-        if ($flag->getType() != 0) {
-            // Some variables
-            $additional_inner = '';
-            $data = json_decode($flag->getData(), true);
-            
-            // Fix flag independent
-            if ($flag->getType() == 1) {
-                // Change name
-                $additional = '<hr /><p>Nåværende navn: ' . $element->getName() . '</p>';
-                $additional .= '<p>Endres til: ' . $data['name'] . '</p>';
-            }
-
-            // Add comment
-            if ($data['comment'] == '') {
-                $additional_inner .= '<p><em>Ingen kommentar</em></p>';
-            }
-            else {
-                
-                $additional_comment = explode("<br />", nl2br($data['comment']));
-                foreach ($additional_comment as $v) {
-                    if ($v != '') {
-                        $additional_inner .= '<p>' . $v . '</p>';
-                    }
-                }
-                
-            }
-            $additional .= '<div class="givegrayaround">' . $additional_inner . '</div>';
-        }
-
-        // Calculate percent
-        $percent = ($num_voted / 5) * 100;
-
-    	// Check if status
-    	if ($this->user->isLoggedIn()) {
-    		// User is logged in
-  			if ($this->user->canContribute()) {
-                // Check if user is the owner
-                if ($this->user->getId() == $flag->getUser()) {
-                    $question_status = '<i class="fa fa-question" title="Stemme kan ikke avlegges."></i>';
-                    $question_status_bottom = '<span style="color: red;">Dette er et flagg opprettet av deg, du kan derfor <em>ikke</em> stemme.</span>';
-                }
-                else {
-                    $display_buttons = true;
-                    if ($has_voted == false) {
-                        $question_status = '<i class="fa fa-question" title="Stemme ikke avlagt."></i>';
-                        $question_status_bottom = 'Du har <em>ikke</em> avgitt din stemme.';
-                    }
-                    else {
-                        if ($user_vote == false) {
-                            $question_status = '<i class="fa fa-times" style="color: red;" title="Stemt for avvisning."></i>';
-                            $question_status_bottom = '<span style="color: red;">Du har stemt for avvisning!</span>';
-                        }
-                        else {
-                            $question_status = '<i class="fa fa-check" style="color: green;" title="Stemt for godkjenning."></i>';
-                            $question_status_bottom = '<span style="color: green;">Du har stemt for godkjenning!</span>';
-                        }
-                    }
-                }
-   			}
-  			else {
-                if (!$this->user->hasKarma()) {
-                    $question_status = '<i class="fa fa-question" title="Din konto er stengt."></i>';
-                    $question_status_bottom = '<span style="color: red;">Du kan ikke lenger bidra på denne siden fordi din karma er <strong>0</strong>.</span>';
-                }
-                else if ($this->user->isBanned()) {
-                    $question_status = '<i class="fa fa-question" title="Din konto er stengt."></i>';
-                    $question_status_bottom = '<span style="color: red;">Du kan ikke lenger bidra på denne siden fordi du er bannet.</span>';
-                }
-                else {
-                    $question_status = '<i class="fa fa-question" title="Registrer din NTNU-epost for å stemme."></i>';
-                    $question_status_bottom = 'Registrer din NTNU-epost for å stemme.';
-                }
-  			}
-    	}
-    	else {
-    		// User is not logged in
-    		$question_status = '<i class="fa fa-question" title="Logg inn og registrer din NTNU-epost for å stemme."></i>';
-    		$question_status_bottom = 'Logg inn og registrer din NTNU-epost for å stemme.';
-    	}
-
-    	return '<div class="panel panel-default">
-					<div class="panel-heading">
-						<h4 class="panel-title">
-							<a data-toggle="collapse" data-parent="#flags-panel" href="#collapse' . $k . '">
-								' . $this->flagType[$flag->getType()] . '
-								<div class="model-flags-collaps-info">
-									' . $question_status . '
-									<div class="progress">
-										<div class="progress-bar" role="progressbar" aria-valuenow="' . $percent . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . $percent . '%;">
-											' . $percent . '%
-										</div>
-									</div>
-								</div>
-							</a>
-						</h4>
-					</div>
-					<div id="collapse' . $k . '" class="panel-collapse collapse">
-						<div class="panel-body">
-							' . $this->flagText[$flag->getType()] . $additional . '
-							<hr />
-							<p>' . $num_voted . ' av ' . $num_votes_needed . ' godkjenninger. ' . $question_status_bottom . '</p>
-							' . ($display_buttons ? '<button type="button" data-flag="' . $flag->getId() . '" data-value="1" class="btn btn-primary flag-button">Godkjenn</button> <button type="button" data-flag="' . $flag->getId() . '" data-value="0" class="btn btn-danger flag-button">Avvis</button>' : '') . '
-						</div>
-					</div>
-				</div>';
     }
 
     //
