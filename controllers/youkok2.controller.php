@@ -113,7 +113,7 @@ class Youkok2 {
                 require_once BASE_PATH . '/controllers/error.controller.php';
 
                 // New instance
-                $controller = new ErrorController('db');
+                $controller = new ErrorController($this->routes, 'db');
                 
                 // Kill this off
                 die();

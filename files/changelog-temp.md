@@ -1,7 +1,8 @@
 Youkok2 - 0.0.1-pl (xx. juni, 2014)
 ===================================
 
-- [Info] First Public Release
+- [Info] First Public Release.
+- [Info] Fjernet påkrevd NTNU-identifisering og Wall-of-Shame-konseptet.
 - [New] På forsiden står det nå hvilke mappe filer ligger i, ikke bare hvilke fag det tilhører.
 - [New] Linker til nedlastninger har nå rel="nofollow", for å unngå at botter besøker dem titt og ofte.
 - [New] .js- & .css-filer er nå minifiserte.
