@@ -139,7 +139,7 @@ class ProcessorController extends Youkok2 {
             	if (count($flags) > 0) {
             		// Flags
             		foreach ($flags as $k => $v) {
-            			$response['html'] .= $this->drawFlag($k, $v);
+            			$response['html'] .= $this->drawFlag($k, $v, $item);
             		}
             	}
 
@@ -165,7 +165,7 @@ class ProcessorController extends Youkok2 {
     // Method for drawing each flag
     //
 
-    private function drawFlag($k, $flag) {
+    private function drawFlag($k, $flag, $element) {
         // Load votes
         $flag->getVotes();
 
