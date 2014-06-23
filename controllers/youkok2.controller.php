@@ -23,6 +23,7 @@ class Youkok2 {
     public $template;
     public $cacheManager;
     public $collection;
+    public $util;
 
     // Array that contains all the routes for the system
     protected $routes;
@@ -71,6 +72,9 @@ class Youkok2 {
         catch (Exception $e) {
             $this->db = null;
         }
+
+        // Init Utils
+        $this->utils = new Utils();
         
         // Init Smarty
         $this->template = $smarty = new Smarty();
@@ -101,7 +105,7 @@ class Youkok2 {
                 
                 // Check if we should validate login
                 if (isset($_POST['login-email'])) {
-                    $this->logIn();
+                    $this->user->logIn();
                 }
             }
             else {
@@ -199,7 +203,7 @@ class Youkok2 {
     // Method for redirecting
     //
 
-    protected function redirect($p) {
+    public function redirect($p) {
         // Close first
         $this->close();
 
@@ -270,7 +274,7 @@ class Youkok2 {
         }
     }
 
-    protected function addMessage($text, $type) {
+    public function addMessage($text, $type) {
         if (!isset($_SESSION['youkok2_message'])) {
             $_SESSION['youkok2_message'] = array();
         }
@@ -306,7 +310,7 @@ class Youkok2 {
         $this->showMessages();
         
         // Load cache
-        $this->loadTypeaheadCache();
+        $this->cacheManager->loadTypeaheadCache();
         
         // Call Smarty
         $this->template->display($template, $sid);
@@ -389,163 +393,10 @@ class Youkok2 {
     }
     
     //
-    // Loading cache for typeahad
-    //
-    
-    private function loadTypeaheadCache() {
-        if (file_exists(BASE_PATH . '/cache/typeahead.json')) {
-            // File exists
-            $content = json_decode(file_get_contents(BASE_PATH . '/cache/typeahead.json'), true);
-            
-            // Check content
-            if (!isset($content['ts'])) {
-                // Assign random cache
-                $this->template->assign('TYPEAHEAD_CACHE_TIME', rand());
-            }
-            else {
-                // Assign corret cache
-                $this->template->assign('TYPEAHEAD_CACHE_TIME', $content['ts']);
-            }
-        }
-        else {
-            // Assign random cache
-            $this->template->assign('TYPEAHEAD_CACHE_TIME', rand());
-        }
-    }
-    
-    //
-    // Login
-    //
-
-    protected function logIn() {
-        // Check if logged in
-        if (!$this->user == null or !$this->user->isLoggedIn()) {
-            // Okey
-            if (isset($_POST['login-email']) and isset($_POST['login-pw'])) {
-                // Try to fetch email
-                $get_login_user = "SELECT id, email, salt, password
-                FROM user 
-                WHERE email = :email";
-                
-                $get_login_user_query = $this->db->prepare($get_login_user);
-                $get_login_user_query->execute(array(':email' => $_POST['login-email']));
-                $row = $get_login_user_query->fetch(PDO::FETCH_ASSOC);
-
-                // Check result
-                if (isset($row['id'])) {
-                    // Try to match password
-                    $hash = $this->hashPassword($_POST['login-pw'], $row['salt']);
-                    
-                    // Try to match with password from the database
-                    if ($hash === $row['password']) {
-                        // Check remember me
-                        if (isset($_POST['login-remember']) and $_POST['login-remember'] == 'pizza') {
-                            $remember_me = true;
-                        }
-                        else {
-                            $remember_me = true;
-                        }
-
-                        // Set login
-                        $this->setLogin($hash, $_POST['login-email'], $remember_me);
-
-                        // Add message
-                        $this->addMessage('Du er nå logget inn.', 'success');
-                        
-                        // Check if we should redirect the user back to the previous page
-                        if (strstr($_SERVER['HTTP_REFERER'], SITE_URL) !== false) {
-                            // Has referer, remove base
-                            $clean_referer = str_replace(SITE_URL_FULL, '', $_SERVER['HTTP_REFERER']);
-                            
-                            // Check if anything left
-                            if (strlen($clean_referer) > 0) {
-                                // Refirect to whatever we have left
-                                $this->redirect($clean_referer);
-                            }
-                            else {
-                                // Send to frontpage
-                                $this->redirect('');
-                            }
-                        }
-                        else {
-                            // Does not have referer
-                            $this->redirect('');
-                        }
-                    }
-                    else {
-                        // Message
-                        $this->addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
-                        
-                        $this->redirect('logg-inn');
-                    }
-                }
-                else {
-                    // Message
-                    $this->addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
-                    
-                    // Display
-                    $this->redirect('logg-inn');
-                }
-            }
-            else {
-                // Not submitted or anything, just redirect
-                $this->redirect('');
-            }
-        }
-    }
-
-    //
-    // Hash password
-    //
-
-    protected function hashPassword($pass, $salt, $hard = true) {
-        // Create hash
-        $hash = password_hash($pass, PASSWORD_BCRYPT, array('cost' => 12, 'salt' => $salt));
-
-        // Check if the hash should be fucked up in addition
-        if ($hard) {
-            return password_fuckup($hash);
-        }
-        else {
-            return $hash;
-        }
-    }
-
-    protected function setLogin($hash, $email, $cookie = false) {
-        // Remove old login (just in case)
-        unset($_SESSION['youkok2']);
-        
-        // Set the cookie
-        setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
-
-        // Set new login
-        $strg = $email . 'asdkashdsajheeeeehehdffhaaaewwaddaaawww' . $hash;
-        if ($cookie) {
-            setcookie('youkok2', $strg, time() + (60 * 60 * 24 * 31), '/');
-        }
-        else {
-            $_SESSION['youkok2'] = $strg;
-        }
-    }
-    
-    //
     // Get service (call method from a class)
     //
 
     public function getService($method, $args) {
         return call_user_func_array(array($this, $method), $args);
-    }
-
-    //
-    // Prettify dates
-    //
-    
-    protected function prettifySQLDate($d) {
-        $norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
-                                 'okt', 'nov', 'des');
-        $split1 = explode(' ', $d);
-        $split2 = explode('-', $split1[0]);
-        
-        return (int) $split2[2] . '. ' . $norwegianMonths[$split2[1] - 1] . ' ' . $split2[0] . ' @ ' . $split1[1];
     }
 }

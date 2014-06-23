@@ -2,7 +2,7 @@
 
 <div class="col-md-8">
 	<h1>Karma</h1>
-	<p>Vi bruker konseptet med karma for å holde styr på hvor hjelpsomme og oppriktige brukere er. Alle brukere på Youkok2 begynner med <strong>5</strong> i karma. Dersom man <a href="hjelp">identifiserer</a> seg har man mulighet til å bidra på siden og dermed tjene/miste karmapoeng.</p>
+	<p>Vi bruker konseptet med karma for å holde styr på hvor hjelpsomme og oppriktige brukere er. Alle brukere på Youkok2 begynner med <strong>5</strong> i karma.</p>
 	<p>Man kan tjene/miste karmapoeng ved å opprette og å stemme på flagg i systemet. Dersom man oppretter et flagg og flagget blir stemt for avvisning vil du og alle de som stemte for godkjenning miste karma. Dersom et flagg blir godkjent mister de som har stemt for avvisning karma.</p>
 	<p>Under er en komplett oversikt over hva som gir/tar karmapoeng fra deg:</p>
 
@@ -68,7 +68,6 @@
             <li><a href="retningslinjer">Retningslinjer</a></li>
             <li><a href="hjelp">Hjelp</a></li>
             <li><a href="privacy">Privacy</a></li>
-            <li><a href="wall-of-shame">Wall of Shame</a></li>
         </ul>
 	</div>
     

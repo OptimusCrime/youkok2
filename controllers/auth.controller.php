@@ -26,22 +26,28 @@ class AuthController extends Youkok2 {
 
         // Check query
         if ($this->queryGet(0) == 'logg-inn') {
-            // Check if submitted
-            if (isset($_POST['login2-email'])) {
-                // Change post vars
-                $_POST['login-email'] = $_POST['login2-email'];
-                $_POST['login-pw'] = $_POST['login2-pw'];
-
-                // Call method
-                $this->logIn();
+            // Check if logged in
+            if ($this->user->isLoggedIn()) {
+                $this->redirect('');
             }
             else {
-                $this->template->assign('SITE_TITLE', 'Logg inn');
-                $this->displayAndCleanup('login.tpl');
+                // Check if submitted
+                if (isset($_POST['login2-email'])) {
+                    // Change post vars
+                    $_POST['login-email'] = $_POST['login2-email'];
+                    $_POST['login-pw'] = $_POST['login2-pw'];
+
+                    // Call method
+                    $this->user->logIn();
+                }
+                else {
+                    $this->template->assign('SITE_TITLE', 'Logg inn');
+                    $this->displayAndCleanup('login.tpl');
+                }
             }
         }
         else if ($this->queryGet(0) == 'logg-ut') {
-        	$this->logOut();
+        	$this->user->logOut();
         }
         else if ($this->queryGet(0) == 'registrer') {
             $this->template->assign('SITE_TITLE', 'Registrer');
@@ -62,24 +68,6 @@ class AuthController extends Youkok2 {
             // Page not found!
         	$this->display404();
         }
-    }
-
-    //
-    // Method for logging user out
-    //
-
-    private function logOut() {
-        // Check if logged in
-        if ($this->user->isLoggedIn()) {
-            unset($_SESSION['youkok2']);
-            setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
-
-            // Set message
-            $this->addMessage('Du har nå logget ut.', 'success');
-        }
-
-        // Redirect to frontpage
-        $this->redirect('');
     }
 
     //
@@ -177,7 +165,7 @@ class AuthController extends Youkok2 {
                     $this->addMessage('Velkommen til Youkok2!', 'success');
 
                     // Log in (only session)
-                    $this->setLogin($hash, $_POST['register-form-email']);
+                    $this->user->setLogin($hash, $_POST['register-form-email']);
 
                     $this->redirect('');
                 }
@@ -314,7 +302,7 @@ class AuthController extends Youkok2 {
                             $this->addMessage('Passordet er endret!', 'success');
 
                             // Log in (only session)
-                            $this->setLogin($hash, $row2['email']);
+                            $this->user->setLogin($hash, $row2['email']);
 
                             $this->redirect('');
                         }
@@ -342,61 +330,6 @@ class AuthController extends Youkok2 {
                 // Redirect
                 $this->redirect('');
             }
-        }
-    }
-
-    //
-    // Method for verifying a user
-    //
-
-    private function verify() {
-        if (isset($_GET['hash'])) {
-            // Got hash
-            $get_verify_info = "SELECT *
-            FROM verify 
-            WHERE hash = :hash";
-            
-            $get_verify_info_query = $this->db->prepare($get_verify_info);
-            $get_verify_info_query->execute(array(':hash' => $_GET['hash']));
-            $row = $get_verify_info_query->fetch(PDO::FETCH_ASSOC);
-
-            if (isset($row['id'])) {
-                // Got good hash
-                $update_user_setverified = "UPDATE user
-                SET ntnu_email = :ntnu_email,
-                ntnu_verified = 1
-                WHERE id = :user";
-                
-                $update_user_setverified_query = $this->db->prepare($update_user_setverified);
-                $update_user_setverified_query->execute(array(':ntnu_email' => $row['username'], ':user' => $row['user']));
-
-                // Delete all other verifies
-                $delete_verify = "DELETE FROM verify
-                WHERE user = :user";
-                
-                $delete_verify_query = $this->db->prepare($delete_verify);
-                $delete_verify_query->execute(array(':user' => $row['user'])); 
-
-                // Add message
-                $this->addMessage('Din bruker har nå blitt verifisert!', 'success');
-
-                // Redirect
-                $this->redirect('');
-            }
-            else {
-                // Add error message
-                $this->addMessage('Denne linken er ikke lenger gyldig.', 'danger');
-
-                // Redirect
-                $this->redirect('');
-            }
-        }
-        else {
-            // Add error message
-            $this->addMessage('Her gikk visst noe galt.', 'danger');
-
-            // Redirect
-            $this->redirect('');
         }
     }
 }

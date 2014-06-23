@@ -14,7 +14,6 @@
             <li><a href="retningslinjer">Retningslinjer</a></li>
             <li><a href="karma">Karma</a></li>
             <li><a href="hjelp">Hjelp</a></li>
-            <li><a href="wall-of-shame">Wall of Shame</a></li>
         </ul>
 	</div>
     

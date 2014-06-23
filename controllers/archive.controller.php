@@ -66,7 +66,6 @@ class ArchiveController extends Youkok2 {
                     $this->template->assign('ARCHIVE_ID', $item->getId());
                     
                     // User status
-                    $this->template->assign('ARCHIVE_USER_VERIFIED', $this->user->isVerified());
                     $this->template->assign('ARCHIVE_USER_BANNED', $this->user->isBanned());
                     $this->template->assign('ARCHIVE_USER_HAS_KARMA', $this->user->hasKarma());
                     $this->template->assign('ARCHIVE_USER_CAN_CONTRIBUTE', $this->user->canContribute());

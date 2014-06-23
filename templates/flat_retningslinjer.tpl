@@ -15,7 +15,7 @@
 	<p>Legg ut gode løsningsforslag, fasiter, tips og ressurser. Ikke fyll opp siden med nisjeting, feilaktig informasjon eller annet uønsket materiell. Styr unna ting av lav kvalitet. Gjennom prosessen med å godkjenne filer kan det tenkes disse filene også blir avvist.</p>
 
 	<h3>Ikke vær en idiot</h3>
-	<p>Som (identifisert) bruker på Youkok2 kan man fritt laste opp filer, opprette mapper og stemme på flagg. Ikke misbruk denne tillitten. Ved idiot-oppførsel kan din konto bli stengt. I enkelte tilfeller kan det føre til at du havner på <a href="wall-of-shame">Wall of Shame</a>.</p>
+	<p>Som registrert bruker på Youkok2 kan man fritt laste opp filer, opprette mapper og stemme på flagg. Ikke misbruk denne tillitten. Ved idiot-oppførsel kan din konto bli stengt. Din konto kan også bli inaktiv om du får <strong>0</strong> i <a href="karma">karma</a>.</p>
 	<p>Regelen er ganske enkel: Vær snill og hjelpsom, så burde du ikke ha noen problemer.</p>
 
 	<h3>Godkjente filtyper</h3>
@@ -37,7 +37,6 @@
             <li><a href="karma">Karma</a></li>
             <li><a href="hjelp">Hjelp</a></li>
             <li><a href="privacy">Privacy</a></li>
-            <li><a href="wall-of-shame">Wall of Shame</a></li>
         </ul>
 	</div>
     

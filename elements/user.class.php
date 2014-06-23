@@ -155,4 +155,139 @@ Class User {
         $update_last_seen_query = $this->controller->db->prepare($update_last_seen);
         $update_last_seen_query->execute(array(':id' => $this->id));
     }
+
+
+    //
+    // Login
+    //
+
+    public function logIn() {
+        // Check if logged in
+        if (!$this->isLoggedIn()) {
+            // Okey
+            if (isset($_POST['login-email']) and isset($_POST['login-pw'])) {
+                // Try to fetch email
+                $get_login_user = "SELECT id, email, salt, password
+                FROM user 
+                WHERE email = :email";
+                
+                $get_login_user_query = $this->controller->db->prepare($get_login_user);
+                $get_login_user_query->execute(array(':email' => $_POST['login-email']));
+                $row = $get_login_user_query->fetch(PDO::FETCH_ASSOC);
+
+                // Check result
+                if (isset($row['id'])) {
+                    // Try to match password
+                    $hash = $this->hashPassword($_POST['login-pw'], $row['salt']);
+                    
+                    // Try to match with password from the database
+                    if ($hash === $row['password']) {
+                        // Check remember me
+                        if (isset($_POST['login-remember']) and $_POST['login-remember'] == 'pizza') {
+                            $remember_me = true;
+                        }
+                        else {
+                            $remember_me = true;
+                        }
+
+                        // Set login
+                        $this->setLogin($hash, $_POST['login-email'], $remember_me);
+
+                        // Add message
+                        $this->controller->addMessage('Du er nå logget inn.', 'success');
+                        
+                        // Check if we should redirect the user back to the previous page
+                        if (strstr($_SERVER['HTTP_REFERER'], SITE_URL) !== false) {
+                            // Has referer, remove base
+                            $clean_referer = str_replace(SITE_URL_FULL, '', $_SERVER['HTTP_REFERER']);
+                            
+                            // Check if anything left
+                            if (strlen($clean_referer) > 0) {
+                                // Refirect to whatever we have left
+                                $this->controller->redirect($clean_referer);
+                            }
+                            else {
+                                // Send to frontpage
+                                $this->controller->redirect('');
+                            }
+                        }
+                        else {
+                            // Does not have referer
+                            $this->controller->redirect('');
+                        }
+                    }
+                    else {
+                        // Message
+                        $this->controller->addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+                        
+                        $this->controller->redirect('logg-inn');
+                    }
+                }
+                else {
+                    // Message
+                    $this->controller->addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+                    
+                    // Display
+                    $this->controller->redirect('logg-inn');
+                }
+            }
+            else {
+                // Not submitted or anything, just redirect
+                $this->controller->redirect('');
+            }
+        }
+    }
+
+
+    //
+    // Method for logging user out
+    //
+
+    public function logOut() {
+        // Check if logged in
+        if ($this->isLoggedIn()) {
+            unset($_SESSION['youkok2']);
+            setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+
+            // Set message
+            $this->controller->addMessage('Du har nå logget ut.', 'success');
+        }
+
+        // Redirect to frontpage
+        $this->controller->redirect('');
+    }
+
+    //
+    // Hash password
+    //
+
+    public function hashPassword($pass, $salt, $hard = true) {
+        // Create hash
+        $hash = password_hash($pass, PASSWORD_BCRYPT, array('cost' => 12, 'salt' => $salt));
+
+        // Check if the hash should be fucked up in addition
+        if ($hard) {
+            return password_fuckup($hash);
+        }
+        else {
+            return $hash;
+        }
+    }
+
+    public function setLogin($hash, $email, $cookie = false) {
+        // Remove old login (just in case)
+        unset($_SESSION['youkok2']);
+        
+        // Set the cookie
+        setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+
+        // Set new login
+        $strg = $email . 'asdkashdsajheeeeehehdffhaaaewwaddaaawww' . $hash;
+        if ($cookie) {
+            setcookie('youkok2', $strg, time() + (60 * 60 * 24 * 31), '/');
+        }
+        else {
+            $_SESSION['youkok2'] = $strg;
+        }
+    }
 }

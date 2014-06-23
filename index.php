@@ -27,6 +27,7 @@ require_once BASE_PATH . '/libs/phpmailer/class.phpmailer.php';
 require_once BASE_PATH . '/libs/smarty/Smarty.class.php';
 require_once BASE_PATH . '/libs/youkok2/cachemanager.php';
 require_once BASE_PATH . '/libs/youkok2/executioner.php';
+require_once BASE_PATH . '/libs/youkok2/utilities.php';
 
 require_once BASE_PATH . '/elements/collection.class.php';
 require_once BASE_PATH . '/elements/course.class.php';

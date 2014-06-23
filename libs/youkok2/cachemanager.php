@@ -178,5 +178,31 @@ Class CacheManager {
 	private function getHash($id, $type) {
 		return $hash = substr(md5('lorem ' . $type . ' ipsum' . $id . md5($id)), 0, 22);
 	}
+
+
+    //
+    // Loading cache for typeahad
+    //
+    
+    public function loadTypeaheadCache() {
+        if (file_exists(BASE_PATH . '/cache/typeahead.json')) {
+            // File exists
+            $content = json_decode(file_get_contents(BASE_PATH . '/cache/typeahead.json'), true);
+            
+            // Check content
+            if (!isset($content['ts'])) {
+                // Assign random cache
+                $this->controller->template->assign('TYPEAHEAD_CACHE_TIME', rand());
+            }
+            else {
+                // Assign corret cache
+                $this->controller->template->assign('TYPEAHEAD_CACHE_TIME', $content['ts']);
+            }
+        }
+        else {
+            // Assign random cache
+            $this->controller->template->assign('TYPEAHEAD_CACHE_TIME', rand());
+        }
+    }
 }
 ?>

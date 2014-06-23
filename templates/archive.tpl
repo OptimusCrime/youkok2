@@ -204,14 +204,12 @@
                 [[+else]]
                     [[+if $ARCHIVE_USER_ONLINE == true]]
                         [[+if $ARCHIVE_USER_BANNED == true]]
-                            <p>Du et bannet fra siden og kan dermed ikke bidra på Youkok2 lenger.</p>
+                            <p>Du er bannet fra systemet og kan dermed ikke bidra på Youkok2 lenger.</p>
                         [[+elseif $ARCHIVE_USER_HAS_KARMA == false]]
                             <p>Du har <strong>0</strong> i karma. På grunn av dette kan du ikke lenger bidra på Youok2.</p>
-                        [[+else]]
-                            <p>Registrer din NTNU-bruker for å kunne legge til filer og opprette mapper. Dette gjøres i din profil</p>
                         [[+/if]]
                     [[+else]]
-                        <p>Logg inn og registrer din NTNU-bruker for å kunne bidra på Youkok2.</p>
+                        <p>Logg inn for å kunne bidra på Youkok2.</p>
                     [[+/if]]
                 [[+/if]]
             </div>
