@@ -19,6 +19,7 @@
 local.php
 cache.php
 .htaccess
+composer.lock
 /processor/search/*
 
 # And those fuckings DS_Stores
