@@ -196,7 +196,7 @@ class AuthController extends Youkok2 {
                 // Check result
                 if (isset($row['id'])) {
                     // Create hash
-                    $hash = $this->hashPassword(md5(rand(0, 100000) . md5(time()) . $row['id']), sha1(rand(0, 1000)), false);
+                    $hash = $this->user->hashPassword(md5(rand(0, 100000) . md5(time()) . $row['id']), sha1(rand(0, 1000)), false);
 
                     // Create database entry
                     $insert_changepassword = "INSERT INTO changepassword
@@ -281,7 +281,7 @@ class AuthController extends Youkok2 {
                         // Check if user was found
                         if (isset($row2['salt'])) {
                             // Generate new hash
-                            $hash = $this->hashPassword($_POST['forgotten-password-new-form-password1'], $row2['salt']);
+                            $hash = $this->user->hashPassword($_POST['forgotten-password-new-form-password1'], $row2['salt']);
                             
                             // Insert
                             $insert_user_new_password = "UPDATE user
