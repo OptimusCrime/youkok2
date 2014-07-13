@@ -6,7 +6,7 @@
 	<p>Dersom du har glemt ditt passord kan du prøve å resette passordet ditt <a href="glemt-passord">her</a>.
 	<form action="logg-inn" method="post">
 		<label for="login2-email">E-post</label>
-		<input type="email" name="login2-email" class="form-control" id="login2-email" value="" placeholder="E-post" />
+		<input type="email" name="login2-email" class="form-control" id="login2-email" value="[[+if isset($LOGIN_EMAIL)]][[+$LOGIN_EMAIL]][[+/if]]" placeholder="E-post" />
 		<label for="login2-pw">Passord</label>
 		<input type="password" name="login2-pw" class="form-control" id="login2-pw" value="" placeholder="Passord" />
 		<button type="submit" class="btn btn-default">Logg inn</button> eller <a href="registrer">registrer deg</a>.

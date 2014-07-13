@@ -83,8 +83,8 @@ Class User {
                 }
                 else {
                     // Unset all
-                    //unset($_SESSION['youkok2']);
-                    //setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+                    unset($_SESSION['youkok2']);
+                    setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
                 }
             }
         }
@@ -220,6 +220,8 @@ Class User {
                         // Message
                         $this->controller->addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
                         
+                        $_SESSION['login_correct_email'] = $row['email'];
+
                         $this->controller->redirect('logg-inn');
                     }
                 }

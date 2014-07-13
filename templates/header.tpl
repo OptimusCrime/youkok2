@@ -74,7 +74,7 @@
                                     <form role="form" action="" method="post">
                                         <div class="form-group">
                                             <label for="login-email">E-post</label>
-                                            <input type="email" name="login-email" class="form-control" id="login-email" value="" placeholder="" />
+                                            <input type="email" name="login-email" class="form-control" id="login-email" value="[[+if isset($LOGIN_EMAIL)]][[+$LOGIN_EMAIL]][[+/if]]" placeholder="" />
                                             <label for="login-pw">Passord</label>
                                             <input type="password" name="login-pw" class="form-control" id="login-pw" value="" placeholder="" />
                                         </div>
