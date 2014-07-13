@@ -10,6 +10,8 @@ Class LineCounter {
 	private $lines;
 	private $lines_type;
 
+	private $totalNumber;
+
 	public function __construct($ignore_paths, $ignore_files, $add_files) {
 		$this->ignore_paths = $ignore_paths;
 		$this->ignore_files = $ignore_files;
@@ -18,6 +20,8 @@ Class LineCounter {
 		$this->elements = array('/' => array());
 		$this->lines = array();
 		$this->lines_type = array();
+
+		$this->totalNumber = 0;
 	}
 
 	public function analyze() {
@@ -40,12 +44,11 @@ Class LineCounter {
 
 		$this->lines('', $this->elements);
 
-		echo "<pre>";
-		print_r($this->lines);
-		echo "<hr />";
-		print_r($this->lines_type);
-		echo "<hr />";
-		echo array_sum($this->lines_type);
+		$this->totalNumber = array_sum($this->lines_type);
+	}
+
+	public function getTotalLines() {
+		return $this->totalNumber;
 	}
 
 	private function ingorePaths ($dir = '/') {

@@ -23,7 +23,7 @@ require_once BASE_PATH . '/_build/libs/youkok2/linecounter.class.php';
 //
 // Set namespace
 //
-/*
+
 use MatthiasMullie\Minify;
 
 //
@@ -42,7 +42,8 @@ echo '<span style="color: green;">Minified CSS</span><br />';
 $js_minifier = new Minify\JS(BASE_PATH . '/assets/js/youkok.js');
 $js_minifier->minify(BASE_PATH . '/assets/js/youkok.min.js');
 echo '<span style="color: green;">Minified JS</span><br />';
-*/
+echo '<span>------------------------------------</span><br />';
+
 //
 // Count number of lines
 //
@@ -70,8 +71,8 @@ $ignore_files = array(
 
 $add_files = array(
 	// Override directories we have ignored earlier
-	'_build/libs/youkok2/index.php',
-	'_build/libs/youkok2/libs/youkok2/linecounter.class.php',
+	'_build/index.php',
+	'_build/libs/youkok2/linecounter.class.php',
 	'assets/js/youkok.js',
 	'assets/css/youkok.css',
 	'libs/youkok2/cachemanager.php',
@@ -81,6 +82,7 @@ $add_files = array(
 
 $linecounter = new LineCounter($ignore_paths, $ignore_files, $add_files);
 $linecounter->analyze();
+echo '<span style="color: green;">Read a total of ' . number_format($linecounter->getTotalLines()) . ' lines</span><br />';
 
 //
 // Finish
