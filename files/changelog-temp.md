@@ -13,6 +13,7 @@ Youkok2 - 0.0.1-pl (xx. juni, 2014)
 - [Enhanced] Nedlastning av filer logger nå UA.
 - [Enhanced] Nedlastning av filer gir korrekt Mimetype i stede for 'octet/stream'.
 - [Enhanced] Antall spørringer som kjører pr. pageload er nesten halvert på de fleste sider.
+- [Enhanced] Hvis e-post ble funnet under innlogging, vil den automatisk være fylt ut om passordet var feil.
 - [Other] Mange mindre tekstlige endringer.
 
 Youkok2 - 0.0.1-c (2. mai, 2014)

@@ -144,6 +144,19 @@ Class User {
     }
 
     //
+    // Setters
+    //
+
+    public function setMostPopularDelta($delta) {
+        $update_most_popular_delta = "UPDATE user
+        SET most_popular_delta = :delta
+        WHERE id = :id";
+        
+        $update_most_popular_delta_query = $this->controller->db->prepare($update_most_popular_delta);
+        $update_most_popular_delta_query->execute(array(':delta' => $delta, ':id' => $this->id));
+    }
+
+    //
     // Function for updating the last_seen field to the current timestamp
     //
 

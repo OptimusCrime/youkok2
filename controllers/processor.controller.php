@@ -99,7 +99,7 @@ class ProcessorController extends Youkok2 {
                 // Ajax calls for fetching histories
                 if ($this->queryGet(2) == 'get') {
                     // Fetch history
-                    $response = $this->getHistory();
+                    $response = $this->historyGet();
                 }
             }
             else {
@@ -294,7 +294,8 @@ class ProcessorController extends Youkok2 {
     	// First, check if logged in
     	if ($this->user->isLoggedIn() and $this->user->canContribute()) {
     		// Can vote
-    		if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['flag']) and is_numeric($_POST['flag']) and ($_POST['value'] == 1 or $_POST['value'] == 0)) {
+    		if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['flag']) and 
+                is_numeric($_POST['flag']) and ($_POST['value'] == 1 or $_POST['value'] == 0)) {
 	        	// Valid id, try to load the object
 	        	$item = new Item($this);
 	        	$item->createById($_POST['id']);
@@ -450,12 +451,7 @@ class ProcessorController extends Youkok2 {
             $response['code'] = 200;
 
             if ($this->user->isLoggedIn()) {
-                $update_user = "UPDATE user
-                SET most_popular_delta = :delta
-                WHERE id = :id";
-                
-                $update_user_query = $this->db->prepare($update_user);
-                $update_user_query->execute(array(':delta' => $_POST['delta'], ':id' => $this->user->getId()));
+                $this->user->setMostPopularDelta($_POST['delta']);
             }
             else {
                 setcookie('home_popular', $_POST['delta'], time() + (60 * 60 * 24 * 7), '/');
@@ -527,7 +523,7 @@ class ProcessorController extends Youkok2 {
                     }
                     else {
                         // Create directory
-                        $new_directory = $this->fileDirectory . $element->getFullLocation() . '/' . $this->generateUrlFriendly($_POST['name']);
+                        $new_directory = FILE_ROOT . '/' . $element->getFullLocation() . '/' . $this->generateUrlFriendly($_POST['name']);
                         mkdir($new_directory);
 
                         // Inser archive
@@ -796,7 +792,7 @@ class ProcessorController extends Youkok2 {
     // Method for getting the current history
     //
 
-    private function getHistory() {
+    private function historyGet() {
         $response = array();
         $response['html'] = '';
 
