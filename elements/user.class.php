@@ -83,8 +83,8 @@ Class User {
                 }
                 else {
                     // Unset all
-                    unset($_SESSION['youkok2']);
-                    setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+                    //unset($_SESSION['youkok2']);
+                    //setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
                 }
             }
         }
@@ -278,7 +278,7 @@ Class User {
         // Remove old login (just in case)
         unset($_SESSION['youkok2']);
         
-        // Set the cookie
+        // Unset the cookie
         setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
 
         // Set new login

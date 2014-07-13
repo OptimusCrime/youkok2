@@ -119,7 +119,7 @@ class AuthController extends Youkok2 {
                         if ($_POST['register-form-password1'] == $_POST['register-form-password2']) {
                             // Match, create new password
                             $hash_salt = md5(rand(0, 10000000000)) . "-" . md5(time()) . "DHGDKJDHGkebabSJHingridvoldKEfggfgf";
-                            $hash = $this->hashPassword($_POST['register-form-password1'], $hash_salt);
+                            $hash = $this->user->hashPassword($_POST['register-form-password1'], $hash_salt);
                             
                             // Insert to database
                             $create_user = "INSERT INTO user
@@ -143,7 +143,7 @@ class AuthController extends Youkok2 {
                             $mail->isHTML(false);
                             
                             $mail->Subject = utf8_decode('Velkommen til Youkok2');
-                            $mail->Body = utf8_decode(file_get_contents($this->basePath . '/mail/register.txt'));
+                            $mail->Body = utf8_decode(file_get_contents(BASE_PATH . '/mail/register.txt'));
                             $mail->send();
                         }
                         else {
@@ -217,7 +217,7 @@ class AuthController extends Youkok2 {
                     $mail->isHTML(false);
 
                     $mail->Subject = utf8_decode('Glemt passord på Youkok2');
-                    $message = utf8_decode(file_get_contents($this->basePath . '/mail/forgotten.txt'));
+                    $message = utf8_decode(file_get_contents(BASE_PATH . '/mail/forgotten.txt'));
                     $message_keys = array(
                         '{{SITE_URL}}' => SITE_URL_FULL,
                         '{{HASH}}' => $hash);

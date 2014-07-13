@@ -95,12 +95,12 @@ class ProfileController extends Youkok2 {
 		        // Check if user was found
 		        if (isset($row2['salt'])) {
 		        	// Generate old hash
-		        	$hash_pre = $this->hashPassword($_POST['forgotten-password-new-form-oldpassword'], $row2['salt']);
+		        	$hash_pre = $this->user->hashPassword($_POST['forgotten-password-new-form-oldpassword'], $row2['salt']);
 		        	
 		        	// Check if the old password matches the old one
 		        	if ($hash_pre == $row2['password']) {
 		        		// Generate new hash
-			            $hash = $this->hashPassword($_POST['forgotten-password-new-form-password1'], $row2['salt']);
+			            $hash = $this->user->hashPassword($_POST['forgotten-password-new-form-password1'], $row2['salt']);
 			            
 			            // Insert
 			            $insert_user_new_password = "UPDATE user
@@ -123,7 +123,7 @@ class ProfileController extends Youkok2 {
 			            }
 
 			            // Set the login
-			            $this->setLogin($hash, $this->user->getEmail(), $set_login_cookie);
+			            $this->user->setLogin($hash, $this->user->getEmail(), $set_login_cookie);
 
 			            // Do the redirect
 			            $this->redirect('profil/innstillinger');
@@ -159,7 +159,9 @@ class ProfileController extends Youkok2 {
 
     private function profileInfo() {
     	if ($this->user->isLoggedIn() and isset($_POST['register-form-email']) and isset($_POST['register-form-nick'])) {
-    		// Check if we should update e-mail
+    		$error = false;
+
+            // Check if we should update e-mail
     		if ($_POST['register-form-email'] != $this->user->getEmail() 
     			and strlen($_POST['register-form-email']) > 0 
     			and filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL)) {
@@ -189,6 +191,26 @@ class ProfileController extends Youkok2 {
 		            $update_user_email_query = $this->db->prepare($update_user_email);
 		            $update_user_email_query->execute(array(':email' => $_POST['register-form-email'], 
 		            									    ':user' => $this->user->getId()));
+
+                    // Update cookie/session
+                    if (isset($_COOKIE['youkok2'])) {
+                        $hash = $_COOKIE['youkok2'];
+                        $set_login_cookie = true;
+                    }
+                    else {
+                        $hash = $_SESSION['youkok2'];
+                        $set_login_cookie = false;
+                    }
+
+                    // Try to split
+                    $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
+                    if (count($hash_split) == 2) {
+                        // Set the login
+                        $this->user->setLogin($hash_split[1], $_POST['register-form-email'], $set_login_cookie);
+                    }
+                    else {
+                        $error = true;
+                    }
                 }
     		}
 
@@ -203,11 +225,20 @@ class ProfileController extends Youkok2 {
 	            									   ':user' => $this->user->getId()));
     		}
 
-    		// Add messag
-    		$this->addMessage('Dine endringer er lagret!', 'success');
+            if (!$error) {
+                // Add messag
+                $this->addMessage('Dine endringer er lagret!', 'success');
 
-	        // Redirect
-	        $this->redirect('profil/innstillinger');
+                // Redirect
+                $this->redirect('profil/innstillinger');
+            }
+            else {
+                // Add messag
+                $this->addMessage('Her gikk visst noe galt...', 'danger');
+
+                // Redirect
+                $this->redirect('profil/innstillinger');
+            }
     	}
     	else {
     		// Add messag
