@@ -182,13 +182,13 @@ class Flag {
             // Load all votes
             $get_all_votes = "SELECT *
             FROM vote
-            WHERE file = :file";
+            WHERE flag = :flag";
             
             $get_all_votes_query = $this->controller->db->prepare($get_all_votes);
-            $get_all_votes_query->execute(array(':file' => $this->id));
+            $get_all_votes_query->execute(array(':flag' => $this->id));
             while ($row = $get_all_votes_query->fetch(PDO::FETCH_ASSOC)) {
                 // Create new flag
-                $vote = new Vote($this->controller, $this);
+                $vote = new Vote($this->controller);
 
                 // Set all fields
                 $vote->setAll($row);
@@ -205,7 +205,7 @@ class Flag {
                 }
 
                 // Add vote value
-                $this->voteValue[$vote->getValue()]++;
+                $this->voteValues[$vote->getValue()]++;
             }
         }
         
@@ -266,5 +266,46 @@ class Flag {
         }
 
         return ($this->voteValues[1] / Flag::$VotesNeeded) * 100;
+    }
+
+    //
+    // Return the vote object voted on by the current user
+    //
+
+    public function getCurrentUserVote() {
+        // Check if fetched
+        if ($this->votes == null) {
+            $this->getVotes();
+        }
+
+        foreach ($this->votes as $v) {
+            if ($v->getUser() == $this->controller->user->getId()) {
+                return $v;
+            }
+        }
+
+        return null;
+    }
+
+    //
+    // Create
+    //
+
+    public function createById($id) {
+        $create_flag = "SELECT *
+        FROM flag
+        WHERE id = :id";
+
+        $create_flag_query = $this->controller->db->prepare($create_flag);
+        $create_flag_query->execute(array(':id' => $id));
+        $row = $create_flag_query->fetch(PDO::FETCH_ASSOC);
+
+        if (!isset($row['id'])) {
+            return false;
+        }
+        else {
+            $this->setAll($row);
+            return true;
+        }
     }
 }

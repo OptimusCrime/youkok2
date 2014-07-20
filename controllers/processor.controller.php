@@ -298,78 +298,60 @@ class ProcessorController extends Youkok2 {
                 is_numeric($_POST['flag']) and ($_POST['value'] == 1 or $_POST['value'] == 0)) {
 	        	// Valid id, try to load the object
 	        	$item = new Item($this);
-	        	$item->createById($_POST['id']);
-	        	$this->collection->addIfDoesNotExist($item);
-	            $element = $this->collection->get($_POST['id']);
-	            
-	            if ($element == null) {
+                $item->createById($_POST['id']);
+                
+                // Check if valid id
+                if (!$item->wasFound()) {
 	            	// WTF
-	            	$response['code'] = 500;
+	            	$response['code'] = 5001;
 	            }
 	            else {
-	            	// Get flag
-	            	$get_flag = "SELECT *
-		            FROM flag 
-		            WHERE id = :id";
-		            
-		            $get_flag_query = $this->db->prepare($get_flag);
-		            $get_flag_query->execute(array(':id' => $_POST['flag']));
-		            $row = $get_flag_query->fetch(PDO::FETCH_ASSOC);
-		            
+                    // Init new flag
+	            	$flag = new Flag($this);
+
 		            // Check if flag was returned
-		            if (!isset($row['id'])) {
-		            	$response['code'] = 500;
+		            if (!$flag->createById($_POST['flag'])) {
+		            	$response['code'] = 5002;
 		            }
 		            else {
-		            	if ($row['active'] == 1 and $row['user'] != $this->user->getId()) {
+		            	if ($flag->isActive() and $flag->getUser() != $this->user->getId() and 
+                            $flag->getFile() == $item->getId()) {
 		            		// Flag returned and is currently active, check if has voted
-		            		$get_vote = "SELECT *
-				            FROM vote 
-				            WHERE flag = :flag
-				            AND user = :user";
+		            		$flag_votes = $flag->getVotes();
 				            
-				            $get_vote_query = $this->db->prepare($get_vote);
-				            $get_vote_query->execute(array(':flag' => $_POST['flag'], ':user' => $this->user->getId()));
-				            $row2 = $get_vote_query->fetch(PDO::FETCH_ASSOC);
-
 				            // Check if has voted
-				             if (!isset($row2['id'])) {
+				             if (!$flag->userHasVoted()) {
 				            	// Insert
-				            	$insert_vote = "INSERT INTO vote
-				            	(user, flag, value)
-				            	VALUES (:user, :flag, :value)";
-					            
-					            $insert_vote_query = $this->db->prepare($insert_vote);
-					            $insert_vote_query->execute(array(':user' => $this->user->getId(), ':flag' => $_POST['flag'], ':value' => $_POST['value']));
+                                $vote = new Vote($this);
+                                $vote->setUser($this->user->getId());
+                                $vote->setFlag($_POST['flag']);
+                                $vote->setValue($_POST['value']);
+                                $vote->createNew();
 				            }
 				            else {
 				            	// Update
-				            	$update_vote = "UPDATE vote
-				            	SET value = :value
-				            	WHERE user = :user
-				            	AND flag = :flag";
-					            
-					            $update_vote_query = $this->db->prepare($update_vote);
-					            $update_vote_query->execute(array(':value' => $_POST['value'], ':user' => $this->user->getId(), ':flag' => $_POST['flag']));
+                                $vote = $flag->getCurrentUserVote();
+				            	$vote->setValue($_POST['value']);
+                                $vote->updateVote();
 				            }
 
 				            $response['code'] = 200;
 
 				            // Check for completed vote!
-				            new Executioner($element, $this->db, $_POST['flag']);
+				            //new Executioner($item, $this->db, $_POST['flag']);
 		            	}
 		            	else {
-		            		$response['code'] = 500;
+		            		$response['code'] = 5003;
 		            	}
 		            }
 	            }
 	        }
 	        else {
-	        	$response['code'] = 500;
+	        	$response['code'] = 5004;
 	        }
     	}
     	else {
-    		$response['code'] = 500;
+    		$response['code'] = 5005;
     	}
 
     	// Return

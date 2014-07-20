@@ -27,10 +27,9 @@ class Vote {
     private $value;
     private $voted;
 
-    public function __construct($controller, $flag) {
+    public function __construct($controller) {
     	// Store references
     	$this->controller = &$controller;
-    	$this->flag = &$flag;
 
     	// Set all fields to null first
     	$this->id = null;
@@ -72,5 +71,59 @@ class Vote {
 
     public function getVoted() {
     	return $this->voted;
+    }
+
+    //
+    // Setters
+    //
+
+    public function setId($id) {
+        $this->id = $id;
+    }
+
+    public function setUser($user) {
+        $this->user = $user;
+    }
+
+    public function setFlag($flag) {
+        $this->flag = $flag;
+    }
+
+    public function setValue($value) {
+        $this->value = $value;
+    }
+
+    public function setVoted($voted) {
+        $this->voted = $voted;
+    }
+
+    //
+    // New
+    //
+
+    public function createNew() {
+        // Insert etc here
+        $create_vote = "INSERT INTO vote
+        (user, flag, value)
+        VALUES (:user, :flag, :value)";
+
+        $create_vote_query = $this->controller->db->prepare($create_vote);
+        $create_vote_query->execute(array(':user' => $this->user, 
+                                          ':flag' => $this->flag, 
+                                          ':value' => $this->value));
+    }
+
+    //
+    // Update
+    //
+
+    public function updateVote() {
+        $update_vote = "UPDATE vote
+        SET value = :value, voted = NOW()
+        WHERE id = :id";
+
+        $update_vote_query = $this->controller->db->prepare($update_vote);
+        $update_vote_query->execute(array(':value' => $this->value, 
+                                          ':id' => $this->id));
     }
 }
