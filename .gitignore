@@ -11,6 +11,7 @@
 !/files/
 !/libs/
 !/mail/
+!/migrations/
 !/processor/
 !/scripts/
 !/templates/
