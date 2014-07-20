@@ -303,7 +303,7 @@ class ProcessorController extends Youkok2 {
                 // Check if valid id
                 if (!$item->wasFound()) {
 	            	// WTF
-	            	$response['code'] = 5001;
+	            	$response['code'] = 500;
 	            }
 	            else {
                     // Init new flag
@@ -311,7 +311,7 @@ class ProcessorController extends Youkok2 {
 
 		            // Check if flag was returned
 		            if (!$flag->createById($_POST['flag'])) {
-		            	$response['code'] = 5002;
+		            	$response['code'] = 500;
 		            }
 		            else {
 		            	if ($flag->isActive() and $flag->getUser() != $this->user->getId() and 
@@ -341,17 +341,17 @@ class ProcessorController extends Youkok2 {
 				            //new Executioner($item, $this->db, $_POST['flag']);
 		            	}
 		            	else {
-		            		$response['code'] = 5003;
+		            		$response['code'] = 500;
 		            	}
 		            }
 	            }
 	        }
 	        else {
-	        	$response['code'] = 5004;
+	        	$response['code'] = 500;
 	        }
     	}
     	else {
-    		$response['code'] = 5005;
+    		$response['code'] = 500;
     	}
 
     	// Return
