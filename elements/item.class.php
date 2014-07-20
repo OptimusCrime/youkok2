@@ -129,7 +129,7 @@ class Item {
             }
 
             // If we are fetching the full location, this should be the last fragment
-            if ($this->loadFullLocation) {
+            if (count($this->fullLocation) > 0 and $this->loadFullLocation) {
                 $this->fullLocation[] = $temp_cache_data['location'];
             }
 
