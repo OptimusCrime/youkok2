@@ -500,7 +500,7 @@ class ProcessorController extends Youkok2 {
                     }
                     else {
                         // Create directory
-                        $new_directory = FILE_ROOT . '/' . $item->getFullLocation() . '/' . $this->generateUrlFriendly($_POST['name']) . '/';
+                        $new_directory = FILE_ROOT . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($_POST['name']) . '/';
                         mkdir($new_directory);
 
                         // Inser archive
@@ -510,9 +510,9 @@ class ProcessorController extends Youkok2 {
                         
                         $insert_archive_query = $this->db->prepare($insert_archive);
                         $insert_archive_query->execute(array(':name' => $_POST['name'],
-                            ':url_friendly' => $this->generateUrlFriendly($_POST['name'], true),
+                            ':url_friendly' => $this->utils->generateUrlFriendly($_POST['name'], true),
                             ':parent' => $item->getId(),
-                            ':location' => $this->generateUrlFriendly($_POST['name']),
+                            ':location' => $this->utils->generateUrlFriendly($_POST['name']),
                             ':is_directory' => 1));
 
                         // Insert flag
@@ -573,7 +573,7 @@ class ProcessorController extends Youkok2 {
                         $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
                         $this_file_name = $_FILES['files']['name'][0];
                         while(true) {
-                            if (file_exists($this->fileDirectory . '/' . $item->getFullLocation() . '/' . $this->generateUrlFriendly($this_file_name))) {
+                            if (file_exists($this->fileDirectory . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($this_file_name))) {
                                 $this_file_name = $letters[rand(0, count($letters) - 1)] . $this_file_name;
                             }
                             else {
@@ -581,10 +581,10 @@ class ProcessorController extends Youkok2 {
                                 break;
                             }
                         }
-                        $upload_full_location = $this->fileDirectory . '/' . $item->getFullLocation() . '/' . $this->generateUrlFriendly($this_file_name);
+                        $upload_full_location = $this->fileDirectory . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($this_file_name);
                         
                         // Check duplicates for url friendly
-                        $url_friendly = $this->generateUrlFriendly($_FILES['files']['name'][0], true);
+                        $url_friendly = $this->utils->generateUrlFriendly($_FILES['files']['name'][0], true);
                         $num = 2;
                         while (true) {
                             $get_duplicate = "SELECT id
@@ -903,29 +903,6 @@ class ProcessorController extends Youkok2 {
 
         // Return
         return $response;
-    }
-
-    //
-    // Generic method for generating SEO friendly urls and directory names
-    //
-
-    private function generateUrlFriendly($s, $for_url = false) {
-        // Replace first here to keep "norwegian" names in a way
-        $s = str_replace(array('Æ', 'Ø', 'Å'), array('ae', 'o', 'aa'), $s);
-        $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
-        
-        // Remove all non-alphanumeric, keep spaces and dots, also remove whitespace if more than one space
-        $s = preg_replace('/\s\s+/', ' ', preg_replace("/[^A-Za-z0-9 ]\./", '', strtolower($s)));
-        
-        // Decide how to deal with spaces
-        if ($for_url) {
-            $s = str_replace(' ', '-', $s);
-        }
-        else {
-            $s = str_replace(' ', '_', $s);
-        }
-        
-        return $s;
     }
 }
 
