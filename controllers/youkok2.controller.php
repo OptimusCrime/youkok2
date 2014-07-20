@@ -77,7 +77,7 @@ class Youkok2 {
         $this->utils = new Utils();
         
         // Init Smarty
-        $this->template = $smarty = new Smarty();
+        $this->template = new Smarty();
         
         // Set caching
         $this->template->setCacheDir(BASE_PATH . '/cache/');
