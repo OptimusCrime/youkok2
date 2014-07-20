@@ -475,17 +475,12 @@ class ProcessorController extends Youkok2 {
                 // Trim
                 $_POST['name'] = trim($_POST['name']);
                 
-                // Create element
                 $item = new Item($this);
                 $item->setLoadFullLocation(true);
                 $item->createById($_POST['id']);
-
-                // Add to collection if new
-                $this->collection->add($item);
-
-                // Load item from collection
-                $element = $this->collection->get($_POST['id']);
-                if ($element == null) {
+                
+                // Check if valid id
+                if (!$item->wasFound()) {
                     $response['code'] = 500;
                 }
                 else {
@@ -505,7 +500,7 @@ class ProcessorController extends Youkok2 {
                     }
                     else {
                         // Create directory
-                        $new_directory = FILE_ROOT . '/' . $element->getFullLocation() . '/' . $this->generateUrlFriendly($_POST['name']);
+                        $new_directory = FILE_ROOT . '/' . $item->getFullLocation() . '/' . $this->generateUrlFriendly($_POST['name']) . '/';
                         mkdir($new_directory);
 
                         // Inser archive
@@ -516,7 +511,7 @@ class ProcessorController extends Youkok2 {
                         $insert_archive_query = $this->db->prepare($insert_archive);
                         $insert_archive_query->execute(array(':name' => $_POST['name'],
                             ':url_friendly' => $this->generateUrlFriendly($_POST['name'], true),
-                            ':parent' => $element->getId(),
+                            ':parent' => $item->getId(),
                             ':location' => $this->generateUrlFriendly($_POST['name']),
                             ':is_directory' => 1));
 
@@ -920,7 +915,7 @@ class ProcessorController extends Youkok2 {
         $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
         
         // Remove all non-alphanumeric, keep spaces and dots, also remove whitespace if more than one space
-        $s = preg_replace('/\s\s+/', ' ', preg_replace("/[^a-z0-9 -_\.]/", '', strtolower($s)));
+        $s = preg_replace('/\s\s+/', ' ', preg_replace("/[^A-Za-z0-9 ]\./", '', strtolower($s)));
         
         // Decide how to deal with spaces
         if ($for_url) {
