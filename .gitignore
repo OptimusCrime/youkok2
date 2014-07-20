@@ -21,6 +21,7 @@ local.php
 cache.php
 .htaccess
 composer.lock
+phinx.yml
 /processor/search/*
 
 # And those fuckings DS_Stores
