@@ -34,7 +34,7 @@ class DownloadController extends Youkok2 {
         if ($item->wasFound()) {
             // Check if visible
             if ($item->isVisible()) {
-                $file_location = FILE_ROOT . '/'. $item->getFullLocation();
+                $file_location = FILE_ROOT . '/' . $item->getFullLocation();
 
                 if (file_exists($file_location)) {
                     // Check if we should log download
