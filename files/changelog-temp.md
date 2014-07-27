@@ -1,4 +1,4 @@
-Youkok2 - 0.0.1-pl (xx. juni, 2014)
+Youkok2 - 0.1.0-pl (xx. juli, 2014)
 ===================================
 
 - [Info] First Public Release.
