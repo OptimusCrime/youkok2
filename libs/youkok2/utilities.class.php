@@ -30,14 +30,11 @@ class Utils {
     // Generic method for generating SEO friendly urls and directory names
     //
 
-    private function generateUrlFriendly($s, $for_url = false) {
+    public function generateUrlFriendly($s, $for_url = false) {
         // Replace first here to keep "norwegian" names in a way
         $s = str_replace(array('Æ', 'Ø', 'Å'), array('ae', 'o', 'aa'), $s);
         $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
-        
-        // Remove all non-alphanumeric, keep spaces and dots, also remove whitespace if more than one space
-        $s = preg_replace('/\s\s+/', ' ', preg_replace("/[^A-Za-z0-9 ]\./", '', strtolower($s)));
-        
+
         // Decide how to deal with spaces
         if ($for_url) {
             $s = str_replace(' ', '-', $s);
@@ -45,6 +42,8 @@ class Utils {
         else {
             $s = str_replace(' ', '_', $s);
         }
+
+        $s = preg_replace('![^-_a-z0-9\s]+!', '', strtolower($s));
         
         return $s;
     }
