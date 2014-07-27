@@ -506,11 +506,20 @@ class ProcessorController extends Youkok2 {
                         $insert_flag = "INSERT INTO flag
                         (file, user, type)
                         VALUES (:file, :user, :type)";
+
+                        $file_id = $this->db->lastInsertId();
                         
                         $insert_flag_query = $this->db->prepare($insert_flag);
-                        $insert_flag_query->execute(array(':file' => $this->db->lastInsertId(),
+                        $insert_flag_query->execute(array(':file' => $file_id,
                             ':user' => $this->user->getId(),
                             ':type' => 0));
+
+                        // Add history
+                        $this->addHistory($this->user->getId(), 
+                                          $file_id, 
+                                          '%u opprettet <b>' . $_POST['name'] . '</b>.',
+                                          2);
+                        $this->user->addPendingKarma(2);
 
                         // Send code
                         $response['code'] = 200;
@@ -890,6 +899,22 @@ class ProcessorController extends Youkok2 {
 
         // Return
         return $response;
+    }
+
+    //
+    // Method for adding a history entry
+    //
+
+    private function addHistory($user, $file, $text, $karma) {
+        $insert_history = "INSERT INTO history
+        (user, file, history_text, karma)
+        VALUES (:user, :file, :text, :karma)";
+        
+        $insert_history_query = $this->db->prepare($insert_history);
+        $insert_history_query->execute(array(':user' => $user, 
+                                             ':file' => $file, 
+                                             ':text' => $text,
+                                             ':karma' => $karma));
     }
 }
 

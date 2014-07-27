@@ -26,6 +26,7 @@ Class User {
     private $nick;
     private $mostPopularDelta;
     private $karma;
+    private $karmaPending;
     private $banned;
     
     // Other variables
@@ -56,7 +57,7 @@ Class User {
             $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
             if (count($hash_split) == 2) {
                 // Fetch from database to see if online
-                $get_current_user = "SELECT id, email, nick, karma, banned, most_popular_delta
+                $get_current_user = "SELECT id, email, nick, karma, karma_pending, banned, most_popular_delta
                 FROM user 
                 WHERE email = :email
                 AND password = :password";
@@ -75,6 +76,7 @@ Class User {
                     $this->email = $row['email'];
                     $this->nick = (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']);
                     $this->karma = $row['karma'];
+                    $this->karmaPending = $row['karma_pending'];
                     $this->banned = (boolean) $row['banned'];
                     $this->mostPopularDelta = $row['most_popular_delta'];
 
@@ -93,6 +95,7 @@ Class User {
         $this->controller->template->assign('BASE_USER_IS_LOGGED_IN', $this->loggedIn);
         $this->controller->template->assign('BASE_USER_NICK', $this->nick);
         $this->controller->template->assign('BASE_USER_KARMA', $this->karma);
+        $this->controller->template->assign('BASE_USER_KARMA_PENDING', $this->karmaPending);
     }
     
     //
@@ -121,6 +124,10 @@ Class User {
 
     public function getKarma() {
         return $this->karma;
+    }
+
+    public function getKarmaPending() {
+        return $this->karmaPending;
     }
 
     public function getMostPopularDelta() {
@@ -326,5 +333,21 @@ Class User {
         
         $remove_favorite_query = $this->controller->db->prepare($remove_favorite);
         $remove_favorite_query->execute(array(':file' => $item->getId(), ':user' => $this->id));
+    }
+
+    //
+    // Add karma
+    //
+
+    public function addPendingKarma($value) {
+        $this->karmaPending += $value;
+
+        $update_karma_pending = "UPDATE user
+        SET karma_pending = :karma_pending
+        WHERE id = :id";
+        
+        $update_karma_pending_query = $this->controller->db->prepare($update_karma_pending);
+        $update_karma_pending_query->execute(array(':karma_pending' => $this->karmaPending, 
+                                                   ':id' => $this->id));
     }
 }
