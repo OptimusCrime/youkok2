@@ -305,4 +305,26 @@ Class User {
             $_SESSION['youkok2'] = $strg;
         }
     }
+
+    //
+    // Favorite
+    //
+
+    public function addFavorite($item) {
+        $insert_favorite = "INSERT INTO favorite
+        (file, user)
+        VALUES (:file, :user)";
+        
+        $insert_favorite_query = $this->controller->db->prepare($insert_favorite);
+        $insert_favorite_query->execute(array(':file' => $item->getId(), ':user' => $this->id));
+    }
+
+    public function removeFavorite($item) {
+        $remove_favorite = "DELETE FROM favorite
+        WHERE file = :file
+        AND user = :user";
+        
+        $remove_favorite_query = $this->controller->db->prepare($remove_favorite);
+        $remove_favorite_query->execute(array(':file' => $item->getId(), ':user' => $this->id));
+    }
 }

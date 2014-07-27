@@ -338,7 +338,7 @@ class ProcessorController extends Youkok2 {
 				            $response['code'] = 200;
 
 				            // Check for completed vote!
-				            //new Executioner($item, $this->db, $_POST['flag']);
+				            new Executioner($flag);
 		            	}
 		            	else {
 		            		$response['code'] = 500;
@@ -370,40 +370,27 @@ class ProcessorController extends Youkok2 {
             // Valid id, try to load the object
             $item = new Item($this);
             $item->createById($_POST['id']);
-            $this->collection->add($item);
-            $element = $this->collection->get($_POST['id']);
 
-            if ($element != null) {  
+            if ($item->wasFound()) {
                 // Check if logged in
                 if ($this->user->isLoggedIn()) {
                     $response['code'] = 200;
 
-                    if ($b and $element->isFavorite($this->user) == 0) {
-                        // Add new favorite
-                        $insert_favorite = "INSERT INTO favorite
-                        (file, user)
-                        VALUES (:file, :user)";
-                        
-                        $insert_favorite_query = $this->db->prepare($insert_favorite);
-                        $insert_favorite_query->execute(array(':file' => $element->getId(), ':user' => $this->user->getId()));
+                    if ($b and $item->isFavorite($this->user) == 0) {
+                        $this->user->addFavorite($item);
                     
                         $response['msg'] = array(
                             array(
-                                'text' => $element->getName() . ' er langt til i dine favoritter.',
+                                'text' => $item->getName() . ' er langt til i dine favoritter.',
                                 'type' => 'success'));
                     }
                     else if (!$b) {
                         // Remove favorite
-                        $remove_favorite = "DELETE FROM favorite
-                        WHERE file = :file
-                        AND user = :user";
-                        
-                        $remove_favorite_query = $this->db->prepare($remove_favorite);
-                        $remove_favorite_query->execute(array(':file' => $element->getId(), ':user' => $this->user->getId()));
+                        $this->user->removeFavorite($item);
                         
                         $response['msg'] = array(
                             array(
-                                'text' => $element->getName() . ' er fjernet fra dine favoritter.',
+                                'text' => $item->getName() . ' er fjernet fra dine favoritter.',
                                 'type' => 'success'));
                     }
 
