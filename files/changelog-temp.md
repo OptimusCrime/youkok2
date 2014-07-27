@@ -8,6 +8,9 @@ Youkok2 - 0.1.0-pl (xx. juli, 2014)
 - [New] .js- & .css-filer er nå minifiserte.
 - [New] Implementert heftig caching av hele siden, som reduserer antall queries drastisk.
 - [New] Når man linker til nedlastning av filer på Facebook får man nå opp informasjon om fila.
+- [New] Introduserte pending karma. Dette er karma på flagg som enda ikke er stengt.
+- [New] Implementerte 'Karma / Historikk' til din bruker, som viser hva du har gjort for å skaffe deg
+        karmaen du har opparbeidet deg.
 - [Fixed] Context meny er nå korrekt sentert på x-aksen.
 - [Enhanced] Opplastning av flere filer gir nå bare en melding.
 - [Enhanced] Nedlastning av filer logger nå UA.

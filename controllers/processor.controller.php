@@ -516,7 +516,8 @@ class ProcessorController extends Youkok2 {
 
                         // Add history
                         $this->addHistory($this->user->getId(), 
-                                          $file_id, 
+                                          $file_id,
+                                          1,
                                           '%u opprettet <b>' . $_POST['name'] . '</b>.',
                                           2);
                         $this->user->addPendingKarma(2);
@@ -905,14 +906,15 @@ class ProcessorController extends Youkok2 {
     // Method for adding a history entry
     //
 
-    private function addHistory($user, $file, $text, $karma) {
+    private function addHistory($user, $file, $type, $text, $karma) {
         $insert_history = "INSERT INTO history
-        (user, file, history_text, karma)
-        VALUES (:user, :file, :text, :karma)";
+        (user, file, type, history_text, karma)
+        VALUES (:user, :file, :type, :text, :karma)";
         
         $insert_history_query = $this->db->prepare($insert_history);
         $insert_history_query->execute(array(':user' => $user, 
                                              ':file' => $file, 
+                                             ':type' => $type,
                                              ':text' => $text,
                                              ':karma' => $karma));
     }

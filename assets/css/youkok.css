@@ -548,6 +548,13 @@ a, a:focus, a:active, a:visited {
 #archive-asd {
     display: none;
 }
+.width33 {
+    width: 33.333%;
+    display: inline-block;
+}
+.list-group-item .badge {
+    float: right;
+}
 
 /*
     Debug

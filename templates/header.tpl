@@ -56,7 +56,7 @@
                 <ul class="nav navbar-nav navbar-right" id="navbar-dropdown-outer">
                     [[+if $BASE_USER_IS_LOGGED_IN == true]]
                         <li>
-                            <a href="#" data-toggle="dropdown">Min bruker <span class="badge"><span title="Din karma: [[+$BASE_USER_KARMA]]">[[+$BASE_USER_KARMA]]</span>[[+if $BASE_USER_KARMA_PENDING != 0]] <span title="Din pending karma: [[+$BASE_USER_KARMA_PENDING]]">+ [[+$BASE_USER_KARMA_PENDING]]</span>[[+/if]]</span> <b class="caret"></b></a>
+                            <a href="#" data-toggle="dropdown">Min bruker <span class="badge"><span title="Din karma: [[+$BASE_USER_KARMA]]">[[+$BASE_USER_KARMA]]</span>[[+if $BASE_USER_KARMA_PENDING != 0]] <span title="Din pending karma: [[+$BASE_USER_KARMA_PENDING]]"> /  [[+$BASE_USER_KARMA_PENDING]]</span>[[+/if]]</span> <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="user-dropdown">
                                 <li role="presentation" class="dropdown-header">[[+$BASE_USER_NICK]]</li>
                                 <li class="divider"></li>

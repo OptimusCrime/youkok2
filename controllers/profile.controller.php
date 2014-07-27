@@ -63,6 +63,13 @@ class ProfileController extends Youkok2 {
         		}
 	        	
 	        }
+            else if ($this->queryGetClean() == 'profil/historikk') {
+                $this->profileHistory();
+
+                // Displaying and cleaning up
+                $this->template->assign('SITE_TITLE', 'Mine historikk');
+                $this->displayAndCleanup('profile_history.tpl');
+            }
 	        else {
 	        	// Not found
 	        	$this->display404();
@@ -247,6 +254,56 @@ class ProfileController extends Youkok2 {
 	        // Redirect
 	        $this->redirect('profil/innstillinger');
     	}
+    }
+
+    //
+    // Display user history
+    //
+
+    public function profileHistory() {
+        $ret = '';
+
+        $get_profile_history = "SELECT *
+        FROM history
+        WHERE user = :user
+        ORDER BY added DESC";
+        
+        $get_profile_history_query = $this->db->prepare($get_profile_history);
+        $get_profile_history_query->execute(array(':user' => $this->user->getId()));
+        while ($row = $get_profile_history_query->fetch(PDO::FETCH_ASSOC)) {
+            
+            $element = new Item($this);
+            $element->createById($row['file']);
+            $this->collection->add($element);
+
+            if ($element->getParent() != 1) {
+                $parent_element = new Item($this);
+                $parent_element->createById($element->getId());
+                $this->collection->add($parent_element);
+
+                $element_url = $parent_element->generateUrl($this->routes['archive'][0]);
+            }
+            else {
+                $element_url = $parent_element->generateUrl($this->routes['archive'][0]);
+            }
+
+            if ($row['type'] == 1) {
+                $type = 'Opprettet mappe';
+            }
+
+            if ($element->wasFound()) {
+                $inner = '<div class="width33"><a href="' . $element_url . '">' . $element->getName() . '</a></div><div class="width33">' . $type . '</div><div class="width33"><span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span><span class="badge">+' . $row['karma'] . '</span></div>';
+
+                if ($row['final'] == 1) {
+                    $ret .= '<li class="list-group-item list-group-item-success">' . $inner . '</li>';
+                }
+                else {
+                    $ret .= '<li class="list-group-item">' . $inner . '</li>';
+                }
+            }
+        }
+
+        $this->template->assign('PROFILE_USER_HISTORY', $ret);
     }
 }
 
