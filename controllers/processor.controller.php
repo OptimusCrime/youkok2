@@ -327,6 +327,36 @@ class ProcessorController extends Youkok2 {
                                 $vote->setFlag($_POST['flag']);
                                 $vote->setValue($_POST['value']);
                                 $vote->createNew();
+
+                                // Find the correct values
+                                if ($flag->getType() == 0) {
+                                    // Voted for accepting
+                                    if (!$item->isDirectory()) {
+                                        $add_history = array('key' => 3, 'karma' => 1);
+                                    }
+                                    else {
+                                        $add_history = array('key' => 4, 'karma' => 1);
+                                    }
+                                }
+                                else if ($flag->getType() == 1) {
+                                    // Vote for rename
+                                    $add_history = array('key' => 5, 'karma' => 1);
+                                }
+                                else if ($flag->getType() == 2) {
+                                    // Vote for delete
+                                    $add_history = array('key' => 6, 'karma' => 2);
+                                }
+                                else if ($flag->getType() == 2) {
+                                    // Vote for move
+                                    $add_history = array('key' => 7, 'karma' => 1);
+                                }
+
+                                // Add history
+                                $this->addHistory($this->user->getId(), $_POST['id'],
+                                                  $_POST['flag'], $add_history['key'], null, $add_history['karma']);
+                                
+                                // Add karma to pending
+                                $this->user->addPendingKarma($add_history['karma']);
 				            }
 				            else {
 				            	// Update
@@ -338,7 +368,7 @@ class ProcessorController extends Youkok2 {
 				            $response['code'] = 200;
 
 				            // Check for completed vote!
-				            new Executioner($flag);
+				            new Executioner($this, $flag);
 		            	}
 		            	else {
 		            		$response['code'] = 500;
@@ -518,10 +548,10 @@ class ProcessorController extends Youkok2 {
                         $this->addHistory($this->user->getId(), $element_id,
                                           $this->db->lastInsertId(), 1,
                                           '%u opprettet <b>' . $_POST['name'] . '</b>.',
-                                          2);
+                                          1);
 
                         // Add karma to pending
-                        $this->user->addPendingKarma(2);
+                        $this->user->addPendingKarma(1);
 
                         // Send code
                         $response['code'] = 200;

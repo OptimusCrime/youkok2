@@ -20,6 +20,11 @@ class History {
     public static $historyType = array('',
         'Opprettet mappe',
         'Lastet opp fil',
+        'Stemte på godkjenning av fil',
+        'Stemte på godkjenning av mappe',
+        'Stemte på navnendring',
+        'Stemte på sletting',
+        'Stemte på flytting'
         );
 
     
