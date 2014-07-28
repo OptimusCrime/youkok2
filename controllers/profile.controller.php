@@ -302,6 +302,7 @@ class ProfileController extends Youkok2 {
             $type = History::$historyType[$row['type']];
 
             // Set classes according to values
+            $list_class = '';
             if ($row['positive'] == 0) {
                 $list_class = ' list-group-item-danger';
                 $karma_prefix = '-';
