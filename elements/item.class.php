@@ -47,6 +47,7 @@ class Item {
     private $loadFavorite;
     private $loadFlagCount;
     private $loadRootParent;
+    private $loadIfRemoved;
     
     // Other stuff
     private $favorite;
@@ -83,6 +84,7 @@ class Item {
         $this->loadFavorite = false;
         $this->loadFlagCount = false;
         $this->loadRootParent = false;
+        $this->loadIfRemoved = false;
 
         // Create arrays for full locations
         $this->fullUrl = array();
@@ -142,6 +144,10 @@ class Item {
             // Add id to dynamic query
             $this->query['execute'][':id'] = $this->id;
             
+            if (!$this->loadIfRemoved) {
+                $this->query['where'][] = 'a.is_visible = 1';
+            }
+
             // Create dynamic query
             if ($this->loadFavorite) {
                 $this->query['select'][] = "f.id AS 'favorite'";
@@ -166,7 +172,7 @@ class Item {
             }
             
             // Add where
-            $get_item_info .= PHP_EOL . 'WHERE a.id = :id ';
+            $get_item_info .= PHP_EOL . implode(' AND ', $this->query['where']);;
             
             // Add group by (again, if there are any)
             if (count($this->query['groupby']) > 0) {
@@ -178,36 +184,43 @@ class Item {
             $get_item_info_query->execute($this->query['execute']);
             $row = $get_item_info_query->fetch(PDO::FETCH_ASSOC);
             
-            // Set special fields
-            if ($this->loadFavorite) {
-                $this->favorite = (!isset($row['favorite']) or $row['favorite'] == null) ? false : true;
-            }
-            if (isset($row['flags'])) {
-                $this->flagCount = $row['flags'];
-            }
-            
-            // Set results
-            $this->name = $row['name'];
-            $this->directory = $row['is_directory'];
-            $this->urlFriendly = $row['url_friendly'];
-            $this->parent = $row['parent'];
-            $this->mimeType = $row['mime_type'];
-            $this->missingImage = $row['missing_image'];
-            $this->accepted = $row['is_accepted'];
-            $this->visible = $row['is_visible'];
-            $this->location = $row['location'];
-            $this->added = $row['added'];
-            $this->size = $row['size'];
-            $this->course = $row['course'];
-            
-            // If we are fetching the full location, this should be the last fragment
-            if ($this->loadFullLocation) {
-                $this->fullLocation[] = $row['location'];
-            }
+            // Check if the query did return anything
+            if (isset($row['name'])) {
+                // Set special fields
+                if ($this->loadFavorite) {
+                    $this->favorite = (!isset($row['favorite']) or $row['favorite'] == null) ? false : true;
+                }
+                if (isset($row['flags'])) {
+                    $this->flagCount = $row['flags'];
+                }
+                
+                // Set results
+                $this->name = $row['name'];
+                $this->directory = $row['is_directory'];
+                $this->urlFriendly = $row['url_friendly'];
+                $this->parent = $row['parent'];
+                $this->mimeType = $row['mime_type'];
+                $this->missingImage = $row['missing_image'];
+                $this->accepted = $row['is_accepted'];
+                $this->visible = $row['is_visible'];
+                $this->location = $row['location'];
+                $this->added = $row['added'];
+                $this->size = $row['size'];
+                $this->course = $row['course'];
+                
+                // If we are fetching the full location, this should be the last fragment
+                if ($this->loadFullLocation) {
+                    $this->fullLocation[] = $row['location'];
+                }
 
-            // Check if we should cache this Item
-            if ($this->cache) {
-                $this->controller->cacheManager->setCache($id, 'i', $this->cacheFormat());
+                // Check if we should cache this Item
+                if ($this->cache) {
+                    $this->controller->cacheManager->setCache($id, 'i', $this->cacheFormat());
+                }
+            }
+            else {
+                // Was not found
+                $this->id = null;
             }
         }
     }
@@ -423,6 +436,11 @@ class Item {
 
     public function setLoadRootParent($b) {
         $this->loadRoot = $b;
+    }
+
+    public function setLoadIfRemoved($b) {
+        $this->loadIfRemoved = $b;
+        $this->cache = false;
     }
 
     //

@@ -507,19 +507,20 @@ class ProcessorController extends Youkok2 {
                         (file, user, type)
                         VALUES (:file, :user, :type)";
 
-                        $file_id = $this->db->lastInsertId();
+                        $element_id = $this->db->lastInsertId();
                         
                         $insert_flag_query = $this->db->prepare($insert_flag);
-                        $insert_flag_query->execute(array(':file' => $file_id,
+                        $insert_flag_query->execute(array(':file' => $element_id,
                             ':user' => $this->user->getId(),
                             ':type' => 0));
 
                         // Add history
-                        $this->addHistory($this->user->getId(), 
-                                          $file_id,
-                                          1,
+                        $this->addHistory($this->user->getId(), $element_id,
+                                          $this->db->lastInsertId(), 1,
                                           '%u opprettet <b>' . $_POST['name'] . '</b>.',
                                           2);
+
+                        // Add karma to pending
                         $this->user->addPendingKarma(2);
 
                         // Send code
@@ -570,7 +571,7 @@ class ProcessorController extends Youkok2 {
                         $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
                         $this_file_name = $_FILES['files']['name'][0];
                         while(true) {
-                            if (file_exists($this->fileDirectory . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($this_file_name))) {
+                            if (file_exists(FILE_ROOT . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($this_file_name))) {
                                 $this_file_name = $letters[rand(0, count($letters) - 1)] . $this_file_name;
                             }
                             else {
@@ -578,7 +579,7 @@ class ProcessorController extends Youkok2 {
                                 break;
                             }
                         }
-                        $upload_full_location = $this->fileDirectory . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($this_file_name);
+                        $upload_full_location = FILE_ROOT . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($this_file_name);
                         
                         // Check duplicates for url friendly
                         $url_friendly = $this->utils->generateUrlFriendly($_FILES['files']['name'][0], true);
@@ -593,7 +594,7 @@ class ProcessorController extends Youkok2 {
                             $get_duplicate_query->execute(array(':id' => $item->getId(), ':url_friendly' => $url_friendly));
                             $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
                             if (isset($row_duplicate['id'])) {
-                                $url_friendly = $this->generateUrlFriendly($letters[rand(0, count($letters) - 1)] . $url_friendly);
+                                $url_friendly = $this->utils->generateUrlFriendly($letters[rand(0, count($letters) - 1)] . $url_friendly);
                                 $num++;
                             }
                             else {
@@ -627,7 +628,7 @@ class ProcessorController extends Youkok2 {
                         }
                         
                         // Test for missing image
-                        if (file_exists($this->basePath . '/assets/css/lib/images/mimetypes128/' . str_replace('/', '_', $_FILES['files']['type'][0]) . '.png')) {
+                        if (file_exists(BASE_PATH . '/assets/css/lib/images/mimetypes128/' . str_replace('/', '_', $_FILES['files']['type'][0]) . '.png')) {
                             $has_missing_image = 0;
                         }
                         else {
@@ -645,7 +646,7 @@ class ProcessorController extends Youkok2 {
                             ':mime_type' => str_replace('/', '_', $_FILES['files']['type'][0]),
                             ':missing_image' => $has_missing_image,
                             ':parent' => $item->getId(),
-                            ':location' =>  $this->generateUrlFriendly($this_file_name),
+                            ':location' =>  $this->utils->generateUrlFriendly($this_file_name),
                             ':size' => $_FILES['files']['size'][0]));
 
                         // Insert flag
@@ -653,14 +654,28 @@ class ProcessorController extends Youkok2 {
                         (file, user, type)
                         VALUES (:file, :user, :type)";
                         
+                        $element_id = $this->db->lastInsertId();
+
                         $insert_flag_query = $this->db->prepare($insert_flag);
-                        $insert_flag_query->execute(array(':file' => $this->db->lastInsertId(),
+                        $insert_flag_query->execute(array(':file' => $element_id,
                             ':user' => $this->user->getId(),
                             ':type' => 0));
 
                         // Move the file
                         move_uploaded_file($_FILES['files']['tmp_name'][0], $upload_full_location);
                         
+                        // Add history
+                        $this->addHistory($this->user->getId(), $element_id,
+                                          $this->db->lastInsertId(), 2,
+                                          '%u lastet opp <b>' . $name . '</b>.',
+                                          5);
+
+                        // Add karma to pending
+                        $this->user->addPendingKarma(5);
+
+                        // Send code
+                        $response['code'] = 200;
+
                         // Add message
                         $this->addFileMessage($name);
 
@@ -906,14 +921,15 @@ class ProcessorController extends Youkok2 {
     // Method for adding a history entry
     //
 
-    private function addHistory($user, $file, $type, $text, $karma) {
+    private function addHistory($user, $file, $flag, $type, $text, $karma) {
         $insert_history = "INSERT INTO history
-        (user, file, type, history_text, karma)
-        VALUES (:user, :file, :type, :text, :karma)";
+        (user, file, flag, type, history_text, karma)
+        VALUES (:user, :file, :flag, :type, :text, :karma)";
         
         $insert_history_query = $this->db->prepare($insert_history);
         $insert_history_query->execute(array(':user' => $user, 
-                                             ':file' => $file, 
+                                             ':file' => $file,
+                                             ':flag' => $flag,
                                              ':type' => $type,
                                              ':text' => $text,
                                              ':karma' => $karma));

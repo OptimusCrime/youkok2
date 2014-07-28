@@ -271,36 +271,57 @@ class ProfileController extends Youkok2 {
         $get_profile_history_query = $this->db->prepare($get_profile_history);
         $get_profile_history_query->execute(array(':user' => $this->user->getId()));
         while ($row = $get_profile_history_query->fetch(PDO::FETCH_ASSOC)) {
-            
+            // Build element
             $element = new Item($this);
+            $element->setLoadIfRemoved(true);
             $element->createById($row['file']);
             $this->collection->add($element);
 
-            if ($element->getParent() != 1) {
-                $parent_element = new Item($this);
-                $parent_element->createById($element->getId());
-                $this->collection->add($parent_element);
-
-                $element_url = $parent_element->generateUrl($this->routes['archive'][0]);
-            }
-            else {
-                $element_url = $parent_element->generateUrl($this->routes['archive'][0]);
-            }
-
-            if ($row['type'] == 1) {
-                $type = 'Opprettet mappe';
-            }
-
+            // Check if element was found
             if ($element->wasFound()) {
-                $inner = '<div class="width33"><a href="' . $element_url . '">' . $element->getName() . '</a></div><div class="width33">' . $type . '</div><div class="width33"><span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span><span class="badge">+' . $row['karma'] . '</span></div>';
+                // Check if we should fetch parent to build logical link
+                if ($element->getParent() != 1) {
+                    $parent_element = new Item($this);
+                    $parent_element->createById($element->getParent());
+                    $this->collection->add($parent_element);
 
-                if ($row['final'] == 1) {
-                    $ret .= '<li class="list-group-item list-group-item-success">' . $inner . '</li>';
+                    $element_url = $parent_element->generateUrl($this->routes['archive'][0]);
                 }
                 else {
-                    $ret .= '<li class="list-group-item">' . $inner . '</li>';
+                    $element_url = $element->generateUrl($this->routes['archive'][0]);
                 }
+
+                $element_section = '<a href="' . $element_url . '">' . $element->getName() . '</a>';
             }
+            else {
+                // Was not found
+                $element_section = 'Ukjent fil';
+            }
+
+            // Get type
+            $type = History::$historyType[$row['type']];
+
+            // Set classes according to values
+            if ($row['positive'] == 0) {
+                $list_class = ' list-group-item-danger';
+                $karma_prefix = '-';
+            }
+            else {
+                if ($row['active'] == 0) {
+                    $list_class = ' list-group-item-success';
+                }
+                $karma_prefix = '+';
+            }
+
+            // Build inner string
+            $inner = '<div class="width33">' . $element_section . '</div><div class="width33">' . $type . '</div><div class="width33"><span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($row['added']) . '" data-ts="' . $row['added'] . '">Laster...</span><span class="badge">' . $karma_prefix . $row['karma'] . '</span></div>';
+            
+            // Build outer string    
+            $ret .= '<li class="list-group-item' . $list_class . '">' . $inner . '</li>';
+        }
+
+        if ($ret == '') {
+            $ret = '<li class="list-group-item">Du har ikke opparbeidet deg noe karma!</li>';
         }
 
         $this->template->assign('PROFILE_USER_HISTORY', $ret);

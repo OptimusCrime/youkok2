@@ -31,6 +31,7 @@ require_once BASE_PATH . '/libs/youkok2/utilities.class.php';
 
 require_once BASE_PATH . '/elements/collection.class.php';
 require_once BASE_PATH . '/elements/course.class.php';
+require_once BASE_PATH . '/elements/history.class.php';
 require_once BASE_PATH . '/elements/item.class.php';
 require_once BASE_PATH . '/elements/flag.class.php';
 require_once BASE_PATH . '/elements/user.class.php';

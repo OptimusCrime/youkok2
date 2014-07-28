@@ -540,6 +540,9 @@ a, a:focus, a:active, a:visited {
 .tab-pane {
     margin-top: 10px;
 }
+.list-group-item-danger a, .list-group-item-success a {
+    color: #fff;
+}
 
 /*
     Other stuff
