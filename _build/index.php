@@ -56,6 +56,7 @@ $ignore_paths = array(
 	'!cache/',
 	'!files',
 	'!libs/',
+    '!migrations/',
 	'!processor/',
 	'!templates_c/',
 	'!vendor/',
@@ -67,6 +68,8 @@ $ignore_files = array(
 	'!.gitignore',
 	'!local.php',
 	'!composer.lock',
+    '!phinx-example.yml',
+    '!phinx.yml',
 );
 
 $add_files = array(
