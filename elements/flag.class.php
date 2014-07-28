@@ -61,6 +61,7 @@ class Flag {
 
         '3',);
     public static $VotesNeeded = 5;
+    public static $VotesNeededAccepted = 2;
     
     //
     // Constructor
@@ -265,7 +266,14 @@ class Flag {
             $this->getVotes();
         }
 
-        return ($this->voteValues[1] / Flag::$VotesNeeded) * 100;
+        if ($this->getType() == 0) {
+            $needed = Flag::$VotesNeededAccepted;
+        }
+        else {
+            $needed = Flag::$VotesNeeded;
+        }
+
+        return ($this->voteValues[1] / $needed) * 100;
     }
 
     //

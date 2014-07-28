@@ -256,6 +256,14 @@ class ProcessorController extends Youkok2 {
             $question_status = '<i class="fa fa-question" title="Logg inn og registrer din NTNU-epost for å stemme."></i>';
             $question_status_bottom = 'Logg inn og registrer din NTNU-epost for å stemme.';
         }
+
+        // Check how many votes we need to close
+        if ($flag->getType() == 0) {
+            $needed_num_votes = Flag::$VotesNeededAccepted;
+        }
+        else {
+            $needed_num_votes = Flag::$VotesNeeded;
+        }
         
         return '<div class="panel panel-default">
                     <div class="panel-heading">
@@ -277,7 +285,7 @@ class ProcessorController extends Youkok2 {
                         <div class="panel-body">
                             ' . Flag::$flagText[$flag->getType()] . $additional . '
                             <hr />
-                            <p>' . $num_voted . ' av ' . Flag::$VotesNeeded . ' godkjenninger. ' . $question_status_bottom . '</p>
+                            <p>' . $num_voted . ' av ' . $needed_num_votes . ' godkjenninger. ' . $question_status_bottom . '</p>
                             ' . ($display_buttons ? '<button type="button" data-flag="' . $flag->getId() . '" data-value="1" class="btn btn-primary flag-button">Godkjenn</button> <button type="button" data-flag="' . $flag->getId() . '" data-value="0" class="btn btn-danger flag-button">Avvis</button>' : '') . '
                         </div>
                     </div>
