@@ -17,27 +17,27 @@ class Executioner {
     // Variables
     //
 
-    private $element;
-    private $db;
+    private $controller;
     private $flag;
-    private $letters;
+
+    //
+    // Letters that we are going to need for later
+    //
+
+    private static $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o',
+                                    'p','q','r','s','t','u','v','w','x','y','z'); 
 
     //
     // Constructor
     //
     
-    public function __construct($element, $db, $flag) {
+    public function __construct($controller, $flag) {
         // Pointers
-        $this->element = $element;
-        $this->db = $db;
+        $this->controller = &$controller;
         $this->flag = $flag;
 
-        if ($element != null) {
-            $this->analyze();
-        }
-
-        $this->letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
-                               'w','x','y','z');                   
+        // Let's go
+        $this->analyze();             
     }
 
     //
@@ -45,64 +45,57 @@ class Executioner {
     //
 
     private function analyze() {
-        // Get flag
-        $get_flag = "SELECT *
-        FROM flag 
-        WHERE id = :id";
-        
-        $get_flag_query = $this->db->prepare($get_flag);
-        $get_flag_query->execute(array(':id' => $this->flag));
-        $this->flag = $get_flag_query->fetch(PDO::FETCH_ASSOC);
-        
-        // Check if flag was returned
-        if (!isset($this->flag['id'])) {
-            $response['code'] = 500;
-        }
-        else {
-            if ($this->flag['active'] == 1) {
-                // Flag okey, check if reach 5 votes
-                $get_votes1 = "SELECT COUNT(id) as 'votes'
-                FROM vote 
-                WHERE flag = :flag
-                AND value = 1";
-                
-                $get_votes1_query = $this->db->prepare($get_votes1);
-                $get_votes1_query->execute(array(':flag' => $this->flag['id']));
-                $votes1 = $get_votes1_query->fetch(PDO::FETCH_ASSOC);
+        if ($this->flag->isActive()) {
+            // Get votes
+            $votes = $this->flag->getFlags();
+            $votes_positive = 0;
+            $votes_negative = 0;
 
-                $get_votes2 = "SELECT COUNT(id) as 'votes'
-                FROM vote 
-                WHERE flag = :flag
-                AND value = 0";
-                
-                $get_votes2_query = $this->db->prepare($get_votes2);
-                $get_votes2_query->execute(array(':flag' => $this->flag['id']));
-                $votes2 = $get_votes2_query->fetch(PDO::FETCH_ASSOC);
+            // Loop votes and sum the number of them
+            foreach ($votes as $v) {
+                if ($v->getValue()) {
+                    $votes_positive++;
+                }
+                else {
+                    $votes_negative++;
+                }
+            }
 
-                // See which way to go
-                $is_finished = false;
-                $finished_type = null;
-                if (isset($votes1['votes']) and $votes1['votes'] == 5) {
-                    $is_finished = true;
+            // Check if finished
+            $is_finised = false;
+            $finished_type = null;
+            if ($this->flag->getType() == 0) {
+                if ($votes_positive == 2) {
+                    $is_finised = true;
                     $finished_type = true;
                 }
-                if (isset($votes2['votes']) and $votes2['votes'] == 5) {
-                    $is_finished = true;
-                    $finished_type = false;
+                else if ($votes_negative == 5) {
+                    $is_finised = true;
+                    $finished_type = negative;
                 }
+            }
+            else {
+                if ($votes_positive == 5) {
+                    $is_finised = true;
+                    $finished_type = true;
+                }
+                else if ($votes_negative == 5) {
+                    $is_finised = true;
+                    $finished_type = negative;
+                }
+            }
 
-                // See if finished
-                if ($is_finished == true) {
-                    // Executeeeee
-                    if ($this->flag['type'] == 0) {
-                        $this->execute0($finished_type);
-                    }
-                    else if ($this->flag['type'] == 1) {
-                        $this->execute1($finished_type);
-                    }
-                    else if ($this->flag['type'] == 2) {
-                        $this->execute2($finished_type);
-                    }
+            // Check if we should execute anything
+            if ($is_finished) {
+                // Executeeeee
+                if ($this->flag->getType() == 0) {
+                    $this->execute0($finished_type);
+                }
+                else if ($this->flag->getType() = == 1) {
+                    $this->execute1($finished_type);
+                }
+                else if ($this->flag->getType() = == 2) {
+                    $this->execute2($finished_type);
                 }
             }
         }
