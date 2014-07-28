@@ -822,6 +822,7 @@ class ProcessorController extends Youkok2 {
             RIGHT JOIN history AS h ON a.id = h.file
             RIGHT JOIN user AS u ON h.user = u.id
             WHERE a.parent = :id
+            AND h.history_text IS NOT NULL
             ORDER BY h.added DESC
             LIMIT 30";
             
