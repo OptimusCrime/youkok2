@@ -890,6 +890,9 @@ class ProcessorController extends Youkok2 {
 
                     // Add message
                     $this->addMessage('Ditt flagg på \'' . $element->getName() . '\' ble opprettet. Takk for hjelpen.', 'success');
+                    
+                    // Delete cache
+                    $this->cacheManager->deleteCache($element->getId(), 'i');
                 }
             }
             else {
@@ -942,6 +945,9 @@ class ProcessorController extends Youkok2 {
 
                     // Add message
                     $this->addMessage('Ditt flagg på \'' . $element->getName() . '\' ble opprettet. Takk for hjelpen.', 'success');
+                    
+                    // Delete cache
+                    $this->cacheManager->deleteCache($element->getId(), 'i');
                 }
             }
             else {
