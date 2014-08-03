@@ -23,11 +23,13 @@ class Youkok2Upgrade010 extends AbstractMigration
     public function up()
     {
         $this->table('history')
-         ->addColumn('type', 'integer', array('limit' => 1, 'null' => false ,'after' => 'flag'))
+         ->addColumn('flag', 'biginteger', array('limit' => 22, 'null' => true, 'default' => null, 'after' => 'file'))
+         ->addForeignKey('flag', 'flag', 'id')
+         ->addColumn('type', 'integer', array('limit' => 1, 'null' => false, 'default' => 1, 'after' => 'flag'))
          ->removeColumn('history_text')
-         ->addColumn('history_text', 'text', array('null' => true, 'after' => 'type'))
+         ->addColumn('history_text', 'text', array('null' => true, 'default' => null, 'after' => 'type'))
          ->addColumn('karma', 'integer', array('limit' => 2, 'null' => true, 'default' => 0, 'after' => 'history_text'))
-         ->addColumn('active', 'integer', array('limit' => 1, 'null' => false, 'default' => 1, 'after' => 'karma'))
+         ->addColumn('active', 'integer', array('limit' => 1, 'null' => false, 'default' => 1, 'after' => 'added'))
          ->addColumn('positive', 'integer', array('limit' => 1, 'null' => false, 'default' => 1, 'after' => 'active'))
          ->save();
 
