@@ -13,7 +13,7 @@
                 <span class="last"><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>
         	</p>
             [[+nocache]]
-                [[+if DEV]]
+                [[+if $DEV]]
                     <p>
                         <span class="first">Parse time: [[+$DEV_TIME]]</span> ::
                         <span>Antall queries: [[+$DEV_QUERIES_NUM]]</span> ::
