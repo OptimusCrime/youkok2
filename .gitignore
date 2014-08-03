@@ -22,6 +22,7 @@ local.php
 cache.php
 .htaccess
 composer.lock
+composer.phar
 phinx.yml
 /processor/search/*
 
