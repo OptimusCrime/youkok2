@@ -596,7 +596,11 @@ $(document).ready(function () {
             success: function(json) {
                 if (json.code == 200) {
                     // Refresh
-                    window.location.reload();
+                    $('#modal-report').modal('hide');
+                    setTimeout(function () {
+                        $('#model-report-text').val('');
+                        alert('Din rapportering er sendt. Takk.');
+                    }, 200);
                 }
                 else {
                     // Something went wrong

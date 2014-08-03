@@ -1,5 +1,5 @@
-Youkok2 - 0.1.0-pl (xx. juli, 2014)
-===================================
+Youkok2 - 0.1.0-pl (xx. august, 2014)
+=====================================
 
 - [Info] First Public Release.
 - [Info] Fjernet påkrevd NTNU-identifisering og Wall-of-Shame-konseptet.
@@ -18,6 +18,7 @@ Youkok2 - 0.1.0-pl (xx. juli, 2014)
 - [Enhanced] Antall spørringer som kjører pr. pageload er nesten halvert på de fleste sider.
 - [Enhanced] Hvis e-post ble funnet under innlogging, vil den automatisk være fylt ut om passordet var feil.
 - [Enhanced] Man trenger nå bare to stemmer for godkjenning for å gå godkjent en fil/mappe.
+- [Enhanced] Rapportering gir nå penere tilbakemelding
 - [Other] Mange mindre tekstlige endringer.
 
 Youkok2 - 0.0.1-c (2. mai, 2014)
