@@ -18,6 +18,7 @@ class Executioner {
     //
 
     private $controller;
+    private $item;
     private $flag;
 
     //
@@ -31,9 +32,10 @@ class Executioner {
     // Constructor
     //
     
-    public function __construct($controller, $flag) {
+    public function __construct($controller, $item, $flag) {
         // Pointers
         $this->controller = &$controller;
+        $this->item = $item;
         $this->flag = $flag;
 
         // Let's go
@@ -47,7 +49,7 @@ class Executioner {
     private function analyze() {
         if ($this->flag->isActive()) {
             // Get votes
-            $votes = $this->flag->getFlags();
+            $votes = $this->flag->getVotes();
             $votes_positive = 0;
             $votes_negative = 0;
 
@@ -62,25 +64,25 @@ class Executioner {
             }
 
             // Check if finished
-            $is_finised = false;
+            $is_finished = false;
             $finished_type = null;
             if ($this->flag->getType() == 0) {
                 if ($votes_positive == 2) {
-                    $is_finised = true;
+                    $is_finished = true;
                     $finished_type = true;
                 }
                 else if ($votes_negative == 5) {
-                    $is_finised = true;
+                    $is_finished = true;
                     $finished_type = negative;
                 }
             }
             else {
                 if ($votes_positive == 5) {
-                    $is_finised = true;
+                    $is_finished = true;
                     $finished_type = true;
                 }
                 else if ($votes_negative == 5) {
-                    $is_finised = true;
+                    $is_finished = true;
                     $finished_type = negative;
                 }
             }
@@ -106,7 +108,8 @@ class Executioner {
     //
 
     private function execute0($type) {
-        if ($type == true) {
+        // Update element
+        if ($type) {
             // Set verified
             $update_element = "UPDATE archive
             SET is_accepted = 1
@@ -119,81 +122,46 @@ class Executioner {
             WHERE id = :id";
         }
         
-        
-        $update_element_query = $this->db->prepare($update_element);
-        $update_element_query->execute(array(':id' => $this->element->getId()));
+        $update_element_query = $this->controller->db->prepare($update_element);
+        $update_element_query->execute(array(':id' => $this->item->getId()));
 
         // Update flag
         $update_flag = "UPDATE flag
         SET active = 0
         WHERE id = :id";
         
-        $update_flag_query = $this->db->prepare($update_flag);
-        $update_flag_query->execute(array(':id' => $this->flag['id']));
+        $update_flag_query = $this->controller->db->prepare($update_flag);
+        $update_flag_query->execute(array(':id' => $this->flag->getId()));
 
-        // Get all voters
-        $get_all_votes = "SELECT *
-        FROM vote
-        WHERE flag = :flag";
-        
-        $votes = array();
-        $get_all_votes_query = $this->db->prepare($get_all_votes);
-        $get_all_votes_query->execute(array(':flag' => $this->flag['id']));
-        while ($row = $get_all_votes_query->fetch(PDO::FETCH_ASSOC)) {
-            $votes[] = $row;
-        }
+        // Defining the karma values
+        $karma_values = array(
+            'voter' => array(
+                'file_pending' => 1,
+                'file_wrong' => 1,
+                'file_correct' => 1,
 
-        // Loop all votes
-        foreach ($votes as $v) {
-            // Check what values to update
-            $karma_value_string = '';
-            if ($v['value'] == $type) {
-                $karma_value_string = '+1';
-            }
-            else {
-                $karma_value_string = '-1';
-            }
+                'directory_pending' => 1,
+                'directory_wrong' => 1,
+                'directory_correct' => 1,
+            ),
+            'owner' => array(
+                'file_pending' => 3,
+                'file_wrong' => 1,
+                'file_correct' => 3,
 
-            // Run the actual query
-            $update_user_karma = "UPDATE user
-            SET karma = karma" . $karma_value_string . "
-            WHERE id = :id";
-            
-            $update_user_karma_query = $this->db->prepare($update_user_karma);
-            $update_user_karma_query->execute(array(':id' => $v['user']));
-        }
-        
-        // Update karma for the owner
-        $karma_value_string = '';
-        if ($this->element->isDirectory()) {
-            if ($type) {
-                $karma_value_string = '+1';
-            }
-            else {
-                $karma_value_string = '-3';
-            }
-        }
-        else {
-            if ($type) {
-                $karma_value_string = '+3';
-            }
-            else {
-                $karma_value_string = '-3';
-            }
-        }
+                'directory_pending' => 1,
+                'directory_wrong' => 1,
+                'directory_correct' => 1,
+            ),
+        );
 
-        // Update owner karma
-        $update_user_karma = "UPDATE user
-        SET karma=karma" . $karma_value_string . "
-        WHERE id = :id";
-        
-        $update_user_karma_query = $this->db->prepare($update_user_karma);
-        $update_user_karma_query->execute(array(':id' => $this->flag['user']));
+        // Update karma for all voters
+        $this->updateKarma($karma_values, $type, false);
 
         // Create history
-        $this->addHistory($this->flag['user'], 
-                          $this->element->getId(),
-                          '%u opprettet ' . $this->element->getName() . '.');
+        $this->addHistory($this->flag->getUser(), 
+                          $this->item->getId(),
+                          $this->item->getName() . ' av %u ble godkjent.');
     }
 
     //
@@ -201,11 +169,11 @@ class Executioner {
     //
 
     private function execute1($type) {
-        if ($type == true) {
-            $flag_data = json_decode($this->flag['data'], true);
+        if ($type) {
+            $flag_data = $this->flag->getData();
 
             // Check duplicates for url friendly
-            $url_friendly = $this->generateUrlFriendly($flag_data['name'], true);
+            $url_friendly = $this->controller->utils->generateUrlFriendly($flag_data['name'], true);
             $num = 2;
             
             while (true) {
@@ -214,13 +182,13 @@ class Executioner {
                 WHERE parent = :id
                 AND url_friendly = :url_friendly";
                 
-                $get_duplicate_query = $this->db->prepare($get_duplicate);
-                $get_duplicate_query->execute(array(':id' => $this->element->getId(), 
+                $get_duplicate_query = $this->controller->db->prepare($get_duplicate);
+                $get_duplicate_query->execute(array(':id' => $this->item->getId(), 
                                                     ':url_friendly' => $url_friendly));
                 $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
                 
                 if (isset($row_duplicate['id'])) {
-                    $url_friendly = $this->generateUrlFriendly($this->letters[rand(0, count($this->letters) - 1)] . 
+                    $url_friendly = $this->controller->utils->generateUrlFriendly($this->letters[rand(0, count($this->letters) - 1)] . 
                                                                $url_friendly);
                     $num++;
                 }
@@ -236,8 +204,8 @@ class Executioner {
             url_friendly = :url_friendly
             WHERE id = :id";
 
-            $update_element_query = $this->db->prepare($update_element);
-            $update_element_query->execute(array(':id' => $this->element->getId(),
+            $update_element_query = $this->controller->db->prepare($update_element);
+            $update_element_query->execute(array(':id' => $this->item->getId(),
                                                  ':name' => $flag_data['name'],
                                                  ':url_friendly' => $url_friendly));
         }
@@ -247,63 +215,30 @@ class Executioner {
         SET active = 0
         WHERE id = :id";
         
-        $update_flag_query = $this->db->prepare($update_flag);
-        $update_flag_query->execute(array(':id' => $this->flag['id']));
+        $update_flag_query = $this->controller->db->prepare($update_flag);
+        $update_flag_query->execute(array(':id' => $this->flag->getId()));
 
-        // Get all voters
-        $get_all_votes = "SELECT *
-        FROM vote
-        WHERE flag = :flag";
-        
-        $votes = array();
-        $get_all_votes_query = $this->db->prepare($get_all_votes);
-        $get_all_votes_query->execute(array(':flag' => $this->flag['id']));
-        while ($row = $get_all_votes_query->fetch(PDO::FETCH_ASSOC)) {
-            $votes[] = $row;
-        }
+        // Defining the karma values
+        $karma_values = array(
+            'voter' => array(
+                'pending' => 1,
+                'wrong' => 1,
+                'correct' => 1,
+            ),
+            'owner' => array(
+                'pending' => 3,
+                'wrong' => 2,
+                'correct' => 3,
+            ),
+        );
 
-        // Loop all votes
-        foreach ($votes as $v) {
-            // Check what values to update
-            $karma_value_string = '';
-            
-            if ($v['value'] == $type) {
-                $karma_value_string = '+1';
-            }
-            else {
-                $karma_value_string = '-1';
-            }
-
-            // Run the actual query
-            $update_user_karma = "UPDATE user
-            SET karma = karma" . $karma_value_string . "
-            WHERE id = :id";
-            
-            $update_user_karma_query = $this->db->prepare($update_user_karma);
-            $update_user_karma_query->execute(array(':id' => $v['user']));
-        }
-        
-        // Update karma for the owner
-        $karma_value_string = '';
-        if ($type) {
-            $karma_value_string = '+3';
-        }
-        else {
-            $karma_value_string = '-2';
-        }
-
-        // Update owner karma
-        $update_user_karma = "UPDATE user
-        SET karma=karma" . $karma_value_string . "
-        WHERE id = :id";
-        
-        $update_user_karma_query = $this->db->prepare($update_user_karma);
-        $update_user_karma_query->execute(array(':id' => $this->flag['user']));
+        // Update karma for all voters
+        $this->updateKarma($karma_values, $type, true);
 
         // Create history
-        $this->addHistory($this->flag['user'], 
-                          $this->element->getId(), 
-                          '%u endret navn fra <b>' . $this->element->getName() . '</b> til <b>' . $flag_data['name'] . '</b>.');
+        $this->addHistory($this->flag->getUser(), 
+                          $this->item->getId(), 
+                          '%u endret navn fra <b>' . $this->item->getName() . '</b> til <b>' . $flag_data['name'] . '</b>.');
     }
 
 
@@ -387,6 +322,106 @@ class Executioner {
     }
 
     //
+    // Update karma values
+    //
+
+    private function updateKarma($values, $type, $ignore_file_dir) {
+        // Check what field to read
+        if ($ignore_file_dir) {
+            $values_prefix = '';
+        }
+        else {
+            if ($this->item->isDirectory()) {
+                $values_prefix = 'directory_';
+            }
+            else {
+                $values_prefix = 'file_';
+            }
+        }
+
+        // Get all voters
+        $votes = $this->flag->getVotes();
+
+        // Loop all votes
+        foreach ($votes as $v) {
+            // Check what values to update
+            if ($v->getValue() == $type) {
+                $karma_value_value = $values['voter'][$values_prefix . 'correct'];
+                $karma_value_prefix = '+';
+                $karma_is_positive = true;
+            }
+            else {
+                $karma_value_value = $values['voter'][$values_prefix . 'wrong'];
+                $karma_value_prefix = '-';
+                $karma_is_positive = false;
+            }
+
+            $karma_pending_value = $values['voter'][$values_prefix . 'pending'];
+
+            // Run the actual query
+            $update_user_karma = "UPDATE user
+            SET karma=karma" . $karma_value_prefix . $karma_value_value . ",
+                karma_pending=karma_pending-" . $karma_pending_value . "
+            WHERE id = :id";
+            
+            $update_user_karma_query = $this->controller->db->prepare($update_user_karma);
+            $update_user_karma_query->execute(array(':id' => $v->getUser()));
+
+            // Update pending karma
+            $update_user_pending_karma = "UPDATE history
+            SET active = 0,
+                positive = :positive,
+                karma = :karma
+            WHERE user = :user
+            AND flag = :flag
+            AND history_text IS NULL";
+            
+            $update_user_pending_karma_query = $this->controller->db->prepare($update_user_pending_karma);
+            $update_user_pending_karma_query->execute(array(':positive' => $karma_is_positive,
+                                                            ':karma' => $karma_value_value,
+                                                            ':user' => $v->getUser(),
+                                                            ':flag' => $this->flag->getId()));
+        }
+        
+        // Update karma for the owner
+        if ($type) {
+            $karma_value_value = $values['owner'][$values_prefix . 'correct'];
+            $karma_value_prefix = '+';
+            $karma_is_positive = true;
+        }
+        else {
+            $karma_value_value = $values['owner'][$values_prefix . 'wrong'];
+            $karma_value_prefix = '+';
+            $karma_is_positive = true;
+        }
+
+        $karma_pending_value = $values['owner'][$values_prefix . 'pending'];
+
+        $update_user_karma = "UPDATE user
+        SET karma=karma" . $karma_value_prefix . $karma_value_value . ",
+            karma_pending=karma_pending-" . $karma_pending_value . "
+        WHERE id = :id";
+        
+        $update_user_karma_query = $this->controller->db->prepare($update_user_karma);
+        $update_user_karma_query->execute(array(':id' => $this->flag->getUser()));
+
+        // Update pending karma
+        $update_user_pending_karma = "UPDATE history
+        SET active = 0,
+            positive = :positive,
+            karma = :karma
+        WHERE user = :user
+        AND flag = :flag
+        AND history_text IS NULL";
+        
+        $update_user_pending_karma_query = $this->controller->db->prepare($update_user_pending_karma);
+        $update_user_pending_karma_query->execute(array(':positive' => $karma_is_positive,
+                                                        ':karma' => $karma_value_value,
+                                                        ':user' => $this->flag->getUser(),
+                                                        ':flag' => $this->flag->getId()));
+    }
+
+    //
     // Method for adding a history entry
     //
 
@@ -395,29 +430,10 @@ class Executioner {
         (user, file, history_text)
         VALUES (:user, :file, :text)";
         
-        $insert_history_query = $this->db->prepare($insert_history);
+        $insert_history_query = $this->controller->db->prepare($insert_history);
         $insert_history_query->execute(array(':user' => $user, 
                                              ':file' => $file, 
                                              ':text' => $text));
-    }
-
-    //
-    // Generic method for generating SEO friendly urls and directory names
-    //
-
-    private function generateUrlFriendly($s, $for_url = false) {
-        $s = strtolower($s);
-        $s = str_replace(array('Æ', 'Ø', 'Å'), array('ae', 'o', 'aa'), $s);
-        $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
-
-        if ($for_url) {
-            $s = str_replace(' ', '-', $s);
-        }
-        else {
-            $s = str_replace(' ', '_', $s);
-        }
-        
-        return $s;
     }
 }
 ?>

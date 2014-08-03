@@ -245,16 +245,12 @@ class ProcessorController extends Youkok2 {
                     $question_status = '<i class="fa fa-question" title="Din konto er stengt."></i>';
                     $question_status_bottom = '<span style="color: red;">Du kan ikke lenger bidra på denne siden fordi du er bannet.</span>';
                 }
-                else {
-                    $question_status = '<i class="fa fa-question" title="Registrer din NTNU-epost for å stemme."></i>';
-                    $question_status_bottom = 'Registrer din NTNU-epost for å stemme.';
-                }
             }
         }
         else {
             // User is not logged in
-            $question_status = '<i class="fa fa-question" title="Logg inn og registrer din NTNU-epost for å stemme."></i>';
-            $question_status_bottom = 'Logg inn og registrer din NTNU-epost for å stemme.';
+            $question_status = '<i class="fa fa-question" title="Logg inn for å stemme."></i>';
+            $question_status_bottom = 'Logg inn for å stemme.';
         }
 
         // Check how many votes we need to close
@@ -328,7 +324,7 @@ class ProcessorController extends Youkok2 {
 		            		$flag_votes = $flag->getVotes();
 				            
 				            // Check if has voted
-				             if (!$flag->userHasVoted()) {
+				            if ($flag->userHasVoted()) {
 				            	// Insert
                                 $vote = new Vote($this);
                                 $vote->setUser($this->user->getId());
@@ -376,7 +372,7 @@ class ProcessorController extends Youkok2 {
 				            $response['code'] = 200;
 
 				            // Check for completed vote!
-				            new Executioner($this, $flag);
+				            new Executioner($this, $item, $flag);
 		            	}
 		            	else {
 		            		$response['code'] = 500;
@@ -394,97 +390,6 @@ class ProcessorController extends Youkok2 {
 
     	// Return
     	return $response;
-    }
-
-    //
-    // Method for adding or removing a favorite
-    //
-
-    private function favorite($b) {
-        $response = array();
-
-        // Check stuff
-        if (isset($_POST['id']) and is_numeric($_POST['id'])) {
-            // Valid id, try to load the object
-            $item = new Item($this);
-            $item->createById($_POST['id']);
-
-            if ($item->wasFound()) {
-                // Check if logged in
-                if ($this->user->isLoggedIn()) {
-                    $response['code'] = 200;
-
-                    if ($b and $item->isFavorite($this->user) == 0) {
-                        $this->user->addFavorite($item);
-                    
-                        $response['msg'] = array(
-                            array(
-                                'text' => $item->getName() . ' er langt til i dine favoritter.',
-                                'type' => 'success'));
-                    }
-                    else if (!$b) {
-                        // Remove favorite
-                        $this->user->removeFavorite($item);
-                        
-                        $response['msg'] = array(
-                            array(
-                                'text' => $item->getName() . ' er fjernet fra dine favoritter.',
-                                'type' => 'success'));
-                    }
-
-                    $response['status'] = $b;
-                }
-                else {
-                    $response['code'] = 500;
-                }
-            }
-        }
-        else {
-            $response['code'] = 500;
-        }
-
-        return $response;
-    }
-
-    //
-    // Method for updating home user delta choice
-    //
-
-    private function homePopularUpdate() {
-        $response = array();
-
-        // Update preference
-        if (isset($_POST['delta']) and is_numeric($_POST['delta']) and $_POST['delta'] >= 0 and $_POST['delta'] <= 4) {
-            $response['code'] = 200;
-
-            if ($this->user->isLoggedIn()) {
-                $this->user->setMostPopularDelta($_POST['delta']);
-            }
-            else {
-                setcookie('home_popular', $_POST['delta'], time() + (60 * 60 * 24 * 7), '/');
-            }          
-
-            // Include the home controller
-            include_once BASE_PATH . '/controllers/home.controller.php';
-
-            // New instance
-            $home_controller = new HomeController($this->routes, true);
-
-            // Get service
-            $response['html'] = $home_controller->getService('loadMostPopular', array($_POST['delta']));
-
-            // Check if null
-            if ($response['html'] == '') {
-                $response['html'] = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet!</li>';
-            }
-        }
-        else {
-            // Invalid data
-            $response['code'] = 200;
-        }
-
-        // Return
-        return $response;
     }
 
     //
@@ -546,7 +451,7 @@ class ProcessorController extends Youkok2 {
                         VALUES (:file, :user, :type)";
 
                         $element_id = $this->db->lastInsertId();
-                        
+
                         $insert_flag_query = $this->db->prepare($insert_flag);
                         $insert_flag_query->execute(array(':file' => $element_id,
                             ':user' => $this->user->getId(),
@@ -554,7 +459,7 @@ class ProcessorController extends Youkok2 {
 
                         // Add history
                         $this->addHistory($this->user->getId(), $element_id,
-                                          $this->db->lastInsertId(), 1,
+                                          null, 1,
                                           '%u opprettet <b>' . $_POST['name'] . '</b>.',
                                           1);
 
@@ -691,7 +596,7 @@ class ProcessorController extends Youkok2 {
                         $insert_flag = "INSERT INTO flag
                         (file, user, type)
                         VALUES (:file, :user, :type)";
-                        
+
                         $element_id = $this->db->lastInsertId();
 
                         $insert_flag_query = $this->db->prepare($insert_flag);
@@ -704,7 +609,7 @@ class ProcessorController extends Youkok2 {
                         
                         // Add history
                         $this->addHistory($this->user->getId(), $element_id,
-                                          $this->db->lastInsertId(), 2,
+                                          null, 2,
                                           '%u lastet opp <b>' . $name . '</b>.',
                                           5);
 
@@ -734,6 +639,207 @@ class ProcessorController extends Youkok2 {
         }
         else {
             $response['code'] = 500;
+        }
+
+        // Return
+        return $response;
+    }
+
+    //
+    // Flagging for changing name
+    //
+
+    private function flagName() {
+        $response = array();
+        
+        // First, check if logged in
+        if ($this->user->isLoggedIn() and $this->user->canContribute()) {
+            // Can vote
+            if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['comment']) and isset($_POST['filetype']) and isset($_POST['name']) and strlen($_POST['name'].$_POST['filetype']) > 0) {
+                // Valid id, try to load the object
+                $item = new Item($this);
+                $item->createById($_POST['id']);
+                $this->collection->addIfDoesNotExist($item);
+                $element = $this->collection->get($_POST['id']);
+                
+                if ($element == null) {
+                    // WTF
+                    $response['code'] = 500;
+                }
+                else {
+                    // Insert
+                    $insert_flag = "INSERT INTO flag
+                    (file, user, type, data)
+                    VALUES (:file, :user, :type, :data)";
+                    
+                    $insert_flag_query = $this->db->prepare($insert_flag);
+                    $insert_flag_query->execute(array(':file' => $_POST['id'],
+                        ':user' => $this->user->getId(),
+                        ':type' => 1,
+                        ':data' => json_encode(array('name' => $_POST['name'].$_POST['filetype'], 'comment' => $_POST['comment']))));
+
+                    // Code
+                    $response['code'] = 200;
+
+                    // Add message
+                    $this->addMessage('Ditt flagg på \'' . $element->getName() . '\' ble opprettet. Takk for hjelpen.', 'success');
+                    
+                    // Delete cache
+                    $this->cacheManager->deleteCache($element->getId(), 'i');
+                }
+            }
+            else {
+                $response['code'] = 500;
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+
+        // Return
+        return $response;
+    }
+
+    //
+    // Flagging for deleting file
+    //
+
+    private function flagDelete() {
+        $response = array();
+        
+        // First, check if logged in
+        if ($this->user->isLoggedIn() and $this->user->canContribute()) {
+            // Can vote
+            if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['comment'])) {
+                // Valid id, try to load the object
+                $item = new Item($this);
+                $item->createById($_POST['id']);
+                $this->collection->addIfDoesNotExist($item);
+                $element = $this->collection->get($_POST['id']);
+                
+                if ($element == null) {
+                    // WTF
+                    $response['code'] = 500;
+                }
+                else {
+                    // Insert
+                    $insert_flag = "INSERT INTO flag
+                    (file, user, type, data)
+                    VALUES (:file, :user, :type, :data)";
+                    
+                    $insert_flag_query = $this->db->prepare($insert_flag);
+                    $insert_flag_query->execute(array(':file' => $_POST['id'],
+                        ':user' => $this->user->getId(),
+                        ':type' => 2,
+                        ':data' => json_encode(array('comment' => $_POST['comment']))));
+
+                    // Code
+                    $response['code'] = 200;
+
+                    // Add message
+                    $this->addMessage('Ditt flagg på \'' . $element->getName() . '\' ble opprettet. Takk for hjelpen.', 'success');
+                    
+                    // Delete cache
+                    $this->cacheManager->deleteCache($element->getId(), 'i');
+                }
+            }
+            else {
+                $response['code'] = 500;
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+
+        // Return
+        return $response;
+    }
+
+    //
+    // Method for adding or removing a favorite
+    //
+
+    private function favorite($b) {
+        $response = array();
+
+        // Check stuff
+        if (isset($_POST['id']) and is_numeric($_POST['id'])) {
+            // Valid id, try to load the object
+            $item = new Item($this);
+            $item->createById($_POST['id']);
+
+            if ($item->wasFound()) {
+                // Check if logged in
+                if ($this->user->isLoggedIn()) {
+                    $response['code'] = 200;
+
+                    if ($b and $item->isFavorite($this->user) == 0) {
+                        $this->user->addFavorite($item);
+                    
+                        $response['msg'] = array(
+                            array(
+                                'text' => $item->getName() . ' er langt til i dine favoritter.',
+                                'type' => 'success'));
+                    }
+                    else if (!$b) {
+                        // Remove favorite
+                        $this->user->removeFavorite($item);
+                        
+                        $response['msg'] = array(
+                            array(
+                                'text' => $item->getName() . ' er fjernet fra dine favoritter.',
+                                'type' => 'success'));
+                    }
+
+                    $response['status'] = $b;
+                }
+                else {
+                    $response['code'] = 500;
+                }
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+
+        return $response;
+    }
+
+    //
+    // Method for updating home user delta choice
+    //
+
+    private function homePopularUpdate() {
+        $response = array();
+
+        // Update preference
+        if (isset($_POST['delta']) and is_numeric($_POST['delta']) and $_POST['delta'] >= 0 and $_POST['delta'] <= 4) {
+            $response['code'] = 200;
+
+            if ($this->user->isLoggedIn()) {
+                $this->user->setMostPopularDelta($_POST['delta']);
+            }
+            else {
+                setcookie('home_popular', $_POST['delta'], time() + (60 * 60 * 24 * 7), '/');
+            }          
+
+            // Include the home controller
+            include_once BASE_PATH . '/controllers/home.controller.php';
+
+            // New instance
+            $home_controller = new HomeController($this->routes, true);
+
+            // Get service
+            $response['html'] = $home_controller->getService('loadMostPopular', array($_POST['delta']));
+
+            // Check if null
+            if ($response['html'] == '') {
+                $response['html'] = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet!</li>';
+            }
+        }
+        else {
+            // Invalid data
+            $response['code'] = 200;
         }
 
         // Return
@@ -849,116 +955,6 @@ class ProcessorController extends Youkok2 {
             $response['html'] = '<em>Ingen historikk å vise.</em>';
         }
 
-        return $response;
-    }
-
-    //
-    // Flagging for changing name
-    //
-
-    private function flagName() {
-        $response = array();
-        
-        // First, check if logged in
-        if ($this->user->isLoggedIn() and $this->user->canContribute()) {
-            // Can vote
-            if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['comment']) and isset($_POST['filetype']) and isset($_POST['name']) and strlen($_POST['name'].$_POST['filetype']) > 0) {
-                // Valid id, try to load the object
-                $item = new Item($this);
-                $item->createById($_POST['id']);
-                $this->collection->addIfDoesNotExist($item);
-                $element = $this->collection->get($_POST['id']);
-                
-                if ($element == null) {
-                    // WTF
-                    $response['code'] = 500;
-                }
-                else {
-                    // Insert
-                    $insert_flag = "INSERT INTO flag
-                    (file, user, type, data)
-                    VALUES (:file, :user, :type, :data)";
-                    
-                    $insert_flag_query = $this->db->prepare($insert_flag);
-                    $insert_flag_query->execute(array(':file' => $_POST['id'],
-                        ':user' => $this->user->getId(),
-                        ':type' => 1,
-                        ':data' => json_encode(array('name' => $_POST['name'].$_POST['filetype'], 'comment' => $_POST['comment']))));
-
-                    // Code
-                    $response['code'] = 200;
-
-                    // Add message
-                    $this->addMessage('Ditt flagg på \'' . $element->getName() . '\' ble opprettet. Takk for hjelpen.', 'success');
-                    
-                    // Delete cache
-                    $this->cacheManager->deleteCache($element->getId(), 'i');
-                }
-            }
-            else {
-                $response['code'] = 500;
-            }
-        }
-        else {
-            $response['code'] = 500;
-        }
-
-        // Return
-        return $response;
-    }
-
-    //
-    // Flagging for deleting file
-    //
-
-    private function flagDelete() {
-        $response = array();
-        
-        // First, check if logged in
-        if ($this->user->isLoggedIn() and $this->user->canContribute()) {
-            // Can vote
-            if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['comment'])) {
-                // Valid id, try to load the object
-                $item = new Item($this);
-                $item->createById($_POST['id']);
-                $this->collection->addIfDoesNotExist($item);
-                $element = $this->collection->get($_POST['id']);
-                
-                if ($element == null) {
-                    // WTF
-                    $response['code'] = 500;
-                }
-                else {
-                    // Insert
-                    $insert_flag = "INSERT INTO flag
-                    (file, user, type, data)
-                    VALUES (:file, :user, :type, :data)";
-                    
-                    $insert_flag_query = $this->db->prepare($insert_flag);
-                    $insert_flag_query->execute(array(':file' => $_POST['id'],
-                        ':user' => $this->user->getId(),
-                        ':type' => 2,
-                        ':data' => json_encode(array('comment' => $_POST['comment']))));
-
-                    // Code
-                    $response['code'] = 200;
-
-                    // Add message
-                    $this->addMessage('Ditt flagg på \'' . $element->getName() . '\' ble opprettet. Takk for hjelpen.', 'success');
-                    
-                    // Delete cache
-                    $this->cacheManager->deleteCache($element->getId(), 'i');
-                }
-            }
-            else {
-                $response['code'] = 500;
-            }
-        }
-        else {
-            $response['code'] = 500;
-        }
-
-        // Return
         return $response;
     }
 
