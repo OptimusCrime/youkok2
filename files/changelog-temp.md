@@ -1,5 +1,5 @@
-Youkok2 - 0.1.0-pl (xx. august, 2014)
-=====================================
+Youkok2 - 0.1.0-pl (4. august, 2014)
+====================================
 
 - [Info] First Public Release.
 - [Info] Fjernet påkrevd NTNU-identifisering og Wall-of-Shame-konseptet.

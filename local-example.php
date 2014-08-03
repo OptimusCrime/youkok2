@@ -8,7 +8,7 @@
 */
 
 // Version
-define('VERSION', '0.0.1-c');
+define('VERSION', '0.1.0-pl');
 define('DEV', false);
 
 // Base path

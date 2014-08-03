@@ -1,3 +1,26 @@
+Youkok2 - 0.1.0-pl (4. august, 2014)
+====================================
+
+- [Info] First Public Release.
+- [Info] Fjernet påkrevd NTNU-identifisering og Wall-of-Shame-konseptet.
+- [New] På forsiden står det nå hvilke mappe filer ligger i, ikke bare hvilke fag det tilhører.
+- [New] Linker til nedlastninger har nå rel="nofollow", for å unngå at botter besøker dem titt og ofte.
+- [New] .js- & .css-filer er nå minifiserte.
+- [New] Implementert heftig caching av hele siden, som reduserer antall queries drastisk.
+- [New] Når man linker til nedlastning av filer på Facebook får man nå opp informasjon om fila.
+- [New] Introduserte pending karma. Dette er karma på flagg som enda ikke er stengt.
+- [New] Implementerte 'Karma / Historikk' til din bruker, som viser hva du har gjort for å skaffe deg
+        karmaen du har opparbeidet deg.
+- [Fixed] Context meny er nå korrekt sentert på x-aksen.
+- [Enhanced] Opplastning av flere filer gir nå bare en melding.
+- [Enhanced] Nedlastning av filer logger nå UA.
+- [Enhanced] Nedlastning av filer gir korrekt Mimetype i stede for 'octet/stream'.
+- [Enhanced] Antall spørringer som kjører pr. pageload er nesten halvert på de fleste sider.
+- [Enhanced] Hvis e-post ble funnet under innlogging, vil den automatisk være fylt ut om passordet var feil.
+- [Enhanced] Man trenger nå bare to stemmer for godkjenning for å gå godkjent en fil/mappe.
+- [Enhanced] Rapportering gir nå penere tilbakemelding
+- [Other] Mange mindre tekstlige endringer.
+
 Youkok2 - 0.0.1-c (2. mai, 2014)
 ================================
 
