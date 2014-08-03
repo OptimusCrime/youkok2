@@ -91,10 +91,10 @@ class Executioner {
                 if ($this->flag->getType() == 0) {
                     $this->execute0($finished_type);
                 }
-                else if ($this->flag->getType() = == 1) {
+                else if ($this->flag->getType() == 1) {
                     $this->execute1($finished_type);
                 }
-                else if ($this->flag->getType() = == 2) {
+                else if ($this->flag->getType() == 2) {
                     $this->execute2($finished_type);
                 }
             }
