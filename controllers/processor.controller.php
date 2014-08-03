@@ -471,7 +471,7 @@ class ProcessorController extends Youkok2 {
             $home_controller = new HomeController($this->routes, true);
 
             // Get service
-            $response['html'] = $home_controller->getService('loadMostPopular', array());
+            $response['html'] = $home_controller->getService('loadMostPopular', array($_POST['delta']));
 
             // Check if null
             if ($response['html'] == '') {

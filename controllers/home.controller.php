@@ -96,7 +96,7 @@ class HomeController extends Youkok2 {
     // Method for loading the files with most downloads
     //
     
-    public function loadMostPopular() {
+    public function loadMostPopular($override = null) {
         $ret = '';
 
         // Deltas
@@ -106,16 +106,21 @@ class HomeController extends Youkok2 {
             '',
             ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY)');
 
-        if ($this->user->isLoggedIn()) {
-            $user_delta = $this->user->getMostPopularDelta();
-        }
-        else {
-            if (isset($_COOKIE['home_popular'])) {
-                $user_delta = $_COOKIE['home_popular'];
+        if ($override == null) {
+            if ($this->user->isLoggedIn()) {
+                $user_delta = $this->user->getMostPopularDelta();
             }
             else {
-                $user_delta = 1;
+                if (isset($_COOKIE['home_popular'])) {
+                    $user_delta = $_COOKIE['home_popular'];
+                }
+                else {
+                    $user_delta = 1;
+                }
             }
+        }
+        else {
+            $user_delta = $override;
         }
 
         // Assign to Smarty
