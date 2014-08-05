@@ -483,6 +483,7 @@ $(document).ready(function () {
                 if (json.code == 200) {
                     $('#home-most-popular').slideUp(400, function () {
                         $(this).html(json.html).slideDown(400);
+                        $('#home-most-popular a').tooltip();
                     });
                 }
                 else {
