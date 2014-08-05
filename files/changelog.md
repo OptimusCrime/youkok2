@@ -1,3 +1,10 @@
+Youkok2 - 0.1.1-pl (xx. august, 2014)
+=====================================
+
+- [Fixed] Hover fungerte ikke når man endret mest populære på forsiden.
+- [Fixed] Hvis man har stjernet et fag vises navnet på faget i hover.
+- [Enhanced] Fjernet drøssevis av ikoner som ikke var i bruk.
+
 Youkok2 - 0.1.0-pl (4. august, 2014)
 ====================================
 
