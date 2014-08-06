@@ -45,7 +45,8 @@ class GrayboxController extends Youkok2 {
         'Refract00o0oring to get everything to work again, zzzz', 'Asaaand removed composer rofl', 'Fixed old leftovershit',
         'Messed up the order of the params, fuckem', 'MOST IMPORTANT CHANGES EVER FRRIKING HELL', 
         'Soooo much refractoring my eyes are dropping', 'Refractor the loader class to reflect some bad design choices',
-        'Began working on a nice as F caching system',
+        'Began working on a nice as F caching system', 'Added epic search functionality', 'Removed a hell of a lot images',
+        'Fixed typo 500ing the entire site', 'I messed up some stuff', 
     );
 
     //
