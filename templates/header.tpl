@@ -14,19 +14,15 @@
     <script type="text/javascript" src="assets/js/lib/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="assets/js/lib/jquery.fileupload.js"></script>
     <script type="text/javascript" src="assets/js/lib/jquery.ba-outside-events.min.js"></script>
-    [[+nocache]]
-        <script type="text/javascript" src="assets/js/youkok[[+if !$DEV]].min[[+/if]].js?v=[[+$VERSION]]"></script>
-    [[+/nocache]]
+    [[+nocache]]<script type="text/javascript" src="assets/js/youkok[[+if !$DEV]].min[[+/if]].js?v=[[+$VERSION]]"></script>[[+/nocache]]
     <link rel="stylesheet" type="text/css" href="assets/css/lib/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/lib/font-awesome.css" />
-    [[+nocache]]
-        <link rel="stylesheet" type="text/css" href="assets/css/youkok[[+if !$DEV]].min[[+/if]].css?v=[[+$VERSION]]" />
-    [[+/nocache]]
+    [[+nocache]]<link rel="stylesheet" type="text/css" href="assets/css/youkok[[+if !$DEV]].min[[+/if]].css?v=[[+$VERSION]]" />[[+/nocache]]
 </head>
 <body>
 [[+nocache]]
-    <input type="hidden" name="cache-time" id="typehead-cache-time" value="[[+$TYPEAHEAD_CACHE_TIME]]" />
-    <input type="hidden" name="search-base" id="search-base" value="[[+$SITE_SEARCH_BASE]]" />
+<input type="hidden" name="cache-time" id="typehead-cache-time" value="[[+$TYPEAHEAD_CACHE_TIME]]" />
+<input type="hidden" name="search-base" id="search-base" value="[[+$SITE_SEARCH_BASE]]" />
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
