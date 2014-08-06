@@ -257,7 +257,7 @@ a, a:focus, a:active, a:visited {
     text-overflow: ellipsis;
     white-space: nowrap;
     z-index: 100;
-    font-size: 13px;
+    font-size: 12px;
 }
 .archive-badge {
     background-color: #d9534f;
