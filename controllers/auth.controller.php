@@ -90,7 +90,7 @@ class AuthController extends Youkok2 {
         }
         else {
             // Page not found!
-        	$this->display404();
+            $this->display404();
         }
     }
 

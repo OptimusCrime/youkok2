@@ -18,17 +18,17 @@ class PDOStatement2 extends PDOStatement {
     //
     
     protected $connection;
-	protected $bound_params = array();
+    protected $bound_params = array();
     private $log;
-	
+
     //
     // Override constructor
     //
     
-	protected function __construct(PDO2 $connection, &$log) {
+    protected function __construct(PDO2 $connection, &$log) {
         $this->connection = $connection;
         $this->log = &$log;
-	}
+    }
     
     //
     // Override

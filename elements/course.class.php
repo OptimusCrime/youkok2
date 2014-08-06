@@ -28,13 +28,13 @@ class Course {
     //
     
     public function __construct($controller) {
-    	// Store db reference
-    	$this->controller = &$controller;
+        // Store db reference
+        $this->controller = &$controller;
 
-    	// Set all fields to null first
-    	$this->id = null;
-    	$this->code = null;
-    	$this->name = null;
+        // Set all fields to null first
+        $this->id = null;
+        $this->code = null;
+        $this->name = null;
     }
 
     //
@@ -43,7 +43,7 @@ class Course {
 
     public function setId($id) {
         // Store id
-    	$this->id = $id;
+        $this->id = $id;
 
         // Check if cached
         if ($this->controller->cacheManager->isCached($id, 'c')) {
@@ -61,11 +61,11 @@ class Course {
     }
 
     public function setCode($code) {
-    	$this->code = $code;
+        $this->code = $code;
     }
 
     public function setName($name) {
-    	$this->name = $name;
+        $this->name = $name;
     }
 
     //
@@ -73,7 +73,7 @@ class Course {
     //
 
     private function fetch($args) {
-    	$get_course = "SELECT " . implode(',', $args) . "
+        $get_course = "SELECT " . implode(',', $args) . "
         FROM course
         WHERE id = :id";
         
@@ -82,9 +82,9 @@ class Course {
         $row = $get_course_query->fetch(PDO::FETCH_ASSOC);
 
         foreach ($args as $v) {
-        	if (isset($row[$v])) {
-        		$this->$v = $row[$v];
-        	}
+            if (isset($row[$v])) {
+                $this->$v = $row[$v];
+            }
         }
 
         // Cache the new result
@@ -96,21 +96,21 @@ class Course {
     //
     
     public function getId() {
-    	return $this->id;
+        return $this->id;
     }
 
     public function getCode() {
-    	if ($this->code == null) {
-    		$this->fetch(array('code'));
-    	}
-    	return $this->code;
+        if ($this->code == null) {
+            $this->fetch(array('code'));
+        }
+        return $this->code;
     }
 
     public function getName() {
-    	if ($this->name == null) {
-    		$this->fetch(array('name'));
-    	}
-    	return $this->name;
+        if ($this->name == null) {
+            $this->fetch(array('name'));
+        }
+        return $this->name;
     }
 
     //

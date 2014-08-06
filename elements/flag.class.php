@@ -68,18 +68,18 @@ class Flag {
     //
     
     public function __construct($controller) {
-    	// Store controller reference
-    	$this->controller = &$controller;
+        // Store controller reference
+        $this->controller = &$controller;
 
-    	// Set all fields to null first
-    	$this->id = null;
-    	$this->file = null;
-    	$this->user = null;
-    	$this->flagged = null;
-    	$this->type = null;
-    	$this->active = null;
-    	$this->data = null;
-    	$this->message = null;
+        // Set all fields to null first
+        $this->id = null;
+        $this->file = null;
+        $this->user = null;
+        $this->flagged = null;
+        $this->type = null;
+        $this->active = null;
+        $this->data = null;
+        $this->message = null;
 
         $this->votes = null;
         $this->userHasVoted = false;
@@ -92,46 +92,46 @@ class Flag {
     //
 
     public function setAll($arr) {
-    	// Loop all fields in the array
-    	foreach ($arr as $k => $v) {
-    		// Check that the field exists as a property/attribute in this class
-    		if (property_exists('Flag', $k)) {
-    			// Set value
-    			$this->$k = $v;
-    		}
-    	}
+        // Loop all fields in the array
+        foreach ($arr as $k => $v) {
+            // Check that the field exists as a property/attribute in this class
+            if (property_exists('Flag', $k)) {
+                // Set value
+                $this->$k = $v;
+            }
+        }
     }
 
     public function setId($id) {
-    	$this->id = $id;
+        $this->id = $id;
     }
 
     public function setFile($file) {
-    	$this->file = $file;
+        $this->file = $file;
     }
 
     public function setUser($user) {
-    	$this->user = $user;
+        $this->user = $user;
     }
 
     public function setFlagged($flagged) {
-    	$this->flagged = $flagged;
+        $this->flagged = $flagged;
     }
 
     public function setType($type) {
-    	$this->type = $type;
+        $this->type = $type;
     }
 
     public function setActive($b) {
-    	$this->active = $b;
+        $this->active = $b;
     }
 
     public function setData($data) {
-    	$this->data = $data;
+        $this->data = $data;
     }
 
     public function setMessage($m) {
-    	$this->message = $m;
+        $this->message = $m;
     }
 
     //
@@ -139,35 +139,35 @@ class Flag {
     //
 
     public function getId() {
-    	return $this->id;
+        return $this->id;
     }
 
     public function getFile() {
-    	return $this->file;
+        return $this->file;
     }
 
     public function getUser() {
-    	return $this->user;
+        return $this->user;
     }
 
     public function getFlagged() {
-    	return $this->flagged;
+        return $this->flagged;
     }
 
     public function getType() {
-    	return $this->type;
+        return $this->type;
     }
 
     public function isActive() {
-    	return $this->active;
+        return $this->active;
     }
 
     public function getData() {
-    	return json_decode($this->data, true);
+        return json_decode($this->data, true);
     }
 
     public function getMessage() {
-    	return $this->message;
+        return $this->message;
     }
 
     //

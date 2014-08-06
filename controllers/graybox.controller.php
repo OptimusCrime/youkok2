@@ -59,13 +59,13 @@ class GrayboxController extends Youkok2 {
         
         // Check query
         if ($this->queryGetClean() == 'graybox/newest') {
-        	$this->generateNewest();
+            $this->generateNewest();
         }
         else if ($this->queryGetClean() == 'graybox/downloads') {
-        	$this->generateDownloads();
+            $this->generateDownloads();
         }
         else if ($this->queryGetClean() == 'graybox/numbers') {
-        	$this->generateNumbers();
+            $this->generateNumbers();
         }
     }
     

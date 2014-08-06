@@ -49,38 +49,38 @@ echo '<span>------------------------------------</span><br />';
 //
 
 $ignore_paths = array(
-	// Remove all directories we don't want
-	'!.git/',
-	'!_build/',
-	'!assets/',
-	'!cache/',
-	'!files',
-	'!libs/',
+    // Remove all directories we don't want
+    '!.git/',
+    '!_build/',
+    '!assets/',
+    '!cache/',
+    '!files',
+    '!libs/',
     '!migrations/',
-	'!processor/',
-	'!templates_c/',
-	'!vendor/',
+    '!processor/',
+    '!templates_c/',
+    '!vendor/',
 );
 
 $ignore_files = array(
-	// Remove all root files we don't want
-	'!.htaccess',
-	'!.gitignore',
-	'!local.php',
-	'!composer.lock',
+    // Remove all root files we don't want
+    '!.htaccess',
+    '!.gitignore',
+    '!local.php',
+    '!composer.lock',
     '!phinx-example.yml',
     '!phinx.yml',
 );
 
 $add_files = array(
-	// Override directories we have ignored earlier
-	'_build/index.php',
-	'_build/libs/youkok2/linecounter.class.php',
-	'assets/js/youkok.js',
-	'assets/css/youkok.css',
-	'libs/youkok2/cachemanager.php',
-	'libs/youkok2/executioner.php',
-	'libs/youkok2/utilities.php',
+    // Override directories we have ignored earlier
+    '_build/index.php',
+    '_build/libs/youkok2/linecounter.class.php',
+    'assets/js/youkok.js',
+    'assets/css/youkok.css',
+    'libs/youkok2/cachemanager.php',
+    'libs/youkok2/executioner.php',
+    'libs/youkok2/utilities.php',
 );
 
 $linecounter = new LineCounter($ignore_paths, $ignore_files, $add_files);

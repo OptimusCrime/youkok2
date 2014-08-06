@@ -29,20 +29,20 @@ class ProcessorController extends Youkok2 {
 
         // Check what we got
         if ($this->queryGetSize() < 2) {
-        	$response['code'] = 500;
+            $response['code'] = 500;
         }
         else {
-        	// Flag
-        	if ($this->queryGet(1) == 'flag') {
+            // Flag
+            if ($this->queryGet(1) == 'flag') {
                 // Everything to do with flags
-        		if ($this->queryGet(2) == 'get') {
+                if ($this->queryGet(2) == 'get') {
                     // Get flag
-        			$response = $this->flagGet();
-        		}
-        		else if ($this->queryGet(2) == 'vote') {
+                    $response = $this->flagGet();
+                }
+                else if ($this->queryGet(2) == 'vote') {
                     // Vote flag
-        			$response = $this->flagVote();
-        		}
+                    $response = $this->flagVote();
+                }
                 else if ($this->queryGet(2) == 'name') {
                     // New flag - new name
                     $response = $this->flagName();
@@ -51,7 +51,7 @@ class ProcessorController extends Youkok2 {
                     // New flag - delete
                     $response = $this->flagDelete();
                 }
-        	}
+            }
             else if ($this->queryGet(1) == 'favorite') {
                 // Everything to do with favorite
                 if ($this->queryGet(2) == 'add') {
@@ -117,44 +117,44 @@ class ProcessorController extends Youkok2 {
     //
 
     private function flagGet() {
-    	$response = array();
+        $response = array();
 
-    	// Check stuff
-    	if (isset($_POST['id']) and is_numeric($_POST['id'])) {
-        	// Valid id, try to load the object
-        	$item = new Item($this);
-        	$item->createById($_POST['id']);
-        	
+        // Check stuff
+        if (isset($_POST['id']) and is_numeric($_POST['id'])) {
+            // Valid id, try to load the object
+            $item = new Item($this);
+            $item->createById($_POST['id']);
+
             // Check if valid id
             if ($item->wasFound()) {
-            	// Good to go
-            	$response['code'] = 200;
+                // Good to go
+                $response['code'] = 200;
 
-            	// Load all flags
-            	$flags = $item->getFlags();
+                // Load all flags
+                $flags = $item->getFlags();
 
-            	$response['html'] = '';
+                $response['html'] = '';
 
-            	// Loop and create html
-            	if (count($flags) > 0) {
-            		// Flags
-            		foreach ($flags as $k => $v) {
-            			$response['html'] .= $this->drawFlag($k, $v, $item);
-            		}
-            	}
+                // Loop and create html
+                if (count($flags) > 0) {
+                    // Flags
+                    foreach ($flags as $k => $v) {
+                        $response['html'] .= $this->drawFlag($k, $v, $item);
+                    }
+                }
 
                 if ($response['html'] == '') {
                     $response['html'] = '<p>Ingen flagg!</p>';
                 }
             }
             else {
-            	// Invalid item
-            	$response['code'] = 500;
+                // Invalid item
+                $response['code'] = 500;
             }
         }
         else {
-        	// Invalid id
-        	$response['code'] = 500;
+            // Invalid id
+            $response['code'] = 500;
         }
 
         // Return
@@ -293,39 +293,39 @@ class ProcessorController extends Youkok2 {
     //
 
     private function flagVote() {
-    	$response = array();
-    	
-    	// First, check if logged in
-    	if ($this->user->isLoggedIn() and $this->user->canContribute()) {
-    		// Can vote
-    		if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['flag']) and 
+        $response = array();
+
+        // First, check if logged in
+        if ($this->user->isLoggedIn() and $this->user->canContribute()) {
+            // Can vote
+            if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['flag']) and
                 is_numeric($_POST['flag']) and ($_POST['value'] == 1 or $_POST['value'] == 0)) {
-	        	// Valid id, try to load the object
-	        	$item = new Item($this);
+                // Valid id, try to load the object
+                $item = new Item($this);
                 $item->createById($_POST['id']);
                 
                 // Check if valid id
                 if (!$item->wasFound()) {
-	            	// WTF
-	            	$response['code'] = 500;
-	            }
-	            else {
+                    // WTF
+                    $response['code'] = 500;
+                }
+                else {
                     // Init new flag
-	            	$flag = new Flag($this);
+                    $flag = new Flag($this);
 
-		            // Check if flag was returned
-		            if (!$flag->createById($_POST['flag'])) {
-		            	$response['code'] = 500;
-		            }
-		            else {
-		            	if ($flag->isActive() and $flag->getUser() != $this->user->getId() and 
+                    // Check if flag was returned
+                    if (!$flag->createById($_POST['flag'])) {
+                        $response['code'] = 500;
+                    }
+                    else {
+                        if ($flag->isActive() and $flag->getUser() != $this->user->getId() and
                             $flag->getFile() == $item->getId()) {
-		            		// Flag returned and is currently active, check if has voted
-		            		$flag_votes = $flag->getVotes();
-				            
-				            // Check if has voted
-				            if ($flag->userHasVoted()) {
-				            	// Insert
+                            // Flag returned and is currently active, check if has voted
+                            $flag_votes = $flag->getVotes();
+
+                            // Check if has voted
+                            if ($flag->userHasVoted()) {
+                                // Insert
                                 $vote = new Vote($this);
                                 $vote->setUser($this->user->getId());
                                 $vote->setFlag($_POST['flag']);
@@ -361,35 +361,35 @@ class ProcessorController extends Youkok2 {
                                 
                                 // Add karma to pending
                                 $this->user->addPendingKarma($add_history['karma']);
-				            }
-				            else {
-				            	// Update
+                            }
+                            else {
+                                // Update
                                 $vote = $flag->getCurrentUserVote();
-				            	$vote->setValue($_POST['value']);
+                                $vote->setValue($_POST['value']);
                                 $vote->updateVote();
-				            }
+                            }
 
-				            $response['code'] = 200;
+                            $response['code'] = 200;
 
-				            // Check for completed vote!
-				            new Executioner($this, $item, $flag);
-		            	}
-		            	else {
-		            		$response['code'] = 500;
-		            	}
-		            }
-	            }
-	        }
-	        else {
-	        	$response['code'] = 500;
-	        }
-    	}
-    	else {
-    		$response['code'] = 500;
-    	}
+                            // Check for completed vote!
+                            new Executioner($this, $item, $flag);
+                        }
+                        else {
+                            $response['code'] = 500;
+                        }
+                    }
+                }
+            }
+            else {
+                $response['code'] = 500;
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
 
-    	// Return
-    	return $response;
+        // Return
+        return $response;
     }
 
     //

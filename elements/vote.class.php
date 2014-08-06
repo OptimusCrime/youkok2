@@ -17,7 +17,7 @@ class Vote {
     // Variables
     //
 
-	// Pointer to the controller
+    // Pointer to the controller
     private $controller;
 
     // Database fields
@@ -28,14 +28,14 @@ class Vote {
     private $voted;
 
     public function __construct($controller) {
-    	// Store references
-    	$this->controller = &$controller;
+        // Store references
+        $this->controller = &$controller;
 
-    	// Set all fields to null first
-    	$this->id = null;
-    	$this->user = null;
-    	$this->value = null;
-    	$this->voted = null;
+        // Set all fields to null first
+        $this->id = null;
+        $this->user = null;
+        $this->value = null;
+        $this->voted = null;
     }
 
     //
@@ -43,10 +43,10 @@ class Vote {
     //
 
     public function setAll($arr) {
-    	$this->id = $arr['id'];
-    	$this->user = $arr['user'];
-    	$this->value = $arr['value'];
-    	$this->voted = $arr['voted'];
+        $this->id = $arr['id'];
+        $this->user = $arr['user'];
+        $this->value = $arr['value'];
+        $this->voted = $arr['voted'];
     }
 
     //
@@ -54,23 +54,23 @@ class Vote {
     //
 
     public function getId() {
-    	return $this->id;
+        return $this->id;
     }
 
     public function getUser() {
-    	return $this->user;
+        return $this->user;
     }
 
     public function getFlag() {
-    	return $this->flag;
+        return $this->flag;
     }
 
     public function getValue() {
-    	return $this->value;
+        return $this->value;
     }
 
     public function getVoted() {
-    	return $this->voted;
+        return $this->voted;
     }
 
     //

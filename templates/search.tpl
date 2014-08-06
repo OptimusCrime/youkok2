@@ -1,13 +1,13 @@
 [[+include file="header.tpl"]]
 
 <div class="col-md-8">
-	<h1>Søk</h1>
-	<p>Ditt søk på <strong>[[+$SEARCH_QUERY]]</strong> returnerte <strong>[[+$SEARCH_NUM]]</strong> treff.</p>
+    <h1>Søk</h1>
+    <p>Ditt søk på <strong>[[+$SEARCH_QUERY]]</strong> returnerte <strong>[[+$SEARCH_NUM]]</strong> treff.</p>
     <p>Du kan bruke stjerne (*) som wildcard når du søker. Søket vil kun treffe på fagkoder og fagnavn. Dersom et fag mangler i listen kan du <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">kontakte oss</a>, så legger vi det til.</p>
 
-	<hr />
+    <hr />
 
-	[[+$SEARCH_RESULT]]
+    [[+$SEARCH_RESULT]]
 </div>
 <div class="col-md-4">
     <div id="archive-sidebar-readalso" class="archive-sidebar">

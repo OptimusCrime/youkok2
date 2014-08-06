@@ -1,99 +1,99 @@
 [[+include file="header.tpl"]]
 
 <div class="modal fade" id="modal-new-flag">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Laster...</h4>
-			</div>
-			<div class="modal-body">
-				<div id="modal-new-flag-name" class="modal-new-flag-container">
-					<p>Dersom du syntes dette elementet burde ha et nytt navn kan du foreslå det her.</p> 
-					<form action="" method="post" name="modal-new-flag-name-form" id="modal-new-flag-name-form">
-						<label for="modal-new-flag-name-name">Nytt navn</label>
-	                    <div class="input-group">
-							<input type="text" name="modal-new-flag-name-name" class="form-control" id="modal-new-flag-name-name" value="" placeholder="Skriv inn ditt forslag her" />
-							<span class="input-group-addon">.laster</span>
-						</div>
-						<label for="modal-new-flag-name-comment">Kommentar</label>
-						<textarea class="form-control" id="modal-new-flag-name-comment" name="modal-new-flag-name-comment"></textarea>
-						<button type="submit" class="btn btn-default">Send</button> eller <a href="#">lukk</a>.
-					</form>
-				</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Laster...</h4>
+            </div>
+            <div class="modal-body">
+                <div id="modal-new-flag-name" class="modal-new-flag-container">
+                    <p>Dersom du syntes dette elementet burde ha et nytt navn kan du foreslå det her.</p>
+                    <form action="" method="post" name="modal-new-flag-name-form" id="modal-new-flag-name-form">
+                        <label for="modal-new-flag-name-name">Nytt navn</label>
+                        <div class="input-group">
+                            <input type="text" name="modal-new-flag-name-name" class="form-control" id="modal-new-flag-name-name" value="" placeholder="Skriv inn ditt forslag her" />
+                            <span class="input-group-addon">.laster</span>
+                        </div>
+                        <label for="modal-new-flag-name-comment">Kommentar</label>
+                        <textarea class="form-control" id="modal-new-flag-name-comment" name="modal-new-flag-name-comment"></textarea>
+                        <button type="submit" class="btn btn-default">Send</button> eller <a href="#">lukk</a>.
+                    </form>
+                </div>
 
-				<div id="modal-new-flag-delete" class="modal-new-flag-container">
-					<p>Dersom du syntes dette elementet burde slettes kan du foreslå det her.</p> 
-					<form action="" method="post" name="modal-new-flag-delete-form" id="modal-new-flag-delete-form">
-						<label for="modal-new-flag-delete-comment">Kommentar</label>
-						<textarea class="form-control" id="modal-new-flag-delete-comment" name="modal-new-flag-delete-comment"></textarea>
-						<button type="submit" class="btn btn-default">Send</button> eller <a href="#">lukk</a>.
-					</form>
-				</div>
+                <div id="modal-new-flag-delete" class="modal-new-flag-container">
+                    <p>Dersom du syntes dette elementet burde slettes kan du foreslå det her.</p>
+                    <form action="" method="post" name="modal-new-flag-delete-form" id="modal-new-flag-delete-form">
+                        <label for="modal-new-flag-delete-comment">Kommentar</label>
+                        <textarea class="form-control" id="modal-new-flag-delete-comment" name="modal-new-flag-delete-comment"></textarea>
+                        <button type="submit" class="btn btn-default">Send</button> eller <a href="#">lukk</a>.
+                    </form>
+                </div>
 
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
-			</div>
-		</div>
-	</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="modal-flags">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Flagg for:</h4>
-			</div>
-			<div class="modal-body">
-				<div class="panel-group" id="flags-panel">
-					Laster...
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Flagg for:</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-group" id="flags-panel">
+                    Laster...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="modal-report">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Rapporter:</h4>
-			</div>
-			<div class="modal-body">
-				<form action="" method="post" id="modal-report-form" name="modal-report-form">
-					Velg kategori:
-					<div class="dropdown">
-						<button class="btn dropdown-toggle" type="button" id="model-report-category" data-toggle="dropdown">
-							<span id="modal-report-selected">Brudd på åndsverkloven</span>
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu" aria-labelledby="model-report-category">
-							<li class="disabled"><a href="#">Brudd på åndsverkloven</a></li>
-							<li><a href="#">Spam</a></li>
-							<li><a href="#">Denne fila er min</a></li>
-							<li><a href="#">Støtende, fornærmende eller hatefulle ytringer</a></li>
-							<li><a href="#">Denne fila inneholder virus, malware og lignende</a></li>
-							<li class="divider"></li>
-							<li><a href="#">Andre grunner</a></li>
-						</ul>
-					</div>
-					<hr />
-					<label for="model-report-text">Kommentar</label>
-					<textarea class="form-control" id="model-report-text" name="model-report-text"></textarea>
-					<button type="submit" class="btn btn-default">Send</button> eller <a href="#">lukk</a>.
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Rapporter:</h4>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post" id="modal-report-form" name="modal-report-form">
+                    Velg kategori:
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle" type="button" id="model-report-category" data-toggle="dropdown">
+                            <span id="modal-report-selected">Brudd på åndsverkloven</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="model-report-category">
+                            <li class="disabled"><a href="#">Brudd på åndsverkloven</a></li>
+                            <li><a href="#">Spam</a></li>
+                            <li><a href="#">Denne fila er min</a></li>
+                            <li><a href="#">Støtende, fornærmende eller hatefulle ytringer</a></li>
+                            <li><a href="#">Denne fila inneholder virus, malware og lignende</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Andre grunner</a></li>
+                        </ul>
+                    </div>
+                    <hr />
+                    <label for="model-report-text">Kommentar</label>
+                    <textarea class="form-control" id="model-report-text" name="model-report-text"></textarea>
+                    <button type="submit" class="btn btn-default">Send</button> eller <a href="#">lukk</a>.
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <ul class="dropdown-menu" id="archive-context-menu">
@@ -108,11 +108,11 @@
     <li class="divider"></li>
 
     <li class="dropdown-submenu" id="archive-context-newflag-outer"><a href="#" id="archive-context-newflag">Nytt flagg</a>
-    	<ul class="dropdown-menu">
-    		<li><a href="#" id="archive-context-new-flag-name">Endre navn</a></li>
-    		<li style="display: none;"><a href="#" id="archive-context-new-flag-delete">Sletting av fil</a></li>
-    		<li style="display: none;"><a href="#" id="archive-context-new-flag-move">Flytting av fil</a></li>
-    	</ul>
+        <ul class="dropdown-menu">
+            <li><a href="#" id="archive-context-new-flag-name">Endre navn</a></li>
+            <li style="display: none;"><a href="#" id="archive-context-new-flag-delete">Sletting av fil</a></li>
+            <li style="display: none;"><a href="#" id="archive-context-new-flag-move">Flytting av fil</a></li>
+        </ul>
     </li>
     <li><a href="#" id="archive-context-flags">Vis flagg <span class="badge" id="archive-context-menu-flags">0</span></a></li>
     <li><a href="#" id="archive-context-report">Rapporter</a></li>
@@ -133,22 +133,22 @@
 
 
 <div class="col-md-8" id="archive-top">
-	<ol class="breadcrumb" id="archive-breadcrumbs">
-		<li><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
-		[[+$ARCHIVE_BREADCRUMBS]]
-	</ol>
+    <ol class="breadcrumb" id="archive-breadcrumbs">
+        <li><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
+        [[+$ARCHIVE_BREADCRUMBS]]
+    </ol>
     
     [[+nocache]]
         <h1>[[+$ARCHIVE_TITLE]]</h1>
     [[+/nocache]]
-	[[+if $ARCHIVE_MODE == 'browse']]
+    [[+if $ARCHIVE_MODE == 'browse']]
         [[+nocache]]
             <div id="archive_accepted_filetypes">[[+$ARCHIVE_ACCEPTED_FILETYPES]]</div>
             <div id="archive_accepted_fileendings">[[+$ARCHIVE_ACCEPTED_FILEENDINGS]]</div>
         [[+/nocache]]
-		<ul id="archive-list">
-		    [[+$ARCHIVE_DISPLAY]]
-		</ul>
+        <ul id="archive-list">
+            [[+$ARCHIVE_DISPLAY]]
+        </ul>
         
         <div id="archive-empty" class="well">
             <p>Huffa!</p>
@@ -163,9 +163,9 @@
             [[+/if]]
             <p>- YouKok2</p>
         </div>
-	[[+else]]
-		[[+$ARCHIVE_DISPLAY]]
-	[[+/if]]
+    [[+else]]
+        [[+$ARCHIVE_DISPLAY]]
+    [[+/if]]
 </div>
 <div class="col-md-4">
     [[+if $ARCHIVE_MODE == 'browse']]
@@ -250,10 +250,10 @@
         </div>
     [[+/if]]
 
-	<div id="archive-asd" class="archive-sidebar">
-		<h3>Reklame</h3>
-		<p>Herpaderp</p>
-	</div>
+    <div id="archive-asd" class="archive-sidebar">
+        <h3>Reklame</h3>
+        <p>Herpaderp</p>
+    </div>
 </div>
 
 [[+include file="footer.tpl"]]

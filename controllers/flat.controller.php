@@ -27,15 +27,15 @@ class FlatController extends Youkok2 {
             $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
             
             // Assign header and title
-        	$this->template->assign('HEADER_MENU', 'ABOUT');
+            $this->template->assign('HEADER_MENU', 'ABOUT');
             $this->template->assign('SITE_TITLE', 'Om Youkok2');
             
             // Display
-        	$this->displayAndCleanup('flat_about.tpl');
+            $this->displayAndCleanup('flat_about.tpl');
         }
         elseif ($this->queryGet(0) == 'retningslinjer') {
             // Assign header and title
-        	$this->template->assign('HEADER_MENU', null);
+            $this->template->assign('HEADER_MENU', null);
             $this->template->assign('SITE_TITLE', 'Retningslinjer for Youkok2');
             
             // Fix list for filtypes
@@ -55,7 +55,7 @@ class FlatController extends Youkok2 {
             $this->template->assign('SITE_ACCEPTED_FILEENDINGS', $endings_string);
             
             // Display the page
-        	$this->displayAndCleanup('flat_retningslinjer.tpl');
+            $this->displayAndCleanup('flat_retningslinjer.tpl');
         }
         elseif ($this->queryGet(0) == 'privacy') {
             // Turn on caching
@@ -105,7 +105,7 @@ class FlatController extends Youkok2 {
         }
         else {
             // Page was not found
-        	$this->display404();
+            $this->display404();
         }
     }
 }
