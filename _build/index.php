@@ -48,8 +48,8 @@ echo '<span>------------------------------------</span><br />';
 // Count number of lines
 //
 
+// Remove all directories we don't want
 $ignore_paths = array(
-    // Remove all directories we don't want
     '!.git/',
     '!_build/',
     '!assets/',
@@ -62,8 +62,8 @@ $ignore_paths = array(
     '!vendor/',
 );
 
+// Remove all root files we don't want
 $ignore_files = array(
-    // Remove all root files we don't want
     '!.htaccess',
     '!.gitignore',
     '!local.php',
@@ -72,8 +72,8 @@ $ignore_files = array(
     '!phinx.yml',
 );
 
+// Override directories we have ignored earlier
 $add_files = array(
-    // Override directories we have ignored earlier
     '_build/index.php',
     '_build/libs/youkok2/linecounter.class.php',
     'assets/js/youkok.js',
@@ -85,7 +85,8 @@ $add_files = array(
 
 $linecounter = new LineCounter($ignore_paths, $ignore_files, $add_files);
 $linecounter->analyze();
-echo '<span style="color: green;">Read a total of ' . number_format($linecounter->getTotalLines()) . ' lines</span><br />';
+echo '<span style="color: green;">Read a total of ' . number_format($linecounter->getTotalLines())
+   . ' lines</span><br />';
 
 //
 // Finish

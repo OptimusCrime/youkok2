@@ -54,7 +54,8 @@ Class LineCounter {
     private function ingorePaths ($dir = '/') {
         if ($handle = opendir(BASE_PATH . $dir)) {
             while (false !== ($entry = readdir($handle))) {
-                if ($entry != '..' and $entry != '.' and $entry != '.DS_Store' and $entry != '._.DS_Store') {
+                if ($entry != '..' and $entry != '.' and $entry != '.DS_Store'
+                    and $entry != '._.DS_Store') {
                     if (is_dir(BASE_PATH . $dir . $entry)) {
                         if (!$this->isIgnored($dir, $entry . '/')) {
                             $this->ingorePaths($dir . $entry . '/');
@@ -111,12 +112,12 @@ Class LineCounter {
     private function getNode($dir, $entry) {
         $s = explode('/', $dir . $entry);
         $node = &$this->elements;
-
+        
         foreach ($s as $k => $v) {
             if ($k == 0) {
                 $v = '/';
             }
-
+            
             if (!isset($node[$v])) {
                 if ($v == $entry) {
                     $node[] = $v;
@@ -125,9 +126,9 @@ Class LineCounter {
                 else {
                     $node[$v] = array();
                 }
-
+            
             }
-
+            
             $node = &$node[$v];
         }
         return $node;
@@ -140,10 +141,10 @@ Class LineCounter {
                 if ($k != '/') {
                     $prev .= $k . '/';
                 }
-
+                
                 $this->lines($base . $prev, $v);
                 $prev = '';
-
+                
             }
             else {
                 if (is_file(BASE_PATH . '/' . $base . $v)) {
@@ -153,11 +154,11 @@ Class LineCounter {
                         $line = fgets($handle);
                         $linecount++;
                     }
-
+                    
                     fclose($handle);
-
+                    
                     $this->lines[$v] = $linecount;
-
+                    
                     $file_explode = explode('.', $v);
                     $file_type = $file_explode[count($file_explode) -1 ];
                     if (!isset($this->lines_type[$file_type])) {
