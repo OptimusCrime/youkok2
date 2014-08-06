@@ -92,6 +92,7 @@ class Youkok2 {
         $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
         $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($this->routes['archive'][0], 1) . '/');
         $this->template->assign('SITE_EMAIL_CONTACT', SITE_EMAIL_CONTACT);
+        $this->template->assign('SEARCH_QUERY', '');
         
         // Check if in panic mode or not
         if ($kill == false) {

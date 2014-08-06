@@ -108,7 +108,11 @@ class Loader {
         'graybox' => array(
             '/graybox',
         ),
-    );
+
+        'search' => array(
+            '/sok',
+        )
+     );
 
     //
     // Constructor
