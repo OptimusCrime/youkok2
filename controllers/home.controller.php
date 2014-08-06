@@ -334,7 +334,7 @@ class HomeController extends Youkok2 {
         $get_dowload_number_result = $get_download_number_query->fetch(PDO::FETCH_ASSOC);
         
         // Return text
-        return '<h3>Hei og velkommen til Youkok2. Den beste kokeboka på nettet!</h3><p>Vi har for tiden <b>' . number_format($get_user_number_result['antall_brukere']) . '</b> registrerte brukere, <b>' . number_format($get_file_number_result['antall_filer']) . '</b> filer og totalt <b>' . number_format($get_dowload_number_result['antall_nedlastninger']) . '</b> nedlastninger i vårt system.</p><p>Som registrerte brukere på Youkok2 får mulighet til å lagre favoritter, se sine siste nedlastninger, samt muligheten til å laste opp filer og å bidra til å gjøre Youkok2 enda bedre. Du kan lese mer om dette i <a href="om">om-seksjonen</a> vår.</p><p>La oss gjøre studiehverdagen enklere, sammen!</p><p>- Youkok2</p>';
+        return '<h1>Hei og velkommen til Youkok2. Den beste kokeboka på nettet!</h1><p>Vi har for tiden <b>' . number_format($get_user_number_result['antall_brukere']) . '</b> registrerte brukere, <b>' . number_format($get_file_number_result['antall_filer']) . '</b> filer og totalt <b>' . number_format($get_dowload_number_result['antall_nedlastninger']) . '</b> nedlastninger i vårt system.</p><p>Som registrerte brukere på Youkok2 får mulighet til å lagre favoritter, se sine siste nedlastninger, samt muligheten til å laste opp filer og å bidra til å gjøre Youkok2 enda bedre. Du kan lese mer om dette i <a href="om">om-seksjonen</a> vår.</p><p>La oss gjøre studiehverdagen enklere, sammen!</p><p>- Youkok2</p>';
     }
 }
 

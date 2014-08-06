@@ -197,6 +197,9 @@ a, a:focus, a:active, a:visited {
 .dropdown-menu .disabled a, .dropdown-menu .disabled a:hover {
     color: #999999;
 }
+#frontpage-wellholder h1 {
+    font-size: 24px;
+}
 
 /*
     Archive
@@ -251,13 +254,17 @@ a, a:focus, a:active, a:visited {
     z-index: 100;
 }
 .archive-item-label {
-    width: 100%;
+    width: 100px;
     text-align: center;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     z-index: 100;
-    font-size: 12px;
+}
+.archive-item-label h4 {
+    font-size: 11.5px;
+    color: #3498db;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 .archive-badge {
     background-color: #d9534f;
@@ -332,6 +339,23 @@ a, a:focus, a:active, a:visited {
     display: none;
     border-top: 1px solid gray;
     padding-top: 5px;
+}
+#archive-title h1, #archive-title h2 {
+    display: inline-block;
+}
+#archive-title h2 {
+    font-size: 22px;
+    margin: 0px;
+}
+#archive-title i {
+    font-size: 24px;
+    margin: 0px;
+    padding-left: 5px;
+}
+#archive-title span {
+    font-size: 36px;
+    margin-bottom: 10px;
+    margin-top: 20px;
 }
 
 /*

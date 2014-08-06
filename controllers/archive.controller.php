@@ -30,7 +30,7 @@ class ArchiveController extends Youkok2 {
             $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
         
             // Get title
-            $this->template->assign('ARCHIVE_TITLE', 'Arkiv');
+            $this->template->assign('ARCHIVE_TITLE', 'Kokeboka');
             
             // Check if cached
             if (!$this->template->isCached('archive.tpl', $this->queryGetClean())) {
@@ -40,7 +40,7 @@ class ArchiveController extends Youkok2 {
                 $this->template->assign('ARCHIVE_DISPLAY', $this->loadCourses());
 
                 // Get breadcrumbs
-                $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Arkiv</li>');
+                $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Kokeboka</li>');
             }
         }
         else {
@@ -78,12 +78,12 @@ class ArchiveController extends Youkok2 {
                     $this->template->assign('ARCHIVE_ACCEPTED_FILEENDINGS', json_encode($accepted_fileending));
                     
                     // Get title
-                    $archive_title = $item->getName();
+                    $archive_title = '<h1>' . $item->getName() . '</h1>';
                     if ($item->hasCourse()) {
-                        $archive_title .= ' - <span class="archive-title-smaller">' . $item->getCourse()->getName() . '</span>';
+                        $archive_title .= '<span> - </span><h2>' . $item->getCourse()->getName() . '</h2>';
                     }
                     if ($this->user->isLoggedIn()) {
-                        $archive_title .= ' <small><i class="fa fa-star archive-heading-star-' . $item->isFavorite() . '" data-archive-id="' . $item->getId() . '" id="archive-heading-star"></i></small>';
+                        $archive_title .= ' <i class="fa fa-star archive-heading-star-' . $item->isFavorite() . '" data-archive-id="' . $item->getId() . '" id="archive-heading-star"></i>';
                     }
                     
                     // Assign to Smarty
@@ -215,7 +215,7 @@ class ArchiveController extends Youkok2 {
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($item->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/folder.png\');"></div>
-                                        <div class="archive-item-label"><p>' . $item->getName() . '</p></div>
+                                        <div class="archive-item-label"><h4>' . $item->getName() . '</h4></div>
                                     </div>
                                 </a>
                             </li>';
@@ -228,7 +228,7 @@ class ArchiveController extends Youkok2 {
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         ' . ($item->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . ($item->getMissingImage() ? 'unknown' : $item->getMimeType()) . '.png\');"></div>
-                                        <div class="archive-item-label"><p>' . $item->getName() . '</p></div>
+                                        <div class="archive-item-label"><h4>' . $item->getName() . '</h4></div>
                                     </div>
                                 </a>
                             </li>';

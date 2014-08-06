@@ -139,7 +139,9 @@
     </ol>
     
     [[+nocache]]
-        <h1>[[+$ARCHIVE_TITLE]]</h1>
+        <div id="archive-title">
+            [[+$ARCHIVE_TITLE]]
+        </div>
     [[+/nocache]]
     [[+if $ARCHIVE_MODE == 'browse']]
         [[+nocache]]
