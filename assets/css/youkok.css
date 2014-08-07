@@ -340,6 +340,11 @@ a, a:focus, a:active, a:visited {
     cursor: pointer;
     user-select: none;
 }
+#archive-zip {
+    float: right;
+    margin-top: 37px;
+    display: none;
+}
 .archive-title-smaller {
     font-size: 22px;
 }

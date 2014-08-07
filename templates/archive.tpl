@@ -141,6 +141,7 @@
     [[+nocache]]
         <div id="archive-title">
             [[+$ARCHIVE_TITLE]]
+            [[+if $ARCHIVE_MODE == 'browse']]<a id="archive-zip" href="[[+$ARCHIVE_ZIP_DOWNLOAD]]">Last ned som .zip</a>[[+/if]]
         </div>
     [[+/nocache]]
     [[+if $ARCHIVE_MODE == 'browse']]

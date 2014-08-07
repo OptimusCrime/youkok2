@@ -792,6 +792,23 @@ $(document).ready(function () {
         $('#archive-list').hide();
         $('#archive-empty').show();
     }
+    
+    //
+    // Check if should display zip-message
+    //
+    
+    if ($('#archive-list').length > 0) {
+        var display = false;
+        $('#archive-list li').each(function () {
+            if (display == false && $(this).find('div').data('type') == 'file') {
+                display = true;
+            }
+        });
+        
+        if (display) {
+            $('#archive-zip').show();
+        }
+    }
 
     //
     // Create file

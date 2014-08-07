@@ -88,6 +88,7 @@ class ArchiveController extends Youkok2 {
                     
                     // Assign to Smarty
                     $this->template->assign('ARCHIVE_TITLE', $archive_title);
+                    $this->template->assign('ARCHIVE_ZIP_DOWNLOAD', $item->generateUrl($this->routes['download'][0]));
                     
                     // List every single element that has this element as a parent
                     $this->template->assign('ARCHIVE_DISPLAY', $this->loadArchive($item->getId()));

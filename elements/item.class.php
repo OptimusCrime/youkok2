@@ -62,6 +62,10 @@ class Item {
     // Cache
     private $cache;
     
+    // Static options
+    public static $file = 0;
+    public static $dir = 1;
+    
     //
     // Constructor
     //
@@ -756,5 +760,35 @@ class Item {
 
         // Implode and return
         return implode(', ', $cache_temp);
+    }
+    
+    //
+    // Get children
+    //
+    
+    public function getChildren($flag = null) {
+        $children = array();
+        $subquery = '';
+        
+        if ($flag !== null) {
+            $subquery = ' AND is_directory = ' . $flag;
+        }
+        
+        // Load all favorites
+        $get_children_ids = "SELECT id
+        FROM archive
+        WHERE parent = :parent" . $subquery;
+        
+        $get_children_ids_query = $this->controller->db->prepare($get_children_ids);
+        $get_children_ids_query->execute(array(':parent' => $this->getId()));
+        while ($row = $get_children_ids_query->fetch(PDO::FETCH_ASSOC)) {
+            $element = new Item($this->controller);
+            $element->setLoadFullLocation(true);
+            $element->createById($row['id']);
+            $this->controller->collection->add($element);
+            $children[] = $element;
+        }
+        
+        return $children;
     }
 }
