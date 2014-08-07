@@ -44,7 +44,7 @@ class DownloadController extends Youkok2 {
                     }
 
                     // Check if we should return fake http response to facebook crawler
-                    if (strpos($_SERVER['HTTP_USER_AGENT'], 'facebook') !== false) {
+                    if (isset($_SERVER['HTTP_USER_AGENT']) and strpos($_SERVER['HTTP_USER_AGENT'], 'facebook') !== false) {
                         // Facebook crawler
                         $this->template->assign('DOWNLOAD_FILE', $item->getName());
                         $this->template->assign('DOWNLOAD_SIZE', $item->getSizePretty());
