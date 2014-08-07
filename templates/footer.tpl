@@ -5,17 +5,17 @@
     <div class="row">
         <div class="col-md-12" id="footer">
             <p>
-                <a href="changelog.txt"><span class="first">Youkok2 v[[+$VERSION]]</span></a> ::
-                <span><a href="om">Om Youkok2</a></span> ::
-                <span><a href="retningslinjer">Retningslinjer</a></span> ::
-                <span><a href="privacy">Privacy og så videre</a></span> ::
-                <span><a href="hjelp">Hjelp</a></span> ::
-                <span class="last"><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>
+                <a href="changelog.txt"><span class="first">Youkok2 v[[+$VERSION]]</span></a>::
+                <span><a href="om">Om Youkok2</a></span>::
+                <span><a href="retningslinjer">Retningslinjer</a></span>::
+                <span><a href="privacy">Privacy og så videre</a></span>::
+                <span><a href="hjelp">Hjelp</a></span>::
+                <span><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>::
+                <span class="last">[[+$DEV_TIME]] ms</span>
             </p>
             [[+nocache]]
                 [[+if $DEV]]
                     <p>
-                        <span class="first">Parse time: [[+$DEV_TIME]]</span> ::
                         <span>Antall queries: [[+$DEV_QUERIES_NUM]]</span> ::
                         <span class="last"><a id="toggle-queries" href="#"><span class="nopadd">Vis</span> alle queries</a></span>
                     </p>

@@ -39,10 +39,8 @@ class Youkok2 {
     //
 
     public function __construct($routes, $kill = false) {
-        // If development, start time here
-        if (DEV) {
-            $this->startTime = MICROTIME(TRUE);
-        }
+        // Store start time
+        $this->startTime = microtime(true);
         
         // Starting session, if not already started
         if (session_status() === PHP_SESSION_NONE) {
@@ -298,8 +296,6 @@ class Youkok2 {
     protected function displayAndCleanup($template, $sid = null) {
         // If develop, assign dev variables
         if (DEV) {
-            $this->endTime = MICROTIME(TRUE);
-            $this->template->assign('DEV_TIME', $this->endTime - $this->startTime);
             $this->template->assign('DEV_QUERIES_NUM', number_format($this->db->getCount()));
             $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->sqlLog));
         }
@@ -312,6 +308,11 @@ class Youkok2 {
         
         // Load cache
         $this->cacheManager->loadTypeaheadCache();
+        
+        // Display load time
+        $this->endTime = microtime(true);
+        $microtime_calc = round((($this->endTime - $this->startTime)*1000), 4);
+        $this->template->assign('DEV_TIME', $microtime_calc);
         
         // Call Smarty
         $this->template->display($template, $sid);
