@@ -1,13 +1,13 @@
 #!/bin/bash
-echo -e "\033[0;33mExecuting git pull\033[0m \n"
+echo "\033[0;33mExecuting git pull\033[0m \n"
 git pull --progress
 
-echo -e "\n\033[0;33mExecuting git fetch\033[0m \n"
+echo "\n\033[0;33mExecuting git fetch\033[0m \n"
 git fetch --progress
-echo -e "All done."
+echo "All done."
 
-echo -e "\n\033[0;33mClearing cache\033[0m \n"
+echo "\n\033[0;33mClearing cache\033[0m \n"
 php "_upgrade/clearcache.class.php"
 
-echo -e "\n\033[0;33mRunning migrations\033[0m \n"
+echo "\n\033[0;33mRunning migrations\033[0m \n"
 php vendor/bin/phinx migrate -e production
