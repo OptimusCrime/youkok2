@@ -1,5 +1,5 @@
-Youkok2 - 1.0.0-pl (xx. august, 2014)
-=====================================
+Youkok2 - 0.1.1-pl (7. august, 2014)
+====================================
 
 - [New] Introduuucing, søk!
 - [New] Man kan nå fjerne favoritter fra forsiden.
