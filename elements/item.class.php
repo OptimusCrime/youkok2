@@ -473,7 +473,11 @@ class Item {
                 }
 
                 // Get the url piece
-                $temp_url[] = $temp_item->getUrlFriendly();
+                $temp_url_friendly = $temp_item->getUrlFriendly();
+                if (strlen($temp_url_friendly) > 0) {
+                    $temp_url[] = $temp_url_friendly;
+                }
+                
 
                 // Update id
                 $temp_id = $temp_item->getParent();
@@ -494,7 +498,7 @@ class Item {
         }
 
         // Return goes here!
-        return substr($path, 1) . implode('/', $this->fullUrl) . ($this->directory ? '/' : '');
+        return substr($path, 1) . '/' . implode('/', $this->fullUrl) . ($this->directory ? '/' : '');
     }
 
     //
