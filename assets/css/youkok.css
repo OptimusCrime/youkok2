@@ -207,9 +207,7 @@ a, a:focus, a:active, a:visited {
     display: block;
 }
 .star-remove {
-    position: absolute;
-    right: 15px;
-    top: 11px;
+    float: right;
     color: #ff4136;
     cursor: pointer;
     font-size: 18px;
