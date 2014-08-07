@@ -1,3 +1,12 @@
+Youkok2 - 1.0.0.-pl (xx. august, 2014)
+=====================================
+
+- [Info] Første "ordentlige" lansering.
+- [New] Batch/ZIP nedlastning av alle filer i en mappe.
+- [Fixed] Feil som var igjen etter debugging, som gjorde at avstemningen ikke fungerte som den skulle.
+- [Other] Skrevet om flere tekster.
+- [Other] Et dusin mindre bugfixes
+
 Youkok2 - 0.1.1-pl (7. august, 2014)
 ====================================
 
