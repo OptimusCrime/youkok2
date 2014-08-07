@@ -524,30 +524,11 @@ class ProcessorController extends Youkok2 {
                         }
                         $upload_full_location = FILE_ROOT . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($this_file_name);
                         
-                        // Check duplicates for url friendly
-                        $url_friendly = $this->utils->generateUrlFriendly($_FILES['files']['name'][0], true);
-                        $num = 2;
-                        while (true) {
-                            $get_duplicate = "SELECT id
-                            FROM archive 
-                            WHERE parent = :id
-                            AND url_friendly = :url_friendly";
-                            
-                            $get_duplicate_query = $this->db->prepare($get_duplicate);
-                            $get_duplicate_query->execute(array(':id' => $item->getId(), ':url_friendly' => $url_friendly));
-                            $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
-                            if (isset($row_duplicate['id'])) {
-                                $url_friendly = $this->utils->generateUrlFriendly($letters[rand(0, count($letters) - 1)] . $url_friendly);
-                                $num++;
-                            }
-                            else {
-                                // Gogog
-                                break;
-                            }
-                        }
-
                         // Check duplicates for name
-                        $real_name = $_FILES['files']['name'][0];
+                        $real_name = explode('.', $_FILES['files']['name'][0]);
+                        $real_name_ending = $real_name[count($real_name) - 1];
+                        unset($real_name[count($real_name) - 1]);
+                        
                         $name = $_FILES['files']['name'][0];
                         $num = 2;
                         while (true) {
@@ -560,9 +541,28 @@ class ProcessorController extends Youkok2 {
                             $get_duplicate_query->execute(array(':id' => $item->getId(), ':name' => $name));
                             $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
                             if (isset($row_duplicate['id'])) {
-                                $name = $real_name . ' (' . $num . ')';
+                                $name = implode('.', $real_name)  . ' (' . $num . ').' . $real_name_ending;
                                 $num++;
+                            }
+                            else {
+                                // Gogog
                                 break;
+                            }
+                        }
+                        
+                        // Check duplicates for url friendly
+                        $url_friendly = $this->utils->generateUrlFriendly($name, true);
+                        while (true) {
+                            $get_duplicate = "SELECT id
+                            FROM archive 
+                            WHERE parent = :id
+                            AND url_friendly = :url_friendly";
+                            
+                            $get_duplicate_query = $this->db->prepare($get_duplicate);
+                            $get_duplicate_query->execute(array(':id' => $item->getId(), ':url_friendly' => $url_friendly));
+                            $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
+                            if (isset($row_duplicate['id'])) {
+                                $url_friendly = $this->utils->generateUrlFriendly($letters[rand(0, count($letters) - 1)] . $url_friendly);
                             }
                             else {
                                 // Gogog
@@ -662,7 +662,17 @@ class ProcessorController extends Youkok2 {
                 $this->collection->addIfDoesNotExist($item);
                 $element = $this->collection->get($_POST['id']);
                 
-                if ($element == null) {
+                // Check that new name has correct fileending
+                $incorrect_new_name = false;
+                if (!$element->isDirectory()) {
+                    $original_ending_split = explode('.', $element->getName());
+                    $original_ending = '.' . $original_ending_split[count($original_ending_split) - 1];
+                    if ($original_ending != $_POST['filetype']) {
+                        $incorrect_new_name = true;
+                    }
+                }
+                    
+                if ($element == null or $incorrect_new_name) {
                     // WTF
                     $response['code'] = 500;
                 }

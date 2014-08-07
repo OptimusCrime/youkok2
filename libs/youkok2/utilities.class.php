@@ -43,7 +43,7 @@ class Utils {
             $s = str_replace(' ', '_', $s);
         }
 
-        $s = preg_replace('![^-_a-z0-9\s]+!', '', strtolower($s));
+        $s = preg_replace('![^-_a-z0-9\s\.]+!', '', strtolower($s));
         
         return $s;
     }
