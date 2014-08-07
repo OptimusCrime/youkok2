@@ -571,7 +571,7 @@ class ProcessorController extends Youkok2 {
                         }
                         
                         // Test for missing image
-                        if (file_exists(BASE_PATH . '/assets/css/lib/images/mimetypes128/' . str_replace('/', '_', $_FILES['files']['type'][0]) . '.png')) {
+                        if (file_exists(BASE_PATH . '/assets/css/lib/images/mimetypes64/' . str_replace('/', '_', $_FILES['files']['type'][0]) . '.png')) {
                             $has_missing_image = 0;
                         }
                         else {
