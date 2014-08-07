@@ -1171,6 +1171,45 @@ $(document).ready(function () {
     $('.list-group-item a').tooltip();
     
     //
+    // Remove favorite from frontpage
+    //
+    
+    var removing_fav = false;
+    $('.star-remove').on('click', function () {
+        $el = $(this);
+        
+        if (!removing_fav) {
+            removing_fav = true;
+            $.ajax({
+                cache: false,
+                type: "post",
+                url: "processor/favorite/remove",
+                data: { 
+                    id: $el.data('id') 
+                },
+                success: function(json) {
+                    if (json.code == 200) {
+                        // Everything went better than expected :)
+                        $el.parent().slideUp(function () {
+                            $(this).remove();
+                            if ($('#favorites-list li').length == 0) {
+                                $('#favorites-list').html('<li class="list-group-item" style="display: none;"><em>Du har ingen favoritter...</em></li>');
+                                $('#favorites-list li').slideDown();
+                            }
+                            removing_fav = false;
+                        })
+                    }
+                    else {
+                        // Something went wrong
+                        alert('Noe gikk visst galt her. Ups!');
+                        removing_fav = false;
+                    }
+                }
+            });
+        }
+    });
+    
+    //
     // Debug
     //
     

@@ -28,7 +28,7 @@
         <div class="list-header">
             <h2>Mine favoritter</h2>
         </div>
-        <ul class="list-group">
+        <ul class="list-group" id="favorites-list">
             [[+$HOME_USER_FAVORITES]]
         </ul>
     </div>

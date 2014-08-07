@@ -200,6 +200,20 @@ a, a:focus, a:active, a:visited {
 #frontpage-wellholder h1 {
     font-size: 24px;
 }
+.list-group-star .star-remove {
+    display: none;
+}
+.list-group-star:hover .star-remove {
+    display: block;
+}
+.star-remove {
+    position: absolute;
+    right: 15px;
+    top: 11px;
+    color: #ff4136;
+    cursor: pointer;
+    font-size: 18px;
+}
 
 /*
     Archive
