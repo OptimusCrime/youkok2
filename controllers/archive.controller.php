@@ -213,7 +213,7 @@ class ArchiveController extends Youkok2 {
                                 <a title="' . $item->getName() . '" href="' . $item->generateUrl($this->routes['archive'][0]) . '">
                                     <div class="archive-item' . ($item->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $item->isFavorite($this->user) . '" data-id="' . $item->getId() . '" data-type="dir" data-name="' . $item->getName() . '" data-flags="' . $flag_count . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
-                                        <div class="archive-badge archive-badge-right"><i class="fa fa-comments-o"></i></div>
+                                        <div class="archive-badge archive-badge-right hidden"><i class="fa fa-comments-o"></i></div>
                                         ' . ($item->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/folder.png\');"></div>
                                         <div class="archive-item-label"><h4>' . $item->getName() . '</h4></div>
@@ -227,7 +227,7 @@ class ArchiveController extends Youkok2 {
                                 <a title="' . $item->getName() . '" rel="nofollow" href="' . $item->generateUrl($this->routes['download'][0]) . '">
                                     <div class="archive-item' . ($item->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $item->isFavorite($this->user) . '" data-id="' . $item->getId() . '" data-type="file" data-name="' . $item->getName() . '" data-flags="' . $flag_count . '" data-size="' . $item->getSize() . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
-                                        <div class="archive-badge archive-badge-right"><i class="fa fa-comment"></i></div>
+                                        <div class="archive-badge archive-badge-right hidden"><i class="fa fa-comment"></i></div>
                                         ' . ($item->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
                                         <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . ($item->getMissingImage() ? 'unknown' : $item->getMimeType()) . '.png\');"></div>
                                         <div class="archive-item-label"><h4>' . $item->getName() . '</h4></div>
