@@ -324,7 +324,7 @@ class ProcessorController extends Youkok2 {
                             $flag_votes = $flag->getVotes();
 
                             // Check if has voted
-                            if ($flag->userHasVoted()) {
+                            if (!$flag->userHasVoted()) {
                                 // Insert
                                 $vote = new Vote($this);
                                 $vote->setUser($this->user->getId());
