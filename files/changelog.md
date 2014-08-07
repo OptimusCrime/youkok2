@@ -2,6 +2,7 @@ Youkok2 - 1.0.0-pl (xx. august, 2014)
 =====================================
 
 - [New] Introduuucing, søk!
+- [New] Man kan nå fjerne favoritter fra forsiden.
 - [Fixed] Hover fungerte ikke når man endret mest populære på forsiden.
 - [Fixed] Hvis man har stjernet et fag vises navnet på faget i hover.
 - [Enhanced] Fjernet drøssevis av ikoner som ikke var i bruk.
