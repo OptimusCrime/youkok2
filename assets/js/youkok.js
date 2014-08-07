@@ -1197,7 +1197,10 @@ $(document).ready(function () {
                                 $('#favorites-list li').slideDown();
                             }
                             removing_fav = false;
-                        })
+                        });
+                        
+                        // Display message
+                        display_message(json.msg);
                     }
                     else {
                         // Something went wrong
