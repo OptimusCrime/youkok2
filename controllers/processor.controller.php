@@ -460,7 +460,7 @@ class ProcessorController extends Youkok2 {
                         // Add history
                         $this->addHistory($this->user->getId(), $element_id,
                                           null, 1,
-                                          '%u opprettet <b>' . $_POST['name'] . '</b>.',
+                                          '%u opprettet ' . $_POST['name'],
                                           1);
 
                         // Add karma to pending
@@ -610,7 +610,7 @@ class ProcessorController extends Youkok2 {
                         // Add history
                         $this->addHistory($this->user->getId(), $element_id,
                                           null, 2,
-                                          '%u lastet opp <b>' . $name . '</b>.',
+                                          '%u lastet opp ' . $name,
                                           5);
 
                         // Add karma to pending
