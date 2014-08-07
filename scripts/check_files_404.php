@@ -2,13 +2,22 @@
 // Set headers
 header('Content-Type: text/html; charset=utf-8');
 
-// Variables
-$base_path = dirname(dirname(__FILE__));
-
 // Includes
-require_once $base_path . '/local.php';
-require_once $base_path . '/elements/collection.class.php';
-require_once $base_path . '/elements/item.class.php';
+require_once '../local.php';
+
+require_once BASE_PATH . '/libs/pdo2/pdo2.class.php';
+require_once BASE_PATH . '/libs/pdo2/pdostatement2.class.php';
+require_once BASE_PATH . '/libs/phpmailer/class.phpmailer.php';
+require_once BASE_PATH . '/libs/smarty/Smarty.class.php';
+require_once BASE_PATH . '/libs/youkok2/cachemanager.class.php';
+require_once BASE_PATH . '/libs/youkok2/executioner.class.php';
+require_once BASE_PATH . '/libs/youkok2/utilities.class.php';
+
+require_once BASE_PATH . '/elements/collection.class.php';
+require_once BASE_PATH . '/elements/item.class.php';
+require_once BASE_PATH . '/elements/user.class.php';
+
+require_once BASE_PATH . '/controllers/youkok2.controller.php';
 
 
 // Connect to database
@@ -26,11 +35,7 @@ if ($db) {
     $success_num = 0;
     $error_num = 0;
     
-    // Init collection with root element
-    $collection = new Collection();
-    $root_element = new Item($collection, $db);
-    $root_element->createById(1);
-    $collection->add($root_element);
+    $controller = new Youkok2(array('download' => '/last-ned'));
     
     // Search all files in the system
     $get_all_items = "SELECT id
@@ -42,9 +47,9 @@ if ($db) {
     $get_all_items_query->execute();
     while ($row = $get_all_items_query->fetch(PDO::FETCH_ASSOC)) {
         // Create element
-        $element = new Item($collection, $db);
+        $element = new Item($controller);
         $element->createById($row['id']);
-        $collection->add($element);
+        $controller->collection->add($element);
         
         // Generate full url
         $url = SITE_URL_FULL . $element->generateUrl('/last-ned') . '?donotlogthisdownload';
