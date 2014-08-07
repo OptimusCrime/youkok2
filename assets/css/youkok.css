@@ -292,9 +292,14 @@ a, a:focus, a:active, a:visited {
     vertical-align: baseline;
     white-space: nowrap;
     position: absolute;
-    left: 13px;
+    left: 5px;
     top: 0px;
     z-index: 1000;
+}
+.archive-badge-right {
+    right: 16px;
+    left: auto;
+
 }
 .archive-overlay {
     background-image: urL('gfx/archive-overlay.png');
