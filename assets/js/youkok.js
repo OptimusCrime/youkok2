@@ -971,9 +971,14 @@ $(document).ready(function () {
         $('#modal-new-flag .modal-title').html('Endre navn på: ' + $archive_right_click.data('name'));
 
         // Set filetype
-        var filetype_index = $archive_right_click.data('name').lastIndexOf('.');
-        $('#modal-new-flag-name .input-group .input-group-addon').html($archive_right_click.data('name').substr(filetype_index));
-
+        if ($archive_right_click.data('type') == 'dir') {
+            $('#modal-new-flag-name .input-group .input-group-addon').html(' ');
+        }
+        else {
+            var filetype_index = $archive_right_click.data('name').lastIndexOf('.');
+            $('#modal-new-flag-name .input-group .input-group-addon').html($archive_right_click.data('name').substr(filetype_index));
+        }
+        
         // Show modal
         $('#modal-new-flag').modal('show');
 

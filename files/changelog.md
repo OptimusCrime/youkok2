@@ -5,6 +5,7 @@ Youkok2 - 1.0.0-pl (xx. august, 2014)
 - [New] Man kan nå fjerne favoritter fra forsiden.
 - [Fixed] Hover fungerte ikke når man endret mest populære på forsiden.
 - [Fixed] Hvis man har stjernet et fag vises navnet på faget i hover.
+- [Fixed] Feil hvor opprettelse av flagg for å gi nytt navn til en mappe hadde "filendelse".
 - [Enhanced] Fjernet drøssevis av ikoner som ikke var i bruk.
 
 Youkok2 - 0.1.0-pl (4. august, 2014)
