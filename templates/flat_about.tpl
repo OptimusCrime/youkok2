@@ -25,6 +25,8 @@
         <li><a href="http://www.smarty.net" target="_blank">Smarty</a></li>
         <li><a href="https://github.com/Synchro/PHPMailer" target="_blank">PHPMailer</a></li>
         <li><a href="https://github.com/matthiasmullie/minify" target="_blank">Minify</a></li>
+        <li><a href="https://getcomposer.org/" target="_blank">Composer</a></li>
+        <li><a href="http://phinx.org/" target="_blank">Phinx</a></li>
     </ul>
     <ul>
         <li><a href="http://getbootstrap.com" target="_blank">Bootstrap</a></li>
