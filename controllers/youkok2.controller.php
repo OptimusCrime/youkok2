@@ -76,6 +76,8 @@ class Youkok2 {
         
         // Init Smarty
         $this->template = new Smarty();
+        $this->template->left_delimiter = '[[+'; 
+        $this->template->right_delimiter = ']]';
         
         // Set caching
         $this->template->setCacheDir(BASE_PATH . '/cache/');
