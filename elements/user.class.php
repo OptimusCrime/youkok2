@@ -289,7 +289,7 @@ Class User {
 
         // Check if the hash should be fucked up in addition
         if ($hard) {
-            return password_fuckup($hash);
+            return $this->controller->utils->passwordFuckup($hash);
         }
         else {
             return $hash;

@@ -47,4 +47,19 @@ class Utils {
         
         return $s;
     }
+    
+    //
+    // Because simple hash is too simple!
+    //
+
+    public function passwordFuckup($s) {
+        // Split the hash
+        $splits = array(substr($s, 0, 5),
+            substr($s, 5, 5),
+            substr($s, 10, 10),
+            substr($s, 20));
+
+        // Rejoin and full with stuff
+        return $splits[0] . $splits[1] . 'kebab' . $splits[3] . md5('ingrid vold') . 'hslee' . $splits[2] . 'yolo';
+    }
 }
