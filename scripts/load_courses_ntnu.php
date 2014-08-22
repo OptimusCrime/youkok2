@@ -3,7 +3,6 @@
 header('Content-Type: text/html; charset=utf-8');
 
 // Variables
-$base_path = dirname(dirname(__FILE__));
 $clean = array();
 $page = 1;
 $db = null;
@@ -11,7 +10,7 @@ $to_json = array();
 $log = array();
 
 // Includes
-require_once $base_path . '/local.php';
+require '../local.php';
 
 // Method for cleaning urls
 function url_friendly($s) {
@@ -84,7 +83,7 @@ if ($db) {
                     $log[] = '<span style="color: green;"><b>' . $v['code'] . '</b> was not found in the archive table.</span>';
 
                     // Check if the directory exists
-                    $directory_check = $base_path . FILE_ROOT . '/' . $v['directory'];
+                    $directory_check = BASE_PATH . FILE_ROOT . '/' . $v['directory'];
                     if (is_dir($directory_check)) {
                         $log[] = '<span style="color: red;"><b>' . $directory_check . '</b> directory exists in the file system. Not created!</span>';
                     }
@@ -148,14 +147,14 @@ if ($db) {
     }
 
     // Put content to file
-    file_put_contents($base_path . '/processor/search/courses.json', json_encode($to_json));
+    file_put_contents(BASE_PATH . '/processor/search/courses.json', json_encode($to_json));
     
     // Update cache settings
-    if (file_exists($base_path . '/cache/typeahead.json')) {
+    if (file_exists(BASE_PATH . '/cache/typeahead.json')) {
         // File in place
         $cache_content = json_encode(array('ts' => time()));
         
-        file_put_contents($base_path . '/cache/typeahead.json', $cache_content);
+        file_put_contents(BASE_PATH . '/cache/typeahead.json', $cache_content);
     }
     else {
         // Missing cache file, return error

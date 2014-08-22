@@ -3,8 +3,7 @@
 header('Content-Type: text/html; charset=utf-8');
 
 // Variables
-$base_path = dirname(dirname(__FILE__));
-require_once $base_path . '/local.php';
+require '../local.php';
 
 // Connect to database
 try {

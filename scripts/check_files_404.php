@@ -3,19 +3,21 @@
 header('Content-Type: text/html; charset=utf-8');
 
 // Includes
-require_once '../local.php';
+require '../local.php';
 
-require_once BASE_PATH . '/libs/pdo2/pdo2.class.php';
-require_once BASE_PATH . '/libs/pdo2/pdostatement2.class.php';
-require_once BASE_PATH . '/libs/youkok2/cachemanager.class.php';
-require_once BASE_PATH . '/libs/youkok2/executioner.class.php';
-require_once BASE_PATH . '/libs/youkok2/utilities.class.php';
+require BASE_PATH . '/vendor/autoload.php';
 
-require_once BASE_PATH . '/elements/collection.class.php';
-require_once BASE_PATH . '/elements/item.class.php';
-require_once BASE_PATH . '/elements/user.class.php';
+require BASE_PATH . '/libs/pdo2/pdo2.class.php';
+require BASE_PATH . '/libs/pdo2/pdostatement2.class.php';
+require BASE_PATH . '/libs/youkok2/cachemanager.class.php';
+require BASE_PATH . '/libs/youkok2/executioner.class.php';
+require BASE_PATH . '/libs/youkok2/utilities.class.php';
 
-require_once BASE_PATH . '/controllers/youkok2.controller.php';
+require BASE_PATH . '/elements/collection.class.php';
+require BASE_PATH . '/elements/item.class.php';
+require BASE_PATH . '/elements/user.class.php';
+
+require BASE_PATH . '/controllers/youkok2.controller.php';
 
 
 // Connect to database

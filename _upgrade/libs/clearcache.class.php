@@ -19,13 +19,14 @@ Class ClearCache {
         // Trying to include base
         //
         
-        $local_file = dirname(dirname(__FILE__)) . '/local.php';
+        $local_file = '../../local.php';
         if (!file_exists($local_file)) {
             die("Please create your local.php-file");
         }
         
         // Include base
-        include_once $local_file;
+        require $local_file;
+        require BASE_PATH . '/vendor/autoload.php';
 
         //
         // Typehead backup

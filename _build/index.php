@@ -11,14 +11,14 @@
 // Include the libs
 //
 
-require_once '../local.php';
+require '../local.php';
 
-require_once BASE_PATH . '/_build/libs/minify/Minify.php';
-require_once BASE_PATH . '/_build/libs/minify/CSS.php';
-require_once BASE_PATH . '/_build/libs/minify/JS.php';
-require_once BASE_PATH . '/_build/libs/minify/Exception.php';
+require BASE_PATH . '/_build/libs/minify/Minify.php';
+require BASE_PATH . '/_build/libs/minify/CSS.php';
+require BASE_PATH . '/_build/libs/minify/JS.php';
+require BASE_PATH . '/_build/libs/minify/Exception.php';
 
-require_once BASE_PATH . '/_build/libs/youkok2/linecounter.class.php';
+require BASE_PATH . '/_build/libs/youkok2/linecounter.class.php';
 
 //
 // Set namespace
