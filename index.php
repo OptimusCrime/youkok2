@@ -20,6 +20,8 @@ header('Content-Type: text/html; charset=utf-8');
 
 require 'local.php';
 
+require BASE_PATH . '/vendor/autoload.php';
+
 require BASE_PATH . '/libs/pdo2/pdo2.class.php';
 require BASE_PATH . '/libs/pdo2/pdostatement2.class.php';
 require BASE_PATH . '/libs/youkok2/cachemanager.class.php';

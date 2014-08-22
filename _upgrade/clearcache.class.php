@@ -41,9 +41,6 @@ Class ClearCache {
         // Clear Smarty Cache
         //
 
-        // Include Smarty
-        require_once BASE_PATH . '/libs/smarty/Smarty.class.php';
-
         // New Smarty instance
         $smarty = new Smarty();
         $smarty->setCacheDir(BASE_PATH . '/cache/');
