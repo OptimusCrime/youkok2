@@ -7,8 +7,6 @@ require_once '../local.php';
 
 require_once BASE_PATH . '/libs/pdo2/pdo2.class.php';
 require_once BASE_PATH . '/libs/pdo2/pdostatement2.class.php';
-require_once BASE_PATH . '/libs/phpmailer/class.phpmailer.php';
-require_once BASE_PATH . '/libs/smarty/Smarty.class.php';
 require_once BASE_PATH . '/libs/youkok2/cachemanager.class.php';
 require_once BASE_PATH . '/libs/youkok2/executioner.class.php';
 require_once BASE_PATH . '/libs/youkok2/utilities.class.php';
