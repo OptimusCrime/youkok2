@@ -30,13 +30,12 @@ class ArchiveController extends Youkok2 {
             $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
         
             // Get title
-            $this->template->assign('ARCHIVE_TITLE', 'Kokeboka');
+            $this->template->assign('ARCHIVE_TITLE', '<h1>Kokeboka</h1>');
+            $this->template->assign('ARCHIVE_MODE', 'list');
             
             // Check if cached
             if (!$this->template->isCached('archive.tpl', $this->queryGetClean())) {
                 // Not cached, load courses
-                $this->template->assign('SITE_TITLE', 'Kokeboka');
-                $this->template->assign('ARCHIVE_MODE', 'list');
                 $this->template->assign('ARCHIVE_DISPLAY', $this->loadCourses());
 
                 // Get breadcrumbs
