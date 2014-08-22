@@ -18,26 +18,23 @@ header('Content-Type: text/html; charset=utf-8');
 // Include the libraries and system-files
 //
 
-require_once 'local.php';
+require 'local.php';
 
-require_once BASE_PATH . '/libs/bcrypt/bcrypt.php';
-require_once BASE_PATH . '/libs/pdo2/pdo2.class.php';
-require_once BASE_PATH . '/libs/pdo2/pdostatement2.class.php';
-require_once BASE_PATH . '/libs/phpmailer/class.phpmailer.php';
-require_once BASE_PATH . '/libs/smarty/Smarty.class.php';
-require_once BASE_PATH . '/libs/youkok2/cachemanager.class.php';
-require_once BASE_PATH . '/libs/youkok2/executioner.class.php';
-require_once BASE_PATH . '/libs/youkok2/utilities.class.php';
+require BASE_PATH . '/libs/pdo2/pdo2.class.php';
+require BASE_PATH . '/libs/pdo2/pdostatement2.class.php';
+require BASE_PATH . '/libs/youkok2/cachemanager.class.php';
+require BASE_PATH . '/libs/youkok2/executioner.class.php';
+require BASE_PATH . '/libs/youkok2/utilities.class.php';
 
-require_once BASE_PATH . '/elements/collection.class.php';
-require_once BASE_PATH . '/elements/course.class.php';
-require_once BASE_PATH . '/elements/history.class.php';
-require_once BASE_PATH . '/elements/item.class.php';
-require_once BASE_PATH . '/elements/flag.class.php';
-require_once BASE_PATH . '/elements/user.class.php';
-require_once BASE_PATH . '/elements/vote.class.php';
+require BASE_PATH . '/elements/collection.class.php';
+require BASE_PATH . '/elements/course.class.php';
+require BASE_PATH . '/elements/history.class.php';
+require BASE_PATH . '/elements/item.class.php';
+require BASE_PATH . '/elements/flag.class.php';
+require BASE_PATH . '/elements/user.class.php';
+require BASE_PATH . '/elements/vote.class.php';
 
-require_once BASE_PATH . '/controllers/youkok2.controller.php';
+require BASE_PATH . '/controllers/youkok2.controller.php';
 
 //
 // Debug
@@ -158,11 +155,11 @@ class Loader {
         // Checking to see if the file exsists
         if (file_exists($file)) {
             // File exists, load it
-            $controller = require_once $file;
+            $controller = require $file;
         }
         else {
             // Load not found
-            $controller = require_once $this->buildControllerPath('notfound');
+            $controller = require $this->buildControllerPath('notfound');
         }
 
         // Run instance
