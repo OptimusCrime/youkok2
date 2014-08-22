@@ -14,8 +14,8 @@
         </div>
 
         <div class="form-group">
-            <label for="forgotten-password-new-form-password2">Gjennta passord <span style="color: red;">*</span></label>
-            <input disabled type="password" class="form-control" id="forgotten-password-new-form-password2" name="forgotten-password-new-form-password2" placeholder="Gjennta ditt passord her" />
+            <label for="forgotten-password-new-form-password2">Gjenta passord <span style="color: red;">*</span></label>
+            <input disabled type="password" class="form-control" id="forgotten-password-new-form-password2" name="forgotten-password-new-form-password2" placeholder="Gjenta ditt passord her" />
             <p id="forgotten-password-new-form-password-error2">Det er en fordel om de to passord-feltene er like.</p>
         </div>
 
