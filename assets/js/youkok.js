@@ -107,9 +107,11 @@ courses.initialize();
 // Searching
 //
 
-function check_check_search() {
+function check_check_search(target) {
+    // Find what values to use
+    var val = $('#' + target).val();
+    
     // Some variables
-    var val = $('#s').val();
     var datums = courses.index.datums;
     var datums_size = datums.length;
     var was_found = false;
@@ -130,7 +132,7 @@ function check_check_search() {
 
     // Check if was found or not
     if (!was_found) {
-        $('#search-form').submit();
+        $('#' + target).parent().parent().parent().submit();
     }
 }
 
@@ -152,7 +154,7 @@ $(document).ready(function () {
         // Assign ts
         localStorage.setItem('ts', $('#typehead-cache-time').val());
     }
-    $('#prefetch .typeahead').typeahead({
+    $('#prefetch .typeahead,#prefetch2 .typeahead').typeahead({
         hint: true,
         highlight: true,
     }, {
@@ -160,20 +162,20 @@ $(document).ready(function () {
         displayKey: 'course',
         source: courses.ttAdapter(),	
     }).on('typeahead:selected', function($e, datum) {
-        check_check_search();
+        check_check_search($e.target.id);
     });
 
     //
     // Search
     //
 
-    $('#s').on('keyup', function(e) {
+    $('#s,#s2').on('keyup', function(e) {
         if (e.keyCode == 13) {
-            check_check_search();
+            check_check_search(this.id);
         }
     });
-    $('#nav-search').on('click', function() {
-        check_check_search();
+    $('#nav-search,#nav-search2').on('click', function() {
+        check_check_search($(this).parent().find('.tt-input').attr('id'));
     });
 
     //

@@ -22,11 +22,14 @@ class SearchController extends Youkok2 {
         parent::__construct($routes);
         
         if (!isset($_GET['s']) or strlen($_GET['s']) == 0) {
-            $this->redirect('');
+            $this->template->assign('SEARCH_MODE', 'info');
         }
         else {
             $this->search();
         }
+        
+        // Display
+        $this->displayAndCleanup('search.tpl');
     }
 
     //
@@ -35,6 +38,7 @@ class SearchController extends Youkok2 {
 
     private function search () {
         // Assign the search
+        $this->template->assign('SEARCH_MODE', 'search');
         $this->template->assign('SEARCH_QUERY', $_GET['s']);
 
         // Clean the input
@@ -181,15 +185,6 @@ class SearchController extends Youkok2 {
             $this->template->assign('SEARCH_NUM', 'ingen');
             $this->template->assign('SEARCH_RESULT', 'Ditt søk returnerte ingen treff!');
         }
-
-
-
-        // Collect all the codes
-
-
-                
-        
-        $this->displayAndCleanup('search.tpl');
     }
 }
 
