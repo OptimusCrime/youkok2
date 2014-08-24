@@ -1,7 +1,7 @@
-Youkok2 - 1.0.0.-pl (xx. august, 2014)
-=====================================
+Youkok2 - 0.1.2.-pl (xx. august, 2014)
+======================================
 
-- [Info] Første "ordentlige" lansering.
+- [Info] Flere bugfixes og andre ting.
 - [New] Batch/zip nedlastning av alle filer i en mappe.
 - [Fixed] Feil som var igjen etter debugging, som gjorde at avstemningen ikke fungerte som den skulle.
 - [Fixed] Feil på forsiden som gjorde at 'I dag' aldri ble markert som aktiv.
