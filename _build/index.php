@@ -66,6 +66,7 @@ $ignore_paths = array(
 $ignore_files = array(
     '!.htaccess',
     '!.gitignore',
+    '!.idea',
     '!local.php',
     '!composer.lock',
     '!phinx-example.yml',
@@ -87,6 +88,7 @@ $linecounter = new LineCounter($ignore_paths, $ignore_files, $add_files);
 $linecounter->analyze();
 echo '<span style="color: green;">Read a total of ' . number_format($linecounter->getTotalLines())
    . ' lines</span><br />';
+echo $linecounter->getOutput();
 
 //
 // Finish
