@@ -17,13 +17,13 @@ class Utils {
     // Prettify dates
     //
     
-    public function prettifySQLDate($d) {
-        $norwegianMonths = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
+    public function prettifySQLDate($d, $include_time = true) {
+        $norwegian_months = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
                                  'okt', 'nov', 'des');
         $split1 = explode(' ', $d);
         $split2 = explode('-', $split1[0]);
         
-        return (int) $split2[2] . '. ' . $norwegianMonths[$split2[1] - 1] . ' ' . $split2[0] . ' @ ' . $split1[1];
+        return (int) $split2[2] . '. ' . $norwegian_months[$split2[1] - 1] . ' ' . $split2[0] . ($include_time ? (' @ ' . $split1[1]) : '');
     }
 
     //
@@ -61,5 +61,22 @@ class Utils {
 
         // Rejoin and full with stuff
         return $splits[0] . $splits[1] . 'kebab' . $splits[3] . md5('ingrid vold') . 'hslee' . $splits[2] . 'yolo';
+    }
+    
+    //
+    // Prettyfi filesizes
+    //
+    
+    public function prettifyFilesize($z) {
+        $bytes = $z;
+        if ($bytes > 0) {
+            $unit = intval(log($bytes, 1024));
+            $units = array('B', 'kB', 'MB', 'GB');
+
+            if (array_key_exists($unit, $units) === true) {
+            return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);
+            }
+        }
+        return $bytes;
     }
 }

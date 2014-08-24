@@ -361,17 +361,7 @@ class Item {
     }
 
     public function getSizePretty() {
-        $bytes = $this->size;
-        if ($bytes > 0) {
-            $unit = intval(log($bytes, 1024));
-            $units = array('B', 'kB', 'MB', 'GB');
-
-            if (array_key_exists($unit, $units) === true) {
-            return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);
-            }
-        }
-
-        return $bytes;
+        return $this->controller->utils->prettifyFilesize($this->size);
     }
 
     public function isVisible() {
