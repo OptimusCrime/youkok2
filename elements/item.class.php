@@ -40,6 +40,7 @@ class Item {
     
     // Full paths
     private $fullUrl;
+    private $finishedLoadingUrl;
     private $fullLocation;
     
     // Load additional information
@@ -98,6 +99,7 @@ class Item {
         $this->favorite = null;
         $this->rootParent = null;
         $this->flagCount = null;
+        $this->finishedLoadingUrl = true;
         $this->downloadCount = array(0 => null, 
                                      1 => null, 
                                      2 => null, 
@@ -281,6 +283,7 @@ class Item {
                         
                         // Add url piece
                         $this->fullUrl[] = $url_piece_single;
+                        $this->finishedLoadingUrl = false;
                         
                         // Check if this object already exists
                         $temp_item = $this->controller->collection->get($temp_id);
@@ -443,9 +446,9 @@ class Item {
 
     public function generateUrl($path) {
         // Check if the url is already cached!
-        if (count($this->fullUrl) == 0) {
+        if (count($this->fullUrl) == 0 or $this->finishedLoadingUrl == false) {
             // Store some variables for later
-            $temp_url = array($this->urlFriendly);
+            $temp_url= array($this->urlFriendly);
             $temp_id = $this->parent;
             $temp_root_parent = $this;
 
@@ -461,13 +464,12 @@ class Item {
                     $temp_item->createById($temp_id);
                     $temp_item->controller->collection->add($temp_item);
                 }
-
+                
                 // Get the url piece
                 $temp_url_friendly = $temp_item->getUrlFriendly();
                 if (strlen($temp_url_friendly) > 0) {
                     $temp_url[] = $temp_url_friendly;
                 }
-                
 
                 // Update id
                 $temp_id = $temp_item->getParent();
@@ -485,8 +487,13 @@ class Item {
             
             // Store in real variable
             $this->fullUrl = $temp_url;
+            
+            // Check if we should reset so we don't have to fetch this again
+            if (!$this->finishedLoadingUrl) {
+                $this->finishedLoadingUrl = true;
+            }
         }
-
+        
         // Return goes here!
         return substr($path, 1) . '/' . implode('/', $this->fullUrl) . ($this->directory ? '/' : '');
     }
@@ -784,5 +791,9 @@ class Item {
         }
         
         return $children;
+    }
+    
+    public function getChildrenCount($flag = null) {
+        return count($this->getChildren($flag));
     }
 }

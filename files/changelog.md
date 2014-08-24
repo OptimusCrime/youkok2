@@ -1,3 +1,9 @@
+Youkok2 - 0.2.1.-pl (25. august, 2014)
+======================================
+
+- [Info] Hotfix.
+- [Fixed] Rar feil som gjorde at linking til zip-filer ikke fungerte.
+
 Youkok2 - 0.2.0.-pl (25. august, 2014)
 ======================================
 
