@@ -111,6 +111,10 @@ class Loader {
         'search' => array(
             '/sok',
         ),
+        
+        'admin' => array(
+            '/admin',
+        ),
      );
 
     //
