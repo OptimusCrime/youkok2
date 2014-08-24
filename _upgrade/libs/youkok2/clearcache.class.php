@@ -19,7 +19,7 @@ Class ClearCache {
         // Trying to include base
         //
         
-        $local_file = '../../local.php';
+        $local_file = dirname(__FILE__) . '/../../../local.php';
         if (!file_exists($local_file)) {
             die("Please create your local.php-file");
         }
