@@ -1,14 +1,21 @@
-Youkok2 - 0.1.2.-pl (xx. august, 2014)
+Youkok2 - 0.2.0.-pl (25. august, 2014)
 ======================================
 
 - [Info] Flere bugfixes og andre ting.
 - [New] Batch/zip nedlastning av alle filer i en mappe.
+- [New] Nytt søkefelt på søkesiden.
+- [New] Parsetid på hver pageload vises nå i footeren.
 - [Fixed] Feil som var igjen etter debugging, som gjorde at avstemningen ikke fungerte som den skulle.
 - [Fixed] Feil på forsiden som gjorde at 'I dag' aldri ble markert som aktiv.
+- [Fixed] Noen småfeil i cachingen.
+- [Fixed] Lagt tilbake flere ikoner som ikke skulle vært fjernet.
 - [Other] Skrevet om flere tekster.
 - [Other] Composer brukes nå til alle eksterne libs.
 - [Other] Et dusin mindre bugfixes.
 - [Other] Skrivefails.
+- [Other] La til Phinx og Composer under 'Teknisk om nettsiden' på 'Om'-siden.
+- [Enhanced] Søkefunksjonen er nå funksjonell for brukere på mobil.
+
 
 Youkok2 - 0.1.1-pl (7. august, 2014)
 ====================================
