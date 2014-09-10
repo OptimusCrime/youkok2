@@ -517,6 +517,7 @@ $(document).ready(function () {
                 $('archive-create-folder-name').focus();
             });
             $('#archive-create-file-div').stop().slideUp();
+            $('#archive-create-link-div').stop().slideUp();
         }
     });
     $('#archive-create-folder-div a').on('click', function(e) {
@@ -562,7 +563,7 @@ $(document).ready(function () {
                 });
             }
         }
-
+        
         return false;
     });
 
@@ -822,6 +823,7 @@ $(document).ready(function () {
         }
         else {
             $('#archive-create-folder-div').stop().slideUp();
+            $('#archive-create-link-div').stop().slideUp();
             $('#archive-create-file-div').stop().slideDown();
         }
     });
@@ -943,6 +945,69 @@ $(document).ready(function () {
         accepted_filetypes = jQuery.parseJSON($('#archive_accepted_filetypes').html());
         accepted_fileendings = jQuery.parseJSON($('#archive_accepted_fileendings').html());
     }
+    
+    //
+    // Create link
+    //
+    
+    $('#archive-create-link').on('click', function () {
+        if ($('#archive-create-link-div').is(':visible')) {
+            $('#archive-create-link-div').stop().slideUp();
+        }
+        else {
+            $('#archive-create-link-div').stop().slideDown(400, function () {
+                $('archive-create-link-name').focus();
+            });
+            $('#archive-create-file-div').stop().slideUp();
+            $('#archive-create-folder-div').stop().slideUp();
+        }
+    });
+    $('#archive-create-link-div a').on('click', function(e) {
+        e.preventDefault();
+        $('#archive-create-link-div').stop().slideUp(400, function () {
+            $('#archive-create-link-name').val('');
+        });
+    });
+    var submitting_archive_create_link_form = false;
+    $('#archive-create-link-form').on('submit', function () {
+        if ($('#archive-create-link-name').val().length == 0) {
+            alert('Error: Du har ikke gitt mappen noen URL!');
+        }
+        else {
+            // Update queue
+            if (!submitting_archive_create_link_form) {
+                submitting_archive_create_link_form = true;
+
+                // Update working
+                $('#archive-create-link-form-submit').html('Jobber...').prop('disabled', true);
+
+                $.ajax({
+                    cache: false,
+                    type: "post",
+                    url: "processor/create/link",
+                    data: { 
+                        id: $('#archive-id').val(), 
+                        name: $('#archive-create-link-name').val() 
+                    },
+                    success: function(json) {
+                        submitting_archive_create_link_form = false;
+                        if (json.code == 200) {
+                            // Refresh
+                            window.location.reload();
+                        }
+                        else if (json.code == 400) {
+                            display_message([{'text': 'Et element med denne URLen finnes fra før!', 'type': 'danger'}]);
+                        }
+                        else {
+                            display_message([{'text': 'Noe gikk visst galt her!', 'type': 'danger'}]);
+                        }
+                    }
+                });
+            }
+        }
+        
+        return false;
+    });
 
     //
     // History

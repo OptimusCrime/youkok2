@@ -177,7 +177,11 @@
                 <h3>Kontroller</h3>
                 [[+if $ARCHIVE_USER_CAN_CONTRIBUTE == true]]
                     <div id="archive-create-controlls">
-                        <button type="button" id="archive-create-file" class="btn btn-default">Last opp fil</button> <button type="button" class="btn btn-default" id="archive-create-folder">Opprett mappe</button>
+                        <button type="button" id="archive-create-file" class="btn btn-default">Last opp fil</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" id="archive-create-folder">Opprett mappe</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" id="archive-create-link">Opprett link</button>
                     </div>
 
                     <div id="archive-create-folder-div">
@@ -210,6 +214,16 @@
                             </div>
                             <p><a href="retningslinjer" target="_blank">Se liste over godkjente filtyper</a>.</p>
                             <button id="archive-create-file-form-submit" type="submit" class="btn btn-default">Last opp</button> eller <a href="#">avbryt</a>.
+                        </form>
+                    </div>
+                    
+                    <div id="archive-create-link-div">
+                        <form role="form" action="" id="archive-create-link-form" method="post">
+                            <div class="form-group">
+                                <label for="archive-create-link-url">URL</label>
+                                <input type="text" name="archive-create-link-url" class="form-control" id="archive-create-link-name" value="" placeholder="URL for linken" />
+                            </div>
+                            <button id="archive-create-link-form-submit" type="submit" class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
                         </form>
                     </div>
                 [[+else]]

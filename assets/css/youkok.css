@@ -360,7 +360,7 @@ a, a:focus, a:active, a:visited {
 #archive-create-controlls {
     padding-bottom: 10px;
 }
-#archive-create-folder-div, #archive-create-file-div {
+#archive-create-folder-div, #archive-create-file-div, #archive-create-link-div {
     display: none;
     border-top: 1px solid gray;
     padding-top: 5px;
