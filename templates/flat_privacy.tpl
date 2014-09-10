@@ -25,7 +25,7 @@
     </div>
 
     <div id="archive-sidebar-newest" class="archive-sidebar">
-        <h3>Nyeste filer</h3>
+        <h3>Nyeste elementer</h3>
         <div id="archive-sidebar-newest-inner">
             <p>Laster...</p>
         </div>

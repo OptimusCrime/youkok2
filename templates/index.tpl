@@ -45,7 +45,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="list-header">
-            <h2>Nyeste filer</h2>
+            <h2>Nyeste elementer</h2>
         </div>
         <ul class="list-group">
             [[+$HOME_NEWEST]]

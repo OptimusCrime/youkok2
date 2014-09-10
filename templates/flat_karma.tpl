@@ -7,7 +7,7 @@
     <p>Under er en komplett oversikt over hva som gir/tar karmapoeng fra deg:</p>
 
     <h3>Opprette</h3>
-    <strong>Fil, godkjent:</strong>
+    <strong>Fil/Link, godkjent:</strong>
     <ul>
         <li>Eier +3</li>
         <li>Stemmer +1</li>
@@ -17,7 +17,7 @@
         <li>Eier +1</li>
         <li>Stemmer +1</li>
     </ul>
-    <strong>Fil/mappe, avvist:</strong>
+    <strong>Fil/mappe/link, avvist:</strong>
     <ul>
         <li>Eier -3</li>
         <li>Stemmer -1</li>
@@ -79,7 +79,7 @@
     </div>
 
     <div id="archive-sidebar-newest" class="archive-sidebar">
-        <h3>Nyeste filer</h3>
+        <h3>Nyeste elementer</h3>
         <div id="archive-sidebar-newest-inner">
             <p>Laster...</p>
         </div>
