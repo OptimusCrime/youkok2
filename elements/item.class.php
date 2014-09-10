@@ -505,7 +505,12 @@ class Item {
         }
         
         // Return goes here!
-        return substr($path, 1) . '/' . implode('/', $this->fullUrl) . ($this->directory ? '/' : '');
+        if ($this->isLink()) {
+            return substr($path, 1) . '/' . $this->id;
+        }
+        else {
+            return substr($path, 1) . '/' . implode('/', $this->fullUrl) . ($this->directory ? '/' : '');
+        }
     }
 
     //
@@ -760,7 +765,7 @@ class Item {
     private function cacheFormat() {
         $cache_temp = array();
         $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 'accepted', 
-                        'visible', 'location', 'added', 'size', 'course', 'flagCount');
+                        'visible', 'location', 'added', 'size', 'course', 'flagCount', 'url');
         
         // Loop each field
         foreach ($fields as $v) {
