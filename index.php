@@ -115,6 +115,10 @@ class Loader {
         'admin' => array(
             '/admin',
         ),
+        
+        'redirect' => array(
+            '/redirect',
+        ),
      );
 
     //

@@ -221,7 +221,9 @@
                         <form role="form" action="" id="archive-create-link-form" method="post">
                             <div class="form-group">
                                 <label for="archive-create-link-url"><strong>URL</strong></label>
-                                <input type="text" name="archive-create-link-url" class="form-control" id="archive-create-link-name" value="" placeholder="URL for linken" />
+                                <input type="text" name="archive-create-link-url" class="form-control" id="archive-create-link-url" value="" placeholder="URL for linken" />
+                                 <label for="archive-create-link-name"><strong>Name</strong></label>
+                                <input type="text" name="archive-create-link-name" class="form-control" id="archive-create-link-name" value="" placeholder="Alternativt navn" />
                             </div>
                             <button id="archive-create-link-form-submit" type="submit" class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
                         </form>

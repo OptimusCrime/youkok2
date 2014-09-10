@@ -964,7 +964,7 @@ $(document).ready(function () {
         }
         else {
             $('#archive-create-link-div').stop().slideDown(400, function () {
-                $('archive-create-link-name').focus();
+                $('archive-create-link-url').focus();
             });
             $('#archive-create-file-div').stop().slideUp();
             $('#archive-create-folder-div').stop().slideUp();
@@ -973,12 +973,13 @@ $(document).ready(function () {
     $('#archive-create-link-div a').on('click', function(e) {
         e.preventDefault();
         $('#archive-create-link-div').stop().slideUp(400, function () {
+            $('#archive-create-link-url').val('');
             $('#archive-create-link-name').val('');
         });
     });
     var submitting_archive_create_link_form = false;
     $('#archive-create-link-form').on('submit', function () {
-        var link_name = $('#archive-create-link-name').val();
+        var link_name = $('#archive-create-link-url').val();
         if (link_name.length == 0) {
             display_message([{'text': 'Du har ikke skrevet inn noen URL.', 'type': 'danger'}]);
         }
@@ -1000,6 +1001,7 @@ $(document).ready(function () {
                         url: "processor/create/link",
                         data: { 
                             id: $('#archive-id').val(), 
+                            url: $('#archive-create-link-url').val(),
                             name: $('#archive-create-link-name').val() 
                         },
                         success: function(json) {

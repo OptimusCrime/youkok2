@@ -37,6 +37,7 @@ class Item {
     private $accepted;
     private $visible;
     private $added;
+    private $url;
     
     // Full paths
     private $fullUrl;
@@ -78,7 +79,7 @@ class Item {
         // Init array for the query
         $this->query = array('select' => array('a.name', 'a.parent', 'a.is_directory', 'a.url_friendly', 
                                                'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 
-                                               'a.added', 'a.location', 'a.size', 'a.course'), 
+                                               'a.added', 'a.location', 'a.size', 'a.course', 'a.url'), 
                              'join' => array(), 
                              'where' => array('WHERE a.id = :id'),
                              'groupby' => array(),
@@ -125,7 +126,7 @@ class Item {
             // This Item is cached, go ahead and fetch data
             $temp_cache_data = $this->controller->cacheManager->getCache($id, 'i');
             $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 
-                            'accepted', 'visible', 'location', 'added', 'size', 'course');
+                            'accepted', 'visible', 'location', 'added', 'size', 'course', 'url');
             
             // Loop all the fields and apply data
             foreach ($temp_cache_data as $k => $v) {
@@ -213,6 +214,7 @@ class Item {
                 $this->added = $row['added'];
                 $this->size = $row['size'];
                 $this->course = $row['course'];
+                $this->url = $row['url'];
                 
                 // If we are fetching the full location, this should be the last fragment
                 if ($this->loadFullLocation) {
@@ -362,6 +364,10 @@ class Item {
     public function getSize() {
         return $this->size;
     }
+    
+    public function getUrl() {
+        return $this->url;
+    }
 
     public function getSizePretty() {
         return $this->controller->utils->prettifyFilesize($this->size);
@@ -373,6 +379,10 @@ class Item {
 
     public function isAccepted() {
         return $this->accepted;
+    }
+    
+    public function isLink() {
+        return $this->url != null;
     }
 
     //
