@@ -213,7 +213,7 @@ class HomeController extends Youkok2 {
                 $root_parent = $element->getRootParent();
                 if ($element->isDirectory()) {
                     if ($element->hasCourse()) {
-                        $ret .= '<li class="list-group-item list-group-star"><i title="Fjern favoritt" data-id="' . $element->getId() . '" class="fa fa-times-circle star-remove"></i><a href="' . $element->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $element->getCourse()->getName() . '">' . $element->getName() . '</a></li>';
+                        $ret .= '<li class="list-group-item list-group-star"><i title="Fjern favoritt" data-id="' . $element->getId() . '" class="fa fa-times-circle star-remove"></i><a href="' . $element->generateUrl($this->routes['archive'][0]) . '">' . $element->getName() . ' — ' . $element->getCourse()->getName() . '</a></li>';
                     }
                     else {
                         $ret .= '<li class="list-group-item list-group-star"><i title="Fjern favoritt" data-id="' . $element->getId() . '" class="fa fa-times-circle star-remove""></i><a href="' . $element->generateUrl($this->routes['archive'][0]) . '">' . $element->getName() . '</a>' . (($root_parent == null or $element->getId() == $root_parent->getId()) ? '' : ' @ <a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . '</li>';

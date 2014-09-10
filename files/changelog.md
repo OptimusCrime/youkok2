@@ -3,6 +3,7 @@ Youkok2 - 0.3.0.-pl (xx. september, 2014)
 
 - [Info] Minor stuff.
 - [New] Man kan nå opprette linker som linker direkte til sider og enkeltfiler.
+- [Enhanced] Dersom man favoriserer ett fag vises fagnavnet sammen med fagkoden på forsiden.
 
 Youkok2 - 0.2.1.-pl (25. august, 2014)
 ======================================
