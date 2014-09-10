@@ -76,9 +76,13 @@ class ProcessorController extends Youkok2 {
                     // New folder
                     $response = $this->createFolder();
                 }
-                else {
+                else if ($this->queryGet(2) == 'file') {
                     // New file
                     $response = $this->createFile();
+                }
+                else {
+                    // New link
+                    $response = $this->createLink();
                 }
             }
             else if ($this->queryGet(1) == 'report') {
@@ -577,7 +581,7 @@ class ProcessorController extends Youkok2 {
                         else {
                             $has_missing_image = 1;
                         }
-
+                        
                         // Insert into archive
                         $insert_archive = "INSERT INTO archive
                         (name, url_friendly, mime_type, missing_image, parent, location, size)
@@ -642,6 +646,93 @@ class ProcessorController extends Youkok2 {
         }
 
         // Return
+        return $response;
+    }
+    
+    //
+    // Create link
+    //
+    
+    //
+    // Method for uploading files
+    //
+
+    private function createLink() {
+        $response = array();
+
+        // Check stuff
+        if (isset($_POST['id']) and is_numeric($_POST['id']) and $_POST['id'] != 1 and isset($_POST['name']) and strlen($_POST['name']) > 0) {
+            if ($this->user->isLoggedIn() and $this->user->canContribute()) {
+                // Trim
+                $_POST['name'] = trim($_POST['name']);
+                
+                $item = new Item($this);
+                $item->setLoadFullLocation(true);
+                $item->createById($_POST['id']);
+                
+                // Check if valid id
+                if (!$item->wasFound()) {
+                    $response['code'] = 500;
+                }
+                else {
+                    // Check if valid email
+                    if (!filter_var($_POST['name'], FILTER_VALIDATE_URL)) {
+                        // This url is not valid (according to PHP...)
+                        $response['code'] = 500;
+                    }
+                    else {
+                        // Check for duplicate (TODO)
+                        if (1 == 1) {
+                            // Not a duplicate, add to database
+                            $insert_archive = "INSERT INTO archive
+                            (name, url_friendly, mime_type, missing_image, parent, location, size)
+                            VALUES (:name, :url_friendly, :mime_type, :missing_image, :parent, :location, :url)";
+                            
+                            $insert_archive_query = $this->db->prepare($insert_archive);
+                            $insert_archive_query->execute(array(':name' => $_POST['name'],
+                                ':url_friendly' => '',
+                                ':mime_type' => null,
+                                ':missing_image' => 0,
+                                ':parent' => $item->getId(),
+                                ':location' =>  '',
+                                ':url' => $_POST['name']));
+                            
+                            // Insert flag
+                            $insert_flag = "INSERT INTO flag
+                            (file, user, type)
+                            VALUES (:file, :user, :type)";
+                            
+                            $element_id = $this->db->lastInsertId();
+                            
+                            $insert_flag_query = $this->db->prepare($insert_flag);
+                            $insert_flag_query->execute(array(':file' => $element_id,
+                                ':user' => $this->user->getId(),
+                                ':type' => 0));
+                            
+                            // Add history
+                            $this->addHistory($this->user->getId(), $element_id,
+                                              null, 2,
+                                              '%u lastet opp ' . $_POST['name'],
+                                              5);
+                            
+                            // Add karma to pending
+                            $this->user->addPendingKarma(5);
+                            
+                            // Send code
+                            $response['code'] = 200;
+                            
+                            // Add message
+                            $this->addFileMessage($_POST['name']);
+                            
+                            // Finally, success code
+                            $response['code'] = 200;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Returning content
         return $response;
     }
 

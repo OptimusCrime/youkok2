@@ -24,6 +24,14 @@ function check_email(str) {
 };
 
 //
+// Method for validating url
+//
+
+function check_url(url) {
+    return url.match(/^(ht|f)tps?:\/\/[a-z0-9-\.]+\.[a-z]{2,4}\/?([^\s<>\#%"\,\{\}\\|\\\^\[\]`]+)?$/);
+}
+
+//
 //
 //
 
@@ -970,39 +978,47 @@ $(document).ready(function () {
     });
     var submitting_archive_create_link_form = false;
     $('#archive-create-link-form').on('submit', function () {
-        if ($('#archive-create-link-name').val().length == 0) {
-            alert('Error: Du har ikke gitt mappen noen URL!');
+        var link_name = $('#archive-create-link-name').val();
+        if (link_name.length == 0) {
+            display_message([{'text': 'Du har ikke skrevet inn noen URL.', 'type': 'danger'}]);
         }
         else {
-            // Update queue
-            if (!submitting_archive_create_link_form) {
-                submitting_archive_create_link_form = true;
-
-                // Update working
-                $('#archive-create-link-form-submit').html('Jobber...').prop('disabled', true);
-
-                $.ajax({
-                    cache: false,
-                    type: "post",
-                    url: "processor/create/link",
-                    data: { 
-                        id: $('#archive-id').val(), 
-                        name: $('#archive-create-link-name').val() 
-                    },
-                    success: function(json) {
-                        submitting_archive_create_link_form = false;
-                        if (json.code == 200) {
-                            // Refresh
-                            window.location.reload();
+            if (!check_url(link_name)) {
+                display_message([{'text': '\'' + link_name + ' \' er ikke en gyldig URL.', 'type': 'danger'}]);
+            }
+            else {
+                // Update queue
+                if (!submitting_archive_create_link_form) {
+                    submitting_archive_create_link_form = true;
+                    
+                    // Update working
+                    $('#archive-create-link-form-submit').html('Jobber...').prop('disabled', true);
+                    
+                    $.ajax({
+                        cache: false,
+                        type: "post",
+                        url: "processor/create/link",
+                        data: { 
+                            id: $('#archive-id').val(), 
+                            name: $('#archive-create-link-name').val() 
+                        },
+                        success: function(json) {
+                            submitting_archive_create_link_form = false;
+                            if (json.code == 200) {
+                                // Refresh
+                                window.location.reload();
+                            }
+                            else if (json.code == 400) {
+                                display_message([{'text': 'Et element med denne URLen finnes fra før!', 'type': 'danger'}]);
+                                $('#archive-create-link-form-submit').html('Lagre').prop('disabled', false);
+                            }
+                            else {
+                                display_message([{'text': 'Noe gikk visst galt her!', 'type': 'danger'}]);
+                                $('#archive-create-link-form-submit').html('Lagre').prop('disabled', false);
+                            }
                         }
-                        else if (json.code == 400) {
-                            display_message([{'text': 'Et element med denne URLen finnes fra før!', 'type': 'danger'}]);
-                        }
-                        else {
-                            display_message([{'text': 'Noe gikk visst galt her!', 'type': 'danger'}]);
-                        }
-                    }
-                });
+                    });
+                }
             }
         }
         
