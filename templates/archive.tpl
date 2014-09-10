@@ -187,7 +187,7 @@
                     <div id="archive-create-folder-div">
                         <form role="form" action="" id="archive-create-folder-form" method="post">
                             <div class="form-group">
-                                <label for="archive-create-folder-name">Navn</label>
+                                <label for="archive-create-folder-name"><strong>Name</strong></label>
                                 <input type="text" name="archive-create-folder-name" class="form-control" id="archive-create-folder-name" value="" placeholder="Navn på mappen du ønsker å opprette" />
                             </div>
                             <button id="archive-create-folder-form-submit" type="submit" class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
@@ -220,7 +220,7 @@
                     <div id="archive-create-link-div">
                         <form role="form" action="" id="archive-create-link-form" method="post">
                             <div class="form-group">
-                                <label for="archive-create-link-url">URL</label>
+                                <label for="archive-create-link-url"><strong>URL</strong></label>
                                 <input type="text" name="archive-create-link-url" class="form-control" id="archive-create-link-name" value="" placeholder="URL for linken" />
                             </div>
                             <button id="archive-create-link-form-submit" type="submit" class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
