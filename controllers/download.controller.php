@@ -100,7 +100,7 @@ class DownloadController extends Youkok2 {
                     if (file_exists($file_location)) {
                         // Check if we should log download
                         if (!isset($_GET['donotlogthisdownload'])) {
-                            // Logg download
+                            // Log download
                             $item->addDownload();
                         }
     

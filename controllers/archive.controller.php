@@ -225,7 +225,7 @@ class ArchiveController extends Youkok2 {
                 else if ($item->isLink()) {
                     // This is a link
                     $ret .= '<li>
-                                <a title="Link til: ' . $item->getUrl() . '" href="' . $item->generateUrl($this->routes['redirect'][0]) . '">
+                                <a target="_blank" title="Link til: ' . $item->getUrl() . '" href="' . $item->generateUrl($this->routes['redirect'][0]) . '">
                                     <div class="archive-item' . ($item->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $item->isFavorite($this->user) . '" data-id="' . $item->getId() . '" data-type="dir" data-name="' . $item->getName() . '" data-flags="' . $flag_count . '">
                                         ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
                                         <div class="archive-badge archive-badge-right hidden"><i class="fa fa-comments-o"></i></div>

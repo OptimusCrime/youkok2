@@ -248,7 +248,7 @@ class Youkok2 {
             }
             
             // Build final string
-            $ret .= '<div class="alert alert-success">' . $file_msg . ' ble lastet opp til Youkok2. '
+            $ret .= '<div class="alert alert-success">' . $file_msg . ' ble lagt til. '
                   . 'Takk for ditt bidrag!<div class="alert-close"><i class="fa fa-times"></i></div></div>';
             
             // Unset the session variable
