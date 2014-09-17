@@ -421,7 +421,7 @@ class Youkok2 {
         unset($s[0]);
         
         // Include
-        require_once BASE_PATH . '/libs/' . $lib . '/' . strtolower(implode('.', $s)) . '.php';
+        require_once BASE_PATH . '/libs/' . $lib . '/' . strtolower(implode('.', $s)) . '.class.php';
         
         // Return instance
         if (count($args) > 0) {

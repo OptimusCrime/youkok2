@@ -1,6 +1,4 @@
 <?php
-namespace MatthiasMullie\Minify;
-
 /**
  * Minify Exception class
  *

@@ -1,6 +1,4 @@
 <?php
-namespace MatthiasMullie\Minify;
-
 /**
  * MinifyCSS class
  *

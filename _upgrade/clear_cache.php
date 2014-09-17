@@ -14,4 +14,4 @@ require BASE_PATH . '/controllers/youkok2.controller.php';
 require BASE_PATH . '/controllers/external.controller.php';
 
 $externalController = new ExternalController(array());
-$externalController->getExternalService('youkok2.ClearCache.class', array());
+$externalController->getExternalService('youkok2.ClearCache', array());

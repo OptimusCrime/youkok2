@@ -1,36 +1,26 @@
 <?php
-/*
- * File: index.php
- * Holds: Creates new builds for the system
- * Created: 13.05.13
- * Project: Youkok2
- * 
-*/
+// Set headers
+header('Content-Type: text/html; charset=utf-8');
 
-//
-// Include the libs
-//
-
+// Includes
 require '../local.php';
 
-require BASE_PATH . '/_build/libs/minify/Minify.php';
-require BASE_PATH . '/_build/libs/minify/CSS.php';
-require BASE_PATH . '/_build/libs/minify/JS.php';
-require BASE_PATH . '/_build/libs/minify/Exception.php';
+require BASE_PATH . '/vendor/autoload.php';
 
-require BASE_PATH . '/_build/libs/youkok2/linecounter.class.php';
+require BASE_PATH . '/libs/pdo2/pdo2.class.php';
+require BASE_PATH . '/libs/pdo2/pdostatement2.class.php';
+require BASE_PATH . '/libs/minify/minify.class.php';
 
-//
-// Set namespace
-//
+require BASE_PATH . '/controllers/youkok2.controller.php';
+require BASE_PATH . '/controllers/external.controller.php';
 
-use MatthiasMullie\Minify;
+$externalController = new ExternalController(array());
 
 //
 // Minify CSS
 //
 
-$css_minifier = new Minify\CSS(BASE_PATH . '/assets/css/youkok.css');
+$css_minifier = $externalController->getExternalService('minify.CSS', array(BASE_PATH . '/assets/css/youkok.css'));
 $css_minifier->minify(BASE_PATH . '/assets/css/youkok.min.css');
 $css_minifier = null;
 echo '<span style="color: green;">Minified CSS</span><br />';
@@ -39,7 +29,7 @@ echo '<span style="color: green;">Minified CSS</span><br />';
 // Minify JS
 //
 
-$js_minifier = new Minify\JS(BASE_PATH . '/assets/js/youkok.js');
+$js_minifier = $externalController->getExternalService('minify.JS', array(BASE_PATH . '/assets/js/youkok.css'));
 $js_minifier->minify(BASE_PATH . '/assets/js/youkok.min.js');
 echo '<span style="color: green;">Minified JS</span><br />';
 echo '<span>------------------------------------</span><br />';
@@ -51,6 +41,7 @@ echo '<span>------------------------------------</span><br />';
 // Remove all directories we don't want
 $ignore_paths = array(
     '!.git/',
+    '!.idea/',
     '!_build/',
     '!assets/',
     '!cache/',
@@ -76,15 +67,22 @@ $ignore_files = array(
 // Override directories we have ignored earlier
 $add_files = array(
     '_build/index.php',
-    '_build/libs/youkok2/linecounter.class.php',
     'assets/js/youkok.js',
     'assets/css/youkok.css',
-    'libs/youkok2/cachemanager.php',
+    'libs/pdo/pdo2.class.php',
+    'libs/pdo/pdostatement2.class.php',
+    'libs/youkok2/cachemanager.class.phpp',
+    'libs/youkok2/clearcache.class.php',
     'libs/youkok2/executioner.php',
+    'libs/youkok2/linecounter.php',
     'libs/youkok2/utilities.php',
 );
 
-$linecounter = new LineCounter($ignore_paths, $ignore_files, $add_files);
+$linecounter = $externalController->getExternalService('youkok2.LineCounter',
+                                                       array($ignore_paths,
+                                                             $ignore_files, 
+                                                             $add_files));
+
 $linecounter->analyze();
 echo '<span style="color: green;">Read a total of ' . number_format($linecounter->getTotalLines())
    . ' lines</span><br />';
