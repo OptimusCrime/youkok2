@@ -3,7 +3,11 @@ Youkok2 - 0.3.0.-pl (xx. september, 2014)
 
 - [Info] Minor stuff.
 - [New] Man kan nå opprette linker som linker direkte til sider og enkeltfiler.
+- [New] Det er nå mulig å laste opp .zip-arkiv til Youkok2. Innholdet av arkivet blir sjekket, og opplastning blir kun
+        gjennomført om alle filene er av godkjente filtyper.
 - [Enhanced] Dersom man favoriserer ett fag vises fagnavnet sammen med fagkoden på forsiden.
+- [Enhanced] Bedre evaluering av filtyper når man laster opp filer.
+- [Fixed] Scraper-scriptet la ikke til nye fag for 2014 høst-semesteret.
 
 Youkok2 - 0.2.1.-pl (25. august, 2014)
 ======================================
