@@ -7,7 +7,8 @@ $clean = array();
 $page = 1;
 $db = null;
 $to_json = array();
-$log = array();
+$log = array('ok' => array(),
+             'error' => array());
 
 // Includes
 require '../local.php';
@@ -32,7 +33,7 @@ if ($db) {
     // Fetch all!
     while (true) {
         // Load
-        $file = file_get_contents('http://www.ntnu.no/web/studier/emnesok?p_p_id=courselistportlet_WAR_courselistportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=fetch-courselist-as-json&p_p_cacheability=cacheLevelPage&p_p_col_id=column-1&p_p_col_pos=1&p_p_col_count=2&semester=2013&faculty=-1&institute=-1&multimedia=0&english=0&phd=0&courseAutumn=0&courseSpring=0&courseSummer=0&searchQueryString=&pageNo=' . $page . '&season=spring&sortOrder=%2Btitle&year=');
+        $file = file_get_contents('http://www.ntnu.no/web/studier/emnesok?p_p_id=courselistportlet_WAR_courselistportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=fetch-courselist-as-json&p_p_cacheability=cacheLevelPage&p_p_col_id=column-1&p_p_col_pos=1&p_p_col_count=2&semester=' . date('Y') . '&faculty=-1&institute=-1&multimedia=0&english=0&phd=0&courseAutumn=0&courseSpring=0&courseSummer=0&searchQueryString=&pageNo=' . $page . '&season=autumn&sortOrder=%2Btitle&year=');
         $json_content = json_decode($file, true);
 
         // Clean
@@ -55,11 +56,11 @@ if ($db) {
 
             // Check if exists
             if (isset($row['id'])) {
-                $log[] = '<span style="color: red;"><b>' . $v['code'] . '</b> exists in the course table. Not created!</span>';
+                $log['error'][] = '<span style="color: red;"><b>' . $v['code'] . '</b> exists in the course table. Not created!</span>';
             }
             else {
                 // Logging
-                $log[] = '<span style="color: green;"><b>' . $v['code'] . '</b> was not found in the course table.</span>';
+                $log['ok'][] = '<span style="color: green;"><b>' . $v['code'] . '</b> was not found in the course table. Creating...</span>';
 
                 // Check if url-friendly or name exists
                 $check_current_course2 = "SELECT id
@@ -76,20 +77,10 @@ if ($db) {
                 $row2 = $check_current_course2_query->fetch(PDO::FETCH_ASSOC);
 
                 // Check if exists
-                if (isset($row2['id'])) {
-                    $log[] = '<span style="color: red;"><b>' . $v['code'] . '</b> exists in the archive table. Not created!</span>';
-                }
-                else {
-                    $log[] = '<span style="color: green;"><b>' . $v['code'] . '</b> was not found in the archive table.</span>';
-
+                if (!isset($row2['id'])) {
                     // Check if the directory exists
                     $directory_check = BASE_PATH . FILE_ROOT . '/' . $v['directory'];
-                    if (is_dir($directory_check)) {
-                        $log[] = '<span style="color: red;"><b>' . $directory_check . '</b> directory exists in the file system. Not created!</span>';
-                    }
-                    else {
-                        $log[] = '<span style="color: green;"><b>' . $directory_check . '</b> directory does not exist in the file system.</span>';
-
+                    if (!is_dir($directory_check)) {
                         // Insert course
                         $insert_course = "INSERT INTO course (code, name)
                         VALUES (:code, :name)";
@@ -109,15 +100,9 @@ if ($db) {
 
                         // Create directory
                         mkdir($directory_check);
-
-                        // Log successful message :)
-                        $log[] = '<span style="color: green;">Everything went better than expected! (I think)</span>';
                     }
                 }
             }
-
-            // Append ruler
-            $log[] = '<hr />';
         }
 
         // Check if more results
@@ -165,8 +150,11 @@ if ($db) {
     $db = null;
 
     // Feedback
-    echo '<h2>Log</h2>';
-    echo implode('<br />', $log);
+    echo '<h2>Created:</h2>';
+    echo implode('<br />', $log['ok']);
+    
+    echo '<h2>Not created:</h2>';
+    echo implode('<br />', $log['error']);
 }
 else {
     // Return error
