@@ -90,7 +90,7 @@ class Youkok2 {
             $this->template->assign('VERSION', VERSION);
             $this->template->assign('DEV', DEV);
             $this->template->assign('SITE_URL', SITE_URL);
-            $this->template->assign('SITE_TITLE', 'Den beste kokeboka');
+            $this->template->assign('SITE_TITLE', 'Den beste kokeboka på nettet');
             $this->template->assign('SITE_USE_GA', SITE_USE_GA);
             $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
             $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);

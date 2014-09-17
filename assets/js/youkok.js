@@ -855,6 +855,8 @@ $(document).ready(function () {
             var found = false;
             var name = file_object.name;
             var mimetype = file_object.type;
+            var this_filetype = file_object.name.split('.');
+            this_filetype = this_filetype[this_filetype.length - 1].toLowerCase();
 
             // Check with mimetype first (is better)
             if (mimetype != null) {
@@ -879,8 +881,14 @@ $(document).ready(function () {
 
             // Check if valid or not
             if (found) {
+                // Check if file is a .zip archive
+                var inner_warning = '';
+                if (this_filetype == 'zip') {
+                    inner_warning = '<em>Innholdet i dette .zip-arkivet vil bli evaluert mot de godkjente filtypene, og kan ikke innehold andre .zip-arkiv';
+                }
+                
                 // The container
-                var $container = $('<div class="fileupload-file"><strong>' + name + '</strong><p>' + human_file_size(file_object.size, true) + '</p><div class="fileupload-file-remove"><span>Fjern <i class="fa fa-times"></i></span></div></div>');
+                var $container = $('<div class="fileupload-file"><strong>' + name + '</strong><p>' + human_file_size(file_object.size, true) + '</p><div class="fileupload-file-remove"><span>Fjern <i class="fa fa-times"></i></span></div>' + inner_warning + '</div>');
 
                 // The button
                 var $button = $('<button style="display: none;">x</button>');
@@ -901,10 +909,9 @@ $(document).ready(function () {
             }
             else {
                 // Display error, wrong filetype
-                var this_filetype = file_object.name.split('.');
                 var error = [
                     {
-                        'text' : '<p>Filtypen \'.' + this_filetype[this_filetype.length - 1] + '\' er ikke godkjent på Youkok2. Dersom du syntes denne filtypen burde godkjennes, kan du ta kontakt.</p>',
+                        'text' : '<p>Filtypen \'.' + this_filetype + '\' er ikke godkjent på Youkok2. Dersom du syntes denne filtypen burde godkjennes, kan du ta kontakt.</p>',
                         'type' : 'danger',
                     },
                 ];

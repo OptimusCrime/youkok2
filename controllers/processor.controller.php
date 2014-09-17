@@ -514,120 +514,199 @@ class ProcessorController extends Youkok2 {
                 if (is_numeric($item_id)) {
                     // Check if any files was sent
                     if (isset($_FILES['files'])) {
-                        // Find what the physical location should be
-                        $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
-                        $this_file_name = $_FILES['files']['name'][0];
-                        while(true) {
-                            if (file_exists(FILE_ROOT . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($this_file_name))) {
-                                $this_file_name = $letters[rand(0, count($letters) - 1)] . $this_file_name;
-                            }
-                            else {
-                                // Gogog
-                                break;
-                            }
-                        }
-                        $upload_full_location = FILE_ROOT . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($this_file_name);
+                        $can_be_added = true;
                         
-                        // Check duplicates for name
+                        // Get name and file ending
+                        $this_file_name = $_FILES['files']['name'][0];
                         $real_name = explode('.', $_FILES['files']['name'][0]);
                         $real_name_ending = $real_name[count($real_name) - 1];
                         unset($real_name[count($real_name) - 1]);
                         
-                        $name = $_FILES['files']['name'][0];
-                        $num = 2;
-                        while (true) {
-                            $get_duplicate = "SELECT id
-                            FROM archive 
-                            WHERE parent = :id
-                            AND name = :name";
-                            
-                            $get_duplicate_query = $this->db->prepare($get_duplicate);
-                            $get_duplicate_query->execute(array(':id' => $item->getId(), ':name' => $name));
-                            $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
-                            if (isset($row_duplicate['id'])) {
-                                $name = implode('.', $real_name)  . ' (' . $num . ').' . $real_name_ending;
-                                $num++;
-                            }
-                            else {
-                                // Gogog
-                                break;
-                            }
-                        }
+                        // Get allowed filetypes
+                        $allowed_filetypes = explode(',', SITE_ACCEPTED_FILEENDINGS);
                         
-                        // Check duplicates for url friendly
-                        $url_friendly = $this->utils->generateUrlFriendly($name, true);
-                        while (true) {
-                            $get_duplicate = "SELECT id
-                            FROM archive 
-                            WHERE parent = :id
-                            AND url_friendly = :url_friendly";
+                        // Check if .zip
+                        if (strtolower($real_name_ending) == 'zip') {
+                            // Create random folder for the zip archive
+                            $tmp_dir = FILE_ROOT . '/tmp/' . substr(md5(rand(0, 1000000)), 0, 15) . time() . '/';
+                            mkdir($tmp_dir);
                             
-                            $get_duplicate_query = $this->db->prepare($get_duplicate);
-                            $get_duplicate_query->execute(array(':id' => $item->getId(), ':url_friendly' => $url_friendly));
-                            $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
-                            if (isset($row_duplicate['id'])) {
-                                $url_friendly = $this->utils->generateUrlFriendly($letters[rand(0, count($letters) - 1)] . $url_friendly);
+                            // Extract
+                            $zipArchive = new ZipArchive();
+                            $result = $zipArchive->open($_FILES['files']['tmp_name'][0]);
+                            if ($result) {
+                                $zipArchive->extractTo($tmp_dir);
+                                $zipArchive->close();
                             }
-                            else {
-                                // Gogog
-                                break;
+                            
+                            // Get content of archive
+                            $iter = new RecursiveIteratorIterator(
+                                new RecursiveDirectoryIterator($tmp_dir, RecursiveDirectoryIterator::SKIP_DOTS),
+                                    RecursiveIteratorIterator::SELF_FIRST,
+                                    RecursiveIteratorIterator::CATCH_GET_CHILD
+                            );
+
+                            $zip_archive = array();
+                            foreach ($iter as $path => $dir) {
+                                if (!$dir->isDir()) {
+                                    $zip_archive[] = $path;
+                                }
                             }
-                        }
-                        
-                        // Test for missing image
-                        if (file_exists(BASE_PATH . '/assets/css/lib/images/mimetypes64/' . str_replace('/', '_', $_FILES['files']['type'][0]) . '.png')) {
-                            $has_missing_image = 0;
+                            
+                            // Analyze content
+                            foreach ($zip_archive as $v) {
+                                if ($can_be_added) {
+                                    $zip_archive_file_split = explode('.', $v);
+                                    
+                                    if (!in_array($zip_archive_file_split[count($zip_archive_file_split) - 1], $allowed_filetypes) or 
+                                        $zip_archive_file_split[count($zip_archive_file_split) - 1] == 'zip') {
+                                        // This file is not allowed!
+                                        $can_be_added = false;
+                                        
+                                        // Add error message
+                                        $this->addMessage('\'' . $_FILES['files']['name'][0] . '\' kunne ikke lastes opp fordi den inneholder fil(er) av typer som ikke er godkjent.', 'danger');
+                                        die($zip_archive_file_split[count($zip_archive_file_split) - 1]);
+                                        // Break
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            // Remove folder
+                            $iter2 = new RecursiveIteratorIterator(
+                            new RecursiveDirectoryIterator($tmp_dir, RecursiveDirectoryIterator::SKIP_DOTS),
+                            RecursiveIteratorIterator::CHILD_FIRST
+                            );
+
+                            foreach ($iter2 as $fileinfo) {
+                                $remove_op = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+                                $remove_op($fileinfo->getRealPath());
+                            }
+
+                            rmdir($tmp_dir);
                         }
                         else {
-                            $has_missing_image = 1;
+                            // Check filetype
+                            if (!in_array($real_name_ending, $allowed_filetypes)) {
+                                // Wrong file ending, you hax0r
+                                $can_be_added = false;
+                            }
                         }
                         
-                        // Insert into archive
-                        $insert_archive = "INSERT INTO archive
-                        (name, url_friendly, mime_type, missing_image, parent, location, size)
-                        VALUES (:name, :url_friendly, :mime_type, :missing_image, :parent, :location, :size)";
-                        
-                        $insert_archive_query = $this->db->prepare($insert_archive);
-                        $insert_archive_query->execute(array(':name' => $name,
-                            ':url_friendly' => $url_friendly,
-                            ':mime_type' => str_replace('/', '_', $_FILES['files']['type'][0]),
-                            ':missing_image' => $has_missing_image,
-                            ':parent' => $item->getId(),
-                            ':location' =>  $this->utils->generateUrlFriendly($this_file_name),
-                            ':size' => $_FILES['files']['size'][0]));
+                        if ($can_be_added) {
+                            // Find what the physical location should be
+                            $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
+                            while(true) {
+                                if (file_exists(FILE_ROOT . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($this_file_name))) {
+                                    $this_file_name = $letters[rand(0, count($letters) - 1)] . $this_file_name;
+                                }
+                                else {
+                                    // Gogog
+                                    break;
+                                }
+                            }
+                            $upload_full_location = FILE_ROOT . '/' . $item->getFullLocation() . '/' . $this->utils->generateUrlFriendly($this_file_name);
+                            
+                            // Check duplicates for name
+                            $name = $_FILES['files']['name'][0];
+                            $num = 2;
+                            while (true) {
+                                $get_duplicate = "SELECT id
+                                FROM archive 
+                                WHERE parent = :id
+                                AND name = :name";
+                                
+                                $get_duplicate_query = $this->db->prepare($get_duplicate);
+                                $get_duplicate_query->execute(array(':id' => $item->getId(), ':name' => $name));
+                                $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
+                                if (isset($row_duplicate['id'])) {
+                                    $name = implode('.', $real_name)  . ' (' . $num . ').' . $real_name_ending;
+                                    $num++;
+                                }
+                                else {
+                                    // Gogog
+                                    break;
+                                }
+                            }
+                            
+                            // Check duplicates for url friendly
+                            $url_friendly = $this->utils->generateUrlFriendly($name, true);
+                            while (true) {
+                                $get_duplicate = "SELECT id
+                                FROM archive 
+                                WHERE parent = :id
+                                AND url_friendly = :url_friendly";
+                                
+                                $get_duplicate_query = $this->db->prepare($get_duplicate);
+                                $get_duplicate_query->execute(array(':id' => $item->getId(), ':url_friendly' => $url_friendly));
+                                $row_duplicate = $get_duplicate_query->fetch(PDO::FETCH_ASSOC);
+                                if (isset($row_duplicate['id'])) {
+                                    $url_friendly = $this->utils->generateUrlFriendly($letters[rand(0, count($letters) - 1)] . $url_friendly);
+                                }
+                                else {
+                                    // Gogog
+                                    break;
+                                }
+                            }
+                            
+                            // Test for missing image
+                            if (file_exists(BASE_PATH . '/assets/css/lib/images/mimetypes64/' . str_replace('/', '_', $_FILES['files']['type'][0]) . '.png')) {
+                                $has_missing_image = 0;
+                            }
+                            else {
+                                $has_missing_image = 1;
+                            }
+                            
+                            // Insert into archive
+                            $insert_archive = "INSERT INTO archive
+                            (name, url_friendly, mime_type, missing_image, parent, location, size)
+                            VALUES (:name, :url_friendly, :mime_type, :missing_image, :parent, :location, :size)";
+                            
+                            $insert_archive_query = $this->db->prepare($insert_archive);
+                            $insert_archive_query->execute(array(':name' => $name,
+                                ':url_friendly' => $url_friendly,
+                                ':mime_type' => str_replace('/', '_', $_FILES['files']['type'][0]),
+                                ':missing_image' => $has_missing_image,
+                                ':parent' => $item->getId(),
+                                ':location' =>  $this->utils->generateUrlFriendly($this_file_name),
+                                ':size' => $_FILES['files']['size'][0]));
 
-                        // Insert flag
-                        $insert_flag = "INSERT INTO flag
-                        (file, user, type)
-                        VALUES (:file, :user, :type)";
+                            // Insert flag
+                            $insert_flag = "INSERT INTO flag
+                            (file, user, type)
+                            VALUES (:file, :user, :type)";
 
-                        $element_id = $this->db->lastInsertId();
+                            $element_id = $this->db->lastInsertId();
 
-                        $insert_flag_query = $this->db->prepare($insert_flag);
-                        $insert_flag_query->execute(array(':file' => $element_id,
-                            ':user' => $this->user->getId(),
-                            ':type' => 0));
+                            $insert_flag_query = $this->db->prepare($insert_flag);
+                            $insert_flag_query->execute(array(':file' => $element_id,
+                                ':user' => $this->user->getId(),
+                                ':type' => 0));
 
-                        // Move the file
-                        move_uploaded_file($_FILES['files']['tmp_name'][0], $upload_full_location);
-                        
-                        // Add history
-                        $this->addHistory($this->user->getId(), $element_id,
-                                          null, 2,
-                                          '%u lastet opp ' . $name . '.',
-                                          5);
+                            // Move the file
+                            move_uploaded_file($_FILES['files']['tmp_name'][0], $upload_full_location);
+                            
+                            // Add history
+                            $this->addHistory($this->user->getId(), $element_id,
+                                              null, 2,
+                                              '%u lastet opp ' . $name . '.',
+                                              5);
 
-                        // Add karma to pending
-                        $this->user->addPendingKarma(5);
+                            // Add karma to pending
+                            $this->user->addPendingKarma(5);
 
-                        // Send code
-                        $response['code'] = 200;
+                            // Send code
+                            $response['code'] = 200;
 
-                        // Add message
-                        $this->addFileMessage($name);
+                            // Add message
+                            $this->addFileMessage($name);
 
-                        // Finally, success code
-                        $response['code'] = 200;
+                            // Finally, success code
+                            $response['code'] = 200;
+                        }
+                        else {
+                            $response['code'] = 500;
+                        }
                     }
                     else {
                         $response['code'] = 500;

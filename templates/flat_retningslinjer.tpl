@@ -28,6 +28,7 @@
     <ul>
         [[+$SITE_ACCEPTED_FILEENDINGS]]
     </ul>
+    <em>Legg merke til at .zip-filer blir evaluert ved opplastning. .zip-fila kan kun inneholde filer som er godkjente, og ikke andre .zip-arkiv.</em>
 </div>
 <div class="col-md-4">
     <div id="archive-sidebar-readalso" class="archive-sidebar">
