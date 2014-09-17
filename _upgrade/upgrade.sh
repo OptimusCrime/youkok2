@@ -7,7 +7,7 @@ git fetch --progress
 echo "All done."
 
 echo "\n\033[0;33mClearing cache\033[0m \n"
-php "_upgrade/libs/youkok2/clearcache.class.php"
+php "_upgrade/clear_cache.php"
 
 echo "\n\033[0;33mUpdating composer\033[0m \n"
 composer update

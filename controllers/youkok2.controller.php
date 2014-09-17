@@ -46,20 +46,19 @@ class Youkok2 {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-
-        // Store routes
-        $this->routes = $routes;
         
         // Trying to connect to the database
         try {
             $this->db = new PDO2('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, DATABASE_USER, 
                                 DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
             
-            // Init the CacheManager
-            $this->cacheManager = new CacheManager($this);
+             if (get_class($this) != 'ExternalController') {
+                // Init the CacheManager
+                $this->cacheManager = new CacheManager($this);
 
-            // Init the collection
-            $this->collection = new Collection($this);
+                // Init the collection
+                $this->collection = new Collection($this);
+            }
             
             // Set debug log
             if (DEV) {
@@ -70,32 +69,38 @@ class Youkok2 {
         catch (Exception $e) {
             $this->db = null;
         }
-
-        // Init Utils
-        $this->utils = new Utils();
         
-        // Init Smarty
-        $this->template = new Smarty();
-        $this->template->left_delimiter = '[[+'; 
-        $this->template->right_delimiter = ']]';
-        
-        // Set caching
-        $this->template->setCacheDir(BASE_PATH . '/cache/');
-        
-        // Define a few constants in Smarty
-        $this->template->assign('VERSION', VERSION);
-        $this->template->assign('DEV', DEV);
-        $this->template->assign('SITE_URL', SITE_URL);
-        $this->template->assign('SITE_TITLE', 'Den beste kokeboka');
-        $this->template->assign('SITE_USE_GA', SITE_USE_GA);
-        $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
-        $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
-        $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($this->routes['archive'][0], 1) . '/');
-        $this->template->assign('SITE_EMAIL_CONTACT', SITE_EMAIL_CONTACT);
-        $this->template->assign('SEARCH_QUERY', '');
+        // Check if we should initiate everything
+        if (get_class($this) != 'ExternalController') {
+            // Init Utils
+            $this->utils = new Utils();
+            
+            // Store routes
+            $this->routes = $routes;
+            
+            // Init Smarty
+            $this->template = new Smarty();
+            $this->template->left_delimiter = '[[+'; 
+            $this->template->right_delimiter = ']]';
+            
+            // Set caching
+            $this->template->setCacheDir(BASE_PATH . '/cache/');
+            
+            // Define a few constants in Smarty
+            $this->template->assign('VERSION', VERSION);
+            $this->template->assign('DEV', DEV);
+            $this->template->assign('SITE_URL', SITE_URL);
+            $this->template->assign('SITE_TITLE', 'Den beste kokeboka');
+            $this->template->assign('SITE_USE_GA', SITE_USE_GA);
+            $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
+            $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
+            $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($this->routes['archive'][0], 1) . '/');
+            $this->template->assign('SITE_EMAIL_CONTACT', SITE_EMAIL_CONTACT);
+            $this->template->assign('SEARCH_QUERY', '');
+        }
         
         // Check if in panic mode or not
-        if ($kill == false) {
+        if ($kill == false and get_class($this) != 'ExternalController') {
             // Authenticate if database-connection was successful
             if ($this->db !== NULL) {
                 // Define the standard menu
@@ -121,8 +126,10 @@ class Youkok2 {
             }
         }
         
-        // Analyze query
-        $this->queryAnalyze();
+        if (get_class($this) != 'ExternalController') {
+            // Analyze query
+            $this->queryAnalyze();
+        }
     }
     
     //
@@ -402,5 +409,26 @@ class Youkok2 {
 
     public function getService($method, $args) {
         return call_user_func_array(array($this, $method), $args);
+    }
+    
+    //
+    // Get external service (call method from another class)
+    //
+    
+    public function getExternalService($service, $args) {
+        $s = explode('.', $service);
+        $lib = $s[0];
+        unset($s[0]);
+        
+        // Include
+        require_once BASE_PATH . '/libs/' . $lib . '/' . strtolower(implode('.', $s)) . '.php';
+        
+        // Return instance
+        if (count($args) > 0) {
+            return new $s[1]($args);
+        }
+        else {
+            return new $s[1]();
+        }
     }
 }

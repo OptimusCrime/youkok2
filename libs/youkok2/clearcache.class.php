@@ -14,19 +14,6 @@ Class ClearCache {
     //
 
     public function __construct() {
-        
-        //
-        // Trying to include base
-        //
-        
-        $local_file = dirname(__FILE__) . '/../../../local.php';
-        if (!file_exists($local_file)) {
-            die("Please create your local.php-file");
-        }
-        
-        // Include base
-        require $local_file;
-        require BASE_PATH . '/vendor/autoload.php';
 
         //
         // Typehead backup
@@ -68,9 +55,3 @@ Class ClearCache {
         echo "Cleared cache.\n";
     }
 }
-
-//
-// Run
-//
-
-new ClearCache();
