@@ -85,6 +85,10 @@ class ArchiveController extends Youkok2 {
                         $archive_title .= ' <i class="fa fa-star archive-heading-star-' . $item->isFavorite() . '" data-archive-id="' . $item->getId() . '" id="archive-heading-star"></i>';
                     }
                     
+                    // Description
+                    $item_root = $item->getRootParent();
+                    $site_description = $item_root->getName() . ' - ' . $item_root->getCourse()->getName() . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com.';
+                    
                     // Assign to Smarty
                     $this->template->assign('ARCHIVE_TITLE', $archive_title);
                     $this->template->assign('ARCHIVE_ZIP_DOWNLOAD', $item->generateUrl($this->routes['download'][0]));
@@ -99,6 +103,7 @@ class ArchiveController extends Youkok2 {
                     
                     // Add title
                     $this->template->assign('SITE_TITLE', 'Kokeboka :: ' . $this->loadBredcrumbsTitle($item));
+                    $this->template->assign('SITE_DESCRPTION', $site_description);
                 }
                 else {
                     $should_display_404 = true;
