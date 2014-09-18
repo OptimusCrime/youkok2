@@ -87,7 +87,7 @@ class ArchiveController extends Youkok2 {
                     
                     // Description
                     $item_root = $item->getRootParent();
-                    $site_description = $item_root->getName() . ' - ' . $item_root->getCourse()->getName() . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com.';
+                    $site_description = $item_root->getName() . ' - ' . $item_root->getCourse()->getName() . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
                     
                     // Assign to Smarty
                     $this->template->assign('ARCHIVE_TITLE', $archive_title);
