@@ -415,7 +415,7 @@ class Youkok2 {
     // Get external service (call method from another class)
     //
     
-    public function getExternalService($service, $args) {
+    public function getExternalService($service, $args = array()) {
         $s = explode('.', $service);
         $lib = $s[0];
         unset($s[0]);
@@ -423,12 +423,10 @@ class Youkok2 {
         // Include
         require_once BASE_PATH . '/libs/' . $lib . '/' . strtolower(implode('.', $s)) . '.class.php';
         
+        // New instance
+        $ref_class = new ReflectionClass($s[1]);
+        
         // Return instance
-        if (count($args) > 0) {
-            return new $s[1]($args);
-        }
-        else {
-            return new $s[1]();
-        }
+        return $ref_class->newInstanceArgs($args);
     }
 }
