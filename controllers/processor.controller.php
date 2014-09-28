@@ -798,7 +798,7 @@ class ProcessorController extends Youkok2 {
                             
                             // Add history
                             $this->addHistory($this->user->getId(), $element_id,
-                                              null, 2,
+                                              null, 8,
                                               '%u postet ' . $name . '.',
                                               5);
                             

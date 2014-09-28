@@ -24,7 +24,8 @@ class History {
         'Stemte på godkjenning av mappe',
         'Stemte på navnendring',
         'Stemte på sletting',
-        'Stemte på flytting'
+        'Stemte på flytting',
+        'Postet link',
         );
 
     
