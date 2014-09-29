@@ -1,3 +1,8 @@
+Youkok2 - 0.3.1.-pl (29. september, 2014)
+=========================================
+
+- [Fixed] Jeg ødela compression av js-fila.
+
 Youkok2 - 0.3.0.-pl (29. september, 2014)
 =========================================
 
