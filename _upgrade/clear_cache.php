@@ -3,7 +3,7 @@
 header('Content-Type: text/html; charset=utf-8');
 
 // Includes
-require dirname(__FILE__) . '../local.php';
+require dirname(__FILE__) . '/../local.php';
 
 require BASE_PATH . '/vendor/autoload.php';
 
