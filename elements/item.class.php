@@ -166,7 +166,7 @@ class Item {
             }
             if ($this->loadFlagCount) {
                 $this->query['select'][] = "count(fl.id) as 'flags'";
-                $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file';
+                $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file AND fl.active = 1';
                 $this->query['groupby'][] = 'a.id';
             }
             
