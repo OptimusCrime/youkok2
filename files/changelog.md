@@ -1,5 +1,5 @@
-Youkok2 - 0.3.0.-pl (xx. september, 2014)
-========================================
+Youkok2 - 0.3.0.-pl (29. september, 2014)
+=========================================
 
 - [Info] Minor stuff.
 - [New] Man kan nå opprette linker som linker direkte til sider og enkeltfiler.
