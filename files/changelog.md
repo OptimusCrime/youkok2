@@ -7,7 +7,10 @@ Youkok2 - 0.3.0.-pl (xx. september, 2014)
         gjennomført om alle filene er av godkjente filtyper.
 - [Enhanced] Dersom man favoriserer ett fag vises fagnavnet sammen med fagkoden på forsiden.
 - [Enhanced] Bedre evaluering av filtyper når man laster opp filer.
+- [Enhanced] Mer generisk lasting av eksterne/interne bibliotek.
 - [Fixed] Scraper-scriptet la ikke til nye fag for 2014 høst-semesteret.
+- [Fixed] Feil som gjorde at antall flagg for elementer også telte lukkede flagg.
+- [Fixed] Feil som gjorde at lukking av et flag ikke ble oppdatert på grunn av cache.
 
 Youkok2 - 0.2.1.-pl (25. august, 2014)
 ======================================
