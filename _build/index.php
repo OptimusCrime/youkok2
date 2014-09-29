@@ -29,7 +29,7 @@ echo '<span style="color: green;">Minified CSS</span><br />';
 // Minify JS
 //
 
-$js_minifier = $externalController->getExternalService('minify.JS', array(BASE_PATH . '/assets/js/youkok.css'));
+$js_minifier = $externalController->getExternalService('minify.JS', array(BASE_PATH . '/assets/js/youkok.js'));
 $js_minifier->minify(BASE_PATH . '/assets/js/youkok.min.js');
 echo '<span style="color: green;">Minified JS</span><br />';
 echo '<span>------------------------------------</span><br />';
