@@ -86,7 +86,7 @@ class HomeController extends Youkok2 {
                 
                 if ($element->isLink()) {
                     $element_url = $element->generateUrl($this->routes['redirect'][0]);
-                    $ret .= '<li class="list-group-item"><a rel="nofollow" title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
+                    $ret .= '<li class="list-group-item"><a rel="nofollow" target="_blank" title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
                 }
                 else {
                     $element_url = $element->generateUrl($this->routes['download'][0]);
@@ -172,7 +172,7 @@ class HomeController extends Youkok2 {
                 
                 if ($element->isLink()) {
                     $element_url = $element->generateUrl($this->routes['redirect'][0]);
-                    $ret .= '<li class="list-group-item"><a rel="nofollow" title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->getDownloadCount($user_delta)) . ']</li>';
+                    $ret .= '<li class="list-group-item"><a rel="nofollow" target="_blank" title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->getDownloadCount($user_delta)) . ']</li>';
                 }
                 else {
                     $element_url = $element->generateUrl($this->routes['download'][0]);
@@ -241,7 +241,7 @@ class HomeController extends Youkok2 {
                     
                     if ($element->isLink()) {
                         $element_url = $element->generateUrl($this->routes['redirect'][0]);
-                        $ret .= '<li class="list-group-item list-group-star"><i title="Fjern favoritt" data-id="' . $element->getId() . '" class="fa fa-times-circle star-remove"></i><a title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . '</li>';
+                        $ret .= '<li class="list-group-item list-group-star"><i title="Fjern favoritt" data-id="' . $element->getId() . '" class="fa fa-times-circle star-remove"></i><a target="_blank" title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . '</li>';
                     }
                     else {
                         $element_url = $element->generateUrl($this->routes['download'][0]);
@@ -311,7 +311,7 @@ class HomeController extends Youkok2 {
                 
                 if ($element->isLink()) {
                     $element_url = $element->generateUrl($this->routes['redirect'][0]);
-                    $ret .= '<li class="list-group-item"><a title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . '</li>';
+                    $ret .= '<li class="list-group-item"><a target="_blank" title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . '</li>';
                 }
                 else {
                     $element_url = $element->generateUrl($this->routes['download'][0]);

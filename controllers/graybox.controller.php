@@ -96,7 +96,7 @@ class GrayboxController extends Youkok2 {
             if ($item != null) {
                 if ($item->isLink()) {
                     $element_url = $item->generateUrl($this->routes['redirect'][0]);
-                    $ret .= '<li class="list-group-item"><a title="Link til: ' . $item->getUrl() . '" href="' . $element_url . '">' . $item->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($item->getAdded()) . '" data-ts="' . $item->getAdded() . '">Laster...</span>]</li>';
+                    $ret .= '<li class="list-group-item"><a target="_blank" title="Link til: ' . $item->getUrl() . '" href="' . $element_url . '">' . $item->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($item->getAdded()) . '" data-ts="' . $item->getAdded() . '">Laster...</span>]</li>';
                 }
                 else {
                     $element_url = $item->generateUrl($this->routes['download'][0]);
@@ -138,7 +138,7 @@ class GrayboxController extends Youkok2 {
             if ($item != null) {
                 if ($item->isLink()) {
                     $element_url = $item->generateUrl($this->routes['redirect'][0]);
-                    $ret .= '<li class="list-group-item"><a title="Link til: ' . $item->getUrl() . '" href="' . $element_url . '">' . $item->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($row['downloaded_time']) . '" data-ts="' . $row['downloaded_time'] . '">Laster...</span>]</li>';
+                    $ret .= '<li class="list-group-item"><a target="_blank" title="Link til: ' . $item->getUrl() . '" href="' . $element_url . '">' . $item->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($row['downloaded_time']) . '" data-ts="' . $row['downloaded_time'] . '">Laster...</span>]</li>';
                 }
                 else {
                     $element_url = $item->generateUrl($this->routes['download'][0]);
