@@ -73,7 +73,7 @@ class Executioner {
                 }
                 else if ($votes_negative == 5) {
                     $is_finished = true;
-                    $finished_type = negative;
+                    $finished_type = false;
                 }
             }
             else {
@@ -83,7 +83,7 @@ class Executioner {
                 }
                 else if ($votes_negative == 5) {
                     $is_finished = true;
-                    $finished_type = negative;
+                    $finished_type = false;
                 }
             }
 
@@ -99,6 +99,9 @@ class Executioner {
                 else if ($this->flag->getType() == 2) {
                     $this->execute2($finished_type);
                 }
+                
+                // Refresh cache
+                $this->controller->cacheManager->deleteCache($this->flag->getFile(), 'i');
             }
         }
     }
