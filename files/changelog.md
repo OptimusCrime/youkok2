@@ -1,12 +1,19 @@
+Youkok2 - 0.4.0.-pl (13. oktober, 2014)
+=======================================
+
+- [Info] Ny funksjonalitet
+- [New] Se detaljer om en fil/link/mappe ved å høyreklikke og velge 'Detaljer'.
+
 Youkok2 - 0.3.1.-pl (29. september, 2014)
 =========================================
 
+- [Info] Hotfix.
 - [Fixed] Jeg ødela compression av js-fila.
 
 Youkok2 - 0.3.0.-pl (29. september, 2014)
 =========================================
 
-- [Info] Minor stuff.
+- [Info] Ny funksjonalitet.
 - [New] Man kan nå opprette linker som linker direkte til sider og enkeltfiler.
 - [New] Det er nå mulig å laste opp .zip-arkiv til Youkok2. Innholdet av arkivet blir sjekket, og opplastning blir kun
         gjennomført om alle filene er av godkjente filtyper.
@@ -45,6 +52,7 @@ Youkok2 - 0.2.0.-pl (25. august, 2014)
 Youkok2 - 0.1.1-pl (7. august, 2014)
 ====================================
 
+- [Info] Ny funksjonalitet.
 - [New] Søkefunksjon.
 - [New] Man kan nå fjerne favoritter fra forsiden.
 - [Fixed] Hover fungerte ikke når man endret mest populære på forsiden.
