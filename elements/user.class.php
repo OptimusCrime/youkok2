@@ -103,7 +103,7 @@ Class User {
     //
     
     public function isLoggedIn() {
-        return $this->loggedIn;
+        return $this->loggedIn ? 1 : 0;
     }
 
     //
@@ -147,7 +147,7 @@ Class User {
     }
 
     public function canContribute() {
-        return $this->karma > 0 and !$this->banned;
+        return ($this->karma > 0 and !$this->banned) ? 1 : 0;
     }
 
     //

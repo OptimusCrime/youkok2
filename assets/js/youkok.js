@@ -195,11 +195,10 @@ $(document).ready(function () {
     var $archive_right_click = null;
     var $archive_context_menu = $('#archive-context-menu');
     var ignore_click_outside = false;
-
+    
     if ($('#archive-online').val() != 1) {
         $('#archive-context-newflag-outer').hide();
         $('#archive-context-report').parent().hide();
-        $('#archive-context-star').parent().hide();
     }
     if ($('#archive-can-c').val() != 1) {
         $('#archive-context-newflag-outer').hide();
@@ -249,18 +248,23 @@ $(document).ready(function () {
         }
 
         // Favorite
-        if ($that.data('favorite') == null) {
-            $('#archive-context-star', $archive_context_menu).hide();
-        }
-        else {
-            $('#archive-context-star', $archive_context_menu).show();
-
-            if ($that.data('favorite') == 1) {
-                $('#archive-context-star-inside', $archive_context_menu).html('Fjern favoritt');
+        if ($('#archive-online').val() == 1) {
+            if ($that.data('favorite') == null) {
+                $('#archive-context-star', $archive_context_menu).hide();
             }
             else {
-                $('#archive-context-star-inside', $archive_context_menu).html('Legg til favoritt');
+                $('#archive-context-star', $archive_context_menu).show();
+                
+                if ($that.data('favorite') == 1) {
+                    $('#archive-context-star-inside', $archive_context_menu).html('Fjern favoritt');
+                }
+                else {
+                    $('#archive-context-star-inside', $archive_context_menu).html('Legg til favoritt');
+                }
             }
+        }
+        else {
+            $('#archive-context-star', $archive_context_menu).hide();
         }
         
         // Set location
