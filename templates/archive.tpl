@@ -7,34 +7,8 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title">Laster...</h4>
             </div>
-            <div class="modal-body">
-                <div class="modal-body-inner">
-                    <div class="modal-col modal-col-left">
-                        <p><b>Lastet opp av:</b></p>
-                        <p><b>Opprettet:</b></p>
-                        <p><b>Størrelse:</b></p>
-                    </div>
-                    <div class="modal-col modal-col-right">
-                        <p><em>Anonym</em></p>
-                        <p>10.20.12</p>
-                        <p>10mb</p>
-                    </div>
-                    <div class="modal-col modal-col-left">
-                        <p><b>Nedlastninger:</b></p>
-                        <p><b>Bandwidth:</b></p>
-                    </div>
-                    <div class="modal-col modal-col-right">
-                        <p>10.114</p>
-                        <p>500mb</p>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="modal-body-inner">
-                    <h4 class="center">Populæritet</h4>
-                    <div id="modal-info-graph-data"></div>
-                    <div id="modal-info-graph"></div>
-                </div>
-                
+            <div class="modal-body" id="info-panel">
+                <p>Laster...</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>

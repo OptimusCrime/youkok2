@@ -72,6 +72,9 @@ class Item {
     public static $file = 0;
     public static $dir = 1;
     
+    public static $accumulated = 0;
+    public static $single = 1;
+    
     //
     // Constructor
     //
@@ -804,7 +807,7 @@ class Item {
         WHERE parent = :parent" . $subquery;
         
         $get_children_ids_query = $this->controller->db->prepare($get_children_ids);
-        $get_children_ids_query->execute(array(':parent' => $this->getId()));
+        $get_children_ids_query->execute(array(':parent' => $this->id));
         while ($row = $get_children_ids_query->fetch(PDO::FETCH_ASSOC)) {
             $element = new Item($this->controller);
             $element->setLoadFullLocation(true);
@@ -863,5 +866,52 @@ class Item {
         
         // Return here
         return $this->ownerUsername;
+    }
+    
+    //
+    // Get graph data
+    //
+    
+    public function getGraphData($type = null) {
+        // Set type if null
+        if ($type === null) {
+            $type = 0;
+        }
+        
+        // Some variables
+        $output = array();
+        $previous_num = 0;
+        
+        // The query
+        $get_all_downloads = "SELECT COUNT(id) AS 'num', downloaded_time
+        FROM download
+        WHERE file = :file
+        GROUP BY DAY(downloaded_time)
+        ORDER BY downloaded_time ASC";
+        
+        $get_all_downloads_query = $this->controller->db->prepare($get_all_downloads);
+        $get_all_downloads_query->execute(array(':file' => $this->id));
+        while ($row = $get_all_downloads_query->fetch(PDO::FETCH_ASSOC)) {
+            // Define how to count downloads
+            if ($type == Item::$accumulated) {
+                $previous_num += $row['num'];
+                $num_count = $previous_num;
+            }
+            else {
+                $num_count = $row['num'];
+            }
+            
+            // Split the timestamp
+            $ts_split = explode(' ', $row['downloaded_time']);
+            $date_split = explode('-', $ts_split[0]);
+            $time_split = explode(':', $ts_split[1]);
+            
+            // The string for Higcharts
+            $output[] = array('Date.UTC(' . $date_split[0] . ', ' . $date_split[1] . ', ' . $date_split[2] . ', ' . $time_split[0] . ', ' . $time_split[1] . ', ' . $time_split[2] . ')',
+                              $num_count);
+        }
+        
+        // Return the series here
+        return json_encode($output);
     }
 }

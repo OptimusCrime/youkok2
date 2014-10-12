@@ -106,6 +106,13 @@ class ProcessorController extends Youkok2 {
                     $response = $this->historyGet();
                 }
             }
+            else if ($this->queryGet(1) == 'element') {
+                // Ajax calls for fetching information about a element
+                if ($this->queryGet(2) == 'info') {
+                    // Fetch history
+                    $response = $this->elementInfo();
+                }
+            }
             else {
                 // Not found
                 $response['code'] = 500;
@@ -1143,6 +1150,107 @@ class ProcessorController extends Youkok2 {
             $response['html'] = '<em>Ingen historikk å vise.</em>';
         }
 
+        return $response;
+    }
+    
+    //
+    // Method for getting information about a element
+    //
+    
+    private function elementInfo() {
+        $response = array();
+        $response['html'] = '';
+        
+        if (isset($_POST['id']) and is_numeric($_POST['id'])) {
+            // Valid id, try to load the object
+            $element = new Item($this);
+            $element->createById($_POST['id']);
+            
+            // Check if valid id
+            if ($element->wasFound()) {
+                // Good to go
+                $response['code'] = 200;
+                
+                // Get basic information
+                $response['html'] .= '<div class="modal-body-inner">';
+                $response['html'] .= '    <div class="modal-col modal-col-left">';
+                
+                if ($element->isDirectory()) {
+                    // Directory element
+                    $response['html'] .= '        <p><b>Opprettet av:</b></p>';
+                    $response['html'] .= '    </div>';
+                    $response['html'] .= '    <div class="modal-col modal-col-right">';
+                    $response['html'] .= '        <p>' . $element->getOwnerUsername() . '</p>';
+                    $response['html'] .= '    </div>';
+                    $response['html'] .= '    <div class="modal-col modal-col-left">';
+                    $response['html'] .= '        <p><b>Opprettet:</b></p>';
+                    $response['html'] .= '    </div>';
+                    $response['html'] .= '    <div class="modal-col modal-col-right">';
+                    $response['html'] .= '        <p><span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span></p>';
+                    $response['html'] .= '    </div>';
+                }
+                else if ($element->isLink()) {
+                    // Link element
+                    $response['html'] .= '        <p><b>Opprettet av:</b></p>';
+                    $response['html'] .= '        <p><b>Opprettet:</b></p>';
+                    $response['html'] .= '    </div>';
+                    $response['html'] .= '    <div class="modal-col modal-col-right">';
+                    $response['html'] .= '        <p>' . $element->getOwnerUsername() . '</p>';
+                    $response['html'] .= '        <p><span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span></p>';
+                    $response['html'] .= '    </div>';
+                    $response['html'] .= '    <div class="modal-col modal-col-left">';
+                    $response['html'] .= '        <p><b>Videresendinger:</b></p>';
+                    $response['html'] .= '    </div>';
+                    $response['html'] .= '    <div class="modal-col modal-col-right">';
+                    $response['html'] .= '        <p>' . $element->getDownloadCount(2) . '</p>';
+                    $response['html'] .= '    </div>';
+                }
+                else {
+                    // File element
+                    
+                    // Get some information
+                    $download_count = $element->getDownloadCount(2);
+                    
+                    $response['html'] .= '        <p><b>Lastet opp av:</b></p>';
+                    $response['html'] .= '        <p><b>Opprettet:</b></p>';
+                    $response['html'] .= '        <p><b>Størrelse:</b></p>';
+                    $response['html'] .= '    </div>';
+                    $response['html'] .= '    <div class="modal-col modal-col-right">';
+                    $response['html'] .= '        <p>' . $element->getOwnerUsername() . '</p>';
+                    $response['html'] .= '        <p><span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span></p>';
+                    $response['html'] .= '        <p>' . $element->getSizePretty()  . '</p>';
+                    $response['html'] .= '    </div>';
+                    $response['html'] .= '    <div class="modal-col modal-col-left">';
+                    $response['html'] .= '        <p><b>Nedlastninger:</b></p>';
+                    $response['html'] .= '        <p><b>Bandwidth:</b></p>';
+                    $response['html'] .= '    </div>';
+                    $response['html'] .= '    <div class="modal-col modal-col-right">';
+                    $response['html'] .= '        <p>' . $download_count . '</p>';
+                    $response['html'] .= '        <p>' . $this->utils->prettifyFilesize($element->getSize() * $download_count) . '</p>';
+                    $response['html'] .= '    </div>';
+                }
+                
+                // Close container
+                $response['html'] .= '    <div class="clear"></div>';
+                $response['html'] .= '</div>';
+                
+                // Only display popularity if the element is not a directory
+                if (!$element->isDirectory()) {
+                    $response['html'] .= '<div class="modal-body-inner">';
+                    $response['html'] .= '    <h4 class="center">Populæritet</h4>';
+                    $response['html'] .= '    <div id="modal-info-graph-data">' . $element->getGraphData(Item::$accumulated) . '</div>';
+                    $response['html'] .= '    <div id="modal-info-graph"></div>';
+                    $response['html'] .= '</div>';
+                }
+            }
+            else {
+                $response['code'] = 500;
+            }
+        }
+        else {
+            $response['code'] = 500;
+        }
+        
         return $response;
     }
 
