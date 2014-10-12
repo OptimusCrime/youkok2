@@ -15,6 +15,9 @@ body, html {
 .hidden {
     display: none;
 }
+.center {
+    text-align: center;
+}
 
 /*
     Overriding theme
@@ -624,4 +627,22 @@ a, a:focus, a:active, a:visited {
 }
 #footer span.nopadd {
     padding: 0px;
+}
+
+/*
+    Info modal
+*/
+
+.modal-col {
+    width: 25%;
+    float: left;
+}
+.modal-col-right p {
+    padding-right: 10px;
+}
+.modal-body-inner {
+    margin-bottom: 15px;
+}
+#modal-info-graph-data {
+    display: none;
 }

@@ -1,5 +1,48 @@
 [[+include file="header.tpl"]]
 
+<div class="modal fade" id="modal-info">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Laster...</h4>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body-inner">
+                    <div class="modal-col modal-col-left">
+                        <p><b>Lastet opp av:</b></p>
+                        <p><b>Opprettet:</b></p>
+                        <p><b>Størrelse:</b></p>
+                    </div>
+                    <div class="modal-col modal-col-right">
+                        <p><em>Anonym</em></p>
+                        <p>10.20.12</p>
+                        <p>10mb</p>
+                    </div>
+                    <div class="modal-col modal-col-left">
+                        <p><b>Nedlastninger:</b></p>
+                        <p><b>Bandwidth:</b></p>
+                    </div>
+                    <div class="modal-col modal-col-right">
+                        <p>10.114</p>
+                        <p>500mb</p>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="modal-body-inner">
+                    <h4 class="center">Populæritet</h4>
+                    <div id="modal-info-graph-data"></div>
+                    <div id="modal-info-graph"></div>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="modal-new-flag">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -104,6 +147,8 @@
     <li id="archive-context-download"><a href="#">Last ned<span id="archive-context-menu-size"></span></a></li>
     <li id="archive-context-open"><a href="#">Åpne</a></li>
     <li id="archive-context-star"><a href="#" id="archive-context-star-inside">Legg til favoritt</a></li>
+    <li id="archive-context-info"><a href="#">Detaljer</a></li>
+    
     
     <li class="divider"></li>
 
