@@ -14,6 +14,7 @@
     <script type="text/javascript" src="assets/js/lib/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="assets/js/lib/jquery.fileupload.js"></script>
     <script type="text/javascript" src="assets/js/lib/jquery.ba-outside-events.min.js"></script>
+    <script type="text/javascript" src="assets/js/lib/highcharts.min.js"></script>
     [[+nocache]]<script type="text/javascript" src="assets/js/youkok[[+if !$DEV]].min[[+/if]].js?v=[[+$VERSION]]"></script>[[+/nocache]]
     <link rel="stylesheet" type="text/css" href="assets/css/lib/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/lib/font-awesome.css" />
