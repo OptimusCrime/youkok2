@@ -57,6 +57,10 @@ class Item {
     private $flagCount;
     private $downloadCount;
     
+    // Owner
+    private $ownerId;
+    private $ownerUsername;
+    
     // Pointers to other objects related to this item
     private $courseObj;
     private $flags;
@@ -105,6 +109,10 @@ class Item {
                                      1 => null, 
                                      2 => null, 
                                      3 => null);
+        
+        // Owner
+        $this->ownerId = null;
+        $this->ownerUsername = null;
         
         // Set pointers to other objects
         $this->courseObj = null;
@@ -810,5 +818,50 @@ class Item {
     
     public function getChildrenCount($flag = null) {
         return count($this->getChildren($flag));
+    }
+    
+    //
+    // Get creator
+    //
+    
+    public function getOwnerId() {
+        // Only fetch if null
+        if ($this->ownerId == null) {
+            // Just call getOwnerUsername, to make things easier
+            $this->getOwnerUsername();
+        }
+        
+        // Return
+        return $this->ownerId;
+    }
+    
+    public function getOwnerUsername() {
+        // Fetch only if null
+        if ($this->ownerUsername == null) {
+            $get_owner = "SELECT u.id, u.nick
+            FROM user AS u
+            LEFT JOIN flag AS f ON f.user = u.id
+            WHERE f.file = :file
+            AND f.type = 0
+            LIMIT 1";
+            
+            $get_owner_query = $this->controller->db->prepare($get_owner);
+            $get_owner_query->execute(array(':file' => $this->id));
+            $row = $get_owner_query->fetch(PDO::FETCH_ASSOC);
+            
+            if (isset($row['id'])) {
+                $this->ownerId = $row['id'];
+                
+                if (!isset($row['nick']) or $row['nick'] == '') {
+                    $this->ownerUsername = '<em>Anonym</em>';
+                }
+                else {
+                    $this->ownerUsername = $row['nick'];
+                }
+            }
+        }
+        
+        // Return here
+        return $this->ownerUsername;
     }
 }
