@@ -577,7 +577,7 @@ class Item {
             $get_download_count = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'
             FROM download d
             LEFT JOIN archive AS a ON a.id = d.file
-            WHERE " . $d. "
+            " . $d. "
             AND d.file = :file";
             
             $get_download_count_query = $this->controller->db->prepare($get_download_count);
