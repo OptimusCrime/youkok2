@@ -275,8 +275,25 @@ Class User {
             $this->controller->addMessage('Du har nå logget ut.', 'success');
         }
 
-        // Redirect to frontpage
-        $this->controller->redirect('');
+        // Check if we should redirect the user back to the previous page
+        if (strstr($_SERVER['HTTP_REFERER'], SITE_URL) !== false) {
+            // Has referer, remove base
+            $clean_referer = str_replace(SITE_URL_FULL, '', $_SERVER['HTTP_REFERER']);
+            
+            // Check if anything left
+            if (strlen($clean_referer) > 0) {
+                // Refirect to whatever we have left
+                $this->controller->redirect($clean_referer);
+            }
+            else {
+                // Send to frontpage
+                $this->controller->redirect('');
+            }
+        }
+        else {
+            // Does not have referer
+            $this->controller->redirect('');
+        }
     }
 
     //
