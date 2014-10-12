@@ -36,6 +36,7 @@
         <li><a href="http://twitter.github.io/typeahead.js/" target="_blank">Typeahead.js</a></li>
         <li><a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">FontAwesome</a></li>
         <li><a href="https://github.com/blueimp/jQuery-File-Upload" target="_blank">jQuery-File-Upload</a></li>
+        <li><a href="http://www.highcharts.com" target="_blank">Highcharts</a></li>
     </ul>
 
     <p>I tillegg er ikoner for filtyper og noe inspirasjon hentet fra <a href="http://www.mollify.org" target="_blank">Mollify</a>.</p>
