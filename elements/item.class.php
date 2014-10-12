@@ -75,6 +75,12 @@ class Item {
     public static $accumulated = 0;
     public static $single = 1;
     
+    public static $delta = array(' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', 
+                                 ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.is_visible = 1', 
+                                 ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', 
+                                 ' WHERE a.is_visible = 1',
+                                 ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1');
+    
     //
     // Constructor
     //
@@ -553,15 +559,25 @@ class Item {
     // Download methods
     //
     
-    public function getDownloadCount($delta) {
+    public function getDownloadCount($d) {
+        // Get the delta index
+        $index = 0;
+        foreach (Item::$delta as $k => $v) {
+            if ($v == $d) {
+                $index = $k;
+                break;
+            }
+        }
+        
         // Check if null
-        if ($this->downloadCount[$delta] == null) {
+        if ($this->downloadCount[$index] == null) {
             // TODO, check what is fetched!
 
             // This count is not cached, run query to fetch the download number
-            $get_download_count = "SELECT COUNT(d.id) as 'downloaded_times'
+            $get_download_count = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'
             FROM download d
-            WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+            LEFT JOIN archive AS a ON a.id = d.file
+            WHERE " . $d. "
             AND d.file = :file";
             
             $get_download_count_query = $this->controller->db->prepare($get_download_count);
@@ -569,14 +585,14 @@ class Item {
             $row = $get_download_count_query->fetch(PDO::FETCH_ASSOC);
 
             // Set value
-            $this->downloadCount[$delta] = $row['downloaded_times'];
+            $this->downloadCount[$index] = $row['downloaded_times'];
 
             // Return value
             return $row['downloaded_times'];
         }
         else {
             // Cached result, just return
-            return $this->downloadCount[$delta];
+            return $this->downloadCount[$index];
         }
     }
     

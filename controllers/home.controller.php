@@ -105,14 +105,7 @@ class HomeController extends Youkok2 {
     
     public function loadMostPopular($override = null) {
         $ret = '';
-
-        // Deltas
-        $delta = array(' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', 
-            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.is_visible = 1', 
-            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', 
-            ' WHERE a.is_visible = 1',
-            ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1');
-
+        
         if ($override == null) {
             if ($this->user->isLoggedIn()) {
                 $user_delta = $this->user->getMostPopularDelta();
@@ -137,7 +130,7 @@ class HomeController extends Youkok2 {
         $get_most_popular = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'
         FROM download d
         LEFT JOIN archive AS a ON a.id = d.file
-        " . $delta[$user_delta] . "
+        " . Item::$delta[$user_delta] . "
         GROUP BY d.file
         ORDER BY downloaded_times DESC
         LIMIT 15";

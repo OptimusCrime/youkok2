@@ -1202,14 +1202,14 @@ class ProcessorController extends Youkok2 {
                     $response['html'] .= '        <p><b>Videresendinger:</b></p>';
                     $response['html'] .= '    </div>';
                     $response['html'] .= '    <div class="modal-col modal-col-right">';
-                    $response['html'] .= '        <p>' . $element->getDownloadCount(2) . '</p>';
+                    $response['html'] .= '        <p>' . $element->getDownloadCount(Item::$delta[3]) . '</p>';
                     $response['html'] .= '    </div>';
                 }
                 else {
                     // File element
                     
                     // Get some information
-                    $download_count = $element->getDownloadCount(2);
+                    $download_count = $element->getDownloadCount(Item::$delta[3]);
                     
                     $response['html'] .= '        <p><b>Lastet opp av:</b></p>';
                     $response['html'] .= '        <p><b>Opprettet:</b></p>';
