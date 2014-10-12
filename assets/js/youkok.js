@@ -199,6 +199,7 @@ $(document).ready(function () {
     if ($('#archive-online').val() != 1) {
         $('#archive-context-newflag-outer').hide();
         $('#archive-context-report').parent().hide();
+        $('#archive-context-star').parent().hide();
     }
     if ($('#archive-can-c').val() != 1) {
         $('#archive-context-newflag-outer').hide();
@@ -1389,6 +1390,12 @@ $(document).ready(function () {
     //
     
     popularity_chart_options =  {
+        lang: {
+            loading: 'Laster...',
+            months: ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'],
+            weekdays: ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'],
+            shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
+        },
         chart: {
             renderTo: 'modal-info-graph',
             height: 150,

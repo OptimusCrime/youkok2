@@ -4,6 +4,9 @@ Youkok2 - 0.4.0.-pl (13. oktober, 2014)
 - [Info] Ny funksjonalitet
 - [New] Se detaljer om en fil/link/mappe ved å høyreklikke og velge 'Detaljer'.
 - [Fixed] Metode som grupperte nedlastninger på tid var helt feil.
+- [Fixed] Man hadde muligheten til å favoritisere noe selv om man ikke var logget inn.
+- [Enchanced] Norske navn på Highcharts grafen.
+- [Enhanced] Når man logger inn returneres man nå til siden man var på.
 
 Youkok2 - 0.3.1.-pl (29. september, 2014)
 =========================================
