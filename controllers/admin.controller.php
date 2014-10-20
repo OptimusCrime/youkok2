@@ -60,9 +60,10 @@ class AdminController extends Youkok2 {
         $get_dowload_number_result = $get_download_number_query->fetch(PDO::FETCH_ASSOC);
         
         // Load downloads past 24 hours
-        $get_download_number_last24 = "SELECT COUNT(id) AS 'antall_nedlastninger'
-        FROM download
-        WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1')";
+        $get_download_number_last24 = "SELECT COUNT(d.id) AS 'antall_nedlastninger'
+        FROM download AS d
+        LEFT JOIN archive AS a ON a.id = d.file
+        WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1";
         
         $get_download_number_last24_query = $this->db->prepare($get_download_number_last24);
         $get_download_number_last24_query->execute();
