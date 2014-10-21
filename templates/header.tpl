@@ -59,6 +59,9 @@
                                 <li class="divider"></li>
                                 <li><a href="profil/innstillinger">Innstillinger</a></li>
                                 <li><a href="profil/historikk">Karma / Historikk</a></li>
+                                [[+if $BASE_USER_IS_ADMIN == true]]
+                                    <li><a href="admin">Admin</a></li>
+                                [[+/if]]
                                 <li class="divider"></li>
                                 <li><a href="logg-ut">Logg ut</a></li>
                             </ul>
