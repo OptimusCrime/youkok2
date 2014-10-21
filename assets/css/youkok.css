@@ -646,3 +646,18 @@ a, a:focus, a:active, a:visited {
 #modal-info-graph-data {
     display: none;
 }
+
+/*
+    Admin
+*/
+
+.admin-graph-hidden {
+    display: none;
+}
+#modal-admin-script .modal-body{
+    padding-top: 20px;
+}
+#modal-admin-iframe {
+    width: 558px;
+    min-height: 200px;
+}

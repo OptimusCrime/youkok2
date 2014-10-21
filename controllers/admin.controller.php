@@ -21,7 +21,7 @@ class AdminController extends Youkok2 {
         // Calling Base' constructor
         parent::__construct($routes);
         
-        if ($this->user->isLoggedIn() and $this->user->getId() == 10000) {
+        if ($this->user->isAdmin()) {
             $this->displayAdminPage();
         }
         else {
@@ -90,7 +90,6 @@ class AdminController extends Youkok2 {
             $total_bandwidth += ($row['downloaded_times'] * $row['size']);
         }
         
-        
         // Assign
         $this->template->assign('ADMIN_USERS', number_format($get_user_number_result['antall_brukere']));
         $this->template->assign('ADMIN_FILES', number_format($get_file_number_result['antall_filer']));
@@ -104,7 +103,8 @@ class AdminController extends Youkok2 {
         $get_download_pr_day = "SELECT downloaded_time AS 'date', COUNT(id) AS 'num' 
         FROM download 
         GROUP BY TO_DAYS(downloaded_time) 
-        ORDER BY downloaded_time DESC";
+        ORDER BY downloaded_time DESC
+        LIMIT 14";
         $get_download_pr_day_query = $this->db->prepare($get_download_pr_day);
         $get_download_pr_day_query->execute();
         while ($row = $get_download_pr_day_query->fetch(PDO::FETCH_ASSOC)) {
@@ -112,8 +112,54 @@ class AdminController extends Youkok2 {
         }
         $this->template->assign('ADMIN_DOWNLOADS_PR_DAY', $download_pr_day);
         
+        //
+        // Get graphs
+        //
+        
+        $graph_data = $this->adminPageGraphs();
+        $this->template->assign('ADMIN_GRAPH_DATA', json_encode($graph_data[0]));
+        $this->template->assign('ADMIN_GRAPH_DATA_ACC', json_encode($graph_data[1]));
+        
         // Display
         $this->displayAndCleanup('admin_home.tpl');
+    }
+    
+    //
+    // Get graphs
+    //
+    
+    private function adminPageGraphs() {
+        // Some variables
+        $output = [[], []];
+        $previous_num = 0;
+        
+        // The query
+        $get_all_downloads = "SELECT COUNT(d.id) AS 'num', d.downloaded_time
+        FROM download AS d
+        LEFT JOIN archive AS a ON a.id = d.file AND a.is_visible = 1
+        GROUP BY DAY(d.downloaded_time)
+        ORDER BY d.downloaded_time ASC";
+        
+        $get_all_downloads_query = $this->db->prepare($get_all_downloads);
+        $get_all_downloads_query->execute();
+        while ($row = $get_all_downloads_query->fetch(PDO::FETCH_ASSOC)) {
+            $previous_num += $row['num'];
+            $num_count = $previous_num;
+                
+            // Split the timestamp
+            $ts_split = explode(' ', $row['downloaded_time']);
+            $date_split = explode('-', $ts_split[0]);
+            $time_split = explode(':', $ts_split[1]);
+            
+            // The string for Higcharts
+            $output[0][] = array('Date.UTC(' . $date_split[0] . ', ' . $date_split[1] . ', ' . $date_split[2] . ', ' . $time_split[0] . ', ' . $time_split[1] . ', ' . $time_split[2] . ')',
+                              $row['num']);
+            $output[1][] = array('Date.UTC(' . $date_split[0] . ', ' . $date_split[1] . ', ' . $date_split[2] . ', ' . $time_split[0] . ', ' . $time_split[1] . ', ' . $time_split[2] . ')',
+                              $num_count);
+        }
+        
+        // Return the series here
+        return $output;
     }
 }
 
