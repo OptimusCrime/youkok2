@@ -120,6 +120,57 @@ class AdminController extends Youkok2 {
         $this->template->assign('ADMIN_GRAPH_DATA', json_encode($graph_data[0]));
         $this->template->assign('ADMIN_GRAPH_DATA_ACC', json_encode($graph_data[1]));
         
+        //
+        // Get system stats
+        //
+        
+        // Courses
+        $get_course_number = "SELECT COUNT(id) AS 'num_couses'
+        FROM course";
+        
+        $get_course_number_query = $this->db->prepare($get_course_number);
+        $get_course_number_query->execute();
+        $get_course_number_result = $get_course_number_query->fetch(PDO::FETCH_ASSOC);
+        
+        // Files
+        $get_files_number = "SELECT COUNT(id) AS 'num_files'
+        FROM archive
+        WHERE is_directory = 0 
+        AND url IS NULL 
+        AND is_visible = 1";
+        
+        $get_files_number_query = $this->db->prepare($get_files_number);
+        $get_files_number_query->execute();
+        $get_files_number_result = $get_files_number_query->fetch(PDO::FETCH_ASSOC);
+        
+        // Links
+        $get_links_number = "SELECT COUNT(id) AS 'num_links'
+        FROM archive
+        WHERE is_directory = 0 
+        AND url IS NOT NULL 
+        AND is_visible = 1";
+        
+        $get_links_number_query = $this->db->prepare($get_links_number);
+        $get_links_number_query->execute();
+        $get_links_number_result = $get_links_number_query->fetch(PDO::FETCH_ASSOC);
+        
+        // Directories
+        $get_dirs_number = "SELECT COUNT(id) AS 'num_dirs'
+        FROM archive
+        WHERE is_directory = 1
+        AND url IS NULL 
+        AND is_visible = 1";
+        
+        $get_dirs_number_query = $this->db->prepare($get_dirs_number);
+        $get_dirs_number_query->execute();
+        $get_dirs_number_result = $get_dirs_number_query->fetch(PDO::FETCH_ASSOC);
+        
+        // Assign
+        $this->template->assign('ADMIN_NUM_COURSES', number_format($get_course_number_result['num_couses']));
+        $this->template->assign('ADMIN_NUM_FILES', number_format($get_files_number_result['num_files']));
+        $this->template->assign('ADMIN_NUM_LINKS', number_format($get_links_number_result['num_links']));
+        $this->template->assign('ADMIN_NUM_DIRS', number_format($get_dirs_number_result['num_dirs']));
+        
         // Display
         $this->displayAndCleanup('admin_home.tpl');
     }

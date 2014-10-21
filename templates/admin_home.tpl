@@ -48,6 +48,14 @@
         <div id="admin-graph2-display"></div>
     </div>
     
+    <h2>Tall</h2>
+    <ul>
+        <li>Antall fag: [[+$ADMIN_NUM_COURSES]]</li>
+        <li>Antall filer: [[+$ADMIN_NUM_FILES]]</li>
+        <li>Antall linker: [[+$ADMIN_NUM_LINKS]]</li>
+        <li>Antall mapper: [[+$ADMIN_NUM_DIRS]]</li>
+    </ul>
+    
 </div>
 <div class="col-md-4">
     <div id="archive-sidebar-readalso" class="archive-sidebar">
