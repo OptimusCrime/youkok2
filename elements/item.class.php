@@ -902,7 +902,7 @@ class Item {
         $get_all_downloads = "SELECT COUNT(id) AS 'num', downloaded_time
         FROM download
         WHERE file = :file
-        GROUP BY DAY(downloaded_time)
+        GROUP BY TO_DAYS(downloaded_time)
         ORDER BY downloaded_time ASC";
         
         $get_all_downloads_query = $this->controller->db->prepare($get_all_downloads);

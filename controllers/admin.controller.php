@@ -185,11 +185,10 @@ class AdminController extends Youkok2 {
         $previous_num = 0;
         
         // The query
-        $get_all_downloads = "SELECT COUNT(d.id) AS 'num', d.downloaded_time
-        FROM download AS d
-        LEFT JOIN archive AS a ON a.id = d.file AND a.is_visible = 1
-        GROUP BY DAY(d.downloaded_time)
-        ORDER BY d.downloaded_time ASC";
+        $get_all_downloads = "SELECT COUNT(id) AS 'num', downloaded_time
+        FROM download
+        GROUP BY TO_DAYS(downloaded_time)
+        ORDER BY downloaded_time ASC";
         
         $get_all_downloads_query = $this->db->prepare($get_all_downloads);
         $get_all_downloads_query->execute();
