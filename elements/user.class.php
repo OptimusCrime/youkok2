@@ -96,6 +96,7 @@ Class User {
         $this->controller->template->assign('BASE_USER_NICK', $this->nick);
         $this->controller->template->assign('BASE_USER_KARMA', $this->karma);
         $this->controller->template->assign('BASE_USER_KARMA_PENDING', $this->karmaPending);
+        $this->controller->template->assign('BASE_USER_IS_ADMIN', $this->isAdmin());
     }
     
     //
@@ -104,6 +105,14 @@ Class User {
     
     public function isLoggedIn() {
         return $this->loggedIn ? 1 : 0;
+    }
+    
+    //
+    // Returning if this user is admin
+    //
+    
+    public function isAdmin() {
+        return ($this->loggedIn and $this->id == '10000');
     }
 
     //
