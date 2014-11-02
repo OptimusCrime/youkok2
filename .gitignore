@@ -16,6 +16,7 @@
 !/scripts/
 !/templates/
 !/templates_c/
+!/youkok2/
 
 # But ignore local settings
 local.php
