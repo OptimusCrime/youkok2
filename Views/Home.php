@@ -4,22 +4,22 @@
  * Holds: The HomeController-class
  * Created: 02.10.13
  * Project: Youkok2
- * 
 */
 
-//
-// Displaying the Home screen
-//
+namespace Youkok2\Views;
 
-class HomeController extends Youkok2 {
+use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Collections\ElementCollection as ElementCollection;
+
+class Home extends Youkok2 {
 
     //
     // The constructor for this subclass
     //
 
-    public function __construct($routes, $kill = false) {
+    public function __construct($kill = false) {
         // Calling Base' constructor
-        parent::__construct($routes);
+        parent::__construct();
         
         // Check if we should autodisplay or not
         if ($kill == false) {
@@ -61,8 +61,8 @@ class HomeController extends Youkok2 {
         ORDER BY added DESC
         LIMIT 15";
         
-        $get_newest_query = $this->db->query($get_newest);
-        while ($row = $get_newest_query->fetch(PDO::FETCH_ASSOC)) {
+        $get_newest_query = Database::$db->query($get_newest);
+        while ($row = $get_newest_query->fetch(\PDO::FETCH_ASSOC)) {
             // Create new object
             $element = $this->collection->get($row['id']);
 

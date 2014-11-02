@@ -7,38 +7,36 @@
  * 
 */
 
-//
-// The class that all the controllers extends
-//
+namespace Youkok2\Views;
+
+use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Utilities\Routes as Routes;
+
+/*
+ * Class that all the controllers extends
+ */
 
 class Youkok2 {
 
-    //
-    // The internal variables
-    //
+    /*
+     * Internal variables
+     */
 
     // Public pointers
-    public $db;
     public $user;
     public $template;
-    public $cacheManager;
-    public $collection;
-    public $util;
-
-    // Array that contains all the routes for the system
-    protected $routes;
-
+    
     // Some private variables for debugging and development
     private $startTime;
     private $endTime;
     private $sqlLog;
     private $query;
     
-    //
-    // Constructor
-    //
+    /*
+     * Constructor
+     */
 
-    public function __construct($routes, $kill = false) {
+    public function __construct($kill = false) {
         // Store start time
         $this->startTime = microtime(true);
         
@@ -49,58 +47,41 @@ class Youkok2 {
         
         // Trying to connect to the database
         try {
-            $this->db = new PDO2('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, DATABASE_USER, 
-                                DATABASE_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-            
-             if (get_class($this) != 'ExternalController') {
-                // Init the CacheManager
-                $this->cacheManager = new CacheManager($this);
-
-                // Init the collection
-                $this->collection = new Collection($this);
-            }
+            Database::connect();
             
             // Set debug log
             if (DEV) {
                 $this->sqlLog = array();
-                $this->db->setLog($this->sqlLog);
+                Database::setLog($this->sqlLog);
             }
         }
         catch (Exception $e) {
             $this->db = null;
         }
         
-        // Check if we should initiate everything
-        if (get_class($this) != 'ExternalController') {
-            // Init Utils
-            $this->utils = new Utils();
-            
-            // Store routes
-            $this->routes = $routes;
-            
-            // Init Smarty
-            $this->template = new Smarty();
-            $this->template->left_delimiter = '[[+'; 
-            $this->template->right_delimiter = ']]';
-            
-            // Set caching
-            $this->template->setCacheDir(BASE_PATH . '/cache/');
-            
-            // Define a few constants in Smarty
-            $this->template->assign('VERSION', VERSION);
-            $this->template->assign('DEV', DEV);
-            $this->template->assign('SITE_URL', SITE_URL);
-            $this->template->assign('SITE_TITLE', 'Den beste kokeboka på nettet');
-            $this->template->assign('SITE_USE_GA', SITE_USE_GA);
-            $this->template->assign('SITE_URL_FULL', SITE_URL_FULL);
-            $this->template->assign('SITE_RELATIVE', SITE_RELATIVE);
-            $this->template->assign('SITE_SEARCH_BASE', SITE_URL_FULL . substr($this->routes['archive'][0], 1) . '/');
-            $this->template->assign('SITE_EMAIL_CONTACT', SITE_EMAIL_CONTACT);
-            $this->template->assign('SEARCH_QUERY', '');
-        }
+        // Init Smarty
+        $this->template = new \Smarty();
+        $this->template->left_delimiter = '[[+'; 
+        $this->template->right_delimiter = ']]';
+        
+        // Set caching
+        $this->template->setCacheDir(BASE_PATH . '/cache/');
+        
+        // Define a few constants in Smarty
+        $this->template->assign('VERSION', VERSION);
+        $this->template->assign('DEV', DEV);
+        $this->template->assign('SITE_URL', URL);
+        $this->template->assign('SITE_TITLE', 'Den beste kokeboka på nettet');
+        $this->template->assign('SITE_USE_GA', USE_GA);
+        $this->template->assign('SITE_URL_FULL', URL_FULL);
+        $this->template->assign('SITE_RELATIVE', URL_RELATIVE);
+        $this->template->assign('SITE_SEARCH_BASE', URL_FULL . substr(Routes::getRoutes()['Archive'][0], 1) . '/');
+        $this->template->assign('SITE_EMAIL_CONTACT', EMAIL_CONTACT);
+        $this->template->assign('SEARCH_QUERY', '');
         
         // Check if in panic mode or not
-        if ($kill == false and get_class($this) != 'ExternalController') {
+        
+        /*if ($kill == false and get_class($this) != 'ExternalController') {
             // Authenticate if database-connection was successful
             if ($this->db !== NULL) {
                 // Define the standard menu
@@ -124,12 +105,9 @@ class Youkok2 {
                 // Kill this off
                 die();
             }
-        }
+        }*/
         
-        if (get_class($this) != 'ExternalController') {
-            // Analyze query
-            $this->queryAnalyze();
-        }
+        $this->queryAnalyze();
     }
     
     //
@@ -188,11 +166,8 @@ class Youkok2 {
     //
     
     protected function display404() {
-        // Include 404 controller
-        require_once BASE_PATH . '/controllers/notfound.controller.php';
-
         // New instance
-        $controller = new NotfoundController($this->routes);
+        $controller = new NotFound();
     }
     
     //
@@ -204,7 +179,7 @@ class Youkok2 {
         $this->cacheManager->store();
 
         // Close connection
-        $this->db = null;
+        Database::close();
     }
 
     //
@@ -216,7 +191,7 @@ class Youkok2 {
         $this->close();
 
         // Redirect
-        header('Location: ' . SITE_URL_FULL . $p);
+        header('Location: ' . URL_FULL . $p);
     }
 
     //
@@ -401,32 +376,5 @@ class Youkok2 {
                 return '<p style="cursor: help;" title="' . $tooltip . '">' . $trace['file'] . ' @ line ' . $trace['line'] . ':</p>';
             }
         }
-    }
-    
-    //
-    // Get service (call method from a class)
-    //
-
-    public function getService($method, $args) {
-        return call_user_func_array(array($this, $method), $args);
-    }
-    
-    //
-    // Get external service (call method from another class)
-    //
-    
-    public function getExternalService($service, $args = array()) {
-        $s = explode('.', $service);
-        $lib = $s[0];
-        unset($s[0]);
-        
-        // Include
-        require_once BASE_PATH . '/libs/' . $lib . '/' . strtolower(implode('.', $s)) . '.class.php';
-        
-        // New instance
-        $ref_class = new ReflectionClass($s[1]);
-        
-        // Return instance
-        return $ref_class->newInstanceArgs($args);
     }
 }

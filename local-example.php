@@ -37,7 +37,7 @@ define('URL', 'http://my-site.tld');
 define('URL_FULL', 'http://my-site.tld');
 
 // Relative position (trailing slash both before and after, or just / if root)
-define('RELATIVE', '/');
+define('URL_RELATIVE', '/');
 
 // Accepted filetypes
 define('ACCEPTED_FILETYPES', 'application/pdf,text/plain,text/x-java-source,application/x-python,text/html');

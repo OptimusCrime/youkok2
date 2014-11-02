@@ -7,11 +7,9 @@
  * 
 */
 
-//
-// The class
-//
+namespace Youkok2\Utilities\PDO2;
 
-class PDO2 extends PDO {
+class PDO2 extends \PDO {
     
     //
     // Variables
@@ -29,7 +27,7 @@ class PDO2 extends PDO {
         $this->debug = true;
         $this->log = &$log;
         
-        $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('PDOStatement2', array($this, &$log)));
+        //$this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array('PDOStatement2', array($this, &$log)));
     }
     
     //
@@ -70,7 +68,7 @@ class PDO2 extends PDO {
     // pdo->prepare
     //
     
-    public function prepare($statement) {
+    public function prepare($statement, $options = null) {
         // Increase counter
         $this->queryCount++;
         

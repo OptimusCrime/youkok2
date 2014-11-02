@@ -4,14 +4,11 @@
  * Holds: Class that overrides the normal PDO-class to log queries etc
  * Created: 27.05.14
  * Project: Youkok2
- * 
 */
 
-//
-// The class
-//
+namespace Youkok2\Utilities\PDO2;
 
-class PDOStatement2 extends PDOStatement {
+class PDOStatement2 extends \PDOStatement {
 
     //
     // Some variables
@@ -25,7 +22,7 @@ class PDOStatement2 extends PDOStatement {
     // Override constructor
     //
     
-    protected function __construct(PDO2 $connection, &$log) {
+    protected function __construct($connection, &$log) {
         $this->connection = $connection;
         $this->log = &$log;
     }
