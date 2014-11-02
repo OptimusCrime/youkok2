@@ -11,6 +11,6 @@ class File extends Element {
      */
 
     public function __construct() {
-        $this->controller = new Youkok2\modelcontrollers\File();
+        $this->controller = new \Youkok2\modelcontrollers\File();
     }
 } 
