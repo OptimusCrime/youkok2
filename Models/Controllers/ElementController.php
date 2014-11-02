@@ -1,14 +1,14 @@
 <?php
-namespace Youkok2\Controllers;
+namespace Youkok2\Models\Controllers;
 
 
-class ElementControllers {
+class ElementController {
     
     /*
      * Variables
      */
     
-    private function $model;
+    private $model;
     
     /*
      * Consutrctor
@@ -16,6 +16,10 @@ class ElementControllers {
     
     public function __construct($model) {
         $this->model = $model;
+    }
+    
+    public function createById($id) {
+        //
     }
     
 } 

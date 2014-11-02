@@ -1,5 +1,7 @@
 <?php
-namespace Youkok2\models;
+namespace Youkok2\Models;
+
+use \Youkok2\Models\Controllers\ElementController as ElementController;
 
 class Element {
 
@@ -79,10 +81,10 @@ class Element {
     }
     
     /*
-     * Reoute special calls
+     * Re-route special calls
      */
     
     public function __call($method, $args) {
-        echo $method;
+        call_user_func_array(array($this->controller, $method), $args);
     }
 } 

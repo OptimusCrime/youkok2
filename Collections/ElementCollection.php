@@ -34,7 +34,7 @@ class ElementCollection {
     public static function add($elm) {
         // Check if should init self
         if (!self::$isInited) {
-            self::$addInitial();
+            self::addInitial();
         }
         
         self::$arr[$elm->getId()] = $elm;
@@ -65,7 +65,7 @@ class ElementCollection {
         self::$isInited = true;
         
         // Add root element to collection
-        $root_element = Element();
+        $root_element = new Element();
         $root_element->createById(1);
         self::add($root_element);
     }
