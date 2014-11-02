@@ -7,6 +7,8 @@
  * Project: Youkok2
  */
 
+namespace Youkok2;
+ 
 /*
  * Set headers
  */
@@ -21,7 +23,7 @@ require 'local.php';
 require 'vendor/autoload.php';
 
 /*
- * Create the autoloader for the project
+ * Create the autoloader for the application
  */
 
 spl_autoload_register(function ($class) {
@@ -29,7 +31,7 @@ spl_autoload_register(function ($class) {
     $prefix = 'Youkok2\\';
 
     // base directory for the namespace prefix
-    $base_dir = BASE_PATH . '/youkok2/';
+    $base_dir = BASE_PATH . '/';
 
     // does the class use the namespace prefix?
     $len = strlen($prefix);
@@ -45,7 +47,7 @@ spl_autoload_register(function ($class) {
     // separators with directory separators in the relative class name, append
     // with .php
     $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
-
+    
     // if the file exists, require it
     if (file_exists($file)) {
         require $file;
@@ -56,18 +58,18 @@ spl_autoload_register(function ($class) {
  * Set debug options
  */
 
-error_reporting(SITE_ERROR_REPORTING);
-ini_set('display_errors', SITE_ERROR_DISPLAY);
+error_reporting(ERROR_MODE);
+ini_set('display_errors', ERROR_DISPLAY);
 
 /*
  * Set the timezone
  */
 
-date_default_timezone_set(SITE_TIMEZONE);
+date_default_timezone_set(TIMEZONE);
 
 /*
  * Initiate the loader
  */
 
-$loader = new Youkok2\Loader();
+$loader = new Utilities\Loader();
 ?>

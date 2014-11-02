@@ -1,47 +1,53 @@
 <?php
 /*
  * File: local-example.php / local.php
- * Holds: Holds the database-information
+ * Holds: Holds the settings
  * Created: 02.10.13
  * Project: Youkok2
- * 
+*/
+
+
+namespace Youkok2;
+
+/*
+ * Settings
 */
 
 // Version
-define('VERSION', '0.1.0-pl');
+define('VERSION', '1.0.0-dev');
 define('DEV', false);
 
 // Base path
 define('BASE_PATH', dirname(__FILE__));
 
 // Errors
-define('SITE_ERROR_REPORTING', E_ALL); 
-define('SITE_ERROR_DISPLAY', 1); 
+define('ERROR_MODE', E_ALL); 
+define('ERROR_DISPLAY', 1); 
 
 // Timezone
-define('SITE_TIMEZONE', 'Europe/London');
+define('TIMEZONE', 'Europe/London');
 
 // Define domain
-define('SITE_DOMAIN', 'my-site.tld');
+define('DOMAIN', 'my-site.tld');
 
 // Site url (no trailing slash)
-define('SITE_URL', 'http://my-site.tld');
+define('URL', 'http://my-site.tld');
 
 // Full site url (trailing slash)
-define('SITE_URL_FULL', 'http://my-site.tld');
+define('URL_FULL', 'http://my-site.tld');
 
 // Relative position (trailing slash both before and after, or just / if root)
-define('SITE_RELATIVE', '/');
+define('RELATIVE', '/');
 
 // Accepted filetypes
-define('SITE_ACCEPTED_FILETYPES', 'application/pdf,text/plain,text/x-java-source,application/x-python,text/html');
-define('SITE_ACCEPTED_FILEENDINGS', 'pdf,txt,java,py,html,htm');
+define('ACCEPTED_FILETYPES', 'application/pdf,text/plain,text/x-java-source,application/x-python,text/html');
+define('ACCEPTED_FILEENDINGS', 'pdf,txt,java,py,html,htm,sql,zip');
 
 // Google analytics
-define('SITE_USE_GA', false);
+define('USE_GA', false);
 
 // Email
-define('SITE_EMAIL_CONTACT', 'post@my-site.tld');
+define('EMAIL_CONTACT', 'post@my-site.tld');
 
 // Folder for downloads
 define('FILE_ROOT', dirname(__FILE__ ) . '/path-to-file-root');
