@@ -21,6 +21,7 @@
 !/Models/
 !/Processors/
 !/Utilities/
+!/Views/
 
 # But ignore local settings
 local.php
