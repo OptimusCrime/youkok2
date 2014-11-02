@@ -4,7 +4,6 @@
  * Holds: The class that all the controllers extends
  * Created: 02.10.13
  * Project: Youkok2
- * 
 */
 
 namespace Youkok2\Views;

@@ -4,7 +4,6 @@
  * Holds: Holds the collection of all the items currently loaded (to reduce queries)
  * Created: 09.04.14
  * Project: Youkok2
- * 
 */
 
 //
