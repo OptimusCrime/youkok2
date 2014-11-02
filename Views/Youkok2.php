@@ -8,6 +8,7 @@
 
 namespace Youkok2\Views;
 
+use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Routes as Routes;
 
@@ -22,7 +23,6 @@ class Youkok2 {
      */
 
     // Public pointers
-    public $user;
     public $template;
     
     // Some private variables for debugging and development
@@ -77,34 +77,12 @@ class Youkok2 {
         $this->template->assign('SITE_SEARCH_BASE', URL_FULL . substr(Routes::getRoutes()['Archive'][0], 1) . '/');
         $this->template->assign('SITE_EMAIL_CONTACT', EMAIL_CONTACT);
         $this->template->assign('SEARCH_QUERY', '');
+        $this->template->assign('HEADER_MENU', 'HOME');
         
-        // Check if in panic mode or not
-        
-        /*if ($kill == false and get_class($this) != 'ExternalController') {
-            // Authenticate if database-connection was successful
-            if ($this->db !== NULL) {
-                // Define the standard menu
-                $this->template->assign('HEADER_MENU', 'HOME');
-
-                // Init user
-                $this->user = new User($this);
-                
-                // Check if we should validate login
-                if (isset($_POST['login-email'])) {
-                    $this->user->logIn();
-                }
-            }
-            else {
-                // Include 404 controller
-                require_once BASE_PATH . '/controllers/error.controller.php';
-
-                // New instance
-                $controller = new ErrorController($this->routes, 'db');
-                
-                // Kill this off
-                die();
-            }
-        }*/
+        // Check if we should validate login
+        if (isset($_POST['login-email'])) {
+            Me::logIn();
+        }
         
         $this->queryAnalyze();
     }

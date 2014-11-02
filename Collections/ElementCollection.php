@@ -1,107 +1,72 @@
 <?php
 /*
- * File: collection.php
+ * File: ElementCollection.php
  * Holds: Holds the collection of all the items currently loaded (to reduce queries)
  * Created: 09.04.14
  * Project: Youkok2
 */
 
-//
-// Collection of Items. Made to reduce loading and make caching easier
-//
+namespace Youkok2\Collections;
 
-class Collection {
-    
-    //
-    // Variables
-    //
-    
-    private $controller;
+/*
+ * Define what classes to use
+ */
 
-    private $arr;
-    private $isInited;
+use Youkok2\Models\Element;
+
+/*
+ * The class ElementCollection, called statically
+ */
+
+class ElementCollection {
     
-    //
-    // Constructor
-    //
+    /*
+     * Variables
+     */
     
-    public function __construct($controller) {
-        // Set references
-        $this->controller = &$controller;
-        
-        // Init array
-        $this->arr = array();
-        
-        // Init collection
-        $this->isInited = false;
-    }
+    private static $arr = array();
+    private static $isInited = false;
     
-    //
-    // Add Item to collection without validating duplicates
-    //
+    /*
+     * Add element to the collection
+     */
     
-    public function add($elm) {
+    public static function add($elm) {
         // Check if should init self
-        if (!$this->isInited) {
-            $this->addInitial();
+        if (!self::$isInited) {
+            self::$addInitial();
         }
         
-        $this->arr[$elm->getId()] = $elm;
-    }
-
-    //
-    // Add Item to collection if it is not already there
-    //
-
-    public function addIfDoesNotExist($elm) {
-        // Check if should init self
-        if (!$this->isInited) {
-            $this->addInitial();
-        }
-        
-        // Get element id
-        $elm_id = $elm->getId();
-
-        // Foreach and check if found
-        if (count($this->arr) > 0) {
-            foreach ($this->arr as $k => $v) {
-                if ($k == $elm_id) {
-                    return;
-                }
-            }
-        }
-
-        // Not found, add
-        $this->arr[$elm_id] = $elm;
+        self::$arr[$elm->getId()] = $elm;
     }
     
-    //
-    // Return an item
-    //
+    /*
+     * Return an element, or null, if not found
+     */
 
-    public function get($id) {
+    public static function get($id) {
         // Check if found
-        if (!isset($this->arr[$id])) {
+        if (!isset(self::$arr[$id])) {
             // Not found
             return null;
         }
         else {
             // Return object
-            return $this->arr[$id];
+            return self::$arr[$id];
         }
     }
     
-    //
-    // Init the entire list
-    //
+    /*
+     * Init the list by adding the root element
+     */
     
-    private function addInitial() {
+    private static function addInitial() {
         // Reset variable
-        $this->isInited = true;
+        self::$isInited = true;
         
         // Add root element to collection
-        $root_element = new Item($this->controller);
+        $root_element = Element();
         $root_element->createById(1);
-        $this->add($root_element);
+        self::add($root_element);
     }
 }

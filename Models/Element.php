@@ -9,13 +9,29 @@ class Element {
 
     public $controller;
 
-    protected $id;
-    protected $name;
-    protected $urlFriendly;
-    protected $parent;
-    protected $course;
-    protected $location;
-
+    private $id;
+    private $name;
+    private $urlFriendly;
+    private $parent;
+    private $course;
+    private $location;
+    private $mimeType;
+    private $missingImage;
+    private $size;
+    private $isDirectory;
+    private $isAccepted;
+    private $isVisibile;
+    private $url;
+    private $added;
+    
+    /*
+     * Constructor
+     */
+    
+    public function __construct() {
+        $this->controller = new ElementController($this);
+    }
+    
     /*
      * Getters
      */
@@ -60,5 +76,13 @@ class Element {
     }
     public function setLocation($location) {
         $this->location = $location;
+    }
+    
+    /*
+     * Reoute special calls
+     */
+    
+    public function __call($method, $args) {
+        echo $method;
     }
 } 

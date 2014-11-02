@@ -8,8 +8,9 @@
 
 namespace Youkok2\Views;
 
-use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Collections\ElementCollection as ElementCollection;
+use \Youkok2\Shared\Elements as Elements;
+use \Youkok2\Utilities\Database as Database;
 
 class Home extends Youkok2 {
 
@@ -21,82 +22,25 @@ class Home extends Youkok2 {
         // Calling Base' constructor
         parent::__construct();
         
-        // Check if we should autodisplay or not
-        if ($kill == false) {
-            // Load newest files
-            $this->template->assign('HOME_NEWEST', $this->loadNewest());
-            
-            // Load most popular files
-            $this->template->assign('HOME_MOST_POPULAR', $this->loadMostPopular());
-            
-            // Check if this user is logged in
-            if ($this->user->isLoggedIn()) {
-                $this->template->assign('HOME_INFOBOX', null);
-                $this->template->assign('HOME_USER_LATEST', $this->loadLastDownloads());
-                $this->template->assign('HOME_USER_FAVORITES', $this->loadFavorites());
-            } else {
-                $this->template->assign('HOME_INFOBOX', $this->loadInfobox());
-                $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
-                $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
-            }
-            
-            // Display the template
-            $this->displayAndCleanup('index.tpl');
-        }
-    }
-    
-    //
-    // Method for loading the newest files in the system
-    //
-    
-    private function loadNewest() {
-        // Declear variable for storing content
-        $ret = '';
+        // Load newest files
+        $this->template->assign('HOME_NEWEST', Elements::getNewest());
         
-        // Loading newest files from the system TODO add filter
-        $get_newest = "SELECT id
-        FROM archive
-        WHERE is_directory = 0
-        AND is_visible = 1
-        ORDER BY added DESC
-        LIMIT 15";
+        // Load most popular files
+        $this->template->assign('HOME_MOST_POPULAR', $this->loadMostPopular());
         
-        $get_newest_query = Database::$db->query($get_newest);
-        while ($row = $get_newest_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Create new object
-            $element = $this->collection->get($row['id']);
-
-            if ($element == null) {
-                $element = new Item($this);
-                $element->setLoadRootParent(true);
-                $element->createById($row['id']);
-                $this->collection->add($element);
-            }
-
-            // CHeck if element was loaded
-            if ($element != null) {
-                $root_parent = $element->getRootParent();
-                
-                // Check if we should load local dir for element
-                $local_dir_str = '';
-                if ($element->getParent() != $root_parent->getId()) {
-                    $local_dir_element = $this->collection->get($element->getParent());
-                    $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->routes['archive'][0]) . '">' . $local_dir_element->getName() . '</a> i ';
-                }
-                
-                if ($element->isLink()) {
-                    $element_url = $element->generateUrl($this->routes['redirect'][0]);
-                    $ret .= '<li class="list-group-item"><a rel="nofollow" target="_blank" title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
-                }
-                else {
-                    $element_url = $element->generateUrl($this->routes['download'][0]);
-                    $ret .= '<li class="list-group-item"><a rel="nofollow" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
-                }
-            }
+        // Check if this user is logged in
+        if ($this->user->isLoggedIn()) {
+            $this->template->assign('HOME_INFOBOX', null);
+            $this->template->assign('HOME_USER_LATEST', $this->loadLastDownloads());
+            $this->template->assign('HOME_USER_FAVORITES', $this->loadFavorites());
+        } else {
+            $this->template->assign('HOME_INFOBOX', $this->loadInfobox());
+            $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
+            $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
         }
         
-        // Return the content
-        return $ret;
+        // Display the template
+        $this->displayAndCleanup('index.tpl');
     }
     
     //
