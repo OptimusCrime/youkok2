@@ -12,11 +12,15 @@
 !/libs/
 !/mail/
 !/migrations/
-!/processor/
 !/scripts/
 !/templates/
 !/templates_c/
-!/youkok2/
+
+!/Collections/
+!/Controllers/
+!/Models/
+!/Processors/
+!/Utilities/
 
 # But ignore local settings
 local.php
@@ -29,5 +33,4 @@ phinx.yml
 
 # And those fuckings DS_Stores
 .DS_Store
-._.DS_Store
 ._*
