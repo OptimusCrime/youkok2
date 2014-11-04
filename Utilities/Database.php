@@ -37,7 +37,15 @@ class Database {
         self::$db->setLog($log);
     }
     public static function getLog() {
-        self::$db->getLog();
+        return self::$db->getLog();
+    }
+    
+    /*
+     * Get number of queries
+     */
+    
+    public static function getCount() {
+        return self::$db->getCount();
     }
     
     /*

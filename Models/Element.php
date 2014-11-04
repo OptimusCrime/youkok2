@@ -20,9 +20,9 @@ class Element {
     private $mimeType;
     private $missingImage;
     private $size;
-    private $isDirectory;
-    private $isAccepted;
-    private $isVisibile;
+    private $directory;
+    private $accepted;
+    private $visibile;
     private $url;
     private $added;
     
@@ -45,7 +45,7 @@ class Element {
         return $this->name;
     }
     public function getUrlFriendly() {
-        return $this->$urlFriendly;
+        return $this->urlFriendly;
     }
     public function getParent() {
         return $this->parent;
@@ -55,6 +55,33 @@ class Element {
     }
     public function getLocation() {
         return $this->location;
+    }
+    public function getMimeType() {
+        return $this->mimeType;
+    }
+    public function getMissingImage() {
+        return $this->missingImage;
+    }
+    public function getSize() {
+        return $this->size;
+    }
+    public function isDirectory() {
+        return $this->directory;
+    }
+    public function isLink() {
+        return ($this->url != null);
+    }
+    public function isAccepted() {
+        return $this->accepted;
+    }
+    public function isVisible() {
+        return $this->visibile;
+    }
+    public function getUrl() {
+        return $this->url;
+    }
+    public function getAdded() {
+        return $this->added;
     }
 
     /*
@@ -68,7 +95,7 @@ class Element {
         $this->name = $name;
     }
     public function setUrlFriendly($url) {
-        $this->$urlFriendly = $url;
+        $this->urlFriendly = $url;
     }
     public function setParent($parent) {
         $this->parent = $parent;
@@ -79,12 +106,45 @@ class Element {
     public function setLocation($location) {
         $this->location = $location;
     }
+    public function setMimeType($mime) {
+        $this->mimeType = $mime;
+    }
+    public function setMissingImage($missingImage) {
+        $this->missingImage = $missingImage;
+    }
+    public function setSize($size) {
+        $this->size = $size;
+    }
+    public function setDirectory($directory) {
+        $this->directory = $directory;
+    }
+    public function setAccepted($accepted) {
+        $this->accepted = $accepted;
+    }
+    public function setVisible($visible) {
+        $this->visibile = $visible;
+    }
+    public function setUrl($url) {
+        $this->url = $url;
+    }
+    public function setAdded($added) {
+        $this->added = $added;
+    }
     
     /*
-     * Re-route special calls
+     * Redirectors
      */
     
-    public function __call($method, $args) {
-        call_user_func_array(array($this->controller, $method), $args);
+    public function createById($id) {
+        $this->controller->createById($id);
+    }
+    public function createByUrl($url) {
+        $this->controller->createByUrl($url);
+    }
+    public function save() {
+        $this->controller->save();
+    }
+    public function update() {
+        $this->controller->update();
     }
 } 

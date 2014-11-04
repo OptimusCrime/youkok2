@@ -9,6 +9,7 @@
 namespace Youkok2\Views;
 
 use \Youkok2\Models\Me as Me;
+use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Routes as Routes;
 
@@ -153,7 +154,7 @@ class Youkok2 {
     
     protected function close() {
         // Process cache
-        $this->cacheManager->store();
+        CacheManager::store();
 
         // Close connection
         Database::close();
@@ -257,7 +258,7 @@ class Youkok2 {
     protected function displayAndCleanup($template, $sid = null) {
         // If develop, assign dev variables
         if (DEV) {
-            $this->template->assign('DEV_QUERIES_NUM', number_format($this->db->getCount()));
+            $this->template->assign('DEV_QUERIES_NUM', number_format(Database::getCount()));
             $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->sqlLog));
         }
         
@@ -268,7 +269,8 @@ class Youkok2 {
         $this->showMessages();
         
         // Load cache
-        $this->cacheManager->loadTypeaheadCache();
+        //CacheManager::loadTypeaheadCache();
+        // TODOD
         
         // Display load time
         $this->endTime = microtime(true);

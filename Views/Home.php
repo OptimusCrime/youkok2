@@ -9,6 +9,7 @@
 namespace Youkok2\Views;
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
+use \Youkok2\Models\Me as Me;
 use \Youkok2\Shared\Elements as Elements;
 use \Youkok2\Utilities\Database as Database;
 
@@ -26,17 +27,17 @@ class Home extends Youkok2 {
         $this->template->assign('HOME_NEWEST', Elements::getNewest());
         
         // Load most popular files
-        $this->template->assign('HOME_MOST_POPULAR', $this->loadMostPopular());
+        //$this->template->assign('HOME_MOST_POPULAR', $this->loadMostPopular());
         
         // Check if this user is logged in
-        if ($this->user->isLoggedIn()) {
+        if (Me::isLoggedIn()) {
             $this->template->assign('HOME_INFOBOX', null);
-            $this->template->assign('HOME_USER_LATEST', $this->loadLastDownloads());
-            $this->template->assign('HOME_USER_FAVORITES', $this->loadFavorites());
+            //$this->template->assign('HOME_USER_LATEST', $this->loadLastDownloads());
+            //$this->template->assign('HOME_USER_FAVORITES', $this->loadFavorites());
         } else {
-            $this->template->assign('HOME_INFOBOX', $this->loadInfobox());
-            $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
-            $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
+            //$this->template->assign('HOME_INFOBOX', $this->loadInfobox());
+            //$this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
+            //$this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
         }
         
         // Display the template
@@ -51,8 +52,8 @@ class Home extends Youkok2 {
         $ret = '';
         
         if ($override == null) {
-            if ($this->user->isLoggedIn()) {
-                $user_delta = $this->user->getMostPopularDelta();
+            if (Me::isLoggedIn()) {
+                $user_delta = Me::getMostPopularDelta();
             }
             else {
                 if (isset($_COOKIE['home_popular'])) {

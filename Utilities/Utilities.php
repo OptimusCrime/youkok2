@@ -7,17 +7,15 @@
  * 
 */
 
-//
-// Different minor functions
-//
+namespace Youkok2\Utilities;
 
-class Utils {
+class Utilities {
 
     //
     // Prettify dates
     //
     
-    public function prettifySQLDate($d, $include_time = true) {
+    public static function prettifySQLDate($d, $include_time = true) {
         $norwegian_months = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
                                  'okt', 'nov', 'des');
         $split1 = explode(' ', $d);
@@ -30,7 +28,7 @@ class Utils {
     // Generic method for generating SEO friendly urls and directory names
     //
 
-    public function generateUrlFriendly($s, $for_url = false) {
+    public static function generateUrlFriendly($s, $for_url = false) {
         // Replace first here to keep "norwegian" names in a way
         $s = str_replace(array('Æ', 'Ø', 'Å'), array('ae', 'o', 'aa'), $s);
         $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
@@ -52,7 +50,7 @@ class Utils {
     // Because simple hash is too simple!
     //
 
-    public function passwordFuckup($s) {
+    public static function passwordFuckup($s) {
         // Split the hash
         $splits = array(substr($s, 0, 5),
             substr($s, 5, 5),
@@ -67,7 +65,7 @@ class Utils {
     // Prettyfi filesizes
     //
     
-    public function prettifyFilesize($z) {
+    public static function prettifyFilesize($z) {
         $bytes = $z;
         if ($bytes > 0) {
             $unit = intval(log($bytes, 1024));
