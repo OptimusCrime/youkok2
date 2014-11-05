@@ -27,7 +27,7 @@ class Home extends Youkok2 {
         $this->template->assign('HOME_NEWEST', Elements::getNewest());
         
         // Load most popular files
-        //$this->template->assign('HOME_MOST_POPULAR', $this->loadMostPopular());
+        $this->template->assign('HOME_MOST_POPULAR', Elements::getMostPopular());
         
         // Check if this user is logged in
         if (Me::isLoggedIn()) {
@@ -42,89 +42,6 @@ class Home extends Youkok2 {
         
         // Display the template
         $this->displayAndCleanup('index.tpl');
-    }
-    
-    //
-    // Method for loading the files with most downloads
-    //
-    
-    public function loadMostPopular($override = null) {
-        $ret = '';
-        
-        if ($override == null) {
-            if (Me::isLoggedIn()) {
-                $user_delta = Me::getMostPopularDelta();
-            }
-            else {
-                if (isset($_COOKIE['home_popular'])) {
-                    $user_delta = $_COOKIE['home_popular'];
-                }
-                else {
-                    $user_delta = 1;
-                }
-            }
-        }
-        else {
-            $user_delta = $override;
-        }
-
-        // Assign to Smarty
-        $this->template->assign('HOME_MOST_POPULAR_DELTA', $user_delta);
-        
-        // Load most popular files from the system
-        $get_most_popular = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'
-        FROM download d
-        LEFT JOIN archive AS a ON a.id = d.file
-        " . Item::$delta[$user_delta] . "
-        GROUP BY d.file
-        ORDER BY downloaded_times DESC
-        LIMIT 15";
-        
-        $get_most_popular_query = $this->db->prepare($get_most_popular);
-        $get_most_popular_query->execute();
-        while ($row = $get_most_popular_query->fetch(PDO::FETCH_ASSOC)) {
-            // Get element
-            $element = $this->collection->get($row['id']);
-
-            // Get file if not cached
-            if ($element == null) {
-                $element = new Item($this);
-                $element->setLoadRootParent(true);
-                $element->createById($row['id']);
-                $this->collection->add($element);
-            }
-
-            // Set downloaded
-            $element->setDownloadCount($user_delta, $row['downloaded_times']);
-
-            // CHeck if element was loaded
-            if ($element != null) {
-                $root_parent = $element->getRootParent();
-                
-                // Check if we should load local dir for element
-                $local_dir_str = '';
-                if ($element->getParent() != $root_parent->getId()) {
-                    $local_dir_element = $this->collection->get($element->getParent());
-                    $local_dir_str = '<a href="' . $local_dir_element->generateUrl($this->routes['archive'][0]) . '">' . $local_dir_element->getName() . '</a> i ';
-                }
-                
-                if ($element->isLink()) {
-                    $element_url = $element->generateUrl($this->routes['redirect'][0]);
-                    $ret .= '<li class="list-group-item"><a rel="nofollow" target="_blank" title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->getDownloadCount(Item::$delta[$user_delta])) . ']</li>';
-                }
-                else {
-                    $element_url = $element->generateUrl($this->routes['download'][0]);
-                    $ret .= '<li class="list-group-item"><a rel="nofollow" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->generateUrl($this->routes['archive'][0]) . '" data-toggle="tooltip" data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->getDownloadCount(Item::$delta[$user_delta])) . ']</li>';
-                }
-            }
-        }
-
-        // Check if null
-        if ($ret == '') {
-            $ret = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet!</li>';
-        }
-        
-        return $ret;
     }
 
     //
