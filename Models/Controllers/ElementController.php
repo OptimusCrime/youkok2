@@ -1,10 +1,26 @@
 <?php
+/*
+ * File: ElmentController.php
+ * Holds: Controller for the model Element
+ * Created: 06.11.2014
+ * Project: Youkok2
+*/
+
 namespace Youkok2\Models\Controllers;
+
+/*
+ * Define what classes to use
+ */
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
+use \Youkok2\Shared\Elements as Elements;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
+
+/*
+ * The class ElementController
+ */
 
 class ElementController {
     
@@ -109,9 +125,9 @@ class ElementController {
         $this->cache = true;
     }
     
-    //
-    // Create methods
-    //
+    /*
+     * Methods for creating the element
+     */
     
     public function createById($id) {
         $this->model->setId($id);
@@ -258,10 +274,10 @@ class ElementController {
                 AND url_friendly = :url_friendly
                 AND is_visible = 1";
                 
-                $get_reverse_url_query = $this->controller->db->prepare($get_reverse_url);
+                $get_reverse_url_query = Database::$db->prepare($get_reverse_url);
                 $get_reverse_url_query->execute(array(':parent' => $temp_id, 
                                                       ':url_friendly' => $url_piece_single));
-                $row = $get_reverse_url_query->fetch(PDO::FETCH_ASSOC);
+                $row = $get_reverse_url_query->fetch(\PDO::FETCH_ASSOC);
                 
                 // Check if anything was returned
                 if (isset($row['id'])) {
@@ -284,14 +300,14 @@ class ElementController {
                         $this->finishedLoadingUrl = false;
                         
                         // Check if this object already exists
-                        $temp_item = $this->controller->collection->get($temp_id);
+                        $temp_item = ElementCollection::get($temp_id);
                         
                         // Check if already cached, or not
                         if ($temp_item == null) {
                             // Should cache, just in case
-                            $temp_item = new Item($this->controller);
+                            $temp_item = new Element();
                             $temp_item->createById($temp_id);
-                            $temp_item->controller->collection->add($temp_item);
+                            ElementCollection::add($temp_item);
                         }
 
                         // Check if we should add to location array too
@@ -304,12 +320,12 @@ class ElementController {
         }
     }
     
-    //
-    // Check if real or invalid url
-    //
+    /*
+     * Check if the Element was found or not
+     */
 
     public function wasFound() {
-        if ($this->id != null and is_numeric($this->id)) {
+        if ($this->model->getId() != null and is_numeric($this->model->getId())) {
             return true;
         }
         else {
@@ -317,35 +333,34 @@ class ElementController {
         }
     }
 
-    //
-    // Getters
-    //
-
+    /*
+     * Some special getters
+     */
 
     public function getSizePretty() {
-        return $this->controller->utils->prettifyFilesize($this->size);
+        return Utilities::prettifyFilesize($this->size);
     }
     
-    //
-    // Returning the full location for the current file
-    //
+    /*
+     * Returning the full location for the Element
+     */
 
     public function getFullLocation() {
         if (count($this->fullLocation) == 0) {
-            $temp_location = array($this->location);
+            $temp_location = array($this->model->getLocation());
             $temp_id = $this->parent;
 
             // Loop untill we reach the root
             while ($temp_id != 0) {
                 // Check if this object already exists
-                $temp_item = $this->controller->collection->get($temp_id);
+                $temp_item = ElementCollection::get($temp_id);
                 
                 // Check if already cached, or not
                 if ($temp_item == null) {
                     // Create new object
-                    $temp_item = new Item($this->controller);
+                    $temp_item = new Element();
                     $temp_item->createById($temp_id);
-                    $this->controller->collection->add($temp_item);
+                    ElementCollection::add($temp_item);
                 }
 
                 // Get the url piece
@@ -366,9 +381,9 @@ class ElementController {
         return implode('/', $this->fullLocation);
     }
 
-    //
-    // Setters for loading additional information
-    //
+    /*
+     * Setters to load additional information when loaded
+     */
 
     public function setLoadFullLocation($b) {
         $this->loadFullLocation = $b;
@@ -391,9 +406,9 @@ class ElementController {
         $this->cache = false;
     }
 
-    //
-    // Generate url for this item
-    //
+    /*
+     * Generate url for the current Element
+     */
 
     public function generateUrl($path) {
         // Check if the url is already cached!
@@ -454,9 +469,9 @@ class ElementController {
         }
     }
 
-    //
-    // Get breadcrumbs for the current item
-    //
+    /*
+     * Get breadcrumbs for the current Element
+     */
 
     public function getBreadcrumbs() {
         // Store some variables for later
@@ -466,7 +481,7 @@ class ElementController {
         // Loop untill we reach the root
         while ($temp_id != null) {
             // Check if this object already exists
-            $temp_item = $this->controller->collection->get($temp_id);
+            $temp_item = ElementCollection::get($temp_id);
             
             // Get the url piece
             $temp_collection[] = $temp_item;
@@ -479,14 +494,14 @@ class ElementController {
         return array_reverse($temp_collection);
     }
 
-    //
-    // Download methods
-    //
+    /*
+     * Download methods
+     */
     
     public function getDownloadCount($d) {
         // Get the delta index
         $index = 0;
-        foreach (Item::$delta as $k => $v) {
+        foreach (Elements::$delta as $k => $v) {
             if ($v == $d) {
                 $index = $k;
                 break;
@@ -549,9 +564,9 @@ class ElementController {
         }
     }
 
-    //
-    // Flags
-    //
+    /*
+     * Flags
+     */
 
     public function loadFlags() {
         $get_all_flags = "SELECT *
@@ -599,9 +614,9 @@ class ElementController {
         return $this->flags;
     }
 
-    //
-    // Favorite
-    //
+    /*
+     * Favorite
+     */
 
     public function isFavorite() {
         // First, check if logged in
@@ -640,9 +655,9 @@ class ElementController {
         }
     }
 
-    //
-    // Root parent
-    //
+    /*
+     * Root parent
+     */
 
     public function getRootParent() {
         if ($this->rootParent != null) {
@@ -681,19 +696,19 @@ class ElementController {
         }
     }
 
-    //
-    // Course
-    //
+    /*
+     * Course
+     */
 
     public function hasCourse() {
-        return (($this->course == null) ? false : true);
+        return (($this->model->course == null) ? false : true);
     }
 
     public function getCourse() {
         // Check if course object is set
         if ($this->courseObj == null) {
             // Create object and set id
-            $this->courseObj = new Course($this->controller);
+            $this->courseObj = new Course();
             $this->courseObj->setId($this->course);
         }
 
@@ -701,17 +716,17 @@ class ElementController {
         return $this->courseObj;
     }
 
-    //
-    // Setter for cache lookup
-    //
+    /*
+     * Setter for caching
+     */
 
     public function getCache($b) {
         $this->cache = $b;
     }
 
-    //
-    // Create cache string for this Item
-    //
+    /*
+     * Create cache string for this Element
+     */
 
     private function cacheFormat() {
         $cache_temp = array();
@@ -729,9 +744,9 @@ class ElementController {
         return implode(', ', $cache_temp);
     }
     
-    //
-    // Get children
-    //
+    /*
+     * Get direct children
+     */
     
     public function getChildren($flag = null) {
         $children = array();
@@ -763,9 +778,9 @@ class ElementController {
         return count($this->getChildren($flag));
     }
     
-    //
-    // Get creator
-    //
+    /*
+     * Get creator
+     */
     
     public function getOwnerId() {
         // Only fetch if null
@@ -808,9 +823,9 @@ class ElementController {
         return $this->ownerUsername;
     }
     
-    //
-    // Get graph data
-    //
+    /*
+     * Get graph data
+     */
     
     public function getGraphData($type = null) {
         // Set type if null

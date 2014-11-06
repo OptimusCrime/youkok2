@@ -17,6 +17,10 @@ class Routes {
     /*
      * Array with routes
      */
+     
+    const ARCHIVE = '/kokeboka';
+    const DOWNLOAD = '/last-ned';
+    const REDIRECT = '/redirect';
     
     private static $routes = array(
         'Home' => array(
@@ -24,7 +28,7 @@ class Routes {
         ),
 
         'Archive' => array(
-            '/kokeboka',
+            self::ARCHIVE,
         ),
 
         'Profile' => array(
@@ -32,7 +36,7 @@ class Routes {
         ),
 
         'Download' => array(
-            '/last-ned',
+            self::DOWNLOAD,
         ),
 
         'Flat' => array(
@@ -74,7 +78,7 @@ class Routes {
         ),
 
         'Redirect' => array(
-            '/redirect',
+            self::REDIRECT,
         ),
     );
     

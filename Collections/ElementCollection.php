@@ -37,6 +37,7 @@ class ElementCollection {
             self::addInitial();
         }
         
+        // Add element to self
         self::$arr[$elm->getId()] = $elm;
     }
     

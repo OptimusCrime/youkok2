@@ -35,10 +35,13 @@ class Home extends Youkok2 {
             //$this->template->assign('HOME_USER_LATEST', $this->loadLastDownloads());
             //$this->template->assign('HOME_USER_FAVORITES', $this->loadFavorites());
         } else {
-            //$this->template->assign('HOME_INFOBOX', $this->loadInfobox());
+            $this->template->assign('HOME_INFOBOX', $this->loadInfobox());
             //$this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
             //$this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
         }
+        
+        // Assign other stuff
+        $this->template->assign('HOME_MOST_POPULAR_DELTA', Me::getUserDelta());
         
         // Display the template
         $this->displayAndCleanup('index.tpl');
@@ -193,26 +196,26 @@ class Home extends Youkok2 {
         $get_user_number = "SELECT COUNT(id) as 'antall_brukere'
         FROM user";
         
-        $get_user_number_query = $this->db->prepare($get_user_number);
+        $get_user_number_query = Database::$db->prepare($get_user_number);
         $get_user_number_query->execute();
-        $get_user_number_result = $get_user_number_query->fetch(PDO::FETCH_ASSOC);
+        $get_user_number_result = $get_user_number_query->fetch(\PDO::FETCH_ASSOC);
         
         // Load files
         $get_file_number = "SELECT COUNT(id) as 'antall_filer'
         FROM archive
         WHERE is_directory = 0";
         
-        $get_file_number_query = $this->db->prepare($get_file_number);
+        $get_file_number_query = Database::$db->prepare($get_file_number);
         $get_file_number_query->execute();
-        $get_file_number_result = $get_file_number_query->fetch(PDO::FETCH_ASSOC);
+        $get_file_number_result = $get_file_number_query->fetch(\PDO::FETCH_ASSOC);
         
         // Load downloads
         $get_download_number = "SELECT COUNT(id) as 'antall_nedlastninger'
         FROM download";
         
-        $get_download_number_query = $this->db->prepare($get_download_number);
+        $get_download_number_query = Database::$db->prepare($get_download_number);
         $get_download_number_query->execute();
-        $get_dowload_number_result = $get_download_number_query->fetch(PDO::FETCH_ASSOC);
+        $get_dowload_number_result = $get_download_number_query->fetch(\PDO::FETCH_ASSOC);
         
         // Return text
         return '<h1>Hei og velkommen til Youkok2. Den beste kokeboka på nettet!</h1><p>Vi har for tiden <b>' . number_format($get_user_number_result['antall_brukere']) . '</b> registrerte brukere, <b>' . number_format($get_file_number_result['antall_filer']) . '</b> filer og totalt <b>' . number_format($get_dowload_number_result['antall_nedlastninger']) . '</b> nedlastninger i vårt system.</p><p>Som registrerte brukere på Youkok2 får mulighet til å lagre favoritter, se sine siste nedlastninger, samt muligheten til å laste opp filer og å bidra til å gjøre Youkok2 enda bedre. Du kan lese mer om dette i <a href="om">om-seksjonen</a> vår.</p><p>La oss gjøre studiehverdagen enklere, sammen!</p><p>- Youkok2</p>';
