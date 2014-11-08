@@ -135,7 +135,7 @@ class Elements {
         $favorites = Me::getFavorites();
         
         if (count($favorites) > 0) {
-            $str = '';
+            $ret = '';
             foreach ($favorites as $favorite) {
                 // Check if cached
                 $element = ElementCollection::get($favorite);

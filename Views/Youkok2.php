@@ -272,6 +272,7 @@ class Youkok2 {
             $this->template->assign('DEV_QUERIES_NUM', number_format(Database::getCount()));
             $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->sqlLog));
             $this->template->assign('DEV_ELEMENT_COLLECTION', ElementCollection::getSize());
+            $this->template->assign('DEV_CACHE_LOAD', CacheManager::getFetches());
         }
         
         // Close database and process cache

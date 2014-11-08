@@ -139,15 +139,13 @@ class ElementController {
         if ($this->cache and CacheManager::isCached($id, 'i')) {
             // This Item is cached, go ahead and fetch data
             $temp_cache_data = CacheManager::getCache($id, 'i');
-            $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 
-                            'accepted', 'visible', 'location', 'added', 'size', 'course', 'url');
-            
             // Loop all the fields and apply data
             foreach ($temp_cache_data as $k => $v) {
+                $k_actual = 'set' . ucfirst($k);
                 // Check that the field exists as a property/attribute in this class
-                if (property_exists('Item', $k)) {
+                if (method_exists('\Youkok2\Models\Element', $k_actual)) {
                     // Set value
-                    $this->model->$k = $v;
+                    call_user_func_array(array($this->model, $k_actual), array($v));
                 }
             }
 
@@ -238,7 +236,7 @@ class ElementController {
                 // Check if we should cache this Item
                 if ($this->cache) {
                     // TODO
-                    //CacheManager::setCache($id, 'i', $this->cacheFormat());
+                    CacheManager::setCache($id, 'i', $this->cacheFormat());
                 }
             }
             else {
@@ -599,6 +597,7 @@ class ElementController {
     }
 
     public function getFlagCount() {
+        return 1;
         if ($this->flagCount === null) {
             // Flags are not loaded, load them first
             $this->loadFlags();
@@ -742,16 +741,20 @@ class ElementController {
 
     private function cacheFormat() {
         $cache_temp = array();
-        $fields = array('name', 'directory', 'urlFriendly', 'parent', 'mimeType', 'missingImage', 'accepted', 
-                        'visible', 'location', 'added', 'size', 'course', 'flagCount', 'url');
+        $fields = array('getName', 'isDirectory', 'getUrlFriendly', 'getParent', 'getMimeType', 'getMissingImage', 
+                        'isAccepted', 'isVisible', 'getLocation', 'getAdded', 'getSize', 'getCourse', 'getUrl');
         
         // Loop each field
         foreach ($fields as $v) {
-            if ($this->$v != null) {
-                $cache_temp[] = "'" . $v . "' => '" . addslashes($this->$v) . "'";
+            $v_pretty = strtolower(str_replace(array('get', 'is'), '', $v));
+            if (method_exists('\Youkok2\Models\Element', $v)) {
+                $cache_temp[] = "'" . $v_pretty . "' => '" . addslashes(call_user_func(array($this->model, $v))) . "'";
             }
         }
-
+        
+        // Add flag count
+         $cache_temp[] = "'flagcount' => '" . addslashes($this->getFlagCount()) . "'";
+         
         // Implode and return
         return implode(', ', $cache_temp);
     }
@@ -897,7 +900,7 @@ class ElementController {
         if ($mode != null) {
             if ($mode == 'added') {
                 $endfix .= ' [<span class="moment-timestamp" style="cursor: help;" title="' . Utilities::prettifySQLDate($this->model->getAdded()) . '" ';
-                $endfix .= 'data-ts="' . $this->model->getAdded() . '">Laster...</span>]</li>';
+                $endfix .= 'data-ts="' . $this->model->getAdded() . '">Laster...</span>]';
             }
             else if ($mode == 'most-popular') {
                 $endfix .= ' [' . number_format($this->getDownloadCount(Elements::$delta[Me::getUserDelta($special)])) . ']';
@@ -911,7 +914,7 @@ class ElementController {
         // The different types of Elements requires different links
         if ($this->model->isLink()) {
             $element_url = $this->generateUrl(Routes::REDIRECT);
-            $element_title = 'title="Link til: ' . $this->model->getUrl() . '"';
+            $element_title = ' title="Link til: ' . $this->model->getUrl() . '"';
         }
         else if ($this->model->isFile()) {
             $element_url = $this->generateUrl(Routes::DOWNLOAD);
@@ -919,7 +922,7 @@ class ElementController {
         }
         
         // Begin the list
-        $ret .= '<li class="' . $list_classes . '">';
+        $ret .= '<li class="' . $list_classes . '">' . PHP_EOL;
         
         // Check if directory
         if ($this->model->isDirectory()) {
@@ -931,28 +934,28 @@ class ElementController {
             }
             
             // Close link
-            $ret .= '</a>';
+            $ret .= '</a>' . PHP_EOL;
         }
         else {
             // The link itself
-            $ret .= '    <a rel="nofollow" target="_blank" ' . $element_title . '" href="' . $element_url . '">' . $this->model->getName() . '</a> @ ';
+            $ret .= '    <a rel="nofollow" target="_blank"' . $element_title . ' href="' . $element_url . '">' . $this->model->getName() . '</a> @ ' . PHP_EOL;
             
             // Check if we should output the parent
             if ($this->model->getParent() != 1 and $this->model->getParent() != $root_parent->getId()) {
                 $local_dir_element = ElementCollection::get($this->model->getParent());
-                $ret .= '    <a href="' . $this->generateUrl(Routes::ARCHIVE) . '">' . $local_dir_element->getName() . '</a>, ';
+                $ret .= '    <a href="' . $this->generateUrl(Routes::ARCHIVE) . '">' . $local_dir_element->getName() . '</a>, ' . PHP_EOL;
             }
             
             // Check if we should add the root parent
             if ($root_parent != null) {
                 $ret .= '    <a href="' . $root_parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" ';
-                $ret .= '    data-placement="top" title="$root_parent->getCourse()->getName()">' . $root_parent->getName() . '</a>';
+                $ret .= ' data-placement="top" title="$root_parent->getCourse()->getName()">' . $root_parent->getName() . '</a>' . PHP_EOL;
             }
         }
         
         // Close the list
-        $ret .= $endfix;
-        $ret .= '</li>';
+        $ret .= $endfix . PHP_EOL;
+        $ret .= '</li>' . PHP_EOL;
         
         // Return the entire string
         return $ret;
