@@ -25,6 +25,7 @@ class Database {
      */
     
     public static function connect() {
+        //self::$db = new PDO2\PDO2('sqlite:dogsDb_PDO.sqlite');
         self::$db = new PDO2\PDO2('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_TABLE, DATABASE_USER, 
                                    DATABASE_PASSWORD, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
     }
