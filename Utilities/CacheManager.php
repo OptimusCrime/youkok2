@@ -18,6 +18,7 @@ Class CacheManager {
     private static $cacheArr = array();
     private static $currentChecking = null;
     private static $currentContent = null;
+    private static $fetches = 0;
     
     //
     // Check if Item is cached or not
@@ -31,6 +32,9 @@ Class CacheManager {
         if (file_exists($file)) {
             // Get content
             $temp_content = file_get_contents($file);
+            
+            // Increase fetch
+            self::$fetches++;
 
             // Check if content is valid (and safe!)
             if (substr(file_get_contents($file), 0, 19) == '<?php return array(') {
@@ -129,7 +133,7 @@ Class CacheManager {
         // Check if we got something queued
         if (count(self::$cacheArr) > 0) {
             // Loop all cache items
-            foreach (self::cacheArr as $k => $v) {
+            foreach (self::$cacheArr as $k => $v) {
                 self::setCache($v['id'], $v['type'], $v['content'], true);
             }
 
@@ -187,6 +191,14 @@ Class CacheManager {
             // Assign random cache
             $this->controller->template->assign('TYPEAHEAD_CACHE_TIME', rand());
         }
+    }
+    
+    /*
+     * Return number of fetches
+     */
+    
+    public static function getFetches() {
+        return self::$fetches;
     }
 }
 ?>
