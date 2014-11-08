@@ -16,6 +16,7 @@
             [[+nocache]]
                 [[+if $DEV]]
                     <p>
+                        <span>ElementCollection: [[+$DEV_ELEMENT_COLLECTION]]</span> ::
                         <span>Antall queries: [[+$DEV_QUERIES_NUM]]</span> ::
                         <span class="last"><a id="toggle-queries" href="#"><span class="nopadd">Vis</span> alle queries</a></span>
                     </p>

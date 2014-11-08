@@ -71,6 +71,9 @@ class Element {
     public function isLink() {
         return ($this->url != null);
     }
+    public function isFile() {
+        return ($this->url == null and !$this->directory);
+    }
     public function isAccepted() {
         return $this->accepted;
     }

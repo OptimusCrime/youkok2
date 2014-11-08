@@ -70,4 +70,12 @@ class ElementCollection {
         $root_element->createById(1);
         self::add($root_element);
     }
+    
+    /*
+     * Return size of the collection
+     */
+    
+    public static function getSize() {
+        return count(self::$arr);
+    }
 }

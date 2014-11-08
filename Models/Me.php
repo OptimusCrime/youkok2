@@ -34,11 +34,13 @@ class Me {
     
     // Other variables
     private static $loggedIn;
+    private static $favorites;
     
     public static function init() {
         // Set initial
         self::$loggedIn = false;
         self::$nick = null;
+        self::$favorites = null;
 
         // Check if we have anything stored
         if (isset($_SESSION['youkok2']) or isset($_COOKIE['youkok2'])) {
@@ -151,5 +153,34 @@ class Me {
         else {
             return $override;
         }
+    }
+    
+    /*
+     * Favorites
+     */
+    
+    public static function getFavorites() {
+        // Check if already loaded
+        if (self::$favorites === null) {
+            // Set favorites to array
+            self::$favorites = array();
+            
+            // Run query
+            $get_favorites = "SELECT f.file
+            FROM favorite AS f
+            LEFT JOIN archive AS a ON a.id = f.file
+            WHERE f.user = :user
+            AND a.is_visible = 1
+            ORDER BY f.ordering ASC";
+            
+            $get_favorites_query = Database::$db->prepare($get_favorites);
+            $get_favorites_query->execute(array(':user' => self::$id));
+            while ($row = $get_favorites_query->fetch(\PDO::FETCH_ASSOC)) {
+                self::$favorites[] = $row['file'];
+            }
+        }
+        
+        // Return entire list of elements
+        return self::$favorites;
     }
 }

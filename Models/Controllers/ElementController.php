@@ -15,8 +15,11 @@ namespace Youkok2\Models\Controllers;
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Shared\Elements as Elements;
+use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Utilities\Routes as Routes;
+use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
  * The class ElementController
@@ -416,7 +419,7 @@ class ElementController {
             // Store some variables for later
             $temp_url= array($this->model->getUrlFriendly());
             $temp_id = $this->model->getParent();
-            $temp_root_parent = $this;
+            $temp_root_parent = $this->model;
 
             // Loop untill we reach the root
             while ($temp_id != 0) {
@@ -666,26 +669,33 @@ class ElementController {
         else {
             // Temp variables
             $temp_id = $this->model->getParent();
-            $temp_root_parent = $this;
+            $temp_root_parent = $this->model;
 
             // Loop untill we reach the root
             while ($temp_id != 0) {
                 // Check if this object already exists
-                $temp_item = ElementCollection::get($temp_id);
+                $temp_element = ElementCollection::get($temp_id);
                 
                 // Check if already cached
-                if ($temp_item == null) {
+                if ($temp_element == null) {
                     // Create new object
-                    $temp_item = new Element();
-                    $temp_item->createById($temp_id);
-                    ElementCollection::add($temp_item);
+                    $temp_element = new Element();
+                    $temp_element->createById($temp_id);
+                    
                 }
+                
+                // Check if was found
+                if ($temp_element->controller->wasFound()) {
+                    ElementCollection::add($temp_element);
+                    $temp_id = $temp_element->getParent();
 
-                // Update id
-                $temp_id = $temp_item->getParent();
-
-                if ($temp_item->getId() != 1) {
-                    $temp_root_parent = $temp_item;
+                    if ($temp_element->getId() != 1) {
+                        $temp_root_parent = $temp_element;
+                    }
+                }
+                else {
+                    // Omg
+                    break;
                 }
             }
             
@@ -701,6 +711,8 @@ class ElementController {
      */
 
     public function hasCourse() {
+        return false;
+        // TODO
         return (($this->model->course == null) ? false : true);
     }
 
@@ -868,5 +880,81 @@ class ElementController {
         
         // Return the series here
         return json_encode($output);
+    }
+    
+    /*
+     * Generate frontpage link for the current Element
+     */
+    
+    public function getFrontpageLink($mode = null, $special = null) {
+        // Some variable we are going to eed
+        $ret = '';
+        $endfix = '';
+        $list_classes = 'list-group-item';
+        $root_parent = $this->getRootParent();
+        
+        // Check if we should load additional information
+        if ($mode != null) {
+            if ($mode == 'added') {
+                $endfix .= ' [<span class="moment-timestamp" style="cursor: help;" title="' . Utilities::prettifySQLDate($this->model->getAdded()) . '" ';
+                $endfix .= 'data-ts="' . $this->model->getAdded() . '">Laster...</span>]</li>';
+            }
+            else if ($mode == 'most-popular') {
+                $endfix .= ' [' . number_format($this->getDownloadCount(Elements::$delta[Me::getUserDelta($special)])) . ']';
+            }
+            else if ($mode == 'favorites') {
+                $list_classes .= ' list-group-star';
+                $endfix = '    <i title="Fjern favoritt" data-id="' . $this->model->getId() . '" class="fa fa-times-circle star-remove"></i>';
+            }
+        }
+        
+        // The different types of Elements requires different links
+        if ($this->model->isLink()) {
+            $element_url = $this->generateUrl(Routes::REDIRECT);
+            $element_title = 'title="Link til: ' . $this->model->getUrl() . '"';
+        }
+        else if ($this->model->isFile()) {
+            $element_url = $this->generateUrl(Routes::DOWNLOAD);
+            $element_title = '';
+        }
+        
+        // Begin the list
+        $ret .= '<li class="' . $list_classes . '">';
+        
+        // Check if directory
+        if ($this->model->isDirectory()) {
+            $ret .= '    <a href="' . $this->generateUrl(Routes::ARCHIVE) . '">' . $this->model->getName();
+            
+            // Check if has course
+            if ($this->hasCourse()) {
+                $ret .= ' — $this->getCourse()->getName()';
+            }
+            
+            // Close link
+            $ret .= '</a>';
+        }
+        else {
+            // The link itself
+            $ret .= '    <a rel="nofollow" target="_blank" ' . $element_title . '" href="' . $element_url . '">' . $this->model->getName() . '</a> @ ';
+            
+            // Check if we should output the parent
+            if ($this->model->getParent() != 1 and $this->model->getParent() != $root_parent->getId()) {
+                $local_dir_element = ElementCollection::get($this->model->getParent());
+                $ret .= '    <a href="' . $this->generateUrl(Routes::ARCHIVE) . '">' . $local_dir_element->getName() . '</a>, ';
+            }
+            
+            // Check if we should add the root parent
+            if ($root_parent != null) {
+                $ret .= '    <a href="' . $root_parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" ';
+                $ret .= '    data-placement="top" title="$root_parent->getCourse()->getName()">' . $root_parent->getName() . '</a>';
+            }
+        }
+        
+        // Close the list
+        $ret .= $endfix;
+        $ret .= '</li>';
+        
+        // Return the entire string
+        return $ret;
     }
 }

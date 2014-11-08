@@ -8,6 +8,7 @@
 
 namespace Youkok2\Views;
 
+use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
@@ -270,6 +271,7 @@ class Youkok2 {
         if (DEV) {
             $this->template->assign('DEV_QUERIES_NUM', number_format(Database::getCount()));
             $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->sqlLog));
+            $this->template->assign('DEV_ELEMENT_COLLECTION', ElementCollection::getSize());
         }
         
         // Close database and process cache

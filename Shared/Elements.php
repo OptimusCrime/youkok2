@@ -1,13 +1,17 @@
 <?php
 /*
- * File: home.controller.php
- * Holds: The HomeController-class
+ * File: Elements.php
+ * Holds: Methods for fetching several Elements in a cluser
  * Created: 02.10.13
  * Project: Youkok2
 */
 
 namespace Youkok2\Shared;
 
+/*
+ * Define what classes to use
+ */
+ 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
@@ -15,7 +19,15 @@ use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Routes as Routes;
 use \Youkok2\Utilities\Utilities as Utilities;
 
+/*
+ * The class Elements, represents loading of a clusered collection Element
+ */
+
 class Elements {
+    
+    /*
+     * Variable defining how to fetch time spesific intervals
+     */
     
     public static $delta = array(
         ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', 
@@ -23,6 +35,10 @@ class Elements {
         ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', 
         ' WHERE a.is_visible = 1',
         ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1');
+    
+    /*
+     * Fetch newest Elements
+     */
     
     public static function getNewest() {
         // Declear variable for storing content
@@ -33,40 +49,26 @@ class Elements {
         FROM archive
         WHERE is_directory = 0
         AND is_visible = 1
-        ORDER BY added DESC
+        ORDER BY added DESC, name DESC
         LIMIT 15";
         
         $get_newest_query = Database::$db->query($get_newest);
         while ($row = $get_newest_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Create new object
+            // Check if cached
             $element = ElementCollection::get($row['id']);
-
+            
+            // Not cached, init
             if ($element == null) {
                 $element = new Element();
                 $element->controller->setLoadRootParent(true);
                 $element->controller->createById($row['id']);
-                ElementCollection::add($element);
+                
             }
 
-            // Check if element was loaded
-            if ($element != null) {
-                $root_parent = $element->controller->getRootParent();
-                
-                // Check if we should load local dir for element
-                $local_dir_str = '';
-                if ($element->getParent() != $root_parent->getId()) {
-                    $local_dir_element = ElementCollection::get($element->getParent());
-                    $local_dir_str = '<a href="' . $local_dir_element->controller->generateUrl(Routes::ARCHIVE) . '">' . $local_dir_element->getName() . '</a> i ';
-                }
-                
-                if ($element->isLink()) {
-                    $element_url = $element->controller->generateUrl(Routes::REDIRECT);
-                    $ret .= '<li class="list-group-item"><a rel="nofollow" target="_blank" title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" data-placement="top" title="$root_parent->getCourse()->getName()">' . $root_parent->getName() . '</a>') . ' [<span class="moment-timestamp" style="cursor: help;" title="' . Utilities::prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
-                }
-                else {
-                    $element_url = $element->controller->generateUrl(Routes::DOWNLOAD);
-                    $ret .= '<li class="list-group-item"><a rel="nofollow" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" data-placement="top" title="$root_parent->getCourse()->getName()">' . $root_parent->getName() . '</a>') . ' [<span class="moment-timestamp" style="cursor: help;" title="' . Utilities::prettifySQLDate($element->getAdded()) . '" data-ts="' . $element->getAdded() . '">Laster...</span>]</li>';
-                }
+            // Check if valid Element
+            if ($element->controller->wasFound()) {
+                ElementCollection::add($element);
+                $ret .= $element->controller->getFrontpageLink('added');
             }
         }
         
@@ -74,9 +76,9 @@ class Elements {
         return $ret;
     }
 
-    //
-    // Method for loading the files with most downloads
-    //
+    /*
+     * Fetch most popular Elements
+     */
 
     public static function getMostPopular($override = null) {
         $ret = '';
@@ -89,45 +91,31 @@ class Elements {
         LEFT JOIN archive AS a ON a.id = d.file
         " . self::$delta[$user_delta] . "
         GROUP BY d.file
-        ORDER BY downloaded_times DESC
+        ORDER BY downloaded_times DESC, a.added DESC
         LIMIT 15";
 
         $get_most_popular_query = Database::$db->prepare($get_most_popular);
         $get_most_popular_query->execute();
         while ($row = $get_most_popular_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Get element
+            // Check if cached
             $element = ElementCollection::get($row['id']);
-
-            // Get file if not cached
+            
+            // Not cached, init
             if ($element == null) {
                 $element = new Element();
                 $element->controller->setLoadRootParent(true);
                 $element->createById($row['id']);
-                ElementCollection::add($element);
             }
-
-            // Set downloaded
-            $element->controller->setDownloadCount($user_delta, $row['downloaded_times']);
-
-            // CHeck if element was loaded
-            if ($element != null) {
-                $root_parent = $element->controller->getRootParent();
-
-                // Check if we should load local dir for element
-                $local_dir_str = '';
-                if ($element->getParent() != $root_parent->getId()) {
-                    $local_dir_element = ElementCollection::get($element->getParent());
-                    $local_dir_str = '<a href="' . $local_dir_element->controller->generateUrl(Routes::ARCHIVE) . '">' . $local_dir_element->getName() . '</a> i ';
-                }
-
-                if ($element->isLink()) {
-                    $element_url = $element->controller->generateUrl(Routes::REDIRECT);
-                    $ret .= '<li class="list-group-item"><a rel="nofollow" target="_blank" title="Link til: ' . $element->getUrl() . '" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" data-placement="top" title="$root_parent->getCourse()->getName()">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->controller->getDownloadCount(self::$delta[$user_delta])) . ']</li>';
-                }
-                else {
-                    $element_url = $element->controller->generateUrl(Routes::DOWNLOAD);
-                    $ret .= '<li class="list-group-item"><a rel="nofollow" href="' . $element_url . '">' . $element->getName() . '</a> @ ' . $local_dir_str . ($root_parent == null ? '' : '<a href="' . $root_parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" data-placement="top" title="$root_parent->getCourse()->getName()">' . $root_parent->getName() . '</a>') . ' [' . number_format($element->controller->getDownloadCount(self::$delta[$user_delta])) . ']</li>';
-                }
+            
+            // Check if valid Element
+            if ($element->controller->wasFound()) {
+                ElementCollection::add($element);
+                
+                // Set download count
+                $element->controller->setDownloadCount($user_delta, $row['downloaded_times']);
+                
+                // Generate string
+                $ret .= $element->controller->getFrontpageLink('most-popular', $override);
             }
         }
 
@@ -137,5 +125,41 @@ class Elements {
         }
 
         return $ret;
+    }
+    
+    /*
+     * Fetch Me favorites
+     */
+    
+    public static function getFavorites() {
+        $favorites = Me::getFavorites();
+        
+        if (count($favorites) > 0) {
+            $str = '';
+            foreach ($favorites as $favorite) {
+                // Check if cached
+                $element = ElementCollection::get($favorite);
+                
+                // Not cached, init
+                if ($element == null) {
+                    $element = new Element();
+                    $element->createById($favorite);
+                    
+                }
+                
+                // Check if valid Element
+                if ($element->controller->wasFound()) {
+                    ElementCollection::add($element);
+                    $ret .= $element->controller->getFrontpageLink('favorites');
+                }
+            }
+            
+            if ($ret == '') {
+                $ret = '<li class="list-group-item"><em>Du har ingen favoritter...</em></li>';
+            }
+            
+            // Return the list
+            return $ret;
+        }
     }
 }
