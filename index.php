@@ -23,10 +23,7 @@ require 'vendor/autoload.php';
 spl_autoload_register(function ($class) {
     // project-specific namespace prefix
     $prefix = 'Youkok2\\';
-
-    // base directory for the namespace prefix
-    $base_dir = BASE_PATH . '/';
-
+    
     // does the class use the namespace prefix?
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
@@ -40,7 +37,7 @@ spl_autoload_register(function ($class) {
     // replace the namespace prefix with the base directory, replace namespace
     // separators with directory separators in the relative class name, append
     // with .php
-    $file = $base_dir . 'classes/' . str_replace('\\', '/', $relative_class) . '.php';
+    $file = BASE_PATH . '/classes/' . str_replace('\\', '/', $relative_class) . '.php';
     
     // if the file exists, require it
     if (file_exists($file)) {
