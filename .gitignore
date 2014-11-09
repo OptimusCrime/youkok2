@@ -6,7 +6,7 @@
 !/_upgrade/
 !/assets/
 !/cache/
-!/controllers/
+!/classes/
 !/elements/
 !/files/
 !/libs/
@@ -15,14 +15,6 @@
 !/scripts/
 !/templates/
 !/templates_c/
-
-!/Collections/
-!/Controllers/
-!/Models/
-!/Processors/
-!/Shared/
-!/Utilities/
-!/Views/
 
 # But ignore local settings
 local.php
