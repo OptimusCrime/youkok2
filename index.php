@@ -7,12 +7,6 @@
  * Project: Youkok2
  */
 
-namespace Youkok2;
- 
-/*
- * Set headers
- */
-
 header('Content-Type: text/html; charset=utf-8');
 
 /*
@@ -46,7 +40,7 @@ spl_autoload_register(function ($class) {
     // replace the namespace prefix with the base directory, replace namespace
     // separators with directory separators in the relative class name, append
     // with .php
-    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+    $file = $base_dir . 'classes/' . str_replace('\\', '/', $relative_class) . '.php';
     
     // if the file exists, require it
     if (file_exists($file)) {
@@ -71,5 +65,5 @@ date_default_timezone_set(TIMEZONE);
  * Initiate the loader
  */
 
-$loader = new Utilities\Loader();
+$loader = new \Youkok2\Utilities\Loader();
 ?>
