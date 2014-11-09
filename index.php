@@ -62,8 +62,11 @@ ini_set('display_errors', ERROR_DISPLAY);
 date_default_timezone_set(TIMEZONE);
 
 /*
- * Initiate the loader
+ * Check if we should initiate the Loader
  */
 
-$loader = new \Youkok2\Utilities\Loader();
+if (get_included_files()[0] == __FILE__) {
+    // First element included files array, meaning this file is the file being called, run Loader
+    $loader = new \Youkok2\Utilities\Loader();
+}
 ?>
