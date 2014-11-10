@@ -1,7 +1,22 @@
 <?php
+/*
+ * File: Element.php
+ * Holds: Holds a Element
+ * Created: 11.11.2014
+ * Project: Youkok2
+*/
+
 namespace Youkok2\Models;
 
+/*
+ * Load different classes into namespace
+ */
+
 use \Youkok2\Models\Controllers\ElementController as ElementController;
+
+/*
+ * Model for a Element
+ */
 
 class Element {
 
