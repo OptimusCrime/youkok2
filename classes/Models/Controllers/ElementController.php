@@ -15,6 +15,7 @@ namespace Youkok2\Models\Controllers;
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Shared\Elements as Elements;
+use \Youkok2\Models\Course as Course;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
@@ -121,7 +122,6 @@ class ElementController {
         $this->ownerUsername = null;
         
         // Set pointers to other objects
-        $this->courseObj = null;
         $this->flags = null;
 
         // Set caching to true as default
@@ -144,8 +144,16 @@ class ElementController {
                 $k_actual = 'set' . ucfirst($k);
                 // Check that the field exists as a property/attribute in this class
                 if (method_exists('\Youkok2\Models\Element', $k_actual)) {
-                    // Set value
-                    call_user_func_array(array($this->model, $k_actual), array($v));
+                    // Check if Course
+                    if ($k == 'course' and $v != null and strlen($v) > 0) {
+                        $course_obj = new Course();
+                        $course_obj->createById($v);
+                        $this->model->setCourse($course_obj);
+                    }
+                    else {
+                        // Set value
+                        call_user_func_array(array($this->model, $k_actual), array($v));
+                    }
                 }
             }
 
@@ -225,8 +233,13 @@ class ElementController {
                 $this->model->setLocation($row['location']);
                 $this->model->setAdded($row['added']);
                 $this->model->setSize($row['size']);
-                $this->model->setCourse($row['course']);
                 $this->model->setUrl($row['url']);
+                
+                if (isset($row['course']) and $row['course'] != null and strlen($row['course']) > 0) {
+                    $course_obj = new Course();
+                    $course_obj->createById($row['course']);
+                    $this->model->setCourse($course_obj);
+                }
                 
                 // If we are fetching the full location, this should be the last fragment
                 if ($this->loadFullLocation) {
@@ -704,29 +717,15 @@ class ElementController {
             return $this->rootParent;
         }
     }
-
+    
     /*
      * Course
      */
 
     public function hasCourse() {
-        return false;
-        // TODO
-        return (($this->model->course == null) ? false : true);
+        return (($this->model->getCourse() == null) ? false : true);
     }
-
-    public function getCourse() {
-        // Check if course object is set
-        if ($this->courseObj == null) {
-            // Create object and set id
-            $this->courseObj = new Course();
-            $this->courseObj->setId($this->course);
-        }
-
-        // Fetch name
-        return $this->courseObj;
-    }
-
+    
     /*
      * Setter for caching
      */
@@ -930,7 +929,7 @@ class ElementController {
             
             // Check if has course
             if ($this->hasCourse()) {
-                $ret .= ' — $this->getCourse()->getName()';
+                $ret .= ' — ' . $this->model->getCourse()->getName();
             }
             
             // Close link
@@ -949,7 +948,7 @@ class ElementController {
             // Check if we should add the root parent
             if ($root_parent != null) {
                 $ret .= '    <a href="' . $root_parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" ';
-                $ret .= ' data-placement="top" title="$root_parent->getCourse()->getName()">' . $root_parent->getName() . '</a>' . PHP_EOL;
+                $ret .= ' data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>' . PHP_EOL;
             }
         }
         

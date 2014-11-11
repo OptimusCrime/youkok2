@@ -119,7 +119,7 @@ class Element {
         $this->parent = $parent;
     }
     public function setCourse($course) {
-        $this->course = $course;
+        $this->course = &$course;
     }
     public function setLocation($location) {
         $this->location = $location;
