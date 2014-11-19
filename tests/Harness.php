@@ -1,7 +1,7 @@
 <?php
 /*
  * File: Harness.php
- * Holds: Some stuff to make Yuokok2 testready
+ * Holds: Some stuff to make Youkok2 testready
  * Created: 19.11.2014
  * Project: Youkok2
 */
@@ -11,22 +11,10 @@ namespace Youkok2;
 use \Youkok2\Utilities\Database as Database;
 
 /*
- * Override stuff
- */
-
-// Directories
-define('TEST_PATH', dirname(__FILE__));
-define('BASE_PATH', dirname(TEST_PATH));
-define('FILE_PATH', TEST_PATH . '/files');
-define('CACHE_PATH', FILE_PATH . '/cache');
- 
-// Database
-define('DATABASE_CONNECTION', 'mysql:host=localhost;dbname=youkok2_tests');
-
-/*
  * Include settings
  */
 
+require_once dirname(__FILE__) . '/TestSettings.php';
 require_once BASE_PATH . '/local.php';
 require_once BASE_PATH . '/local-default.php';
 
@@ -86,12 +74,7 @@ class Harness {
             $content = file_get_contents($db_dump);
             
             // Run queries
-            try {
-                Database::$db->query($content);
-            }
-            catch (Exception $e) {
-                echo $e->getMessage();
-            }
+            Database::$db->query($content);
         }
         else {
             // Missing dump

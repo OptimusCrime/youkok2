@@ -1,36 +1,50 @@
 <?php
 /*
- * File: Harness.php
- * Holds: Some stuff to make Yuokok2 testready
+ * File: Setup.php
+ * Holds: Set some initial content
  * Created: 19.11.2014
  * Project: Youkok2
 */
 
-namespace Youkok2\Setup;
+namespace Youkok2;
 
 use \Youkok2\Utilities\Database as Database;
 
 /*
- * Get current location
+ * Include settings
  */
 
-$file_location = dirname(__FILE__);
-
-/*
- * Define some constants
- */
-
-// Database
-define('DATABASE_CONNECTION', 'sqlite:' . $file_location . '/files/test.db');
-define('DATABASE_USER', null);
-define('DATABASE_PASSWORD', null);
-
-// Directories
-define('FILE_PATH', $file_location . '/files/files/');
-define('CACHE_PATH', $file_location . '/files/cache/');
+require_once dirname(dirname(__FILE__)) . '/TestSettings.php';
+require_once BASE_PATH . '/local.php';
+require_once BASE_PATH . '/local-default.php';
 
 /*
  * Include the bootstrap file
  */
 
-require dirname(__FILE__) . '/../index.php';
+require_once BASE_PATH . '/index.php';
+
+/*
+ * Setup class
+*/
+
+class Setup {
+    
+    /*
+     * Constructor
+     */
+    
+    public function __construct() {
+        // Insert users
+        
+        // Insert root element
+        
+        // Insert derp
+    }
+}
+
+/*
+ * Run the Setup
+ */
+
+new Setup();
