@@ -37,8 +37,14 @@ if (!defined('CACHE_PATH')) {
 }
 
 // Database
-if (!defined('DATABASE_CONNECTION_INFO')) {
-    define('DATABASE_CONNECTION_INFO', 'mysql:host=localhost;dbname=youkok2,root,password');
+if (!defined('DATABASE_CONNECTION')) {
+    define('DATABASE_CONNECTION', 'mysql:host=localhost;dbname=youkok2');
+}
+if (!defined('DATABASE_USER')) {
+    define('DATABASE_USER', 'root');
+}
+if (!defined('DATABASE_PASSWORD')) {
+    define('DATABASE_PASSWORD', 'password');
 }
 
 // Errors

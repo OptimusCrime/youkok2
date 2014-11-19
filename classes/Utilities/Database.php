@@ -25,7 +25,7 @@ class Database {
      */
     
     public static function connect() {
-        self::$db = new PDO2\PDO2(DATABASE_CONNECTION_INFO, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+        self::$db = new PDO2\PDO2(DATABASE_CONNECTION, DATABASE_USER, DATABASE_PASSWORD, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
     }
     
     /*
