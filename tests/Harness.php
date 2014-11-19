@@ -6,6 +6,14 @@
  * Project: Youkok2
 */
 
+namespace Youkok2;
+
+use \Youkok2\Utilities\Database as Database;
+
+/*
+ * Get current location
+ */
+
 $file_location = dirname(__FILE__);
 
 /*
@@ -28,24 +36,59 @@ define('CACHE_PATH', $file_location . '/files/cache/');
 require dirname(__FILE__) . '/../index.php';
 
 /*
- * Create directories
+ * Harness class
 */
 
-if (!is_dir(FILE_PATH)) {
-    mkdir(FILE_PATH);
-}
-if (!is_dir(CACHE_PATH)) {
-    mkdir(CACHE_PATH);
+class Harness {
+    
+    /*
+     * Constructor
+     */
+    
+    public function __construct() {
+        // Directories
+        $this->createDirectories();
+        
+        // Database
+        $this->databaseConnect();
+        $this->databasePopulate();
+    }
+    
+    /*
+     * Create directories
+     */
+    
+    private function createDirectories() {
+        // Create file directory
+        if (!is_dir(FILE_PATH)) {
+            mkdir(FILE_PATH);
+        }
+        
+        // Create cache directory
+        if (!is_dir(CACHE_PATH)) {
+            mkdir(CACHE_PATH);
+        }
+    }
+    
+    /*
+     * Connect to database
+     */
+    
+    private function databaseConnect() {
+        Database::connect();
+    }
+    
+    /*
+     * Populate the database
+     */
+    
+    private function databasePopulate() {
+        // TODO
+    }
 }
 
 /*
- * Connect to database
+ * Load class
  */
 
-// TODO
-
-/*
- * Populate database
- */
-
-// TODO
+new Harness();
