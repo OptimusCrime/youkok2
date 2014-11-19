@@ -13,32 +13,32 @@ namespace Youkok2;
 */
 
 // Version
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('VERSION')) {
     define('VERSION', '1.0.0-dev');
 }
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('DEV')) {
     define('DEV', false);
 }
 
 // Paths
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('BASE_PATH')) {
     define('BASE_PATH', dirname(__FILE__));
 }
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('FILE_PATH')) {
     define('FILE_PATH', BASE_PATH . '/path-to-file-root');
 }
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('CACHE_PATH')) {
     define('CACHE_PATH', BASE_PATH . '/cache');
 }
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('TEST_PATH')) {
     define('TEST_PATH', BASE_PATH . '/tests');
 }
 
 // Database
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('DATABASE_CONNECTION')) {
     define('DATABASE_CONNECTION', 'mysql:host=localhost;dbname=youkok2');
 }
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('DATABASE_USER')) {
     define('DATABASE_USER', 'root');
 }
 if (!defined('DATABASE_PASSWORD')) {
@@ -46,52 +46,52 @@ if (!defined('DATABASE_PASSWORD')) {
 }
 
 // Errors
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('ERROR_MODE')) {
     define('ERROR_MODE', E_ERROR);
 }
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('ERROR_DISPLAY')) {
     define('ERROR_DISPLAY', 0);
 }
 
 // Timezone
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('TIMEZONE')) {
     define('TIMEZONE', 'Europe/London');
 }
 
 // Define domain
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('DOMAIN')) {
     define('DOMAIN', 'my-site.tld');
 }
 
 // Site url (no trailing slash)
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('URL')) {
     define('URL', 'http://my-site.tld');
 }
 
 // Full site url (trailing slash)
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('URL_FULL')) {
     define('URL_FULL', 'http://my-site.tld');
 }
 
 // Relative position (trailing slash both before and after, or just / if root)
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('URL_RELATIVE')) {
     define('URL_RELATIVE', '/');
 }
 
 // Accepted filetypes
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('ACCEPTED_FILETYPES')) {
     define('ACCEPTED_FILETYPES', 'application/pdf,text/plain,text/x-java-source,application/x-python,text/html');
 }
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('ACCEPTED_FILEENDINGS')) {
     define('ACCEPTED_FILEENDINGS', 'pdf,txt,java,py,html,htm,sql,zip');
 }
 
 // Google analytics
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('USE_GA')) {
     define('USE_GA', false);
 }
 
 // Email
-if (!defined('DATABASE_PASSWORD')) {
+if (!defined('EMAIL_CONTACT')) {
     define('EMAIL_CONTACT', 'post@my-site.tld');
 }
