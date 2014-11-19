@@ -26,3 +26,26 @@ define('CACHE_PATH', $file_location . '/files/cache/');
  */
 
 require dirname(__FILE__) . '/../index.php';
+
+/*
+ * Create directories
+*/
+
+if (!is_dir(FILE_PATH)) {
+    mkdir(FILE_PATH);
+}
+if (!is_dir(CACHE_PATH)) {
+    mkdir(CACHE_PATH);
+}
+
+/*
+ * Connect to database
+ */
+
+// TODO
+
+/*
+ * Populate database
+ */
+
+// TODO
