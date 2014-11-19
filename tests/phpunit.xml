@@ -1,0 +1,19 @@
+<phpunit colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         syntaxCheck="true"
+         verbose="true"
+         bootstrap="Autloader.php"
+         strict="true">
+    <testsuites>
+        <testsuite name="Setup">
+            <file>Setup/Setup.php</file>
+        </testsuite>
+        <testsuite name="Teardown">
+            <file>Setup/Teardown.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
