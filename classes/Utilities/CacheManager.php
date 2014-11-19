@@ -170,7 +170,7 @@ Class CacheManager {
     //
 
     private static function getHash($id, $type) {
-        return $hash = substr(md5('lorem ' . $type . ' ipsum' . $id . md5($id)), 0, 22);
+        return substr(md5('lorem ' . $type . ' ipsum' . $id . md5($id)), 0, 22);
     }
 
 
