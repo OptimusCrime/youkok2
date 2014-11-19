@@ -101,6 +101,12 @@ Class CacheManager {
             if (!file_exists($parent_dir)) {
                 mkdir($parent_dir);
             }
+            
+            // Second parent dir
+            $parent_dir .= '/' . substr($hash, 1, 1);
+            if (!file_exists($parent_dir)) {
+                mkdir($parent_dir);
+            }
 
             // Store content in file
             file_put_contents($file, $data);
@@ -156,7 +162,7 @@ Class CacheManager {
 
     private static function getFileName($id, $type) {
         $hash = self::getHash($id, $type);
-        return BASE_PATH . '/cache/elements/' . substr($hash, 0, 1) . '/' . $hash . '_' . $type . '_' . $id . '_c.php';
+        return BASE_PATH . '/cache/elements/' . substr($hash, 0, 1) . '/' . substr($hash, 1, 1) . '/' . $hash . '_' . $type . '_' . $id . '_c.php';
     }
 
     //
