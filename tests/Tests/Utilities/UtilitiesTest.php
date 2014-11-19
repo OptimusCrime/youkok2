@@ -13,14 +13,16 @@ class UtilitiesTest extends PHPUnit_Framework_TestCase {
      */
     
     public function testUrlFriendly() {
-        // Generate some urls
+        // Generate some filenames
         $special_chars = Utilities::generateUrlFriendly('`foo!"#¤%&/()=?bar');
         $quotes = Utilities::generateUrlFriendly('foo\'bar"bar');
-        $norwegian = Utilities:generateUrlFriendly('abcæøåabc');
+        $with_spaces = Utilities::generateUrlFriendly('foo bar  foo');
+        $url_with_spaces = Utilities::generateUrlFriendly('foo bar  foo', true);
         
         // Test them
         $this->assertEquals($special_chars, 'foobar');
         $this->assertEquals($quotes, 'foobarbar');
-        $this->assertEquals($norwegian, 'abcabc');
+        $this->assertEquals($with_spaces, 'foo_bar_foo');
+        $this->assertEquals($url_with_spaces, 'foo-bar-foo');
     }
 }
