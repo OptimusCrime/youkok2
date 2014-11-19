@@ -13,9 +13,9 @@ header('Content-Type: text/html; charset=utf-8');
  * Include the settings and the autoloader from Composer
  */
 
-require 'local.php';
-require 'local-default.php';
-require 'vendor/autoload.php';
+require_once dirname(__FILE__) . '/local-default.php';
+require_once BASE_PATH . '/local.php';
+require_once BASE_PATH . '/vendor/autoload.php';
 
 /*
  * Create the autoloader for the application
