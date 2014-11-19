@@ -13,8 +13,8 @@ header('Content-Type: text/html; charset=utf-8');
  * Include the settings and the autoloader from Composer
  */
 
+require_once dirname(__FILE__) . '/local.php';
 require_once dirname(__FILE__) . '/local-default.php';
-require_once BASE_PATH . '/local.php';
 require_once BASE_PATH . '/vendor/autoload.php';
 
 /*

@@ -11,29 +11,38 @@ namespace Youkok2;
 use \Youkok2\Utilities\Database as Database;
 
 /*
- * Get current location
+ * Override stuff
  */
 
-$file_location = dirname(__FILE__);
-
-/*
- * Define some constants
- */
-
+// Directories
+define('TEST_PATH', dirname(__FILE__));
+define('BASE_PATH', dirname(TEST_PATH));
+define('FILE_PATH', TEST_PATH . '/files/files');
+define('CACHE_PATH', TEST_PATH . '/files/cache/');
+ 
 // Database
-define('DATABASE_CONNECTION', 'sqlite:' . $file_location . '/files/test.db');
+define('DATABASE_CONNECTION', 'sqlite:' . TEST_PATH . '/files/test.db');
 define('DATABASE_USER', null);
 define('DATABASE_PASSWORD', null);
 
-// Directories
-define('FILE_PATH', $file_location . '/files/files/');
-define('CACHE_PATH', $file_location . '/files/cache/');
+/*
+ * Include settings
+ */
+
+require_once BASE_PATH . '/local.php';
+require_once BASE_PATH . '/local-default.php';
+
+/*
+ * Override
+ */
+
+
 
 /*
  * Include the bootstrap file
  */
 
-require dirname(__FILE__) . '/../index.php';
+require_once BASE_PATH . '/index.php';
 
 /*
  * Harness class
@@ -83,7 +92,21 @@ class Harness {
      */
     
     private function databasePopulate() {
-        // TODO
+        // Check if there is a database file
+        $db_dump = FILE_PATH . 'db.sql';
+        echo $db_dump;
+        if (file_exists($db_dump)) {
+            // Create dummy database
+            $content = file_get_contents($db_dump);
+            Database::$db->query($content);
+        }
+        else {
+            // Missing dump
+            echo "Missing database dump";
+            
+            // Kill
+            die();
+        }
     }
 }
 
