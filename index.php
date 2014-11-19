@@ -14,6 +14,7 @@ header('Content-Type: text/html; charset=utf-8');
  */
 
 require 'local.php';
+require 'local-default.php';
 require 'vendor/autoload.php';
 
 /*
