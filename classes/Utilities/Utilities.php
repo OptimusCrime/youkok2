@@ -32,7 +32,10 @@ class Utilities {
         // Replace first here to keep "norwegian" names in a way
         $s = str_replace(array('Æ', 'Ø', 'Å'), array('ae', 'o', 'aa'), $s);
         $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
-
+        
+        // Replace multiple spaces with a single spaces
+        $s = preg_replace('!\s+!', ' ', $s);
+        
         // Decide how to deal with spaces
         if ($for_url) {
             $s = str_replace(' ', '-', $s);
