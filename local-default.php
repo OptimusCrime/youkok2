@@ -1,6 +1,6 @@
 <?php
 /*
- * File: local-example.php / local.php
+ * File: local-default.php / local.php
  * Holds: Holds the settings
  * Created: 02.10.13
  * Project: Youkok2
