@@ -12,6 +12,9 @@
         <testsuite name="Setup">
             <file>Setup/Setup.php</file>
         </testsuite>
+        <testsuite name="money">
+            <directory>Tests/</directory>
+        </testsuite>
         <testsuite name="Teardown">
             <file>Setup/Teardown.php</file>
         </testsuite>
