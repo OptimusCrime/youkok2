@@ -18,7 +18,7 @@ class Routes {
      * Array with routes
      */
      
-    const ARCHIVE = '/kokeboka';
+    const ARCHIVE = '/emner';
     const DOWNLOAD = '/last-ned';
     const REDIRECT = '/redirect';
     
@@ -52,10 +52,6 @@ class Routes {
             '/404',
         ),
 
-        'Processor' => array(
-            '/processor',
-        ),
-
         'Auth' => array(
             '/logg-inn',
             '/logg-ut',
@@ -83,10 +79,34 @@ class Routes {
     );
     
     /*
-     * Static method returning the routes
+     * Array with processors
+     */
+    
+    private static $processors = array(
+        'User' => array(
+            '/user/save',
+        ),
+    );
+    
+    /*
+     * Array with redirects
+     */
+    
+    private static $redirects = array(
+        'kokeboka/*' => 'emner/*',
+    );
+    
+    /*
+     * Return the internal variables
      */
     
     public static function getRoutes() {
         return self::$routes;
+    }
+    public static function getProcessors() {
+        return self::$processors;
+    }
+    public static function getRedirects() {
+        return self::$redirects;
     }
 }

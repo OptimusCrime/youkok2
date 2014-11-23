@@ -7,11 +7,9 @@
  * 
 */
 
-//
-// The ArchiceController
-//
+namespace Youkok2\Views;
 
-class ArchiveController extends Youkok2 {
+class Archive extends Youkok2 {
 
     //
     // The constructor for this subclass
