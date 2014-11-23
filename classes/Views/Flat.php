@@ -1,30 +1,32 @@
 <?php
 /*
- * File: flat.controller.php
- * Holds: The FlatController-class
+ * File: Flat.php
+ * Holds: Class for displaying flat files
  * Created: 02.10.13
  * Project: Youkok2
  * 
 */
 
-//
-// The FlatController class
-//
+namespace Youkok2\Views;
 
-class FlatController extends Youkok2 {
+/*
+ * The Flat class, extending Youkok2 base class
+ */
 
-    //
-    // The constructor for this subclass
-    //
+class Flat extends Youkok2 {
 
-    public function __construct($routes) {
+    /*
+     * Constructor
+     */
+
+    public function __construct() {
         // Calling Base' constructor
-        parent::__construct($routes);
+        parent::__construct();
         
         // Check query
         if ($this->queryGet(0) == 'om') {
             // Turn on caching
-            $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+            $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
             
             // Assign header and title
             $this->template->assign('HEADER_MENU', 'ABOUT');
@@ -39,27 +41,27 @@ class FlatController extends Youkok2 {
             $this->template->assign('SITE_TITLE', 'Retningslinjer for Youkok2');
             
             // Fix list for filtypes
-            $mime_types = explode(',', SITE_ACCEPTED_FILETYPES);
+            $mime_types = explode(',', ACCEPTED_FILETYPES);
             $mime_types_string = '';
             foreach ($mime_types as $v) {
                 $mime_types_string .= '<li>' . $v . '</li>';
             }
-            $this->template->assign('SITE_ACCEPTED_FILETYPES', $mime_types_string);
+            $this->template->assign('ACCEPTED_FILETYPES', $mime_types_string);
             
             // Fix list for filendings
-            $endings = explode(',', SITE_ACCEPTED_FILEENDINGS);
+            $endings = explode(',', ACCEPTED_FILEENDINGS);
             $endings_string = '';
             foreach ($endings as $v) {
                 $endings_string .= '<li>.' . $v . '</li>';
             }
-            $this->template->assign('SITE_ACCEPTED_FILEENDINGS', $endings_string);
+            $this->template->assign('ACCEPTED_FILEENDINGS', $endings_string);
             
             // Display the page
             $this->displayAndCleanup('flat_retningslinjer.tpl');
         }
         elseif ($this->queryGet(0) == 'privacy') {
             // Turn on caching
-            $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+            $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
             
             // Assign header and title
             $this->template->assign('HEADER_MENU', null);
@@ -70,7 +72,7 @@ class FlatController extends Youkok2 {
         }
         elseif ($this->queryGet(0) == 'hjelp') {
             // Turn on caching
-            $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+            $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
             
             // Assign header and title
             $this->template->assign('HEADER_MENU', 'HELP');
@@ -81,7 +83,7 @@ class FlatController extends Youkok2 {
         }
         elseif ($this->queryGet(0) == 'karma') {
             // Turn on caching
-            $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+            $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
             
             // Assign header and title
             $this->template->assign('HEADER_MENU', null);
@@ -109,9 +111,3 @@ class FlatController extends Youkok2 {
         }
     }
 }
-
-//
-// Return the class name
-//
-
-return 'FlatController';
