@@ -1,3 +1,11 @@
+Youkok2 - 1.0.0.-pl (xx. xxxxxxxx, 2014)
+=======================================
+
+- [Info] Komplett omskrivning av hele kildekoden
+- [New] Systemet er nå skrevet komplett om til å bruke autoloader og namespaces.
+- [New] Systemet blir nå testet av PHPUnit.
+- [Enchanced] Velkomstsiden er endre litt.
+
 Youkok2 - 0.4.0.-pl (13. oktober, 2014)
 =======================================
 
@@ -6,7 +14,7 @@ Youkok2 - 0.4.0.-pl (13. oktober, 2014)
 - [Fixed] Metode som grupperte nedlastninger på tid var helt feil.
 - [Fixed] Man hadde muligheten til å favoritisere noe selv om man ikke var logget inn.
 - [Enchanced] Norske navn på Highcharts grafen.
-- [Enhanced] Når man logger inn returneres man nå til siden man var på.
+- [Enchanced] Når man logger inn returneres man nå til siden man var på.
 
 Youkok2 - 0.3.1.-pl (29. september, 2014)
 =========================================
