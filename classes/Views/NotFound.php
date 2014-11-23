@@ -7,11 +7,18 @@
  * 
 */
 
+namespace Youkok2\Views;
+
+debug_print_backtrace();
+die();
+
 //
 // NotfoundController handles 404
 //
 
-class NotfoundController extends Youkok2 {
+
+
+class NotFound extends Youkok2 {
 
     //
     // The constructor for this subclass
@@ -35,9 +42,3 @@ class NotfoundController extends Youkok2 {
         $this->displayAndCleanup('404.tpl');
     }
 }
-
-//
-// Return the class name
-//
-
-return 'NotFoundController';

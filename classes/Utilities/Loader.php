@@ -17,35 +17,72 @@ class Loader {
     /*
      * Constructor
      */
+    
+    private $basePath;
+    private $fullPath;
 
     public function __construct() {
-        // Checking wether the path is set or not
-        if (isset($_GET['q'])) {
-            // We have a path, find the base-path to include the correct script
-            if (strpos($_GET['q'], '/') !== false) {
-                // We have multiple slashed, use the first one as base for path-lookup
-                $path_split = explode('/', $_GET['q']);
-                $path = '/' . $path_split[0];
-            }
-            else {
-                // We don't have any slashes in the url, use what we got
-                $path = '/' . str_replace('/', '', $_GET['q']);
-            }
-        } else {
-            // Clean path, use a single slash to identify home-page
-            $path = '/';
+        // Get the base path (/[something])
+        $this->getBasePath();
+        
+        // Check if proseccor or view is requested
+        if ($this->basePath == Routes::PROSECESSOR) {
+            // Get processor
+            $this->getProcessor();
         }
-
-        // Storing the namespace for the view to call
-        $view = '\Youkok2\Views\\';
-
+        else {
+            $this->getView();
+        }
+    }
+    
+    /*
+     * Returns processor
+     */
+    
+    private function getProcessor() {
+        // Trim the fullPath
+        $this->fullPath = str_replace(Routes::PROSECESSOR, '', $this->fullPath);
+        
         // Loop the path-array and find what view to load
-        $routes = Routes::getRoutes();
         $found = false;
+        $routes = Routes::getProcessors();
+        $processor = '\Youkok2\Processors\\';
         
         foreach ($routes as $k => $v) {
             foreach ($v as $iv) {
-                if ($iv == $path) {
+                if ($iv == $this->fullPath) {
+                    // We found matching url-pattern, store name
+                    $processor .= $k;
+                    $found = true;
+                    break;
+                }
+            }
+        }
+        
+        // If not found, return 500 error if not
+        if (!$found) {
+            // Return 500 error
+            $processor .= 'NotFound';
+        }
+        
+        // Run instance
+        new $processor();
+    }
+    
+    /*
+     * Returns view
+     */
+    
+    private function getView() {
+        // Loop the path-array and find what view to load
+        $found = false;
+        $view = '\Youkok2\Views\\';
+        $routes = Routes::getRoutes();
+        
+        // Loop the routes
+        foreach ($routes as $k => $v) {
+            foreach ($v as $iv) {
+                if ($iv == $this->basePath) {
                     // We found matching url-pattern, store name
                     $view .= $k;
                     $found = true;
@@ -54,12 +91,67 @@ class Loader {
             }
         }
         
-        // Check to see if we actually found a route
+        // If not found, display 404 view
         if (!$found) {
+            // Array with regex expressions
+            $regexes = array(
+                '/' => '\/', 
+                '*' => '(.*)'
+            );
+            
+            // Check if should be redirected
+            $redirects = Routes::getRedirects();
+            
+            // Loop all redirects
+            foreach ($redirects as $k => $v) {
+                // Build regex patthern
+                $regex = '/^' . str_replace(array_keys($regexes), $regexes, $k) . '/i';
+                
+                // Test regex
+                if (preg_match_all($regex, $this->fullPath, $matches)) {
+                    $redirect_url = URL_FULL . substr(str_replace('*', $matches[0][0], $v), 1);
+                    
+                    // Send redirect
+                    header('HTTP/1.1 301 Moved Permanently'); 
+                    header('Location: ' . $redirect_url);
+                    
+                    // Kill
+                    exit();
+                }
+            }
+            
+            // If we got this far, we never found a match
             $view .= 'NotFound';
+            new $view();
         }
-
-        // Run instance
-        new $view();
+        else {
+            // Run instance
+            new $view();
+        }
+    }
+    
+    /*
+     * Returns the base path for the request
+     */
+    
+    private function getBasePath() {
+        // Checking wether the path is set or not
+        if (isset($_GET['q'])) {
+            // Store the paths first
+            $this->basePath = '/' . $_GET['q'];
+            $this->fullPath = '/' . $_GET['q'];
+            
+            // We have a path, find the base-path to include the correct script
+            if (strpos($_GET['q'], '/') !== false) {
+                // We have multiple slashed, use the first one as base for path-lookup
+                $path_split = explode('/', $_GET['q']);
+                $this->basePath = '/' . $path_split[0];
+            }
+        }
+        else {
+            // Store full path
+            $this->basePath = '/';
+            $this->fullPath = '/';
+        }
     }
 }

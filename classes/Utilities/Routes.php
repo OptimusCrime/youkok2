@@ -21,6 +21,7 @@ class Routes {
     const ARCHIVE = '/emner';
     const DOWNLOAD = '/last-ned';
     const REDIRECT = '/redirect';
+    const PROSECESSOR = '/processor';
     
     private static $routes = array(
         'Home' => array(
@@ -93,7 +94,7 @@ class Routes {
      */
     
     private static $redirects = array(
-        'kokeboka/*' => 'emner/*',
+        '/kokeboka*' => '/emner*',
     );
     
     /*
