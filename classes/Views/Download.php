@@ -1,21 +1,28 @@
 <?php
 /*
- * File: download.controller.php
- * Holds: The DownloadController-class
+ * File: Download.php
+ * Holds: Downloading one or a collection of elements
  * Created: 02.10.13
  * Project: Youkok2
  * 
 */
 
-//
-// The DownloadController class
-//
+namespace Youkok2\Views;
 
-class DownloadController extends Youkok2 {
+use \Youkok2\Collections\ElementCollection as ElementCollection;
+use \Youkok2\Models\Me as Me;
+use \Youkok2\Shared\Elements as Elements;
+use \Youkok2\Utilities\Database as Database;
 
-    //
-    // The constructor for this subclass
-    //
+/*
+ * The Download class, extending Youkok2 base class
+ */
+
+class Download extends Youkok2 {
+
+    /*
+     * Constructor
+     */
 
     public function __construct($routes) {
         // Calling Base' constructor
@@ -25,7 +32,7 @@ class DownloadController extends Youkok2 {
         $should_display_404 = false;
 
         // Create new object
-        $item = new Item($this);
+        $item = new Element($this);
         $item->setLoadFullLocation(true);
         $item->setLoadRootParent(true);
         $item->createByUrl($this->queryGetClean());
@@ -187,9 +194,3 @@ class DownloadController extends Youkok2 {
         exit;
     }
 }
-
-//
-// Return the class name
-//
-
-return 'DownloadController';

@@ -1,7 +1,7 @@
 <?php
 /*
- * File: home.controller.php
- * Holds: The HomeController-class
+ * File: Home.php
+ * Holds: The frontpage
  * Created: 02.10.13
  * Project: Youkok2
 */
@@ -13,32 +13,30 @@ use \Youkok2\Models\Me as Me;
 use \Youkok2\Shared\Elements as Elements;
 use \Youkok2\Utilities\Database as Database;
 
+/*
+ * The Home class, extending Youkok2 base class
+ */
+
 class Home extends Youkok2 {
 
-    //
-    // The constructor for this subclass
-    //
+    /*
+     * Constructor
+     */
 
     public function __construct($kill = false) {
-        // Calling Base' constructor
         parent::__construct();
         
-        // Load newest files
+        // Load default boxes
         $this->template->assign('HOME_NEWEST', Elements::getNewest());
-        
-        // Load most popular files
         $this->template->assign('HOME_MOST_POPULAR', Elements::getMostPopular());
         
         // Check if this user is logged in
         if (Me::isLoggedIn()) {
-            $this->template->assign('HOME_INFOBOX', null);
             //$this->template->assign('HOME_USER_LATEST', $this->loadLastDownloads());
             $this->template->assign('HOME_USER_FAVORITES', Elements::getFavorites());
         }
         else {
             $this->template->assign('HOME_INFOBOX', $this->loadInfobox());
-            $this->template->assign('HOME_USER_LATEST', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
-            $this->template->assign('HOME_USER_FAVORITES', '<li class="list-group-item"><em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em></li>');
         }
         
         // Assign other stuff
@@ -148,12 +146,6 @@ class Home extends Youkok2 {
         $get_dowload_number_result = $get_download_number_query->fetch(\PDO::FETCH_ASSOC);
         
         // Return text
-        return '<h1>Hei og velkommen til Youkok2. Den beste kokeboka på nettet!</h1><p>Vi har for tiden <b>' . number_format($get_user_number_result['antall_brukere']) . '</b> registrerte brukere, <b>' . number_format($get_file_number_result['antall_filer']) . '</b> filer og totalt <b>' . number_format($get_dowload_number_result['antall_nedlastninger']) . '</b> nedlastninger i vårt system.</p><p>Som registrerte brukere på Youkok2 får mulighet til å lagre favoritter, se sine siste nedlastninger, samt muligheten til å laste opp filer og å bidra til å gjøre Youkok2 enda bedre. Du kan lese mer om dette i <a href="om">om-seksjonen</a> vår.</p><p>La oss gjøre studiehverdagen enklere, sammen!</p><p>- Youkok2</p>';
+        return '<p>Vi har for tiden <b>' . number_format($get_user_number_result['antall_brukere']) . '</b> registrerte brukere, <b>' . number_format($get_file_number_result['antall_filer']) . '</b> filer og totalt <b>' . number_format($get_dowload_number_result['antall_nedlastninger']) . '</b> nedlastninger i vårt system.</p>';
     }
 }
-
-//
-// Return the class name
-//
-
-return 'HomeController';
