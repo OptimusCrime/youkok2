@@ -1,7 +1,7 @@
 <?php
 /*
- * File: notfound.controller.php
- * Holds: The NotfoundController-class that returns 404 error-message to the user
+ * File: NotFound.php
+ * Holds: Returns 404 error if the view was not found
  * Created: 02.10.13
  * Project: Youkok2
  * 
@@ -9,24 +9,19 @@
 
 namespace Youkok2\Views;
 
-debug_print_backtrace();
-die();
-
-//
-// NotfoundController handles 404
-//
-
-
+/*
+ * The NotFound class, extending Youkok2 base class
+ */
 
 class NotFound extends Youkok2 {
 
-    //
-    // The constructor for this subclass
-    //
+    /*
+     * Constructor
+     */
 
-    public function __construct($routes) {
+    public function __construct() {
         // Calling Base' constructor
-        parent::__construct($routes);
+        parent::__construct();
         
         // Set 404 header
         header('HTTP/1.0 404 Not Found');
@@ -35,7 +30,7 @@ class NotFound extends Youkok2 {
         $this->template->assign('HEADER_MENU', null);
         
         // Turn on caching
-        $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+        $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
 
         // Display template
         $this->template->assign('SITE_TITLE', 'Siden ble ikke funnet');
