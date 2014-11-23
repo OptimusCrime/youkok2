@@ -145,10 +145,12 @@ class ElementController {
                 // Check that the field exists as a property/attribute in this class
                 if (method_exists('\Youkok2\Models\Element', $k_actual)) {
                     // Check if Course
-                    if ($k == 'course' and $v != null and strlen($v) > 0) {
-                        $course_obj = new Course();
-                        $course_obj->createById($v);
-                        $this->model->setCourse($course_obj);
+                    if ($k == 'course') {
+                         if ($v != null and strlen($v) > 0) {
+                            $course_obj = new Course();
+                            $course_obj->createById($v);
+                            $this->model->setCourse($course_obj);
+                         }
                     }
                     else {
                         // Set value
@@ -248,7 +250,6 @@ class ElementController {
 
                 // Check if we should cache this Item
                 if ($this->cache) {
-                    // TODO
                     CacheManager::setCache($id, 'i', $this->cacheFormat());
                 }
             }
@@ -740,14 +741,24 @@ class ElementController {
 
     private function cacheFormat() {
         $cache_temp = array();
-        $fields = array('getName', 'isDirectory', 'getUrlFriendly', 'getParent', 'getMimeType', 'getMissingImage', 
+        $fields = array('getId', 'getName', 'isDirectory', 'getUrlFriendly', 'getParent', 'getMimeType', 'getMissingImage', 
                         'isAccepted', 'isVisible', 'getLocation', 'getAdded', 'getSize', 'getCourse', 'getUrl');
         
         // Loop each field
         foreach ($fields as $v) {
-            $v_pretty = strtolower(str_replace(array('get', 'is'), '', $v));
+            $v_pretty = strtolower(str_replace(array('get', 'is'), '', $v, $count));
+            
+            if ($count > 1) {
+                $v_pretty = strtolower(str_replace('get', '', $v));
+            }
+            
             if (method_exists('\Youkok2\Models\Element', $v)) {
-                $cache_temp[] = "'" . $v_pretty . "' => '" . addslashes(call_user_func(array($this->model, $v))) . "'";
+                if ($v == 'getCourse' and $this->hasCourse() == true) {
+                    $cache_temp[] = "'" . $v_pretty . "' => '" . addslashes($this->model->getCourse()->getId()) . "'";
+                }
+                else {
+                    $cache_temp[] = "'" . $v_pretty . "' => '" . addslashes(call_user_func(array($this->model, $v))) . "'";
+                }
             }
         }
         
