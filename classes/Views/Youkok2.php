@@ -28,8 +28,6 @@ class Youkok2 {
     public $template;
     
     // Some private variables for debugging and development
-    private $startTime;
-    private $endTime;
     private $sqlLog;
     private $query;
     
@@ -38,9 +36,6 @@ class Youkok2 {
      */
 
     public function __construct($kill = false) {
-        // Store start time
-        $this->startTime = microtime(true);
-        
         // Starting session, if not already started
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -286,9 +281,9 @@ class Youkok2 {
         // TODOD
         
         // Display load time
-        $this->endTime = microtime(true);
-        $microtime_calc = round((($this->endTime - $this->startTime)*1000), 4);
-        $this->template->assign('DEV_TIME', $microtime_calc);
+        $time = \PHP_Timer::stop();
+        //$microtime_calc = round((($this->endTime - $this->startTime)*1000), 4);
+        $this->template->assign('TIMER', \PHP_Timer::secondsToTimeString($time));
         
         // Call Smarty
         $this->template->display($template, $sid);

@@ -47,6 +47,12 @@ spl_autoload_register(function ($class) {
 });
 
 /*
+ * Start timing
+ */
+
+\PHP_Timer::start();
+
+/*
  * Set debug options
  */
 
