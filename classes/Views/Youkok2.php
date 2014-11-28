@@ -167,18 +167,6 @@ class Youkok2 {
     }
 
     //
-    // Method for redirecting
-    //
-
-    public function redirect($p) {
-        // Close first
-        $this->close();
-
-        // Redirect
-        header('Location: ' . URL_FULL . $p);
-    }
-
-    //
     // Method for displaying message
     //
 

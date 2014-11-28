@@ -9,10 +9,7 @@
 
 namespace Youkok2\Views;
 
-use \Youkok2\Collections\ElementCollection as ElementCollection;
-use \Youkok2\Models\Me as Me;
-use \Youkok2\Shared\Elements as Elements;
-use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Models\Element as Element;
 
 /*
  * The Download class, extending Youkok2 base class
@@ -32,17 +29,18 @@ class Download extends Youkok2 {
         $should_display_404 = false;
 
         // Create new object
-        $item = new Element($this);
-        $item->setLoadFullLocation(true);
-        $item->setLoadRootParent(true);
-        $item->createByUrl($this->queryGetClean());
+        $item = new Element();
+        $item->controller->setLoadFullLocation(true);
+        $item->controller->setLoadRootParent(true);
+        $item->controller->createByUrl($this->queryGetClean());
 
         // Check if was found or invalid url
-        if ($item->wasFound()) {
+        if ($item->controller->wasFound()) {
             // Check if visible
             if ($item->isVisible()) {
-                $file_location = FILE_ROOT . '/' . $item->getFullLocation();
                 
+                $file_location = FILE_PATH . '/' . $item->controller->getFullLocation();
+                die($file_location);
                 // Check if zip download or not
                 if ($item->isDirectory()) {
                     if (is_dir($file_location)) {
@@ -54,14 +52,14 @@ class Download extends Youkok2 {
                             // Create array with locations
                             $files_archive = array();
                             foreach ($files as $v) {
-                                $files_archive[] = array('file' => FILE_ROOT . $v->getFullLocation(),
+                                $files_archive[] = array('file' => FILE_PATH . $v->getFullLocation(),
                                                          'name' => $v->getName());
                             }
                             
                             
                             
                             // Create zip archive
-                            $file = tempnam(FILE_ROOT . '/tmp', 'zip');
+                            $file = tempnam(FILE_PATH . '/tmp', 'zip');
                             
                             $zip = new ZipArchive;
                             $res = $zip->open($file, ZipArchive::CREATE);
@@ -108,7 +106,7 @@ class Download extends Youkok2 {
                         // Check if we should log download
                         if (!isset($_GET['donotlogthisdownload'])) {
                             // Log download
-                            $item->addDownload();
+                            //$item->addDownload();
                         }
     
                         // Check if we should return fake http response to facebook crawler

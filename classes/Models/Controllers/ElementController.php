@@ -746,10 +746,11 @@ class ElementController {
         
         // Loop each field
         foreach ($fields as $v) {
-            $v_pretty = strtolower(str_replace(array('get', 'is'), '', $v, $count));
-            
-            if ($count > 1) {
-                $v_pretty = strtolower(str_replace('get', '', $v));
+            if (substr($v, 0, 3) == 'get') {
+                $v_pretty = strtolower(substr($v, 3));
+            }
+            else {
+                $v_pretty = strtolower(substr($v, 2));
             }
             
             if (method_exists('\Youkok2\Models\Element', $v)) {

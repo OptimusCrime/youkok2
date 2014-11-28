@@ -12,7 +12,8 @@ namespace Youkok2\Models;
  * Define what classes to use
  */
 
-use Youkok2\Utilities\Database;
+use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
  * The class Me, called statically
@@ -182,5 +183,97 @@ class Me {
         
         // Return entire list of elements
         return self::$favorites;
+    }
+
+    /*
+     * Login
+     */
+
+    public static function logIn() {
+        //
+    }
+
+    /*
+     * Logout
+     */
+
+    public static function logOut() {
+        // Check if logged in
+        if (!self::isLoggedIn()) {
+            // Okey
+            if (isset($_POST['login-email']) and isset($_POST['login-pw'])) {
+                // Try to fetch email
+                $get_login_user = "SELECT id, email, salt, password
+                FROM user
+                WHERE email = :email";
+
+                $get_login_user_query = Database::$db->prepare($get_login_user);
+                $get_login_user_query->execute(array(':email' => $_POST['login-email']));
+                $row = $get_login_user_query->fetch(\PDO::FETCH_ASSOC);
+
+                // Check result
+                if (isset($row['id'])) {
+                    // Try to match password
+                    $hash = Utilities::hashPassword($_POST['login-pw'], $row['salt']);
+
+                    // Try to match with password from the database
+                    if ($hash === $row['password']) {
+                        // Check remember me
+                        if (isset($_POST['login-remember']) and $_POST['login-remember'] == 'pizza') {
+                            $remember_me = true;
+                        }
+                        else {
+                            $remember_me = true;
+                        }
+
+                        // Set login
+                        self::setLogin($hash, $_POST['login-email'], $remember_me);
+
+                        // Add message
+                        $this->controller->addMessage('Du er nå logget inn.', 'success');
+
+                        // Check if we should redirect the user back to the previous page
+                        if (strstr($_SERVER['HTTP_REFERER'], SITE_URL) !== false) {
+                            // Has referer, remove base
+                            $clean_referer = str_replace(SITE_URL_FULL, '', $_SERVER['HTTP_REFERER']);
+
+                            // Check if anything left
+                            if (strlen($clean_referer) > 0) {
+                                // Refirect to whatever we have left
+                                Redirect::send($clean_referer);
+                            }
+                            else {
+                                // Send to frontpage
+                                Redirect::send('');
+                            }
+                        }
+                        else {
+                            // Does not have referer
+                            Redirect::send('');
+                        }
+                    }
+                    else {
+                        // Message
+                        $this->controller->addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+
+                        $_SESSION['login_correct_email'] = $row['email'];
+
+                        Redirect::send('logg-inn');
+                    }
+                }
+                else {
+                    // Message
+                    $this->controller->addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+
+                    // Display
+                    Redirect::send('logg-inn');
+                }
+            }
+            else {
+                // Not submitted or anything, just redirect
+                Redirect::send('');
+            }
+        }
+    }
     }
 }

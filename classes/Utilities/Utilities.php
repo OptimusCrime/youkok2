@@ -11,9 +11,9 @@ namespace Youkok2\Utilities;
 
 class Utilities {
 
-    //
-    // Prettify dates
-    //
+    /*
+     * Prettify SQL dates
+     */
     
     public static function prettifySQLDate($d, $include_time = true) {
         $norwegian_months = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
@@ -24,9 +24,9 @@ class Utilities {
         return (int) $split2[2] . '. ' . $norwegian_months[$split2[1] - 1] . ' ' . $split2[0] . ($include_time ? (' @ ' . $split1[1]) : '');
     }
 
-    //
-    // Generic method for generating SEO friendly urls and directory names
-    //
+    /*
+     * Generate URL friendly
+     */
 
     public static function generateUrlFriendly($s, $for_url = false) {
         // Replace first here to keep "norwegian" names in a way
@@ -49,9 +49,9 @@ class Utilities {
         return $s;
     }
     
-    //
-    // Because simple hash is too simple!
-    //
+    /*
+     * Change up the password a bit
+     */
 
     public static function passwordFuckup($s) {
         // Split the hash
@@ -64,9 +64,9 @@ class Utilities {
         return $splits[0] . $splits[1] . 'kebab' . $splits[3] . md5('ingrid vold') . 'hslee' . $splits[2] . 'yolo';
     }
     
-    //
-    // Prettyfi filesizes
-    //
+    /*
+     * Prettify file size
+     */
     
     public static function prettifyFilesize($z) {
         $bytes = $z;
