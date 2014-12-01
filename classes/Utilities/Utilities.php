@@ -68,16 +68,34 @@ class Utilities {
      * Prettify file size
      */
     
-    public static function prettifyFilesize($z) {
-        $bytes = $z;
+    public static function prettifyFilesize($bytes) {
         if ($bytes > 0) {
             $unit = intval(log($bytes, 1024));
             $units = array('B', 'kB', 'MB', 'GB');
 
             if (array_key_exists($unit, $units) === true) {
-            return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);
+                return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);
             }
         }
+        
+        // Return pretty filesize
         return $bytes;
+    }
+    
+    /*
+     * Hashing a password
+     */
+    
+    public static function hashPassword($pass, $salt, $hard = true) {
+        // Create hash
+        $hash = password_hash($pass, PASSWORD_BCRYPT, array('cost' => 12, 'salt' => $salt));
+        
+        // Check if the hash should be fucked up in addition
+        if ($hard) {
+            $hash = self::passwordFuckup($hash);
+        }
+        
+        // Return hash
+        return $hash;
     }
 }

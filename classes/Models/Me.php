@@ -14,6 +14,8 @@ namespace Youkok2\Models;
 
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
+use \Youkok2\Utilities\MessageManager as MessageManager;
+use \Youkok2\Utilities\Redirect as Redirect;
 
 /*
  * The class Me, called statically
@@ -190,14 +192,6 @@ class Me {
      */
 
     public static function logIn() {
-        //
-    }
-
-    /*
-     * Logout
-     */
-
-    public static function logOut() {
         // Check if logged in
         if (!self::isLoggedIn()) {
             // Okey
@@ -230,12 +224,12 @@ class Me {
                         self::setLogin($hash, $_POST['login-email'], $remember_me);
 
                         // Add message
-                        $this->controller->addMessage('Du er nå logget inn.', 'success');
+                        MessageManager::addMessage('Du er nå logget inn.', 'success');
 
                         // Check if we should redirect the user back to the previous page
-                        if (strstr($_SERVER['HTTP_REFERER'], SITE_URL) !== false) {
+                        if (strstr($_SERVER['HTTP_REFERER'], URL) !== false) {
                             // Has referer, remove base
-                            $clean_referer = str_replace(SITE_URL_FULL, '', $_SERVER['HTTP_REFERER']);
+                            $clean_referer = str_replace(URL_FULL, '', $_SERVER['HTTP_REFERER']);
 
                             // Check if anything left
                             if (strlen($clean_referer) > 0) {
@@ -254,7 +248,7 @@ class Me {
                     }
                     else {
                         // Message
-                        $this->controller->addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+                        MessageManager::addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
 
                         $_SESSION['login_correct_email'] = $row['email'];
 
@@ -263,7 +257,7 @@ class Me {
                 }
                 else {
                     // Message
-                    $this->controller->addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+                    MessageManager::addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
 
                     // Display
                     Redirect::send('logg-inn');
@@ -275,5 +269,33 @@ class Me {
             }
         }
     }
+    
+    /*
+     * Set the login information
+     */
+    
+    public static function setLogin($hash, $email, $cookie = false) {
+        // Remove old login (just in case)
+        unset($_SESSION['youkok2']);
+        
+        // Unset the cookie
+        setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+        
+        // Set new login
+        $strg = $email . 'asdkashdsajheeeeehehdffhaaaewwaddaaawww' . $hash;
+        if ($cookie) {
+            setcookie('youkok2', $strg, time() + (60 * 60 * 24 * 31), '/');
+        }
+        else {
+            $_SESSION['youkok2'] = $strg;
+        }
+    }
+
+    /*
+     * Logout
+     */
+
+    public static function logOut() {
+        //
     }
 }

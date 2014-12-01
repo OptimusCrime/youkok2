@@ -8,10 +8,15 @@
 
 namespace Youkok2\Views;
 
+/*
+ * Define what classes to use
+ */
+
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Utilities\MessageManager as MessageManager;
 use \Youkok2\Utilities\Routes as Routes;
 
 /*
@@ -24,12 +29,9 @@ class Youkok2 {
      * Internal variables
      */
 
-    // Public pointers
     public $template;
-    
-    // Some private variables for debugging and development
-    private $sqlLog;
     private $query;
+    private $sqlLog;
     
     /*
      * Constructor
@@ -91,12 +93,13 @@ class Youkok2 {
             Me::logIn();
         }
         
+        // Analyze the query
         $this->queryAnalyze();
     }
     
-    //
-    // Methods for analyzing, reading and returning the query
-    //
+    /*
+     * Methods for analyzing, reading and returning the query
+     */
     
     private function queryAnalyze() {
         // Init array
@@ -116,17 +119,14 @@ class Youkok2 {
             }
         }
     }
-    
     protected function queryGetSize() {
         return count($this->query);
     }
-
     protected function queryGet($i, $prefix = '', $endfix = '') {
         if (count($this->query) >= $i) {
             return $prefix . $this->query[$i] . $endfix;
         }
     }
-
     protected function queryGetAll() {
         if (isset($_GET['q'])) {
             return $_GET['q'];
@@ -135,7 +135,6 @@ class Youkok2 {
             return null;
         }
     }
-
     protected function queryGetClean($prefix = '', $endfix = '') {
         if (count($this->query) > 0) {
             return $prefix . implode('/', $this->query) . $endfix;
@@ -145,18 +144,18 @@ class Youkok2 {
         }
     }
     
-    //
-    // Returning an 404-page
-    //
+    /*
+     * Returning 404 page
+     */
     
     protected function display404() {
         // New instance
         $controller = new NotFound();
     }
     
-    //
-    // Close the database-connection and process queued cache
-    //
+    /*
+     * Close the database-connection and process queued cache
+     */
     
     protected function close() {
         // Process cache
@@ -166,58 +165,61 @@ class Youkok2 {
         Database::close();
     }
 
-    //
-    // Method for displaying message
-    //
+    /*
+     * Display message (if any)
+     */
 
     private function showMessages() {
         // Keep the string here
         $ret = '';
         
-        // Check for files
-        if (isset($_SESSION['youkok2_files']) and count($_SESSION['youkok2_files']) > 0) {
-            $file_msg = '';
+        // Check if any message was found
+        if (MessageManager::hasMessages()) {
+            // Check for files
+            if (isset($_SESSION['youkok2_files']) and count($_SESSION['youkok2_files']) > 0) {
+                $file_msg = '';
 
-            // Loop all files and make the message "pretty"
-            foreach ($_SESSION['youkok2_files'] as $k => $v) {
-                if (count($_SESSION['youkok2_files']) == 1) {
-                    $file_msg .= $v;
-                }
-                else if (count($_SESSION['youkok2_files']) == 2 and $k == 1) {
-                    $file_msg .= ' og ' . $v;
-                }
-                else {
-                    if ((count($_SESSION['youkok2_files']) - 1) == $k) {
+                // Loop all files and make the message "pretty"
+                foreach ($_SESSION['youkok2_files'] as $k => $v) {
+                    if (count($_SESSION['youkok2_files']) == 1) {
+                        $file_msg .= $v;
+                    }
+                    else if (count($_SESSION['youkok2_files']) == 2 and $k == 1) {
                         $file_msg .= ' og ' . $v;
                     }
                     else {
-                        $file_msg .= ', ' . $v;
+                        if ((count($_SESSION['youkok2_files']) - 1) == $k) {
+                            $file_msg .= ' og ' . $v;
+                        }
+                        else {
+                            $file_msg .= ', ' . $v;
+                        }
                     }
                 }
+                
+                // Remove the ugly part
+                if (count($_SESSION['youkok2_files']) > 1) {
+                    $file_msg = substr($file_msg, 2);
+                }
+                
+                // Build final string
+                $ret .= '<div class="alert alert-success">' . $file_msg . ' ble lagt til. '
+                      . 'Takk for ditt bidrag!<div class="alert-close"><i class="fa fa-times"></i></div></div>';
+                
+                // Unset the session variable
+                unset($_SESSION['youkok2_files']);
             }
             
-            // Remove the ugly part
-            if (count($_SESSION['youkok2_files']) > 1) {
-                $file_msg = substr($file_msg, 2);
+            // Check for normal messages
+            if (isset($_SESSION['youkok2_message']) and count($_SESSION['youkok2_message']) > 0) {
+                foreach ($_SESSION['youkok2_message'] as $v) {
+                    $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text']
+                          . '<div class="alert-close"><i class="fa fa-times"></i></div></div>';
+                }
+                
+                // Unset the session variable
+                unset($_SESSION['youkok2_message']);
             }
-            
-            // Build final string
-            $ret .= '<div class="alert alert-success">' . $file_msg . ' ble lagt til. '
-                  . 'Takk for ditt bidrag!<div class="alert-close"><i class="fa fa-times"></i></div></div>';
-            
-            // Unset the session variable
-            unset($_SESSION['youkok2_files']);
-        }
-        
-        // Check for normal messages
-        if (isset($_SESSION['youkok2_message']) and count($_SESSION['youkok2_message']) > 0) {
-            foreach ($_SESSION['youkok2_message'] as $v) {
-                $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text']
-                      . '<div class="alert-close"><i class="fa fa-times"></i></div></div>';
-            }
-            
-            // Unset the session variable
-            unset($_SESSION['youkok2_message']);
         }
         
         // Check if any message was found
@@ -228,26 +230,10 @@ class Youkok2 {
             $this->template->assign('SITE_MESSAGES', null);
         }
     }
-
-    public function addMessage($text, $type) {
-        if (!isset($_SESSION['youkok2_message'])) {
-            $_SESSION['youkok2_message'] = array();
-        }
-        
-        $_SESSION['youkok2_message'][] = array('text' => $text, 'type' => $type);
-    }
     
-    protected function addFileMessage($name) {
-        if (!isset($_SESSION['youkok2_files'])) {
-            $_SESSION['youkok2_files'] = array();
-        }
-        
-        $_SESSION['youkok2_files'][] = $name;
-    }
-
-    //
-    // Override default display method from Smarty
-    //
+    /*
+     * Override default display method from Smarty
+     */
 
     protected function displayAndCleanup($template, $sid = null) {
         // If develop, assign dev variables
@@ -270,16 +256,15 @@ class Youkok2 {
         
         // Display load time
         $time = \PHP_Timer::stop();
-        //$microtime_calc = round((($this->endTime - $this->startTime)*1000), 4);
         $this->template->assign('TIMER', \PHP_Timer::secondsToTimeString($time));
         
         // Call Smarty
         $this->template->display($template, $sid);
     }
     
-    //
-    // Cleans up the sql log
-    //
+    /*
+     * Clean up SQL log
+     */
     
     private function cleanSqlLog($arr) {
         // Some variables
@@ -333,7 +318,6 @@ class Youkok2 {
         // Return resulting string
         return $str;
     }
-
     private function cleanSqlBacktrace($arr) {
         if (count($arr) > 0) {
             $trace = $arr[0];
