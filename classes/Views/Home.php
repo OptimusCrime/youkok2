@@ -1,12 +1,16 @@
 <?php
 /*
  * File: Home.php
- * Holds: The frontpage
+ * Holds: The frontpage view
  * Created: 02.10.13
  * Project: Youkok2
 */
 
 namespace Youkok2\Views;
+
+/*
+ * Define what classes to use
+ */
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Me as Me;

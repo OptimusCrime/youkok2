@@ -9,6 +9,18 @@
 
 namespace Youkok2;
 
+/*
+ * The base class Youkok2
+ */
+
 class Youkok2 {
-    // TODO
+    
+    /*
+     * Run a processor with a given action
+     */
+    
+    public static function runProcessor($action) {
+        echo 'Running processor ' . $action;
+    }
+    
 }

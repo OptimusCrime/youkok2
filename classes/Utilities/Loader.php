@@ -9,6 +9,12 @@
 namespace Youkok2\Utilities;
 
 /*
+ * Define what classes to use
+ */
+
+use \Youkok2\Youkok2 as Youkok2;
+
+/*
  * The Loader class. Loads the correct view based on the url
  */
 
@@ -41,32 +47,10 @@ class Loader {
     
     private function getProcessor() {
         // Trim the fullPath
-        $this->fullPath = str_replace(Routes::PROSECESSOR, '', $this->fullPath);
+        $action = substr(str_replace(Routes::PROSECESSOR, '', $this->fullPath), 1);
         
-        // Loop the path-array and find what view to load
-        $found = false;
-        $routes = Routes::getProcessors();
-        $processor = '\Youkok2\Processors\\';
-        
-        foreach ($routes as $k => $v) {
-            foreach ($v as $iv) {
-                if ($iv == $this->fullPath) {
-                    // We found matching url-pattern, store name
-                    $processor .= $k;
-                    $found = true;
-                    break;
-                }
-            }
-        }
-        
-        // If not found, return 500 error if not
-        if (!$found) {
-            // Return 500 error
-            $processor .= 'NotFound';
-        }
-        
-        // Run instance
-        new $processor();
+        // Run processor
+        Youkok2::runProcessor($action);
     }
     
     /*
