@@ -11,7 +11,7 @@
 // In case something goes very wrong
 //
 
-class ErrorController extends Youkok2 {
+class ErrorController extends Base {
 
     //
     // The constructor for this subclass

@@ -10,10 +10,10 @@
 namespace Youkok2\Views;
 
 /*
- * The Flat class, extending Youkok2 base class
+ * The Flat class, extending Base class
  */
 
-class Flat extends Youkok2 {
+class Flat extends Base {
 
     /*
      * Constructor

@@ -11,7 +11,7 @@
 // The RedirectController class
 //
 
-class RedirectController extends Youkok2 {
+class RedirectController extends Base {
 
     //
     // The constructor for this subclass

@@ -11,7 +11,7 @@
 // The AdminController class
 //
 
-class AdminController extends Youkok2 {
+class AdminController extends Base {
 
     //
     // The constructor for this subclass

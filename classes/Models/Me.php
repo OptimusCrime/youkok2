@@ -12,6 +12,7 @@ namespace Youkok2\Models;
  * Define what classes to use
  */
 
+use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
 use \Youkok2\Utilities\MessageManager as MessageManager;
@@ -297,5 +298,58 @@ class Me {
 
     public static function logOut() {
         //
+    }
+    
+    /*
+     * Get latest downloads
+     */
+    
+    public static function loadLastDownloads() {
+        // Declear variable for storing content
+        $ret = '';
+        
+        // Load all favorites
+        $get_last_downloads = "SELECT d.file
+        FROM download AS d
+        LEFT JOIN archive AS a ON a.id = d.file
+        WHERE d.user = :user
+        AND a.is_visible = 1
+        AND d.id = (
+            SELECT dd.id
+            FROM download dd
+            WHERE d.file = dd.file
+            ORDER BY dd.downloaded_time
+            DESC LIMIT 1)
+        ORDER BY d.downloaded_time DESC
+        LIMIT 15";
+        
+        $get_last_downloads_query = Database::$db->prepare($get_last_downloads);
+        $get_last_downloads_query->execute(array(':user' => Self::getId()));
+        while ($row = $get_last_downloads_query->fetch(\PDO::FETCH_ASSOC)) {
+            // Get element
+            $element = ElementCollection::get($row['file']);
+
+            // Get file if not cached
+            if ($element == null) {
+                $element = new Element();
+                $element->controller->setLoadRootParent(true);
+                $element->createById($row['file']);
+                ElementCollection::add($element);
+            }
+
+            // Check if valid Element
+            if ($element->controller->wasFound()) {
+                ElementCollection::add($element);
+                $ret .= $element->controller->getFrontpageLink('latestdownloaded');
+            }
+        }
+        
+        // Check if null
+        if ($ret == '') {
+            $ret .= '<li class="list-group-item"><em>Du har ikke lastet ned noen filer enda...</em></li>';
+        }
+
+        // Return the content
+        return $ret;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /*
- * File: youkok2.class.php
- * Holds: The class that all the controllers extends
+ * File: Base.php
+ * Holds: Base view class
  * Created: 02.10.13
  * Project: Youkok2
 */
@@ -12,6 +12,7 @@ namespace Youkok2\Views;
  * Define what classes to use
  */
 
+use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\CacheManager as CacheManager;
@@ -23,7 +24,7 @@ use \Youkok2\Utilities\Routes as Routes;
  * Class that all the controllers extends
  */
 
-class Youkok2 {
+class Base extends Youkok2 {
 
     /*
      * Internal variables

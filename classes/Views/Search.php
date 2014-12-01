@@ -11,7 +11,7 @@
 // The SearchController class
 //
 
-class SearchController extends Youkok2 {
+class SearchController extends Base {
 
     //
     // The constructor for this subclass

@@ -9,7 +9,7 @@
 
 namespace Youkok2\Views;
 
-class Archive extends Youkok2 {
+class Archive extends Base {
 
     //
     // The constructor for this subclass
