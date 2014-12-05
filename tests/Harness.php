@@ -6,8 +6,6 @@
  * Project: Youkok2
 */
 
-namespace Youkok2;
-
 use \Youkok2\Utilities\Database as Database;
 
 /*

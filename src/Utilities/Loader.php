@@ -106,12 +106,10 @@ class Loader {
             
             // If we got this far, we never found a match
             $view .= 'NotFound';
-            new $view();
         }
-        else {
-            // Run instance
-            new $view();
-        }
+        
+        // Run instance
+        new $view();
     }
     
     /*

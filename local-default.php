@@ -6,12 +6,6 @@
  * Project: Youkok2
 */
 
-namespace Youkok2;
-
-/*
- * Settings
-*/
-
 // Version
 if (!defined('VERSION')) {
     define('VERSION', '1.0.0-dev');
