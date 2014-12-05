@@ -6,7 +6,7 @@
 !/_upgrade/
 !/assets/
 !/cache/
-!/classes/
+!/cli/
 !/elements/
 !/files/
 !/migrations/
@@ -14,6 +14,7 @@
 !/templates/
 !/templates_c/
 !/tests/
+!/src/
 
 # But ignore local settings
 local.php
