@@ -38,7 +38,7 @@ class Harness {
         
         // Database
         $this->databaseConnect();
-        $this->databasePopulate();
+        //$this->databasePopulate();
     }
     
     /*
