@@ -45,9 +45,27 @@ class ElementCollection {
      * Return an element, or null, if not found
      */
 
-    public static function get($id) {
-        // Check if found
+    public static function get($id, $flags = null) {
+        // Check if already fetched
         if (!isset(self::$arr[$id])) {
+            // Not fetched, try to load
+            $element = new Element();
+            
+            // Check if we should set flags
+            if ($flags != null) {
+                if (in_array('root', $flags)) {
+                    $element->controller->setLoadRootParent(true);
+                }
+            }
+            
+            // Create element
+            $element->createById($id);
+            
+            // Check if it was found
+            if ($element->controller->wasFound()) {
+                return $element;
+            }
+            
             // Not found
             return null;
         }

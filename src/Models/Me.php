@@ -129,7 +129,13 @@ class Me {
         return self::$loggedIn;
     }
     public static function isAdmin() {
-        return (self::$id == 10000);
+        return self::$id == 10000;
+    }
+    public static function hasKarma() {
+        return self::$karma > 0;
+    }
+    public static function canContribute() {
+        return (self::hasKarma() and !self::isBanned());
     }
     
     /*

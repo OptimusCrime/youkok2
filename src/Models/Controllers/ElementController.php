@@ -371,21 +371,18 @@ class ElementController {
                 $temp_item = ElementCollection::get($temp_id);
                 
                 // Check if already cached, or not
-                if ($temp_item == null) {
-                    // Create new object
-                    $temp_item = new Element();
-                    $temp_item->createById($temp_id);
-                    ElementCollection::add($temp_item);
+                if ($temp_item !== null) {
+                    // Get the url piece
+                    $temp_location[] = $temp_item->getLocation();
+                    
+                    // Update id
+                    $temp_id = $temp_item->getParent();
                 }
-
-                // Get the url piece
-                $temp_location[] = $temp_item->getLocation();
-
-                // Update id
-                $temp_id = $temp_item->getParent();
+                else {
+                    die('500');
+                }
             }
 
-            
             // Reverse array
             $temp_location = array_reverse($temp_location);
 
@@ -635,8 +632,10 @@ class ElementController {
      */
 
     public function isFavorite() {
+        return false;
+        // TODO
         // First, check if logged in
-        if ($this->controller->user != null and $this->controller->user->isLoggedIn()) {
+        if (Me::isLoggedIn()) {
             // Check if fetched
             if ($this->favorite === null) {
                 // Not fetched
@@ -645,10 +644,10 @@ class ElementController {
                 WHERE file = :file
                 AND user = :user";
                 
-                $get_favorite_status_query = $this->controller->db->prepare($get_favorite_status);
-                $get_favorite_status_query->execute(array(':file' => $this->id, 
-                                                          ':user' => $this->controller->user->getId()));
-                $row = $get_favorite_status_query->fetch(PDO::FETCH_ASSOC);
+                $get_favorite_status_query = Database::$db->prepare($get_favorite_status);
+                $get_favorite_status_query->execute(array(':file' => $this->model->getId(), 
+                                                          ':user' => Me::getId()));
+                $row = $get_favorite_status_query->fetch(\PDO::FETCH_ASSOC);
                 
                 // Cache for later
                 if (isset($row['id'])) {
@@ -690,16 +689,10 @@ class ElementController {
                 $temp_element = ElementCollection::get($temp_id);
                 
                 // Check if already cached
-                if ($temp_element == null) {
+                if ($temp_element !== null) {
                     // Create new object
                     $temp_element = new Element();
                     $temp_element->createById($temp_id);
-                    
-                }
-                
-                // Check if was found
-                if ($temp_element->controller->wasFound()) {
-                    ElementCollection::add($temp_element);
                     $temp_id = $temp_element->getParent();
 
                     if ($temp_element->getId() != 1) {
@@ -707,8 +700,7 @@ class ElementController {
                     }
                 }
                 else {
-                    // Omg
-                    break;
+                    die('500');
                 }
             }
             

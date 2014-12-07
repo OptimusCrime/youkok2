@@ -54,20 +54,11 @@ class Elements {
         
         $get_newest_query = Database::$db->query($get_newest);
         while ($row = $get_newest_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Check if cached
-            $element = ElementCollection::get($row['id']);
-            
-            // Not cached, init
-            if ($element == null) {
-                $element = new Element();
-                $element->controller->setLoadRootParent(true);
-                $element->controller->createById($row['id']);
-                
-            }
+            // Get
+            $element = ElementCollection::get($row['id'], array('root'));
 
             // Check if valid Element
-            if ($element->controller->wasFound()) {
-                ElementCollection::add($element);
+            if ($element !== null) {
                 $ret .= $element->controller->getFrontpageLink('added');
             }
         }
@@ -97,20 +88,11 @@ class Elements {
         $get_most_popular_query = Database::$db->prepare($get_most_popular);
         $get_most_popular_query->execute();
         while ($row = $get_most_popular_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Check if cached
-            $element = ElementCollection::get($row['id']);
-            
-            // Not cached, init
-            if ($element == null) {
-                $element = new Element();
-                $element->controller->setLoadRootParent(true);
-                $element->createById($row['id']);
-            }
-            
+            // Get
+            $element = ElementCollection::get($row['id'], array('root'));
+
             // Check if valid Element
-            if ($element->controller->wasFound()) {
-                ElementCollection::add($element);
-                
+            if ($element !== null) {
                 // Set download count
                 $element->controller->setDownloadCount($user_delta, $row['downloaded_times']);
                 
@@ -137,19 +119,11 @@ class Elements {
         if (count($favorites) > 0) {
             $ret = '';
             foreach ($favorites as $favorite) {
-                // Check if cached
+                // Get
                 $element = ElementCollection::get($favorite);
-                
-                // Not cached, init
-                if ($element == null) {
-                    $element = new Element();
-                    $element->createById($favorite);
-                    
-                }
-                
+
                 // Check if valid Element
-                if ($element->controller->wasFound()) {
-                    ElementCollection::add($element);
+                if ($element !== null) {
                     $ret .= $element->controller->getFrontpageLink('favorites');
                 }
             }

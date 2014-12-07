@@ -1,7 +1,7 @@
 <?php
 /*
- * File: archive.controller.php
- * Holds: The ArchiveController-class
+ * File: Archive.php
+ * Holds: Archive view
  * Created: 02.10.13
  * Project: Youkok2
  * 
@@ -9,23 +9,33 @@
 
 namespace Youkok2\Views;
 
+/*
+ * Define what classes to use
+ */
+
+use \Youkok2\Models\Element as Element;
+use \Youkok2\Models\Me as Me;
+use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Utilities\Routes as Routes;
+
+
+/*
+ * The Home class, extending Base class
+ */
+
 class Archive extends Base {
 
-    //
-    // The constructor for this subclass
-    //
+    /*
+     * Constructor
+     */
 
-    public function __construct($routes) {
-        // Calling Base' constructor
-        parent::__construct($routes);
+    public function __construct() {
+        parent::__construct();
         
-        // Displaying 404 or not
-        $should_display_404 = false;
-    
         // Check if base
-        if ($this->queryGetClean('/') == $this->routes['archive'][0]) {
+        if ($this->queryGetClean('/') == Routes::ARCHIVE) {
             // Turn on caching
-            $this->template->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+            $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
         
             // Get title
             $this->template->assign('ARCHIVE_TITLE', '<h1>Kokeboka</h1>');
@@ -39,57 +49,65 @@ class Archive extends Base {
                 // Get breadcrumbs
                 $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Kokeboka</li>');
             }
+            
+            // Display
+            $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
         }
         else {
-            // Create new object
-            $item = new Item($this);
+            // Load the archive
+            $this->loadArchive();
+        }
+    }
+    
+    /*
+     * Load archive for a folder
+     */
+    
+    private function loadArchive() {
+        // Try to create new element
+        $element = new Element();
+        $element->controller->setLoadRootParent(true);
+        $element->createByUrl($this->queryGetClean());
+        
+        // Check if element was found and is directory
+        if ($element->controller->wasFound() and $element->isDirectory()) {
+            // Set archive information to Smarty
+            $this->setArchiveInformation();
             
-            // Decide if we should load favorites
-            if ($this->user->isLoggedIn()) {
-                $item->setLoadFavorite(true);
-            }
+            // Set information related to the Element
+            $this->setElementInformation($element);
             
-            // Create the object
-            $item->createByUrl($this->queryGetClean());
-            
-            // Check if was found or invalid url
-            if ($item->wasFound()) {
-                // Add to collection if new
-                $this->collection->add($item);
-                
-                // Element was found, double check that this is a directory
-                if ($item->isDirectory()) {
-                    // Assign variables we need no matter if the page is cached or not
-                    $this->template->assign('ARCHIVE_ID', $item->getId());
-                    
-                    // User status
-                    $this->template->assign('ARCHIVE_USER_BANNED', $this->user->isBanned());
-                    $this->template->assign('ARCHIVE_USER_HAS_KARMA', $this->user->hasKarma());
-                    $this->template->assign('ARCHIVE_USER_CAN_CONTRIBUTE', $this->user->canContribute());
-                    $this->template->assign('ARCHIVE_USER_ONLINE', $this->user->isLoggedIn());
-                    
-                    // File types
-                    $accepted_filetypes = explode(',', SITE_ACCEPTED_FILETYPES);
-                    $this->template->assign('ARCHIVE_ACCEPTED_FILETYPES', json_encode($accepted_filetypes));
-                    $accepted_fileending = explode(',', SITE_ACCEPTED_FILEENDINGS);
-                    $this->template->assign('ARCHIVE_ACCEPTED_FILEENDINGS', json_encode($accepted_fileending));
-                    
-                    // Get title
-                    $archive_title = '<h1>' . $item->getName() . '</h1>';
-                    if ($item->hasCourse()) {
-                        $archive_title .= '<span> - </span><h2>' . $item->getCourse()->getName() . '</h2>';
-                    }
-                    if ($this->user->isLoggedIn()) {
-                        $archive_title .= ' <i class="fa fa-star archive-heading-star-' . $item->isFavorite() . '" data-archive-id="' . $item->getId() . '" id="archive-heading-star"></i>';
-                    }
-                    
-                    // Description
-                    $item_root = $item->getRootParent();
-                    $site_description = $item_root->getName() . ' - ' . $item_root->getCourse()->getName() . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
-                    
-                    // Assign to Smarty
-                    $this->template->assign('ARCHIVE_TITLE', $archive_title);
-                    $this->template->assign('ARCHIVE_ZIP_DOWNLOAD', $item->generateUrl($this->routes['download'][0]));
+            // Display
+            $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
+        }
+        else {
+            $this->display404();
+        }
+    }
+    
+    /*
+     * Set information needed in the archive view
+     */
+    
+    private function setArchiveInformation() {
+        // Set state
+        $this->template->assign('HEADER_MENU', 'ARCHIVE');
+        
+        // User status
+        $this->template->assign('ARCHIVE_USER_BANNED', Me::isBanned());
+        $this->template->assign('ARCHIVE_USER_HAS_KARMA', Me::hasKarma());
+        $this->template->assign('ARCHIVE_USER_CAN_CONTRIBUTE', Me::canContribute());
+        $this->template->assign('ARCHIVE_USER_ONLINE', Me::isLoggedIn());
+
+        // File types
+        $accepted_filetypes = explode(',', ACCEPTED_FILETYPES);
+        $this->template->assign('ACCEPTED_FILETYPES', json_encode($accepted_filetypes));
+        $accepted_fileending = explode(',', ACCEPTED_FILEENDINGS);
+        $this->template->assign('ACCEPTED_FILEENDINGS', json_encode($accepted_fileending));
+    }
+    
+    /*
+    $this->template->assign('ARCHIVE_ZIP_DOWNLOAD', $item->generateUrl($this->routes['download'][0]));
                     $this->template->assign('ARCHIVE_ZIP_DOWNLOAD_NUM', $item->getChildrenCount(Item::$file));
                     
                     // List every single element that has this element as a parent
@@ -101,28 +119,30 @@ class Archive extends Base {
                     
                     // Add title
                     $this->template->assign('SITE_TITLE', 'Kokeboka :: ' . $this->loadBredcrumbsTitle($item));
-                    $this->template->assign('SITE_DESCRPTION', $site_description);
-                }
-                else {
-                    $should_display_404 = true;
-               }
-            }
-            else {
-                $should_display_404 = true;
-            }
-        }
+                    */
+    
+    /*
+     * Set information related to the Element we are browsing
+     */
+    
+    private function setElementInformation($element) {
+        // Set id
+        $this->template->assign('ARCHIVE_ID', $element->getId());
         
-        // Check if return 404 or not
-        if ($should_display_404) {
-            $this->display404();
+        // Set title
+        $archive_title = '<h1>' . $element->getName() . '</h1>';
+        if ($element->controller->hasCourse()) {
+            $archive_title .= '<span> - </span><h2>' . $element->getCourse()->getName() . '</h2>';
         }
-        else {
-            // Set menu
-            $this->template->assign('HEADER_MENU', 'ARCHIVE');
-
-            // Found (yay), display archive tpl
-            $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
+        if (Me::isLoggedIn()) {
+            $archive_title .= ' <i class="fa fa-star archive-heading-star-' . $element->controller->isFavorite() . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i>';
         }
+        $this->template->assign('ARCHIVE_TITLE', $archive_title);
+        
+        // Metadata
+        $element_root = $element->controller->getRootParent();
+        $site_description = $element_root->getName() . ' - ' . $element_root->getCourse()->getName() . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
+        $this->template->assign('SITE_DESCRPTION', $site_description);           
     }
 
     //
@@ -177,7 +197,7 @@ class Archive extends Base {
     // Method for loading the elements for this archive
     //
 
-    private function loadArchive($id) {
+    private function loadArchivxe($id) {
         $ret = '';
         
         // Loading newest files from the system
@@ -260,16 +280,16 @@ class Archive extends Base {
         return $ret;
     }
 
-    //
-    // Load all the course
-    //
+    /*
+     * Load courses
+     */
 
     private function loadCourses() {
         // Variables are nice
         $ret = '';
         $letter = null;
         $container_is_null = true;
-        $archive_url = substr($this->routes['archive'][0], 1);
+        $archive_url = substr(Routes::ARCHIVE, 1);
         
         // Load all the courses
         $get_all_courses = "SELECT c.code, c.name, a.url_friendly
@@ -278,9 +298,9 @@ class Archive extends Base {
         WHERE a.is_visible = 1
         ORDER BY c.code ASC";
         
-        $get_all_courses_query = $this->db->prepare($get_all_courses);
+        $get_all_courses_query = Database::$db->prepare($get_all_courses);
         $get_all_courses_query->execute();
-        while ($row = $get_all_courses_query->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
             // Store the current letter
             $current_letter = substr($row['code'], 0, 1);
 
@@ -322,9 +342,3 @@ class Archive extends Base {
         return $ret;
     }
 }
-
-//
-// Return the class name
-//
-
-return 'ArchiveController';
