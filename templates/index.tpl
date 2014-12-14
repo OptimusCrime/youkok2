@@ -1,24 +1,36 @@
 [[+include file="header.tpl"]]
 
-[[+if $HOME_INFOBOX != '']]
+<div class="row" id="frontpage-hello">
+    <div class="col-mn-12">
+        <h1>Hei og velkommen til Youkok2</h1>
+        <h3>Den beste kokeboka på nettet!</h3>
+    </div>
+</div>
+
+[[+if $BASE_USER_IS_LOGGED_IN == FALSE]]
     <div class="row" id="frontpage-wellholder">
-        <div class="col-md-9">
-            <div class="well">
-                [[+$HOME_INFOBOX]]
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="well">
-                <h3>Kjappe linker</h3>
-                <a class="login-opener" data-toggle="dropdown" href="logg-inn">Logg inn</a><br />
-                <a href="registrer">Registrer</a><br />
-                <a href="glemt-passord">Glemt passord</a><br />
-                <br />
-                <a href="om">Om</a><br />
-                <a href="retningslinjer">Retningslinjer</a><br />
-                <a href="hjelp">Hjelp</a><br />
-                <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a>
-            </div>
+        <div class="well">
+            <div class="row">
+                <div class="col-md-9">
+                    [[+$HOME_INFOBOX]]
+                    <p>Nettsiden er helt åpen og krever ikke at du registrerer deg for å kunne bruke den.</p>
+                    <p>Om du velger å registrere deg får mulighet til å lagre favoritter, se sine siste nedlastninger, 
+                    samt muligheten til å laste opp filer og å bidra til å gjøre Youkok2 enda bedre. Du kan lese mer om 
+                    dette i <a href="om">om-seksjonen</a> vår.</p><p>La oss gjøre studiehverdagen enklere, sammen!</p>
+                    <p>- Youkok2</p>
+                </div>
+                <div class="col-md-3">
+                    <h3>Kjappe linker</h3>
+                    <a class="login-opener" data-toggle="dropdown" href="logg-inn">Logg inn</a><br />
+                    <a href="registrer">Registrer</a><br />
+                    <a href="glemt-passord">Glemt passord</a><br />
+                    <br />
+                    <a href="om">Om</a><br />
+                    <a href="retningslinjer">Retningslinjer</a><br />
+                    <a href="hjelp">Hjelp</a><br />
+                    <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a>
+                </div>
+             </div>
         </div>
     </div>
 [[+/if]]
@@ -29,7 +41,13 @@
             <h2>Mine favoritter</h2>
         </div>
         <ul class="list-group" id="favorites-list">
-            [[+$HOME_USER_FAVORITES]]
+            [[+if $BASE_USER_IS_LOGGED_IN == true]]
+                [[+$HOME_USER_FAVORITES]]
+            [[+else]]
+                <li class="list-group-item">
+                    <em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em>
+                </li>
+            [[+/if]]
         </ul>
     </div>
     <div class="col-md-6">
@@ -37,7 +55,13 @@
             <h2>Mine siste nedlastninger</h2>
         </div>
         <ul class="list-group">
-            [[+$HOME_USER_LATEST]]
+            [[+if $BASE_USER_IS_LOGGED_IN == true]]
+                [[+$HOME_USER_LATEST]]
+            [[+else]]
+                <li class="list-group-item">
+                    <em><a href="#" data-toggle="dropdown" class="login-opener">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em>
+                </li>
+            [[+/if]]
         </ul>
     </div>
 </div>

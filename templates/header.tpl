@@ -39,7 +39,7 @@
             <div class="navbar-collapse collapse">
                 <ul id="main-nav" class="nav navbar-nav">
                     <li[[+if $HEADER_MENU == 'HOME']] class="active"[[+/if]]><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
-                    <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="kokeboka/">Kokeboka</a></li>
+                    <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="emner/">Emner</a></li>
                     <li class="hidden[[+if $HEADER_MENU == 'SEARCH']] active[[+/if]]"><a href="sok">Søk</a></li>
                     <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om Youkok2</a></li>
                     <li[[+if $HEADER_MENU == 'HELP']] class="active"[[+/if]]><a href="hjelp">Hjelp</a></li>

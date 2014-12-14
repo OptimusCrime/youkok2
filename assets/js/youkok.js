@@ -1476,5 +1476,4 @@ $(document).ready(function () {
             });
         }
     });
-    
 });

@@ -11,12 +11,14 @@
                 <span><a href="privacy">Privacy og så videre</a></span>::
                 <span><a href="hjelp">Hjelp</a></span>::
                 <span><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>::
-                <span class="last">[[+$DEV_TIME]] ms</span>
+                <span class="last">[[+$TIMER]]</span>
             </p>
             [[+nocache]]
                 [[+if $DEV]]
                     <p>
+                        <span>ElementCollection: [[+$DEV_ELEMENT_COLLECTION]]</span> ::
                         <span>Antall queries: [[+$DEV_QUERIES_NUM]]</span> ::
+                        <span>Antall fetches: [[+$DEV_CACHE_LOAD]]</span> ::
                         <span class="last"><a id="toggle-queries" href="#"><span class="nopadd">Vis</span> alle queries</a></span>
                     </p>
                     

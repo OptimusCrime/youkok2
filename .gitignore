@@ -6,16 +6,15 @@
 !/_upgrade/
 !/assets/
 !/cache/
-!/controllers/
+!/cli/
 !/elements/
 !/files/
-!/libs/
-!/mail/
 !/migrations/
-!/processor/
 !/scripts/
 !/templates/
 !/templates_c/
+!/tests/
+!/src/
 
 # But ignore local settings
 local.php
@@ -28,5 +27,4 @@ phinx.yml
 
 # And those fuckings DS_Stores
 .DS_Store
-._.DS_Store
 ._*
