@@ -30,7 +30,7 @@ class Loader {
     public function __construct() {
         // Get the base path (/[something])
         $this->getBasePath();
-        
+
         // Check if proseccor or view is requested
         if ($this->basePath == Routes::PROSECESSOR) {
             // Get processor

@@ -63,6 +63,10 @@ class ElementCollection {
             
             // Check if it was found
             if ($element->controller->wasFound()) {
+                // Add to list
+                self::add($element);
+
+                // Return element
                 return $element;
             }
             
