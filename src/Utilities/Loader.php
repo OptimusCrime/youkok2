@@ -30,7 +30,11 @@ class Loader {
     public function __construct() {
         // Get the base path (/[something])
         $this->getBasePath();
-        
+
+        echo $this->basePath;
+        echo "\n";
+        echo $this->fullPath;
+
         // Check if proseccor or view is requested
         if ($this->basePath == Routes::PROSECESSOR) {
             // Get processor
@@ -118,15 +122,18 @@ class Loader {
     
     private function getBasePath() {
         // Checking wether the path is set or not
-        if (isset($_GET['q'])) {
+
+        $request_path = $this->getRequestPath();
+
+        if (isset($request_path)) {
             // Store the paths first
-            $this->basePath = '/' . $_GET['q'];
-            $this->fullPath = '/' . $_GET['q'];
+            $this->basePath = '/' . $request_path;
+            $this->fullPath = '/' . $request_path;
             
             // We have a path, find the base-path to include the correct script
-            if (strpos($_GET['q'], '/') !== false) {
+            if (strpos($request_path, '/') !== false) {
                 // We have multiple slashed, use the first one as base for path-lookup
-                $path_split = explode('/', $_GET['q']);
+                $path_split = explode('/', $request_path);
                 $this->basePath = '/' . $path_split[0];
             }
         }
@@ -134,6 +141,22 @@ class Loader {
             // Store full path
             $this->basePath = '/';
             $this->fullPath = '/';
+        }
+    }
+
+    /*
+     *  * Get request path
+     */
+
+    private function getRequestPath() {
+        // Check if we are running built in server or apache/nginx
+        if (strpos($_SERVER['SERVER_SOFTWARE'], 'Development Server') !== false) {
+            // PHP built in server
+            return substr($_SERVER['REQUEST_URI'], 1);
+        }
+        else {
+            // Apache/nginx
+            return (isset($_GET['q']) ? $_GET['q'] : '/');
         }
     }
 }
