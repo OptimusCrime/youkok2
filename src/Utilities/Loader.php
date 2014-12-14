@@ -30,11 +30,7 @@ class Loader {
     public function __construct() {
         // Get the base path (/[something])
         $this->getBasePath();
-
-        echo $this->basePath;
-        echo "\n";
-        echo $this->fullPath;
-
+        
         // Check if proseccor or view is requested
         if ($this->basePath == Routes::PROSECESSOR) {
             // Get processor
@@ -123,7 +119,7 @@ class Loader {
     private function getBasePath() {
         // Checking wether the path is set or not
 
-        $request_path = $this->getRequestPath();
+        $request_path = self::getQuery();
 
         if (isset($request_path)) {
             // Store the paths first
@@ -148,7 +144,7 @@ class Loader {
      *  * Get request path
      */
 
-    private function getRequestPath() {
+    public static function getQuery() {
         // Check if we are running built in server or apache/nginx
         if (strpos($_SERVER['SERVER_SOFTWARE'], 'Development Server') !== false) {
             // PHP built in server

@@ -17,6 +17,7 @@ use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Utilities\Loader as Loader;
 use \Youkok2\Utilities\MessageManager as MessageManager;
 use \Youkok2\Utilities\Routes as Routes;
 
@@ -93,7 +94,7 @@ class Base extends Youkok2 {
         if (isset($_POST['login-email'])) {
             Me::logIn();
         }
-        
+
         // Analyze the query
         $this->queryAnalyze();
     }
@@ -107,15 +108,13 @@ class Base extends Youkok2 {
         $this->query = array();
 
         // Split query
-        if (isset($_GET['q'])) {
-            $q = explode('/', $_GET['q']);
+        $q = explode('/', Loader::getQuery());
 
-            // Read fragments
-            if (count($q) > 0) {
-                foreach ($q as $v) {
-                    if (strlen($v) > 0) {
-                        $this->query[] = $v;
-                    }
+        // Read fragments
+        if (count($q) > 0) {
+            foreach ($q as $v) {
+                if (strlen($v) > 0) {
+                    $this->query[] = $v;
                 }
             }
         }
@@ -129,12 +128,7 @@ class Base extends Youkok2 {
         }
     }
     protected function queryGetAll() {
-        if (isset($_GET['q'])) {
-            return $_GET['q'];
-        }
-        else {
-            return null;
-        }
+        return $this->query;
     }
     protected function queryGetClean($prefix = '', $endfix = '') {
         if (count($this->query) > 0) {
