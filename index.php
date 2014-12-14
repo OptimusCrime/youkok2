@@ -13,7 +13,7 @@ header('Content-Type: text/html; charset=utf-8');
  * Include the settings and the autoloader from Composer
  */
 
-require_once dirname(__FILE__) . '/local.php';
+include_once dirname(__FILE__) . '/local.php';
 require_once dirname(__FILE__) . '/local-default.php';
 require_once BASE_PATH . '/vendor/autoload.php';
 
@@ -69,8 +69,20 @@ date_default_timezone_set(TIMEZONE);
  * Check if we should initiate the Loader
  */
 
+$call_loader = false;
 if (get_included_files()[0] == __FILE__) {
     // First element included files array, meaning this file is the file being called, run Loader
+    $call_loader = true;
+}
+else {
+    // Check if running the built in server
+    $boot = explode('/', get_included_files()[0]);
+    if ($boot[count($boot) - 1] == 'route.php') {
+        $call_loader = true;
+    }
+}
+
+if ($call_loader) {
     $loader = new \Youkok2\Utilities\Loader();
 }
 ?>
