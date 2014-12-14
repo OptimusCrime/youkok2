@@ -6,7 +6,7 @@
  * Project: Youkok2
  */
 
-if (preg_match('/\.(?:png|jpg|jpeg|gif|txt|css|js)$/', $_SERVER['REQUEST_URI'])) {
+if (preg_match('/\.(?:png|jpg|jpeg|gif|txt|css|js|woff|tff|)/', $_SERVER['REQUEST_URI'])) {
     // Static request, return as is
     return false;
 }
