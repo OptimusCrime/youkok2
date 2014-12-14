@@ -62,6 +62,11 @@ class Elements {
                 $ret .= $element->controller->getFrontpageLink('added');
             }
         }
+
+        // Check if null
+        if ($ret == '') {
+            $ret = '<li class="list-group-item">Det er visst ingen filer her.</li>';
+        }
         
         // Return the content
         return $ret;
@@ -103,7 +108,7 @@ class Elements {
 
         // Check if null
         if ($ret == '') {
-            $ret = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet!</li>';
+            $ret = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet.</li>';
         }
 
         return $ret;
@@ -129,7 +134,7 @@ class Elements {
             }
             
             if ($ret == '') {
-                $ret = '<li class="list-group-item"><em>Du har ingen favoritter...</em></li>';
+                $ret = '<li class="list-group-item"><em>Du har ingen favoritter</em></li>';
             }
             
             // Return the list
