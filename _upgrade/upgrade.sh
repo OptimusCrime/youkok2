@@ -10,7 +10,7 @@ echo "\n\033[0;33mClearing cache\033[0m \n"
 php "_upgrade/clear_cache.php"
 
 echo "\n\033[0;33mUpdating composer packages\033[0m \n"
-composer update
+php composer.phar update
 
 echo "\n\033[0;33mRunning migrations\033[0m \n"
 php vendor/bin/phinx migrate -e production

@@ -3,6 +3,7 @@
 
 # Except these
 !/_build/
+!/_install/
 !/_upgrade/
 !/assets/
 !/cache/

@@ -1,1 +1,1 @@
-vendor/bin/phpunit -c tests
+php vendor/bin/phpunit -c tests
