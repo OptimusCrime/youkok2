@@ -87,6 +87,9 @@ class Routes {
         'User' => array(
             '/user/save',
         ),
+        'Tasks\\LoadCourses' => array(
+            '/tasks/courses',
+        ),
     );
     
     /*

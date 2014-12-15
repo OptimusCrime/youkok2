@@ -39,7 +39,7 @@ class Youkok2 {
         // Loop the routes
         foreach ($processors as $k => $v) {
             foreach ($v as $iv) {
-                if ($iv == $action) {
+                if ($iv == $action or substr($iv, 1) == $action) {
                     // We found matching url-pattern, store name
                     $processor .= $k;
                     $found = true;
