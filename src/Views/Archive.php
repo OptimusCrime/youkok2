@@ -49,14 +49,17 @@ class Archive extends Base {
                 // Get breadcrumbs
                 $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Kokeboka</li>');
             }
-            
-            // Display
-            $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
         }
         else {
             // Load the archive
             $this->loadArchive();
         }
+        
+        // Set title
+        $this->template->assign('HEADER_MENU', 'ARCHIVE');
+        
+        // Display
+        $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
     }
     
     /*
@@ -76,9 +79,6 @@ class Archive extends Base {
             
             // Set information related to the Element
             $this->setElementInformation($element);
-            
-            // Display
-            $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
         }
         else {
             $this->display404();
