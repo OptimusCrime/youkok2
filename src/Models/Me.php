@@ -303,7 +303,34 @@ class Me {
      */
 
     public static function logOut() {
-        //
+        // Check if logged in
+        if (self::isLoggedIn()) {
+            unset($_SESSION['youkok2']);
+            setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+
+            // Set message
+            MessageManager::addMessage('Du har nå logget ut.', 'success');
+        }
+
+        // Check if we should redirect the user back to the previous page
+        if (strstr($_SERVER['HTTP_REFERER'], URL) !== false) {
+            // Has referer, remove base
+            $clean_referer = str_replace(URL_FULL, '', $_SERVER['HTTP_REFERER']);
+            
+            // Check if anything left
+            if (strlen($clean_referer) > 0) {
+                // Refirect to whatever we have left
+                Redirect::send($clean_referer);
+            }
+            else {
+                // Send to frontpage
+                Redirect::send('');
+            }
+        }
+        else {
+            // Does not have referer
+            Redirect::send('');
+        }
     }
     
     /*

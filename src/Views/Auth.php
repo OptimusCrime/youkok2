@@ -7,19 +7,29 @@
  * 
 */
 
-//
-// The AuthController class
-//
+namespace Youkok2\Views;
 
-class AuthController extends Base {
+/*
+ * Define what classes to use
+ */
+
+use \Youkok2\Models\Me as Me;
+use \Youkok2\Utilities\Redirect as Redirect;
+
+/*
+ * The Flat class, extending Base class
+ */
+
+
+class Auth extends Base {
 
     //
     // The constructor for this subclass
     //
 
-    public function __construct($routes) {
+    public function __construct() {
         // Calling Base' constructor
-        parent::__construct($routes);
+        parent::__construct();
 
         // Reset menu
         $this->template->assign('HEADER_MENU', null);
@@ -27,8 +37,8 @@ class AuthController extends Base {
         // Check query
         if ($this->queryGet(0) == 'logg-inn') {
             // Check if logged in
-            if ($this->user->isLoggedIn()) {
-                $this->redirect('');
+            if (Me::isLoggedIn()) {
+                Redirect::send('');
             }
             else {
                 // Check if submitted
@@ -38,7 +48,7 @@ class AuthController extends Base {
                     $_POST['login-pw'] = $_POST['login2-pw'];
 
                     // Call method
-                    $this->user->logIn();
+                    Me::login();
                 }
                 else {
                     $this->template->assign('SITE_TITLE', 'Logg inn');
@@ -53,16 +63,16 @@ class AuthController extends Base {
             }
         }
         else if ($this->queryGet(0) == 'logg-ut') {
-            if (!$this->user->isLoggedIn()) {
-                $this->redirect('');
+            if (!Me::isLoggedIn()) {
+                Redirect::send('');
             }
             else {
-                $this->user->logOut();
+                Me::logOut();
             }
         }
         else if ($this->queryGet(0) == 'registrer') {
-            if ($this->user->isLoggedIn()) {
-                $this->redirect('');
+            if (Me::isLoggedIn()) {
+                Redirect::send('');
             }
             else {
                 $this->template->assign('SITE_TITLE', 'Registrer');
@@ -70,8 +80,8 @@ class AuthController extends Base {
             }
         }
         else if ($this->queryGet(0) == 'glemt-passord') {
-            if ($this->user->isLoggedIn()) {
-                $this->redirect('');
+            if (Me::isLoggedIn()) {
+                Redirect::send('');
             }
             else {
                 $this->template->assign('SITE_TITLE', 'Glemt passord');
@@ -80,8 +90,8 @@ class AuthController extends Base {
         }
         else if ($this->queryGet(0) == 'nytt-passord') {
             $this->forgottenPasswordNew();
-            if ($this->user->isLoggedIn()) {
-                $this->redirect('');
+            if (Me::isLoggedIn()) {
+                Redirect::send('');
             }
             else {
                 $this->template->assign('SITE_TITLE', 'Nytt passord');
@@ -186,7 +196,7 @@ class AuthController extends Base {
                 // Log in (only session)
                 $this->user->setLogin($hash, $_POST['register-form-email']);
 
-                $this->redirect('');
+                Redirect::send('');
             }
         }
     }
@@ -245,7 +255,7 @@ class AuthController extends Base {
             }
 
             // Redirect back to form
-            $this->redirect('glemt-passord');
+            Redirect::send('glemt-passord');
         }
         else {
             $this->displayAndCleanup('forgotten_password.tpl');
@@ -335,13 +345,7 @@ class AuthController extends Base {
             $this->addMessage('Denne linken er ikke lenger gyldig.', 'danger');
 
             // Redirect
-            $this->redirect('');
+            Redirect::send('');
         }
     }
 }
-
-//
-// Return the class name
-//
-
-return 'AuthController';
