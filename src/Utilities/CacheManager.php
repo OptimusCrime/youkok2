@@ -9,20 +9,24 @@
 
 namespace Youkok2\Utilities;
 
+/*
+ * The CacheManager class
+ */
+
 Class CacheManager {
 
-    //
-    // Some variables
-    //
+    /*
+     * Internal variables
+     */
     
-    private static $cacheArr = array();
+    private static $cacheArr = [];
     private static $currentChecking = null;
     private static $currentContent = null;
     private static $fetches = 0;
     
-    //
-    // Check if Item is cached or not
-    //
+    /*
+     * Check if cached
+     */
 
     public static function isCached($id, $type) {
         // Generate full path for item
@@ -60,9 +64,9 @@ Class CacheManager {
         }
     }
 
-    //
-    // Return cache
-    //
+    /*
+     * Return cache
+     */
 
     public static function getCache($id, $type) {
         // Check if already validated
@@ -82,9 +86,9 @@ Class CacheManager {
         }
     }
 
-    //
-    // Set cache
-    //
+    /*
+     * Set cahce
+     */
 
     public static function setCache($id, $type, $content, $force = false) {
         // Get file name
@@ -113,15 +117,15 @@ Class CacheManager {
         }
         else {
             // Queue storing for later
-            self::$cacheArr[$id . '-' . $type] = array('id' => $id,
-                                                       'type' => $type,
-                                                       'content' => $content);
+            self::$cacheArr[$id . '-' . $type] = ['id' => $id,
+                'type' => $type,
+                'content' => $content];
         }
     }
 
-    //
-    // Delete cache file
-    //
+    /*
+     * Clear cache
+     */
 
     public static function deleteCache($id, $type) {
         // Get file name
@@ -131,9 +135,9 @@ Class CacheManager {
         unlink($file);
     }
 
-    //
-    // Store all cache on disk
-    //
+    /*
+     * Store cache to disk
+     */
 
     public static function store() {
         // Check if we got something queued
@@ -144,58 +148,57 @@ Class CacheManager {
             }
 
             // Clear array
-            self::$cacheArr = array();
+            self::$cacheArr = [];
         }
     }
 
-    //
-    // Private method for evaling and removing php-tags from the file
-    //
+    /*
+     * Private method for evaling and removing php-tags from the file
+     */
 
     private static function evalAndClean($c) {
-        return eval(str_replace(array('<?php', '?>'), '', $c));
+        return eval(str_replace(['<?php', '?>'], '', $c));
     }
 
-    //
-    // Private method for generating hashes used by the cache
-    //
+    /*
+     * Private method for generating hashes used by the cache
+     */
 
     private static function getFileName($id, $type) {
         $hash = self::getHash($id, $type);
         return BASE_PATH . '/cache/elements/' . substr($hash, 0, 1) . '/' . substr($hash, 1, 1) . '/' . $hash . '_' . $type . '_' . $id . '_c.php';
     }
 
-    //
-    // Private method that returns that hash
-    //
+    /*
+     * Private method that returns that hash
+     */
 
     private static function getHash($id, $type) {
         return substr(md5('lorem ' . $type . ' ipsum' . $id . md5($id)), 0, 22);
     }
-
-
-    //
-    // Loading cache for typeahad
-    //
-    // TODO
+    
+    /*
+     * Returns the cache tiemstamp for typeahad
+     */
+    
     public static function loadTypeaheadCache() {
-        if (file_exists(BASE_PATH . '/cache/typeahead.json')) {
+        if (file_exists(CACHE_PATH . '/typeahead.json')) {
             // File exists
-            $content = json_decode(file_get_contents(BASE_PATH . '/cache/typeahead.json'), true);
+            $content = json_decode(file_get_contents(CACHE_PATH . '/typeahead.json'), true);
             
-            // Check content
-            if (!isset($content['ts'])) {
-                // Assign random cache
-                $this->controller->template->assign('TYPEAHEAD_CACHE_TIME', rand());
+            // Check if valid content
+            if (!isset($content['timestamp'])) {
+                // Return the current time
+                return time();
             }
             else {
-                // Assign corret cache
-                $this->controller->template->assign('TYPEAHEAD_CACHE_TIME', $content['ts']);
+                // Return stored timestamp
+                return $content['timestamp'];
             }
         }
         else {
-            // Assign random cache
-            $this->controller->template->assign('TYPEAHEAD_CACHE_TIME', rand());
+            // Return the current time
+            return time();
         }
     }
     
@@ -207,4 +210,3 @@ Class CacheManager {
         return self::$fetches;
     }
 }
-?>

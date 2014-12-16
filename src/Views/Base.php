@@ -51,7 +51,7 @@ class Base extends Youkok2 {
             
             // Set debug log
             if (DEV) {
-                $this->sqlLog = array();
+                $this->sqlLog = [];
                 Database::setLog($this->sqlLog);
             }
         }
@@ -105,7 +105,7 @@ class Base extends Youkok2 {
     
     private function queryAnalyze() {
         // Init array
-        $this->query = array();
+        $this->query = [];
 
         // Split query
         $q = explode('/', Loader::getQuery());
@@ -246,8 +246,7 @@ class Base extends Youkok2 {
         $this->showMessages();
         
         // Load cache
-        //CacheManager::loadTypeaheadCache();
-        // TODOD
+        $this->template->assign('TYPEAHEAD_CACHE_TIME', CacheManager::loadTypeaheadCache());
         
         // Display load time
         $time = \PHP_Timer::stop();
@@ -265,7 +264,7 @@ class Base extends Youkok2 {
         // Some variables
         $str = '';
         $has_prepare = false;
-        $prepare_val = array();
+        $prepare_val = [];
         
         // Check that we have some acutal queries here
         if (count($arr) > 0) {
