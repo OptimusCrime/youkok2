@@ -13,6 +13,7 @@ namespace Youkok2\Processors;
  */
 
 use \Youkok2\Youkok2 as Youkok2;
+use \Youkok2\Models\Me as Me;
 
 /*
  * Class that all the processors extends
@@ -58,5 +59,25 @@ class Base extends Youkok2 {
             // Display nicely TODO
             print_r($this->data);
         }
+    }
+    
+    /*
+     * No access
+     */
+    
+    protected function noAccess() {
+        $this->setData('code', 500);
+        $this->setData('msg', 'No access');
+    }
+    
+    /*
+     * Require only one kind of request etc
+     */
+    
+    protected static function requireCli() {
+        return php_sapi_name() == 'cli';
+    }
+    protected static function requireAdmin() {
+        return (Me::isLoggedIn() and Me::isAdmin());
     }
 }

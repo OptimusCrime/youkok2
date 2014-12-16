@@ -28,24 +28,18 @@ class Utilities {
      * Generate URL friendly
      */
 
-    public static function generateUrlFriendly($s, $for_url = false) {
+    public static function urlSafe($s) {
         // Replace first here to keep "norwegian" names in a way
         $s = str_replace(array('Æ', 'Ø', 'Å'), array('ae', 'o', 'aa'), $s);
         $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
         
-        // Replace multiple spaces with a single spaces
-        $s = preg_replace('!\s+!', ' ', $s);
+        // Replace multiple spaces to dashes
+        $s = preg_replace('!\s+!', '-', $s);
         
-        // Decide how to deal with spaces
-        if ($for_url) {
-            $s = str_replace(' ', '-', $s);
-        }
-        else {
-            $s = str_replace(' ', '_', $s);
-        }
-
+        // Final replace replace
         $s = preg_replace('![^-_a-z0-9\s\.]+!', '', strtolower($s));
         
+        // Return here
         return $s;
     }
     

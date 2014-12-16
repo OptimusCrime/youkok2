@@ -20,7 +20,7 @@ use \Youkok2\Utilities\Database as Database;
  * The class CourseController
  */
 
-class CourseController {
+class CourseController implements BaseController {
     
     /*
      * Variables
@@ -76,7 +76,7 @@ class CourseController {
                 $this->model->setName($row['name']);
                 
                 // Cache the new result
-                CacheManager::setCache($id, 'c', $this->cacheFormat());
+                $this->cache();
             }
         }
     }
@@ -99,5 +99,43 @@ class CourseController {
          
         // Implode and return
         return implode(', ', $cache_temp);
+    }
+    
+    /*
+     * Save method (for a new Course)
+     */
+    
+    public function save() {
+        $insert_course  = "INSERT INTO course (code, name) " . PHP_EOL;
+        $insert_course .= "VALUES (:code, :name)";
+
+        $insert_course_query = Database::$db->prepare($insert_course);
+        $insert_course_query->execute(array(':code' => $this->model->getCode(),
+            ':name' => $this->model->getName()));
+
+        // Get the course-id
+        $course_id = $db->lastInsertId();
+        
+        // Set id to model
+        $this->model->setId($course_id);
+        
+        // Cache
+        $this->cache();
+    }
+    
+    /*
+     * Update method
+     */
+    
+    public function update() {
+        // TODO
+    }
+    
+    /*
+     * Cache element
+     */
+    
+    public function cache() {
+        CacheManager::setCache($id, 'c', $this->cacheFormat());
     }
 }

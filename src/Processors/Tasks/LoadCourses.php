@@ -7,8 +7,10 @@ namespace Youkok2\Processors\Tasks;
  * Define what classes to use
  */
 
+use \Youkok2\Models\Course as Course;
 use \Youkok2\Processors\Base as Base;
 use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
  * Class
@@ -23,11 +25,19 @@ class LoadCourses extends Base {
     public function __construct() {
         // Calling Base' constructor
         parent::__construct();
-
-        // Check database
-        if ($this->checkDatabase()) {
-            // Fetch
-            $this->fetchData();
+        
+        if (self::requireCli() or true) {
+            // Check database
+            if ($this->checkDatabase()) {
+                // Fetch
+                $this->fetchData();
+                
+                // Build search file
+                $this->buildSearchFile();
+            }
+        }
+        else {
+            $this->noAccess();
         }
 
         // Return data
@@ -67,32 +77,43 @@ class LoadCourses extends Base {
         while (true) {
             // Load
             $file = file_get_contents('http://www.ntnu.no/web/studier/emnesok?p_p_id=courselistportlet_WAR_courselistportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=fetch-courselist-as-json&p_p_cacheability=cacheLevelPage&p_p_col_id=column-1&p_p_col_pos=1&p_p_col_count=2&semester=' . date('Y') . '&faculty=-1&institute=-1&multimedia=0&english=0&phd=0&courseAutumn=0&courseSpring=0&courseSummer=0&searchQueryString=&pageNo=' . $page . '&season=autumn&sortOrder=%2Btitle&year=');
-            $json_content = json_decode($file, true);
+            $json_result = json_decode($file, true);
 
             // Clean
-            foreach ($json_content['courses'] as $v) {
-                $clean_url_path = url_friendly($v['courseCode']);
-                $clean[] = array('code' => $v['courseCode'],
+            $result = [];
+            foreach ($json_result['courses'] as $v) {
+                $result[] = array('code' => $v['courseCode'],
                     'name' => $v['courseName'],
-                    'url_friendly' => $clean_url_path,
-                    'directory' => $clean_url_path);
+                    'url_friendly' => Utilities::urlSafe($v['courseCode']));
             }
 
             // Loop every single course
-            foreach ($clean as $v) {
+            foreach ($result as $v) {
                 // Check if course is in database
-                $check_current_course = "SELECT id
-            FROM course
-            WHERE code = :code
-            LIMIT 1";
+                $check_current_course  = "SELECT id " . PHP_EOL;
+                $check_current_course .= "FROM course " . PHP_EOL;
+                $check_current_course .= "WHERE code = :code " . PHP_EOL;
+                $check_current_course .= "LIMIT 1";
+                echo $check_current_course;
+                $check_current_course_query = Database::$db->prepare($check_current_course);
+                $check_current_course_query->execute(array(':code' => $v['code']));
+                $row = $check_current_course_query->fetch(\PDO::FETCH_ASSOC);
 
-            $check_current_course_query = Database::$db->prepare($check_current_course);
-            $check_current_course_query->execute(array(':code' => $v['code']));
-            $row = $check_current_course_query->fetch(\PDO::FETCH_ASSOC);
-
-            // Check if exists
-            if (!isset($row['id'])) {
-                $message[] = 'Added ' . $v['code'];
+                // Check if exists
+                if (!isset($row['id'])) {
+                    // New course course
+                    $course = New Course();
+                    
+                    // Set data
+                    $course->setCode($v['code']);
+                    $course->setName($v['name']);
+                    
+                    // Save
+                    $course->save();
+                    
+                    // TODO implement Element
+                    
+                    $message[] = 'Added ' . $v['code'];
                 /*
                 // Check if url-friendly or name exists
                 $check_current_course2 = "SELECT id
@@ -141,8 +162,13 @@ class LoadCourses extends Base {
                     }*/
                 }
             }
+            break;
         }
-
+        
         $this->setData('message', $message);
+    }
+    
+    private function buildSearchFile() {
+        //
     }
 } 
