@@ -48,7 +48,7 @@ class CourseController implements BaseController {
             $temp_cache_data = CacheManager::getCache($id, 'c');
 
             // Fields to look up
-            $fields = array('name', 'code');
+            $fields = ['name', 'code'];
             
             // Loop all the fields and apply data
             foreach ($temp_cache_data as $k => $v) {
@@ -86,12 +86,12 @@ class CourseController implements BaseController {
      */
 
     private function cacheFormat() {
-        $cache_temp = array();
-        $fields = array('getCode', 'getName');
+        $cache_temp = [];
+        $fields = ['getCode', 'getName'];
         
         // Loop each field
         foreach ($fields as $v) {
-            $v_pretty = strtolower(str_replace(array('get', 'is'), '', $v));
+            $v_pretty = strtolower(str_replace(['get', 'is'], '', $v));
             if (method_exists('\Youkok2\Models\Course', $v)) {
                 $cache_temp[] = "'" . $v_pretty . "' => '" . addslashes(call_user_func(array($this->model, $v))) . "'";
             }
@@ -110,8 +110,8 @@ class CourseController implements BaseController {
         $insert_course .= "VALUES (:code, :name)";
 
         $insert_course_query = Database::$db->prepare($insert_course);
-        $insert_course_query->execute(array(':code' => $this->model->getCode(),
-            ':name' => $this->model->getName()));
+        $insert_course_query->execute([':code' => $this->model->getCode(),
+            ':name' => $this->model->getName()]);
 
         // Get the course-id
         $course_id = $db->lastInsertId();

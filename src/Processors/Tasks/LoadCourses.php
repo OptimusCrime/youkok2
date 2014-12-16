@@ -34,6 +34,9 @@ class LoadCourses extends Base {
                 
                 // Build search file
                 $this->buildSearchFile();
+                
+                // Close database connection
+                Database::close();
             }
         }
         else {
@@ -71,7 +74,7 @@ class LoadCourses extends Base {
         $this->setData('code', 200);
 
         $page = 1;
-        $message = array();
+        $message = [];
 
         // Fetch the courses
         while (true) {
@@ -82,9 +85,9 @@ class LoadCourses extends Base {
             // Clean
             $result = [];
             foreach ($json_result['courses'] as $v) {
-                $result[] = array('code' => $v['courseCode'],
+                $result[] = ['code' => $v['courseCode'],
                     'name' => $v['courseName'],
-                    'url_friendly' => Utilities::urlSafe($v['courseCode']));
+                    'url_friendly' => Utilities::urlSafe($v['courseCode'])];
             }
 
             // Loop every single course
@@ -94,7 +97,7 @@ class LoadCourses extends Base {
                 $check_current_course .= "FROM course " . PHP_EOL;
                 $check_current_course .= "WHERE code = :code " . PHP_EOL;
                 $check_current_course .= "LIMIT 1";
-                echo $check_current_course;
+                
                 $check_current_course_query = Database::$db->prepare($check_current_course);
                 $check_current_course_query->execute(array(':code' => $v['code']));
                 $row = $check_current_course_query->fetch(\PDO::FETCH_ASSOC);
@@ -162,13 +165,39 @@ class LoadCourses extends Base {
                     }*/
                 }
             }
-            break;
         }
         
+        // Set message
         $this->setData('message', $message);
     }
     
+    /*
+     * Fetch all courses and build a search file
+     */
+    
     private function buildSearchFile() {
-        //
+        $courses = [];
+        
+        // Build query
+        $get_all_courses  = "SELECT c.code, c.name, a.url_friendly " . PHP_EOL;
+        $get_all_courses .= "FROM course c " . PHP_EOL;
+        $get_all_courses .= "LEFT JOIN archive AS a ON c.id = a.course " . PHP_EOL;
+        $get_all_courses .= "ORDER BY c.code ASC";
+        
+        // Run query
+        $get_all_courses_query = Database::$db->prepare($get_all_courses);
+        $get_all_courses_query->execute();
+        
+        // Append to array
+        while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
+            $courses[] = array('course' => $row['code'] . ' - ' . $row['name'],
+                'url' => $row['url_friendly']);
+        }
+        
+        // Put content to file
+        file_put_contents(CACHE_PATH . '/courses.json', json_encode($courses));
+        
+        // Store timestamp in typehead.json
+        file_put_contents(CACHE_PATH . '/typeahead.json', json_encode(['timestamp' => time()]));
     }
 } 
