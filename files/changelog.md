@@ -5,6 +5,7 @@ Youkok2 - 1.0.0.-pl (xx. xxxxxxxx, 2014)
 - [Enhanced] Nettsiden bruker nå "mobile first"-prinsippet til Bootstrap.
 - [Enhanced] Velkomstsiden er endre litt.
 - [Enhanced] Linker til innlogging funker på små devices.
+- [Enhanced] Informasjon på forsiden vises nå penere med Bootstrap tooltip.
 
 Youkok2 - 0.4.0.-pl (13. oktober, 2014)
 =======================================

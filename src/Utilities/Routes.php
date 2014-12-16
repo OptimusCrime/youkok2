@@ -90,6 +90,9 @@ class Routes {
         'Tasks\\LoadCourses' => array(
             '/tasks/courses',
         ),
+        'StaticReturner' => array(
+            '/search/courses.json',
+         ),
     );
     
     /*
