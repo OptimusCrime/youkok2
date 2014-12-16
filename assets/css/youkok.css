@@ -19,6 +19,9 @@ html {
 .center {
     text-align: center;
 }
+.help {
+    cursor: help;
+}
 
 /*
  * Overriding theme

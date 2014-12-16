@@ -1281,7 +1281,7 @@ $(document).ready(function () {
     // Tooltips
     //
 
-    $('.list-group-item a').tooltip();
+    $('.list-group-item a, .list-group-item .moment-timestamp').tooltip();
     
     //
     // Remove favorite from frontpage

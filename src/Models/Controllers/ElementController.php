@@ -902,7 +902,7 @@ class ElementController {
         // Check if we should load additional information
         if ($mode != null) {
             if ($mode == 'added') {
-                $endfix .= ' [<span class="moment-timestamp" style="cursor: help;" title="' . Utilities::prettifySQLDate($this->model->getAdded()) . '" ';
+                $endfix .= ' [<span class="moment-timestamp help" data-toggle="tooltip" title="' . Utilities::prettifySQLDate($this->model->getAdded()) . '" ';
                 $endfix .= 'data-ts="' . $this->model->getAdded() . '">Laster...</span>]';
             }
             else if ($mode == 'most-popular') {
@@ -917,7 +917,7 @@ class ElementController {
         // The different types of Elements requires different links
         if ($this->model->isLink()) {
             $element_url = $this->generateUrl(Routes::REDIRECT);
-            $element_title = ' title="Link til: ' . $this->model->getUrl() . '"';
+            $element_title = ' data-toggle="tooltip" class="help" title="Link til: ' . $this->model->getUrl() . '"';
         }
         else if ($this->model->isFile()) {
             $element_url = $this->generateUrl(Routes::DOWNLOAD);
@@ -952,7 +952,7 @@ class ElementController {
             // Check if we should add the root parent
             if ($root_parent != null) {
                 $ret .= '    <a href="' . $root_parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" ';
-                $ret .= ' data-placement="top" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>' . PHP_EOL;
+                $ret .= ' data-placement="top" class="help" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>' . PHP_EOL;
             }
         }
         
