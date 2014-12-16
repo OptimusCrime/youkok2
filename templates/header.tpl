@@ -110,13 +110,9 @@
 </div>
 <div class="container" id="main">
     <div class="row">
-        <div class="col-md-12" id="main_messages">
-            [[+nocache]]
-                [[+if $SITE_MESSAGES != '']]
-                    [[+$SITE_MESSAGES]]
-                [[+/if]]
-            [[+/nocache]]
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+        [[+nocache]]
+            [[+if $SITE_MESSAGES != '']]
+                [[+$SITE_MESSAGES]]
+            [[+/if]]
+        [[+/nocache]]
+        <div class="col-xs-12">

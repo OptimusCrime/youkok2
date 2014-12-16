@@ -3,7 +3,7 @@
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-md-12" id="footer">
+        <div class="col-xs-12" id="footer">
             <p>
                 <a href="changelog.txt"><span class="first">Youkok2 v[[+$VERSION]]</span></a>::
                 <span><a href="om">Om Youkok2</a></span>::
