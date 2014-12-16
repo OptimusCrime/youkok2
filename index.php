@@ -60,6 +60,17 @@ error_reporting(ERROR_MODE);
 ini_set('display_errors', ERROR_DISPLAY);
 
 /*
+ * Apply Whoops if dev
+ */
+
+if (defined('DEV') and DEV === true) {
+    // Apply Whoops
+    $whoops = new \Whoops\Run;
+    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+    $whoops->register();
+}
+
+/*
  * Set the timezone
  */
 
