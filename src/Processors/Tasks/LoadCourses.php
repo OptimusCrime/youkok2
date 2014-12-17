@@ -26,7 +26,7 @@ class LoadCourses extends Base {
         // Calling Base' constructor
         parent::__construct($returnData);
         
-        if (self::requireCli()) {
+        if (!self::requireCli()) {
             // Check database
             if ($this->checkDatabase()) {
                 // Fetch

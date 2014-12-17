@@ -57,7 +57,7 @@ class Base extends Youkok2 {
     protected function returnData() {
         // Check if we should return or output
         if ($this->returnData) {
-            // Return;
+            // Return
             return $this->data;
         }
         else {
