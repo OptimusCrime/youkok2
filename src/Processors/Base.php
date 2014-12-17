@@ -65,8 +65,8 @@ class Base extends Youkok2 {
                 echo json_encode($this->data);
             }
             else {
-                // Display nicely TODO
-                print_r($this->data);
+                // Return to console using CLImate
+                $climate->json($this->data);
             }
         }
     }
