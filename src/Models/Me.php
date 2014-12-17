@@ -62,10 +62,10 @@ class Me {
             $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
             if (count($hash_split) == 2) {
                 // Fetch from database to see if online
-                $get_current_user = "SELECT id, email, nick, karma, karma_pending, banned, most_popular_delta
-                FROM user 
-                WHERE email = :email
-                AND password = :password";
+                $get_current_user  = "SELECT id, email, nick, karma, karma_pending, banned, most_popular_delta" . PHP_EOL;
+                $get_current_user .= "FROM user " . PHP_EOL;
+                $get_current_user .= "WHERE email = :email" . PHP_EOL;
+                $get_current_user .= "AND password = :password";
                 
                 $get_current_user_query = Database::$db->prepare($get_current_user);
                 $get_current_user_query->execute(array(':email' => $hash_split[0], 

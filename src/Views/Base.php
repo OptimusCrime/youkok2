@@ -228,7 +228,7 @@ class Base extends Youkok2 {
     protected function displayAndCleanup($template, $sid = null) {
         // If develop, assign dev variables
         if (DEV) {
-            $this->template->assign('DEV_QUERIES_NUM', number_format(Database::getCount()));
+            $this->template->assign('DEV_QUERIES_NUM', count($this->sqlLog));
             $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->sqlLog));
             $this->template->assign('DEV_ELEMENT_COLLECTION', ElementCollection::getSize());
             $this->template->assign('DEV_CACHE_LOAD', CacheManager::getFetches());
@@ -299,7 +299,7 @@ class Base extends Youkok2 {
                 
                 // Clean up n stuff
                 if (!$has_prepare) {
-                    $str .= $temp_loc . '<pre>' . str_replace('    ', '', $temp_query) . '</pre>';
+                    $str .= $temp_loc . '<pre>' . $temp_query . '</pre>';
                 }
             }
         }
