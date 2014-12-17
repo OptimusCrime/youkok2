@@ -40,11 +40,6 @@ class Base extends Youkok2 {
      */
 
     public function __construct($kill = false) {
-        // Starting session, if not already started
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        
         // Trying to connect to the database
         try {
             Database::connect();
@@ -65,7 +60,7 @@ class Base extends Youkok2 {
         $this->template->right_delimiter = ']]';
         
         // Set caching
-        $this->template->setCacheDir(BASE_PATH . '/cache/');
+        $this->template->setCacheDir(CACHE_PATH . '/smarty/');
         
         // Define a few constants in Smarty
         $this->template->assign('VERSION', VERSION);

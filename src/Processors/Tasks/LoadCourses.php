@@ -1,5 +1,10 @@
 <?php
-
+/*
+ * File: LoadCourses.php
+ * Holds: Load courses
+ * Created: 17.12.14
+ * Project: Youkok2
+*/
 
 namespace Youkok2\Processors\Tasks;
 
@@ -13,7 +18,7 @@ use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
- * Class
+ * LoadCourses extending Base
  */
 
 class LoadCourses extends Base {
@@ -40,6 +45,7 @@ class LoadCourses extends Base {
             }
         }
         else {
+            // No access
             $this->noAccess();
         }
         
@@ -58,8 +64,8 @@ class LoadCourses extends Base {
             return true;
         }
         catch (Exception $e) {
-            $this->setData('msg', 'Could not connect to database');
             $this->setData('code', 500);
+            $this->setData('msg', 'Could not connect to database');
 
             return false;
         }
@@ -188,7 +194,7 @@ class LoadCourses extends Base {
         }
         
         // Set message
-        $this->setData('message', ['Fetched' => $fetched, 'New' => $new, 'Added' => $added]);
+        $this->setData('msg', ['Fetched' => $fetched, 'New' => $new, 'Added' => $added]);
     }
     
     /*

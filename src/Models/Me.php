@@ -37,11 +37,14 @@ class Me {
     private static $banned;
     
     // Other variables
+    public static $inited = false;
+    
     private static $loggedIn;
     private static $favorites;
     
     public static function init() {
         // Set initial
+        self::$inited = true;
         self::$loggedIn = false;
         self::$nick = null;
         self::$favorites = null;

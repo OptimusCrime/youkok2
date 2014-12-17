@@ -7,6 +7,14 @@
  * Project: Youkok2
  */
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+/*
+ * Set header
+ */
+
 header('Content-Type: text/html; charset=utf-8');
 
 /*

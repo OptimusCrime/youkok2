@@ -84,11 +84,24 @@ class Routes {
      */
     
     private static $processors = array(
+        
+        /*
+         * Tasks
+         */
+        
+        'Tasks\\ClearCache' => array(
+            '/tasks/clearcache',
+         ),
+         'Tasks\\LoadCourses' => array(
+            '/tasks/courses',
+        ),
+        
+        /*
+         * Other stuff
+         */
+        
         'User' => array(
             '/user/save',
-        ),
-        'Tasks\\LoadCourses' => array(
-            '/tasks/courses',
         ),
         'StaticReturner' => array(
             '/search/courses.json',

@@ -14,6 +14,7 @@ namespace Youkok2\Processors;
 
 use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Models\Me as Me;
+use \Youkok2\Utilities\Database as Database;
 
 /*
  * Class that all the processors extends
@@ -90,6 +91,19 @@ class Base extends Youkok2 {
         return php_sapi_name() == 'cli';
     }
     protected static function requireAdmin() {
+        // Check if inited
+        if (!Me::$inited) {
+            // Check if need to connect to database first
+            if (Database::$db === null) {
+                // Connect to database
+                Database::connect();
+            }
+            
+            // Init user
+            Me::init();
+        }
+        
+        // Do the check
         return (Me::isLoggedIn() and Me::isAdmin());
     }
 }

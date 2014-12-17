@@ -28,7 +28,7 @@ class Youkok2 {
     public static function runProcessor($action, $returnData = false) {
         // Check if we should return as json
         if (php_sapi_name() !== 'cli') {
-            header('Content-Type: application/json');
+            //header('Content-Type: application/json');
         }
         
         // Loop the path-array and find what view to load
