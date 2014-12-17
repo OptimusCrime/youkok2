@@ -6,6 +6,8 @@ Youkok2 - 1.0.0.-pl (xx. xxxxxxxx, 2014)
 - [Enhanced] Velkomstsiden er endre litt.
 - [Enhanced] Linker til innlogging funker på små devices.
 - [Enhanced] Informasjon på forsiden vises nå penere med Bootstrap tooltip.
+- [Fixed] Feil som gjorde at cache ble hengende igjen.
+- [Fixed] Antall millisekunder siden bruker på å laste er ikke lenget cachet.
 
 Youkok2 - 0.4.0.-pl (13. oktober, 2014)
 =======================================

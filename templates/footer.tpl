@@ -11,7 +11,7 @@
                 <span><a href="privacy">Privacy og så videre</a></span>::
                 <span><a href="hjelp">Hjelp</a></span>::
                 <span><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>::
-                <span class="last">[[+$TIMER]]</span>
+                <span class="last">[[+nocache]][[+$TIMER]][[+/nocache]]</span>
             </p>
             [[+nocache]]
                 [[+if $DEV]]
