@@ -60,9 +60,9 @@ class CourseController implements BaseController {
             }
         }
         else {
-            $get_course = "SELECT name, code
-            FROM course
-            WHERE id = :id";
+            $get_course  = "SELECT name, code" . PHP_EOL;
+            $get_course .= "FROM course" . PHP_EOL;
+            $get_course .= "WHERE id = :id";
             
             $get_course_query = Database::$db->prepare($get_course);
             $get_course_query->execute(array(':id' => $id));

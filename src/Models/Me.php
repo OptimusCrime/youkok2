@@ -179,12 +179,12 @@ class Me {
             self::$favorites = array();
             
             // Run query
-            $get_favorites = "SELECT f.file
-            FROM favorite AS f
-            LEFT JOIN archive AS a ON a.id = f.file
-            WHERE f.user = :user
-            AND a.is_visible = 1
-            ORDER BY f.ordering ASC";
+            $get_favorites  = "SELECT f.file" . PHP_EOL;
+            $get_favorites .= "FROM favorite AS f" . PHP_EOL;
+            $get_favorites .= "LEFT JOIN archive AS a ON a.id = f.file" . PHP_EOL;
+            $get_favorites .= "WHERE f.user = :user" . PHP_EOL;
+            $get_favorites .= "AND a.is_visible = 1" . PHP_EOL;
+            $get_favorites .= "ORDER BY f.ordering ASC";
             
             $get_favorites_query = Database::$db->prepare($get_favorites);
             $get_favorites_query->execute(array(':user' => self::$id));
@@ -207,9 +207,9 @@ class Me {
             // Okey
             if (isset($_POST['login-email']) and isset($_POST['login-pw'])) {
                 // Try to fetch email
-                $get_login_user = "SELECT id, email, salt, password
-                FROM user
-                WHERE email = :email";
+                $get_login_user  = "SELECT id, email, salt, password" . PHP_EOL;
+                $get_login_user .= "FROM user" . PHP_EOL;
+                $get_login_user .= "WHERE email = :email";
 
                 $get_login_user_query = Database::$db->prepare($get_login_user);
                 $get_login_user_query->execute(array(':email' => $_POST['login-email']));
@@ -259,9 +259,11 @@ class Me {
                     else {
                         // Message
                         MessageManager::addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
-
+                        
+                        // Set session
                         $_SESSION['login_correct_email'] = $row['email'];
-
+                        
+                        // Redirect
                         Redirect::send('logg-inn');
                     }
                 }
@@ -269,7 +271,7 @@ class Me {
                     // Message
                     MessageManager::addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
 
-                    // Display
+                    // Redirect
                     Redirect::send('logg-inn');
                 }
             }
@@ -345,19 +347,19 @@ class Me {
         $ret = '';
         
         // Load all favorites
-        $get_last_downloads = "SELECT d.file
-        FROM download AS d
-        LEFT JOIN archive AS a ON a.id = d.file
-        WHERE d.user = :user
-        AND a.is_visible = 1
-        AND d.id = (
-            SELECT dd.id
-            FROM download dd
-            WHERE d.file = dd.file
-            ORDER BY dd.downloaded_time
-            DESC LIMIT 1)
-        ORDER BY d.downloaded_time DESC
-        LIMIT 15";
+        $get_last_downloads  = "SELECT d.file" . PHP_EOL;
+        $get_last_downloads .= "FROM download AS d" . PHP_EOL;
+        $get_last_downloads .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
+        $get_last_downloads .= "WHERE d.user = :user" . PHP_EOL;
+        $get_last_downloads .= "AND a.is_visible = 1" . PHP_EOL;
+        $get_last_downloads .= "AND d.id = (" . PHP_EOL;
+        $get_last_downloads .= "    SELECT dd.id" . PHP_EOL;
+        $get_last_downloads .= "    FROM download dd" . PHP_EOL;
+        $get_last_downloads .= "    WHERE d.file = dd.file" . PHP_EOL;
+        $get_last_downloads .= "    ORDER BY dd.downloaded_time" . PHP_EOL;
+        $get_last_downloads .= "    DESC LIMIT 1)" . PHP_EOL;
+        $get_last_downloads .= "ORDER BY d.downloaded_time DESC" . PHP_EOL;
+        $get_last_downloads .= "LIMIT 15";
         
         $get_last_downloads_query = Database::$db->prepare($get_last_downloads);
         $get_last_downloads_query->execute(array(':user' => Self::getId()));

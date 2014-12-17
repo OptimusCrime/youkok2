@@ -283,11 +283,11 @@ class ElementController {
             // Loop each fragment
             foreach ($url_pieces as $k => $url_piece_single) {
                 // Run query for this fragment
-                $get_reverse_url = "SELECT id
-                FROM archive 
-                WHERE parent = :parent
-                AND url_friendly = :url_friendly
-                AND is_visible = 1";
+                $get_reverse_url  = "SELECT id" . PHP_EOL;
+                $get_reverse_url .= "FROM archive " . PHP_EOL;
+                $get_reverse_url .= "WHERE parent = :parent" . PHP_EOL;
+                $get_reverse_url .= "AND url_friendly = :url_friendly" . PHP_EOL;
+                $get_reverse_url .= "AND is_visible = 1";
                 
                 $get_reverse_url_query = Database::$db->prepare($get_reverse_url);
                 $get_reverse_url_query->execute(array(':parent' => $temp_id, 
@@ -525,11 +525,11 @@ class ElementController {
             // TODO, check what is fetched!
 
             // This count is not cached, run query to fetch the download number
-            $get_download_count = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'
-            FROM download d
-            LEFT JOIN archive AS a ON a.id = d.file
-            " . $d. "
-            AND d.file = :file";
+            $get_download_count  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
+            $get_download_count .= "FROM download d" . PHP_EOL;
+            $get_download_count .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
+            $get_download_count .= $d . PHP_EOL;
+            $get_download_count .= "AND d.file = :file";
             
             $get_download_count_query = $this->controller->db->prepare($get_download_count);
             $get_download_count_query->execute(array(':file' => $this->id));
@@ -555,8 +555,8 @@ class ElementController {
         // Check if user is logged in
         if ($this->controller->user != null and $this->controller->user->isLoggedIn()) {
             // User is logged in
-            $insert_user_download = "INSERT INTO download (file, ip, agent, user)
-            VALUES (:file, :ip, :agent, :user)";
+            $insert_user_download  = "INSERT INTO download (file, ip, agent, user)" . PHP_EOL;
+            $insert_user_download .= "VALUES (:file, :ip, :agent, :user)";
             
             $insert_user_download_query = $this->controller->db->prepare($insert_user_download);
             $insert_user_download_query->execute(array(':file' => $this->id, 
@@ -581,10 +581,10 @@ class ElementController {
      */
 
     public function loadFlags() {
-        $get_all_flags = "SELECT *
-        FROM flag
-        WHERE file = :file
-        AND active = 1";
+        $get_all_flags  = "SELECT *" . PHP_EOL;
+        $get_all_flags .= "FROM flag" . PHP_EOL;
+        $get_all_flags .= "WHERE file = :file" . PHP_EOL;
+        $get_all_flags .= "AND active = 1";
         
         $get_all_flags_query = $this->controller->db->prepare($get_all_flags);
         $get_all_flags_query->execute(array(':file' => $this->id));
@@ -639,10 +639,10 @@ class ElementController {
             // Check if fetched
             if ($this->favorite === null) {
                 // Not fetched
-                $get_favorite_status = "SELECT id
-                FROM favorite
-                WHERE file = :file
-                AND user = :user";
+                $get_favorite_status  = "SELECT id" . PHP_EOL;
+                $get_favorite_status .= "FROM favorite" . PHP_EOL;
+                $get_favorite_status .= "WHERE file = :file" . PHP_EOL;
+                $get_favorite_status .= "AND user = :user";
                 
                 $get_favorite_status_query = Database::$db->prepare($get_favorite_status);
                 $get_favorite_status_query->execute(array(':file' => $this->model->getId(), 
@@ -775,9 +775,9 @@ class ElementController {
         }
         
         // Load all favorites
-        $get_children_ids = "SELECT id
-        FROM archive
-        WHERE parent = :parent" . $subquery;
+        $get_children_ids  = "SELECT id" . PHP_EOL;
+        $get_children_ids .= "FROM archive" . PHP_EOL;
+        $get_children_ids .= "WHERE parent = :parent" . $subquery;
         
         $get_children_ids_query = $this->controller->db->prepare($get_children_ids);
         $get_children_ids_query->execute(array(':parent' => $this->id));
@@ -814,12 +814,12 @@ class ElementController {
     public function getOwnerUsername() {
         // Fetch only if null
         if ($this->ownerUsername == null) {
-            $get_owner = "SELECT u.id, u.nick
-            FROM user AS u
-            LEFT JOIN flag AS f ON f.user = u.id
-            WHERE f.file = :file
-            AND f.type = 0
-            LIMIT 1";
+            $get_owner  = "SELECT u.id, u.nick" . PHP_EOL;
+            $get_owner .= "FROM user AS u" . PHP_EOL;
+            $get_owner .= "LEFT JOIN flag AS f ON f.user = u.id" . PHP_EOL;
+            $get_owner .= "WHERE f.file = :file" . PHP_EOL;
+            $get_owner .= "AND f.type = 0" . PHP_EOL;
+            $get_owner .= "LIMIT 1";
             
             $get_owner_query = $this->controller->db->prepare($get_owner);
             $get_owner_query->execute(array(':file' => $this->id));
@@ -856,11 +856,11 @@ class ElementController {
         $previous_num = 0;
         
         // The query
-        $get_all_downloads = "SELECT COUNT(id) AS 'num', downloaded_time
-        FROM download
-        WHERE file = :file
-        GROUP BY TO_DAYS(downloaded_time)
-        ORDER BY downloaded_time ASC";
+        $get_all_downloads = "SELECT COUNT(id) AS 'num', downloaded_time" . PHP_EOL;
+        $get_all_downloads .= "FROM download" . PHP_EOL;
+        $get_all_downloads .= "WHERE file = :file" . PHP_EOL;
+        $get_all_downloads .= "GROUP BY TO_DAYS(downloaded_time)" . PHP_EOL;
+        $get_all_downloads .= "ORDER BY downloaded_time ASC";
         
         $get_all_downloads_query = $this->controller->db->prepare($get_all_downloads);
         $get_all_downloads_query->execute(array(':file' => $this->id));

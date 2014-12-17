@@ -105,9 +105,9 @@ class LoadCourses extends Base {
             // Loop every single course
             foreach ($result as $v) {
                 // Check if course is in database
-                $check_current_course  = "SELECT id " . PHP_EOL;
-                $check_current_course .= "FROM course " . PHP_EOL;
-                $check_current_course .= "WHERE code = :code " . PHP_EOL;
+                $check_current_course  = "SELECT id" . PHP_EOL;
+                $check_current_course .= "FROM course" . PHP_EOL;
+                $check_current_course .= "WHERE code = :code" . PHP_EOL;
                 $check_current_course .= "LIMIT 1";
                 
                 $check_current_course_query = Database::$db->prepare($check_current_course);
@@ -205,9 +205,9 @@ class LoadCourses extends Base {
         $courses = [];
         
         // Build query
-        $get_all_courses  = "SELECT c.code, c.name, a.url_friendly " . PHP_EOL;
-        $get_all_courses .= "FROM course c " . PHP_EOL;
-        $get_all_courses .= "LEFT JOIN archive AS a ON c.id = a.course " . PHP_EOL;
+        $get_all_courses  = "SELECT c.code, c.name, a.url_friendly" . PHP_EOL;
+        $get_all_courses .= "FROM course c" . PHP_EOL;
+        $get_all_courses .= "LEFT JOIN archive AS a ON c.id = a.course" . PHP_EOL;
         $get_all_courses .= "ORDER BY c.code ASC";
         
         // Run query
