@@ -1,4 +1,7 @@
 #!/bin/bash
+echo "Enter checksum"
+read CHECKSUM
+
 echo "\033[0;33mExecuting git pull\033[0m \n"
 git pull --progress
 
@@ -7,7 +10,7 @@ git fetch --progress
 echo "All done."
 
 echo "\n\033[0;33mClearing cache\033[0m \n"
-php "_upgrade/clear_cache.php"
+php cli/cmd.php tasks/clearcache $CHECKSUM
 
 echo "\n\033[0;33mUpdating composer packages\033[0m \n"
 php composer.phar update
