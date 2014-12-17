@@ -27,6 +27,7 @@ class Base extends Youkok2 {
     
     private $data;
     private $returnData;
+    private $climate;
     
     /*
      * Constructor
@@ -34,7 +35,8 @@ class Base extends Youkok2 {
 
     public function __construct($returnData = false) {
         $this->returnData = $returnData;
-        $this->data = array();
+        $this->data = [];
+        $this->climate = new \League\CLImate\CLImate;
     }
     
     /*
@@ -66,7 +68,7 @@ class Base extends Youkok2 {
             }
             else {
                 // Return to console using CLImate
-                $climate->json($this->data);
+                $this->climate->json($this->data);
             }
         }
     }

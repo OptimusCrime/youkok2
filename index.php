@@ -71,14 +71,6 @@ if (defined('DEV') and DEV === true) {
 }
 
 /*
- * Apply CLImate if runing from the command line
- */
-
-if (php_sapi_name() == 'cli') {
-    $climate = new League\CLImate\CLImate;
-}
-
-/*
  * Set the timezone
  */
 

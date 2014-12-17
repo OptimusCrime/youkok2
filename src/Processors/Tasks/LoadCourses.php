@@ -42,7 +42,7 @@ class LoadCourses extends Base {
         else {
             $this->noAccess();
         }
-
+        
         // Return data
         $this->returnData();
     }
@@ -78,6 +78,7 @@ class LoadCourses extends Base {
 
         // Fetch the courses
         while (true) {
+            
             // Load
             $file = file_get_contents('http://www.ntnu.no/web/studier/emnesok?p_p_id=courselistportlet_WAR_courselistportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=fetch-courselist-as-json&p_p_cacheability=cacheLevelPage&p_p_col_id=column-1&p_p_col_pos=1&p_p_col_count=2&semester=' . date('Y') . '&faculty=-1&institute=-1&multimedia=0&english=0&phd=0&courseAutumn=0&courseSpring=0&courseSummer=0&searchQueryString=&pageNo=' . $page . '&season=autumn&sortOrder=%2Btitle&year=');
             $json_result = json_decode($file, true);
@@ -164,6 +165,16 @@ class LoadCourses extends Base {
                         mkdir($directory_check);
                     }*/
                 }
+            }
+            
+            // Check if more results
+            if (count($result) == 100) {
+                // More results, increase page
+                $page++;
+            }
+            else {
+                // No more results, kill script
+                break;
             }
         }
         
