@@ -26,7 +26,7 @@ class LoadCourses extends Base {
         // Calling Base' constructor
         parent::__construct($returnData);
         
-        if (!self::requireCli()) {
+        if (self::requireCli()) {
             // Check database
             if ($this->checkDatabase()) {
                 // Fetch
@@ -74,7 +74,9 @@ class LoadCourses extends Base {
         $this->setData('code', 200);
 
         $page = 1;
-        $message = [];
+        $added = [];
+        $fetched = 0;
+        $new = 0;
 
         // Fetch the courses
         while (true) {
@@ -89,6 +91,9 @@ class LoadCourses extends Base {
                 $result[] = ['code' => $v['courseCode'],
                     'name' => $v['courseName'],
                     'url_friendly' => Utilities::urlSafe($v['courseCode'])];
+                
+                // Inc fetched
+                $fetched++;
             }
 
             // Loop every single course
@@ -117,7 +122,11 @@ class LoadCourses extends Base {
                     
                     // TODO implement Element
                     
-                    $message[] = 'Added ' . $v['code'];
+                    $added[] = 'Added ' . $v['code'];
+                    
+                    // Inc added
+                    $new++;
+                    
                 /*
                 // Check if url-friendly or name exists
                 $check_current_course2 = "SELECT id
@@ -179,7 +188,7 @@ class LoadCourses extends Base {
         }
         
         // Set message
-        $this->setData('message', $message);
+        $this->setData('message', ['Fetched' => $fetched, 'New' => $new, 'Added' => $added]);
     }
     
     /*

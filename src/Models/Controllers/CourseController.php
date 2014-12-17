@@ -114,7 +114,7 @@ class CourseController implements BaseController {
             ':name' => $this->model->getName()]);
 
         // Get the course-id
-        $course_id = $db->lastInsertId();
+        $course_id = Database::$db->lastInsertId();
         
         // Set id to model
         $this->model->setId($course_id);
@@ -136,6 +136,6 @@ class CourseController implements BaseController {
      */
     
     public function cache() {
-        CacheManager::setCache($id, 'c', $this->cacheFormat());
+        CacheManager::setCache($this->model->getId(), 'c', $this->cacheFormat());
     }
 }

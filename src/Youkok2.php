@@ -56,5 +56,4 @@ class Youkok2 {
         // New instance
         new $processor($returnData);
     }
-    
 }
