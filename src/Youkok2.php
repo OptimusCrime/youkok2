@@ -25,7 +25,7 @@ class Youkok2 {
      * Run a processor with a given action
      */
     
-    public static function runProcessor($action) {
+    public static function runProcessor($action, $return = false) {
         // Check if we should return as json
         if (php_sapi_name() !== 'cli') {
             header('Content-Type: application/json');
@@ -54,7 +54,7 @@ class Youkok2 {
         }
         
         // New instance
-        new $processor();
+        new $processor($return);
     }
     
 }

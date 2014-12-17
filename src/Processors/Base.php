@@ -26,12 +26,14 @@ class Base extends Youkok2 {
      */
     
     private $data;
+    private $returnData;
     
     /*
      * Constructor
      */
 
-    public function __construct() {
+    public function __construct($returnData = false) {
+        $this->returnData = $returnData;
         $this->data = array();
     }
     
@@ -51,13 +53,21 @@ class Base extends Youkok2 {
      */
     
     protected function returnData() {
-        if (php_sapi_name() !== 'cli') {
-            // Return as json
-            echo json_encode($this->data);
+        // Check if we should return or output
+        if ($this->returnData) {
+            // Return;
+            return $this->data;
         }
         else {
-            // Display nicely TODO
-            print_r($this->data);
+            // Output the data
+            if (php_sapi_name() !== 'cli') {
+                // Return as json
+                echo json_encode($this->data);
+            }
+            else {
+                // Display nicely TODO
+                print_r($this->data);
+            }
         }
     }
     

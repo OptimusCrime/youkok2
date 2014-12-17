@@ -5,6 +5,7 @@
         "phpmailer/phpmailer": "5.2.8",
         "phpunit/phpunit": "4.3.5",
         "phpunit/php-timer": "~1.0",
-        "filp/whoops": "~1.0"
+        "filp/whoops": "~1.0",
+        "league/climate": "~2.0"
     }
 }

@@ -25,9 +25,9 @@ class StaticReturner extends Base {
      * Constructor
      */
 
-    public function __construct() {
+    public function __construct($returnData = false) {
         // Calling Base' constructor
-        parent::__construct();
+        parent::__construct($returnData);
         
         // Get actual request
         $request = Loader::getQuery();
