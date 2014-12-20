@@ -83,7 +83,7 @@ class ElementController implements BaseController {
      * Consutrctor
      */
     
-    public function __construct(&$model) {
+    public function __construct($model) {
         // Set pointer to the model
         $this->model = $model;
         
