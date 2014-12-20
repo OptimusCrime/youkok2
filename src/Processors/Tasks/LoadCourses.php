@@ -13,6 +13,7 @@ namespace Youkok2\Processors\Tasks;
  */
 
 use \Youkok2\Models\Course as Course;
+use \Youkok2\Models\Element as Element;
 use \Youkok2\Processors\Base as Base;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
@@ -31,7 +32,7 @@ class LoadCourses extends Base {
         // Calling Base' constructor
         parent::__construct($returnData);
         
-        if (self::requireCli()) {
+        if (self::requireCli() or self::requireAdmin()) {
             // Check database
             if ($this->checkDatabase()) {
                 // Fetch
@@ -116,69 +117,27 @@ class LoadCourses extends Base {
 
                 // Check if exists
                 if (!isset($row['id'])) {
-                    // New course course
+                    // New course
                     $course = New Course();
-                    
-                    // Set data
                     $course->setCode($v['code']);
                     $course->setName($v['name']);
-                    
-                    // Save
                     $course->save();
                     
-                    // TODO implement Element
+                    // New Element
+                    $element = new Element();
+                    $element->setname($v['code']);
+                    $element->setUrlFriendly($v['url_friendly']);
+                    $element->setParent(1);
+                    $element->setCourse($course->getId());
+                    $element->setLocation(null);
+                    $element->setDirectory(true);
+                    $element->save();
                     
+                    // Add text
                     $added[] = 'Added ' . $v['code'];
                     
                     // Inc added
                     $new++;
-                    
-                /*
-                // Check if url-friendly or name exists
-                $check_current_course2 = "SELECT id
-                FROM archive
-                WHERE (
-                    name = :name
-                    OR url_friendly = :url_friendly
-                )
-                AND parent = 1
-                LIMIT 1";
-
-                $check_current_course2_query = Database::$db->prepare($check_current_course2);
-                $check_current_course2_query->execute(array(':name' => $v['code'],
-                    ':url_friendly' => $v['url_friendly']));
-                $row2 = $check_current_course2_query->fetch(\PDO::FETCH_ASSOC);
-
-                // Check if exists
-                if (!isset($row2['id'])) {
-                    // Check if the directory exists
-                    $directory_check = BASE_PATH . FILE_ROOT . '/' . $v['directory'];
-                    if (!is_dir($directory_check)) {
-                        // Insert course
-                        $insert_course = "INSERT INTO course (code, name)
-                        VALUES (:code, :name)";
-
-                        $insert_course_query = $db->prepare($insert_course);
-                        $insert_course_query->execute(array(':code' => $v['code'], ':name' => $v['name']));
-
-                        // Get the course-id
-                        $course_id = $db->lastInsertId();
-
-                        // Build empty archive
-                        $insert_archive = "INSERT INTO archive (name, url_friendly, parent, course, location, is_directory)
-                        VALUES (:name, :url_friendly, :parent, :course, :location, :is_directory)";
-
-                        $insert_archive_query = $db->prepare($insert_archive);
-                        $insert_archive_query->execute(array(':name' => $v['code'],
-                            ':url_friendly' => $v['url_friendly'],
-                            ':parent' => 1,
-                            ':course' => $course_id,
-                            ':location' => $v['directory'],
-                            ':is_directory' => 1));
-
-                        // Create directory
-                        mkdir($directory_check);
-                    }*/
                 }
             }
             

@@ -26,7 +26,7 @@ use \Youkok2\Utilities\Utilities as Utilities;
  * The class ElementController
  */
 
-class ElementController {
+class ElementController implements BaseController {
     
     /*
      * Variables
@@ -250,7 +250,7 @@ class ElementController {
 
                 // Check if we should cache this Item
                 if ($this->cache) {
-                    CacheManager::setCache($id, 'i', $this->cacheFormat());
+                    $this->cache();
                 }
             }
             else {
@@ -962,5 +962,54 @@ class ElementController {
         
         // Return the entire string
         return $ret;
+    }
+    
+    /*
+     * Cache the current Element
+     */
+    
+    public function cache() {
+        CacheManager::setCache($this->model->getId(), 'i', $this->cacheFormat());
+    }
+    
+    /*
+     * Save the current Element
+     */
+    
+    public function save() {
+        $insert_element  = "INSERT INTO archive (name, url_friendly, parent, course, location, mime_type, missing_image, size, is_directory, is_accepted, is_visible, url, added) " . PHP_EOL;
+        $insert_element .= "VALUES (:name, :url_friendly, :parent, :course, :location, :mime_type, :missing_image, :size, :is_directory, :is_accepted, :is_visible, :url, NOW())";
+
+        $insert_element_query = Database::$db->prepare($insert_element);
+        $insert_element_query->execute([':name' => $this->model->getName(),
+            ':url_friendly' => $this->model->getUrlFriendly(),
+            ':parent' => $this->model->getParent(),
+            ':course' => $this->model->getCourse(),
+            ':location' => $this->model->getLocation(),
+            ':mime_type' => $this->model->getMimeType(),
+            ':missing_image' => $this->model->getMissingImage(),
+            ':size' => $this->model->getSize(),
+            ':is_directory' => $this->model->isDirectory(),
+            ':is_accepted' => $this->model->isAccepted(),
+            ':is_visible' => $this->model->isVisible(),
+            ':url' => $this->model->getUrl(),
+        ]);
+
+        // Get the course-id
+        $element_id = Database::$db->lastInsertId();
+        
+        // Set id to model
+        $this->model->setId($element_id);
+        
+        // Cache
+        $this->cache();
+    }
+    
+    /*
+     * Update the current Element
+     */
+    
+    public function update() {
+        // TODO
     }
 }
