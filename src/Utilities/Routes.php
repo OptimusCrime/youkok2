@@ -95,6 +95,9 @@ class Routes {
          'Tasks\\LoadCourses' => array(
             '/tasks/courses',
         ),
+        'Tasks\\MigrateChecksums' => array(
+            '/tasks/migratecheckums',
+        ),
         
         /*
          * Other stuff

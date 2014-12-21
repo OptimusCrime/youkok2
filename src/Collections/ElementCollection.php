@@ -56,6 +56,9 @@ class ElementCollection {
                 if (in_array('root', $flags)) {
                     $element->controller->setLoadRootParent(true);
                 }
+                if (in_array('location', $flags)) {
+                    $element->controller->setLoadFullLocation(true);
+                }
             }
             
             // Create element

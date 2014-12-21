@@ -363,7 +363,7 @@ class ElementController implements BaseController {
     public function getFullLocation() {
         if (count($this->fullLocation) == 0) {
             $temp_location = array($this->model->getLocation());
-            $temp_id = $this->parent;
+            $temp_id = $this->model->getParent();
 
             // Loop untill we reach the root
             while ($temp_id != 0) {
