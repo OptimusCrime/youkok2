@@ -27,6 +27,11 @@ class Error extends Base {
             $this->template->assign('SITE_TITLE', 'Noe gikk galt');
             $this->template->display('error_db.tpl');
         }
+        elseif ($reason == 'offline') {
+            // Dette er ikke implementert enda
+            $this->template->assign('SITE_TITLE', 'Youkok2 er offline');
+            $this->template->display('error_offline.tpl');
+        }
         else {
             // Dette er ikke implementert enda
             $this->template->assign('SITE_TITLE', 'Noe gikk galt');
