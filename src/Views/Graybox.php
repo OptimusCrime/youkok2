@@ -1,17 +1,19 @@
 <?php
 /*
- * File: graybox.controller.php
- * Holds: The GrayboxController-class
+ * File: Graybox.php
+ * Holds: The Graybox-view
  * Created: 23.04.14
  * Project: Youkok2
  * 
 */
 
-//
-// The FlatController class
-//
+namespace Youkok2\Views;
 
-class GrayboxController extends Base {
+/*
+ * The Graybox class, extending Base class
+ */
+
+class Graybox extends Base {
 
     //
     // Some variables
@@ -53,9 +55,9 @@ class GrayboxController extends Base {
     // The constructor for this subclass
     //
 
-    public function __construct($routes) {
+    public function __construct() {
         // Calling Base' constructor
-        parent::__construct($routes);
+        parent::__construct();
         
         // Check query
         if ($this->queryGetClean() == 'graybox/newest') {
@@ -162,9 +164,3 @@ class GrayboxController extends Base {
         echo '<p><b>Tilfeldig commit:</b> ' . $this->commits[rand(0, (count($this->commits) - 1))] . '</p>';
     }
 }
-
-//
-// Return the class name
-//
-
-return 'GrayboxController';
