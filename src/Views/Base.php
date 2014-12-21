@@ -41,17 +41,22 @@ class Base extends Youkok2 {
 
     public function __construct($kill = false) {
         // Trying to connect to the database
-        try {
-            Database::connect();
-            
-            // Set debug log
-            if (DEV) {
-                $this->sqlLog = [];
-                Database::setLog($this->sqlLog);
+        if ($kill == false) {
+            try {
+                Database::connect();
+                
+                // Set debug log
+                if (DEV) {
+                    $this->sqlLog = [];
+                    Database::setLog($this->sqlLog);
+                }
             }
-        }
-        catch (Exception $e) {
-            $this->db = null;
+            catch (\Exception $e) {
+                $this->db = null;
+                
+                new Error('db');
+                die();
+            }
         }
         
         // Init Smarty
@@ -75,23 +80,26 @@ class Base extends Youkok2 {
         $this->template->assign('SEARCH_QUERY', '');
         $this->template->assign('HEADER_MENU', 'HOME');
         
-        // Init the user
-        Me::init();
-        
-        // Set BASE_USER_* information to the template
-        $this->template->assign('BASE_USER_IS_LOGGED_IN', Me::isLoggedIn());
-        $this->template->assign('BASE_USER_NICK', Me::getNick());
-        $this->template->assign('BASE_USER_KARMA', Me::getKarma());
-        $this->template->assign('BASE_USER_KARMA_PENDING', Me::getKarmaPending());
-        $this->template->assign('BASE_USER_IS_ADMIN', Me::isAdmin());
-        
-        // Check if we should validate login
-        if (isset($_POST['login-email'])) {
-            Me::logIn();
-        }
+        // Check if we should kill the view
+        if ($kill == false) {
+            // Init the user
+            Me::init();
+            
+            // Set BASE_USER_* information to the template
+            $this->template->assign('BASE_USER_IS_LOGGED_IN', Me::isLoggedIn());
+            $this->template->assign('BASE_USER_NICK', Me::getNick());
+            $this->template->assign('BASE_USER_KARMA', Me::getKarma());
+            $this->template->assign('BASE_USER_KARMA_PENDING', Me::getKarmaPending());
+            $this->template->assign('BASE_USER_IS_ADMIN', Me::isAdmin());
+            
+            // Check if we should validate login
+            if (isset($_POST['login-email'])) {
+                Me::logIn();
+            }
 
-        // Analyze the query
-        $this->queryAnalyze();
+            // Analyze the query
+            $this->queryAnalyze();
+        }
     }
     
     /*

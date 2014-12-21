@@ -1,25 +1,27 @@
 <?php
 /*
- * File: error.controller.php
- * Holds: The ErrorController-class
+ * File: Error.php
+ * Holds: Displaying an error message to the user
  * Created: 02.05.14
  * Project: Youkok2
  * 
 */
 
-//
-// In case something goes very wrong
-//
+namespace Youkok2\Views;
 
-class ErrorController extends Base {
+/*
+ * The Home class, extending Base class
+ */
 
-    //
-    // The constructor for this subclass
-    //
+class Error extends Base {
 
-    public function __construct($routes, $reason) {
+    /*
+     * Constructor
+     */
+
+    public function __construct($reason) {
         // Calling Base' constructor
-        parent::__construct($routes, true);
+        parent::__construct(true);
 
         if ($reason == 'db') {
             $this->template->assign('SITE_TITLE', 'Noe gikk galt');
@@ -32,9 +34,3 @@ class ErrorController extends Base {
         }
     }
 }
-
-//
-// Return the class name
-//
-
-return 'ErrorController';
