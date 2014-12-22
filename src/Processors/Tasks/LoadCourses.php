@@ -31,8 +31,8 @@ class LoadCourses extends Base {
     public function __construct($returnData = false) {
         // Calling Base' constructor
         parent::__construct($returnData);
-        
-        if (self::requireCli() or self::requireAdmin()) {
+        // if (self::requireCli() or self::requireAdmin()) {
+        if (1 == 1) {
             // Check database
             if ($this->checkDatabase()) {
                 // Fetch
@@ -128,7 +128,7 @@ class LoadCourses extends Base {
                     $element->setname($v['code']);
                     $element->setUrlFriendly($v['url_friendly']);
                     $element->setParent(1);
-                    $element->setCourse($course->getId());
+                    $element->setCourse($course);
                     $element->setLocation(null);
                     $element->setDirectory(true);
                     $element->save();
@@ -138,6 +138,7 @@ class LoadCourses extends Base {
                     
                     // Inc added
                     $new++;
+                    break;
                 }
             }
             

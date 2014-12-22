@@ -38,6 +38,9 @@ if (!defined('DATABASE_USER')) {
 if (!defined('DATABASE_PASSWORD')) {
     define('DATABASE_PASSWORD', 'password');
 }
+if (!defined('DATABASE_ERROR_MODE')) {
+    define('DATABASE_ERROR_MODE', \PDO::ERRMODE_WARNING);
+}
 
 // Errors
 if (!defined('ERROR_MODE')) {

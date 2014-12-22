@@ -47,6 +47,22 @@ class Element {
     
     public function __construct() {
         $this->controller = new ElementController($this);
+
+        /*
+         * Set some default values
+         */
+
+        $this->parent = null;
+        $this->course = null;
+        $this->location = ''; // Backwards compability
+        $this->mimeType = null;
+        $this->missingImage = 0;
+        $this->size = null;
+        $this->directory = false;
+        $this->accepted = false;
+        $this->visible = true;
+        $this->url = null;
+
     }
     
     /*
@@ -75,13 +91,13 @@ class Element {
         return $this->mimeType;
     }
     public function getMissingImage() {
-        return $this->missingImage;
+        return (bool) $this->missingImage;
     }
     public function getSize() {
         return $this->size;
     }
     public function isDirectory() {
-        return $this->directory;
+        return (bool) $this->directory;
     }
     public function isLink() {
         return ($this->url != null);
@@ -90,10 +106,10 @@ class Element {
         return ($this->url == null and !$this->directory);
     }
     public function isAccepted() {
-        return $this->accepted;
+        return (bool) $this->accepted;
     }
     public function isVisible() {
-        return $this->visibile;
+        return (bool) $this->visibile;
     }
     public function getUrl() {
         return $this->url;
@@ -119,7 +135,13 @@ class Element {
         $this->parent = $parent;
     }
     public function setCourse($course) {
-        $this->course = &$course;
+        if (is_object($course)) {
+            $this->course = &$course;
+
+        }
+        else {
+            $this->controller->setCourseFromId($course);
+        }
     }
     public function setLocation($location) {
         $this->location = $location;
