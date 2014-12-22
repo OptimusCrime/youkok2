@@ -1001,23 +1001,8 @@ class ElementController implements BaseController {
             ':url' => $this->model->getUrl(),
         ]);
 
-        print_r([':name' => $this->model->getName(),
-            ':url_friendly' => $this->model->getUrlFriendly(),
-            ':parent' => $this->model->getParent(),
-            ':course' => (($this->model->getCourse() === null) ? null : $this->model->getCourse()->getId()),
-            ':location' => $this->model->getLocation(),
-            ':mime_type' => $this->model->getMimeType(),
-            ':missing_image' => $this->model->getMissingImage(),
-            ':size' => $this->model->getSize(),
-            ':is_directory' => $this->model->isDirectory(),
-            ':is_accepted' => $this->model->isAccepted(),
-            ':is_visible' => $this->model->isVisible(),
-            ':url' => $this->model->getUrl(),
-        ]);
-
         // Get the course-id
         $element_id = Database::$db->lastInsertId();
-        print_r(Database::$db->errorInfo());
         
         // Set id to model
         $this->model->setId($element_id);
