@@ -40,16 +40,16 @@ class Archive extends Base {
             // Check if cached
             if (!$this->template->isCached('courses.tpl', $this->queryGetClean())) {
                 // Get title
-                $this->template->assign('ARCHIVE_TITLE', '<h1>Kokeboka</h1>');
-
-                // Load courses
-                $this->template->assign('ARCHIVE_DISPLAY', $this->loadCourses());
+                $this->template->assign('ARCHIVE_TITLE', '<h1>Emner</h1>');
 
                 // Get breadcrumbs
-                $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Kokeboka</li>');
+                $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Emner</li>');
 
                 // Set title
                 $this->template->assign('HEADER_MENU', 'ARCHIVE');
+
+                // Load content
+                $this->loadCourses();
             }
 
             // Display
@@ -311,28 +311,30 @@ class Archive extends Base {
 
             // Check how we should parse the course
             if ($container_is_null) {
-                $ret .= '<div class="col-md-6 archive-course">
-                    <h3>' . $current_letter . '</h3>
-                    <ul>
-                        <li>
-                            <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>
-                        </li>';
+                $ret .= '<div class="col-md-6 archive-course">' . PHP_EOL;
+                $ret .= '    <h3>' . $current_letter . '</h3>' . PHP_EOL;
+                $ret .= '    <ul>' . PHP_EOL;
+                $ret .= '        <li>' . PHP_EOL;
+                $ret .= '            <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>' . PHP_EOL;
+                $ret .= '        </li>' . PHP_EOL;
 
                 $container_is_null = false;
             }
             else {
                 if ($letter != $current_letter) {
-                    $ret .= '</ul></div><div class="col-md-6 archive-course">
-                    <h3>' . $current_letter . '</h3>
-                    <ul>
-                        <li>
-                            <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>
-                        </li>';
+                    $ret .= '    </ul>' . PHP_EOL;
+                    $ret .= '</div>' . PHP_EOL;
+                    $ret .= '<div class="col-md-6 archive-course">' . PHP_EOL;
+                    $ret .= '    <h3>' . $current_letter . '</h3>' . PHP_EOL;
+                    $ret .= '    <ul>' . PHP_EOL;
+                    $ret .= '        <li>' . PHP_EOL;
+                    $ret .= '            <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>' . PHP_EOL;
+                    $ret .= '        </li>' . PHP_EOL;
                 }
                 else {
-                    $ret .= '<li>
-                                <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>
-                            </li>';
+                    $ret .= '        <li>' . PHP_EOL;
+                    $ret .= '            <a href="' . $archive_url . '/' . $row['url_friendly'] . '">' . $row['code'] . ' - ' . $row['name'] . '</a>' . PHP_EOL;
+                    $ret .= '        </li>' . PHP_EOL;
                 }
             }
             
@@ -341,9 +343,10 @@ class Archive extends Base {
         }
 
         // End container
-        $ret .= '</ul></div>';
+        $ret .= '    </ul>' . PHP_EOL;
+        $ret .= '</div>' . PHP_EOL;
 
         // Return content
-        return $ret;
+        $this->template->assign('ARCHIVE_DISPLAY', $ret);
     }
 }
