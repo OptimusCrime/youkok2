@@ -25,6 +25,9 @@ class Youkok1001 extends AbstractMigration
         $this->table('archive')
              ->addColumn('checksum', 'string', array('limit' => 200, 'null' => true, 'default' => null, 'after' => 'course'))
              ->update();
+
+        // Workaround
+        $this->execute('ALTER TABLE `archive` CHANGE `location` `location` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL');
     }
 
     /**

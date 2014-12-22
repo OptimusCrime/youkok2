@@ -37,7 +37,7 @@ class Element {
     private $size;
     private $directory;
     private $accepted;
-    private $visibile;
+    private $visible;
     private $url;
     private $added;
     
@@ -109,7 +109,7 @@ class Element {
         return (bool) $this->accepted;
     }
     public function isVisible() {
-        return (bool) $this->visibile;
+        return (bool) $this->visible;
     }
     public function getUrl() {
         return $this->url;
@@ -162,7 +162,7 @@ class Element {
         $this->accepted = $accepted;
     }
     public function setVisible($visible) {
-        $this->visibile = $visible;
+        $this->visible = $visible;
     }
     public function setUrl($url) {
         $this->url = $url;

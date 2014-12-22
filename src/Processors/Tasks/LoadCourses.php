@@ -130,6 +130,7 @@ class LoadCourses extends Base {
                     $element->setParent(1);
                     $element->setCourse($course);
                     $element->setLocation(null);
+                    $element->setAccepted(true);
                     $element->setDirectory(true);
                     $element->save();
                     
