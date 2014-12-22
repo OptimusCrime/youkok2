@@ -138,7 +138,6 @@ class LoadCourses extends Base {
                     
                     // Inc added
                     $new++;
-                    break;
                 }
             }
             
