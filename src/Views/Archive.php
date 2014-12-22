@@ -36,30 +36,35 @@ class Archive extends Base {
         if ($this->queryGetClean('/') == Routes::ARCHIVE) {
             // Turn on caching
             $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
-        
-            // Get title
-            $this->template->assign('ARCHIVE_TITLE', '<h1>Kokeboka</h1>');
-            $this->template->assign('ARCHIVE_MODE', 'list');
-            
+
             // Check if cached
-            if (!$this->template->isCached('archive.tpl', $this->queryGetClean())) {
-                // Not cached, load courses
+            if (!$this->template->isCached('courses.tpl', $this->queryGetClean())) {
+                // Get title
+                $this->template->assign('ARCHIVE_TITLE', '<h1>Kokeboka</h1>');
+
+                // Load courses
                 $this->template->assign('ARCHIVE_DISPLAY', $this->loadCourses());
 
                 // Get breadcrumbs
                 $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Kokeboka</li>');
+
+                // Set title
+                $this->template->assign('HEADER_MENU', 'ARCHIVE');
             }
+
+            // Display
+            $this->displayAndCleanup('courses.tpl', $this->queryGetClean());
         }
         else {
             // Load the archive
             $this->loadArchive();
+
+            // Set title
+            $this->template->assign('HEADER_MENU', 'ARCHIVE');
+
+            // Display
+            $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
         }
-        
-        // Set title
-        $this->template->assign('HEADER_MENU', 'ARCHIVE');
-        
-        // Display
-        $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
     }
     
     /*
@@ -292,12 +297,12 @@ class Archive extends Base {
         $archive_url = substr(Routes::ARCHIVE, 1);
         
         // Load all the courses
-        $get_all_courses = "SELECT c.code, c.name, a.url_friendly
-        FROM course c
-        LEFT JOIN archive AS a ON c.id = a.course
-        WHERE a.is_visible = 1
-        ORDER BY c.code ASC";
-        
+        $get_all_courses  = "SELECT c.code, c.name, a.url_friendly" . PHP_EOL;
+        $get_all_courses .= "FROM course c" . PHP_EOL;
+        $get_all_courses .= "LEFT JOIN archive AS a ON c.id = a.course" . PHP_EOL;
+        $get_all_courses .= "WHERE a.is_visible = 1" . PHP_EOL;
+        $get_all_courses .= "ORDER BY c.code ASC";
+
         $get_all_courses_query = Database::$db->prepare($get_all_courses);
         $get_all_courses_query->execute();
         while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {

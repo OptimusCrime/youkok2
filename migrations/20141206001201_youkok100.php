@@ -179,7 +179,7 @@ class Youkok100 extends AbstractMigration
          */
         
         $this->table('archive')
-             ->addForeignKey('parent', 'archive', 'id', array('delete' => 'SET_NULL', 'update' => 'CASCADE'))
+             ->addForeignKey('parent', 'archive', 'id', array('delete' => 'SET_NULL', 'update' => 'NO_ACTION'))
              ->addForeignKey('course', 'course', 'id', array('delete' => 'SET_NULL', 'update' => 'CASCADE'))
              ->update();
         
