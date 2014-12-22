@@ -15,9 +15,9 @@ namespace Youkok2\Views;
 
 class Graybox extends Base {
 
-    //
-    // Some variables
-    //
+    /*
+     * Internal variables
+     */
     
     private $commits = array(
         'Forgot the emails, fuuuck', 'Added homescreen text and stuff', 'Added some stuff to header',
@@ -51,14 +51,14 @@ class Graybox extends Base {
         'Fixed typo 500ing the entire site', 'I messed up some stuff', 
     );
 
-    //
-    // The constructor for this subclass
-    //
+    /*
+     * Constructor
+     */
 
     public function __construct() {
         // Calling Base' constructor
         parent::__construct();
-        
+
         // Check query
         if ($this->queryGetClean() == 'graybox/newest') {
             $this->generateNewest();

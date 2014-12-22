@@ -147,11 +147,18 @@ class Loader {
     public static function getQuery() {
         // Check if we are running built in server or apache/nginx
         if (strpos($_SERVER['SERVER_SOFTWARE'], 'Development Server') !== false) {
+            $request_url = $_SERVER['REQUEST_URL'];
+
+            // Check if request uri has additional information (? params)
+            if (strpos($request_url, '?') !== false) {
+                $request_url = explode('?', $request_url)[0];
+            }
+
             // PHP built in server
-            return substr($_SERVER['REQUEST_URI'], 1);
+            return substr($request_url, 1);
         }
         else {
-            // Apache/nginx
+            // Apache/nginx/etc
             return (isset($_GET['q']) ? $_GET['q'] : '/');
         }
     }
