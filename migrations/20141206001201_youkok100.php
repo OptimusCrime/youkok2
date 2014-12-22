@@ -179,46 +179,46 @@ class Youkok100 extends AbstractMigration
          */
         
         $this->table('archive')
-             ->addForeignKey('parent', 'archive', 'id')
-             ->addForeignKey('course', 'course', 'id')
+             ->addForeignKey('parent', 'archive', 'id', array('delete' => 'SET_NULL', 'update' => 'CASCADE'))
+             ->addForeignKey('course', 'course', 'id', array('delete' => 'SET_NULL', 'update' => 'CASCADE'))
              ->update();
         
         $this->table('changepassword')
-             ->addForeignKey('user', 'user', 'id')
+             ->addForeignKey('user', 'user', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
              ->update();
-        
+
         $this->table('download')
-             ->addForeignKey('file', 'archive', 'id')
-             ->addForeignKey('user', 'user', 'id')
+             ->addForeignKey('file', 'archive', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
+             ->addForeignKey('user', 'user', 'id', array('delete' => 'SET_NULL', 'update' => 'CASCADE'))
              ->update();
-        
+
         $this->table('favorite')
-             ->addForeignKey('file', 'archive', 'id')
-             ->addForeignKey('user', 'user', 'id')
+             ->addForeignKey('file', 'archive', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
+             ->addForeignKey('user', 'user', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
              ->update();
-        
+
         $this->table('flag')
-             ->addForeignKey('file', 'archive', 'id')
-             ->addForeignKey('user', 'user', 'id')
+             ->addForeignKey('file', 'archive', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
+             ->addForeignKey('user', 'user', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
              ->update();
         
         $this->table('history')
-             ->addForeignKey('file', 'archive', 'id')
-             ->addForeignKey('user', 'user', 'id')
+             ->addForeignKey('file', 'archive', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
+             ->addForeignKey('user', 'user', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
              ->update();
         
         $this->table('report')
-             ->addForeignKey('file', 'archive', 'id')
-             ->addForeignKey('user', 'user', 'id')
+             ->addForeignKey('file', 'archive', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
+             ->addForeignKey('user', 'user', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
              ->update();
         
         $this->table('verify')
-             ->addForeignKey('user', 'user', 'id')
+             ->addForeignKey('user', 'user', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
              ->update();
         
         $this->table('vote')
-             ->addForeignKey('user', 'user', 'id')
-             ->addForeignKey('flag', 'flag', 'id')
+             ->addForeignKey('user', 'user', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
+             ->addForeignKey('flag', 'flag', 'id', array('delete' => 'SET_NULL', 'update' => 'CASCADE'))
              ->update();
     }
 

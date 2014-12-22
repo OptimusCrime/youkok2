@@ -993,11 +993,11 @@ class ElementController implements BaseController {
             ':course' => (($this->model->getCourse() === null) ? null : $this->model->getCourse()->getId()),
             ':location' => $this->model->getLocation(),
             ':mime_type' => $this->model->getMimeType(),
-            ':missing_image' => $this->model->getMissingImage(),
+            ':missing_image' => (int) $this->model->getMissingImage(),
             ':size' => $this->model->getSize(),
-            ':is_directory' => $this->model->isDirectory(),
-            ':is_accepted' => $this->model->isAccepted(),
-            ':is_visible' => $this->model->isVisible(),
+            ':is_directory' => (int) $this->model->isDirectory(),
+            ':is_accepted' => (int) $this->model->isAccepted(),
+            ':is_visible' => (int) $this->model->isVisible(),
             ':url' => $this->model->getUrl(),
         ]);
 
