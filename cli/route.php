@@ -13,7 +13,7 @@ if (strpos($req, '?') !== false) {
 }
 
 // Do the actual matching
-if (preg_match('/\.(?:png|jpg|jpeg|gif|txt|css|js|woff|tff|)$/', $req)) {
+if (preg_match('/\.(?:png|jpg|jpeg|gif|css|js|woff|tff|)$/', $req)) {
     // Static request, return as is
     return false;
 }
