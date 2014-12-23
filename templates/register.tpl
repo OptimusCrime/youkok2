@@ -51,19 +51,7 @@
         <p>Det skal mye til for å lage en kortere registreringsprosess enn dette her!</p>
     </div>
 
-    <div id="archive-sidebar-newest" class="archive-sidebar">
-        <h3>Nyeste elementer</h3>
-        <div id="archive-sidebar-newest-inner">
-            <p>Laster...</p>
-        </div>
-    </div>
-
-    <div id="archive-sidebar-last-downloads" class="archive-sidebar">
-        <h3>Siste nedlastninger</h3>
-        <div id="archive-sidebar-last-downloads-inner">
-            <p>Laster...</p>
-        </div>
-    </div>
+    [[+include file="sidebar.tpl"]]
 </div>
 
 [[+include file="footer.tpl"]]

@@ -83,7 +83,7 @@ class Graybox extends Base {
      */
     
     private function generateNewest() {
-        echo SharedElements::getNewest();
+        echo '<ul>' . SharedElements::getNewest() . '</ul>';
     }
     
     /*
@@ -91,7 +91,7 @@ class Graybox extends Base {
      */
     
     private function generateDownloads() {
-        echo SharedElements::getMostPopular(4);
+        echo '<ul>' . SharedElements::getMostPopular(4) . '</ul>';
     }
     
     /*
