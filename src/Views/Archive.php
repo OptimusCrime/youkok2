@@ -37,6 +37,9 @@ class Archive extends Base {
             // Turn on caching
             $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
 
+            // Set menu
+            $this->template->assign('HEADER_MENU', 'ARCHIVE');
+
             // Check if cached
             if (!$this->template->isCached('courses.tpl', $this->queryGetClean())) {
                 // Get title
@@ -44,9 +47,6 @@ class Archive extends Base {
 
                 // Get breadcrumbs
                 $this->template->assign('ARCHIVE_BREADCRUMBS', '<li class="active">Emner</li>');
-
-                // Set title
-                $this->template->assign('HEADER_MENU', 'ARCHIVE');
 
                 // Load content
                 $this->loadCourses();
