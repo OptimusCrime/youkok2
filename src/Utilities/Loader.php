@@ -32,7 +32,6 @@ class Loader {
         $this->getBasePath();
 
         // Check if proseccor or view is requested
-
         if ($this->basePath == Routes::PROSECESSOR) {
             // Get processor
             $this->getProcessor();
