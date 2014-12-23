@@ -119,10 +119,12 @@ class Elements {
      */
     
     public static function getFavorites() {
+        $ret = '';
         $favorites = Me::getFavorites();
-        
+
+        // Check if user has any favorites at all
         if (count($favorites) > 0) {
-            $ret = '';
+
             foreach ($favorites as $favorite) {
                 // Get
                 $element = ElementCollection::get($favorite);
@@ -132,13 +134,14 @@ class Elements {
                     $ret .= $element->controller->getFrontpageLink('favorites');
                 }
             }
-            
-            if ($ret == '') {
-                $ret = '<li class="list-group-item"><em>Du har ingen favoritter</em></li>';
-            }
-            
-            // Return the list
-            return $ret;
         }
+
+        // Check if anything was found
+        if (count($favorites) == 0 or $ret == '') {
+            $ret = '<li class="list-group-item"><em>Du har ingen favoritter</em></li>';
+        }
+
+        // Return the list
+        return $ret;
     }
 }
