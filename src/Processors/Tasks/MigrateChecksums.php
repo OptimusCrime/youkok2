@@ -35,7 +35,7 @@ class MigrateChecksums extends Base {
         
         if (self::requireCli() or self::requireAdmin()) {
             // Check database
-            if ($this->checkDatabase()) {
+            if ($this->makeDatabaseConnection()) {
                 // Fetch
                 $this->collect();
                 
@@ -50,24 +50,6 @@ class MigrateChecksums extends Base {
         
         // Return data
         $this->returnData();
-    }
-
-    /*
-     * Check if we can connect to the database
-     */
-
-    private function checkDatabase() {
-        try {
-            Database::connect();
-
-            return true;
-        }
-        catch (Exception $e) {
-            $this->setData('code', 500);
-            $this->setData('msg', 'Could not connect to database');
-
-            return false;
-        }
     }
 
     /*

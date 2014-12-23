@@ -106,6 +106,9 @@ class Routes {
         'User' => array(
             '/user/save',
         ),
+        'Register' => array(
+            '/register/email',
+        ),
         'StaticReturner' => array(
             '/search/courses.json',
          ),

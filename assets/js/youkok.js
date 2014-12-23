@@ -648,7 +648,7 @@ $(document).ready(function () {
                     $.ajax({
                         cache: false,
                         type: "post",
-                        url: "processor/register/check",
+                        url: "processor/register/email",
                         data: { 
                             email: $('#register-form-email').val() 
                         },

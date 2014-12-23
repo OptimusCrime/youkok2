@@ -106,4 +106,26 @@ class Base extends Youkok2 {
         // Do the check
         return (Me::isLoggedIn() and Me::isAdmin());
     }
+
+    /*
+     * Derp
+     */
+
+    /*
+     * Check if we can connect to the database
+     */
+
+    protected function makeDatabaseConnection() {
+        try {
+            Database::connect();
+
+            return true;
+        }
+        catch (Exception $e) {
+            $this->setData('code', 500);
+            $this->setData('msg', 'Could not connect to database');
+
+            return false;
+        }
+    }
 }
