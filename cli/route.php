@@ -6,7 +6,14 @@
  * Project: Youkok2
  */
 
-if (preg_match('/\.(?:png|jpg|jpeg|gif|txt|css|js|woff|tff|)/', $_SERVER['REQUEST_URI'])) {
+// Check if we should strip get params
+$req = $_SERVER['REQUEST_URI'];
+if (strpos($req, '?') !== false) {
+    $req = explode('?', $req)[0];
+}
+
+// Do the actual matching
+if (preg_match('/\.(?:png|jpg|jpeg|gif|txt|css|js|woff|tff|)$/', $req)) {
     // Static request, return as is
     return false;
 }

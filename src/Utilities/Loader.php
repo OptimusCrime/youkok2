@@ -32,6 +32,7 @@ class Loader {
         $this->getBasePath();
 
         // Check if proseccor or view is requested
+
         if ($this->basePath == Routes::PROSECESSOR) {
             // Get processor
             $this->getProcessor();
@@ -48,7 +49,7 @@ class Loader {
     private function getProcessor() {
         // Trim the fullPath
         $action = substr(str_replace(Routes::PROSECESSOR, '', $this->fullPath), 1);
-        
+
         // Run processor
         Youkok2::runProcessor($action);
     }
