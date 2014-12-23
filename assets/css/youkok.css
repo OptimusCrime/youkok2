@@ -56,6 +56,7 @@ a, a:focus, a:active, a:visited {
 }
 #dropdown-menu-opener:hover {
     color: #999999;
+    transition: color 0.2s ease;
 }
 .open #dropdown-menu-opener {
     color: #333333;
