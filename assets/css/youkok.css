@@ -39,13 +39,26 @@ html {
     color: #fff;
 }
 #main-nav a:hover {
-    color: #333333;
+    color: #999999;
+    transition: color 0.2s ease;
 }
 #main-nav .active a {
-    color: #999999;
+    color: #333333;
 }
 a, a:focus, a:active, a:visited {
     color: #3498DB;
+}
+.navbar-default .navbar-brand:hover {
+    color: #999999;
+}
+#dropdown-menu-opener:focus {
+    color: #fff;
+}
+#dropdown-menu-opener:hover {
+    color: #999999;
+}
+.open #dropdown-menu-opener {
+    color: #333333;
 }
 
 /*
@@ -107,9 +120,6 @@ a, a:focus, a:active, a:visited {
 #nav-search2:hover {
     margin-top: 0px;
     border-bottom-width: 4px;
-}
-.navbar-brand {
-    padding-right: 20%;
 }
 .navbar-form div {
     width: 100%;
