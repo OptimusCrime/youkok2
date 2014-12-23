@@ -28,25 +28,31 @@ class Register extends Base
      * Constructor
      */
 
-    public function __construct($returnData = false)
-    {
+    public function __construct($returnData = false, $method = null, $data = []) {
         // Calling Base' constructor
         parent::__construct($returnData);
 
         // Try to connect to the database
         if ($this->makeDatabaseConnection()) {
-            // Get actual request
-            $request = Loader::getQuery();
-
-            // Find what request is made
-            if ($request == 'processor/register/email') {
-                // Check if provided email already is in the system
-                $this->checkEmail();
+            // Check if a method was provided
+            if ($method !== null and method_exists($this, $method)) {
+                // Call method directory
+                call_user_func_array(array($this, $method), $data);
             }
             else {
-                // Processor not found
-                $this->setData('msg', 'Processor not found');
-                $this->setData('code', 500);
+                // Get actual request
+                $request = Loader::getQuery();
+
+                // Find what request is made
+                if ($request == 'processor/register/email') {
+                    // Check if provided email already is in the system
+                    $this->checkEmail();
+                }
+                else {
+                    // Processor not found
+                    $this->setData('msg', 'Processor not found');
+                    $this->setData('code', 500);
+                }
             }
         }
 
@@ -61,6 +67,7 @@ class Register extends Base
     private function checkEmail() {
         // Check if valid request
         if (isset($_POST['email']) and (isset($_POST['ignore']) or !Me::isLoggedIn())) {
+
             $check_email  = "SELECT id" . PHP_EOL;
             $check_email .= "FROM user" . PHP_EOL;
             $check_email .= "WHERE email = :email";

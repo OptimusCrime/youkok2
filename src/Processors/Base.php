@@ -55,7 +55,7 @@ class Base extends Youkok2 {
      * Return data
      */
     
-    protected function returnData() {
+    public function returnData() {
         // Check if we should return or output
         if ($this->returnData) {
             // Return
@@ -116,9 +116,14 @@ class Base extends Youkok2 {
      */
 
     protected function makeDatabaseConnection() {
+        // Check if already connected
+        if (Database::$db !== null) {
+            return true;
+        }
+
+        // Not connected, try
         try {
             Database::connect();
-
             return true;
         }
         catch (Exception $e) {

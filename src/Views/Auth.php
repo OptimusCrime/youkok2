@@ -130,6 +130,12 @@ class Auth extends Base {
                 $should_error = true;
             }
             else {
+                // Set post variables
+                $this->setFormValues('post', ['email' => $_POST['register-form-email']]);
+
+                $check_email = $this->runProcessor('register/email', true, 'checkEmail');
+                print_r($check_email->returnData());
+                die();
                 // No errors, check unique email
                 $check_email = "SELECT id
                 FROM user 
