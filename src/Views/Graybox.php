@@ -10,6 +10,13 @@
 namespace Youkok2\Views;
 
 /*
+ * Define what classes to use
+ */
+
+use \Youkok2\Shared\Elements as SharedElements;
+use \Youkok2\Utilities\Database as Database;
+
+/*
  * The Graybox class, extending Base class
  */
 
@@ -19,7 +26,7 @@ class Graybox extends Base {
      * Internal variables
      */
     
-    private $commits = array(
+    private $commits = [
         'Forgot the emails, fuuuck', 'Added homescreen text and stuff', 'Added some stuff to header',
         'Cleanup', 'Added good mails', 'Added very good error message if database-connection goes down',
         'Forgot one stupid line', 'Them dates', 'Ups', 'Changed order of stuff in header',
@@ -49,7 +56,7 @@ class Graybox extends Base {
         'Soooo much refractoring my eyes are dropping', 'Refractor the loader class to reflect some bad design choices',
         'Began working on a nice as F caching system', 'Added epic search functionality', 'Removed a hell of a lot images',
         'Fixed typo 500ing the entire site', 'I messed up some stuff', 
-    );
+    ];
 
     /*
      * Constructor
@@ -71,94 +78,25 @@ class Graybox extends Base {
         }
     }
     
-    //
-    // Method for generating graybox for newest files
-    //
+    /*
+     * Method for generating graybox for newest files
+     */
     
     private function generateNewest() {
-        // Declear variable for storing content
-        $ret = '<ul class="list-group">';
-        
-        $get_newest = "SELECT id
-        FROM archive
-        WHERE is_directory = 0
-        ORDER BY added DESC
-        LIMIT 15";
-        
-        $get_newest_query = $this->db->query($get_newest);
-        while ($row = $get_newest_query->fetch(PDO::FETCH_ASSOC)) {
-            // Create new object
-            $item = new Item($this);
-            $item->createById($row['id']);
-
-            // Add to collection if new
-            $this->collection->add($item);
-            
-            // CHeck if element was loaded
-            if ($item != null) {
-                if ($item->isLink()) {
-                    $element_url = $item->generateUrl($this->routes['redirect'][0]);
-                    $ret .= '<li class="list-group-item"><a target="_blank" title="Link til: ' . $item->getUrl() . '" href="' . $element_url . '">' . $item->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($item->getAdded()) . '" data-ts="' . $item->getAdded() . '">Laster...</span>]</li>';
-                }
-                else {
-                    $element_url = $item->generateUrl($this->routes['download'][0]);
-                    $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $item->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($item->getAdded()) . '" data-ts="' . $item->getAdded() . '">Laster...</span>]</li>';
-                }
-            }
-        }
-        
-        // End
-        $ret .= '</ul>';
-        
-        // Echo the pure content
-        echo $ret;
+        echo SharedElements::getNewest();
     }
     
-     //
-    // Method for generating graybox for newest downloads
-    //
+    /*
+     * Method for generating graybox for newest downloads
+     */
     
     private function generateDownloads() {
-        // Declear variable for storing content
-        $ret = '<ul class="list-group">';
-        
-        $get_downloads = "SELECT file, downloaded_time
-        FROM download
-        ORDER BY id DESC
-        LIMIT 15";
-        
-        $get_downloads_query = $this->db->query($get_downloads);
-        while ($row = $get_downloads_query->fetch(PDO::FETCH_ASSOC)) {
-            // Create new object
-            $item = new Item($this);
-            $item->createById($row['file']);
-
-            // Add to collection if new
-            $this->collection->add($item);
-
-            // CHeck if element was loaded
-            if ($item != null) {
-                if ($item->isLink()) {
-                    $element_url = $item->generateUrl($this->routes['redirect'][0]);
-                    $ret .= '<li class="list-group-item"><a target="_blank" title="Link til: ' . $item->getUrl() . '" href="' . $element_url . '">' . $item->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($row['downloaded_time']) . '" data-ts="' . $row['downloaded_time'] . '">Laster...</span>]</li>';
-                }
-                else {
-                    $element_url = $item->generateUrl($this->routes['download'][0]);
-                    $ret .= '<li class="list-group-item"><a href="' . $element_url . '">' . $item->getName() . '</a> [<span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($row['downloaded_time']) . '" data-ts="' . $row['downloaded_time'] . '">Laster...</span>]</li>';
-                }  
-            }
-        }
-        
-        // End
-        $ret .= '</ul>';
-        
-        // Echo the pure content
-        echo $ret;
+        echo SharedElements::getMostPopular(4);
     }
     
-    //
-    // Method for generating grayfor for funny numbers
-    //
+    /*
+     * Method for generating grayfor for funny numbers
+     */
     
     private function generateNumbers() {
         echo '<p><b>Tilfeldig commit:</b> ' . $this->commits[rand(0, (count($this->commits) - 1))] . '</p>';
