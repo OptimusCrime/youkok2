@@ -14,7 +14,10 @@ namespace Youkok2\Views;
  */
 
 use \Youkok2\Models\Me as Me;
+use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Redirect as Redirect;
+use \Youkok2\Utilities\MessageManager as MessageManager;
+use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
  * The Flat class, extending Base class
@@ -123,84 +126,70 @@ class Auth extends Base {
                 }
             }
 
-            $should_error = false;
-
-            // Check if error
-            if ($err) {
-                $should_error = true;
-            }
-            else {
+            // Check if missing data
+            if (!$err) {
                 // Set post variables
                 $this->setFormValues('post', ['email' => $_POST['register-form-email']]);
 
-                $check_email = $this->runProcessor('register/email', true, 'checkEmail');
-                print_r($check_email->returnData());
-                die();
-                // No errors, check unique email
-                $check_email = "SELECT id
-                FROM user 
-                WHERE email = :email";
-                
-                $check_email_query = $this->db->prepare($check_email);
-                $check_email_query->execute(array(':email' => $_POST['register-form-email']));
-                $row = $check_email_query->fetch(PDO::FETCH_ASSOC);
-                
-                // Check if flag was returned
-                if (isset($row['id']) or filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL) == false) {
-                    $should_error = true;
-                }
-                else {
+                // Run processor
+                $email_check = ($this->runProcessor('register/email', true, 'checkEmail')->returnData());
+
+                // Check if valid email
+                if (isset($email_check['code']) and $email_check['code'] == 200 and filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) == true) {
                     // Check passwords
                     if ($_POST['register-form-password1'] == $_POST['register-form-password2']) {
                         // Match, create new password
                         $hash_salt = md5(rand(0, 10000000000)) . "-" . md5(time()) . "DHGDKJDHGkebabSJHingridvoldKEfggfgf";
-                        $hash = $this->user->hashPassword($_POST['register-form-password1'], $hash_salt);
-                        
+                        $hash = Utilities::hashPassword($_POST['register-form-password1'], $hash_salt);
+
                         // Insert to database
-                        $create_user = "INSERT INTO user
-                        (email, password, salt, nick)
-                        VALUES (:email, :password, :salt, :nick)";
-                        
-                        $create_user_query = $this->db->prepare($create_user);
-                        $create_user_query->execute(array(':email' => $_POST['register-form-email'],
+                        $create_user  = "INSERT INTO user" . PHP_EOL;
+                        $create_user .= "(email, password, salt, nick)" . PHP_EOL;
+                        $create_user .= "VALUES (:email, :password, :salt, :nick)";
+
+                        $create_user_query = Database::$db->prepare($create_user);
+                        $create_user_query->execute([':email' => $_POST['register-form-email'],
                             ':password' => $hash,
                             ':salt' => $hash_salt,
-                            ':nick' => $_POST['register-form-nick']));
-                        
+                            ':nick' => $_POST['register-form-nick']]);
+
                         // Send e-mail here
-                        $mail = new PHPMailer;
-                        $mail->From = 'donotreply@' . SITE_DOMAIN;
+                        $mail = new \PHPMailer;
+                        $mail->From = 'donotreply@' . DOMAIN;
                         $mail->FromName = 'Youkok2';
                         $mail->addAddress($_POST['register-form-email']);
-                        $mail->addReplyTo(SITE_EMAIL_CONTACT);
-                        
+                        $mail->addReplyTo(EMAIL_CONTACT);
+
                         $mail->WordWrap = 75;
                         $mail->isHTML(false);
-                        
+
                         $mail->Subject = utf8_decode('Velkommen til Youkok2');
-                        $mail->Body = utf8_decode(file_get_contents(BASE_PATH . '/mail/register.txt'));
+                        $mail->Body = utf8_decode(file_get_contents(BASE_PATH . '/files/mail/register.txt'));
                         $mail->send();
                     }
                     else {
-                        $should_error = true;
+                        $err = true;
                     }
+                }
+                else {
+                    $err = true;
                 }
             }
 
             // Check if there was any errors during the signup
-            if ($should_error) {
+            if ($err) {
                 // Add message
-                $this->addMessage('Her gikk visst noe galt...', 'danger');
+                MessageManager::addMessage('Her gikk visst noe galt...', 'danger');
                
                 // Redirect
-                $this->redirect('registrer');
+                Redirect::send('registrer');
             }
             else {
                 // Add message
-                $this->addMessage('Velkommen til Youkok2!', 'success');
+                MessageManager::addMessage('Velkommen til Youkok2!', 'success');
 
                 // Log in (only session)
-                $this->user->setLogin($hash, $_POST['register-form-email']);
+                Me::setLogin($hash, $_POST['register-form-email']);
 
                 Redirect::send('');
             }

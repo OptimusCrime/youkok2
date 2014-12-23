@@ -42,6 +42,23 @@ class Utilities {
         // Return here
         return $s;
     }
+
+    /*
+     * Hash the passwords
+     */
+
+    public static function hashPassword($pass, $salt, $hard = true) {
+        // Create hash
+        $hash = password_hash($pass, PASSWORD_BCRYPT, ['cost' => 12, 'salt' => $salt]);
+
+        // Check if the hash should be fucked up in addition
+        if ($hard) {
+            return self::passwordFuckup($hash);
+        }
+        else {
+            return $hash;
+        }
+    }
     
     /*
      * Change up the password a bit
@@ -55,7 +72,7 @@ class Utilities {
             substr($s, 20));
 
         // Rejoin and full with stuff
-        return $splits[0] . $splits[1] . 'kebab' . $splits[3] . md5('ingrid vold') . 'hslee' . $splits[2] . 'yolo';
+        return $splits[0] . $splits[1] . 'kebab' . $splits[3] . '6071f11238e773ac6bb269ae0a0d4f4bhslee' . $splits[2] . 'yolo';
     }
     
     /*
@@ -74,22 +91,5 @@ class Utilities {
         
         // Return pretty filesize
         return $bytes;
-    }
-    
-    /*
-     * Hashing a password
-     */
-    
-    public static function hashPassword($pass, $salt, $hard = true) {
-        // Create hash
-        $hash = password_hash($pass, PASSWORD_BCRYPT, array('cost' => 12, 'salt' => $salt));
-        
-        // Check if the hash should be fucked up in addition
-        if ($hard) {
-            $hash = self::passwordFuckup($hash);
-        }
-        
-        // Return hash
-        return $hash;
     }
 }

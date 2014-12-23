@@ -309,18 +309,7 @@ Class User {
     // Hash password
     //
 
-    public function hashPassword($pass, $salt, $hard = true) {
-        // Create hash
-        $hash = password_hash($pass, PASSWORD_BCRYPT, array('cost' => 12, 'salt' => $salt));
-
-        // Check if the hash should be fucked up in addition
-        if ($hard) {
-            return $this->controller->utils->passwordFuckup($hash);
-        }
-        else {
-            return $hash;
-        }
-    }
+    
 
     public function setLogin($hash, $email, $cookie = false) {
         // Remove old login (just in case)
