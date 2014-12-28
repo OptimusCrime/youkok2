@@ -297,7 +297,7 @@ class Archive extends Base {
         $archive_url = substr(Routes::ARCHIVE, 1);
         
         // Load all the courses
-        $get_all_courses  = "SELECT c.code, c.name, a.url_friendly" . PHP_EOL;
+        $get_all_courses  = "SELECT c.code, c.name, c.empty, a.url_friendly" . PHP_EOL;
         $get_all_courses .= "FROM course c" . PHP_EOL;
         $get_all_courses .= "LEFT JOIN archive AS a ON c.id = a.course" . PHP_EOL;
         $get_all_courses .= "WHERE a.is_visible = 1" . PHP_EOL;
@@ -327,7 +327,7 @@ class Archive extends Base {
                 }
             }
 
-            $ret .= '        <li class="list-group-item">' . PHP_EOL;
+            $ret .= '        <li class="' . (($row['empty'] == 1) ? 'course-empty ' : '') . 'list-group-item">' . PHP_EOL;
             $ret .= '            <a href="' . $archive_url . '/' . $row['url_friendly'] . '"><strong>' . $row['code'] . '</strong> &mdash; ' . $row['name'] . '</a>' . PHP_EOL;
             $ret .= '        </li>' . PHP_EOL;
             

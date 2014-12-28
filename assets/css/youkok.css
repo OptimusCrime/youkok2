@@ -278,6 +278,14 @@ a, a:focus, a:active, a:visited {
 }
 
 /*
+ * Course
+ */
+
+.course-empty a {
+    color: #99c1dc;
+}
+
+/*
  * Archive
 */
 
