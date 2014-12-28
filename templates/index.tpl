@@ -85,7 +85,7 @@
     <div class="col-xs-12 col-sm-6">
         <div class="list-header">
             <h2 class="can-i-be-inline">Mest populære</h2>
-            <div class="btn-group">
+            <div class="btn-group" id="frontpage-most-popular-dropdown">
                 <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                 <span id="home-most-popular-selected">[[+if $HOME_MOST_POPULAR_DELTA == 0]]
                     Denne uka
