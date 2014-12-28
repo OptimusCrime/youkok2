@@ -19,7 +19,7 @@
             [[+$ARCHIVE_DISPLAY]]
         </div>
     </div>
-    <div class="col-xs-12 col-md-4">
+    <div id="sidebar" class="col-xs-12 col-md-4">
         <div class="sidebar-element">
             <h3>Hjelp</h3>
             <div class="sidebar-element-inner">

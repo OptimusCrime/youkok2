@@ -22,6 +22,9 @@ html {
 .help {
     cursor: help;
 }
+.red {
+    color: red;
+}
 
 /*
  * Overriding theme
@@ -76,6 +79,11 @@ a, a:focus, a:active, a:visited {
     }
     .elm-md-bigger {
         display: none;
+    }
+}
+@media all and (max-width: 749px) {
+    #sidebar {
+        margin-top: 15px;
     }
 }
 
