@@ -939,7 +939,7 @@ class ElementController implements BaseController {
             
             // Check if has course
             if ($this->hasCourse()) {
-                $ret .= ' — ' . $this->model->getCourse()->getName();
+                $ret .= ' &mdash; ' . $this->model->getCourse()->getName();
             }
             
             // Close link
