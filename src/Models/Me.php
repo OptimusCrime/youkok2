@@ -207,7 +207,7 @@ class Me {
             // Okey
             if (isset($_POST['login-email']) and isset($_POST['login-pw'])) {
                 // Try to fetch email
-                $get_login_user  = "SELECT id, email, salt, password" . PHP_EOL;
+                $get_login_user  = "SELECT id, email, password" . PHP_EOL;
                 $get_login_user .= "FROM user" . PHP_EOL;
                 $get_login_user .= "WHERE email = :email";
 

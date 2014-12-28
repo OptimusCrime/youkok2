@@ -45,10 +45,12 @@ class Auth extends Base {
             }
             else {
                 // Check if submitted
-                if (isset($_POST['login2-email'])) {
+                if (isset($_POST['login2-email']) or isset($_POST['login-email'])) {
                     // Change post vars
-                    $_POST['login-email'] = $_POST['login2-email'];
-                    $_POST['login-pw'] = $_POST['login2-pw'];
+                    if (isset($_POST['login2-email'])) {
+                        $_POST['login-email'] = $_POST['login2-email'];
+                        $_POST['login-pw'] = $_POST['login2-pw'];
+                    }
 
                     // Call method
                     Me::login();
@@ -144,13 +146,12 @@ class Auth extends Base {
 
                         // Insert to database
                         $create_user  = "INSERT INTO user" . PHP_EOL;
-                        $create_user .= "(email, password, salt, nick)" . PHP_EOL;
-                        $create_user .= "VALUES (:email, :password, :salt, :nick)";
+                        $create_user .= "(email, password, nick)" . PHP_EOL;
+                        $create_user .= "VALUES (:email, :password, :nick)";
 
                         $create_user_query = Database::$db->prepare($create_user);
                         $create_user_query->execute([':email' => $_POST['register-form-email'],
                             ':password' => $hash,
-                            ':salt' => $hash_salt,
                             ':nick' => $_POST['register-form-nick']]);
 
                         // Send e-mail here

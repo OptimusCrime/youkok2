@@ -66,7 +66,7 @@
                     <a id="dropdown-menu-opener" href="#" data-toggle="dropdown">Logg inn <b class="caret"></b></a>
                     <ul class="dropdown-menu" id="login-dropdown">
                         <li>
-                            <form role="form" action="" method="post">
+                            <form role="form" action="logg-inn" method="post">
                                 <div class="form-group">
                                     <label for="login-email">E-post</label>
                                     <input type="email" name="login-email" class="form-control" id="login-email" value="[[+if isset($LOGIN_EMAIL)]][[+$LOGIN_EMAIL]][[+/if]]" placeholder="" />
