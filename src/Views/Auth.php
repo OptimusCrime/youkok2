@@ -94,8 +94,7 @@ class Auth extends Base {
             }
         }
         else if ($this->queryGet(0) == 'nytt-passord') {
-            $this->forgottenPasswordNew();
-            if (Me::isLoggedIn()) {
+            if (Me::isLoggedIn() or !isset($_GET['hash'])) {
                 Redirect::send('');
             }
             else {
@@ -141,7 +140,7 @@ class Auth extends Base {
                     // Check passwords
                     if ($_POST['register-form-password1'] == $_POST['register-form-password2']) {
                         // Match, create new password
-                        $hash_salt = md5(rand(0, 10000000000)) . "-" . md5(time()) . "DHGDKJDHGkebabSJHingridvoldKEfggfgf";
+                        $hash_salt = Utilities::generateSalt();
                         $hash = Utilities::hashPassword($_POST['register-form-password1'], $hash_salt);
 
                         // Insert to database
@@ -264,14 +263,15 @@ class Auth extends Base {
 
     private function forgottenPasswordNew() {
         // Check if changepassword was found
-        $validate_hash = "SELECT id, user
-        FROM changepassword 
-        WHERE hash = :hash
-        AND timeout > NOW()";
+        $validate_hash  = "SELECT c.id, c.user, u.email" . PHP_EOL;
+        $validate_hash .= "FROM changepassword c" . PHP_EOL;
+        $validate_hash .= "LEFT JOIN user AS u ON c.user = u.id" . PHP_EOL;
+        $validate_hash .= "WHERE c.hash = :hash" . PHP_EOL;
+        $validate_hash .= "AND c.timeout > NOW()";
         
-        $validate_hash_query = $this->db->prepare($validate_hash);
+        $validate_hash_query = Database::$db->prepare($validate_hash);
         $validate_hash_query->execute(array(':hash' => $_GET['hash']));
-        $row = $validate_hash_query->fetch(PDO::FETCH_ASSOC);
+        $row = $validate_hash_query->fetch(\PDO::FETCH_ASSOC);
 
         // Check if valid or not
         if (isset($row['id'])) {
@@ -281,64 +281,48 @@ class Auth extends Base {
                 $this->displayAndCleanup('forgotten_password_new.tpl');
             }
             else {
+                // Check if the two passwords are identical
                 if ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2']) {
-                    // Get salt
-                    $get_user_salt = "SELECT salt, email
-                    FROM user 
-                    WHERE id = :user";
-                    
-                    $get_user_salt_query = $this->db->prepare($get_user_salt);
-                    $get_user_salt_query->execute(array(':user' => $row['user']));
-                    $row2 = $get_user_salt_query->fetch(PDO::FETCH_ASSOC);
 
-                    // Check if user was found
-                    if (isset($row2['salt'])) {
-                        // Generate new hash
-                        $hash = $this->user->hashPassword($_POST['forgotten-password-new-form-password1'], $row2['salt']);
-                        
-                        // Insert
-                        $insert_user_new_password = "UPDATE user
-                        SET password = :password
-                        WHERE id = :user";
-                        
-                        $insert_user_new_password_query = $this->db->prepare($insert_user_new_password);
-                        $insert_user_new_password_query->execute(array(':password' => $hash, ':user' => $row['user']));
+                    // New hash
+                    $hash_salt = Utilities::generateSalt();
+                    $hash = Utilities::hashPassword($_POST['forgotten-password-new-form-password1'], $hash_salt);
 
-                        // Delete from changepassword
-                        $delete_changepassword = "DELETE FROM changepassword
-                        WHERE user = :user";
-                        
-                        $delete_changepassword_query = $this->db->prepare($delete_changepassword);
-                        $delete_changepassword_query->execute(array(':user' => $row['user'])); 
+                    // Insert
+                    $insert_user_new_password  = "UPDATE user" . PHP_EOL;
+                    $insert_user_new_password .= "SET password = :password" . PHP_EOL;
+                    $insert_user_new_password .= "WHERE id = :user";
 
-                        // Add message
-                        $this->addMessage('Passordet er endret!', 'success');
+                    $insert_user_new_password_query = Database::$db->prepare($insert_user_new_password);
+                    $insert_user_new_password_query->execute(array(':password' => $hash, ':user' => $row['user']));
 
-                        // Log in (only session)
-                        $this->user->setLogin($hash, $row2['email']);
+                    // Delete from changepassword
+                    $delete_changepassword  = "DELETE FROM changepassword" . PHP_EOL;
+                    $delete_changepassword .= "WHERE user = :user";
 
-                        $this->redirect('');
-                    }
-                    else {
-                        // Add error message
-                        $this->addMessage('Her gikk visst noe galt...', 'danger');
+                    $delete_changepassword_query = Database::$db->prepare($delete_changepassword);
+                    $delete_changepassword_query->execute(array(':user' => $row['user']));
 
-                        // Redirect
-                        $this->redirect('');
-                    }
+                    // Add message
+                    MessageManager::addMessage('Passordet er endret!', 'success');
+
+                    // Log in (only session)
+                    Me::setLogin($hash, $row['email']);
+
+                    Redirect::send('');
                 }
                 else {
                     // Add error message
-                    $this->addMessage('De to passordene er ikke like.', 'danger');
+                    MessageManager::addMessage('De to passordene er ikke like.', 'danger');
 
                     // Redirect
-                    $this->redirect('nytt-passord?hash=' . $_GET['hash']);
+                    Redirect::send('nytt-passord?hash=' . $_GET['hash']);
                 }
             }
         }
         else {
             // Add error message
-            $this->addMessage('Denne linken er ikke lenger gyldig.', 'danger');
+            MessageManager::addMessage('Denne linken er ikke lenger gyldig.', 'danger');
 
             // Redirect
             Redirect::send('');
