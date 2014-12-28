@@ -66,13 +66,26 @@ class Utilities {
 
     public static function passwordFuckup($s) {
         // Split the hash
-        $splits = array(substr($s, 0, 5),
-            substr($s, 5, 5),
+        $splits = array(substr($s, 0, 10),
             substr($s, 10, 10),
             substr($s, 20));
 
         // Rejoin and full with stuff
-        return $splits[0] . $splits[1] . 'kebab' . $splits[3] . '6071f11238e773ac6bb269ae0a0d4f4bhslee' . $splits[2] . 'yolo';
+        return $splits[0] . 'kebab' . $splits[2] . '6071f11238e773ac6bb269ae0a0d4f4bhslee' . $splits[1] . 'yolo';
+    }
+
+    /*
+     * Change the password back to the initial state
+     */
+
+    public static function reverseFuckup($s) {
+        // Split the hash
+        $splits = array(substr($s, 0, 10),
+            substr($s, 15, 40),
+            substr($s, 92, 10));
+
+        // Return the correct
+        return $splits[0] . $splits[2] . $splits[1];
     }
     
     /*

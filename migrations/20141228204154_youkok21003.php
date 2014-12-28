@@ -2,7 +2,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class Youkok1002 extends AbstractMigration
+class Youkok21003 extends AbstractMigration
 {
     /**
      * Change Method.
@@ -22,8 +22,8 @@ class Youkok1002 extends AbstractMigration
      */
     public function up()
     {
-        $this->table('course')
-             ->addColumn('empty', 'boolean', array('limit' => 1, 'null' => false, 'default' => 1, 'after' => 'name'))
+        $this->table('user')
+             ->removeColumn('salt')
              ->update();
     }
 

@@ -217,13 +217,11 @@ class Me {
 
                 // Check result
                 if (isset($row['id'])) {
-                    // Try to match password
-                    $hash = Utilities::hashPassword($_POST['login-pw'], $row['salt']);
-
+                    $hash = Utilities::reverseFuckup($row['password']);
                     // Try to match with password from the database
-                    if ($hash === $row['password']) {
+                    if (password_verify($_POST['login-pw'], $hash)) {
                         // Check remember me
-                        if (isset($_POST['login-remember']) and $_POST['login-remember'] == 'pizza') {
+                        if (isset($_POST['login-remember']) and $_POST['login-remember'] == 'remember') {
                             $remember_me = true;
                         }
                         else {
@@ -231,7 +229,7 @@ class Me {
                         }
 
                         // Set login
-                        self::setLogin($hash, $_POST['login-email'], $remember_me);
+                        self::setLogin($row['password'], $_POST['login-email'], $remember_me);
 
                         // Add message
                         MessageManager::addMessage('Du er nå logget inn.', 'success');
@@ -242,7 +240,7 @@ class Me {
                             $clean_referer = str_replace(URL_FULL, '', $_SERVER['HTTP_REFERER']);
 
                             // Check if anything left
-                            if (strlen($clean_referer) > 0) {
+                            if (strlen($clean_referer) > 0 and $clean_referer != 'logg-inn') {
                                 // Refirect to whatever we have left
                                 Redirect::send($clean_referer);
                             }
