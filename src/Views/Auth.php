@@ -204,50 +204,50 @@ class Auth extends Base {
     private function forgottenPassword() {
         if (isset($_POST['forgotten-email'])) {
             // Handle stuff here
-            $get_login_user = "SELECT id
-            FROM user 
-            WHERE email = :email";
-            
-            $get_login_user_query = $this->db->prepare($get_login_user);
+            $get_login_user  = "SELECT id" . PHP_EOL;
+            $get_login_user .= "FROM user" . PHP_EOL;
+            $get_login_user .= "WHERE email = :email";
+
+            $get_login_user_query = Database::$db->prepare($get_login_user);
             $get_login_user_query->execute(array(':email' => $_POST['forgotten-email']));
-            $row = $get_login_user_query->fetch(PDO::FETCH_ASSOC);
+            $row = $get_login_user_query->fetch(\PDO::FETCH_ASSOC);
 
             // Check result
             if (isset($row['id'])) {
                 // Create hash
-                $hash = $this->user->hashPassword(md5(rand(0, 100000) . md5(time()) . $row['id']), sha1(rand(0, 1000)), false);
+                $hash = Utilities::hashPassword(md5(rand(0, 100000) . md5(time()) . $row['id']), sha1(rand(0, 1000)), false);
 
                 // Create database entry
-                $insert_changepassword = "INSERT INTO changepassword
-                (user, hash, timeout) 
-                VALUES (:user, :hash, NOW() + INTERVAL 1 DAY)";
+                $insert_changepassword  = "INSERT INTO changepassword" . PHP_EOL;
+                $insert_changepassword .= "(user, hash, timeout)" . PHP_EOL;
+                $insert_changepassword .= "VALUES (:user, :hash, NOW() + INTERVAL 1 DAY)";
                 
-                $insert_changepassword_query = $this->db->prepare($insert_changepassword);
+                $insert_changepassword_query = Database::$db->prepare($insert_changepassword);
                 $insert_changepassword_query->execute(array(':user' => $row['id'], ':hash' => $hash));
 
                 // Send mail
-                $mail = new PHPMailer;
-                $mail->From = 'donotreply@' . SITE_DOMAIN;
+                $mail = new \PHPMailer;
+                $mail->From = 'donotreply@' . DOMAIN;
                 $mail->FromName = 'Youkok2';
                 $mail->addAddress($_POST['forgotten-email']);
-                $mail->addReplyTo(SITE_EMAIL_CONTACT);
+                $mail->addReplyTo(EMAIL_CONTACT);
 
                 $mail->WordWrap = 75;
                 $mail->isHTML(false);
 
                 $mail->Subject = utf8_decode('Glemt passord på Youkok2');
-                $message = utf8_decode(file_get_contents(BASE_PATH . '/mail/forgotten.txt'));
+                $message = utf8_decode(file_get_contents(BASE_PATH . '/files//mail/forgotten.txt'));
                 $message_keys = array(
-                    '{{SITE_URL}}' => SITE_URL_FULL,
+                    '{{SITE_URL}}' => URL_FULL,
                     '{{HASH}}' => $hash);
                 $mail->Body = str_replace(array_keys($message_keys), $message_keys, $message);
                 $mail->send();
 
                 // Add message
-                $this->addMessage('Det er blitt sendt en e-post til deg. Denne inneholder en link for å velge nytt passord. Denne linken er gyldig i 24 timer.', 'success');
+                MessageManager::addMessage('Det er blitt sendt en e-post til deg. Denne inneholder en link for å velge nytt passord. Denne linken er gyldig i 24 timer.', 'success');
             }
             else {
-                $this->addMessage('E-posten du oppga ble ikke funnet i systemet. Prøv igjen.', 'danger');
+                MessageManager::addMessage('E-posten du oppga ble ikke funnet i systemet. Prøv igjen.', 'danger');
             }
 
             // Redirect back to form
