@@ -311,7 +311,7 @@ class Archive extends Base {
 
             // Check how we should parse the course
             if ($container_is_null) {
-                $ret .= '<div class="col-xs-12 col-md-6">' . PHP_EOL;
+                $ret .= '<div class="col-xs-12 col-md-6 course-box">' . PHP_EOL;
                 $ret .= '    <h3>' . $current_letter . '</h3>' . PHP_EOL;
                 $ret .= '    <ul class="list-group">' . PHP_EOL;
 

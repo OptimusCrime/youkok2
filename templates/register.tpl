@@ -46,11 +46,6 @@
     </form>
 </div>
 <div class="col-md-4">
-    <div class="archive-sidebar">
-        <h3>Visste du at?</h3>
-        <p>Det skal mye til for å lage en kortere registreringsprosess enn dette her!</p>
-    </div>
-
     [[+include file="sidebar.tpl"]]
 </div>
 

@@ -83,7 +83,7 @@ class Graybox extends Base {
      */
     
     private function generateNewest() {
-        echo '<ul>' . SharedElements::getNewest() . '</ul>';
+        echo '<ul class="list-group">' . SharedElements::getNewest() . '</ul>';
     }
     
     /*
@@ -91,7 +91,7 @@ class Graybox extends Base {
      */
     
     private function generateDownloads() {
-        echo '<ul>' . SharedElements::getMostPopular(4) . '</ul>';
+        echo '<ul class="list-group">' . SharedElements::getMostPopular(4) . '</ul>';
     }
     
     /*
@@ -99,6 +99,6 @@ class Graybox extends Base {
      */
     
     private function generateNumbers() {
-        echo '<p><b>Tilfeldig commit:</b> ' . $this->commits[rand(0, (count($this->commits) - 1))] . '</p>';
+        echo '<p><strong>Tilfeldig commit:</strong> ' . $this->commits[rand(0, (count($this->commits) - 1))] . '</p>';
     }
 }
