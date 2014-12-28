@@ -246,7 +246,7 @@ class Base extends Youkok2 {
     protected function displayAndCleanup($template, $sid = null) {
         // If develop, assign dev variables
         if (DEV) {
-            $this->template->assign('DEV_QUERIES_NUM', count($this->sqlLog));
+            $this->template->assign('DEV_QUERIES_NUM', Database::getCount());
             $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->sqlLog));
             $this->template->assign('DEV_ELEMENT_COLLECTION', ElementCollection::getSize());
             $this->template->assign('DEV_CACHE_LOAD', CacheManager::getFetches());
