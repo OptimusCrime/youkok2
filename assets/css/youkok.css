@@ -102,6 +102,10 @@ a, a:focus, a:active, a:visited {
 #frontpage-wellholder {
     padding: 15px;
 }
+.well {
+    box-shadow: none;
+    border: 1px solid #dddddd;
+}
 
 /*
  * Nav
@@ -265,12 +269,12 @@ a, a:focus, a:active, a:visited {
 @media all and (max-width: 767px) {
     #frontpage-links {
         padding-top: 10px;
-        border-top: 1px solid #e7e7e7;
+        border-top: 1px solid #dddddd;
     }
 }
 @media all and (min-width: 768px) {
     #frontpage-info {
-        border-right: 1px solid #e7e7e7;
+        border-right: 1px solid #dddddd;
     }
     #frontpage-links-second {
         padding-top: 15px;
