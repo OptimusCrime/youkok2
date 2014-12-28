@@ -56,25 +56,25 @@ class Home extends Base {
     
     private function loadInfobox() {
         // Load users
-        $get_user_number = "SELECT COUNT(id) as 'antall_brukere'
-        FROM user";
+        $get_user_number  = "SELECT COUNT(id) as 'antall_brukere'" . PHP_EOL;
+        $get_user_number .= "FROM user";
         
         $get_user_number_query = Database::$db->prepare($get_user_number);
         $get_user_number_query->execute();
         $get_user_number_result = $get_user_number_query->fetch(\PDO::FETCH_ASSOC);
         
         // Load files
-        $get_file_number = "SELECT COUNT(id) as 'antall_filer'
-        FROM archive
-        WHERE is_directory = 0";
+        $get_file_number  = "SELECT COUNT(id) as 'antall_filer'" . PHP_EOL;
+        $get_file_number .= "FROM archive" . PHP_EOL;
+        $get_file_number .= "WHERE is_directory = 0";
         
         $get_file_number_query = Database::$db->prepare($get_file_number);
         $get_file_number_query->execute();
         $get_file_number_result = $get_file_number_query->fetch(\PDO::FETCH_ASSOC);
         
         // Load downloads
-        $get_download_number = "SELECT COUNT(id) as 'antall_nedlastninger'
-        FROM download";
+        $get_download_number  = "SELECT COUNT(id) as 'antall_nedlastninger'" . PHP_EOL;
+        $get_download_number .= "FROM download";
         
         $get_download_number_query = Database::$db->prepare($get_download_number);
         $get_download_number_query->execute();
