@@ -21,7 +21,7 @@
                 <div class="panel-body">
                     <p><b>E-post:</b> [[+$PROFILE_USER_EMAIL]]</p>
                     <p><b>Kallenavn:</b> [[+$BASE_USER_NICK]]</p>
-                    <p><b>Karma:</b> [[+$BASE_USER_KARMA]]</p>
+                    <p><b>Karma:</b> [[+$BASE_USER_KARMA]] / [[+$BASE_USER_KARMA_PENDING]]</p>
                 </div>
             </div>
         </div>
@@ -31,7 +31,6 @@
                     <h3 class="panel-title">Annet</h3>
                 </div>
                 <div class="panel-body">
-                    <p><b>Aktiv konto:</b> [[+if $PROFILE_USER_ACTIVE == 1]]<i class="fa fa-check" style="color: green;"></i>[[+else]]<i class="fa fa-times" style="color: red;"></i>[[+/if]]</p>
                     <p><b>Kan bidra:</b> [[+if $PROFILE_USER_CAN_CONTRIBUTE == 1]]<i class="fa fa-check" style="color: green;"></i>[[+else]]<i class="fa fa-times" style="color: red;"></i>[[+/if]]</p>
                 </div>
             </div>

@@ -137,6 +137,14 @@ class Me {
     public static function getNick() {
         return self::$nick;
     }
+    public static function getNickReal() {
+        if (self::$nick == '<em>Anonym</em>') {
+            return '';
+        }
+        else {
+            return self::$nick;
+        }
+    }
     public static function getMostPopularDelta($override = null) {
         if ($override == null) {
             if (self::isLoggedIn()) {
@@ -183,7 +191,7 @@ class Me {
     }
     public static function setNick($nick) {
         if ($nick == '') {
-            $nick = null;
+            $nick = '<em>Anonym</em>';
         }
 
         // Set
@@ -224,19 +232,42 @@ class Me {
     public static function update() {
         // Check what should be updated
         $updated = [];
+
         foreach (self::$initialData as $k => $v) {
-            echo self::$k;
-            if (self::$k != $k['value']) {
-                if (!isset($k['db'])) {
-                    $updated[] = array('field' => $v['db'], 'value' => $v['value']);
+            if (self::$$k != $v['value']) {
+                // Get data
+                $value = self::$$k;
+                if ($k == 'nick') {
+                    $value = self::getNickReal();
+                }
+
+                // Find database field
+                if (isset($v['db'])) {
+                    $updated[] = array('field' => $v['db'], 'value' => $value);
                 }
                 else {
-                    $updated[] = array('field' => $k, 'value' => $v['value']);
+                    $updated[] = array('field' => $k, 'value' => $value);
                 }
             }
         }
 
-        var_dump($updated);
+        // Build sub query
+        $subquery = [];
+        $binds = [];
+        foreach ($updated as $v) {
+            $subquery[] = $v['field'] . ' = :' . $v['field'];
+            $binds[':' . $v['field']] = $v['value'];
+        }
+
+        // Add user id
+        $binds[':id'] = self::$id;
+
+        // Build query
+        $query = 'UPDATE user SET ' . implode(', ', $subquery) . ' WHERE id = :id';
+
+        // Run query
+        $create_user_query = Database::$db->prepare($query);
+        $create_user_query->execute($binds);
     }
     
     /*

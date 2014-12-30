@@ -1,7 +1,7 @@
 <?php
 /*
  * File: Profile.php
- * Holds:
+ * Holds: Views for the profile
  * Created: 02.10.13
  * Project: Youkok2
  * 
@@ -14,6 +14,8 @@ namespace Youkok2\Views;
  */
 
 use \Youkok2\Models\Me as Me;
+use \Youkok2\Utilities\MessageManager as MessageManager;
+use \Youkok2\Utilities\Redirect as Redirect;
 use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
@@ -51,7 +53,7 @@ class Profile extends Base {
                         $this->profileUpdatePassword();
                     }
                     else if ($_POST['source'] == 'info') {
-                        $this->profileInfo();
+                        $this->profileUpdateInfo();
                     }
                     else {
                         $this->redirect('');
@@ -132,31 +134,20 @@ class Profile extends Base {
     // Update profile info
     //
 
-    private function profileInfo() {
+    private function profileUpdateInfo() {
         if (isset($_POST['register-form-email']) and isset($_POST['register-form-nick'])) {
             $error = false;
 
             // Check if we should update e-mail
-            if ($_POST['register-form-email'] != $this->user->getEmail()
+            if ($_POST['register-form-email'] != Me::getEmail()
                 and strlen($_POST['register-form-email']) > 0
                 and filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL)) {
 
                 // Set data
                 Me::setEmail($_POST['register-form-email']);
 
-                // Save
-                Me::save();
-                
-                // Check if flag was returned
-                if (isset($row['id'])) {
-                    // Add messag
-                    $this->addMessage('Her gikk visst noe galt...', 'danger');
-
-                    // Redirect
-                    $this->redirect('profil/innstillinger');
-                }
-                else {
-                    // Store new email
+                /* TODO
+                 * // Store new email
                     $update_user_email = "UPDATE user
                     SET email = :email
                     WHERE id = :user";
@@ -184,41 +175,29 @@ class Profile extends Base {
                     else {
                         $error = true;
                     }
-                }
+                 */
             }
 
-            // Check if we sould update nick
-            if (isset($_POST['register-form-nick'])) {
-                $update_user_nick = "UPDATE user
-                SET nick = :nick
-                WHERE id = :user";
-
-                $update_user_nick_query = $this->db->prepare($update_user_nick);
-                $update_user_nick_query->execute(array(':nick' => $_POST['register-form-nick'],
-                                                       ':user' => $this->user->getId()));
+            // Check if we should update nick
+            if ($_POST['register-form-nick'] != Me::getNickReal()) {
+                Me::setNick($_POST['register-form-nick']);
             }
 
-            if (!$error) {
-                // Add messag
-                $this->addMessage('Dine endringer er lagret!', 'success');
+            // Save here
+            Me::update();
 
-                // Redirect
-                $this->redirect('profil/innstillinger');
-            }
-            else {
-                // Add messag
-                $this->addMessage('Her gikk visst noe galt...', 'danger');
+            // Add messag
+            MessageManager::addMessage('Dine endringer er lagret.', 'success');
 
-                // Redirect
-                $this->redirect('profil/innstillinger');
-            }
+            // Redirect
+            Redirect::send('profil/innstillinger');
         }
         else {
             // Add messag
-            $this->addMessage('Her gikk visst noe galt...', 'danger');
+            MessageManager::addMessage('Her gikk visst noe galt...', 'danger');
 
             // Redirect
-            $this->redirect('profil/innstillinger');
+            Redirect::send('profil/innstillinger');
         }
     }
 
