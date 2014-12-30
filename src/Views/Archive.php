@@ -97,12 +97,9 @@ class Archive extends Base {
     private function setArchiveInformation() {
         // Set state
         $this->template->assign('HEADER_MENU', 'ARCHIVE');
-        
-        // User status
-        $this->template->assign('ARCHIVE_USER_BANNED', Me::isBanned());
-        $this->template->assign('ARCHIVE_USER_HAS_KARMA', Me::hasKarma());
-        $this->template->assign('ARCHIVE_USER_CAN_CONTRIBUTE', Me::canContribute());
-        $this->template->assign('ARCHIVE_USER_ONLINE', Me::isLoggedIn());
+
+        // Set user status
+        Me::setUserStatus($this, 'ARCHIVE');
 
         // File types
         $accepted_filetypes = explode(',', ACCEPTED_FILETYPES);

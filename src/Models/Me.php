@@ -30,6 +30,7 @@ class Me {
     
     private static $id;
     private static $email;
+    private static $password;
     private static $nick;
     private static $mostPopularDelta;
     private static $karma;
@@ -62,7 +63,7 @@ class Me {
             $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
             if (count($hash_split) == 2) {
                 // Fetch from database to see if online
-                $get_current_user  = "SELECT id, email, nick, karma, karma_pending, banned, most_popular_delta" . PHP_EOL;
+                $get_current_user  = "SELECT id, email, password, nick, karma, karma_pending, banned, most_popular_delta" . PHP_EOL;
                 $get_current_user .= "FROM user " . PHP_EOL;
                 $get_current_user .= "WHERE email = :email" . PHP_EOL;
                 $get_current_user .= "AND password = :password";
@@ -80,6 +81,7 @@ class Me {
                     // Set attributes
                     self::$id = $row['id'];
                     self::$email = $row['email'];
+                    self::$password = $row['password'];
                     self::$nick = (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']);
                     self::$karma = $row['karma'];
                     self::$karmaPending = $row['karma_pending'];
@@ -108,6 +110,9 @@ class Me {
     public static function getEmail() {
         return self::$email;
     }
+    public static function getPassword() {
+        return self::$password;
+    }
     public static function getNick() {
         return self::$nick;
     }
@@ -122,6 +127,56 @@ class Me {
     }
     public static function isBanned() {
         return self::$banned;
+    }
+
+    /*
+     * Setters for the database information
+     */
+
+    public static function setId($id) {
+        self::$id = $id;
+    }
+    public static function setEmail($email) {
+        self::$email = $email;
+    }
+    public static function setPassword($password) {
+        self::$password = $password;
+    }
+    public static function setNick($nick) {
+        if ($nick == '') {
+            $nick = null;
+        }
+
+        // Set
+        self::$nick = $nick;
+    }
+    public static function setMostPopularDelta($delta) {
+        self::getUserDelta();
+        // TIDI
+    }
+    public static function setKarma($karma) {
+        self::$karma = $karma;
+    }
+    public static function setKarmaPending($pending) {
+        self::$karmaPending = $pending;
+    }
+    public static function setBanned($banned) {
+        self::$banned = $banned;
+    }
+
+    /*
+     * Create
+     */
+
+    public static function create() {
+        $create_user  = "INSERT INTO user" . PHP_EOL;
+        $create_user .= "(email, password, nick)" . PHP_EOL;
+        $create_user .= "VALUES (:email, :password, :nick)";
+
+        $create_user_query = Database::$db->prepare($create_user);
+        $create_user_query->execute([':email' => self::$email,
+            ':password' => self::$password,
+             ':nick' => self::$nick]);
     }
     
     /*
@@ -387,5 +442,17 @@ class Me {
 
         // Return the content
         return $ret;
+    }
+
+    /*
+     * Set user status
+     */
+
+    public static function setUserStatus(&$scope, $prefix) {
+        // User status
+        $scope->template->assign($prefix . '_USER_BANNED', Me::isBanned());
+        $scope->template->assign($prefix . '_USER_HAS_KARMA', Me::hasKarma());
+        $scope->template->assign($prefix . '_USER_CAN_CONTRIBUTE', Me::canContribute());
+        $scope->template->assign($prefix . '_USER_ONLINE', Me::isLoggedIn());
     }
 }

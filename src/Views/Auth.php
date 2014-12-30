@@ -140,18 +140,15 @@ class Auth extends Base {
                     // Check passwords
                     if ($_POST['register-form-password1'] == $_POST['register-form-password2']) {
                         // Match, create new password
-                        $hash_salt = Utilities::generateSalt();
-                        $hash = Utilities::hashPassword($_POST['register-form-password1'], $hash_salt);
+                        $hash = Utilities::hashPassword($_POST['register-form-password1'], Utilities::generateSalt());
 
                         // Insert to database
-                        $create_user  = "INSERT INTO user" . PHP_EOL;
-                        $create_user .= "(email, password, nick)" . PHP_EOL;
-                        $create_user .= "VALUES (:email, :password, :nick)";
+                        Me::setEmail($_POST['register-form-email']);
+                        Me::setPassword($hash);
+                        Me::setNick($_POST['register-form-nick']);
 
-                        $create_user_query = Database::$db->prepare($create_user);
-                        $create_user_query->execute([':email' => $_POST['register-form-email'],
-                            ':password' => $hash,
-                            ':nick' => $_POST['register-form-nick']]);
+                        // Create
+                        Me::create();
 
                         // Send e-mail here
                         $mail = new \PHPMailer;

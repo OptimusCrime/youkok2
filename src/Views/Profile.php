@@ -1,50 +1,46 @@
 <?php
 /*
- * File: profile.controller.php
- * Holds: The ProfileController-class
+ * File: Profile.php
+ * Holds:
  * Created: 02.10.13
  * Project: Youkok2
  * 
 */
 
-//
-// The ProfileController. Handles different profile stuff
-//
+namespace Youkok2\Views;
 
-class ProfileController extends Base {
+/*
+ * Define what classes to use
+ */
 
-    //
-    // The constructor for this subclass
-    //
+use \Youkok2\Models\Me as Me;
+use \Youkok2\Utilities\Utilities as Utilities;
 
-    public function __construct($routes) {
+/*
+ * The Profile class, extending Base class
+ */
+
+class Profile extends Base {
+
+    /*
+     * Constructor
+     */
+
+    public function __construct() {
         // Calling Base' constructor
-        parent::__construct($routes);
+        parent::__construct();
 
         // Check if online
-        if ($this->user->isLoggedIn()) {
+        if (Me::isLoggedIn()) {
             if ($this->queryGetClean() == 'profil/innstillinger') {
                 if (!isset($_POST['source'])) {
-                    // Assign email
-                    $this->template->assign('PROFILE_USER_EMAIL', $this->user->getEmail());
-
-                    if ($this->user->isBanned()) {
-                        $this->template->assign('PROFILE_USER_ACTIVE', 0);
-                    }
-                    else {
-                        $this->template->assign('PROFILE_USER_ACTIVE', 1);
-                    }
-
-                    if ($this->user->canContribute()) {
-                        $this->template->assign('PROFILE_USER_CAN_CONTRIBUTE', 1);
-                    }
-                    else {
-                        $this->template->assign('PROFILE_USER_CAN_CONTRIBUTE', 0);
-                    }
+                    // Set status
+                    Me::setUserStatus($this, 'PROFILE');
 
                     // For info
-                    $this->template->assign('PROFILE_USER_EMAIL', $this->user->getEmail());
-                    $this->template->assign('PROFILE_USER_NICK', $this->user->getNick());
+                    $this->template->assign('PROFILE_USER_EMAIL', Me::getEmail());
+                    $this->template->assign('PROFILE_USER_EMAIL', Me::getEmail());
+                    $this->template->assign('PROFILE_USER_NICK', Me::getNick());
 
                     // Displaying and cleaning up
                     $this->template->assign('SITE_TITLE', 'Mine innstillinger');
@@ -52,7 +48,7 @@ class ProfileController extends Base {
                 }
                 else {
                     if ($_POST['source'] == 'password') {
-                        $this->profilePassword();
+                        $this->profileUpdatePassword();
                     }
                     else if ($_POST['source'] == 'info') {
                         $this->profileInfo();
@@ -80,83 +76,55 @@ class ProfileController extends Base {
         }
     }
 
-    //
-    // Method for updating password
-    //
+    /*
+     * Update password
+     */
 
-    private function profilePassword() {
-        if ($this->user->isLoggedIn() and isset($_POST['forgotten-password-new-form-oldpassword'])
+    private function profileUpdatePassword() {
+        // Check if everything is ok
+        if (isset($_POST['forgotten-password-new-form-oldpassword'])
             and isset($_POST['forgotten-password-new-form-password1'])
-            and isset($_POST['forgotten-password-new-form-password2'])) {
+            and isset($_POST['forgotten-password-new-form-password2'])
+            and ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2'])) {
 
-            if ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2']) {
-                // Get salt
-                $get_user_salt = "SELECT salt, password
-                FROM user
-                WHERE id = :user";
+            // Validate old password
+            if (password_verify($_POST['forgotten-password-new-form-oldpassword'], Utility::reverseFuckup(Me::getPassword()))) {
+                // New hash
+                $hash_salt = Utilities::generateSalt();
+                $hash = Utilities::hashPassword($_POST['forgotten-password-new-form-password1'], $hash_salt);
 
-                $get_user_salt_query = $this->db->prepare($get_user_salt);
-                $get_user_salt_query->execute(array(':user' => $this->user->getId()));
-                $row2 = $get_user_salt_query->fetch(PDO::FETCH_ASSOC);
+                // Insert
+                $insert_user_new_password  = "UPDATE user" . PHP_EOL;
+                $insert_user_new_password .= "SET password = :password" . PHP_EOL;
+                $insert_user_new_password .= "WHERE id = :user";
 
-                // Check if user was found
-                if (isset($row2['salt'])) {
-                    // Generate old hash
-                    $hash_pre = $this->user->hashPassword($_POST['forgotten-password-new-form-oldpassword'], $row2['salt']);
+                $insert_user_new_password_query = Database::$db->prepare($insert_user_new_password);
+                $insert_user_new_password_query->execute(array(':password' => $hash, ':user' => Me::getId()));
 
-                    // Check if the old password matches the old one
-                    if ($hash_pre == $row2['password']) {
-                        // Generate new hash
-                        $hash = $this->user->hashPassword($_POST['forgotten-password-new-form-password1'], $row2['salt']);
+                // Add message
+                $this->addMessage('Passordet er endret!', 'success');
 
-                        // Insert
-                        $insert_user_new_password = "UPDATE user
-                        SET password = :password
-                        WHERE id = :user";
-
-                        $insert_user_new_password_query = $this->db->prepare($insert_user_new_password);
-                        $insert_user_new_password_query->execute(array(':password' => $hash,
-                                                                       ':user' => $this->user->getId()));
-
-                        // Add message
-                        $this->addMessage('Passordet er endret!', 'success');
-
-                        // Check if we should set more than just session
-                        if (isset($_COOKIE['youkok2'])) {
-                            $set_login_cookie = true;
-                        }
-                        else {
-                            $set_login_cookie = false;
-                        }
-
-                        // Set the login
-                        $this->user->setLogin($hash, $this->user->getEmail(), $set_login_cookie);
-
-                        // Do the redirect
-                        $this->redirect('profil/innstillinger');
-                    }
-                    else {
-                        // Add message
-                        $this->addMessage('Passordet du oppga som ditt gamle passord er ikke korrekt. Prøv igjen!', 'danger');
-
-                        // Redirect
-                        $this->redirect('profil/innstillinger');
-                    }
+                // Check if we should set more than just session
+                if (isset($_COOKIE['youkok2'])) {
+                    $set_login_cookie = true;
                 }
                 else {
-                    // Add error message
-                    $this->addMessage('Her gikk visst noe galt...', 'danger');
-
-                    // Redirect
-                    $this->redirect('profil/innstillinger');
+                    $set_login_cookie = false;
                 }
-            }
-        }
-        else {
-            $this->addMessage('Her gikk visst noe galt...', 'danger');
 
-            // Redirect
-            $this->redirect('profil/innstillinger');
+                // Set the login
+                $this->user->setLogin($hash, $this->user->getEmail(), $set_login_cookie);
+
+                // Do the redirect
+                $this->redirect('profil/innstillinger');
+            }
+            else {
+                // Add message
+                $this->addMessage('Passordet du oppga som ditt gamle passord er ikke korrekt. Prøv igjen!', 'danger');
+
+                // Redirect
+                $this->redirect('profil/innstillinger');
+            }
         }
     }
 
@@ -165,7 +133,7 @@ class ProfileController extends Base {
     //
 
     private function profileInfo() {
-        if ($this->user->isLoggedIn() and isset($_POST['register-form-email']) and isset($_POST['register-form-nick'])) {
+        if (isset($_POST['register-form-email']) and isset($_POST['register-form-nick'])) {
             $error = false;
 
             // Check if we should update e-mail
@@ -173,13 +141,11 @@ class ProfileController extends Base {
                 and strlen($_POST['register-form-email']) > 0
                 and filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL)) {
 
-                $check_email = "SELECT id
-                FROM user 
-                WHERE email = :email";
-                
-                $check_email_query = $this->db->prepare($check_email);
-                $check_email_query->execute(array(':email' => $_POST['register-form-email']));
-                $row = $check_email_query->fetch(PDO::FETCH_ASSOC);
+                // Set data
+                Me::setEmail($_POST['register-form-email']);
+
+                // Save
+                Me::save();
                 
                 // Check if flag was returned
                 if (isset($row['id'])) {
@@ -328,9 +294,3 @@ class ProfileController extends Base {
         $this->template->assign('PROFILE_USER_HISTORY', $ret);
     }
 }
-
-//
-// Return the class name
-//
-
-return 'ProfileController';
