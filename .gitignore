@@ -24,7 +24,7 @@ cache.php
 composer.lock
 composer.phar
 phinx.yml
-/processor/search/*
+npm-debug.log
 
 # And those fuckings DS_Stores
 .DS_Store
