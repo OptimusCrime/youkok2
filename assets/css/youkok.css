@@ -319,6 +319,9 @@ a:visited {
 .sidebar-element {
     margin-bottom: 20px;
 }
+.sidebar-element h3 {
+    margin-top: 0px;
+}
 .sidebar-element-inner {
     border: 1px solid #dddddd;
     background-color: #fff;
