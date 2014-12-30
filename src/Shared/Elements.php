@@ -79,7 +79,7 @@ class Elements {
     public static function getMostPopular($override = null) {
         $ret = '';
 
-        $user_delta = Me::getUserDelta($override);
+        $user_delta = Me::getMostPopularDelta($override);
 
         // Load most popular files from the system
         $get_most_popular  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;

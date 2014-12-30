@@ -33,16 +33,22 @@ class Me {
     private static $password;
     private static $nick;
     private static $mostPopularDelta;
+    private static $lastSeen;
     private static $karma;
     private static $karmaPending;
     private static $banned;
-    
+    private static $initialData = [];
+
     // Other variables
-    public static $inited = false;
-    
     private static $loggedIn;
     private static $favorites;
-    
+
+    public static $inited = false;
+
+    /*
+     * Init the user
+     */
+
     public static function init() {
         // Set initial
         self::$inited = true;
@@ -63,7 +69,7 @@ class Me {
             $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
             if (count($hash_split) == 2) {
                 // Fetch from database to see if online
-                $get_current_user  = "SELECT id, email, password, nick, karma, karma_pending, banned, most_popular_delta" . PHP_EOL;
+                $get_current_user  = "SELECT id, email, password, nick, most_popular_delta, last_seen, karma, karma_pending, banned" . PHP_EOL;
                 $get_current_user .= "FROM user " . PHP_EOL;
                 $get_current_user .= "WHERE email = :email" . PHP_EOL;
                 $get_current_user .= "AND password = :password";
@@ -83,10 +89,25 @@ class Me {
                     self::$email = $row['email'];
                     self::$password = $row['password'];
                     self::$nick = (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']);
-                    self::$karma = $row['karma'];
-                    self::$karmaPending = $row['karma_pending'];
+                    self::$mostPopularDelta = (int) $row['most_popular_delta'];
+                    self::$lastSeen = (int)  $row['last_seen'];
+                    self::$karma = (int) $row['karma'];
+                    self::$karmaPending = (int) $row['karma_pending'];
                     self::$banned = (boolean) $row['banned'];
-                    self::$mostPopularDelta = $row['most_popular_delta'];
+
+
+                    // Set to initial data
+                    self::$initialData = [
+                        'id' => array('value' => self::$id),
+                        'email' => array('value' => self::$email),
+                        'password' => array('value' => self::$password),
+                        'nick' => array('value' => self::$nick),
+                        'mostPopularDelta' => array('value' => self::$mostPopularDelta, 'db' => 'id'),
+                        'lastSeen' => array('value' => self::$lastSeen, 'db' => 'last_seen'),
+                        'karma' => array('value' => self::$karma),
+                        'karmaPending' => array('value' => self::$karmaPending, 'db' => 'karma_pending'),
+                        'banned' => array('value' => self::$banned),
+                    ];
 
                     // Update last seen
                     self::updateLastSeen();
@@ -116,8 +137,26 @@ class Me {
     public static function getNick() {
         return self::$nick;
     }
-    public static function getMostPopularDelta() {
-        return self::getUserDelta();
+    public static function getMostPopularDelta($override = null) {
+        if ($override == null) {
+            if (self::isLoggedIn()) {
+                return self::$mostPopularDelta;
+            }
+            else {
+                if (isset($_COOKIE['home_popular'])) {
+                    return $_COOKIE['home_popular'];
+                }
+                else {
+                    return 1;
+                }
+            }
+        }
+        else {
+            return $override;
+        }
+    }
+    public static function getLastSeen() {
+        return self::$lastSeen;
     }
     public static function getKarma() {
         return self::$karma;
@@ -151,8 +190,7 @@ class Me {
         self::$nick = $nick;
     }
     public static function setMostPopularDelta($delta) {
-        self::getUserDelta();
-        // TIDI
+        self::$mostPopularDelta = $delta;
     }
     public static function setKarma($karma) {
         self::$karma = $karma;
@@ -165,10 +203,10 @@ class Me {
     }
 
     /*
-     * Create
+     * Save
      */
 
-    public static function create() {
+    public static function save() {
         $create_user  = "INSERT INTO user" . PHP_EOL;
         $create_user .= "(email, password, nick)" . PHP_EOL;
         $create_user .= "VALUES (:email, :password, :nick)";
@@ -176,7 +214,29 @@ class Me {
         $create_user_query = Database::$db->prepare($create_user);
         $create_user_query->execute([':email' => self::$email,
             ':password' => self::$password,
-             ':nick' => self::$nick]);
+            ':nick' => self::$nick]);
+    }
+
+    /*
+     * Update
+     */
+
+    public static function update() {
+        // Check what should be updated
+        $updated = [];
+        foreach (self::$initialData as $k => $v) {
+            echo self::$k;
+            if (self::$k != $k['value']) {
+                if (!isset($k['db'])) {
+                    $updated[] = array('field' => $v['db'], 'value' => $v['value']);
+                }
+                else {
+                    $updated[] = array('field' => $k, 'value' => $v['value']);
+                }
+            }
+        }
+
+        var_dump($updated);
     }
     
     /*
@@ -202,25 +262,6 @@ class Me {
     
     public static function updateLastSeen() {
         //
-    }
-    
-    public static function getUserDelta($override = null) {
-        if ($override == null) {
-            if (self::isLoggedIn()) {
-                return self::$mostPopularDelta;
-            }
-            else {
-                if (isset($_COOKIE['home_popular'])) {
-                    return $_COOKIE['home_popular'];
-                }
-                else {
-                    return 1;
-                }
-            }
-        }
-        else {
-            return $override;
-        }
     }
     
     /*

@@ -13,6 +13,7 @@ namespace Youkok2\Views;
  * Define what classes to use
  */
 
+use \Youkok2\Models\ChangePassword as ChangePassword;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Redirect as Redirect;
@@ -147,8 +148,8 @@ class Auth extends Base {
                         Me::setPassword($hash);
                         Me::setNick($_POST['register-form-nick']);
 
-                        // Create
-                        Me::create();
+                        // Save
+                        Me::save();
 
                         // Send e-mail here
                         $mail = new \PHPMailer;
@@ -213,13 +214,13 @@ class Auth extends Base {
                 // Create hash
                 $hash = Utilities::hashPassword(md5(rand(0, 100000) . md5(time()) . $row['id']), sha1(rand(0, 1000)), false);
 
-                // Create database entry
-                $insert_changepassword  = "INSERT INTO changepassword" . PHP_EOL;
-                $insert_changepassword .= "(user, hash, timeout)" . PHP_EOL;
-                $insert_changepassword .= "VALUES (:user, :hash, NOW() + INTERVAL 1 DAY)";
-                
-                $insert_changepassword_query = Database::$db->prepare($insert_changepassword);
-                $insert_changepassword_query->execute(array(':user' => $row['id'], ':hash' => $hash));
+                // Set data
+                $change_password = new ChangePassword();
+                $change_password->setUser($row['id']);
+                $change_password->setHash($hash);
+
+                // Save
+                $change_password->save();
 
                 // Send mail
                 $mail = new \PHPMailer;
@@ -260,18 +261,11 @@ class Auth extends Base {
 
     private function forgottenPasswordNew() {
         // Check if changepassword was found
-        $validate_hash  = "SELECT c.id, c.user, u.email" . PHP_EOL;
-        $validate_hash .= "FROM changepassword c" . PHP_EOL;
-        $validate_hash .= "LEFT JOIN user AS u ON c.user = u.id" . PHP_EOL;
-        $validate_hash .= "WHERE c.hash = :hash" . PHP_EOL;
-        $validate_hash .= "AND c.timeout > NOW()";
-        
-        $validate_hash_query = Database::$db->prepare($validate_hash);
-        $validate_hash_query->execute(array(':hash' => $_GET['hash']));
-        $row = $validate_hash_query->fetch(\PDO::FETCH_ASSOC);
+        $change_password = new ChangePassword();
+        $change_password->createByHash($_GET['hash']);
 
         // Check if valid or not
-        if (isset($row['id'])) {
+        if ($change_password->getId() != null) {
             // Check if submitted
             if (!isset($_POST['forgotten-password-new-form-password1'])) {
                 // Display
@@ -286,25 +280,17 @@ class Auth extends Base {
                     $hash = Utilities::hashPassword($_POST['forgotten-password-new-form-password1'], $hash_salt);
 
                     // Insert
-                    $insert_user_new_password  = "UPDATE user" . PHP_EOL;
-                    $insert_user_new_password .= "SET password = :password" . PHP_EOL;
-                    $insert_user_new_password .= "WHERE id = :user";
-
-                    $insert_user_new_password_query = Database::$db->prepare($insert_user_new_password);
-                    $insert_user_new_password_query->execute(array(':password' => $hash, ':user' => $row['user']));
+                    Me::setPassword($hash);
+                    Me::update();
 
                     // Delete from changepassword
-                    $delete_changepassword  = "DELETE FROM changepassword" . PHP_EOL;
-                    $delete_changepassword .= "WHERE user = :user";
-
-                    $delete_changepassword_query = Database::$db->prepare($delete_changepassword);
-                    $delete_changepassword_query->execute(array(':user' => $row['user']));
+                    $change_password->delete();
 
                     // Add message
                     MessageManager::addMessage('Passordet er endret!', 'success');
 
                     // Log in (only session)
-                    Me::setLogin($hash, $row['email']);
+                    Me::setLogin($hash, Me::getEmail());
 
                     Redirect::send('');
                 }
