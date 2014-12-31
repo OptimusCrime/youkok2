@@ -41,7 +41,7 @@
 
     <p>I tillegg er ikoner for filtyper og noe inspirasjon hentet fra <a href="http://www.mollify.org" target="_blank">Mollify</a>.</p>
 </div>
-<div class="col-md-4">
+<div class="col-md-4" id="sidebar">
     [[+include file="sidebar.tpl"]]
 </div>
 

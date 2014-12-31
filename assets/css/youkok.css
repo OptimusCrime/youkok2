@@ -347,9 +347,6 @@ a:visited {
     padding-left: 25px;
     padding-right: 10px;
 }
-#archive-empty {
-    display: none;
-}
 #archive-list {
     list-style: none;
     list-style-position: inside;

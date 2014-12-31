@@ -6,7 +6,7 @@
     <p>Når man laster ned filer loggfører vi IP-adressen som laster ned. Vi vil aldri selge disse IP-adressene. Ikke tror jeg noen vil ha interesse av det heller, så den dataen er helt sikker.</p>
     <p>Bortsett fra det lagrer vi "Husk meg"-informasjonen i cookies. Dersom du ikke ønsker dette får du hoppe over å huke av den checkboksen!</p>
 </div>
-<div class="col-md-4">
+<div class="col-md-4" id="sidebar">
     [[+include file="sidebar.tpl"]]
 </div>
 

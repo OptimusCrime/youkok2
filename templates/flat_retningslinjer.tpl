@@ -30,7 +30,7 @@
     </ul>
     <em>Legg merke til at .zip-filer blir evaluert ved opplastning. .zip-fila kan kun inneholde filer som er godkjente, og ikke andre .zip-arkiv.</em>
 </div>
-<div class="col-md-4">
+<div class="col-md-4" id="sidebar">
     [[+include file="sidebar.tpl"]]
 </div>
 

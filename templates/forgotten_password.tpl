@@ -11,7 +11,7 @@
         <button type="submit" class="btn btn-default">Send inn</button> eller <a href="logg-inn">gå tilbake</a>.
     </form>
 </div>
-<div class="col-md-4">
+<div class="col-md-4" id="sidebar">
     [[+include file="sidebar.tpl"]]
 </div>
 

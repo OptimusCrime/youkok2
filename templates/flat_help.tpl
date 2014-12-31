@@ -38,7 +38,7 @@
     <p>Opplastning av filer krever en moderne nettleser da dette er gjort gjennom HTML5. Verifiserte nettlesere inkluderer Chrome, Safari 4.0+, Firefox 3.0+, Opera 11.0+ og visstnok en fallback-løsning for IE6 som ikke er testet.</p>
     <p>Ta gjerne <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">kontakt</a> dersom du opplever problemer med vår filopplastning.</p>
 </div>
-<div class="col-md-4">
+<div class="col-md-4" id="sidebar">
     [[+include file="sidebar.tpl"]]
 </div>
 

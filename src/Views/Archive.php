@@ -66,9 +66,68 @@ class Archive extends Base {
             $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
         }
     }
+
+
+    /*
+     * Load courses
+     */
+
+    private function loadCourses() {
+        // Variables are nice
+        $ret = '';
+        $letter = null;
+        $container_is_null = true;
+        $archive_url = substr(Routes::ARCHIVE, 1);
+
+        // Load all the courses
+        $get_all_courses  = "SELECT c.code, c.name, c.empty, a.url_friendly" . PHP_EOL;
+        $get_all_courses .= "FROM course c" . PHP_EOL;
+        $get_all_courses .= "LEFT JOIN archive AS a ON c.id = a.course" . PHP_EOL;
+        $get_all_courses .= "WHERE a.is_visible = 1" . PHP_EOL;
+        $get_all_courses .= "ORDER BY c.code ASC";
+
+        $get_all_courses_query = Database::$db->prepare($get_all_courses);
+        $get_all_courses_query->execute();
+        while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
+            // Store the current letter
+            $current_letter = substr($row['code'], 0, 1);
+
+            // Check how we should parse the course
+            if ($container_is_null) {
+                $ret .= '<div class="col-xs-12 col-md-6 course-box">' . PHP_EOL;
+                $ret .= '    <h3>' . $current_letter . '</h3>' . PHP_EOL;
+                $ret .= '    <ul class="list-group">' . PHP_EOL;
+
+                $container_is_null = false;
+            }
+            else {
+                if ($letter != $current_letter) {
+                    $ret .= '    </ul>' . PHP_EOL;
+                    $ret .= '</div>' . PHP_EOL;
+                    $ret .= '<div class="col-xs-12 col-md-6">' . PHP_EOL;
+                    $ret .= '    <h3>' . $current_letter . '</h3>' . PHP_EOL;
+                    $ret .= '    <ul class="list-group">' . PHP_EOL;
+                }
+            }
+
+            $ret .= '        <li class="' . (($row['empty'] == 1) ? 'course-empty ' : '') . 'list-group-item">' . PHP_EOL;
+            $ret .= '            <a href="' . $archive_url . '/' . $row['url_friendly'] . '"><strong>' . $row['code'] . '</strong> &mdash; ' . $row['name'] . '</a>' . PHP_EOL;
+            $ret .= '        </li>' . PHP_EOL;
+
+            // Assign new letter
+            $letter = $current_letter;
+        }
+
+        // End container
+        $ret .= '    </ul>' . PHP_EOL;
+        $ret .= '</div>' . PHP_EOL;
+
+        // Return content
+        $this->template->assign('ARCHIVE_DISPLAY', $ret);
+    }
     
     /*
-     * Load archive for a folder
+     * Load archive for a directory
      */
     
     private function loadArchive() {
@@ -76,7 +135,7 @@ class Archive extends Base {
         $element = new Element();
         $element->controller->setLoadRootParent(true);
         $element->createByUrl($this->queryGetClean());
-        
+
         // Check if element was found and is directory
         if ($element->controller->wasFound() and $element->isDirectory()) {
             // Set archive information to Smarty
@@ -142,9 +201,15 @@ class Archive extends Base {
         $this->template->assign('ARCHIVE_TITLE', $archive_title);
         
         // Metadata
-        $element_root = $element->controller->getRootParent();
-        $site_description = $element_root->getName() . ' - ' . $element_root->getCourse()->getName() . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
-        $this->template->assign('SITE_DESCRPTION', $site_description);           
+        //$element_root = $element->controller->getRootParent();
+        //$site_description = $element_root->getName() . ' - ' . $element_root->getCourse()->getName() . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
+        $this->template->assign('SITE_DESCRPTION', 'derp');
+
+        $this->template->assign('ARCHIVE_BREADCRUMBS', 'foo');
+        $this->template->assign('ARCHIVE_ZIP_DOWNLOAD', 'foo');
+        $this->template->assign('ARCHIVE_ZIP_DOWNLOAD_NUM', 'foo');
+        $this->template->assign('ARCHIVE_DISPLAY', 'foo');
+        $this->template->assign('ARCHIVE_EMPTY', true);
     }
 
     //
@@ -280,63 +345,5 @@ class Archive extends Base {
 
         // Return the content here
         return $ret;
-    }
-
-    /*
-     * Load courses
-     */
-
-    private function loadCourses() {
-        // Variables are nice
-        $ret = '';
-        $letter = null;
-        $container_is_null = true;
-        $archive_url = substr(Routes::ARCHIVE, 1);
-        
-        // Load all the courses
-        $get_all_courses  = "SELECT c.code, c.name, c.empty, a.url_friendly" . PHP_EOL;
-        $get_all_courses .= "FROM course c" . PHP_EOL;
-        $get_all_courses .= "LEFT JOIN archive AS a ON c.id = a.course" . PHP_EOL;
-        $get_all_courses .= "WHERE a.is_visible = 1" . PHP_EOL;
-        $get_all_courses .= "ORDER BY c.code ASC";
-
-        $get_all_courses_query = Database::$db->prepare($get_all_courses);
-        $get_all_courses_query->execute();
-        while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Store the current letter
-            $current_letter = substr($row['code'], 0, 1);
-
-            // Check how we should parse the course
-            if ($container_is_null) {
-                $ret .= '<div class="col-xs-12 col-md-6 course-box">' . PHP_EOL;
-                $ret .= '    <h3>' . $current_letter . '</h3>' . PHP_EOL;
-                $ret .= '    <ul class="list-group">' . PHP_EOL;
-
-                $container_is_null = false;
-            }
-            else {
-                if ($letter != $current_letter) {
-                    $ret .= '    </ul>' . PHP_EOL;
-                    $ret .= '</div>' . PHP_EOL;
-                    $ret .= '<div class="col-xs-12 col-md-6">' . PHP_EOL;
-                    $ret .= '    <h3>' . $current_letter . '</h3>' . PHP_EOL;
-                    $ret .= '    <ul class="list-group">' . PHP_EOL;
-                }
-            }
-
-            $ret .= '        <li class="' . (($row['empty'] == 1) ? 'course-empty ' : '') . 'list-group-item">' . PHP_EOL;
-            $ret .= '            <a href="' . $archive_url . '/' . $row['url_friendly'] . '"><strong>' . $row['code'] . '</strong> &mdash; ' . $row['name'] . '</a>' . PHP_EOL;
-            $ret .= '        </li>' . PHP_EOL;
-            
-            // Assign new letter
-            $letter = $current_letter;
-        }
-
-        // End container
-        $ret .= '    </ul>' . PHP_EOL;
-        $ret .= '</div>' . PHP_EOL;
-
-        // Return content
-        $this->template->assign('ARCHIVE_DISPLAY', $ret);
     }
 }

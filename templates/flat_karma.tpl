@@ -60,7 +60,7 @@
     </ul>
     <p>Legg merke til at disse verdiene kan endre seg.</p>
 </div>
-<div class="col-md-4">
+<div class="col-md-4" id="sidebar">
     [[+include file="sidebar.tpl"]]
 </div>
 
