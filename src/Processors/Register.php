@@ -66,9 +66,9 @@ class Register extends Base
 
     private function checkEmail() {
         // Check if valid request
-        if (isset($_POST['email']) and (isset($_POST['ignore']) or !Me::isLoggedIn())) {
+        if (isset($_POST['email'])) {
 
-            $check_email  = "SELECT id" . PHP_EOL;
+            $check_email  = "SELECT COUNT(id) as num" . PHP_EOL;
             $check_email .= "FROM user" . PHP_EOL;
             $check_email .= "WHERE email = :email";
 
@@ -77,7 +77,7 @@ class Register extends Base
             $row = $check_email_query->fetch(\PDO::FETCH_ASSOC);
 
             // Check if flag was returned
-            if (isset($row['id'])) {
+            if ((!isset($_POST['ignore']) and $row['num'] > 0) or (isset($_POST['ignore']) and $row['num'] > 1)) {
                 $this->setData('code', 500);
             }
             else {

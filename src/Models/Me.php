@@ -60,6 +60,9 @@ class Me {
         if (isset($_SESSION['youkok2']) or isset($_COOKIE['youkok2'])) {
             if (isset($_COOKIE['youkok2'])) {
                 $hash = $_COOKIE['youkok2'];
+
+                // Set session as well
+                $_SESSION['youkok2'] = $_COOKIE['youkok2'];
             }
             else {
                 $hash = $_SESSION['youkok2'];
@@ -526,5 +529,28 @@ class Me {
         $scope->template->assign($prefix . '_USER_HAS_KARMA', Me::hasKarma());
         $scope->template->assign($prefix . '_USER_CAN_CONTRIBUTE', Me::canContribute());
         $scope->template->assign($prefix . '_USER_ONLINE', Me::isLoggedIn());
+    }
+
+    /*
+     * Get user karma elements
+     */
+
+    public static function getKarmaElements() {
+        $elements = [];
+
+        // Run query
+        $get_user_karma_elements  = "SELECT id" . PHP_EOL;
+        $get_user_karma_elements .= "FROM history" . PHP_EOL;
+        $get_user_karma_elements .= "WHERE user = :user" . PHP_EOL;
+        $get_user_karma_elements .= "ORDER BY added DESC";
+
+        $get_user_karma_elements_query = Database::$db->prepare($get_user_karma_elements);
+        $get_user_karma_elements_query->execute(array(':user' => Me::getId()));
+        while ($row = $get_user_karma_elements_query->fetch(\PDO::FETCH_ASSOC)) {
+            $elements[] = $row['id'];
+        }
+
+        // Return elements
+        return $elements;
     }
 }

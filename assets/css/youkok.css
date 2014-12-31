@@ -316,6 +316,9 @@ a:visited {
  * Sidebar
  */
 
+#sidebar {
+    margin-top: 20px;
+}
 .sidebar-element {
     margin-bottom: 20px;
 }

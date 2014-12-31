@@ -36,6 +36,9 @@ class Profile extends Base {
         if (Me::isLoggedIn()) {
             if ($this->queryGetClean() == 'profil/innstillinger') {
                 if (!isset($_POST['source'])) {
+                    // Set title
+                    $this->template->assign('SITE_TITLE', 'Mine innstillinger');
+
                     // Set status
                     Me::setUserStatus($this, 'PROFILE');
 
@@ -44,11 +47,11 @@ class Profile extends Base {
                     $this->template->assign('PROFILE_USER_EMAIL', Me::getEmail());
                     $this->template->assign('PROFILE_USER_NICK', Me::getNick());
 
-                    // Displaying and cleaning up
-                    $this->template->assign('SITE_TITLE', 'Mine innstillinger');
+                    // Display
                     $this->displayAndCleanup('profile_settings.tpl');
                 }
                 else {
+                    // Not submitted, display views
                     if ($_POST['source'] == 'password') {
                         $this->profileUpdatePassword();
                     }
@@ -56,16 +59,19 @@ class Profile extends Base {
                         $this->profileUpdateInfo();
                     }
                     else {
-                        $this->redirect('');
+                        Redirect::send('');
                     }
                 }
 
             }
             else if ($this->queryGetClean() == 'profil/historikk') {
-                $this->profileHistory();
-
-                // Displaying and cleaning up
+                // Set title
                 $this->template->assign('SITE_TITLE', 'Mine historikk');
+
+                // Get view
+                $this->displayProfileHistory();
+
+                // Display
                 $this->displayAndCleanup('profile_history.tpl');
             }
             else {
@@ -74,7 +80,7 @@ class Profile extends Base {
             }
         }
         else {
-            $this->redirect('');
+            Redirect::send('');
         }
     }
 
@@ -90,49 +96,45 @@ class Profile extends Base {
             and ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2'])) {
 
             // Validate old password
-            if (password_verify($_POST['forgotten-password-new-form-oldpassword'], Utility::reverseFuckup(Me::getPassword()))) {
+            if (password_verify($_POST['forgotten-password-new-form-oldpassword'], Utilities::reverseFuckup(Me::getPassword()))) {
                 // New hash
                 $hash_salt = Utilities::generateSalt();
                 $hash = Utilities::hashPassword($_POST['forgotten-password-new-form-password1'], $hash_salt);
 
-                // Insert
-                $insert_user_new_password  = "UPDATE user" . PHP_EOL;
-                $insert_user_new_password .= "SET password = :password" . PHP_EOL;
-                $insert_user_new_password .= "WHERE id = :user";
+                // Set data
+                Me::setPassword($hash);
 
-                $insert_user_new_password_query = Database::$db->prepare($insert_user_new_password);
-                $insert_user_new_password_query->execute(array(':password' => $hash, ':user' => Me::getId()));
+                // Update
+                Me::update();
 
                 // Add message
-                $this->addMessage('Passordet er endret!', 'success');
+                MessageManager::addMessage('Passordet er endret.', 'success');
 
                 // Check if we should set more than just session
+                $set_login_cookie = false;
                 if (isset($_COOKIE['youkok2'])) {
                     $set_login_cookie = true;
                 }
-                else {
-                    $set_login_cookie = false;
-                }
 
                 // Set the login
-                $this->user->setLogin($hash, $this->user->getEmail(), $set_login_cookie);
+                Me::setLogin($hash, Me::getEmail(), $set_login_cookie);
 
                 // Do the redirect
-                $this->redirect('profil/innstillinger');
+                Redirect::send('profil/innstillinger');
             }
             else {
                 // Add message
-                $this->addMessage('Passordet du oppga som ditt gamle passord er ikke korrekt. Prøv igjen!', 'danger');
+                MessageManager::addMessage('Passordet du oppga som ditt gamle passord er ikke korrekt eller de nye passordene matchet ikke. Prøv igjen.', 'danger');
 
                 // Redirect
-                $this->redirect('profil/innstillinger');
+                Redirect::send('profil/innstillinger');
             }
         }
     }
 
-    //
-    // Update profile info
-    //
+    /*
+     * Update profile info
+     */
 
     private function profileUpdateInfo() {
         if (isset($_POST['register-form-email']) and isset($_POST['register-form-nick'])) {
@@ -146,36 +148,20 @@ class Profile extends Base {
                 // Set data
                 Me::setEmail($_POST['register-form-email']);
 
-                /* TODO
-                 * // Store new email
-                    $update_user_email = "UPDATE user
-                    SET email = :email
-                    WHERE id = :user";
+                // Update
+                Me::update();
 
-                    $update_user_email_query = $this->db->prepare($update_user_email);
-                    $update_user_email_query->execute(array(':email' => $_POST['register-form-email'],
-                                                            ':user' => $this->user->getId()));
+                // Update cookie/session
+                $set_login_cookie = false;
+                if (isset($_COOKIE['youkok2'])) {
+                    $set_login_cookie = true;
+                }
 
-                    // Update cookie/session
-                    if (isset($_COOKIE['youkok2'])) {
-                        $hash = $_COOKIE['youkok2'];
-                        $set_login_cookie = true;
-                    }
-                    else {
-                        $hash = $_SESSION['youkok2'];
-                        $set_login_cookie = false;
-                    }
+                // Try to split
+                $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $_SESSION['youkok2']);
 
-                    // Try to split
-                    $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
-                    if (count($hash_split) == 2) {
-                        // Set the login
-                        $this->user->setLogin($hash_split[1], $_POST['register-form-email'], $set_login_cookie);
-                    }
-                    else {
-                        $error = true;
-                    }
-                 */
+                // Set the login
+                Me::setLogin($hash_split[1], $_POST['register-form-email'], $set_login_cookie);
             }
 
             // Check if we should update nick
@@ -201,19 +187,22 @@ class Profile extends Base {
         }
     }
 
-    //
-    // Display user history
-    //
+    /*
+     * Display profile history
+     */
 
-    public function profileHistory() {
+    public function displayProfileHistory() {
         $ret = '';
 
-        $get_profile_history = "SELECT *
-        FROM history
-        WHERE user = :user
-        ORDER BY added DESC";
-        
-        $get_profile_history_query = $this->db->prepare($get_profile_history);
+        $history = Me::getKarmaElements();
+
+        if (count($history) == 0) {
+            $ret = '<li class="list-group-item">Du har ikke opparbeidet deg noe karma.</li>';
+        }
+        else {
+            // TODO
+            /*
+             * $get_profile_history_query = $this->db->prepare($get_profile_history);
         $get_profile_history_query->execute(array(':user' => $this->user->getId()));
         while ($row = $get_profile_history_query->fetch(PDO::FETCH_ASSOC)) {
             // Build element
@@ -261,13 +250,15 @@ class Profile extends Base {
 
             // Build inner string
             $inner = '<div class="width33">' . $element_section . '</div><div class="width33">' . $type . '</div><div class="width33"><span class="moment-timestamp" style="cursor: help;" title="' . $this->utils->prettifySQLDate($row['added']) . '" data-ts="' . $row['added'] . '">Laster...</span><span class="badge">' . $karma_prefix . $row['karma'] . '</span></div>';
-            
-            // Build outer string    
+
+            // Build outer string
             $ret .= '<li class="list-group-item' . $list_class . '">' . $inner . '</li>';
         }
 
         if ($ret == '') {
-            $ret = '<li class="list-group-item">Du har ikke opparbeidet deg noe karma!</li>';
+            $ret = '<li class="list-group-item">Du har ikke opparbeidet deg noe karma.</li>';
+        }
+             */
         }
 
         $this->template->assign('PROFILE_USER_HISTORY', $ret);

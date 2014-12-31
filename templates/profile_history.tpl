@@ -11,7 +11,7 @@
         [[+$PROFILE_USER_HISTORY]]
     </ul>
 </div>
-<div class="col-md-4">
+<div class="col-md-4" id="sidebar">
     [[+include file="sidebar.tpl"]]
 </div>
 
