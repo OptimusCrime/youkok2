@@ -553,26 +553,26 @@ class ElementController implements BaseController {
 
     public function addDownload() {
         // Check if user is logged in
-        if ($this->controller->user != null and $this->controller->user->isLoggedIn()) {
+        if (Me::isLoggedIn()) {
             // User is logged in
             $insert_user_download  = "INSERT INTO download (file, ip, agent, user)" . PHP_EOL;
             $insert_user_download .= "VALUES (:file, :ip, :agent, :user)";
             
-            $insert_user_download_query = $this->controller->db->prepare($insert_user_download);
-            $insert_user_download_query->execute(array(':file' => $this->id, 
-                                                       ':ip' => $_SERVER['REMOTE_ADDR'], 
-                                                       ':agent' => $_SERVER['HTTP_USER_AGENT'], 
-                                                       ':user' => $this->controller->user->getId()));
+            $insert_user_download_query = Database::$db->prepare($insert_user_download);
+            $insert_user_download_query->execute(array(':file' => $this->model->getId(), 
+               ':ip' => $_SERVER['REMOTE_ADDR'], 
+               ':agent' => $_SERVER['HTTP_USER_AGENT'], 
+               ':user' => Me::getId()));
         }
         else {
             // Is not logged in
-            $insert_anon_download = "INSERT INTO download (file, ip, agent)
-            VALUES (:file, :ip, :agent)";
+            $insert_anon_download  = "INSERT INTO download (file, ip, agent)" . PHP_EOL;
+            $insert_anon_download .= "VALUES (:file, :ip, :agent)";
             
-            $insert_anon_download_query = $this->controller->db->prepare($insert_anon_download);
-            $insert_anon_download_query->execute(array(':file' => $this->id, 
-                                                        ':ip' => $_SERVER['REMOTE_ADDR'], 
-                                                        ':agent' => $_SERVER['HTTP_USER_AGENT']));
+            $insert_anon_download_query = Database::$db->prepare($insert_anon_download);
+            $insert_anon_download_query->execute(array(':file' => $this->model->getId(), 
+                ':ip' => $_SERVER['REMOTE_ADDR'], 
+                ':agent' => $_SERVER['HTTP_USER_AGENT']));
         }
     }
 

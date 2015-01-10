@@ -1,43 +1,51 @@
 <?php
 /*
- * File: redirect.controller.php
- * Holds: The RedirectController-class
+ * File: Redirect.php
+ * Holds: The Redirect class
  * Created: 11.09.14
  * Project: Youkok2
  * 
 */
 
-//
-// The RedirectController class
-//
+namespace Youkok2\Views;
 
-class RedirectController extends Base {
+/*
+ * Define what classes to use
+ */
+
+use \Youkok2\Models\Element as Element;
+
+/*
+ * The Redrict class, extending Base class
+ */
+
+class Redirect extends Base {
 
     //
     // The constructor for this subclass
     //
 
-    public function __construct($routes) {
+    public function __construct() {
         // Calling Base' constructor
-        parent::__construct($routes);
+        parent::__construct();
         
         // Check query
         if ($this->queryGetSize() > 0) {
             $id = $this->queryGet($this->queryGetSize() - 1);
             if (is_numeric($id)) {
-                // Check if real object
-                $item = new Item($this);
-                $item->createById($id);
+                $element = new Element();
+                $element->createById($id);
                 
-                if ($item->wasFound() and $item->isLink()) {
+                // Check if everything is good
+                if ($element->controller->wasFound() and $element->isLink()) {
                     // All good, check if we should count or ignore redirect
                     if (!isset($_GET['donotlogthisdownload'])) {
                         // Log download
-                        $item->addDownload();
+                        $element->controller->addDownload();
                     }
                     
                     // Redirect
-                    header('Location: ' . $item->getUrl());
+                    header('Location: ' . $element->getUrl());
                     
                     // Kill
                     exit();
