@@ -151,6 +151,13 @@ a:visited {
 #user-dropdown {
     margin-top: 4px;
 }
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #28415b;
+}
 
 /*
  * Typeahead
