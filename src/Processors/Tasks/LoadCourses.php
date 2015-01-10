@@ -31,8 +31,8 @@ class LoadCourses extends Base {
     public function __construct($returnData = false) {
         // Calling Base' constructor
         parent::__construct($returnData);
-        // if (self::requireCli() or self::requireAdmin()) {
-        if (1 == 1) {
+        
+        if (self::requireCli() or self::requireAdmin()) {
             // Check database
             if ($this->checkDatabase()) {
                 // Fetch
@@ -87,9 +87,13 @@ class LoadCourses extends Base {
 
         // Fetch the courses
         while (true) {
-            
             // Load
-            $file = file_get_contents('http://www.ntnu.no/web/studier/emnesok?p_p_id=courselistportlet_WAR_courselistportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=fetch-courselist-as-json&p_p_cacheability=cacheLevelPage&p_p_col_id=column-1&p_p_col_pos=1&p_p_col_count=2&semester=' . date('Y') . '&faculty=-1&institute=-1&multimedia=0&english=0&phd=0&courseAutumn=0&courseSpring=0&courseSummer=0&searchQueryString=&pageNo=' . $page . '&season=autumn&sortOrder=%2Btitle&year=');
+            $year = date('Y');
+            if (date('m') < 6) {
+                $year--;
+            }
+            
+            $file = file_get_contents('http://www.ntnu.no/web/studier/emnesok?p_p_id=courselistportlet_WAR_courselistportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=fetch-courselist-as-json&p_p_cacheability=cacheLevelPage&p_p_col_id=column-1&p_p_col_pos=1&p_p_col_count=2&semester=' . $year . '&faculty=-1&institute=-1&multimedia=0&english=0&phd=0&courseAutumn=0&courseSpring=0&courseSummer=0&searchQueryString=&pageNo=' . $page . '&season=spring&sortOrder=%2Btitle&year=');
             $json_result = json_decode($file, true);
 
             // Clean
