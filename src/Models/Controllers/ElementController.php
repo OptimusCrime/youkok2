@@ -912,7 +912,7 @@ class ElementController implements BaseController {
                 $endfix .= 'data-ts="' . $this->model->getAdded() . '">Laster...</span>]';
             }
             else if ($mode == 'most-popular') {
-                $endfix .= ' [' . number_format($this->getDownloadCount(Elements::$delta[Me::getUserDelta($special)])) . ']';
+                $endfix .= ' [' . number_format($this->getDownloadCount(Elements::$delta[Me::getMostPopularDelta($special)])) . ']';
             }
             else if ($mode == 'favorites') {
                 $list_classes .= ' list-group-star';
