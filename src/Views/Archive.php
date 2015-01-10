@@ -78,6 +78,7 @@ class Archive extends Base {
         $letter = null;
         $container_is_null = true;
         $archive_url = substr(Routes::ARCHIVE, 1);
+        $new_row = false;
 
         // Load all the courses
         $get_all_courses  = "SELECT c.code, c.name, c.empty, a.url_friendly" . PHP_EOL;
@@ -94,32 +95,42 @@ class Archive extends Base {
 
             // Check how we should parse the course
             if ($container_is_null) {
-                $ret .= '<div class="col-xs-12 col-md-6 course-box">' . PHP_EOL;
-                $ret .= '    <h3>' . $current_letter . '</h3>' . PHP_EOL;
-                $ret .= '    <ul class="list-group">' . PHP_EOL;
+                $ret .= '<div class="row">' . PHP_EOL;
+                $ret .= '    <div class="col-xs-12 col-md-6 course-box">' . PHP_EOL;
+                $ret .= '        <h3>' . $current_letter . '</h3>' . PHP_EOL;
+                $ret .= '        <ul class="list-group">' . PHP_EOL;
 
                 $container_is_null = false;
             }
             else {
                 if ($letter != $current_letter) {
-                    $ret .= '    </ul>' . PHP_EOL;
-                    $ret .= '</div>' . PHP_EOL;
-                    $ret .= '<div class="col-xs-12 col-md-6">' . PHP_EOL;
-                    $ret .= '    <h3>' . $current_letter . '</h3>' . PHP_EOL;
-                    $ret .= '    <ul class="list-group">' . PHP_EOL;
+                    $ret .= '        </ul>' . PHP_EOL;
+                    $ret .= '    </div>' . PHP_EOL;
+                    
+                    if ($new_row) {
+                        $ret .= '</div>' . PHP_EOL;
+                        $ret .= '<div class="row">' . PHP_EOL;
+                    }
+                    
+                    $new_row = !$new_row;
+                    
+                    $ret .= '    <div class="col-xs-12 col-md-6 course-box">' . PHP_EOL;
+                    $ret .= '        <h3>' . $current_letter . '</h3>' . PHP_EOL;
+                    $ret .= '        <ul class="list-group">' . PHP_EOL;
                 }
             }
 
-            $ret .= '        <li class="' . (($row['empty'] == 1) ? 'course-empty ' : '') . 'list-group-item">' . PHP_EOL;
-            $ret .= '            <a href="' . $archive_url . '/' . $row['url_friendly'] . '"><strong>' . $row['code'] . '</strong> &mdash; ' . $row['name'] . '</a>' . PHP_EOL;
-            $ret .= '        </li>' . PHP_EOL;
+            $ret .= '            <li class="' . (($row['empty'] == 1) ? 'course-empty ' : '') . 'list-group-item">' . PHP_EOL;
+            $ret .= '                <a href="' . $archive_url . '/' . $row['url_friendly'] . '"><strong>' . $row['code'] . '</strong> &mdash; ' . $row['name'] . '</a>' . PHP_EOL;
+            $ret .= '            </li>' . PHP_EOL;
 
             // Assign new letter
             $letter = $current_letter;
         }
 
         // End container
-        $ret .= '    </ul>' . PHP_EOL;
+        $ret .= '        </ul>' . PHP_EOL;
+        $ret .= '    </div>' . PHP_EOL;
         $ret .= '</div>' . PHP_EOL;
 
         // Return content

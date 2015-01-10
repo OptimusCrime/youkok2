@@ -16,7 +16,9 @@
             </div>
         </div>
         <div class="row">
-            [[+$ARCHIVE_DISPLAY]]
+            <div class="col-xs-12">
+                [[+$ARCHIVE_DISPLAY]]
+            </div>
         </div>
     </div>
     <div id="sidebar" class="col-xs-12 col-md-4">
