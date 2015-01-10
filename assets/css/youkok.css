@@ -103,20 +103,21 @@ a:visited {
     color: #fff;
 }
 #main-nav a:hover {
-    color: #999999;
+    color: #28415b;
     transition: color 0.2s ease;
 }
 #main-nav .active a {
-    color: #333333;
+    color: #fff;
+    background-color: #28415b;
 }
 .navbar-default .navbar-brand:hover {
-    color: #999999;
+    color: #28415b;
 }
 #dropdown-menu-opener:focus {
     color: #fff;
 }
 #dropdown-menu-opener:hover {
-    color: #999999;
+    color: #28415b;
     transition: color 0.2s ease;
 }
 .open #dropdown-menu-opener {
