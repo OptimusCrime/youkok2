@@ -81,8 +81,7 @@ class SyncCourse extends Base {
         $get_all_courses  = "SELECT id, code, name" . PHP_EOL;
         $get_all_courses .= "FROM course";
         
-        $get_all_courses_query = Database::$db->prepare($get_all_courses);
-        $get_all_courses_query->execute();
+        $get_all_courses_query->query($get_all_courses);
         
         // Append to array
         while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
