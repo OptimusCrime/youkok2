@@ -33,6 +33,10 @@ class Admin extends Base {
         parent::__construct();
         
         if (Me::isAdmin()) {
+            // Set menu
+            $this->template->assign('HEADER_MENU', null);
+            
+            // Fetch data
             $this->displayAdminPage();
         }
         else {

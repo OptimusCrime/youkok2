@@ -34,6 +34,9 @@ class Profile extends Base {
 
         // Check if online
         if (Me::isLoggedIn()) {
+            // Set menu
+            $this->template->assign('HEADER_MENU', null);
+            
             if ($this->queryGetClean() == 'profil/innstillinger') {
                 if (!isset($_POST['source'])) {
                     // Set title
