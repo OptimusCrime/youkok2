@@ -92,6 +92,9 @@ class Routes {
         'Tasks\\ClearCache' => array(
             '/tasks/clearcache',
          ),
+         'Tasks\\Check404' => array(
+            '/tasks/check404',
+        ),
          'Tasks\\LoadCourses' => array(
             '/tasks/courses',
         ),

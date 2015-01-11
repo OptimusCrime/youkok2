@@ -43,14 +43,12 @@ class ElementController implements BaseController {
     private $fullLocation;
     
     // Load additional information
-    private $loadFullLocation;
     private $loadFavorite;
     private $loadFlagCount;
     private $loadRootParent;
     private $loadIfRemoved;
     
     // Other stuff
-    private $favorite;
     private $rootParent;
     private $flagCount;
     private $downloadCount;
@@ -87,7 +85,7 @@ class ElementController implements BaseController {
         $this->model = $model;
         
         // Init array for the query
-        $this->query = array('select' => array('a.name', 'a.parent', 'a.is_directory', 'a.url_friendly', 
+        $this->query = array('select' => array('a.name', 'a.parent', 'a.checksum', 'a.is_directory', 'a.url_friendly', 
                 'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 
                 'a.added', 'a.location', 'a.size', 'a.url'), 
             'join' => array(), 
@@ -96,7 +94,6 @@ class ElementController implements BaseController {
             'execute' => array());
 
         // Variables to keep track of what should be loaded at creation
-        $this->loadFullLocation = false;
         $this->loadFavorite = false;
         $this->loadFlagCount = false;
         $this->loadRootParent = false;
@@ -104,7 +101,7 @@ class ElementController implements BaseController {
 
         // Create arrays for full locations
         $this->fullUrl = array();
-        $this->fullLocation = array();
+        $this->fullLocation = null;
         
         // Other stuff
         $this->favorite = null;
@@ -143,11 +140,6 @@ class ElementController implements BaseController {
                     // Set value
                     call_user_func_array(array($this->model, $k_actual), array($v));
                 }
-            }
-
-            // If we are fetching the full location, this should be the last fragment
-            if (count($this->fullLocation) > 0 and $this->loadFullLocation) {
-                $this->fullLocation[] = $temp_cache_data['location'];
             }
 
             // Cached flagcount?
@@ -214,6 +206,7 @@ class ElementController implements BaseController {
                 $this->model->setDirectory($row['is_directory']);
                 $this->model->setUrlFriendly($row['url_friendly']);
                 $this->model->setParent($row['parent']);
+                $this->model->setChecksum($row['checksum']);
                 $this->model->setMimeType($row['mime_type']);
                 $this->model->setMissingImage($row['missing_image']);
                 $this->model->setAccepted($row['is_accepted']);
@@ -222,11 +215,6 @@ class ElementController implements BaseController {
                 $this->model->setAdded($row['added']);
                 $this->model->setSize($row['size']);
                 $this->model->setUrl($row['url']);
-                
-                // If we are fetching the full location, this should be the last fragment
-                if ($this->loadFullLocation) {
-                    $this->fullLocation[] = $row['location'];
-                }
 
                 // Check if we should cache this Item
                 if ($this->cache) {
@@ -304,11 +292,6 @@ class ElementController implements BaseController {
                             $temp_item->createById($temp_id);
                             ElementCollection::add($temp_item);
                         }
-
-                        // Check if we should add to location array too
-                        if ($this->loadFullLocation) {
-                            $this->fullLocation[] = $temp_item->getLocation();
-                        }
                     }
                 }
             }
@@ -319,15 +302,7 @@ class ElementController implements BaseController {
     /*
      * Setters to load additional information when loaded
      */
-
-    public function setLoadFullLocation($b) {
-        $this->loadFullLocation = $b;
-    }
-
-    public function setLoadFavorite($b) {
-        $this->loadFavorite = $b;
-    }
-    
+     
     public function setLoadFlagCount($b) {
         $this->loadFlagCount = $b;
     }
@@ -644,8 +619,8 @@ class ElementController implements BaseController {
 
     private function cacheFormat() {
         $cache_temp = array();
-        $fields = array('getId', 'getName', 'isDirectory', 'getUrlFriendly', 'getParent', 'getMimeType', 'getMissingImage', 
-                        'isAccepted', 'isVisible', 'getLocation', 'getAdded', 'getSize', 'getCourse', 'getUrl');
+        $fields = array('getId', 'getName', 'isDirectory', 'getUrlFriendly', 'getParent', 'getChecksum','getMimeType', 
+            'getMissingImage', 'isAccepted', 'isVisible', 'getLocation', 'getAdded', 'getSize', 'getCourse', 'getUrl');
         
         // Loop each field
         foreach ($fields as $v) {
@@ -927,12 +902,17 @@ class ElementController implements BaseController {
         // TODO
     }
     
+    public function getPhysicalLocation() {
+        // TODO
+        $full_path = FILE_PATH . '/foo/' . $this->model->getChecksum();
+    }
+    
     /*
      * Backwards compability
      */
     
     public function getFullLocation() {
-        if (count($this->fullLocation) == 0) {
+        if ($this->fullLocation == null) {
             $temp_location = array($this->model->getLocation());
             $temp_id = $this->model->getParent();
 

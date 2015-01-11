@@ -70,13 +70,14 @@ class MigrateChecksums extends Base {
             $element = ElementCollection::get($row['id'], array('location'));
             
             if ($element != null) {
-                $full_path = FILE_PATH . $element->controller->getFullLocation();
+                $full_path = FILE_PATH . '/' . $element->controller->getFullLocation();
+                echo $full_path . '<br />';
                 if (file_exists($full_path) and !is_dir($full_path)) {
                     $checksum = md5_file($full_path);
                     $file_ending_split = explode('.', $full_path);
                     $sql_checksum = $checksum . '.' . $file_ending_split[count($file_ending_split) - 1];
                     $new_file = FILE_PATH . '/foo/' . $sql_checksum;
-                    
+                    echo $new_file  . '<br />';
                     
                     $save_migrate  = "UPDATE archive" . PHP_EOL;
                     $save_migrate .= "SET checksum = :checksum" . PHP_EOL;

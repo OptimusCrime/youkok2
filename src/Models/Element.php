@@ -79,6 +79,9 @@ class Element {
     public function getParent() {
         return $this->parent;
     }
+    public function getChecksum() {
+        return $this->checksum;
+    }
     public function getLocation() {
         return $this->location;
     }
@@ -128,6 +131,9 @@ class Element {
     }
     public function setParent($parent) {
         $this->parent = $parent;
+    }
+    public function setChecksum($checksum) {
+        $this->checksum = $checksum;
     }
     public function setLocation($location) {
         $this->location = $location;

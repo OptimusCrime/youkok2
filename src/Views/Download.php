@@ -30,8 +30,6 @@ class Download extends Youkok2 {
 
         // Create new object
         $item = new Element();
-        $item->controller->setLoadFullLocation(true);
-        $item->controller->setLoadRootParent(true);
         $item->controller->createByUrl($this->queryGetClean());
 
         // Check if was found or invalid url
@@ -39,7 +37,7 @@ class Download extends Youkok2 {
             // Check if visible
             if ($item->isVisible()) {
                 
-                $file_location = FILE_PATH . '/' . $item->controller->getFullLocation();
+                $file_location = FILE_PATH . '/' . $item->controller->getPhysicalLocation();
                 die($file_location);
                 // Check if zip download or not
                 if ($item->isDirectory()) {
