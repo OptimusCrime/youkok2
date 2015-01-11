@@ -30,6 +30,8 @@ class Element {
     private $name;
     private $urlFriendly;
     private $parent;
+    private $empty;
+    private $checksum;
     private $location;
     private $mimeType;
     private $missingImage;
@@ -52,6 +54,8 @@ class Element {
          */
 
         $this->parent = null;
+        $this->empty = 1;
+        $this->checksum = null;
         $this->location = ''; // Backwards compability
         $this->mimeType = null;
         $this->missingImage = 0;
@@ -78,6 +82,9 @@ class Element {
     }
     public function getParent() {
         return $this->parent;
+    }
+    public function isEmpty() {
+        return (bool) $this->empty;
     }
     public function getChecksum() {
         return $this->checksum;
@@ -132,6 +139,9 @@ class Element {
     public function setParent($parent) {
         $this->parent = $parent;
     }
+    public function setEmpty($empty) {
+        $this->empty = (bool) $empty;
+    }
     public function setChecksum($checksum) {
         $this->checksum = $checksum;
     }
@@ -148,13 +158,13 @@ class Element {
         $this->size = $size;
     }
     public function setDirectory($directory) {
-        $this->directory = $directory;
+        $this->directory = (bool) $directory;
     }
     public function setAccepted($accepted) {
-        $this->accepted = $accepted;
+        $this->accepted = (bool) $accepted;
     }
     public function setVisible($visible) {
-        $this->visible = $visible;
+        $this->visible = (bool) $visible;
     }
     public function setUrl($url) {
         $this->url = $url;
@@ -167,8 +177,8 @@ class Element {
      * Redirectors
      */
     
-    public function createById($id) {
-        $this->controller->createById($id);
+    public function createById($id, $skip_db = false) {
+        $this->controller->createById($id, $skip_db);
     }
     public function createByUrl($url) {
         $this->controller->createByUrl($url);

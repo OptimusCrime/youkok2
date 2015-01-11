@@ -274,6 +274,7 @@ class Base extends Youkok2 {
      */
     
     private function cleanSqlLog($arr) {
+        return '';
         // Some variables
         $str = '';
         $has_prepare = false;

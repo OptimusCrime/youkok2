@@ -88,7 +88,7 @@ class Check404 extends Base {
             $http_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
             
             // Check http code
-            if($http_code == 404) {
+            if ($http_code == 404) {
                 // Increase counter
                 $error_num++;
                 

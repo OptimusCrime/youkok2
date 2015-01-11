@@ -39,7 +39,6 @@ class ElementController implements BaseController {
     
     // Full paths
     private $fullUrl;
-    private $finishedLoadingUrl;
     private $fullLocation;
     
     // Load additional information
@@ -85,8 +84,8 @@ class ElementController implements BaseController {
         $this->model = $model;
         
         // Init array for the query
-        $this->query = array('select' => array('a.name', 'a.parent', 'a.checksum', 'a.is_directory', 'a.url_friendly', 
-                'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 
+        $this->query = array('select' => array('a.name', 'a.parent', 'a.empty', 'a.checksum', 'a.is_directory', 
+                'a.url_friendly', 'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 
                 'a.added', 'a.location', 'a.size', 'a.url'), 
             'join' => array(), 
             'where' => array('WHERE a.id = :id'),
@@ -100,14 +99,13 @@ class ElementController implements BaseController {
         $this->loadIfRemoved = false;
 
         // Create arrays for full locations
-        $this->fullUrl = array();
+        $this->fullUrl = null;
         $this->fullLocation = null;
         
         // Other stuff
         $this->favorite = null;
         $this->rootParent = null;
         $this->flagCount = null;
-        $this->finishedLoadingUrl = true;
         $this->downloadCount = array(0 => null, 1 => null, 2 => null, 3 => null);
         
         // Owner
@@ -125,7 +123,7 @@ class ElementController implements BaseController {
      * Methods for creating the element
      */
     
-    public function createById($id) {
+    public function createById($id, $skip_db = false) {
         $this->model->setId($id);
 
         // Check if we should check the cache and if it is cached
@@ -148,82 +146,85 @@ class ElementController implements BaseController {
             }
         }
         else {
-            // Add id to dynamic query
-            $this->query['execute'][':id'] = $this->model->getId();
-            
-            if (!$this->loadIfRemoved) {
-                $this->query['where'][] = 'a.is_visible = 1';
-            }
-
-            // Create dynamic query
-            if ($this->loadFavorite) {
-                $this->query['select'][] = "f.id AS 'favorite'";
-                $this->query['join'][] = PHP_EOL . 'LEFT JOIN favorite AS f ON f.file = a.id AND f.user = :user';
+            if (!$skip_db) {
+                // Add id to dynamic query
+                $this->query['execute'][':id'] = $this->model->getId();
                 
-                if (!isset($this->query['execute'][':user'])) {
-                    $this->query['execute'][':user'] = $this->controller->user->getId();
+                if (!$this->loadIfRemoved) {
+                    $this->query['where'][] = 'a.is_visible = 1';
                 }
-            }
-            if ($this->loadFlagCount) {
-                $this->query['select'][] = "count(fl.id) as 'flags'";
-                $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file AND fl.active = 1';
-                $this->query['groupby'][] = 'a.id';
-            }
-            
-            // Create the actual query
-            $get_item_info = 'SELECT ' . implode(', ', $this->query['select']) . PHP_EOL . 'FROM archive AS a ';
-            
-            // Add joins (if there are any)
-            if (count($this->query['join']) > 0) {
-                $get_item_info .= implode(' ', $this->query['join']);
-            }
-            
-            // Add where
-            $get_item_info .= PHP_EOL . implode(' AND ', $this->query['where']);;
-            
-            // Add group by (again, if there are any)
-            if (count($this->query['groupby']) > 0) {
-                $get_item_info .= PHP_EOL . 'GROUP BY ' . implode(', ', $this->query['groupby']);
-            }
-            
-            // Run the actual query
-            $get_item_info_query = Database::$db->prepare($get_item_info);
-            $get_item_info_query->execute($this->query['execute']);
-            $row = $get_item_info_query->fetch(\PDO::FETCH_ASSOC);
-            
-            // Check if the query did return anything
-            if (isset($row['name'])) {
-                // Set special fields
+
+                // Create dynamic query
                 if ($this->loadFavorite) {
-                    $this->favorite = (!isset($row['favorite']) or $row['favorite'] == null) ? false : true;
+                    $this->query['select'][] = "f.id AS 'favorite'";
+                    $this->query['join'][] = PHP_EOL . 'LEFT JOIN favorite AS f ON f.file = a.id AND f.user = :user';
+                    
+                    if (!isset($this->query['execute'][':user'])) {
+                        $this->query['execute'][':user'] = $this->controller->user->getId();
+                    }
                 }
-                if (isset($row['flags'])) {
-                    $this->flagCount = $row['flags'];
+                if ($this->loadFlagCount) {
+                    $this->query['select'][] = "count(fl.id) as 'flags'";
+                    $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file AND fl.active = 1';
+                    $this->query['groupby'][] = 'a.id';
                 }
                 
-                // Set results
-                $this->model->setName($row['name']);
-                $this->model->setDirectory($row['is_directory']);
-                $this->model->setUrlFriendly($row['url_friendly']);
-                $this->model->setParent($row['parent']);
-                $this->model->setChecksum($row['checksum']);
-                $this->model->setMimeType($row['mime_type']);
-                $this->model->setMissingImage($row['missing_image']);
-                $this->model->setAccepted($row['is_accepted']);
-                $this->model->setVisible($row['is_visible']);
-                $this->model->setLocation($row['location']);
-                $this->model->setAdded($row['added']);
-                $this->model->setSize($row['size']);
-                $this->model->setUrl($row['url']);
-
-                // Check if we should cache this Item
-                if ($this->cache) {
-                    $this->cache();
+                // Create the actual query
+                $get_item_info = 'SELECT ' . implode(', ', $this->query['select']) . PHP_EOL . 'FROM archive AS a ';
+                
+                // Add joins (if there are any)
+                if (count($this->query['join']) > 0) {
+                    $get_item_info .= implode(' ', $this->query['join']);
                 }
-            }
-            else {
-                // Was not found
-                $this->model->setId(null);
+                
+                // Add where
+                $get_item_info .= PHP_EOL . implode(' AND ', $this->query['where']);;
+                
+                // Add group by (again, if there are any)
+                if (count($this->query['groupby']) > 0) {
+                    $get_item_info .= PHP_EOL . 'GROUP BY ' . implode(', ', $this->query['groupby']);
+                }
+                
+                // Run the actual query
+                $get_item_info_query = Database::$db->prepare($get_item_info);
+                $get_item_info_query->execute($this->query['execute']);
+                $row = $get_item_info_query->fetch(\PDO::FETCH_ASSOC);
+                
+                // Check if the query did return anything
+                if (isset($row['name'])) {
+                    // Set special fields
+                    if ($this->loadFavorite) {
+                        $this->favorite = (!isset($row['favorite']) or $row['favorite'] == null) ? false : true;
+                    }
+                    if (isset($row['flags'])) {
+                        $this->flagCount = $row['flags'];
+                    }
+                    
+                    // Set results
+                    $this->model->setName($row['name']);
+                    $this->model->setDirectory($row['is_directory']);
+                    $this->model->setUrlFriendly($row['url_friendly']);
+                    $this->model->setParent($row['parent']);
+                    $this->model->setEmpty($row['empty']);
+                    $this->model->setChecksum($row['checksum']);
+                    $this->model->setMimeType($row['mime_type']);
+                    $this->model->setMissingImage($row['missing_image']);
+                    $this->model->setAccepted($row['is_accepted']);
+                    $this->model->setVisible($row['is_visible']);
+                    $this->model->setLocation($row['location']);
+                    $this->model->setAdded($row['added']);
+                    $this->model->setSize($row['size']);
+                    $this->model->setUrl($row['url']);
+
+                    // Check if we should cache this Item
+                    if ($this->cache) {
+                        $this->cache();
+                    }
+                }
+                else {
+                    // Was not found
+                    $this->model->setId(null);
+                }
             }
         }
     }
@@ -280,7 +281,6 @@ class ElementController implements BaseController {
                         
                         // Add url piece
                         $this->fullUrl[] = $url_piece_single;
-                        $this->finishedLoadingUrl = false;
                         
                         // Check if this object already exists
                         $temp_item = ElementCollection::get($temp_id);
@@ -353,14 +353,14 @@ class ElementController implements BaseController {
 
     public function generateUrl($path) {
         // Check if the url is already cached!
-        if (count($this->fullUrl) == 0 or $this->finishedLoadingUrl == false) {
+        if ($this->fullUrl == null) {
             // Store some variables for later
             $temp_url= array($this->model->getUrlFriendly());
             $temp_id = $this->model->getParent();
             $temp_root_parent = $this->model;
 
             // Loop untill we reach the root
-            while ($temp_id != 0) {
+            while ($temp_id != null) {
                 // Check if this object already exists
                 $temp_item = ElementCollection::get($temp_id);
                 
@@ -394,11 +394,6 @@ class ElementController implements BaseController {
             
             // Store in real variable
             $this->fullUrl = $temp_url;
-            
-            // Check if we should reset so we don't have to fetch this again
-            if (!$this->finishedLoadingUrl) {
-                $this->finishedLoadingUrl = true;
-            }
         }
         
         // Return goes here!
@@ -619,8 +614,9 @@ class ElementController implements BaseController {
 
     private function cacheFormat() {
         $cache_temp = array();
-        $fields = array('getId', 'getName', 'isDirectory', 'getUrlFriendly', 'getParent', 'getChecksum','getMimeType', 
-            'getMissingImage', 'isAccepted', 'isVisible', 'getLocation', 'getAdded', 'getSize', 'getCourse', 'getUrl');
+        $fields = array('getId', 'getName', 'isDirectory', 'getUrlFriendly', 'getParent', 'isEmpty', 'getChecksum',
+            'getMimeType', 'getMissingImage', 'isAccepted', 'isVisible', 'getLocation', 'getAdded', 'getSize', 
+            'getCourse', 'getUrl');
         
         // Loop each field
         foreach ($fields as $v) {

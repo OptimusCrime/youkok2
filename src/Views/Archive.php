@@ -80,17 +80,22 @@ class Archive extends Base {
         $new_row = false;
 
         // Load all the courses
-        $get_all_courses  = "SELECT id" . PHP_EOL;
+        $get_all_courses  = "SELECT id, name, url_friendly, empty" . PHP_EOL;
         $get_all_courses .= "FROM archive" . PHP_EOL;
         $get_all_courses .= "WHERE parent IS NULL" . PHP_EOL;
         $get_all_courses .= "AND is_visible = 1" . PHP_EOL;
         $get_all_courses .= "ORDER BY name ASC";
-
+        
         $get_all_courses_query = Database::$db->prepare($get_all_courses);
         $get_all_courses_query->execute();
         while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
             $element = new Element();
-            $element->createById($row['id']);
+            $element->createById($row['id'], true);
+            
+            // Override attributes
+            $element->setName($row['name']);
+            $element->setEmpty($row['empty']);
+            $element->setUrlFriendly($row['url_friendly']);
             
             // Check if element is course
             if ($element->controller->isCourse()) {
@@ -126,12 +131,10 @@ class Archive extends Base {
                     }
                 }
 
-                $ret .= '            <li class="list-group-item">' . PHP_EOL;
-                // $ret .= '            <li class="' . (($row['empty'] == 1) ? 'course-empty ' : '') . 'list-group-item">' . PHP_EOL;
+                $ret .= '            <li class="' . (($element->isEmpty()) ? 'course-empty ' : '') . 'list-group-item">' . PHP_EOL;
                 $ret .= '                <a href="' . $element->controller->generateUrl(Routes::ARCHIVE) . '"><strong>' . $course['code'] . '</strong> &mdash; ' . $course['name'] . '</a>' . PHP_EOL;
-                //$ret .= '                <a href="' . $archive_url . '/' . $row['url_friendly'] . '"><strong>' . $row['code'] . '</strong> &mdash; ' . $row['name'] . '</a>' . PHP_EOL;
                 $ret .= '            </li>' . PHP_EOL;
-
+                
                 // Assign new letter
                 $letter = $current_letter;
             }

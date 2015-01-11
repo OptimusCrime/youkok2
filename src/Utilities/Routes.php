@@ -109,6 +109,9 @@ class Routes {
         'Tasks\\Sync\\SyncCourses' => array(
             '/tasks/sync/synccourses',
         ),
+        'Tasks\\Sync\\SyncEmpty' => array(
+            '/tasks/sync/syncempty',
+        ),
         'Tasks\\Sync\\FixElementsYoukok100' => array(
             '/tasks/sync/fixelementsyoukok100',
         ),
