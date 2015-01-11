@@ -30,7 +30,6 @@ class Element {
     private $name;
     private $urlFriendly;
     private $parent;
-    private $course;
     private $location;
     private $mimeType;
     private $missingImage;
@@ -53,7 +52,6 @@ class Element {
          */
 
         $this->parent = null;
-        $this->course = null;
         $this->location = ''; // Backwards compability
         $this->mimeType = null;
         $this->missingImage = 0;
@@ -81,9 +79,6 @@ class Element {
     public function getParent() {
         return $this->parent;
     }
-    public function getCourse() {
-        return $this->course;
-    }
     public function getLocation() {
         return $this->location;
     }
@@ -93,8 +88,8 @@ class Element {
     public function getMissingImage() {
         return (bool) $this->missingImage;
     }
-    public function getSize() {
-        return $this->size;
+    public function getSize($pretty = false) {
+        return $pretty ? Utilities::prettifyFilesize($this->size) : $this->size;
     }
     public function isDirectory() {
         return (bool) $this->directory;
@@ -133,15 +128,6 @@ class Element {
     }
     public function setParent($parent) {
         $this->parent = $parent;
-    }
-    public function setCourse($course) {
-        if (is_object($course)) {
-            $this->course = &$course;
-
-        }
-        else {
-            $this->controller->setCourseFromId($course);
-        }
     }
     public function setLocation($location) {
         $this->location = $location;

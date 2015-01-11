@@ -77,55 +77,64 @@ class Archive extends Base {
         $ret = '';
         $letter = null;
         $container_is_null = true;
-        $archive_url = substr(Routes::ARCHIVE, 1);
         $new_row = false;
 
         // Load all the courses
-        $get_all_courses  = "SELECT c.code, c.name, c.empty, a.url_friendly" . PHP_EOL;
-        $get_all_courses .= "FROM course c" . PHP_EOL;
-        $get_all_courses .= "LEFT JOIN archive AS a ON c.id = a.course" . PHP_EOL;
-        $get_all_courses .= "WHERE a.is_visible = 1" . PHP_EOL;
-        $get_all_courses .= "ORDER BY c.code ASC";
+        $get_all_courses  = "SELECT id" . PHP_EOL;
+        $get_all_courses .= "FROM archive" . PHP_EOL;
+        $get_all_courses .= "WHERE parent IS NULL" . PHP_EOL;
+        $get_all_courses .= "AND is_visible = 1" . PHP_EOL;
+        $get_all_courses .= "ORDER BY name ASC";
 
         $get_all_courses_query = Database::$db->prepare($get_all_courses);
         $get_all_courses_query->execute();
         while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Store the current letter
-            $current_letter = substr($row['code'], 0, 1);
+            $element = new Element();
+            $element->createById($row['id']);
+            
+            // Check if element is course
+            if ($element->controller->isCourse()) {
+                // Get course
+                $course = $element->controller->getCourse();
+                // Store the current letter
+                $current_letter = substr($course['code'], 0, 1);
 
-            // Check how we should parse the course
-            if ($container_is_null) {
-                $ret .= '<div class="row">' . PHP_EOL;
-                $ret .= '    <div class="col-xs-12 col-md-6 course-box">' . PHP_EOL;
-                $ret .= '        <h3>' . $current_letter . '</h3>' . PHP_EOL;
-                $ret .= '        <ul class="list-group">' . PHP_EOL;
-
-                $container_is_null = false;
-            }
-            else {
-                if ($letter != $current_letter) {
-                    $ret .= '        </ul>' . PHP_EOL;
-                    $ret .= '    </div>' . PHP_EOL;
-                    
-                    if ($new_row) {
-                        $ret .= '</div>' . PHP_EOL;
-                        $ret .= '<div class="row">' . PHP_EOL;
-                    }
-                    
-                    $new_row = !$new_row;
-                    
+                // Check how we should parse the course
+                if ($container_is_null) {
+                    $ret .= '<div class="row">' . PHP_EOL;
                     $ret .= '    <div class="col-xs-12 col-md-6 course-box">' . PHP_EOL;
                     $ret .= '        <h3>' . $current_letter . '</h3>' . PHP_EOL;
                     $ret .= '        <ul class="list-group">' . PHP_EOL;
+
+                    $container_is_null = false;
                 }
+                else {
+                    if ($letter != $current_letter) {
+                        $ret .= '        </ul>' . PHP_EOL;
+                        $ret .= '    </div>' . PHP_EOL;
+                        
+                        if ($new_row) {
+                            $ret .= '</div>' . PHP_EOL;
+                            $ret .= '<div class="row">' . PHP_EOL;
+                        }
+                        
+                        $new_row = !$new_row;
+                        
+                        $ret .= '    <div class="col-xs-12 col-md-6 course-box">' . PHP_EOL;
+                        $ret .= '        <h3>' . $current_letter . '</h3>' . PHP_EOL;
+                        $ret .= '        <ul class="list-group">' . PHP_EOL;
+                    }
+                }
+
+                $ret .= '            <li class="list-group-item">' . PHP_EOL;
+                // $ret .= '            <li class="' . (($row['empty'] == 1) ? 'course-empty ' : '') . 'list-group-item">' . PHP_EOL;
+                $ret .= '                <a href="' . $element->controller->generateUrl(Routes::ARCHIVE) . '"><strong>' . $course['code'] . '</strong> &mdash; ' . $course['name'] . '</a>' . PHP_EOL;
+                //$ret .= '                <a href="' . $archive_url . '/' . $row['url_friendly'] . '"><strong>' . $row['code'] . '</strong> &mdash; ' . $row['name'] . '</a>' . PHP_EOL;
+                $ret .= '            </li>' . PHP_EOL;
+
+                // Assign new letter
+                $letter = $current_letter;
             }
-
-            $ret .= '            <li class="' . (($row['empty'] == 1) ? 'course-empty ' : '') . 'list-group-item">' . PHP_EOL;
-            $ret .= '                <a href="' . $archive_url . '/' . $row['url_friendly'] . '"><strong>' . $row['code'] . '</strong> &mdash; ' . $row['name'] . '</a>' . PHP_EOL;
-            $ret .= '            </li>' . PHP_EOL;
-
-            // Assign new letter
-            $letter = $current_letter;
         }
 
         // End container

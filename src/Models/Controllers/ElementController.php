@@ -60,7 +60,6 @@ class ElementController implements BaseController {
     private $ownerUsername;
     
     // Pointers to other objects related to this item
-    private $courseObj;
     private $flags;
     
     // Cache
@@ -73,11 +72,11 @@ class ElementController implements BaseController {
     public static $accumulated = 0;
     public static $single = 1;
     
-    public static $delta = array(' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', 
-                                 ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.is_visible = 1', 
-                                 ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', 
-                                 ' WHERE a.is_visible = 1',
-                                 ' WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1');
+    public static $delta = array('WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', 
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.is_visible = 1', 
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', 
+        'WHERE a.is_visible = 1',
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1');
     
     /*
      * Consutrctor
@@ -89,12 +88,12 @@ class ElementController implements BaseController {
         
         // Init array for the query
         $this->query = array('select' => array('a.name', 'a.parent', 'a.is_directory', 'a.url_friendly', 
-                                               'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 
-                                               'a.added', 'a.location', 'a.size', 'a.course', 'a.url'), 
-                             'join' => array(), 
-                             'where' => array('WHERE a.id = :id'),
-                             'groupby' => array(),
-                             'execute' => array());
+                'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 
+                'a.added', 'a.location', 'a.size', 'a.url'), 
+            'join' => array(), 
+            'where' => array('WHERE a.id = :id'),
+            'groupby' => array(),
+            'execute' => array());
 
         // Variables to keep track of what should be loaded at creation
         $this->loadFullLocation = false;
@@ -112,10 +111,7 @@ class ElementController implements BaseController {
         $this->rootParent = null;
         $this->flagCount = null;
         $this->finishedLoadingUrl = true;
-        $this->downloadCount = array(0 => null, 
-                                     1 => null, 
-                                     2 => null, 
-                                     3 => null);
+        $this->downloadCount = array(0 => null, 1 => null, 2 => null, 3 => null);
         
         // Owner
         $this->ownerId = null;
@@ -144,18 +140,8 @@ class ElementController implements BaseController {
                 $k_actual = 'set' . ucfirst($k);
                 // Check that the field exists as a property/attribute in this class
                 if (method_exists('\Youkok2\Models\Element', $k_actual)) {
-                    // Check if Course
-                    if ($k == 'course') {
-                         if ($v != null and strlen($v) > 0) {
-                            $course_obj = new Course();
-                            $course_obj->createById($v);
-                            $this->model->setCourse($course_obj);
-                         }
-                    }
-                    else {
-                        // Set value
-                        call_user_func_array(array($this->model, $k_actual), array($v));
-                    }
+                    // Set value
+                    call_user_func_array(array($this->model, $k_actual), array($v));
                 }
             }
 
@@ -236,12 +222,6 @@ class ElementController implements BaseController {
                 $this->model->setAdded($row['added']);
                 $this->model->setSize($row['size']);
                 $this->model->setUrl($row['url']);
-                
-                if (isset($row['course']) and $row['course'] != null and strlen($row['course']) > 0) {
-                    $course_obj = new Course();
-                    $course_obj->createById($row['course']);
-                    $this->model->setCourse($course_obj);
-                }
                 
                 // If we are fetching the full location, this should be the last fragment
                 if ($this->loadFullLocation) {
@@ -335,64 +315,7 @@ class ElementController implements BaseController {
         }
     }
     
-    /*
-     * Check if the Element was found or not
-     */
-
-    public function wasFound() {
-        if ($this->model->getId() != null and is_numeric($this->model->getId())) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    /*
-     * Some special getters
-     */
-
-    public function getSizePretty() {
-        return Utilities::prettifyFilesize($this->size);
-    }
-    
-    /*
-     * Returning the full location for the Element
-     */
-
-    public function getFullLocation() {
-        if (count($this->fullLocation) == 0) {
-            $temp_location = array($this->model->getLocation());
-            $temp_id = $this->model->getParent();
-
-            // Loop untill we reach the root
-            while ($temp_id != 0) {
-                // Check if this object already exists
-                $temp_item = ElementCollection::get($temp_id);
-                
-                // Check if already cached, or not
-                if ($temp_item !== null) {
-                    // Get the url piece
-                    $temp_location[] = $temp_item->getLocation();
-                    
-                    // Update id
-                    $temp_id = $temp_item->getParent();
-                }
-                else {
-                    die('500');
-                }
-            }
-
-            // Reverse array
-            $temp_location = array_reverse($temp_location);
-
-            // Assign
-            $this->fullLocation = $temp_location;
-        }
-
-        return implode('/', $this->fullLocation);
-    }
-
+        
     /*
      * Setters to load additional information when loaded
      */
@@ -416,6 +339,37 @@ class ElementController implements BaseController {
     public function setLoadIfRemoved($b) {
         $this->loadIfRemoved = $b;
         $this->cache = false;
+    }
+    
+    /*
+     * Check if the Element was found or not
+     */
+
+    public function wasFound() {
+        if ($this->model->getId() != null and is_numeric($this->model->getId())) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    /*
+     * Check if element is course
+     */
+    
+    public function isCourse() {
+        return strpos($this->model->getName(), '||') !== false;
+    }
+    
+    /*
+     * Return course from element
+     */
+    
+    public function getCourse() {
+        $course = $this->model->getName();
+        $course_split = explode('||', $course);
+        return array('code' => $course_split[0], 'name' => $course_split[1]);
     }
 
     /*
@@ -452,7 +406,7 @@ class ElementController implements BaseController {
                 // Update id
                 $temp_id = $temp_item->getParent();
 
-                if ($temp_item->getId() != 1) {
+                if ($temp_item->getId() != null) {
                     $temp_root_parent = $temp_item;
                 }
             }
@@ -480,7 +434,7 @@ class ElementController implements BaseController {
             return substr($path, 1) . '/' . implode('/', $this->fullUrl) . ($this->model->isDirectory() ? '/' : '');
         }
     }
-
+    
     /*
      * Get breadcrumbs for the current Element
      */
@@ -628,49 +582,6 @@ class ElementController implements BaseController {
     }
 
     /*
-     * Favorite
-     */
-
-    public function isFavorite() {
-        return false;
-        // TODO
-        // First, check if logged in
-        if (Me::isLoggedIn()) {
-            // Check if fetched
-            if ($this->favorite === null) {
-                // Not fetched
-                $get_favorite_status  = "SELECT id" . PHP_EOL;
-                $get_favorite_status .= "FROM favorite" . PHP_EOL;
-                $get_favorite_status .= "WHERE file = :file" . PHP_EOL;
-                $get_favorite_status .= "AND user = :user";
-                
-                $get_favorite_status_query = Database::$db->prepare($get_favorite_status);
-                $get_favorite_status_query->execute(array(':file' => $this->model->getId(), 
-                                                          ':user' => Me::getId()));
-                $row = $get_favorite_status_query->fetch(\PDO::FETCH_ASSOC);
-                
-                // Cache for later
-                if (isset($row['id'])) {
-                    $this->favorite = true;
-                }
-                else {
-                    $this->favorite = false;
-                }
-
-                // Return
-                return $this->favorite;
-            }
-            else {
-                // Fetched, just return
-                return $this->favorite;
-            }
-        }
-        else {
-            return null;
-        }
-    }
-
-    /*
      * Root parent
      */
 
@@ -700,7 +611,7 @@ class ElementController implements BaseController {
                     }
                 }
                 else {
-                    die('500');
+                    return null;
                 }
             }
             
@@ -712,25 +623,19 @@ class ElementController implements BaseController {
     }
     
     /*
-     * Course
-     */
-
-    public function hasCourse() {
-        return (($this->model->getCourse() == null) ? false : true);
-    }
-
-    public function setCourseFromId($id) {
-        $course_obj = new Course();
-        $course_obj->createById($id);
-        $this->model->setCourse($course_obj);
-    }
-    
-    /*
      * Setter for caching
      */
 
-    public function getCache($b) {
+    public function setCache($b) {
         $this->cache = $b;
+    }
+    
+    /*
+     * Cache the current Element
+     */
+    
+    public function cache() {
+        CacheManager::setCache($this->model->getId(), 'i', $this->cacheFormat());
     }
 
     /*
@@ -862,7 +767,7 @@ class ElementController implements BaseController {
         $previous_num = 0;
         
         // The query
-        $get_all_downloads = "SELECT COUNT(id) AS 'num', downloaded_time" . PHP_EOL;
+        $get_all_downloads  = "SELECT COUNT(id) AS 'num', downloaded_time" . PHP_EOL;
         $get_all_downloads .= "FROM download" . PHP_EOL;
         $get_all_downloads .= "WHERE file = :file" . PHP_EOL;
         $get_all_downloads .= "GROUP BY TO_DAYS(downloaded_time)" . PHP_EOL;
@@ -935,11 +840,15 @@ class ElementController implements BaseController {
         
         // Check if directory
         if ($this->model->isDirectory()) {
-            $ret .= '    <a href="' . $this->generateUrl(Routes::ARCHIVE) . '">' . $this->model->getName();
+            $ret .= '    <a href="' . $this->generateUrl(Routes::ARCHIVE) . '">';
             
             // Check if has course
-            if ($this->hasCourse()) {
-                $ret .= ' &mdash; ' . $this->model->getCourse()->getName();
+            if ($this->isCourse()) {
+                $course = $this->getCourse();
+                $ret .= $course['code'] . ' &mdash; ' . $course['name'];
+            }
+            else {
+                $ret .= $this->model->getName();
             }
             
             // Close link
@@ -949,16 +858,27 @@ class ElementController implements BaseController {
             // The link itself
             $ret .= '    <a rel="nofollow" target="_blank"' . $element_title . ' href="' . $element_url . '">' . $this->model->getName() . '</a> @ ' . PHP_EOL;
             
-            // Check if we should output the parent
-            if ($this->model->getParent() != 1 and $this->model->getParent() != $root_parent->getId()) {
-                $local_dir_element = ElementCollection::get($this->model->getParent());
-                $ret .= '    <a href="' . $this->generateUrl(Routes::ARCHIVE) . '">' . $local_dir_element->getName() . '</a>, ' . PHP_EOL;
-            }
+            // Load parent
+            $parent = ElementCollection::get($this->model->getParent());
             
-            // Check if we should add the root parent
-            if ($root_parent != null) {
-                $ret .= '    <a href="' . $root_parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" ';
-                $ret .= ' data-placement="top" class="help" title="' . $root_parent->getCourse()->getName() . '">' . $root_parent->getName() . '</a>' . PHP_EOL;
+            // Just to be sure
+            if ($parent != null) {
+                // Check if element is placed directly in course
+                if ($parent->controller->isCourse()) {
+                    // Parent is course
+                    $parent_course = $parent->controller->getCourse();
+                    $ret .= '    <a href="' . $parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" ';
+                    $ret .= ' data-placement="top" class="help" title="' . $parent_course['name'] . '">' . $parent_course['code'] . '</a>' . PHP_EOL;
+                }
+                else {
+                    // Parent is not course
+                    $ret .= '    <a href="' . $parent->controller->generateUrl(Routes::ARCHIVE) . '">' . $parent->getName() . '</a>, ' . PHP_EOL;
+                    
+                    // Load root parent
+                    $parent_course = $root_parent->controller->getCourse();
+                    $ret .= '    <a href="' . $root_parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" ';
+                    $ret .= ' data-placement="top" class="help" title="' . $parent_course['name'] . '">' . $parent_course['code'] . '</a>' . PHP_EOL;
+                }
             }
         }
         
@@ -971,26 +891,17 @@ class ElementController implements BaseController {
     }
     
     /*
-     * Cache the current Element
-     */
-    
-    public function cache() {
-        CacheManager::setCache($this->model->getId(), 'i', $this->cacheFormat());
-    }
-    
-    /*
      * Save the current Element
      */
     
     public function save() {
-        $insert_element  = "INSERT INTO archive (name, url_friendly, parent, course, location, mime_type, missing_image, size, is_directory, is_accepted, is_visible, url, added) " . PHP_EOL;
-        $insert_element .= "VALUES (:name, :url_friendly, :parent, :course, :location, :mime_type, :missing_image, :size, :is_directory, :is_accepted, :is_visible, :url, NOW())";
+        $insert_element  = "INSERT INTO archive (name, url_friendly, parent, location, mime_type, missing_image, size, is_directory, is_accepted, is_visible, url, added) " . PHP_EOL;
+        $insert_element .= "VALUES (:name, :url_friendly, :parent, :location, :mime_type, :missing_image, :size, :is_directory, :is_accepted, :is_visible, :url, NOW())";
 
         $insert_element_query = Database::$db->prepare($insert_element);
         $insert_element_query->execute([':name' => $this->model->getName(),
             ':url_friendly' => $this->model->getUrlFriendly(),
             ':parent' => $this->model->getParent(),
-            ':course' => (($this->model->getCourse() === null) ? null : $this->model->getCourse()->getId()),
             ':location' => $this->model->getLocation(),
             ':mime_type' => $this->model->getMimeType(),
             ':missing_image' => (int) $this->model->getMissingImage(),
@@ -1000,9 +911,6 @@ class ElementController implements BaseController {
             ':is_visible' => (int) $this->model->isVisible(),
             ':url' => $this->model->getUrl(),
         ]);
-
-        // Get the course-id
-        $element_id = Database::$db->lastInsertId();
         
         // Set id to model
         $this->model->setId($element_id);
@@ -1017,5 +925,42 @@ class ElementController implements BaseController {
     
     public function update() {
         // TODO
+    }
+    
+    /*
+     * Backwards compability
+     */
+    
+    public function getFullLocation() {
+        if (count($this->fullLocation) == 0) {
+            $temp_location = array($this->model->getLocation());
+            $temp_id = $this->model->getParent();
+
+            // Loop untill we reach the root
+            while ($temp_id != 0) {
+                // Check if this object already exists
+                $temp_item = ElementCollection::get($temp_id);
+                
+                // Check if already cached, or not
+                if ($temp_item !== null) {
+                    // Get the url piece
+                    $temp_location[] = $temp_item->getLocation();
+                    
+                    // Update id
+                    $temp_id = $temp_item->getParent();
+                }
+                else {
+                    return null;
+                }
+            }
+
+            // Reverse array
+            $temp_location = array_reverse($temp_location);
+
+            // Assign
+            $this->fullLocation = $temp_location;
+        }
+
+        return implode('/', $this->fullLocation);
     }
 }

@@ -100,6 +100,17 @@ class Routes {
         ),
         
         /*
+         * Syncs
+         */
+        
+        'Tasks\\Sync\\SyncCourses' => array(
+            '/tasks/sync/synccourses',
+        ),
+        'Tasks\\Sync\\FixElementsYoukok100' => array(
+            '/tasks/sync/fixelementsyoukok100',
+        ),
+        
+        /*
          * Other stuff
          */
         
