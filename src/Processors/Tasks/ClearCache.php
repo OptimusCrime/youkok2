@@ -69,6 +69,14 @@ Class ClearCache extends Base {
             unlink(BASE_PATH . '/courses.json');
             unlink(BASE_PATH . '/typeahead.json');
             
+            /*
+             * Youkok2 cache
+             */
+            
+            foreach (array_filter(glob(CACHE_PATH . '/elements/*'), 'is_dir') as $v) {
+                $this->rmNonemptyDir($v);
+            }
+            
             // Set data
             $this->setData('code', 200);
             $this->setData('msg', 'Cache cleared');
@@ -80,5 +88,25 @@ Class ClearCache extends Base {
         
         // Return data
         $this->returnData();
+    }
+    
+    private function rmNonemptyDir($dir) {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            
+            foreach ($objects as $object) {
+                if ($object != '.' && $object != '..') {
+                    if (filetype($dir . '/' . $object) == 'dir') {
+                        $this->rmNonemptyDir($dir . '/' . $object);
+                    }
+                    else {
+                        unlink($dir . '/' . $object);
+                    }
+                }
+            }
+            
+            reset($objects);
+            rmdir($dir);
+        }
     }
 }
