@@ -8,6 +8,9 @@
 */
 
 namespace Youkok2\Views;
+/*
+ * Define what classes to use
+ */
 
 use \Youkok2\Models\Element as Element;
 
@@ -15,32 +18,33 @@ use \Youkok2\Models\Element as Element;
  * The Download class, extending Youkok2 base class
  */
 
-class Download extends Youkok2 {
+class Download extends Base {
 
     /*
      * Constructor
      */
 
-    public function __construct($routes) {
+    public function __construct() {
         // Calling Base' constructor
-        parent::__construct($routes);
+        parent::__construct();
         
         // Displaying 404 or not
         $should_display_404 = false;
-
+        
         // Create new object
-        $item = new Element();
-        $item->controller->createByUrl($this->queryGetClean());
-
+        $element = new Element();
+        $element->createByUrl($this->queryGetClean());
+        
         // Check if was found or invalid url
-        if ($item->controller->wasFound()) {
+        if ($element->controller->wasFound()) {
             // Check if visible
-            if ($item->isVisible()) {
+            if ($element->isVisible()) {
+                $file_location = $element->controller->getPhysicalLocation();
                 
-                $file_location = FILE_PATH . '/' . $item->controller->getPhysicalLocation();
-                die($file_location);
                 // Check if zip download or not
-                if ($item->isDirectory()) {
+                if ($element->isDirectory()) {
+                    // TODO
+                    /*
                     if (is_dir($file_location)) {
                         // Get direct children, that are elements
                         $files = $item->getChildren(Item::$file);
@@ -97,9 +101,9 @@ class Download extends Youkok2 {
                         // Is not a directory
                         $should_display_404 = true;
                     }
+                    */
                 }
                 else {
-                    
                     if (file_exists($file_location)) {
                         // Check if we should log download
                         if (!isset($_GET['donotlogthisdownload'])) {
@@ -109,16 +113,18 @@ class Download extends Youkok2 {
     
                         // Check if we should return fake http response to facebook crawler
                         if (isset($_SERVER['HTTP_USER_AGENT']) and strpos($_SERVER['HTTP_USER_AGENT'], 'facebook') !== false) {
+                            // TODO
+                            /*
                             // Facebook crawler
-                            $this->template->assign('DOWNLOAD_FILE', $item->getName());
-                            $this->template->assign('DOWNLOAD_SIZE', $item->getSizePretty());
+                            $this->template->assign('DOWNLOAD_FILE', $element->getName());
+                            $this->template->assign('DOWNLOAD_SIZE', $element->getSizePretty());
                             $this->template->assign('DOWNLOAD_URL', $_SERVER['REQUEST_URI']);
     
                             // Get item parent information
                             $download_parent = '';
-                            $root_parent = $item->getRootParent();
-                            if ($item->getParent() != $root_parent->getId()) {
-                                $local_dir_element = $this->collection->get($item->getParent());
+                            $root_parent = $element->getRootParent();
+                            if ($element->getParent() != $root_parent->getId()) {
+                                $local_dir_element = $this->collection->get($element->getParent());
                                 $download_parent = $local_dir_element->getName() . ', ';
                             }
                             if ($root_parent != null) {
@@ -129,13 +135,14 @@ class Download extends Youkok2 {
                             
                             // Display fake http response for Facebook
                             $this->displayAndCleanup('download.tpl');
+                            */
                         }
                         else {
                             // Close database connection
                             $this->close();
                             
                             // File exists, download!
-                            $this->loadFile($file_location, $item->getName());
+                            $this->loadFile($file_location, $element->getName());
                         }
                     }
                     else {

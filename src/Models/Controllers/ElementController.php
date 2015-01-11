@@ -247,24 +247,34 @@ class ElementController implements BaseController {
         // Only continue if we have more than one elements
         if ($num_pieces > 0) {
             // Set current id to root
-            $temp_id = 1;
+            $temp_parent = null;
             
             // Loop each fragment
             foreach ($url_pieces as $k => $url_piece_single) {
                 // Run query for this fragment
                 $get_reverse_url  = "SELECT id" . PHP_EOL;
                 $get_reverse_url .= "FROM archive " . PHP_EOL;
-                $get_reverse_url .= "WHERE parent = :parent" . PHP_EOL;
+                
+                if ($temp_parent === null) {
+                    $get_reverse_url .= "WHERE parent IS NULL" . PHP_EOL;
+                    $reverse_arr = array(':url_friendly' => $url_piece_single);
+                }
+                else {
+                    $get_reverse_url .= "WHERE parent = :parent" . PHP_EOL;
+                    $reverse_arr = array(':parent' => $temp_parent, 
+                        ':url_friendly' => $url_piece_single);
+                }
+                
                 $get_reverse_url .= "AND url_friendly = :url_friendly" . PHP_EOL;
                 $get_reverse_url .= "AND is_visible = 1";
                 
                 $get_reverse_url_query = Database::$db->prepare($get_reverse_url);
-                $get_reverse_url_query->execute(array(':parent' => $temp_id, 
-                                                      ':url_friendly' => $url_piece_single));
+                $get_reverse_url_query->execute($reverse_arr);
                 $row = $get_reverse_url_query->fetch(\PDO::FETCH_ASSOC);
                 
                 // Check if anything was returned
                 if (isset($row['id'])) {
+                    
                     // Check if we should load root parent
                     if ($this->loadRootParent and $k == 0) {
                         $this->rootParent = $row['id'];
@@ -277,19 +287,16 @@ class ElementController implements BaseController {
                     }
                     else {
                         // Was found, update the current id
-                        $temp_id = $row['id'];
-                        
-                        // Add url piece
-                        $this->fullUrl[] = $url_piece_single;
+                        $temp_parent = $row['id'];
                         
                         // Check if this object already exists
-                        $temp_item = ElementCollection::get($temp_id);
+                        $temp_item = ElementCollection::get($temp_parent);
                         
                         // Check if already cached, or not
                         if ($temp_item == null) {
                             // Should cache, just in case
                             $temp_item = new Element();
-                            $temp_item->createById($temp_id);
+                            $temp_item->createById($temp_parent);
                             ElementCollection::add($temp_item);
                         }
                     }
@@ -900,7 +907,7 @@ class ElementController implements BaseController {
     
     public function getPhysicalLocation() {
         // TODO
-        $full_path = FILE_PATH . '/foo/' . $this->model->getChecksum();
+        return FILE_PATH . '/foo/' . $this->model->getChecksum();
     }
     
     /*
