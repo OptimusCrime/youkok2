@@ -86,7 +86,7 @@ class Archive extends Base {
         $get_all_courses .= "AND is_visible = 1" . PHP_EOL;
         $get_all_courses .= "ORDER BY name ASC";
         
-        $get_all_courses_query->query($get_all_courses);
+        $get_all_courses_query = Database::$db->query($get_all_courses);
         while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
             $element = new Element();
             $element->createById($row['id'], true);

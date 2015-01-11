@@ -120,15 +120,15 @@ class Routes {
          * Other stuff
          */
         
-        'User' => array(
-            '/user/save',
+        'Module' => array (
+            '/module/update',
         ),
         'Register' => array(
             '/register/email',
         ),
         'StaticReturner' => array(
             '/search/courses.json',
-         ),
+        ),
     );
     
     /*

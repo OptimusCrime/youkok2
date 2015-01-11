@@ -12,7 +12,8 @@
         <div class="well">
             <div class="row">
                 <div class="col-xs-12 col-sm-9" id="frontpage-info">
-                    [[+$HOME_INFOBOX]]
+                    <p>Vi har for tiden <b>[[+$HOME_STATS_USERS]]</b> registrerte brukere, <b>[[+$HOME_STATS_FILES]]</b> 
+                    filer og totalt <b>[[+$HOME_STATS_DOWNLOADS]]</b> nedlastninger i vårt system.</p>
                     <p>Nettsiden er helt åpen og krever ikke at du registrerer deg for å kunne bruke den.</p>
                     <p>Om du velger å registrere deg får mulighet til å lagre favoritter, se sine siste nedlastninger, 
                     samt muligheten til å laste opp filer og å bidra til å gjøre Youkok2 enda bedre. Du kan lese mer om 

@@ -484,8 +484,9 @@ $(document).ready(function () {
         $.ajax({
             cache: false,
             type: "post",
-            url: "processor/popular/update",
-            data: { 
+            url: "processor/module/update",
+            data: {
+                id: 0,
                 delta: $('a', $(this)).data('delta') 
             },
             success: function(json) {

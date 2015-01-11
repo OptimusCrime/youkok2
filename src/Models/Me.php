@@ -408,6 +408,8 @@ class Me {
                 Redirect::send('');
             }
         }
+        
+        exit();
     }
     
     /*

@@ -11,7 +11,8 @@ namespace Youkok2\Shared;
 /*
  * Define what classes to use
  */
- 
+
+use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
@@ -24,17 +25,6 @@ use \Youkok2\Utilities\Utilities as Utilities;
  */
 
 class Elements {
-    
-    /*
-     * Variable defining how to fetch time spesific intervals
-     */
-    
-    public static $delta = array(
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', 
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.is_visible = 1', 
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', 
-        'WHERE a.is_visible = 1',
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1');
     
     /*
      * Fetch newest Elements
@@ -77,41 +67,7 @@ class Elements {
      */
 
     public static function getMostPopular($override = null) {
-        $ret = '';
-
-        $user_delta = Me::getMostPopularDelta($override);
-
-        // Load most popular files from the system
-        $get_most_popular  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
-        $get_most_popular .= "FROM download d" . PHP_EOL;
-        $get_most_popular .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
-        $get_most_popular .= self::$delta[$user_delta] . PHP_EOL;
-        $get_most_popular .= "GROUP BY d.file" . PHP_EOL;
-        $get_most_popular .= "ORDER BY downloaded_times DESC, a.added DESC" . PHP_EOL;
-        $get_most_popular .= "LIMIT 15";
-
-        $get_most_popular_query = Database::$db->prepare($get_most_popular);
-        $get_most_popular_query->execute();
-        while ($row = $get_most_popular_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Get
-            $element = ElementCollection::get($row['id'], array('root'));
-
-            // Check if valid Element
-            if ($element !== null) {
-                // Set download count
-                $element->controller->setDownloadCount($user_delta, $row['downloaded_times']);
-                
-                // Generate string
-                $ret .= $element->controller->getFrontpageLink('most-popular', $override);
-            }
-        }
-
-        // Check if null
-        if ($ret == '') {
-            $ret = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet.</li>';
-        }
-
-        return $ret;
+        return Youkok2::runProcessor('/module/update', true)->returnData()['html'];
     }
     
     /*

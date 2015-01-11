@@ -40,7 +40,7 @@ class Home extends Base {
             $this->template->assign('HOME_USER_FAVORITES', Elements::getFavorites());
         }
         else {
-            $this->template->assign('HOME_INFOBOX', $this->loadInfobox());
+            $this->loadInfobox();
         }
         
         // Assign other stuff
@@ -56,28 +56,30 @@ class Home extends Base {
     
     private function loadInfobox() {
         // Load users
-        $get_user_number  = "SELECT COUNT(id) as 'antall_brukere'" . PHP_EOL;
+        $get_user_number  = "SELECT COUNT(id) AS 'num_users'" . PHP_EOL;
         $get_user_number .= "FROM user";
         
-        $get_user_number_query->query($get_user_number);
+        $get_user_number_query = Database::$db->query($get_user_number);
         $get_user_number_result = $get_user_number_query->fetch(\PDO::FETCH_ASSOC);
         
         // Load files
-        $get_file_number  = "SELECT COUNT(id) as 'antall_filer'" . PHP_EOL;
+        $get_file_number  = "SELECT COUNT(id) AS 'num_files'" . PHP_EOL;
         $get_file_number .= "FROM archive" . PHP_EOL;
         $get_file_number .= "WHERE is_directory = 0";
         
-        $get_file_number_query->query($get_user_number);
+        $get_file_number_query = Database::$db->query($get_file_number);
         $get_file_number_result = $get_file_number_query->fetch(\PDO::FETCH_ASSOC);
         
         // Load downloads
-        $get_download_number  = "SELECT COUNT(id) as 'antall_nedlastninger'" . PHP_EOL;
+        $get_download_number  = "SELECT COUNT(id) AS 'num_downloads'" . PHP_EOL;
         $get_download_number .= "FROM download";
         
-        $get_download_number_query->query($get_user_number);
+        $get_download_number_query = Database::$db->query($get_download_number);
         $get_dowload_number_result = $get_download_number_query->fetch(\PDO::FETCH_ASSOC);
         
         // Return text
-        return '<p>Vi har for tiden <b>' . number_format($get_user_number_result['antall_brukere']) . '</b> registrerte brukere, <b>' . number_format($get_file_number_result['antall_filer']) . '</b> filer og totalt <b>' . number_format($get_dowload_number_result['antall_nedlastninger']) . '</b> nedlastninger i vårt system.</p>';
+        $this->template->assign('HOME_STATS_USERS', number_format($get_user_number_result['num_users']));
+        $this->template->assign('HOME_STATS_FILES', number_format($get_file_number_result['num_files']));
+        $this->template->assign('HOME_STATS_DOWNLOADS', number_format($get_dowload_number_result['num_downloads']));
     }
 }
