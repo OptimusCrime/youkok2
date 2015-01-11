@@ -50,10 +50,10 @@
     
     <h2>Tall</h2>
     <ul>
-        <li>Antall fag: [[+$ADMIN_NUM_COURSES]]</li>
-        <li>Antall filer: [[+$ADMIN_NUM_FILES]]</li>
-        <li>Antall linker: [[+$ADMIN_NUM_LINKS]]</li>
-        <li>Antall mapper: [[+$ADMIN_NUM_DIRS]]</li>
+        <li><strong>Antall fag:</strong> [[+$ADMIN_NUM_COURSES]]</li>
+        <li><strong>Antall filer:</strong> [[+$ADMIN_NUM_FILES]]</li>
+        <li><strong>Antall linker:</strong> [[+$ADMIN_NUM_LINKS]]</li>
+        <li><strong>Antall mapper:</strong> [[+$ADMIN_NUM_DIRS]]</li>
     </ul>
     
 </div>
