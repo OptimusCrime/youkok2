@@ -155,7 +155,6 @@ class Archive extends Base {
     private function loadArchive() {
         // Try to create new element
         $element = new Element();
-        $element->controller->setLoadRootParent(true);
         $element->createByUrl($this->queryGetClean());
 
         // Check if element was found and is directory
@@ -213,10 +212,16 @@ class Archive extends Base {
         $this->template->assign('ARCHIVE_ID', $element->getId());
         
         // Set title
-        $archive_title = '<h1>' . $element->getName() . '</h1>';
-        if ($element->controller->hasCourse()) {
-            $archive_title .= '<span> - </span><h2>' . $element->getCourse()->getName() . '</h2>';
+        if ($element->controller->isCourse()) {
+            $course = $element->controller->getCourse();
+            $archive_title = '<h1>' . $course['code'] . '</h1>';
+            $archive_title .= '<span> - </span><h2>' . $course['name'] . '</h2>';
         }
+        else {
+            $archive_title = '<h1>' . $element->getName() . '</h1>';
+        }
+        
+        
         if (Me::isLoggedIn()) {
             $archive_title .= ' <i class="fa fa-star archive-heading-star-' . $element->controller->isFavorite() . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i>';
         }
