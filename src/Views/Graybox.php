@@ -55,7 +55,17 @@ class Graybox extends Base {
         'Messed up the order of the params, fuckem', 'MOST IMPORTANT CHANGES EVER FRRIKING HELL', 
         'Soooo much refractoring my eyes are dropping', 'Refractor the loader class to reflect some bad design choices',
         'Began working on a nice as F caching system', 'Added epic search functionality', 'Removed a hell of a lot images',
-        'Fixed typo 500ing the entire site', 'I messed up some stuff', 
+        'Fixed typo 500ing the entire site', 'I messed up some stuff', 'Fixed admin interfjes', 'DFuck', 'What a mess',
+        'Now actually clearing youkok2 cache, duurrr', 'Fixed archive markup a bit, still fucked up tho', 
+        'Fixed header yet again, looks cool', 'Began reimplemented archive, which is a pain in the aaaaass', 
+        'Trying to make stuff more OOP, broke some stuff ect', 'Made registration possible again, woopwoop', 'Well fuck',
+        'For fuck sake', 'Damnit again, haha', 'JDFhdsjfklshlfsdjkflg', 'I suck even more', 'Well that was stupoid',
+        'Removed typehead example (what stupid messed up stuff)', 'Fixing stuff, broke the frontpage', 
+        'Fixed a bug or someting', 'I am going to kill someone soon', 'NEW FUCKINGS BUILDDDDDDDDDDDDDDDDDDD', 'FUCK THIS',
+        'Stupid stupid stupid stupid', 'Trying to fix fuckup in the update script', 'Fixed fuckup in the buildscript',
+        'hrherhehrh', 'Shit shit shit shit', 'Removed fucked up stuff in shell script', 'Fixed eifnsdflhsdfkhdsalkhasdlksadh',
+        'NOOO MOAR TABS, CAN I HAS ZHE SPACE INDENTS', 'Ran new build for no apparent reason', 
+        'Fuckings mac creating invisible files all over the place', 
     ];
 
     /*
@@ -99,6 +109,10 @@ class Graybox extends Base {
      */
     
     private function generateNumbers() {
-        echo '<p><strong>Tilfeldig commit:</strong> ' . $this->commits[rand(0, (count($this->commits) - 1))] . '</p>';
+        echo '<p><strong>Tilfeldig commits</strong></p><p>';
+        echo $this->commits[rand(0, (count($this->commits) - 1))] . '<br />';
+        echo $this->commits[rand(0, (count($this->commits) - 1))] . '<br />';
+        echo $this->commits[rand(0, (count($this->commits) - 1))];
+        echo '</p>';
     }
 }
