@@ -10,7 +10,7 @@
 <div class="col-md-8" id="archive-top">
     <ol class="breadcrumb" id="archive-breadcrumbs">
         <li><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
-        <li><a href="#">Emner</a></li>
+        <li><a href="emner/">Emner</a></li>
         [[+$ARCHIVE_BREADCRUMBS]]
     </ol>
     [[+nocache]]

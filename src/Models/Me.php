@@ -326,6 +326,25 @@ class Me {
         // Return entire list of elements
         return self::$favorites;
     }
+    
+    /*
+     * Check if one Element is favorite
+     */
+    
+    public static function isFavorite($id) {
+        // Check if we should load
+        if (self::$favorites === null) {
+            self::getFavorites();
+        }
+        
+        // Compare
+        if (in_array($id, self::$favorites)) {
+            return true;
+        }
+        
+        // If we came all this was, it is not a favorite
+        return false;
+    }
 
     /*
      * Login

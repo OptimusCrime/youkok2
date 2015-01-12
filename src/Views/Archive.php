@@ -59,8 +59,9 @@ class Archive extends Base {
             // Load the archive
             $this->loadArchive();
 
-            // Set title
+            // Set stuff
             $this->template->assign('HEADER_MENU', 'ARCHIVE');
+            $this->template->assign('ARCHIVE_PATH', Routes::ARCHIVE);
 
             // Display
             $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
@@ -215,28 +216,45 @@ class Archive extends Base {
         if ($element->controller->isCourse()) {
             $course = $element->controller->getCourse();
             $archive_title = '<h1>' . $course['code'] . '</h1>';
-            $archive_title .= '<span> - </span><h2>' . $course['name'] . '</h2>';
+            $archive_title .= '<span> &mdash; </span><h2>' . $course['name'] . '</h2>';
         }
         else {
             $archive_title = '<h1>' . $element->getName() . '</h1>';
         }
         
-        
+        // Check if we should add the star for adding / removing favorites too
         if (Me::isLoggedIn()) {
-            $archive_title .= ' <i class="fa fa-star archive-heading-star-' . $element->controller->isFavorite() . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i>';
+            $archive_title .= ' <i class="fa fa-star archive-heading-star-' . Me::isFavorite($element->getId()) . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i>';
         }
         $this->template->assign('ARCHIVE_TITLE', $archive_title);
         
         // Metadata
-        //$element_root = $element->controller->getRootParent();
-        //$site_description = $element_root->getName() . ' - ' . $element_root->getCourse()->getName() . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
-        $this->template->assign('SITE_DESCRPTION', 'derp');
-
-        $this->template->assign('ARCHIVE_BREADCRUMBS', 'foo');
+        if (!$element->controller->isCourse()) {
+            $element_root = $element->controller->getRootParent();
+            $course = $element_root->controller->getCourse();
+        }
+        
+        $site_description = $course['code'] . ' &mdash; ' . $course['name'] . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
+        $this->template->assign('SITE_DESCRPTION', $site_description);
+        
+        // Get breadcrumbs
+        $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
+        
+        // TODO
+        
         $this->template->assign('ARCHIVE_ZIP_DOWNLOAD', 'foo');
         $this->template->assign('ARCHIVE_ZIP_DOWNLOAD_NUM', 'foo');
-        $this->template->assign('ARCHIVE_DISPLAY', 'foo');
-        $this->template->assign('ARCHIVE_EMPTY', true);
+        
+        // Check if archive is empty
+        if ($element->isEmpty()) {
+            $this->template->assign('ARCHIVE_EMPTY', true);
+        }
+        else {
+            $this->template->assign('ARCHIVE_EMPTY', false);
+            $this->template->assign('ARCHIVE_CONTENT', 'foobar');
+            // Load the archive here
+            // $this->loadArchivxe();
+        }
     }
 
     //
@@ -245,29 +263,37 @@ class Archive extends Base {
 
     private function loadBreadcrumbs($element) {
         // Some variables
-        $ret = '';
-        $collection = $element->getBreadcrumbs();
-        $collection_size = count($collection);
+        $ret = array();
+        $collection = $element->controller->getParents();
         
-        // Build return string
-        $ret .= '<li><a href="' . substr($this->routes['archive'][0], 1) . '/">Arkiv</a></li>';
-
         // Loop and build list
-        for ($i = 1; $i < $collection_size; $i++) {
-            // Check what element
-            if (($i + 1) == $collection_size) {
-                // Is final element
-                $ret .= '<li class="active">' . $collection[$i]->getName() . '</li>';
+        foreach ($collection as $v) {
+            // Check if si course
+            if ($v->controller->isCourse()) {
+                $course = $v->controller->getCourse();
+                $name = $course['code'];
             }
             else {
-                // Is not final element
-                $ret .= '<li><a href="' . $collection[$i]->generateUrl($this->routes['archive'][0]) . '">' . $collection[$i]->getName() . '</a></li>';
+                $name = $v->getName();
+            }
+            
+            // Find out what kind of element to use
+            if ($v->getId() == $element->getId()) {
+                // Current element, no link
+                $ret[] = '<li class="active">' . $name . '</li>';
+            }
+            else {
+                // Not current element, add link
+                $ret[] = '<li><a href="' . $v->controller->generateUrl(Routes::ARCHIVE) . '">' . $name . '</a></li>';
             }
             
         }
+        
+        // Flip order
+        $ret = array_reverse($ret);
 
         // Return breadcrumbs
-        return $ret;
+        return implode('', $ret);
     }
     
     private function loadBredcrumbsTitle($element) {

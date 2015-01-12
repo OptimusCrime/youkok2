@@ -796,15 +796,6 @@ $(document).ready(function () {
     });
     
     //
-    // Check for empty archive
-    //
-    
-    if ($('#archive-list').length > 0 && $('#archive-list li').length == 0) {
-        $('#archive-list').hide();
-        $('#archive-empty').show();
-    }
-    
-    //
     // Check if should display zip-message
     //
     

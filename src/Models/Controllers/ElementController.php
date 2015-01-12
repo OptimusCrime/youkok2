@@ -37,18 +37,11 @@ class ElementController implements BaseController {
     // The query
     private $query;
     
-    // Full paths
-    private $fullUrl;
-    private $fullLocation;
-    
     // Load additional information
-    private $loadFavorite;
     private $loadFlagCount;
-    private $loadRootParent;
     private $loadIfRemoved;
     
     // Other stuff
-    private $rootParent;
     private $flagCount;
     private $downloadCount;
     
@@ -62,6 +55,9 @@ class ElementController implements BaseController {
     // Cache
     private $cache;
     
+    // Parents
+    private $parents;
+    
     // Static options
     public static $file = 0;
     public static $dir = 1;
@@ -74,6 +70,10 @@ class ElementController implements BaseController {
         'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', 
         'WHERE a.is_visible = 1',
         'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1');
+    
+    // Backwards compability
+    private $fullLocation;
+    
     
     /*
      * Consutrctor
@@ -93,18 +93,10 @@ class ElementController implements BaseController {
             'execute' => array());
 
         // Variables to keep track of what should be loaded at creation
-        $this->loadFavorite = false;
         $this->loadFlagCount = false;
-        $this->loadRootParent = false;
         $this->loadIfRemoved = false;
 
-        // Create arrays for full locations
-        $this->fullUrl = null;
-        $this->fullLocation = null;
-        
         // Other stuff
-        $this->favorite = null;
-        $this->rootParent = null;
         $this->flagCount = null;
         $this->downloadCount = array(0 => null, 1 => null, 2 => null, 3 => null);
         
@@ -117,6 +109,12 @@ class ElementController implements BaseController {
 
         // Set caching to true as default
         $this->cache = true;
+        
+        // Set parents to null
+        $this->parents = null;
+        
+        // Backwards compability
+        $this->fullLocation = null;
     }
     
     /*
@@ -153,16 +151,7 @@ class ElementController implements BaseController {
                 if (!$this->loadIfRemoved) {
                     $this->query['where'][] = 'a.is_visible = 1';
                 }
-
-                // Create dynamic query
-                if ($this->loadFavorite) {
-                    $this->query['select'][] = "f.id AS 'favorite'";
-                    $this->query['join'][] = PHP_EOL . 'LEFT JOIN favorite AS f ON f.file = a.id AND f.user = :user';
-                    
-                    if (!isset($this->query['execute'][':user'])) {
-                        $this->query['execute'][':user'] = $this->controller->user->getId();
-                    }
-                }
+                
                 if ($this->loadFlagCount) {
                     $this->query['select'][] = "count(fl.id) as 'flags'";
                     $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file AND fl.active = 1';
@@ -193,9 +182,6 @@ class ElementController implements BaseController {
                 // Check if the query did return anything
                 if (isset($row['name'])) {
                     // Set special fields
-                    if ($this->loadFavorite) {
-                        $this->favorite = (!isset($row['favorite']) or $row['favorite'] == null) ? false : true;
-                    }
                     if (isset($row['flags'])) {
                         $this->flagCount = $row['flags'];
                     }
@@ -274,12 +260,6 @@ class ElementController implements BaseController {
                 
                 // Check if anything was returned
                 if (isset($row['id'])) {
-                    
-                    // Check if we should load root parent
-                    if ($this->loadRootParent and $k == 0) {
-                        $this->rootParent = $row['id'];
-                    }
-
                     // Check if this is the last element
                     if ($k == ($num_pieces - 1)) {
                         // Last element, just use createById
@@ -304,7 +284,6 @@ class ElementController implements BaseController {
             }
         }
     }
-    
         
     /*
      * Setters to load additional information when loaded
@@ -312,10 +291,6 @@ class ElementController implements BaseController {
      
     public function setLoadFlagCount($b) {
         $this->loadFlagCount = $b;
-    }
-
-    public function setLoadRootParent($b) {
-        $this->loadRoot = $b;
     }
 
     public function setLoadIfRemoved($b) {
@@ -334,6 +309,43 @@ class ElementController implements BaseController {
         else {
             return false;
         }
+    }
+    
+    /*
+     * Generic method for storing all the parents for a given resource
+     */
+    
+    public function getParents() {
+        if ($this->parents === null) {
+            $this->parents = array($this->model);
+            $temp_parent_id = $this->model->getParent();
+            
+            // Loop untill we reach the root
+            while ($temp_parent_id != null) {
+                // Check if this object already exists
+                $temp_parent = ElementCollection::get($temp_parent_id);
+                
+                // Check if already cached
+                if ($temp_parent == null) {
+                    // Create new object
+                    $temp_parent = new Element();
+                    $temp_parent->createById($temp_parent_id);
+                    ElementCollection::add($temp_parent);
+                }
+                
+                // Add node to parents
+                $this->parents[] = $temp_parent;
+                
+                // Set new parent id
+                $temp_parent_id = $temp_parent->getParent();
+            }
+        }
+        
+        // Reverse
+        $this->parents = array_reverse($this->parents);
+        
+        // Return array
+        return $this->parents;
     }
     
     /*
@@ -359,82 +371,25 @@ class ElementController implements BaseController {
      */
 
     public function generateUrl($path) {
-        // Check if the url is already cached!
-        if ($this->fullUrl == null) {
-            // Store some variables for later
-            $temp_url= array($this->model->getUrlFriendly());
-            $temp_id = $this->model->getParent();
-            $temp_root_parent = $this->model;
-
-            // Loop untill we reach the root
-            while ($temp_id != null) {
-                // Check if this object already exists
-                $temp_item = ElementCollection::get($temp_id);
-                
-                // Check if already cached
-                if ($temp_item == null) {
-                    // Create new object
-                    $temp_item = new Element();
-                    $temp_item->createById($temp_id);
-                    ElementCollection::add($temp_item);
-                }
-                
-                // Get the url piece
-                $temp_url_friendly = $temp_item->getUrlFriendly();
-                if (strlen($temp_url_friendly) > 0) {
-                    $temp_url[] = $temp_url_friendly;
-                }
-
-                // Update id
-                $temp_id = $temp_item->getParent();
-
-                if ($temp_item->getId() != null) {
-                    $temp_root_parent = $temp_item;
-                }
-            }
-            
-            // Store the root
-            $this->rootParent = $temp_root_parent;
-            
-            // Reverse array
-            $temp_url = array_reverse($temp_url);
-            
-            // Store in real variable
-            $this->fullUrl = $temp_url;
-        }
-        
-        // Return goes here!
+        // If generating url for a link, we don't need to fetch the parents
         if ($this->model->isLink()) {
             return substr($path, 1) . '/' . $this->model->getId();
         }
-        else {
-            return substr($path, 1) . '/' . implode('/', $this->fullUrl) . ($this->model->isDirectory() ? '/' : '');
-        }
-    }
-    
-    /*
-     * Get breadcrumbs for the current Element
-     */
-
-    public function getBreadcrumbs() {
-        // Store some variables for later
-        $temp_collection = array($this);
-        $temp_id = $this->parent;
         
-        // Loop untill we reach the root
-        while ($temp_id != null) {
-            // Check if this object already exists
-            $temp_item = ElementCollection::get($temp_id);
-            
-            // Get the url piece
-            $temp_collection[] = $temp_item;
-
-            // Update id
-            $temp_id = $temp_item->getParent(); 
+        // Check if we should load parents
+        if ($this->parents === null) {
+            // Load parents first
+            $this->getParents();
         }
-
-        // Return breadcrumbs in correct order here
-        return array_reverse($temp_collection);
+        
+        // Loop the parents and build the url
+        $full_url = array();
+        foreach ($this->parents as $v) {
+            $full_url[] = $v->getUrlFriendly();
+        }
+        
+        // Return goes here!
+        return substr($path, 1) . '/' . implode('/', $full_url) . ($this->model->isDirectory() ? '/' : '');
     }
 
     /*
@@ -563,40 +518,14 @@ class ElementController implements BaseController {
      */
 
     public function getRootParent() {
-        if ($this->rootParent != null) {
-            return $this->rootParent;
+        // Check if we should load parents
+        if ($this->parents === null) {
+            // Load parents first
+            $this->getParents();
         }
-        else {
-            // Temp variables
-            $temp_id = $this->model->getParent();
-            $temp_root_parent = $this->model;
-
-            // Loop untill we reach the root
-            while ($temp_id != 0) {
-                // Check if this object already exists
-                $temp_element = ElementCollection::get($temp_id);
-                
-                // Check if already cached
-                if ($temp_element !== null) {
-                    // Create new object
-                    $temp_element = new Element();
-                    $temp_element->createById($temp_id);
-                    $temp_id = $temp_element->getParent();
-
-                    if ($temp_element->getId() != 1) {
-                        $temp_root_parent = $temp_element;
-                    }
-                }
-                else {
-                    return null;
-                }
-            }
-            
-            // Store the root
-            $this->rootParent = $temp_root_parent;
-
-            return $this->rootParent;
-        }
+        
+        // Return first element in the stack
+        return $this->parents[0];
     }
     
     /*
@@ -635,12 +564,7 @@ class ElementController implements BaseController {
             }
             
             if (method_exists('\Youkok2\Models\Element', $v)) {
-                if ($v == 'getCourse' and $this->hasCourse() == true) {
-                    $cache_temp[] = "'" . $v_pretty . "' => '" . addslashes($this->model->getCourse()->getId()) . "'";
-                }
-                else {
-                    $cache_temp[] = "'" . $v_pretty . "' => '" . addslashes(call_user_func(array($this->model, $v))) . "'";
-                }
+                $cache_temp[] = "'" . $v_pretty . "' => '" . addslashes(call_user_func(array($this->model, $v))) . "'";
             }
         }
         

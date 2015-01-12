@@ -1,3 +1,3 @@
 <ul id="archive-list">
-    [[+$ARCHIVE_DISPLAY]]
+    [[+$ARCHIVE_CONTENT]]
 </ul>
