@@ -367,12 +367,10 @@ class ElementController implements BaseController {
             $get_children_ids_query->execute(array(':parent' => $this->model->getId()));
             while ($row = $get_children_ids_query->fetch(\PDO::FETCH_ASSOC)) {
                 // Create new element
-                $element = new Element();
-                $element->controller->setLoadFlagCount(true);
-                $element->createById($row['id']);
+                $element = ElementCollection::get($row['id'], array('flag'));
                 
                 // Add if found
-                if ($element->controller->wasFound()) {
+                if ($element != null and $element->controller->wasFound()) {
                     $this->children[] = $element;
                 }
             }

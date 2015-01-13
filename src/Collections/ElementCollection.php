@@ -48,7 +48,9 @@ class ElementCollection {
             
             // Check if we should set flags
             if ($flags != null) {
-                // TODO
+                if (in_array('flag', $flags)) {
+                    $element->controller->setLoadFlagCount(true);
+                }
             }
             
             // Create element
