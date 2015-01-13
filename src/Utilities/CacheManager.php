@@ -23,6 +23,7 @@ Class CacheManager {
     private static $currentChecking = null;
     private static $currentContent = null;
     private static $fetches = 0;
+    private static $bactrace = array();
     
     /*
      * Check if cached
@@ -39,6 +40,13 @@ Class CacheManager {
             
             // Increase fetch
             self::$fetches++;
+            
+            // Debug
+            if (DEV) {
+                self::$bactrace[] = array('id' => $id, 
+                    'type' => $type,
+                    'backtrace' => debug_backtrace());
+            }
 
             // Check if content is valid (and safe!)
             if (substr(file_get_contents($file), 0, 19) == '<?php return array(') {
@@ -208,5 +216,13 @@ Class CacheManager {
     
     public static function getFetches() {
         return self::$fetches;
+    }
+    
+    /*
+     * Return the backtrace array
+     */
+    
+    public static function getBacktrace() {
+        return self::$bactrace;
     }
 }

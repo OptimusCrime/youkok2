@@ -16,14 +16,19 @@
             [[+nocache]]
                 [[+if $DEV]]
                     <p>
-                        <span>ElementCollection: [[+$DEV_ELEMENT_COLLECTION]]</span> ::
+                        <span>ElementCollection: [[+$DEV_ELEMENT_COLLECTION_NUM]]</span> ::
                         <span>Antall queries: [[+$DEV_QUERIES_NUM]]</span> ::
-                        <span>Antall fetches: [[+$DEV_CACHE_LOAD]]</span> ::
-                        <span class="last"><a id="toggle-queries" href="#"><span class="nopadd">Vis</span> alle queries</a></span>
+                        <span>Antall fetches: [[+$DEV_CACHE_LOAD_NUM]]</span> ::
+                        <span><a id="toggle-queries" href="#"><span class="nopadd">Vis</span> alle queries</a></span> ::
+                        <span class="last"><a id="toggle-cache-loads" href="#"><span class="nopadd">Vis</span> alle cache loads</a></span>
                     </p>
                     
                     <div id="queries">
-                        [[+$DEV_QUERIES]]
+                        [[+$DEV_QUERIES_BACKTRACE]]
+                    </div>
+                    
+                    <div id="cache-load">
+                        [[+$DEV_CACHE_LOAD_BACKTRACE]]
                     </div>
                 [[+/if]]
             [[+/nocache]]

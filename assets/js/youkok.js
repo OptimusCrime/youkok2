@@ -1457,6 +1457,15 @@ $(document).ready(function () {
     $('#toggle-queries').on('click', function (e) {
         e.preventDefault();
         var $that = $(this);
+        
+        // Hide other
+        if ($('#cache-load').is(':visible')) {
+            $('#cache-load').slideUp(400, function () {
+                $('#toggle-cache-loads span').html('Vis');
+            });
+        }
+        
+        // Toggle
         if ($('#queries').is(':visible')) {
             $('#queries').slideUp(400, function () {
                 $('span', $that).html('Vis');
@@ -1464,6 +1473,30 @@ $(document).ready(function () {
         }
         else {
             $('#queries').slideDown(400, function () {
+                $('span', $that).html('Skjul');
+            });
+        }
+    });
+    
+    $('#toggle-cache-loads').on('click', function (e) {
+        e.preventDefault();
+        var $that = $(this);
+        
+        // Hide other
+        if ($('#queries').is(':visible')) {
+            $('#queries').slideUp(400, function () {
+                $('#toggle-queries span').html('Vis');
+            });
+        }
+        
+        // Toggle
+        if ($('#cache-load').is(':visible')) {
+            $('#cache-load').slideUp(400, function () {
+                $('span', $that).html('Vis');
+            });
+        }
+        else {
+            $('#cache-load').slideDown(400, function () {
                 $('span', $that).html('Skjul');
             });
         }

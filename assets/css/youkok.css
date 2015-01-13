@@ -736,10 +736,12 @@ a:visited {
  * Debug
 */
 
-#queries {
+#queries,
+#cache-load {
     display: none;
 }
-#queries {
+#queries,
+#cache-load  {
     text-align: left;
 }
 #footer span.nopadd {

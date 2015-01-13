@@ -32,11 +32,6 @@ class ElementCollection {
      */
     
     public static function add($elm) {
-        // Check if should init self
-        if (!self::$isInited) {
-            self::addInitial();
-        }
-        
         // Add element to self
         self::$arr[$elm->getId()] = $elm;
     }
@@ -78,17 +73,19 @@ class ElementCollection {
     }
     
     /*
-     * Init the list by adding the root element
+     * Checks is a element is in the collection
      */
     
-    private static function addInitial() {
-        // Reset variable
-        self::$isInited = true;
+    public static function isStored($id) {
+        if (count(self::$arr) > 0) {
+            foreach (self::$arr as $v) {
+                if ($id == $v->getId()) {
+                    return true;
+                }
+            }
+        }
         
-        // Add root element to collection
-        $root_element = new Element();
-        $root_element->createById(1);
-        self::add($root_element);
+        return false;
     }
     
     /*

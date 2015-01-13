@@ -350,7 +350,7 @@ class Archive extends Base {
             $data[] = 'data-type="' . $type . '"';
             $data[] = 'data-name="' . $child->getName() . '"';
             $data[] = 'data-flags="' . $child->controller->getFlagCount() . '"';
-            $data[] = 'data-favorite="' . Me::isFavorite($child->getId()) . '"';
+            $data[] = 'data-favorite="' . (int) Me::isFavorite($child->getId()) . '"';
             
             // Build the markup
             $ret .= '<li>';

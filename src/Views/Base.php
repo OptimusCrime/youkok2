@@ -247,9 +247,11 @@ class Base extends Youkok2 {
         // If develop, assign dev variables
         if (DEV) {
             $this->template->assign('DEV_QUERIES_NUM', Database::getCount());
-            $this->template->assign('DEV_QUERIES', $this->cleanSqlLog($this->sqlLog));
-            $this->template->assign('DEV_ELEMENT_COLLECTION', ElementCollection::getSize());
-            $this->template->assign('DEV_CACHE_LOAD', CacheManager::getFetches());
+            $this->template->assign('DEV_ELEMENT_COLLECTION_NUM', ElementCollection::getSize());
+            $this->template->assign('DEV_CACHE_LOAD_NUM', CacheManager::getFetches());
+            
+            $this->template->assign('DEV_QUERIES_BACKTRACE', $this->cleanSqlLog($this->sqlLog));
+            $this->template->assign('DEV_CACHE_LOAD_BACKTRACE', $this->cleanCacheLoadLog(CacheManager::getBacktrace()));
         }
         
         // Close database and process cache
@@ -284,7 +286,7 @@ class Base extends Youkok2 {
             // Loop each post
             foreach ($arr as $v) {
                 // Temp variables
-                $temp_loc = $temp_loc = $this->cleanSqlBacktrace($v['backtrace']);
+                $temp_loc = $temp_loc = $this->structureBacktrace($v['backtrace']);
                 $temp_query = '';
                 
                 // Check what kind of query we're dealing with
@@ -325,7 +327,29 @@ class Base extends Youkok2 {
         // Return resulting string
         return $str;
     }
-    private function cleanSqlBacktrace($arr) {
+    private function cleanCacheLoadLog($arr) {
+        $str = '';
+        
+        // Loop stack elements
+        if (count($arr) > 0) {
+            foreach ($arr as $stack_element) {
+                $str .= $this->structureBacktrace($stack_element['backtrace']);
+                $str .= '<pre>';
+                $str .= 'Id: ' . $stack_element['id'] . ' || Type: ' . $stack_element['type'] . ' || Collection: ';
+                $str .= (ElementCollection::isStored($stack_element['id']) ? 'Ja' : 'Nei') . "\n";
+                $str .= '</pre>';
+            }
+        }
+        
+        // Return resulting string
+        return $str;
+    }
+    
+    /*
+     * Structures the backtraces
+     */
+    
+    private function structureBacktrace($arr) {
         if (count($arr) > 0) {
             $trace = $arr[0];
             if (count($arr) == 1) {
