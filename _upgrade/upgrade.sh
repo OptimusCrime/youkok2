@@ -12,6 +12,9 @@ echo "All done."
 echo "\n\033[0;33mClearing cache\033[0m \n"
 php cli/cmd.php tasks/clearcache $CHECKSUM
 
+echo "\n\033[0;33mUpdating composer\033[0m \n"
+php composer.phar self-update
+
 echo "\n\033[0;33mUpdating composer packages\033[0m \n"
 php composer.phar update
 
