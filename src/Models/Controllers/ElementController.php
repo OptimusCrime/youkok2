@@ -55,8 +55,9 @@ class ElementController implements BaseController {
     // Cache
     private $cache;
     
-    // Parents
+    // Parents and children
     private $parents;
+    private $children;
     
     // Static options
     public static $file = 0;
@@ -110,8 +111,9 @@ class ElementController implements BaseController {
         // Set caching to true as default
         $this->cache = true;
         
-        // Set parents to null
+        // Parents and children
         $this->parents = null;
+        $this->children = null;
         
         // Backwards compability
         $this->fullLocation = null;
@@ -339,13 +341,44 @@ class ElementController implements BaseController {
                 // Set new parent id
                 $temp_parent_id = $temp_parent->getParent();
             }
+            
+            // Reverse
+            $this->parents = array_reverse($this->parents);
         }
-        
-        // Reverse
-        $this->parents = array_reverse($this->parents);
         
         // Return array
         return $this->parents;
+    }
+    
+    /*
+     * Get children
+     */
+    
+    public function getChildren() {
+        if ($this->children === null) {
+            // Load all favorites
+            $get_children_ids  = "SELECT id" . PHP_EOL;
+            $get_children_ids .= "FROM archive" . PHP_EOL;
+            $get_children_ids .= "WHERE parent = :parent" . PHP_EOL;
+            $get_children_ids .= "AND is_visible = 1" . PHP_EOL;
+            $get_children_ids .= "ORDER BY is_directory DESC, name ASC";
+            
+            $get_children_ids_query = Database::$db->prepare($get_children_ids);
+            $get_children_ids_query->execute(array(':parent' => $this->model->getId()));
+            while ($row = $get_children_ids_query->fetch(\PDO::FETCH_ASSOC)) {
+                // Create new element
+                $element = new Element();
+                $element->controller->setLoadFlagCount(true);
+                $element->createById($row['id']);
+                
+                // Add if found
+                if ($element->controller->wasFound()) {
+                    $this->children[] = $element;
+                }
+            }
+        }
+        
+        return $this->children;
     }
     
     /*
@@ -573,40 +606,6 @@ class ElementController implements BaseController {
          
         // Implode and return
         return implode(', ', $cache_temp);
-    }
-    
-    /*
-     * Get direct children
-     */
-    
-    public function getChildren($flag = null) {
-        $children = array();
-        $subquery = '';
-        
-        if ($flag !== null) {
-            $subquery = ' AND is_directory = ' . $flag;
-        }
-        
-        // Load all favorites
-        $get_children_ids  = "SELECT id" . PHP_EOL;
-        $get_children_ids .= "FROM archive" . PHP_EOL;
-        $get_children_ids .= "WHERE parent = :parent" . $subquery;
-        
-        $get_children_ids_query = $this->controller->db->prepare($get_children_ids);
-        $get_children_ids_query->execute(array(':parent' => $this->id));
-        while ($row = $get_children_ids_query->fetch(PDO::FETCH_ASSOC)) {
-            $element = new Item($this->controller);
-            $element->setLoadFullLocation(true);
-            $element->createById($row['id']);
-            $this->controller->collection->add($element);
-            $children[] = $element;
-        }
-        
-        return $children;
-    }
-    
-    public function getChildrenCount($flag = null) {
-        return count($this->getChildren($flag));
     }
     
     /*

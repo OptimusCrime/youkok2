@@ -190,21 +190,6 @@ class Archive extends Base {
     }
     
     /*
-    $this->template->assign('ARCHIVE_ZIP_DOWNLOAD', $item->generateUrl($this->routes['download'][0]));
-                    $this->template->assign('ARCHIVE_ZIP_DOWNLOAD_NUM', $item->getChildrenCount(Item::$file));
-                    
-                    // List every single element that has this element as a parent
-                    $this->template->assign('ARCHIVE_DISPLAY', $this->loadArchive($item->getId()));
-                    $this->template->assign('ARCHIVE_MODE', 'browse');
-                    
-                    // Get breadcrumbs
-                    $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($item));
-                    
-                    // Add title
-                    $this->template->assign('SITE_TITLE', 'Kokeboka :: ' . $this->loadBredcrumbsTitle($item));
-                    */
-    
-    /*
      * Set information related to the Element we are browsing
      */
     
@@ -251,9 +236,7 @@ class Archive extends Base {
         }
         else {
             $this->template->assign('ARCHIVE_EMPTY', false);
-            $this->template->assign('ARCHIVE_CONTENT', 'foobar');
-            // Load the archive here
-            // $this->loadArchivxe();
+            $this->template->assign('ARCHIVE_CONTENT', $this->getElementContent($element));
         }
     }
 
@@ -288,9 +271,6 @@ class Archive extends Base {
             }
             
         }
-        
-        // Flip order
-        $ret = array_reverse($ret);
 
         // Return breadcrumbs
         return implode('', $ret);
@@ -317,83 +297,73 @@ class Archive extends Base {
     // Method for loading the elements for this archive
     //
 
-    private function loadArchivxe($id) {
+    private function getElementContent($element) {
         $ret = '';
         
-        // Loading newest files from the system
-        $get_current_archive = "SELECT id
-        FROM archive
-        WHERE parent = :parent
-        AND is_visible = 1
-        ORDER BY is_directory DESC,
-        name ASC";
+        // Get children
+        $children = $element->controller->getChildren();
         
-        $get_current_archive_query = $this->db->prepare($get_current_archive);
-        $get_current_archive_query->execute(array(':parent' => $id));
-        while ($row = $get_current_archive_query->fetch(PDO::FETCH_ASSOC)) {
-            $item = new Item($this);
+        // Loop children
+        foreach ($children as $child) {
+            $data = array();
             
-            // Decide if we should load favorites
-            if ($this->user->isLoggedIn()) {
-                $item->setLoadFavorite(true);
+            // Some stuff
+            if ($child->isDirectory()) {
+                // Directory
+                $title = $child->getName();
+                $url = $child->controller->generateUrl(Routes::ARCHIVE);
+                $image = 'folder.png';
+                $type = 'dir';
+            }
+            else if ($child->isLink()) {
+                // Link
+                $title = 'Link til: ' . $child->getUrl();
+                $url = $child->controller->generateUrl(Routes::REDIRECT);
+                $image = 'link.png';
+                $type = 'link';
+            }
+            else {
+                // Normal file
+                $title = $child->getName();
+                $url = $child->controller->generateUrl(Routes::DOWNLOAD);
+                $image = (($child->getMissingImage() == 1) ? 'unknown' : $child->getMimeType()) . '.png';
+                $type = 'file';
+                $data[] = 'data-size="' . $child->getSize() . '"';
             }
             
-            // Set load flags
-            $item->setLoadFlagCount(true);
-            
-            // Create item
-            $item->createById($row['id']);
-            
-            // Add to collection if new
-            $this->collection->addIfDoesNotExist($item);
-
-            // CHeck if element was loaded
-            if ($item != null) {
-                $flag_count = $item->getFlagCount();
-                // Check if element is file or directory
-                if ($item->isDirectory()) {
-                    // This is a directory, link should go to archive
-                    $ret .= '<li>
-                                <a title="' . $item->getName() . '" href="' . $item->generateUrl($this->routes['archive'][0]) . '">
-                                    <div class="archive-item' . ($item->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $item->isFavorite($this->user) . '" data-id="' . $item->getId() . '" data-type="dir" data-name="' . $item->getName() . '" data-flags="' . $flag_count . '">
-                                        ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
-                                        <div class="archive-badge archive-badge-right hidden"><i class="fa fa-comments-o"></i></div>
-                                        ' . ($item->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
-                                        <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/folder.png\');"></div>
-                                        <div class="archive-item-label"><h4>' . $item->getName() . '</h4></div>
-                                    </div>
-                                </a>
-                            </li>';
-                }
-                else if ($item->isLink()) {
-                    // This is a link
-                    $ret .= '<li>
-                                <a target="_blank" title="Link til: ' . $item->getUrl() . '" href="' . $item->generateUrl($this->routes['redirect'][0]) . '">
-                                    <div class="archive-item' . ($item->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $item->isFavorite($this->user) . '" data-id="' . $item->getId() . '" data-type="dir" data-name="' . $item->getName() . '" data-flags="' . $flag_count . '">
-                                        ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
-                                        <div class="archive-badge archive-badge-right hidden"><i class="fa fa-comments-o"></i></div>
-                                        ' . ($item->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
-                                        <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/link.png\');"></div>
-                                        <div class="archive-item-label"><h4>' . $item->getName() . '</h4></div>
-                                    </div>
-                                </a>
-                            </li>';
-                }
-                else {
-                    // This is a file, link should go to download
-                    $ret .= '<li>
-                                <a title="' . $item->getName() . '" rel="nofollow" href="' . $item->generateUrl($this->routes['download'][0]) . '">
-                                    <div class="archive-item' . ($item->isAccepted() ? '' : ' has-overlay' ) . '" data-favorite="' . $item->isFavorite($this->user) . '" data-id="' . $item->getId() . '" data-type="file" data-name="' . $item->getName() . '" data-flags="' . $flag_count . '" data-size="' . $item->getSize() . '">
-                                        ' . ($flag_count > 0 ? '<div class="archive-badge">' . $flag_count . '</div>' : '') . '
-                                        <div class="archive-badge archive-badge-right hidden"><i class="fa fa-comment"></i></div>
-                                        ' . ($item->isAccepted() ? '' : '<div class="archive-overlay"></div>') . '
-                                        <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . ($item->getMissingImage() ? 'unknown' : $item->getMimeType()) . '.png\');"></div>
-                                        <div class="archive-item-label"><h4>' . $item->getName() . '</h4></div>
-                                    </div>
-                                </a>
-                            </li>';
-                }
+            // Flag
+            $div_flag = '';
+            if ($child->controller->getFlagCount() > 0) {
+                $div_flag = '<div class="archive-badge">' . $child->controller->getFlagCount() . '</div>';
             }
+            
+            // Overlay
+            $archive_classes = 'archive-item';
+            $div_overlay = '';
+            if (!$child->isAccepted()) {
+                $div_overlay = '<div class="archive-overlay"></div>';
+                $archive_classes .= ' has-overlay';
+            }
+            
+            // Collect data
+            $data[] = 'data-id="' . $child->getId() . '"';
+            $data[] = 'data-type="' . $type . '"';
+            $data[] = 'data-name="' . $child->getName() . '"';
+            $data[] = 'data-flags="' . $child->controller->getFlagCount() . '"';
+            $data[] = 'data-favorite="' . Me::isFavorite($child->getId()) . '"';
+            
+            // Build the markup
+            $ret .= '<li>';
+            $ret .= '    <a title="' . $title . '" href="' . $url . '">';
+            $ret .= '        <div class="' . $archive_classes . '" ' . implode(' ', $data) . '>';
+            $ret .= '            ' . $div_flag;
+            $ret .= '            ' . $div_overlay;
+            $ret .= '            <div class="archive-badge archive-badge-right hidden"><i class="fa fa-comments-o"></i></div>';
+            $ret .= '            <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . $image . '\');"></div>';
+            $ret .= '            <div class="archive-item-label"><h4>' . $child->getName() . '</h4></div>';
+            $ret .= '        </div>';
+            $ret .= '    </a>';
+            $ret .= '</li>';
         }
 
         // Return the content here
