@@ -86,6 +86,9 @@ a:visited {
     background-color: #fff;
     padding: 10px 15px;
 }
+.list-group-item {
+    word-wrap: break-word;
+}
 
 /*
  * Menu
