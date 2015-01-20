@@ -214,7 +214,7 @@ $(document).ready(function () {
             }
         }
     });
-    $('body').on('contextmenu', '.archive-item', function(e) {
+    /*$('body').on('contextmenu', '.archive-item', function(e) {
         ignore_click_outside = true;
 
         // Pointer
@@ -290,7 +290,7 @@ $(document).ready(function () {
     });
     $('#archive-context-newflag').on('click', function(e) {
         e.preventDefault();
-    })
+    })*/
 
     //
     // Flags
