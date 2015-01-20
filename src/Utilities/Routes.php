@@ -89,6 +89,9 @@ class Routes {
          * Tasks
          */
         
+        'Tasks\\Build' => array(
+            '/tasks/build',
+        ),
         'Tasks\\ClearCache' => array(
             '/tasks/clearcache',
          ),

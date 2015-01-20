@@ -359,7 +359,7 @@ class Archive extends Base {
             $ret .= '            ' . $div_flag;
             $ret .= '            ' . $div_overlay;
             $ret .= '            <div class="archive-badge archive-badge-right hidden"><i class="fa fa-comments-o"></i></div>';
-            $ret .= '            <div class="archive-item-icon" style="background-image: url(\'assets/css/lib/images/mimetypes64/' . $image . '\');"></div>';
+            $ret .= '            <div class="archive-item-icon" style="background-image: url(\'assets/images/icons/' . $image . '\');"></div>';
             $ret .= '            <div class="archive-item-label"><h4>' . $child->getName() . '</h4></div>';
             $ret .= '        </div>';
             $ret .= '    </a>';

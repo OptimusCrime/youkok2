@@ -79,40 +79,6 @@ function display_message(msg) {
 }
 
 //
-// Moment.js
-//
-
-moment.lang('en', {
-    relativeTime : {
-        future: "Om %s",
-        past:   "%s siden",
-        s:  "Noen få sekunder",
-        m:  "Ett minutt",
-        mm: "%d minutter",
-        h:  "En time",
-        hh: "%d timer",
-        d:  "en dag",
-        dd: "%d dager",
-        M:  "En måned",
-        MM: "%d måneder",
-        y:  "Et år",
-        yy: "%d år"
-    }
-});
-
-//
-// Bloodhound
-//
-
-var courses = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('course'),
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    limit: 10,
-    prefetch: 'processor/search/courses.json',
-});
-courses.initialize();
-
-//
 // Searching
 //
 
@@ -150,6 +116,40 @@ function check_check_search(target) {
 //
 
 $(document).ready(function () {
+    
+    //
+    // Moment.js
+    //
+
+    moment.lang('en', {
+        relativeTime : {
+            future: "Om %s",
+            past:   "%s siden",
+            s:  "Noen få sekunder",
+            m:  "Ett minutt",
+            mm: "%d minutter",
+            h:  "En time",
+            hh: "%d timer",
+            d:  "en dag",
+            dd: "%d dager",
+            M:  "En måned",
+            MM: "%d måneder",
+            y:  "Et år",
+            yy: "%d år"
+        }
+    });
+
+    //
+    // Bloodhound
+    //
+
+    var courses = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('course'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        limit: 10,
+        prefetch: 'processor/search/courses.json',
+    });
+    courses.initialize();
 
     //
     // Typeahead
@@ -461,7 +461,7 @@ $(document).ready(function () {
     //
 
     $('.moment-timestamp').each(function () {
-        $that = $(this);
+        var $that = $(this);
         $that.html(moment($(this).data('ts')).fromNow());
     });
 

@@ -46,5 +46,16 @@
     ga('send', 'pageview');
     </script>
 [[+/if]]
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.0/moment.min.js"></script>
+<script type="text/javascript" src="//code.highcharts.com/4.0.4/highcharts.js"></script>
+[[+nocache]][[+if $DEV]]<script type="text/javascript" src="assets/js/libs/typeahead.bundle.min.js"></script>
+<script type="text/javascript" src="assets/js/libs/jquery.fileupload.js"></script>
+<script type="text/javascript" src="assets/js/libs/jquery.ba-outside-events.min.js"></script>
+<script type="text/javascript" src="assets/js/youkok.js?v=[[+$VERSION]]"></script>
+<script type="text/javascript" src="assets/js/youkok.admin.js?v=[[+$VERSION]]"></script>[[+else]]<script type="text/javascript" src="assets/js/youkok.min.js"></script>[[+/if]]
+[[/+nocache]]
 </body>
 </html>
