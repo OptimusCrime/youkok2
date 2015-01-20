@@ -109,6 +109,9 @@ class Base extends Youkok2 {
 
             // Analyze the query
             $this->queryAnalyze();
+            
+            // Assign query
+            $this->template->assign('BASE_QUERY', Loader::getQuery());
         }
     }
     

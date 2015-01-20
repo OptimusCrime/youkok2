@@ -1,16 +1,18 @@
 <div class="sidebar-element">
     <h3>Les også</h3>
-    <div class="sidebar-element-inner">
-        <p><a href="om">Om YouKok2</a></p>
-        <p><a href="retningslinjer">Retningslinjer</a></p>
-        <p><a href="karma">Karma</a></p>
-        <p><a href="hjelp">Hjelp</a></p>
-    </div>
+    <ul class="list-group">
+        [[+if $BASE_QUERY != 'om']]<li class="list-group-item"><a href="om">Om YouKok2</a></li>[[+/if]]
+        [[+if $BASE_QUERY != 'retningslinjer']]<li class="list-group-item"><a href="retningslinjer">Retningslinjer</a></li>[[+/if]]
+        [[+if $BASE_QUERY != 'karma']]<li class="list-group-item"><a href="karma">Karma</a></li>[[+/if]]
+        [[+if $BASE_QUERY != 'hjelp']]<li class="list-group-item"><a href="hjelp">Hjelp</a></li>[[+/if]]
+        [[+if $BASE_QUERY != 'privacy']]<li class="list-group-item"><a href="hjelp">Privacy</a></li>[[+/if]]
+        <li class="list-group-item"><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></li>
+    </ul>
 </div>
 
 <div id="archive-sidebar-numbers" class="sidebar-element">
-    <h3>Ting</h3>
-    <div class="sidebar-element-inner" id="archive-sidebar-numbers-inner">
+    <h3>Commits</h3>
+    <div id="archive-sidebar-numbers-inner">
         <p>Laster...</p>
     </div>
 </div>

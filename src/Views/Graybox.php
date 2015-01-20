@@ -109,10 +109,9 @@ class Graybox extends Base {
      */
     
     private function generateNumbers() {
-        echo '<p><strong>Tilfeldig commits</strong></p><p>';
-        echo $this->commits[rand(0, (count($this->commits) - 1))] . '<br />';
-        echo $this->commits[rand(0, (count($this->commits) - 1))] . '<br />';
-        echo $this->commits[rand(0, (count($this->commits) - 1))];
-        echo '</p>';
+        echo '<li class="list-group-item">' . $this->commits[rand(0, (count($this->commits) - 1))] . '</li>';
+        echo '<li class="list-group-item">' . $this->commits[rand(0, (count($this->commits) - 1))] . '</li>';
+        echo '<li class="list-group-item">' . $this->commits[rand(0, (count($this->commits) - 1))];
+        echo '</ul>';
     }
 }
