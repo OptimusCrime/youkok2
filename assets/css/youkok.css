@@ -361,10 +361,13 @@ a:visited {
 #archive-list {
     list-style: none;
     list-style-position: inside;
-    padding: 0px;
-    background-color: #ededed;
+    background-color: #fff;
+    border: 1px solid #dddddd;
     border-radius: 4px;
-    padding-bottom: 7px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
+    padding-bottom: 3px;
     position: relative;
 }
 #archive-list li {
@@ -373,18 +376,16 @@ a:visited {
     display: inline-block;
     cursor: pointer;
     margin: 6px;
-    border: 1px solid #EDEDED;
+    border: 1px solid #fff;
+    border-radius: 4px;
 }
 #archive-list li:hover {
-    border-color: #b4b4b4;
+    border-color: #dddddd;
 }
 .archive-item {
     width: 100px;
     height: 100px;
     position: relative;
-}
-.archive-item.has-overlay {
-    background-color: #e1e1e1;
 }
 .archive-item-icon {
     height: 70px;

@@ -338,11 +338,9 @@ class Archive extends Base {
             }
             
             // Overlay
-            $archive_classes = 'archive-item';
             $div_overlay = '';
             if (!$child->isAccepted()) {
                 $div_overlay = '<div class="archive-overlay"></div>';
-                $archive_classes .= ' has-overlay';
             }
             
             // Collect data
@@ -355,7 +353,7 @@ class Archive extends Base {
             // Build the markup
             $ret .= '<li>';
             $ret .= '    <a title="' . $title . '" href="' . $url . '">';
-            $ret .= '        <div class="' . $archive_classes . '" ' . implode(' ', $data) . '>';
+            $ret .= '        <div class="archive-item" ' . implode(' ', $data) . '>';
             $ret .= '            ' . $div_flag;
             $ret .= '            ' . $div_overlay;
             $ret .= '            <div class="archive-badge archive-badge-right hidden"><i class="fa fa-comments-o"></i></div>';
