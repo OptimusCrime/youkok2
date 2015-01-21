@@ -2,7 +2,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class Youkok21003 extends AbstractMigration
+class Youkok1003 extends AbstractMigration
 {
     /**
      * Change Method.

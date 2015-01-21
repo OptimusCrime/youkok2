@@ -29,6 +29,7 @@ class Element {
     private $id;
     private $name;
     private $urlFriendly;
+    private $owner;
     private $parent;
     private $empty;
     private $checksum;
@@ -53,6 +54,7 @@ class Element {
          * Set some default values
          */
 
+        $this->owner = 1;
         $this->parent = null;
         $this->empty = 1;
         $this->checksum = null;
@@ -79,6 +81,9 @@ class Element {
     }
     public function getUrlFriendly() {
         return $this->urlFriendly;
+    }
+    public function getOwner() {
+        return $this->owner;
     }
     public function getParent() {
         return $this->parent;
@@ -135,6 +140,9 @@ class Element {
     }
     public function setUrlFriendly($url) {
         $this->urlFriendly = $url;
+    }
+    public function setOwner($owner) {
+        $this->owner = $owner;
     }
     public function setParent($parent) {
         $this->parent = $parent;
