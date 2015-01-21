@@ -69,7 +69,7 @@ class Favorite extends Base {
                 $remove_favorite_query->execute(array(':file' => $_POST['id'], ':user' => Me::getId()));
                 
                 // Set message
-                $this->setData('msg', 'Favoritten er fjernet.');
+                $this->setData('msg', [['type' => 'success', 'text' => 'Favoritten er fjernet.']]);
             }
             else {
                 // Add favorte
@@ -80,7 +80,7 @@ class Favorite extends Base {
                 $insert_favorite_query->execute(array(':file' => $_POST['id'], ':user' => Me::getId()));
                 
                 // Set message
-                $this->setData('msg', 'Lagt til som favoritt.');
+                $this->setData('msg', [['type' => 'success', 'text' => 'Lagt til som favoritt.']]);
             }
             
             // Set message

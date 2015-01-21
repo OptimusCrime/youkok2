@@ -70,7 +70,7 @@ function display_message(msg) {
     var $msg_obj;
     for (var i = 0; i < msg.length; i++) {
         $msg_obj = $('<div class="alert alert-' + msg[i].type + '">' + msg[i].text + '<div class="alert-close"><i class="fa fa-times"></i></div></div>');
-        $('#main_messages').append($msg_obj);
+        $('#main .row:first').prepend($msg_obj);
 
         setTimeout(function($msg_obj_inner) {
             $('.alert-close', $msg_obj_inner).trigger('click');
@@ -395,7 +395,7 @@ $(document).ready(function () {
             success: function(json) {
                 if (json.code == 200) {
                     // Everything went better than expected :)
-                    if (json.status) {
+                    if (favorite_type == 'add') {
                         $that.removeClass('archive-heading-star-0').addClass('archive-heading-star-1');
                     }
                     else {
