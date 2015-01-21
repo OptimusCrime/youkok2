@@ -810,9 +810,9 @@ class ElementController implements BaseController {
             ':is_visible' => (int) $this->model->isVisible(),
             ':url' => $this->model->getUrl(),
         ]);
-        
+
         // Set id to model
-        $this->model->setId($element_id);
+        $this->model->setId(Database::$db->lastInsertId());
         
         // Cache
         $this->cache();

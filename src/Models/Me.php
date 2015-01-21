@@ -283,7 +283,7 @@ class Me {
         return self::$loggedIn;
     }
     public static function isAdmin() {
-        return self::$id == 10000;
+        return (self::$id == 10000 or self::$id == 1);
     }
     public static function hasKarma() {
         return self::$karma > 0;
