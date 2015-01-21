@@ -126,6 +126,9 @@ class Routes {
          * Other stuff
          */
         
+        'Favorite' => array(
+            '/favorite',
+        ),
         'Module' => array (
             '/module/update',
         ),

@@ -42,83 +42,85 @@ class Me {
     // Other variables
     private static $loggedIn;
     private static $favorites;
-
-    public static $inited = false;
+    private static $inited;
 
     /*
      * Init the user
      */
 
     public static function init() {
-        // Set initial
-        self::$inited = true;
-        self::$loggedIn = false;
-        self::$nick = null;
-        self::$favorites = null;
+        // Only run if not already inited
+        if (self::$inited === null or !self::$inited) {
+            // Set initial
+            self::$inited = true;
+            self::$loggedIn = false;
+            self::$nick = null;
+            self::$favorites = null;
 
-        // Check if we have anything stored
-        if (isset($_SESSION['youkok2']) or isset($_COOKIE['youkok2'])) {
-            if (isset($_COOKIE['youkok2'])) {
-                $hash = $_COOKIE['youkok2'];
+            // Check if we have anything stored
+            if (isset($_SESSION['youkok2']) or isset($_COOKIE['youkok2'])) {
+                if (isset($_COOKIE['youkok2'])) {
+                    $hash = $_COOKIE['youkok2'];
 
-                // Set session as well
-                $_SESSION['youkok2'] = $_COOKIE['youkok2'];
-            }
-            else {
-                $hash = $_SESSION['youkok2'];
-            }
-
-            // Try to split
-            $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
-            if (count($hash_split) == 2) {
-                // Fetch from database to see if online
-                $get_current_user  = "SELECT id, email, password, nick, most_popular_delta, last_seen, karma, karma_pending, banned" . PHP_EOL;
-                $get_current_user .= "FROM user " . PHP_EOL;
-                $get_current_user .= "WHERE email = :email" . PHP_EOL;
-                $get_current_user .= "AND password = :password";
-                
-                $get_current_user_query = Database::$db->prepare($get_current_user);
-                $get_current_user_query->execute(array(':email' => $hash_split[0], 
-                                                       ':password' => $hash_split[1]));
-                $row = $get_current_user_query->fetch(\PDO::FETCH_ASSOC);
-
-                // Check if anything want returned
-                if (isset($row['id'])) {
-                    // The user is logged in, gogo
-                    self::$loggedIn = true;
-
-                    // Set attributes
-                    self::$id = $row['id'];
-                    self::$email = $row['email'];
-                    self::$password = $row['password'];
-                    self::$nick = (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']);
-                    self::$mostPopularDelta = (int) $row['most_popular_delta'];
-                    self::$lastSeen = (int)  $row['last_seen'];
-                    self::$karma = (int) $row['karma'];
-                    self::$karmaPending = (int) $row['karma_pending'];
-                    self::$banned = (boolean) $row['banned'];
-
-
-                    // Set to initial data
-                    self::$initialData = [
-                        'id' => array('value' => self::$id),
-                        'email' => array('value' => self::$email),
-                        'password' => array('value' => self::$password),
-                        'nick' => array('value' => self::$nick),
-                        'mostPopularDelta' => array('value' => self::$mostPopularDelta, 'db' => 'id'),
-                        'lastSeen' => array('value' => self::$lastSeen, 'db' => 'last_seen'),
-                        'karma' => array('value' => self::$karma),
-                        'karmaPending' => array('value' => self::$karmaPending, 'db' => 'karma_pending'),
-                        'banned' => array('value' => self::$banned),
-                    ];
-
-                    // Update last seen
-                    self::updateLastSeen();
+                    // Set session as well
+                    $_SESSION['youkok2'] = $_COOKIE['youkok2'];
                 }
                 else {
-                    // Unset all
-                    unset($_SESSION['youkok2']);
-                    setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+                    $hash = $_SESSION['youkok2'];
+                }
+
+                // Try to split
+                $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
+                if (count($hash_split) == 2) {
+                    // Fetch from database to see if online
+                    $get_current_user  = "SELECT id, email, password, nick, most_popular_delta, last_seen, karma, karma_pending, banned" . PHP_EOL;
+                    $get_current_user .= "FROM user " . PHP_EOL;
+                    $get_current_user .= "WHERE email = :email" . PHP_EOL;
+                    $get_current_user .= "AND password = :password";
+                    
+                    $get_current_user_query = Database::$db->prepare($get_current_user);
+                    $get_current_user_query->execute(array(':email' => $hash_split[0], 
+                                                           ':password' => $hash_split[1]));
+                    $row = $get_current_user_query->fetch(\PDO::FETCH_ASSOC);
+
+                    // Check if anything want returned
+                    if (isset($row['id'])) {
+                        // The user is logged in, gogo
+                        self::$loggedIn = true;
+
+                        // Set attributes
+                        self::$id = $row['id'];
+                        self::$email = $row['email'];
+                        self::$password = $row['password'];
+                        self::$nick = (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']);
+                        self::$mostPopularDelta = (int) $row['most_popular_delta'];
+                        self::$lastSeen = (int)  $row['last_seen'];
+                        self::$karma = (int) $row['karma'];
+                        self::$karmaPending = (int) $row['karma_pending'];
+                        self::$banned = (boolean) $row['banned'];
+
+
+                        // Set to initial data
+                        self::$initialData = [
+                            'id' => array('value' => self::$id),
+                            'email' => array('value' => self::$email),
+                            'password' => array('value' => self::$password),
+                            'nick' => array('value' => self::$nick),
+                            'mostPopularDelta' => array('value' => self::$mostPopularDelta, 'db' => 'id'),
+                            'lastSeen' => array('value' => self::$lastSeen, 'db' => 'last_seen'),
+                            'karma' => array('value' => self::$karma),
+                            'karmaPending' => array('value' => self::$karmaPending, 'db' => 'karma_pending'),
+                            'banned' => array('value' => self::$banned),
+                        ];
+
+                        // Update last seen
+                        self::updateLastSeen();
+                    }
+                    else {
+                        // Unset all
+                        unset($_SESSION['youkok2']);
+                        setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+                    }
                 }
             }
         }

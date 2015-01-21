@@ -42,6 +42,9 @@ class Module extends Base {
                 Database::close();
             }
         }
+        else {
+            $this->setError();
+        }
         
         // Return data
         $this->returnData();

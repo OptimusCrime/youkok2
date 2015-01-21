@@ -84,6 +84,15 @@ class Base extends Youkok2 {
     }
     
     /*
+     * Set error
+     */
+    
+    protected function setError() {
+        $this->setData('code', 500);
+        $this->setData('msg', 'Something went wrong');
+    }
+    
+    /*
      * Require only one kind of request etc
      */
     
@@ -91,17 +100,14 @@ class Base extends Youkok2 {
         return php_sapi_name() == 'cli';
     }
     protected static function requireAdmin() {
-        // Check if inited
-        if (!Me::$inited) {
-            // Check if need to connect to database first
-            if (Database::$db === null) {
-                // Connect to database
-                Database::connect();
-            }
-            
-            // Init user
-            Me::init();
+        // Check if need to connect to database first
+        if (Database::$db === null) {
+            // Connect to database
+            Database::connect();
         }
+        
+        // Init user
+        Me::init();
         
         // Do the check
         return (Me::isLoggedIn() and Me::isAdmin());

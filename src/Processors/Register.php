@@ -55,6 +55,9 @@ class Register extends Base
                 }
             }
         }
+        else {
+            $this->setError();
+        }
 
         // Return data
         $this->returnData();

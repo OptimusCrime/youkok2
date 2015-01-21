@@ -387,9 +387,10 @@ $(document).ready(function () {
         $.ajax({
             cache: false,
             type: "post",
-            url: "processor/favorite/" + favorite_type,
+            url: 'processor/favorite',
             data: { 
-                id: $that.data('archive-id') 
+                id: $that.data('archive-id') ,
+                type: favorite_type
             },
             success: function(json) {
                 if (json.code == 200) {
@@ -426,9 +427,10 @@ $(document).ready(function () {
                 $.ajax({
                     cache: false,
                     type: "post",
-                    url: "processor/favorite/" + favorite_type,
+                    url: 'processor/favorite',
                     data: { 
-                        id: $archive_right_click.data('id') 
+                        id: $archive_right_click.data('id'),
+                        type: favorite_type
                     },
                     success: function(json) {
                         if (json.code == 200) {
@@ -1288,9 +1290,10 @@ $(document).ready(function () {
             $.ajax({
                 cache: false,
                 type: "post",
-                url: "processor/favorite/remove",
+                url: 'processor/favorite',
                 data: { 
-                    id: $el.data('id') 
+                    id: $el.data('id'),
+                    type: 'remove'
                 },
                 success: function(json) {
                     if (json.code == 200) {
