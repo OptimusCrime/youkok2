@@ -1,6 +1,6 @@
 <?php
 /*
- * File: SyncCourse.php
+ * File: SyncCourses.php
  * Holds: Sets course data to elements instead
  * Created: 11.01.15
  * Project: Youkok2
@@ -22,7 +22,7 @@ use \Youkok2\Utilities\Utilities as Utilities;
  * LoadCourses extending Base
  */
 
-class SyncCourse extends Base {
+class SyncCourses extends Base {
 
     /*
      * Constructor
@@ -81,7 +81,7 @@ class SyncCourse extends Base {
         $get_all_courses  = "SELECT id, code, name" . PHP_EOL;
         $get_all_courses .= "FROM course";
         
-        $get_all_courses_query->query($get_all_courses);
+        $get_all_courses_query = Database::$db->query($get_all_courses);
         
         // Append to array
         while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
