@@ -12,7 +12,6 @@ namespace Youkok2\Processors\Tasks;
  * Define what classes to use
  */
 
-use \Youkok2\Models\Course as Course;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Processors\Base as Base;
 use \Youkok2\Utilities\Database as Database;
@@ -111,28 +110,21 @@ class LoadCourses extends Base {
             foreach ($result as $v) {
                 // Check if course is in database
                 $check_current_course  = "SELECT id" . PHP_EOL;
-                $check_current_course .= "FROM course" . PHP_EOL;
-                $check_current_course .= "WHERE code = :code" . PHP_EOL;
+                $check_current_course .= "FROM archive" . PHP_EOL;
+                $check_current_course .= "WHERE name = :name" . PHP_EOL;
                 $check_current_course .= "LIMIT 1";
                 
                 $check_current_course_query = Database::$db->prepare($check_current_course);
-                $check_current_course_query->execute(array(':code' => $v['code']));
+                $check_current_course_query->execute(array(':name' => $v['code'] . '||' . $v['name']));
                 $row = $check_current_course_query->fetch(\PDO::FETCH_ASSOC);
 
                 // Check if exists
                 if (!isset($row['id'])) {
-                    // New course
-                    $course = New Course();
-                    $course->setCode($v['code']);
-                    $course->setName($v['name']);
-                    $course->save();
-                    
                     // New Element
                     $element = new Element();
-                    $element->setname($v['code']);
+                    $element->setname($v['code'] . '||' . $v['name']);
                     $element->setUrlFriendly($v['url_friendly']);
-                    $element->setParent(1);
-                    $element->setCourse($course);
+                    $element->setParent(null);
                     $element->setLocation(null);
                     $element->setAccepted(true);
                     $element->setDirectory(true);
