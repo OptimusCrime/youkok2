@@ -90,6 +90,7 @@ class SyncEmpty extends Base {
             $check_empty  = "SELECT id" . PHP_EOL;
             $check_empty .= "FROM archive" . PHP_EOL;
             $check_empty .= "WHERE parent = :parent" . PHP_EOL;
+            $check_empty .= "AND is_visible = 1" . PHP_EOL;
             $check_empty .= "LIMIT 1";
             
             $check_empty_query = Database::$db->prepare($check_empty);
