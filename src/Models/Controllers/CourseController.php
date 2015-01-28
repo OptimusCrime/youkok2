@@ -34,7 +34,7 @@ class CourseController implements BaseController {
     
     public function __construct($model) {
         // Set pointer to the model
-        $this->model = $model;
+        $this->model = &$model;
     }
     
     /*
@@ -75,8 +75,7 @@ class CourseController implements BaseController {
                 $this->model->setCode($row['code']);
                 $this->model->setName($row['name']);
                 
-                // Cache the new result
-                $this->cache();
+                //CacheManager::setCache($id, 'c', $this->cacheFormat());
             }
         }
     }

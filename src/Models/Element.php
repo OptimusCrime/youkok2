@@ -49,7 +49,7 @@ class Element {
     
     public function __construct() {
         $this->controller = new ElementController($this);
-
+        
         /*
          * Set some default values
          */
@@ -66,7 +66,6 @@ class Element {
         $this->accepted = false;
         $this->visible = true;
         $this->url = null;
-
     }
     
     /*
