@@ -1,5 +1,5 @@
-Youkok2 - 1.0.0.-pl (xx. xxxxxxxx, 2014)
-=======================================
+Youkok2 - 1.0.0.-pl (29. februar 2014)
+======================================
 
 - [Info] Komplett omskrivning av hele kildekoden
 - [Enhanced] Nettsiden bruker nå "mobile first"-prinsippet til Bootstrap.
