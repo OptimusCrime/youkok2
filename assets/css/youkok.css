@@ -106,25 +106,28 @@ a:visited {
     color: #fff;
 }
 #main-nav a:hover {
-    color: #28415b;
-    transition: color 0.2s ease;
+    text-shadow: 0px 0px 5px #fff;
+    transition: text-shadow 0.2s ease;
 }
 #main-nav .active a {
     color: #fff;
     background-color: #28415b;
 }
 .navbar-default .navbar-brand:hover {
-    color: #28415b;
+    color: #fff;
+    text-shadow: 0px 0px 5px #fff;
+    transition: text-shadow 0.2s ease;
 }
-#dropdown-menu-opener:focus {
+#navbar-dropdown-outer > li > a:hover {
+    color: #fff;
+    text-shadow: 0px 0px 5px #fff;
+    transition: text-shadow 0.2s ease;
+}
+#navbar-dropdown-outer > li > a:focus {
     color: #fff;
 }
-#dropdown-menu-opener:hover {
-    color: #28415b;
-    transition: color 0.2s ease;
-}
-.open #dropdown-menu-opener {
-    color: #333333;
+#navbar-dropdown-outer .open .caret {
+    border-bottom: 4px solid #fff;
 }
 #nav-search,
 #nav-search2 {
