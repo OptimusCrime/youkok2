@@ -59,10 +59,12 @@ class MigrateChecksums extends Base {
     private function collect() {
         // Set code to 200
         $this->setData('code', 200);
-
+        
         $get_newest  = "SELECT id" . PHP_EOL;
         $get_newest .= "FROM archive" . PHP_EOL;
         $get_newest .= "WHERE is_directory = 0" . PHP_EOL;
+        $get_newest .= "AND url IS NULL" . PHP_EOL;
+        $get_newest .= "AND checksum IS NOT NULL" . PHP_EOL;
         
         $get_newest_query = Database::$db->query($get_newest);
         while ($row = $get_newest_query->fetch(\PDO::FETCH_ASSOC)) {
@@ -70,31 +72,38 @@ class MigrateChecksums extends Base {
             $element = ElementCollection::get($row['id'], array('location'));
             
             if ($element != null) {
-                $full_path = FILE_PATH . '/' . $element->controller->getFullLocation();
-                echo $full_path . '<br />';
-                if (file_exists($full_path) and !is_dir($full_path)) {
-                    $checksum = md5_file($full_path);
-                    $file_ending_split = explode('.', $full_path);
-                    $sql_checksum = $checksum . '.' . $file_ending_split[count($file_ending_split) - 1];
-                    $new_file = FILE_PATH . '/foo/' . $sql_checksum;
-                    echo $new_file  . '<br />';
+                // Get location
+                $location = $element->controller->getPhysicalLocation();
+                if (file_exists($location)) {
+                    $location_split = explode('/', $location);
                     
-                    $save_migrate  = "UPDATE archive" . PHP_EOL;
-                    $save_migrate .= "SET checksum = :checksum" . PHP_EOL;
-                    $save_migrate .= "WHERE id = :id" . PHP_EOL;
-                    $save_migrate .= "LIMIT 1";
+                    // Get name
+                    $name = $location_split[count($location_split) - 1];
                     
-                    $save_migrate_query = Database::$db->prepare($save_migrate);
-                    $save_migrate_query->execute(array(':checksum' => $sql_checksum, ':id' => $element->getId()));
+                    // Get folders
+                    $folder1 = substr($name, 0, 1);
+                    $folder2 = substr($name, 1, 1);
+                    echo $element->getId() . ': ';
+                    // Create folders
+                    if (!is_dir(FILE_PATH . '/' . $folder1)) {
+                        mkdir(FILE_PATH . '/' . $folder1);
+                    }
+                    if (!is_dir(FILE_PATH . '/' . $folder1 . '/' . $folder2)) {
+                        mkdir(FILE_PATH . '/' . $folder1 . '/' . $folder2);
+                    }
                     
-                    copy($full_path, $new_file);
+                    // Copy file
+                    try {
+                        copy($location, FILE_PATH . '/' . $folder1 . '/' . $folder2 . '/' . $name);
+                    }
+                    catch (\Exception $e) {
+                        echo $e->getMessage();
+                    }
                     
-                    echo $full_path . ' -> ' . $new_file . '<br />';
+                    // Debug
+                    echo $location . ' -> ' . FILE_PATH . '/' . $folder1 . '/' . $folder2 . '/' . $name . '<br />';
                 }
             }
         }
-        
-        // Set message
-        //$this->setData('msg', ['Fetched' => $fetched, 'New' => $new, 'Added' => $added]);
     }
 } 
