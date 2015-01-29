@@ -1,5 +1,13 @@
-Youkok2 - 1.0.0.-pl (29. februar 2014)
+Youkok2 - 1.0.1-pl  (29. februar 2014)
 ======================================
+
+- [Info] Legacy code removal
+- [Enhanced] Systemet bruker nå nye fysiske plasseringer til filer som er raskere å hente frem.
+- [Enhanced] Minify av alle lokale CSS- og JS-filer.
+- [Fixed] Fjernet en del legacy kode fra systemet som var nødvendig for oppgradering.
+
+Youkok2 - 1.0.0-pl (29. februar 2014)
+=====================================
 
 - [Info] Komplett omskrivning av hele kildekoden
 - [Enhanced] Nettsiden bruker nå "mobile first"-prinsippet til Bootstrap.
@@ -10,8 +18,8 @@ Youkok2 - 1.0.0.-pl (29. februar 2014)
 - [Fixed] Feil som gjorde at cache ble hengende igjen.
 - [Fixed] Antall millisekunder siden bruker på å laste er ikke lenget cachet.
 
-Youkok2 - 0.4.0.-pl (13. oktober, 2014)
-=======================================
+Youkok2 - 0.4.0-pl (13. oktober, 2014)
+======================================
 
 - [Info] Ny funksjonalitet
 - [New] Se detaljer om en fil/link/mappe ved å høyreklikke og velge 'Detaljer'.
@@ -20,14 +28,14 @@ Youkok2 - 0.4.0.-pl (13. oktober, 2014)
 - [Enchanced] Norske navn på Highcharts grafen.
 - [Enchanced] Når man logger inn returneres man nå til siden man var på.
 
-Youkok2 - 0.3.1.-pl (29. september, 2014)
-=========================================
+Youkok2 - 0.3..-pl (29. september, 2014)
+========================================
 
 - [Info] Hotfix.
 - [Fixed] Jeg ødela compression av js-fila.
 
-Youkok2 - 0.3.0.-pl (29. september, 2014)
-=========================================
+Youkok2 - 0.3.0-pl (29. september, 2014)
+========================================
 
 - [Info] Ny funksjonalitet.
 - [New] Man kan nå opprette linker som linker direkte til sider og enkeltfiler.
@@ -40,14 +48,14 @@ Youkok2 - 0.3.0.-pl (29. september, 2014)
 - [Fixed] Feil som gjorde at antall flagg for elementer også telte lukkede flagg.
 - [Fixed] Feil som gjorde at lukking av et flag ikke ble oppdatert på grunn av cache.
 
-Youkok2 - 0.2.1.-pl (25. august, 2014)
-======================================
+Youkok2 - 0.2.1-pl (25. august, 2014)
+=====================================
 
 - [Info] Hotfix.
 - [Fixed] Rar feil som gjorde at linking til zip-filer ikke fungerte.
 
-Youkok2 - 0.2.0.-pl (25. august, 2014)
-======================================
+Youkok2 - 0.2.0-pl (25. august, 2014)
+=====================================
 
 - [Info] Flere bugfixes og andre ting.
 - [New] Batch/zip nedlastning av alle filer i en mappe.
