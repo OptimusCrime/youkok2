@@ -101,23 +101,11 @@ class Routes {
          'Tasks\\LoadCourses' => array(
             '/tasks/courses',
         ),
-        'Tasks\\MigrateChecksums' => array(
-            '/tasks/migratecheckums',
-        ),
         
         /*
          * Syncs
          */
         
-        'Tasks\\Sync\\FixElementsYoukok100' => array(
-            '/tasks/sync/fixelementsyoukok100',
-        ),
-        'Tasks\\Sync\\FixElementsYoukok1002' => array(
-            '/tasks/sync/fixelementsyoukok1002',
-        ),
-        'Tasks\\Sync\\SyncCourses' => array(
-            '/tasks/sync/synccourses',
-        ),
         'Tasks\\Sync\\SyncEmpty' => array(
             '/tasks/sync/syncempty',
         ),
