@@ -123,8 +123,9 @@ a:visited {
     text-shadow: 0px 0px 5px #fff;
     transition: text-shadow 0.2s ease;
 }
-#navbar-dropdown-outer > li > a:focus {
+#navbar-dropdown-outer .open > a {
     color: #fff;
+    background-color: #28415b;
 }
 #navbar-dropdown-outer .open .caret {
     border-bottom: 4px solid #fff;
