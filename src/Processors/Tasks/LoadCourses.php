@@ -37,11 +37,11 @@ class LoadCourses extends Base {
                 // Fetch
                 $this->fetchData();
                 
-                // Build search file
-                $this->buildSearchFile();
-                
                 // Close database connection
                 Database::close();
+            }
+            else {
+                $this->setError();
             }
         }
         else {
@@ -151,35 +151,5 @@ class LoadCourses extends Base {
         
         // Set message
         $this->setData('msg', ['Fetched' => $fetched, 'New' => $new, 'Added' => $added]);
-    }
-    
-    /*
-     * Fetch all courses and build a search file
-     */
-    
-    private function buildSearchFile() {
-        $courses = [];
-        
-        // Build query
-        $get_all_courses  = "SELECT c.code, c.name, a.url_friendly" . PHP_EOL;
-        $get_all_courses .= "FROM course c" . PHP_EOL;
-        $get_all_courses .= "LEFT JOIN archive AS a ON c.id = a.course" . PHP_EOL;
-        $get_all_courses .= "ORDER BY c.code ASC";
-        
-        // Run query
-        $get_all_courses_query = Database::$db->prepare($get_all_courses);
-        $get_all_courses_query->execute();
-        
-        // Append to array
-        while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
-            $courses[] = array('course' => $row['code'] . ' - ' . $row['name'],
-                'url' => $row['url_friendly']);
-        }
-        
-        // Put content to file
-        file_put_contents(CACHE_PATH . '/courses.json', json_encode($courses));
-        
-        // Store timestamp in typehead.json
-        file_put_contents(CACHE_PATH . '/typeahead.json', json_encode(['timestamp' => time()]));
     }
 } 

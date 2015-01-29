@@ -12,7 +12,7 @@ namespace Youkok2\Processors\Tasks;
  * Define what classes to use
  */
 
-use \Youkok2\Models\Element as Element;
+use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Processors\Base as Base;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Routes as Routes;
@@ -38,6 +38,9 @@ class Check404 extends Base {
                 
                 // Close database connection
                 Database::close();
+            }
+            else {
+                $this->setError();
             }
         }
         else {
@@ -70,45 +73,42 @@ class Check404 extends Base {
         $get_all_items_query = Database::$db->prepare($get_all_items);
         $get_all_items_query->execute();
         while ($row = $get_all_items_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Create element
-            $element = new Element();
-            $element->createById($row['id']);
+            $element = ElementCollection::get($row['id']);
             
-            // Generate full url
-            $url = URL_FULL . $element->controller->generateUrl(Routes::DOWNLOAD) . '?donotlogthisdownload';
+            // Check if valid Element
+            if ($element !== null) {
+                $url = URL_FULL . $element->controller->generateUrl(Routes::DOWNLOAD) . '?donotlogthisdownload';
             
-            // Init curl
-            $handle = curl_init($url);
-            curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
-            
-            // Do the actual request
-            $foo = curl_exec($handle);
-            
-            // Gather http request info
-            $http_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-            
-            // Check http code
-            if ($http_code == 404) {
-                // Increase counter
-                $error_num++;
+                // Init curl
+                $handle = curl_init($url);
+                curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
                 
-                // Message
-                $error .= 'Id: ' . $row['id'] . ' @ ' . $url . '<br />';
-            }
-            else {
-                // Increase counter
-                $success_num++;
+                // Do the actual request
+                $foo = curl_exec($handle);
                 
-                // Message
-                $success .= 'Id: ' . $row['id'] . ' @ ' . $url . '<br />';
-            }
+                // Gather http request info
+                $http_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+                
+                // Check http code
+                if ($http_code == 404) {
+                    // Increase counter
+                    $error_num++;
+                    
+                    // Message
+                    $error .= 'Id: ' . $row['id'] . ' @ ' . $url . '<br />';
+                }
+                else {
+                    // Increase counter
+                    $success_num++;
+                    
+                    // Message
+                    $success .= 'Id: ' . $row['id'] . ' @ ' . $url . '<br />';
+                }
             
-            // Close handler
-            curl_close($handle);
+                // Close handler
+                curl_close($handle);
+            }
         }
-        
-        // Close db
-        $db = null;
         
         // Output
         echo '<h2 style="color: red;">Errors (' . number_format($error_num) . ')</h2>';

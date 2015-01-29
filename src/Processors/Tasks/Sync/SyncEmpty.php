@@ -41,6 +41,9 @@ class SyncEmpty extends Base {
                 // Close database connection
                 Database::close();
             }
+            else {
+                $this->setError();
+            }
         }
         else {
             // No access

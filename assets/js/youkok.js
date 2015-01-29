@@ -112,6 +112,12 @@ function check_check_search(target) {
 }
 
 //
+// Variables
+//
+
+var courses;
+
+//
 // jQuery gogo
 //
 
@@ -143,7 +149,7 @@ $(document).ready(function () {
     // Bloodhound
     //
 
-    var courses = new Bloodhound({
+    courses = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('course'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         limit: 10,

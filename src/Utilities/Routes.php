@@ -95,11 +95,14 @@ class Routes {
         'Tasks\\ClearCache' => array(
             '/tasks/clearcache',
          ),
-         'Tasks\\Check404' => array(
+        'Tasks\\Check404' => array(
             '/tasks/check404',
         ),
-         'Tasks\\LoadCourses' => array(
+        'Tasks\\LoadCourses' => array(
             '/tasks/courses',
+        ),
+        'Tasks\\LoadCoursesJson' => array(
+            '/tasks/coursesjson',
         ),
         
         /*
