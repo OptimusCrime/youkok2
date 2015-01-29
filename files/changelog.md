@@ -29,8 +29,8 @@ Youkok2 - 0.4.0-pl (13. oktober, 2014)
 - [Enchanced] Norske navn på Highcharts grafen.
 - [Enchanced] Når man logger inn returneres man nå til siden man var på.
 
-Youkok2 - 0.3..-pl (29. september, 2014)
-========================================
+Youkok2 - 0.3.1.-pl (29. september, 2014)
+=========================================
 
 - [Info] Hotfix.
 - [Fixed] Jeg ødela compression av js-fila.
