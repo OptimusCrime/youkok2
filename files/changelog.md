@@ -1,10 +1,10 @@
-Youkok2 - 1.0.1-pl  (29. februar 2014)
+Youkok2 - 1.1.0-pl  (29. februar 2014)
 ======================================
 
 - [Info] Legacy code removal
 - [Enhanced] Systemet bruker nå nye fysiske plasseringer til filer som er raskere å hente frem.
-- [Enhanced] Minify av alle lokale CSS- og JS-filer.
 - [Fixed] Fjernet en del legacy kode fra systemet som var nødvendig for oppgradering.
+- [Fixed] Søk på eksisterende emner fungerte ikke.
 
 Youkok2 - 1.0.0-pl (29. februar 2014)
 =====================================
@@ -15,6 +15,7 @@ Youkok2 - 1.0.0-pl (29. februar 2014)
 - [Enhanced] Linker til innlogging funker på små devices.
 - [Enhanced] Informasjon på forsiden vises nå penere med Bootstrap tooltip.
 - [Enhanced] Fag som ikke har noen filer vises nå i en gråere farge.
+- [Enhanced] Minify av alle lokale CSS- og JS-filer.
 - [Fixed] Feil som gjorde at cache ble hengende igjen.
 - [Fixed] Antall millisekunder siden bruker på å laste er ikke lenget cachet.
 
