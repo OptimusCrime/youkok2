@@ -72,10 +72,6 @@ class ElementController implements BaseController {
         'WHERE a.is_visible = 1',
         'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1');
     
-    // Backwards compability
-    private $fullLocation;
-    
-    
     /*
      * Consutrctor
      */
@@ -114,9 +110,6 @@ class ElementController implements BaseController {
         // Parents and children
         $this->parents = null;
         $this->children = null;
-        
-        // Backwards compability
-        $this->fullLocation = null;
     }
     
     /*
@@ -829,42 +822,5 @@ class ElementController implements BaseController {
     public function getPhysicalLocation() {
         // TODO
         return FILE_PATH . '/foo/' . $this->model->getChecksum();
-    }
-    
-    /*
-     * Backwards compability
-     */
-    
-    public function getFullLocation() {
-        if ($this->fullLocation == null) {
-            $temp_location = array($this->model->getLocation());
-            $temp_id = $this->model->getParent();
-
-            // Loop untill we reach the root
-            while ($temp_id != 0) {
-                // Check if this object already exists
-                $temp_item = ElementCollection::get($temp_id);
-                
-                // Check if already cached, or not
-                if ($temp_item !== null) {
-                    // Get the url piece
-                    $temp_location[] = $temp_item->getLocation();
-                    
-                    // Update id
-                    $temp_id = $temp_item->getParent();
-                }
-                else {
-                    return null;
-                }
-            }
-
-            // Reverse array
-            $temp_location = array_reverse($temp_location);
-
-            // Assign
-            $this->fullLocation = $temp_location;
-        }
-
-        return implode('/', $this->fullLocation);
     }
 }
