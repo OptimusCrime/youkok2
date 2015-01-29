@@ -72,7 +72,6 @@ Youkok2 - 0.2.0-pl (25. august, 2014)
 - [Other] La til Phinx og Composer under 'Teknisk om nettsiden' på 'Om'-siden.
 - [Enhanced] Søkefunksjonen er nå funksjonell for brukere på mobil.
 
-
 Youkok2 - 0.1.1-pl (7. august, 2014)
 ====================================
 
