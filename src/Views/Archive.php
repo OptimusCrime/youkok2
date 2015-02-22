@@ -225,11 +225,6 @@ class Archive extends Base {
         // Get breadcrumbs
         $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
         
-        // TODO
-        
-        $this->template->assign('ARCHIVE_ZIP_DOWNLOAD', 'foo');
-        $this->template->assign('ARCHIVE_ZIP_DOWNLOAD_NUM', 'foo');
-        
         // Check if archive is empty
         if ($element->isEmpty()) {
             $this->template->assign('ARCHIVE_EMPTY', true);

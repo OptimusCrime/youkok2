@@ -814,10 +814,6 @@ $(document).ready(function () {
                 display = true;
             }
         });
-        
-        if (display) {
-            $('#archive-zip').show();
-        }
     }
 
     //

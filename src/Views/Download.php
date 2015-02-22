@@ -42,67 +42,7 @@ class Download extends Base {
                 $file_location = $element->controller->getPhysicalLocation();
                 
                 // Check if zip download or not
-                if ($element->isDirectory()) {
-                    // TODO
-                    /*
-                    if (is_dir($file_location)) {
-                        // Get direct children, that are elements
-                        $files = $item->getChildren(Item::$file);
-                        
-                        // Check if any children were returned
-                        if (count($files) > 0) {
-                            // Create array with locations
-                            $files_archive = array();
-                            foreach ($files as $v) {
-                                $files_archive[] = array('file' => FILE_PATH . $v->getFullLocation(),
-                                                         'name' => $v->getName());
-                            }
-                            
-                            
-                            
-                            // Create zip archive
-                            $file = tempnam(FILE_PATH . '/tmp', 'zip');
-                            
-                            $zip = new ZipArchive;
-                            $res = $zip->open($file, ZipArchive::CREATE);
-                            foreach ($files_archive as $v) {
-                                if (file_exists($v['file'])) {
-                                    $zip->addFile($v['file'], $v['name']);
-                                }
-                            }
-                            $zip->close();
-                            
-                            // Do download
-                            header('Content-Description: File Transfer');
-                            header('Content-Transfer-Encoding: binary');
-                            header('Expires: 0');
-                            header('Cache-Control: must-revalidate');
-                            header('Pragma: public');
-                            header('Content-Type: application/zip');
-                            header('Content-Disposition: attachment; filename="arkiv.zip"');
-                            header('Content-Length: ' . filesize($file));
-                            
-                            // Clean ob and flush
-                            ob_clean();
-                            flush();
-                            
-                            // Read the contents
-                            readfile($file);
-                            
-                            // Delete file
-                            //unlink($file);
-                        }
-                        else {
-                            // No content found
-                            $should_display_404 = true;
-                        }
-                    }
-                    else {
-                        // Is not a directory
-                        $should_display_404 = true;
-                    }
-                    */
-                }
+                if (!$element->isDirectory()) {
                 else {
                     if (file_exists($file_location)) {
                         // Check if we should log download

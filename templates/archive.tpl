@@ -17,7 +17,6 @@
         [[+nocache]]
         <div id="archive-title">
             [[+$ARCHIVE_TITLE]]
-            <a id="archive-zip" href="[[+$ARCHIVE_ZIP_DOWNLOAD]]">Last ned som .zip ([[+$ARCHIVE_ZIP_DOWNLOAD_NUM]])</a>
         </div>
         [[+/nocache]]
 
