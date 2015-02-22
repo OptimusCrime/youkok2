@@ -5,6 +5,7 @@ Youkok2 - 1.1.1-pl  (xx. februar 2014)
 - [Fixed] Redirect system som ikke fungerte helt som det skulle.
 - [Fixed] Enkelte filer migrerte ikke korrekt over fra det gamle systemet.
 - [Fixed] Feil dato på forrige versjon i changelogen.
+- [Removed] Batchnedlastning av filer som .zip er fjernet.
 
 Youkok2 - 1.1.0-pl  (29. januar 2015)
 =====================================
