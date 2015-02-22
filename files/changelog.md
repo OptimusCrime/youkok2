@@ -1,13 +1,21 @@
-Youkok2 - 1.1.0-pl  (29. februar 2014)
-======================================
+Youkok2 - 1.1.1-pl  (xx. februar 2014)
+====================================== 
+
+- [Info] Bugfixes
+- [Fixed] Redirect system som ikke fungerte helt som det skulle.
+- [Fixed] Enkelte filer migrerte ikke korrekt over fra det gamle systemet.
+- [Fixed] Feil dato på forrige versjon i changelogen.
+
+Youkok2 - 1.1.0-pl  (29. januar 2015)
+=====================================
 
 - [Info] Legacy code removal
 - [Enhanced] Systemet bruker nå nye fysiske plasseringer til filer som er raskere å hente frem.
 - [Fixed] Fjernet en del legacy kode fra systemet som var nødvendig for oppgradering.
 - [Fixed] Søk på eksisterende emner fungerte ikke.
 
-Youkok2 - 1.0.0-pl (29. februar 2014)
-=====================================
+Youkok2 - 1.0.0-pl (29. januar 2015)
+====================================
 
 - [Info] Komplett omskrivning av hele kildekoden
 - [Enhanced] Nettsiden bruker nå "mobile first"-prinsippet til Bootstrap.
