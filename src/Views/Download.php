@@ -43,7 +43,6 @@ class Download extends Base {
                 
                 // Check if zip download or not
                 if (!$element->isDirectory()) {
-                else {
                     if (file_exists($file_location)) {
                         // Check if we should log download
                         if (!isset($_GET['donotlogthisdownload'])) {
