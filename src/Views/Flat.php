@@ -40,14 +40,6 @@ class Flat extends Base {
             $this->template->assign('HEADER_MENU', null);
             $this->template->assign('SITE_TITLE', 'Retningslinjer for Youkok2');
             
-            // Fix list for filtypes
-            $mime_types = explode(',', ACCEPTED_FILETYPES);
-            $mime_types_string = '';
-            foreach ($mime_types as $v) {
-                $mime_types_string .= '<li>' . $v . '</li>';
-            }
-            $this->template->assign('ACCEPTED_FILETYPES', $mime_types_string);
-            
             // Fix list for filendings
             $endings = explode(',', ACCEPTED_FILEENDINGS);
             $endings_string = '';

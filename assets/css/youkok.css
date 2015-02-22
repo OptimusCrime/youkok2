@@ -48,6 +48,9 @@ a:visited {
     box-shadow: 0 2px 0 rgba(0, 0, 0, 0.05) inset;
     padding-bottom: 10px;
 }
+#site-data {
+    display: none;
+}
 
 /*
  * Responsive stuff
@@ -335,6 +338,9 @@ a:visited {
 #sidebar {
     margin-top: 20px;
 }
+#sidebar.sidebar-no-top-margin{
+        margin-top: 0px;
+    }
 .sidebar-element {
     margin-bottom: 20px;
 }
@@ -475,11 +481,6 @@ a:visited {
     cursor: pointer;
     user-select: none;
 }
-#archive-zip {
-    float: right;
-    margin-top: 37px;
-    display: none;
-}
 .archive-title-smaller {
     font-size: 22px;
 }
@@ -489,18 +490,13 @@ a:visited {
 #archive-asd {
     margin-bottom: 20px;
 }
-#archive-create-controlls {
-    padding-bottom: 10px;
-}
-#archive-create-controlls button {
-    margin-bottom: 10px;
-}
 #archive-create-folder-div,
 #archive-create-file-div,
 #archive-create-link-div {
     display: none;
-    border-top: 1px solid gray;
+    border-top: 1px solid #dddddd;
     padding-top: 5px;
+    margin-top: 10px;
 }
 #archive-title h1,
 #archive-title h2 {
@@ -519,6 +515,15 @@ a:visited {
     font-size: 36px;
     margin-bottom: 10px;
     margin-top: 20px;
+}
+#archive-warning {
+    padding-top: 10px;
+}
+#archive-controlls.archive-controlls-offline #archive-create-file-div,
+#archive-controlls.archive-controlls-offline #archive-create-link-div {
+    border-bottom: 1px solid #dddddd;
+    padding-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 /*
@@ -623,12 +628,12 @@ a:visited {
 }
 .fileupload-file {
     width: 100%;
-    background-color: #DFF0D8;
+    background-color: #375a7f;
     position: relative;
-    color: #3C763D;
+    color: #fff;
 }
 .fileupload-file {
-    border-bottom: 1px solid #D6E9C6;
+    border-bottom: 1px solid #2b4764;
     padding: 5px;
 }
 .fileupload-add {
@@ -649,9 +654,8 @@ a:visited {
     cursor: pointer;
     font-weight: bold;
 }
-#archive_accepted_filetypes,
-#archive_accepted_fileendings {
-    display: none;
+#fileupload-files {
+    border-radius: 4px;
 }
 
 /*

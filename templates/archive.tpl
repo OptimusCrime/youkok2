@@ -1,11 +1,6 @@
 [[+include file="header.tpl"]]
 [[+include file="archive_modals.tpl"]]
 [[+nocache]]
-<input type="hidden" value="[[+$ARCHIVE_ID]]" id="archive-id" name="archive-id" />
-<input type="hidden" value="[[+$ARCHIVE_USER_ONLINE]]" id="archive-online" name="archive-online" />
-<input type="hidden" value="[[+$ARCHIVE_USER_CAN_CONTRIBUTE]]" id="archive-can-c" name="archive-can-c" />
-<div id="archive_accepted_filetypes">[[+$ACCEPTED_FILETYPES]]</div>
-<div id="archive_accepted_fileendings">[[+$ACCEPTED_FILEENDINGS]]</div>
 [[+/nocache]]
 <div class="row">
     <div id="archive-top" class="col-xs-12 col-md-8">
@@ -26,7 +21,7 @@
             [[+include file="archive_content.tpl"]]
         [[+/if]]
     </div>
-    <div id="sidebar" class="col-xs-12 col-md-4">
+    <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">
         [[+include file="archive_sidebar.tpl"]]
     </div>
 </div>

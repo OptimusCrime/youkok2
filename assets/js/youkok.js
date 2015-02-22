@@ -209,7 +209,7 @@ $(document).ready(function () {
     var $archive_context_menu = $('#archive-context-menu');
     var ignore_click_outside = false;
     
-    if ($('#archive-online').val() != 1) {
+    if (site_data.user_online != 1) {
         $('#archive-context-newflag-outer').hide();
         $('#archive-context-report').parent().hide();
     }
@@ -809,19 +809,6 @@ $(document).ready(function () {
             $('#forgotten-password-new-form-submit').prop('disabled', true);
         }
     });
-    
-    //
-    // Check if should display zip-message
-    //
-    
-    if ($('#archive-list').length > 0) {
-        var display = false;
-        $('#archive-list li').each(function () {
-            if (display == false && $(this).find('div').data('type') == 'file') {
-                display = true;
-            }
-        });
-    }
 
     //
     // Create file
@@ -843,10 +830,9 @@ $(document).ready(function () {
             $('#archive-create-file-div').stop().slideUp(400);
         }
     });
+    
     var num_of_files = 0;
     var num_of_files_uploaded = 0;
-    var accepted_filetypes = [];
-    var accepted_fileendings = [];
     $('#archive-create-file-form').fileupload({
         url: 'processor/create/file',
         add: function (e, data) {
@@ -859,24 +845,12 @@ $(document).ready(function () {
             var mimetype = file_object.type;
             var this_filetype = file_object.name.split('.');
             this_filetype = this_filetype[this_filetype.length - 1].toLowerCase();
-
-            // Check with mimetype first (is better)
-            if (mimetype != null) {
-                for (var i = 0; i < accepted_filetypes.length; i++) {
-                    if (accepted_filetypes[i] == mimetype) {
-                        found = true;
-                        break;
-                    }
-                }
-            }
-
+    
             // Mimetype was not found, okey then, try fileendings
-            if (!found) {
-                for (var i = 0; i < accepted_fileendings.length; i++) {
-                    if (name.endsWith('.' + accepted_fileendings[i])) {
-                        found = true;
-                        break;
-                    }
+            for (var i = 0; i < site_data.file_types.length; i++) {
+                if (name.endsWith('.' + site_data.file_types[i])) {
+                    found = true;
+                    break;
                 }
             }
 
@@ -913,7 +887,7 @@ $(document).ready(function () {
                 // Display error, wrong filetype
                 var error = [
                     {
-                        'text' : '<p>Filtypen \'.' + this_filetype + '\' er ikke godkjent på Youkok2. Dersom du syntes denne filtypen burde godkjennes, kan du ta kontakt.</p>',
+                        'text' : '<p>Filtypen .' + this_filetype + ' er ikke godkjent på Youkok2. Dersom du syntes denne filtypen burde godkjennes, kan du ta kontakt. Kontaktinformasjon nederst på siden.</p>',
                         'type' : 'danger',
                     },
                 ];

@@ -56,6 +56,15 @@ class Archive extends Base {
             $this->displayAndCleanup('courses.tpl', $this->queryGetClean());
         }
         else {
+            // Set information to site data
+            $this->addSiteData('user_online', Me::isLoggedIn());
+            $this->addSiteData('user_can_contribute', Me::canContribute());
+            
+            // Set information directly to Smarty
+            $this->template->assign('ARCHIVE_USER_CAN_CONTRIBUTE', 'ARCHIVE');
+            $this->template->assign('ARCHIVE_USER_BANNED', 'ARCHIVE');
+            $this->template->assign('ARCHIVE_USER_HAS_KARMA', 'ARCHIVE');
+            
             // Load the archive
             $this->loadArchive();
 
@@ -183,10 +192,8 @@ class Archive extends Base {
         Me::setUserStatus($this, 'ARCHIVE');
 
         // File types
-        $accepted_filetypes = explode(',', ACCEPTED_FILETYPES);
-        $this->template->assign('ACCEPTED_FILETYPES', json_encode($accepted_filetypes));
         $accepted_fileending = explode(',', ACCEPTED_FILEENDINGS);
-        $this->template->assign('ACCEPTED_FILEENDINGS', json_encode($accepted_fileending));
+        $this->addSiteData('file_types', $accepted_fileending);
     }
     
     /*
@@ -195,7 +202,7 @@ class Archive extends Base {
     
     private function setElementInformation($element) {
         // Set id
-        $this->template->assign('ARCHIVE_ID', $element->getId());
+        $this->addSiteData('archive_id', $element->getId());
         
         // Set title
         if ($element->controller->isCourse()) {

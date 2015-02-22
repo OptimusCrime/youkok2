@@ -26,10 +26,6 @@
         <p>Her er en liste for godkjente filtyper på Youkok2. Dersom du har ønsker om nye filtyper kan du sende en 
         <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">e-post</a>. Vi har en begrenset liste for å minimere sjanser for 
         virus.</p>
-        <p><b>Mime-types:</b></p>
-        <ul>
-            [[+$ACCEPTED_FILETYPES]]
-        </ul>
         <p><b>Fil-endelser:</b></p>
         <ul>
             [[+$ACCEPTED_FILEENDINGS]]

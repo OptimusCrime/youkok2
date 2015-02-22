@@ -76,9 +76,6 @@ if (!defined('URL_RELATIVE')) {
 }
 
 // Accepted filetypes
-if (!defined('ACCEPTED_FILETYPES')) {
-    define('ACCEPTED_FILETYPES', 'application/pdf,text/plain,text/x-java-source,application/x-python,text/html');
-}
 if (!defined('ACCEPTED_FILEENDINGS')) {
     define('ACCEPTED_FILEENDINGS', 'pdf,txt,java,py,html,htm,sql,zip');
 }
