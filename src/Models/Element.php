@@ -54,7 +54,7 @@ class Element {
          * Set some default values
          */
 
-        $this->owner = 1;
+        $this->owner = null;
         $this->parent = null;
         $this->empty = 1;
         $this->checksum = null;

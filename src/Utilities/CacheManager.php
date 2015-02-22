@@ -140,7 +140,7 @@ Class CacheManager {
         $file = self::getFileName($id, $type);
 
         // Delete
-        unlink($file);
+        @unlink($file);
     }
 
     /*

@@ -298,7 +298,7 @@ class ElementController implements BaseController {
      */
 
     public function wasFound() {
-        if ($this->model->getId() != null and is_numeric($this->model->getId())) {
+        if ($this->model->getId() != null and is_numeric($this->model->getId()) and $this->model->isVisible()) {
             return true;
         }
         else {
@@ -783,18 +783,29 @@ class ElementController implements BaseController {
     }
     
     /*
+     * Delete cache
+     */
+    
+    public function deleteCache() {
+        CacheManager::deleteCache($this->model->getId(), 'i');
+    }
+    
+    /*
      * Save the current Element
      */
     
     public function save() {
-        $insert_element  = "INSERT INTO archive (name, url_friendly, parent, location, mime_type, missing_image, size, is_directory, is_accepted, is_visible, url, added) " . PHP_EOL;
-        $insert_element .= "VALUES (:name, :url_friendly, :parent, :location, :mime_type, :missing_image, :size, :is_directory, :is_accepted, :is_visible, :url, NOW())";
+        $insert_element  = "INSERT INTO archive (name, url_friendly, owner, parent, empty, location, checksum, mime_type, missing_image, size, is_directory, is_accepted, is_visible, url, added) " . PHP_EOL;
+        $insert_element .= "VALUES (:name, :url_friendly, :owner, :parent, :empty, :location, :checksum, :mime_type, :missing_image, :size, :is_directory, :is_accepted, :is_visible, :url, NOW())";
 
         $insert_element_query = Database::$db->prepare($insert_element);
         $insert_element_query->execute([':name' => $this->model->getName(),
             ':url_friendly' => $this->model->getUrlFriendly(),
+            ':owner' => $this->model->getOwner(),
             ':parent' => $this->model->getParent(),
+            ':empty' => $this->model->isEmpty(),
             ':location' => $this->model->getLocation(),
+            ':checksum' => $this->model->getChecksum(),
             ':mime_type' => $this->model->getMimeType(),
             ':missing_image' => (int) $this->model->getMissingImage(),
             ':size' => $this->model->getSize(),
@@ -816,7 +827,45 @@ class ElementController implements BaseController {
      */
     
     public function update() {
-        // TODO
+        Database::$db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING );
+        $update_element  = "UPDATE archive SET" . PHP_EOL;
+        $update_element .= "name = :name," . PHP_EOL;
+        $update_element .= "url_friendly = :url_friendly," . PHP_EOL;
+        $update_element .= "owner = :owner," . PHP_EOL;
+        $update_element .= "parent = :parent," . PHP_EOL;
+        $update_element .= "empty = :empty," . PHP_EOL;
+        $update_element .= "location = :location," . PHP_EOL;
+        $update_element .= "checksum = :checksum," . PHP_EOL;
+        $update_element .= "mime_type = :mime_type," . PHP_EOL;
+        $update_element .= "missing_image = :missing_image," . PHP_EOL;
+        $update_element .= "size = :size," . PHP_EOL;
+        $update_element .= "is_directory = :is_directory," . PHP_EOL;
+        $update_element .= "is_accepted = :is_accepted," . PHP_EOL;
+        $update_element .= "is_visible = :is_visible," . PHP_EOL;
+        $update_element .= "url = :url" . PHP_EOL;
+        $update_element .= "WHERE id = :id" . PHP_EOL;
+        $update_element .= "LIMIT 1";
+        
+        $update_element_query = Database::$db->prepare($update_element);
+        $update_element_query->execute([':name' => $this->model->getName(),
+            ':url_friendly' => $this->model->getUrlFriendly(),
+            ':owner' => $this->model->getOwner(),
+            ':parent' => $this->model->getParent(),
+            ':empty' => $this->model->isEmpty(),
+            ':location' => $this->model->getLocation(),
+            ':checksum' => $this->model->getChecksum(),
+            ':mime_type' => $this->model->getMimeType(),
+            ':missing_image' => (int) $this->model->getMissingImage(),
+            ':size' => $this->model->getSize(),
+            ':is_directory' => (int) $this->model->isDirectory(),
+            ':is_accepted' => (int) $this->model->isAccepted(),
+            ':is_visible' => (int) $this->model->isVisible(),
+            ':url' => $this->model->getUrl(),
+            ':id' => $this->model->getId(),
+        ]);
+        
+        // Cache
+        $this->cache();
     }
     
     public function getPhysicalLocation() {

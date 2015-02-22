@@ -129,6 +129,12 @@ class Routes {
         'StaticReturner' => array(
             '/search/courses.json',
         ),
+        'CreateFile' => array(
+            '/create/file',
+        ),
+        'CreateLink' => array(
+            '/create/link',
+        ),
     );
     
     /*

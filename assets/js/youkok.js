@@ -834,7 +834,7 @@ $(document).ready(function () {
     var num_of_files = 0;
     var num_of_files_uploaded = 0;
     $('#archive-create-file-form').fileupload({
-        url: 'processor/create/file',
+        url: 'processor/create/file?format=html&parent=' + site_data.archive_id,
         add: function (e, data) {
             // Get file object
             var file_object = data.files[data.files.length - 1];
@@ -905,7 +905,7 @@ $(document).ready(function () {
             // Check if all done
             if (num_of_files_uploaded == num_of_files) {
                 // Reload page
-                window.location.reload();
+                //window.location.reload();
             }
         },
         progressall: function (e, data) {
@@ -924,7 +924,7 @@ $(document).ready(function () {
         });
 
         // Update submit button
-        $('#archive-create-file-form-submit').html('Laster opp....').prop('disabled', true);
+        //$('#archive-create-file-form-submit').html('Laster opp....').prop('disabled', true);
 
         // Avoid submitting the form
         return false;
