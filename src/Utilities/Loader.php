@@ -93,7 +93,7 @@ class Loader {
                 
                 // Test regex
                 if (preg_match_all($regex, $this->fullPath, $matches)) {
-                    $redirect_url = URL_FULL . substr(str_replace('*', $matches[0][0], $v), 1);
+                    $redirect_url = URL_FULL . substr(str_replace('*', $matches[1][0], $v), 1);
                     
                     // Send redirect
                     header('HTTP/1.1 301 Moved Permanently'); 

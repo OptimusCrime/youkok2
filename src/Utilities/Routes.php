@@ -136,6 +136,7 @@ class Routes {
      */
     
     private static $redirects = array(
+        '/kokeboka/emner*' => '/emner*',
         '/kokeboka*' => '/emner*',
     );
     
