@@ -301,6 +301,7 @@ class Archive extends Base {
         // Loop children
         foreach ($children as $child) {
             $data = array();
+            $url_target = '';
             
             // Some stuff
             if ($child->isDirectory()) {
@@ -314,6 +315,7 @@ class Archive extends Base {
                 // Link
                 $title = 'Link til: ' . $child->getUrl();
                 $url = $child->controller->generateUrl(Routes::REDIRECT);
+                $url_target = ' target="_blank"';
                 $image = 'link.png';
                 $type = 'link';
             }
@@ -321,6 +323,7 @@ class Archive extends Base {
                 // Normal file
                 $title = $child->getName();
                 $url = $child->controller->generateUrl(Routes::DOWNLOAD);
+                $url_target = ' target="_blank"';
                 $image = (($child->getMissingImage() == 1) ? 'unknown' : $child->getMimeType()) . '.png';
                 $type = 'file';
                 $data[] = 'data-size="' . $child->getSize() . '"';
@@ -347,7 +350,7 @@ class Archive extends Base {
             
             // Build the markup
             $ret .= '<li>';
-            $ret .= '    <a title="' . $title . '" href="' . $url . '">';
+            $ret .= '    <a title="' . $title . '"' . $url_target . ' href="' . $url . '">';
             $ret .= '        <div class="archive-item" ' . implode(' ', $data) . '>';
             $ret .= '            ' . $div_flag;
             $ret .= '            ' . $div_overlay;
