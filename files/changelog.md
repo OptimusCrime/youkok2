@@ -5,6 +5,8 @@ Youkok2 - 1.1.1-pl  (xx. februar 2014)
 - [Fixed] Redirect system som ikke fungerte helt som det skulle.
 - [Fixed] Enkelte filer migrerte ikke korrekt over fra det gamle systemet.
 - [Fixed] Feil dato på forrige versjon i changelogen.
+- [Fixed] Nedlastning av filer åpnes nå i nytt vindu.
+- [Enhanced] .pdf, .py og .txt går nå ikke direkte til nedlastning, men til visning i nettleseren.
 - [Removed] Batchnedlastning av filer som .zip er fjernet.
 
 Youkok2 - 1.1.0-pl  (29. januar 2015)

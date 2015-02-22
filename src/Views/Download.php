@@ -80,8 +80,23 @@ class Download extends Base {
                             // Close database connection
                             $this->close();
                             
-                            // File exists, download!
-                            $this->loadFile($file_location, $element->getName());
+                            // File exists, check if we should display or directly download
+                            $display = false;
+                            $display_instead = explode(',', DISPLAY_INSTEAD_OF_DOWNLOAD);
+                            foreach ($display_instead as $v) {
+                                if ($v == $element->getMimeType()) {
+                                    // Display
+                                    $display = true;
+                                    break;
+                                }
+                            }
+                            
+                            if ($display) {
+                                $this->loadFileDisplay($file_location, $element->getName());
+                            }
+                            else {
+                                $this->loadFileDownload($file_location, $element->getName());
+                            }
                         }
                     }
                     else {
@@ -104,13 +119,41 @@ class Download extends Base {
         if ($should_display_404) {
             $this->display404();
         }
-    } 
+    }
     
     //
-    // Loading an actual file from the fileserver
+    // Loading an actual file from the fileserver for displaying
     //
     
-    private function loadFile($file, $name) {
+    private function loadFileDisplay($file, $name) {
+        // Fetch mime type
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $file_info = finfo_file($finfo, $file);
+        
+        // Set header options;
+        header('Content-Type: ' . $file_info);
+        header('Content-Disposition: inline; filename="' . $name . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file));
+        
+        // Clean ob and flush
+        ob_clean();
+        flush();
+        
+        // Read content of file
+        readfile($file);
+        
+        // Exit the program
+        exit;
+    }
+    
+    //
+    // Loading an actual file from the fileserver for downloading
+    //
+    
+    private function loadFileDownload($file, $name) {
         // Fetch mime type
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $file_info = finfo_file($finfo, $file);

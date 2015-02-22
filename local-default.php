@@ -92,3 +92,8 @@ if (!defined('USE_GA')) {
 if (!defined('EMAIL_CONTACT')) {
     define('EMAIL_CONTACT', 'post@my-site.tld');
 }
+
+// Display instead of download
+if (!defined('DISPLAY_INSTEAD_OF_DOWNLOAD')) {
+    define('DISPLAY_INSTEAD_OF_DOWNLOAD', 'text_x-python-script,text_plain,application_pdf');
+}
