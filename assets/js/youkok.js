@@ -100,7 +100,7 @@ function check_check_search(target) {
         if (current_datum.course == val) {
             // Match!
             was_found = true;
-            window.location = $('#search-base').val() + current_datum.url;
+            window.location = site_data.search_base + current_datum.url;
             break;
         }
     }
@@ -116,12 +116,19 @@ function check_check_search(target) {
 //
 
 var courses;
+var site_data;
 
 //
 // jQuery gogo
 //
 
 $(document).ready(function () {
+    
+    //
+    //
+    //
+    
+    site_data = jQuery.parseJSON($('#site-data').html());
     
     //
     // Moment.js
@@ -162,12 +169,12 @@ $(document).ready(function () {
     //
     
     // Check if we should clear cache first
-    if ($('#typehead-cache-time').val() != localStorage.getItem('ts')) {
+    if (site_data.cache_time != localStorage.getItem('ts')) {
         // Clear first
         localStorage.clear();
         
         // Assign ts
-        localStorage.setItem('ts', $('#typehead-cache-time').val());
+        localStorage.setItem('ts', site_data.cache_time);
     }
     $('#prefetch .typeahead,#prefetch2 .typeahead').typeahead({
         hint: true,

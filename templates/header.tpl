@@ -13,8 +13,7 @@
 [[+/nocache]]
 </head>
 <body>
-[[+nocache]]<input type="hidden" name="cache-time" id="typehead-cache-time" value="[[+$TYPEAHEAD_CACHE_TIME]]" />
-<input type="hidden" name="search-base" id="search-base" value="[[+$SITE_SEARCH_BASE]]" />
+[[+nocache]]<div id="site-data">[[+$SITE_DATA]]</div>[[+/nocache]]
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">

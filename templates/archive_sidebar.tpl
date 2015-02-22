@@ -1,10 +1,5 @@
-<div id="archive-controlls" class="sidebar-element">
-    <h3>Kontroller</h3>
-    <div class="sidebar-element-inner">
-        <p>Det er for tiden ikke mulig å laste opp filer, opprette mapper eller poste linker på Youkok2. Vi kommer
-        sterkere tilbake snart.</p>
-    </div>
-</div>
+[[+include file="archive_sidebar_upload.tpl"]]
+
 <div id="archive-help" class="sidebar-element">
     <h3>Hjelp</h3>
     <div class="sidebar-element-inner">

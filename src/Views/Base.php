@@ -34,6 +34,7 @@ class Base extends Youkok2 {
     public $template;
     private $query;
     private $sqlLog;
+    private $siteData;
     
     /*
      * Constructor
@@ -85,10 +86,12 @@ class Base extends Youkok2 {
         $this->template->assign('SITE_USE_GA', USE_GA);
         $this->template->assign('SITE_URL_FULL', URL_FULL);
         $this->template->assign('SITE_RELATIVE', URL_RELATIVE);
-        $this->template->assign('SITE_SEARCH_BASE', URL_FULL . substr(Routes::getRoutes()['Archive'][0], 1) . '/');
         $this->template->assign('SITE_EMAIL_CONTACT', EMAIL_CONTACT);
         $this->template->assign('SEARCH_QUERY', '');
         $this->template->assign('HEADER_MENU', 'HOME');
+        
+        // Set some site data
+        $this->addSiteData('search_base', URL_FULL . substr(Routes::getRoutes()['Archive'][0], 1) . '/');
         
         // Check if we should kill the view
         if ($kill == false) {
@@ -113,6 +116,9 @@ class Base extends Youkok2 {
             // Assign query
             $this->template->assign('BASE_QUERY', Loader::getQuery());
         }
+        
+        // Init site data array
+        $siteData = [];
     }
     
     /*
@@ -174,6 +180,14 @@ class Base extends Youkok2 {
 
         // Close connection
         Database::close();
+    }
+    
+    /*
+     * Add date to the json object displayed at all pages
+     */
+    
+    protected function addSiteData($key, $value) {
+        $this->siteData[$key] = $value;
     }
 
     /*
@@ -264,7 +278,10 @@ class Base extends Youkok2 {
         $this->showMessages();
         
         // Load cache
-        $this->template->assign('TYPEAHEAD_CACHE_TIME', CacheManager::loadTypeaheadCache());
+        $this->addSiteData('cache_time', CacheManager::loadTypeaheadCache());
+        
+        // Load site data
+        $this->template->assign('SITE_DATA', json_encode($this->siteData));
         
         // Display load time
         $time = \PHP_Timer::stop();
