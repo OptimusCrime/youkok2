@@ -781,6 +781,16 @@ class ElementController implements BaseController {
         return $ret;
     }
     
+    public function getPhysicalLocation() {
+        // Get directories
+        $checksum = $this->model->getChecksum();
+        $folder1 = substr($checksum, 0, 1);
+        $folder2 = substr($checksum, 1, 1);
+        
+        // Return full path
+        return FILE_PATH . '/' . $folder1 . '/' . $folder2 . '/' . $this->model->getChecksum();
+    }
+    
     /*
      * Delete cache
      */
