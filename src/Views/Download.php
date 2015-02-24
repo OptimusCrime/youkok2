@@ -47,7 +47,7 @@ class Download extends Base {
                         // Check if we should log download
                         if (!isset($_GET['donotlogthisdownload'])) {
                             // Log download
-                            //$item->addDownload();
+                            $element->controller->addDownload();
                         }
     
                         // Check if we should return fake http response to facebook crawler
