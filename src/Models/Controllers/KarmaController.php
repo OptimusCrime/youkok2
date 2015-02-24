@@ -1,6 +1,6 @@
 <?php
 /*
- * File: HistoryController.php
+ * File: KarmaController.php
  * Holds: Interface for the controllers
  * Created: 24.02.15
  * Project: Youkok2
@@ -15,10 +15,10 @@ namespace Youkok2\Models\Controllers;
 use \Youkok2\Utilities\Database as Database;
 
 /*
- * HistoryController extending BaseController
+ * KarmaController extending BaseController
  */
 
-class HistoryController implements BaseController {
+class KarmaController implements BaseController {
 
     /*
      * Variables
@@ -40,13 +40,13 @@ class HistoryController implements BaseController {
      */
     
     public function save() {
-        $insert_history  = "INSERT INTO history (user, file, history_text) " . PHP_EOL;
-        $insert_history .= "VALUES (:user, :file, :text)";
+        $insert_history  = "INSERT INTO karma (user, file, value) " . PHP_EOL;
+        $insert_history .= "VALUES (:user, :file, :value)";
 
         $insert_history_query = Database::$db->prepare($insert_history);
         $insert_history_query->execute([':user' => $this->model->getUser(),
             ':file' => $this->model->getFile(),
-            ':text' => $this->model->getHistoryText()]);
+            ':value' => $this->model->getValue()]);
         
         // Set id to model
         $this->model->setId(Database::$db->lastInsertId());

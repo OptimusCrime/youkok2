@@ -16,6 +16,7 @@ namespace Youkok2\Processors;
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\History as History;
+use \Youkok2\Models\Karma as Karma;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\MessageManager as MessageManager;
@@ -245,23 +246,19 @@ class CreateFile extends Base {
                 $history->setUser(Me::getId());
                 $history->setFile($element->getId());
                 $history->save();
+                
+                // Add karma
+                $karma = new Karma();
+                $karma->setUser(Me::getId());
+                $karma->setFile($element->getId());
+                $karma->save();
+                
+                // Add karma to user
+                Me::increaseKarmaPending(5);
+                Me::update();
             }
             
-            // Add history
-            /*
-            $this->addHistory($this->user->getId(), $element_id,
-                              null, 2,
-                              '%u lastet opp ' . $name . '.',
-                              5);
-
-            // Add karma to pending
-            $this->user->addPendingKarma(5);
-
-            // Add message
-            
-
-            // Finally, success code
-            */
+            // Send successful code
             $this->setData('code', 200);
         }
         else {

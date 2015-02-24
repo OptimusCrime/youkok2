@@ -205,11 +205,11 @@ class Me {
     public static function setMostPopularDelta($delta) {
         self::$mostPopularDelta = $delta;
     }
-    public static function setKarma($karma) {
-        self::$karma = $karma;
+    public static function increaseKarma($karma) {
+        self::$karma += $karma;
     }
-    public static function setKarmaPending($pending) {
-        self::$karmaPending = $pending;
+    public static function increaseKarmaPending($pending) {
+        self::$karmaPending += $pending;
     }
     public static function setBanned($banned) {
         self::$banned = $banned;
