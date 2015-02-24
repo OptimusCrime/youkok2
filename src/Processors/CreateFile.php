@@ -169,7 +169,8 @@ class CreateFile extends Base {
                 AND url_friendly = :url_friendly";
                 
                 $get_duplicate_query = Database::$db->prepare($get_duplicate);
-                $get_duplicate_query->execute(array(':id' => $parent->getId(), ':url_friendly' => $url_friendly));
+                $get_duplicate_query->execute(array(':id' => $parent->getId(),
+                    ':url_friendly' => $url_friendly));
                 $row_duplicate = $get_duplicate_query->fetch(\PDO::FETCH_ASSOC);
                 if (isset($row_duplicate['id'])) {
                     $url_friendly = Utilities::urlSafe($letters[rand(0, count($letters) - 1)] . $url_friendly);

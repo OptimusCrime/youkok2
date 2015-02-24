@@ -565,9 +565,9 @@ $(document).ready(function () {
                 $.ajax({
                     cache: false,
                     type: "post",
-                    url: "processor/create/folder",
+                    url: 'processor/folder/create',
                     data: { 
-                        id: $('#archive-id').val(), 
+                        id: site_data.archive_id, 
                         name: $('#archive-create-folder-name').val() 
                     },
                     success: function(json) {

@@ -143,6 +143,9 @@ class Routes {
         'CreateLink' => array(
             '/link/create',
         ),
+        'CreateFolder' => array(
+            '/folder/create',
+        ),
     );
     
     /*
