@@ -1,13 +1,23 @@
-Youkok2 - 1.2.0-pl  (xx. februar 2014)
+Youkok2 - 1.2.0-pl  (25. februar 2014)
 ====================================== 
 
-- [Info] Bugfixes
+- [Info] Bugfixes og reimplementering
+- [New] Man kan laste opp filer på siden igjen!
+- [New] Man kan opprette mapper igjen!
+- [New] Man kan poste linker igjen!
+- [New] Man kan nå laste opp filer og poste linker selv om man ikke er logget inn. Disse må bli manuelt godkjent
+        av en administrator før de er synlige på siden.
+- [Fixed] Loggfører antall nedlastninger igjen.
 - [Fixed] Redirect system som ikke fungerte helt som det skulle.
 - [Fixed] Enkelte filer migrerte ikke korrekt over fra det gamle systemet.
 - [Fixed] Feil dato på forrige versjon i changelogen.
 - [Fixed] Nedlastning av filer åpnes nå i nytt vindu.
 - [Enhanced] .pdf, .py og .txt går nå ikke direkte til nedlastning, men til visning i nettleseren.
+- [Enhanced] Minifisering av flere .js-filer.
+- [Enhanced] Endret noen farger og layout i arkivet.
+- [Enhanced] Endret hvordan data lagres for benyttelse i javascript.
 - [Removed] Batchnedlastning av filer som .zip er fjernet.
+- [Other] Ble kvitt enda mer legacy kode.
 
 Youkok2 - 1.1.0-pl  (29. januar 2015)
 =====================================
