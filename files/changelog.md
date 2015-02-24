@@ -1,4 +1,4 @@
-Youkok2 - 1.1.1-pl  (xx. februar 2014)
+Youkok2 - 1.2.0-pl  (xx. februar 2014)
 ====================================== 
 
 - [Info] Bugfixes

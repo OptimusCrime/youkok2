@@ -905,7 +905,7 @@ $(document).ready(function () {
             // Check if all done
             if (num_of_files_uploaded == num_of_files) {
                 // Reload page
-                //window.location.reload();
+                window.location.reload();
             }
         },
         progressall: function (e, data) {
@@ -924,7 +924,7 @@ $(document).ready(function () {
         });
 
         // Update submit button
-        //$('#archive-create-file-form-submit').html('Laster opp....').prop('disabled', true);
+        $('#archive-create-file-form-submit').html('Laster opp....').prop('disabled', true);
 
         // Avoid submitting the form
         return false;
@@ -1020,10 +1020,10 @@ $(document).ready(function () {
             type: "post",
             url: "processor/history/get",
             data: {
-                id: $('#archive-id').val() 
+                id: site_data.archive_id, 
             },
             success: function(json) {
-                $('#archive-history-inside').html(json.html);
+                $('#archive-history ul').html(json.html);
             }
         });
     }

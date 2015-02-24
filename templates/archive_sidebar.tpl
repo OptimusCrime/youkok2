@@ -9,9 +9,9 @@
     </div>
 </div>
 
-<div id="archive-history" class="sidebar-element">
+<div id="archive-history" class="sidebar-element sidebar-element-autoscroll">
     <h3>Historikk</h3>
-    <div class="sidebar-element-inner">
-        <p>Laster...</p>
-    </div>
+    <ul class="list-group-hax">
+        <li class="list-group-item">Laster...</li>
+    </ul>
 </div>

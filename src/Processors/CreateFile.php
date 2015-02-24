@@ -15,8 +15,10 @@ namespace Youkok2\Processors;
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
+use \Youkok2\Models\History as History;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Utilities\MessageManager as MessageManager;
 use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
@@ -234,7 +236,16 @@ class CreateFile extends Base {
             }
             
             // Add message
-            $this->addFileMessage($file_name . '.' . $file_type);
+            MessageManager::addFileMessage($file_name . '.' . $file_type);
+            
+            // Check if logged in
+            if (Me::isLoggedIn()) {
+                // Add history element
+                $history = new History();
+                $history->setUser(Me::getId());
+                $history->setFile($element->getId());
+                $history->save();
+            }
             
             // Add history
             /*

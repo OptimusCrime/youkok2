@@ -97,8 +97,6 @@ class ChangePasswordController implements BaseController {
      * Not implemented
      */
 
-    public function cache() {
-    }
-    public function update() {
-    }
+    public function cache() {}
+    public function update() {}
 }

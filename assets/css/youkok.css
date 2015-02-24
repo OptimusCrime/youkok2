@@ -356,6 +356,29 @@ a:visited {
 .sidebar-element-inner p:last-child {
     margin: 0px;
 }
+.sidebar-element-autoscroll ul {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+.list-group-hax {
+    padding: 0px;
+    border: 1px solid #dddddd;
+    border-right-width: 0px;
+    border-radius: 4px 4px;
+}
+#archive-history .list-group-hax li {
+    border-right-width: 0px;
+    border-left-width: 0px;
+    border-radius: 0px 0px;
+}
+#archive-history .list-group-hax li:first-child {
+    border-top-width: 0px;
+    border-radius: 0px 0px;
+}
+#archive-history .list-group-hax li:last-child {
+    border-bottom-width: 0px;
+    border-radius: 0px 0px;
+}
 
 /*
  * Archive
@@ -624,7 +647,7 @@ a:visited {
 }
 .bar {
     height: 18px;
-    background: green;
+    background: #28415b;
 }
 .fileupload-file {
     width: 100%;

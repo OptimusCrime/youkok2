@@ -135,6 +135,9 @@ class Routes {
         'CreateLink' => array(
             '/create/link',
         ),
+        'LoadHistory' => array(
+            '/history/get',
+        ),
     );
     
     /*
