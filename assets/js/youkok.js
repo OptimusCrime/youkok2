@@ -834,7 +834,7 @@ $(document).ready(function () {
     var num_of_files = 0;
     var num_of_files_uploaded = 0;
     $('#archive-create-file-form').fileupload({
-        url: 'processor/create/file?format=html&parent=' + site_data.archive_id,
+        url: 'processor/file/create?format=html&parent=' + site_data.archive_id,
         add: function (e, data) {
             // Get file object
             var file_object = data.files[data.files.length - 1];
@@ -980,10 +980,10 @@ $(document).ready(function () {
                     
                     $.ajax({
                         cache: false,
-                        type: "post",
-                        url: "processor/create/link",
+                        type: 'post',
+                        url: 'processor/link/create',
                         data: { 
-                            id: $('#archive-id').val(), 
+                            id: site_data.archive_id, 
                             url: $('#archive-create-link-url').val(),
                             name: $('#archive-create-link-name').val() 
                         },

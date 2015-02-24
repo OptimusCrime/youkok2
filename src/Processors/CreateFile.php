@@ -152,7 +152,8 @@ class CreateFile extends Base {
                 }
             }
         }
-                    
+        
+        // Check if we are good to go
         if ($request_ok) {
             // Get file name
             unset($file_type_split[count($file_type_split) - 1]);
@@ -191,6 +192,7 @@ class CreateFile extends Base {
             // Get checksum
             $checksum = md5_file($_FILES['files']['tmp_name'][0]) . '.' . $file_type;
             
+            // Set information
             $element = new Element();
             $element->setName($file_name . '.' . $file_type);
             $element->setUrlFriendly($url_friendly);

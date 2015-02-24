@@ -129,14 +129,19 @@ class Routes {
         'StaticReturner' => array(
             '/search/courses.json',
         ),
-        'CreateFile' => array(
-            '/create/file',
-        ),
-        'CreateLink' => array(
-            '/create/link',
-        ),
         'LoadHistory' => array(
             '/history/get',
+        ),
+        
+        /*
+         * Creates
+         */
+        
+        'CreateFile' => array(
+            '/file/create',
+        ),
+        'CreateLink' => array(
+            '/link/create',
         ),
     );
     

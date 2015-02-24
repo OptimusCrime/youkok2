@@ -83,7 +83,7 @@ class ElementController implements BaseController {
         // Init array for the query
         $this->query = array('select' => array('a.name', 'a.parent', 'a.empty', 'a.checksum', 'a.is_directory', 
                 'a.url_friendly', 'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 
-                'a.added', 'a.location', 'a.size', 'a.url'), 
+                'a.added', 'a.size', 'a.url'), 
             'join' => array(), 
             'where' => array('WHERE a.id = :id'),
             'groupby' => array(),
@@ -192,7 +192,6 @@ class ElementController implements BaseController {
                     $this->model->setMissingImage($row['missing_image']);
                     $this->model->setAccepted($row['is_accepted']);
                     $this->model->setVisible($row['is_visible']);
-                    $this->model->setLocation($row['location']);
                     $this->model->setAdded($row['added']);
                     $this->model->setSize($row['size']);
                     $this->model->setUrl($row['url']);
@@ -575,7 +574,7 @@ class ElementController implements BaseController {
     private function cacheFormat() {
         $cache_temp = array();
         $fields = array('getId', 'getName', 'isDirectory', 'getUrlFriendly', 'getParent', 'isEmpty', 'getChecksum',
-            'getMimeType', 'getMissingImage', 'isAccepted', 'isVisible', 'getLocation', 'getAdded', 'getSize', 
+            'getMimeType', 'getMissingImage', 'isAccepted', 'isVisible', 'getAdded', 'getSize', 
             'getCourse', 'getUrl');
         
         // Loop each field
@@ -795,8 +794,8 @@ class ElementController implements BaseController {
      */
     
     public function save() {
-        $insert_element  = "INSERT INTO archive (name, url_friendly, owner, parent, empty, location, checksum, mime_type, missing_image, size, is_directory, is_accepted, is_visible, url, added) " . PHP_EOL;
-        $insert_element .= "VALUES (:name, :url_friendly, :owner, :parent, :empty, :location, :checksum, :mime_type, :missing_image, :size, :is_directory, :is_accepted, :is_visible, :url, NOW())";
+        $insert_element  = "INSERT INTO archive (name, url_friendly, owner, parent, empty, checksum, mime_type, missing_image, size, is_directory, is_accepted, is_visible, url, added) " . PHP_EOL;
+        $insert_element .= "VALUES (:name, :url_friendly, :owner, :parent, :empty, :checksum, :mime_type, :missing_image, :size, :is_directory, :is_accepted, :is_visible, :url, NOW())";
 
         $insert_element_query = Database::$db->prepare($insert_element);
         $insert_element_query->execute([':name' => $this->model->getName(),
@@ -804,7 +803,6 @@ class ElementController implements BaseController {
             ':owner' => $this->model->getOwner(),
             ':parent' => $this->model->getParent(),
             ':empty' => $this->model->isEmpty(),
-            ':location' => $this->model->getLocation(),
             ':checksum' => $this->model->getChecksum(),
             ':mime_type' => $this->model->getMimeType(),
             ':missing_image' => (int) $this->model->getMissingImage(),
@@ -827,14 +825,12 @@ class ElementController implements BaseController {
      */
     
     public function update() {
-        Database::$db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING );
         $update_element  = "UPDATE archive SET" . PHP_EOL;
         $update_element .= "name = :name," . PHP_EOL;
         $update_element .= "url_friendly = :url_friendly," . PHP_EOL;
         $update_element .= "owner = :owner," . PHP_EOL;
         $update_element .= "parent = :parent," . PHP_EOL;
         $update_element .= "empty = :empty," . PHP_EOL;
-        $update_element .= "location = :location," . PHP_EOL;
         $update_element .= "checksum = :checksum," . PHP_EOL;
         $update_element .= "mime_type = :mime_type," . PHP_EOL;
         $update_element .= "missing_image = :missing_image," . PHP_EOL;
@@ -852,7 +848,6 @@ class ElementController implements BaseController {
             ':owner' => $this->model->getOwner(),
             ':parent' => $this->model->getParent(),
             ':empty' => $this->model->isEmpty(),
-            ':location' => $this->model->getLocation(),
             ':checksum' => $this->model->getChecksum(),
             ':mime_type' => $this->model->getMimeType(),
             ':missing_image' => (int) $this->model->getMissingImage(),
@@ -866,15 +861,5 @@ class ElementController implements BaseController {
         
         // Cache
         $this->cache();
-    }
-    
-    public function getPhysicalLocation() {
-        // Get directories
-        $checksum = $this->model->getChecksum();
-        $folder1 = substr($checksum, 0, 1);
-        $folder2 = substr($checksum, 1, 1);
-        
-        // Return full path
-        return FILE_PATH . '/' . $folder1 . '/' . $folder2 . '/' . $this->model->getChecksum();
     }
 }

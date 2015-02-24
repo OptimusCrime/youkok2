@@ -33,7 +33,6 @@ class Element {
     private $parent;
     private $empty;
     private $checksum;
-    private $location;
     private $mimeType;
     private $missingImage;
     private $size;
@@ -53,12 +52,13 @@ class Element {
         /*
          * Set some default values
          */
-
+        
+        $this->name = '';
+        $this->urlFriendly = '';
         $this->owner = null;
         $this->parent = null;
         $this->empty = 1;
         $this->checksum = null;
-        $this->location = ''; // Backwards compability
         $this->mimeType = null;
         $this->missingImage = 0;
         $this->size = null;
@@ -92,9 +92,6 @@ class Element {
     }
     public function getChecksum() {
         return $this->checksum;
-    }
-    public function getLocation() {
-        return $this->location;
     }
     public function getMimeType() {
         return $this->mimeType;
@@ -151,9 +148,6 @@ class Element {
     }
     public function setChecksum($checksum) {
         $this->checksum = $checksum;
-    }
-    public function setLocation($location) {
-        $this->location = $location;
     }
     public function setMimeType($mime) {
         $this->mimeType = $mime;
