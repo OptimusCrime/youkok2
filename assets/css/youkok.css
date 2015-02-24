@@ -358,12 +358,11 @@ a:visited {
 }
 .sidebar-element-autoscroll ul {
     max-height: 300px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .list-group-hax {
     padding: 0px;
     border: 1px solid #dddddd;
-    border-right-width: 0px;
     border-radius: 4px 4px;
 }
 #archive-history .list-group-hax li {
