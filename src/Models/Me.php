@@ -316,7 +316,7 @@ class Me {
             $get_favorites .= "LEFT JOIN archive AS a ON a.id = f.file" . PHP_EOL;
             $get_favorites .= "WHERE f.user = :user" . PHP_EOL;
             $get_favorites .= "AND a.is_visible = 1" . PHP_EOL;
-            $get_favorites .= "ORDER BY f.ordering ASC";
+            $get_favorites .= "ORDER BY f.id ASC";
             
             $get_favorites_query = Database::$db->prepare($get_favorites);
             $get_favorites_query->execute(array(':user' => self::$id));
@@ -339,7 +339,6 @@ class Me {
             self::getFavorites();
         }
         
-        // Compare
         if (in_array($id, self::$favorites)) {
             return true;
         }
