@@ -1,3 +1,13 @@
+Youkok2 - 1.2.1-pl  (25. februar 2014)
+====================================== 
+
+- [Info] Minor og bugfixes
+- [New] Når man poster en link hentes automatisk tittelen til siden og foreslår denne som navn. Man står fremdeles
+        fritt til å velge en annen tittel.
+- [Fixed] Feil som gjorde at nedlastninger sluttet å fungere.
+- [Enhanced] Byggescript.
+- [Enhanced] Fjernet flere legacy ting i databasen.
+
 Youkok2 - 1.2.0-pl  (25. februar 2014)
 ====================================== 
 

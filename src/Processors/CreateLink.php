@@ -72,7 +72,7 @@ class CreateLink extends Base {
             if ($parent !== null) {
                 // Check if any files was sent
                 if (isset($_POST['url']) and filter_var($_POST['url'], FILTER_VALIDATE_URL)) {
-                    // This url is not valid (according to PHP...)
+                    // This url is a valid url (according to php)
                     $request_ok = true;
                 }
             }
@@ -80,6 +80,9 @@ class CreateLink extends Base {
         
         // Check if we are good to go            
         if ($request_ok) {
+            // Trim away
+            $_POST['url'] = rtrim(trim($_POST['url']));
+            
             // Check if we should use name instead or url as name
             if (isset($_POST['name']) and strlen($_POST['name']) > 4) {
                 $name = $_POST['name'];

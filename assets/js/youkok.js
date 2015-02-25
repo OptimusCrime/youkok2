@@ -960,6 +960,51 @@ $(document).ready(function () {
             $('#archive-create-link-name').val('');
         });
     });
+    var autocomplete_title_xhr = null;
+    $('#archive-create-link-url').on('keyup', function(e) {
+        var link_url = $(this).val();
+        if (check_url(link_url)) {
+            // Valid link, try to fetch title
+            $('#archive-create-link-form-submit').html('Vent litt').prop('disabled', true);
+            
+            // Abort previous request
+            if (autocomplete_title_xhr !== null) {
+                autocomplete_title_xhr.abort();
+            }
+            
+            // Send request
+            autocomplete_title_xhr = $.ajax({
+                cache: false,
+                type: 'post',
+                url: 'processor/link/title',
+                data: { 
+                    url: link_url,
+                },
+                success: function(json) {
+                    if (json.code == 200) {
+                        // Found a title, put in the box
+                        $('#archive-create-link-name').val(json.title);
+                    }
+                    
+                    // Display if hidden
+                    if ($('#archive-create-link-name-holder').is(':hidden')) {
+                        $('#archive-create-link-name-holder').slideDown(400, function () {
+                            // Turn off disabled
+                            $('#archive-create-link-form-submit').html('Post').prop('disabled', false);
+                        });
+                    }
+                    else {
+                        // Turn off disabled
+                        $('#archive-create-link-form-submit').html('Post').prop('disabled', false);
+                    }
+                }
+            });
+        }
+        else {
+            // Not valid url
+            $('#archive-create-link-form-submit').html('Ikke gyldig link').prop('disabled', true);
+        }
+    });
     var submitting_archive_create_link_form = false;
     $('#archive-create-link-form').on('submit', function () {
         var link_name = $('#archive-create-link-url').val();
