@@ -13,6 +13,7 @@ namespace Youkok2\Processors\Tasks;
  */
 
 use \Youkok2\Processors\Base as Base;
+use \Youkok2\Utilities\LineCounter as LineCounter;
 
 /*
  * Build extending Base
@@ -27,17 +28,23 @@ class Build extends Base {
     public function __construct($returnData = false) {
         parent::__construct($returnData);
         
+        // Check permissions
         if (self::requireCli() or self::requireAdmin()) {
+            // Build stuff
             $this->buildJS();
             $this->buildCSS();
+            
+            // Return data
+            $this->returnData();
+            
+            // Run LineCounter
+            $this->runLineCounter();
         }
         else {
             // No access
             $this->noAccess();
+            $this->returnData();
         }
-        
-        // Return data
-        $this->returnData();
     }
 
     /*
@@ -79,5 +86,43 @@ class Build extends Base {
         
         // Add message
         $this->setData('msg', 'Built CSS files');
+    }
+    
+    /*
+     * Run LineCounter and process the output
+     */
+    
+    private function runLineCounter() {
+        // New instance of LineCounter with our settings
+        $linecounter = new LineCounter(array(
+            // Ignoring directories
+            '!.git/',
+            '!.idea/',
+            '!_build/',
+            '!assets/',
+            '!cache/',
+            '!files',
+            '!migrations/',
+            '!processor/',
+            '!templates_c/',
+            '!tests/',
+            '!vendor/',
+            
+            // Ignoring files
+            '!.htaccess',
+            '!.gitignore',
+            '!composer.phar',
+            '!local.php',
+            '!composer.lock',
+            '!phinx-example.yml',
+            '!phinx.yml',
+            
+            // Adding some final files
+            'assets/js/youkok.js',
+            'assets/css/youkok.css',
+        ));
+
+        // Analyze
+        $linecounter->analyze();
     }
 } 
