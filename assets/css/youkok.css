@@ -808,7 +808,7 @@ a:visited {
  */
 
 @media all and (max-width: 990px) {
-    .archive-item-dropdown {
+    .archive-item-dropdown-arrow {
         display: block;
     }
 }
