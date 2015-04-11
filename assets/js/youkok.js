@@ -199,7 +199,31 @@ $(document).ready(function () {
     $('#nav-search,#nav-search2').on('click', function() {
         check_check_search($(this).parent().find('.tt-input').attr('id'));
     });
-
+    
+    //
+    // Archive context menu2
+    //
+    
+    $('.archive-item-dropdown').on('click', function () {
+        var $caret = $('i', this);
+        var $dropdown = $('.archive-dropdown-content', this);
+        
+        if ($dropdown.is(':visible')) {
+            $dropdown.slideUp(400, function () {
+                $caret.removeClass('fa-caret-up').addClass('fa-caret-down');
+            });
+        }
+        else {
+            $dropdown.slideDown(400, function () {
+                $caret.removeClass('fa-caret-down').addClass('fa-caret-up');
+            });
+        }
+    });
+    $('.archive-dropdown-close').on('click', function(e) {
+        e.preventDefault();
+        $(this).parent().parent().parent().parent().find('.archive-item-dropdown-arrow').trigger('click');
+    });
+    
     //
     // Archive context menu
     //

@@ -403,7 +403,7 @@ a:visited {
     padding-bottom: 3px;
     position: relative;
 }
-#archive-list li {
+#archive-list > li {
     height: 106px;
     width: 102px;
     display: inline-block;
@@ -411,14 +411,95 @@ a:visited {
     margin: 6px;
     border: 1px solid #fff;
     border-radius: 4px;
+    position: relative;
 }
-#archive-list li:hover {
-    border-color: #dddddd;
+#archive-list > li:hover {
+    border-color: #375a7f;
+}
+#archive-list > li:hover .archive-item-dropdown {
+    display: block;
+}
+#archive-list a {
+    text-decoration: none;
 }
 .archive-item {
     width: 100px;
     height: 100px;
     position: relative;
+}
+.archive-item a {
+    z-index: 1;
+}
+.archive-item-dropdown {
+    position: absolute;
+    right: -1px;
+    top: -1px;
+}
+.archive-item-dropdown-arrow {
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 4px;
+    z-index: 9000;
+    background-color: #375a7f;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    text-align: center;
+}
+.archive-item-dropdown i {
+    z-index: 10000;
+    position: relative;
+}
+.archive-dropdown-content {
+    left: -102px;
+    top: 0px;
+    position: absolute;
+    text-align: left;
+    width: 102px;
+    background-color: #375a7f;
+    border-radius: 4px;
+    height: 106px;
+    z-index: 8000;
+    display: none;
+}
+.archive-dropdown-content p {
+    color: #fff;
+    position: absolute;
+    top: 3px;
+    left: 5px;
+    font-size: 11.5px;
+    padding: 0px;
+    margin: 0px;
+    font-weight: bold;
+}
+.archive-dropdown-content ul {
+    padding: 0px;
+    padding-top: 20px;
+    padding-bottom: 5px;
+}
+.archive-dropdown-content li {
+    list-style: none;
+    font-size: 11.5px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.archive-dropdown-content li a {
+    color: #fff;
+    display: block;
+}
+.archive-dropdown-content li a:hover {
+    text-decoration: none;
+}
+.archive-dropdown-content li.sep {
+    margin-top: 3px;
+    height: 1px;
+    background-color: #28415b;
+    margin-bottom: 3px;
+}
+.archive-dropdown-content li:hover {
+    background-color: #28415b;
 }
 .archive-item-icon {
     height: 70px;
@@ -437,7 +518,7 @@ a:visited {
 }
 .archive-item-label h4 {
     font-size: 11.5px;
-    color: #3498db;
+    color: #375a7f;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -463,17 +544,6 @@ a:visited {
 .archive-badge-right {
     right: 16px;
     left: auto;
-}
-.archive-overlay {
-    background-image: urL('gfx/archive-overlay.png');
-    background-position: top left;
-    background-repeat: repeat;
-    width: 100px;
-    height: 100px;
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    z-index: 200;
 }
 .archive-sidebar {
     background-color: #ededed;
@@ -611,17 +681,6 @@ a:visited {
 }
 
 /*
- * Nesten dropdowns
-*/
-
-.dropdown-submenu{position:relative;}
-.dropdown-submenu>.dropdown-menu{top:0;left:100%;margin-top:-6px;margin-left:-1px;-webkit-border-radius:0 6px 6px 6px;-moz-border-radius:0 6px 6px 6px;border-radius:0 6px 6px 6px;}
-.dropdown-submenu:hover>.dropdown-menu{display:block;}
-.dropdown-submenu>a:after{display:block;content:" ";float:right;width:0;height:0;border-color:transparent;border-style:solid;border-width:5px 0 5px 5px;border-left-color:#cccccc;margin-top:5px;margin-right:-10px;}
-.dropdown-submenu:hover>a:after{border-left-color:#ffffff;}
-.dropdown-submenu.pull-left{float:none;}.dropdown-submenu.pull-left>.dropdown-menu{left:-100%;margin-left:10px;-webkit-border-radius:6px 0 6px 6px;-moz-border-radius:6px 0 6px 6px;border-radius:6px 0 6px 6px;}
-
-/*
  * Fileupload
 */
 
@@ -740,6 +799,16 @@ a:visited {
 @media all and (max-width: 1199px) {
     .navbar-form {
         width: 300px;
+    }
+}
+
+/*
+ * Responsive stuff
+ */
+
+@media all and (max-width: 990px) {
+    .archive-item-dropdown {
+        display: block;
     }
 }
 

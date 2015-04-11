@@ -343,9 +343,9 @@ class Archive extends Base {
             }
             
             // Overlay
-            $div_overlay = '';
+            $overlay = '';
             if (!$child->isAccepted()) {
-                $div_overlay = '<div class="archive-overlay"></div>';
+                $overlay = ' class="archive-item-pending"';
             }
             
             // Collect data
@@ -355,12 +355,27 @@ class Archive extends Base {
             $data[] = 'data-flags="' . $child->controller->getFlagCount() . '"';
             $data[] = 'data-favorite="' . (int) Me::isFavorite($child->getId()) . '"';
             
+            $dropdown  = '';
+            $dropdown .= '<ul>';
+            $dropdown .= '    <li><a href="#">Info</a></li>';
+            $dropdown .= '    <li class="sep"></li>';
+            $dropdown .= '    <li><a href="#">Flagg</a></li>';
+            $dropdown .= '    <li><a href="#">Rapporter</a></li>';
+            $dropdown .= '    <li class="sep"></li>';
+            $dropdown .= '    <li><a href="#" class="archive-dropdown-close">Lukk</a></li>';
+            $dropdown .= '</ul>';
+            
             // Build the markup
-            $ret .= '<li>';
+            $ret .= '<li' . $overlay . '>';
+            $ret .= '    <div class="archive-item-dropdown">';
+            $ret .= '        <div class="archive-item-dropdown-arrow">';
+            $ret .= '            <i class="fa fa-caret-down"></i>';
+            $ret .= '       </div>';
+            $ret .= '       <div class="archive-dropdown-content"><p>Valg</p>' . $dropdown . '</div>';
+            $ret .= '    </div>';
             $ret .= '    <a title="' . $title . '"' . $url_target . ' href="' . $url . '">';
             $ret .= '        <div class="archive-item" ' . implode(' ', $data) . '>';
             $ret .= '            ' . $div_flag;
-            $ret .= '            ' . $div_overlay;
             $ret .= '            <div class="archive-badge archive-badge-right hidden"><i class="fa fa-comments-o"></i></div>';
             $ret .= '            <div class="archive-item-icon" style="background-image: url(\'assets/images/icons/' . $image . '\');"></div>';
             $ret .= '            <div class="archive-item-label"><h4>' . $child->getName() . '</h4></div>';
