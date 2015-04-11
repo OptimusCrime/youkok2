@@ -8,7 +8,6 @@
                 <a href="changelog.txt"><span class="first">Youkok2 v[[+$VERSION]]</span></a>::
                 <span><a href="om">Om Youkok2</a></span>::
                 <span><a href="retningslinjer">Retningslinjer</a></span>::
-                <span><a href="privacy">Privacy og så videre</a></span>::
                 <span><a href="hjelp">Hjelp</a></span>::
                 <span><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>::
                 <span class="last">[[+nocache]][[+$TIMER]][[+/nocache]]</span>

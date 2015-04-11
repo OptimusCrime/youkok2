@@ -14,10 +14,13 @@
                 <div class="col-xs-12 col-sm-9" id="frontpage-info">
                     <p>Vi har for tiden <b>[[+$HOME_STATS_USERS]]</b> registrerte brukere, <b>[[+$HOME_STATS_FILES]]</b> 
                     filer og totalt <b>[[+$HOME_STATS_DOWNLOADS]]</b> nedlastninger i vårt system.</p>
-                    <p>Nettsiden er helt åpen og krever ikke at du registrerer deg for å kunne bruke den.</p>
-                    <p>Om du velger å registrere deg får mulighet til å lagre favoritter, se sine siste nedlastninger, 
-                    samt muligheten til å laste opp filer og å bidra til å gjøre Youkok2 enda bedre. Du kan lese mer om 
-                    dette i <a href="om">om-seksjonen</a> vår.</p><p>La oss gjøre studiehverdagen enklere, sammen!</p>
+                    <p><em>Nettsiden er helt åpen og krever ikke at du registrerer deg for å kunne bruke den.</em></p>
+                    <p>Som anonym bruker får du mulighet til å laste opp filer og poste nyttige linker, men disse må
+                    godkjennes manuelt av en administrator. Alle bidrag er velkomne, så lenge de ikke strider mot
+                    våre <a href="retningslinjer">retningslinjer</a>.</p>
+                    <p>Om du velger å registrere deg får mulighet til å laste opp filer, poste linker og opprette mapper
+                    uten at dette må forhåndsgodkjennes. Du får også muligheten til å lagre favoritter og får en 
+                    oversikt over dine siste nedlastninger på forsiden.</p>
                     <p>- Youkok2</p>
                 </div>
                 <div class="col-xs-12 col-sm-3">

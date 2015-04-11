@@ -5,7 +5,6 @@
         [[+if $BASE_QUERY != 'retningslinjer']]<li class="list-group-item"><a href="retningslinjer">Retningslinjer</a></li>[[+/if]]
         [[+if $BASE_QUERY != 'karma']]<li class="list-group-item"><a href="karma">Karma</a></li>[[+/if]]
         [[+if $BASE_QUERY != 'hjelp']]<li class="list-group-item"><a href="hjelp">Hjelp</a></li>[[+/if]]
-        [[+if $BASE_QUERY != 'privacy']]<li class="list-group-item"><a href="hjelp">Privacy</a></li>[[+/if]]
         <li class="list-group-item"><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></li>
     </ul>
 </div>

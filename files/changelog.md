@@ -1,3 +1,14 @@
+Youkok2 - 1.2.2-pl  (11. april 2014)
+==================================== 
+
+- [Info] Minor, tekst og meny
+- [Removed] Privacy-siden er fjernet da den egentlig ikke ga noen mening.
+- [Enhanced] Mange av tekstene er skrevet om.
+- [Enhanced] Flere bibliotek som siden benytter seg av manglet under Om. Disse er nå lagt til.
+- [Enhanced] Fjernet opacity over element-ikonene i kokeboka.
+- [New] Reintrodusert menyen for hvert enkelt element i kokeboka. Menyen gjør ikke så mye i dag, men mye av funksjonaliteten
+        som ble fjernet ved overgangen til 1.0.0 vil legges til her igjen.
+
 Youkok2 - 1.2.1-pl  (25. februar 2014)
 ====================================== 
 

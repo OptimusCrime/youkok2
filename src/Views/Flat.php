@@ -51,17 +51,6 @@ class Flat extends Base {
             // Display the page
             $this->displayAndCleanup('flat_retningslinjer.tpl');
         }
-        elseif ($this->queryGet(0) == 'privacy') {
-            // Turn on caching
-            $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
-            
-            // Assign header and title
-            $this->template->assign('HEADER_MENU', null);
-            $this->template->assign('SITE_TITLE', 'Privacy');
-            
-            // Display the page
-            $this->displayAndCleanup('flat_privacy.tpl');
-        }
         elseif ($this->queryGet(0) == 'hjelp') {
             // Turn on caching
             $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);

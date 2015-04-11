@@ -43,7 +43,6 @@ class Routes {
         'Flat' => array(
             '/om',
             '/retningslinjer',
-            '/privacy',
             '/hjelp',
             '/karma',
             '/changelog.txt',
