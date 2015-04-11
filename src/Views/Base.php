@@ -83,13 +83,12 @@ class Base extends Youkok2 {
         $this->template->assign('DEV', DEV);
         $this->template->assign('SITE_URL', URL);
         $this->template->assign('SITE_TITLE', 'Den beste kokeboka på nettet');
-        $this->template->assign('SITE_USE_GA', USE_GA);
         $this->template->assign('SITE_URL_FULL', URL_FULL);
         $this->template->assign('SITE_RELATIVE', URL_RELATIVE);
         $this->template->assign('SITE_EMAIL_CONTACT', EMAIL_CONTACT);
         $this->template->assign('SEARCH_QUERY', '');
         $this->template->assign('HEADER_MENU', 'HOME');
-        
+                
         // Set some site data
         $this->addSiteData('search_base', URL_FULL . substr(Routes::getRoutes()['Archive'][0], 1) . '/');
         
@@ -115,6 +114,19 @@ class Base extends Youkok2 {
             
             // Assign query
             $this->template->assign('BASE_QUERY', Loader::getQuery());
+            
+            // Google Analytics
+            if (USE_GA) {
+                if (Me::isAdmin()) {
+                    $this->template->assign('SITE_USE_GA', false);
+                }
+                else {
+                    $this->template->assign('SITE_USE_GA', true);
+                }
+            }
+            else {
+                $this->template->assign('SITE_USE_GA', false);
+            }
         }
         
         // Init site data array
