@@ -357,11 +357,11 @@ class Archive extends Base {
             
             $dropdown  = '';
             $dropdown .= '<ul>';
-            $dropdown .= '    <li><a href="#">Info</a></li>';
-            $dropdown .= '    <li class="sep"></li>';
-            $dropdown .= '    <li><a href="#">Flagg</a></li>';
-            $dropdown .= '    <li><a href="#">Rapporter</a></li>';
-            $dropdown .= '    <li class="sep"></li>';
+            //$dropdown .= '    <li><a href="#">Info</a></li>';
+            //$dropdown .= '    <li class="sep"></li>';
+            //$dropdown .= '    <li><a href="#">Flagg</a></li>';
+            //$dropdown .= '    <li><a href="#">Rapporter</a></li>';
+            //$dropdown .= '    <li class="sep"></li>';
             $dropdown .= '    <li><a href="#" class="archive-dropdown-close">Lukk</a></li>';
             $dropdown .= '</ul>';
             

@@ -416,7 +416,7 @@ a:visited {
 #archive-list > li:hover {
     border-color: #375a7f;
 }
-#archive-list > li:hover .archive-item-dropdown {
+#archive-list > li:hover .archive-item-dropdown-arrow {
     display: block;
 }
 #archive-list a {
@@ -447,6 +447,7 @@ a:visited {
     right: 0px;
     top: 0px;
     text-align: center;
+    display: none;
 }
 .archive-item-dropdown i {
     z-index: 10000;
