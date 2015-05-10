@@ -758,6 +758,9 @@ a:visited {
     top: 13px;
     cursor: pointer;
 }
+.alert.no-close .alert-close {
+    display: none;
+}
 
 /*
  * Misc

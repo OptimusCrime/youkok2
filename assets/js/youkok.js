@@ -1111,17 +1111,24 @@ $(document).ready(function () {
     // Alerts
     //
 
-    $('#main_messages').on('click', '.alert-close', function () {
+    $('#main').on('click', '.alert-close', function () {
         // Remove
-        $(this).parent().fadeOut(400, function () {
-        $(this).remove();
+        $(this).parent().slideUp(400, function () {
+            $(this).remove();
         });
     });
     if ($('.alert').length > 0) {
-        setTimeout(function () {
-            // Close all messages
-            $('.alert-close').trigger('click');
-        }, 10000);
+        // Loop each alert
+        $('.alert').each(function () {
+            // Check if it can be auto closed
+            if (!$(this).hasClass('no-close-auto')) {
+                setTimeout(function (target) {
+                    console.log(target);
+                    // Close all messages
+                    $(target).find('.alert-close').trigger('click');
+                }, 10000, $(this));
+            }
+        });
     };
 
     //

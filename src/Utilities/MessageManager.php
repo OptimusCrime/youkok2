@@ -18,12 +18,45 @@ class MessageManager {
      * Adds a message to the queue
      */
     
-    public static function addMessage($msg, $type = 'danger') {
+    public static function addMessage($msg, $type = 'danger', $prioritise = false) {
         if (!isset($_SESSION['youkok2_message'])) {
-            $_SESSION['youkok2_message'] = array();
+            $_SESSION['youkok2_message'] = [];
         }
         
-        $_SESSION['youkok2_message'][] = array('text' => $msg, 'type' => $type);
+        $append = true;
+        
+        // Handle priorities
+        if (count($_SESSION['youkok2_message']) > 0 and $prioritise) {
+            // Don't append
+            $append = false;
+            
+            // Variables
+            $added = false;
+            $message_array = [];
+            
+            // Find out at what index to add the message
+            foreach ($_SESSION['youkok2_message'] as $message) {
+                // Check if we should store for later or do our insertion now
+                if (!$message['prioritise'] and !$added) {
+                    $message_array[] = array('text' => $msg, 'type' => $type, 'prioritise' => $prioritise);
+                    
+                    // Set added to true
+                    $added = true;
+                }
+                
+                // Add the current element
+                $message_array[] = $message;
+            }
+            
+            // Switch arrays
+            $_SESSION['youkok2_message'] = $message_array;
+        }
+        
+        // Check if we should just append the message
+        if ($append) {
+            // Append the message at the end of the message array
+            $_SESSION['youkok2_message'][] = array('text' => $msg, 'type' => $type, 'prioritise' => $prioritise);
+        }
     }
     
     /*

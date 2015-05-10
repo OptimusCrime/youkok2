@@ -15,6 +15,7 @@ namespace Youkok2\Views;
 use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Me as Me;
+use \Youkok2\Models\Message as Message;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Loader as Loader;
@@ -273,6 +274,16 @@ class Base extends Youkok2 {
      */
 
     protected function displayAndCleanup($template, $sid = null) {
+        // Get messages
+        $messages = Message::getMessages(Loader::getQuery());
+        
+        // Check (and handle) message
+        if (count($messages) > 0) {
+            foreach ($messages as $message) {
+                MessageManager::addMessage($message->getMessage(), $message->getType(), true);
+            }
+        }
+        
         // If develop, assign dev variables
         if (DEV) {
             $this->template->assign('DEV_QUERIES_NUM', Database::getCount());
@@ -393,7 +404,9 @@ class Base extends Youkok2 {
                 
                 for ($i = 1; $i <= $lim; $i++) {
                     $trace_temp = $arr[$i];
-                    $tooltip .= ($i + 1) . '. ' . $trace_temp['file'] . ' @ line ' . $trace_temp['line'] . "&#xA;";
+                    if (isset($trace_temp['file'])) {
+                        $tooltip .= ($i + 1) . '. ' . $trace_temp['file'] . ' @ line ' . $trace_temp['line'] . "&#xA;";
+                    }
                 }
                 return '<p style="cursor: help;" title="' . $tooltip . '">' . $trace['file'] . ' @ line ' . $trace['line'] . ':</p>';
             }
