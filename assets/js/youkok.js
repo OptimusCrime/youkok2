@@ -602,9 +602,15 @@ $(document).ready(function () {
                         }
                         else if (json.code == 400) {
                             display_message([{'text': 'Et element med dette navnet finnes fra før!', 'type': 'danger'}]);
+                            $('#archive-create-folder-form-submit').html('Lagre').prop('disabled', false);
+                        }
+                        else if (json.code == 401) {
+                            display_message([{'text': 'Navnet på elementet er fort kort. Minst 4 tegn.', 'type': 'danger'}]);
+                            $('#archive-create-folder-form-submit').html('Lagre').prop('disabled', false);
                         }
                         else {
                             display_message([{'text': 'Noe gikk visst galt her!', 'type': 'danger'}]);
+                            $('#archive-create-folder-form-submit').html('Lagre').prop('disabled', false);
                         }
                     }
                 });
@@ -1067,7 +1073,7 @@ $(document).ready(function () {
                                 $('#archive-create-link-form-submit').html('Lagre').prop('disabled', false);
                             }
                             else if (json.code == 401) {
-                                display_message([{'text': 'Navnet på linken er for kort. Minst 4 bokstaver. La feltet så tomt hvis du ønsker å bruke URLen.', 'type': 'danger'}]);
+                                display_message([{'text': 'Navnet på linken er for kort. Minst 4 tegn. La feltet så tomt hvis du ønsker å bruke URLen.', 'type': 'danger'}]);
                                 $('#archive-create-link-form-submit').html('Lagre').prop('disabled', false);
                             }
                             else {

@@ -71,7 +71,7 @@ class CreateFolder extends Base {
             // Check if valid Element
             if ($parent !== null) {
                 // Check if name was sent
-                if (isset($_POST['name']) and strlen($_POST['name']) > 4) {
+                if (isset($_POST['name']) and strlen($_POST['name']) >= 4) {
                     $request_ok = true;
                 }
             }
@@ -145,7 +145,13 @@ class CreateFolder extends Base {
             $this->setData('code', 200);
         }
         else {
-            $this->setData('code', 500);
+            // Check what kind of error we encountered
+            if (isset($_POST['name']) and strlen($_POST['name']) < 4) {
+                $this->setData('code', 401);
+            }
+            else {
+                $this->setData('code', 500);
+            }
         }
     }
 }
