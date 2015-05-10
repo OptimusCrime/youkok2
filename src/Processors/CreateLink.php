@@ -80,68 +80,84 @@ class CreateLink extends Base {
         
         // Check if we are good to go            
         if ($request_ok) {
+            // For checking if we can post
+            $can_post = true;
+            
             // Trim away
             $_POST['url'] = rtrim(trim($_POST['url']));
             
             // Check if we should use name instead or url as name
-            if (isset($_POST['name']) and strlen($_POST['name']) > 4) {
-                $name = $_POST['name'];
+            if (isset($_POST['name'])) {
+                // Validate the name
+                if (strlen($_POST['name']) >= 4) {
+                    $name = $_POST['name'];
+                }
+                else {
+                    $can_post = false;
+                }
             }
             else {
                 $name = $_POST['url'];
             }
             
-            // Set information
-            $element = new Element();
-            $element->setName($name);
-            $element->setParent($parent->getId());
-            $element->setUrl($_POST['url']);
-            
-            // Check if we should auto hide the element
-            if (!Me::isLoggedIn()) {
-                $element->setVisible(false);
+            // Check if we can post
+            if ($can_post) {
+                // Set information
+                $element = new Element();
+                $element->setName($name);
+                $element->setParent($parent->getId());
+                $element->setUrl($_POST['url']);
+                
+                // Check if we should auto hide the element
+                if (!Me::isLoggedIn()) {
+                    $element->setVisible(false);
+                }
+                else {
+                    // User is logged in, set owner
+                    $element->setOwner(Me::getId());
+                }
+                
+                // Save element
+                $element->save();
+                
+                // Check if parent was sat to empty and if we should update that
+                if (Me::isLoggedIn() and $parent->isEmpty()) {
+                    $parent->setEmpty(false);
+                    $parent->update();
+                    
+                    // Clear cache on parent
+                    $parent->controller->deleteCache();
+                }
+                
+                // Add message
+                MessageManager::addFileMessage($name);
+                
+                // Check if logged in
+                if (Me::isLoggedIn()) {
+                    // Add history element
+                    $history = new History();
+                    $history->setUser(Me::getId());
+                    $history->setFile($element->getId());
+                    $history->save();
+                    
+                    // Add karma
+                    $karma = new Karma();
+                    $karma->setUser(Me::getId());
+                    $karma->setFile($element->getId());
+                    $karma->save();
+                    
+                    // Add karma to user
+                    Me::increaseKarmaPending(5);
+                    Me::update();
+                }
+                
+                // Send successful code
+                $this->setData('code', 200);
             }
             else {
-                // User is logged in, set owner
-                $element->setOwner(Me::getId());
+                // Name is too short
+                $this->setData('code', 401);
             }
-            
-            // Save element
-            $element->save();
-            
-            // Check if parent was sat to empty and if we should update that
-            if (Me::isLoggedIn() and $parent->isEmpty()) {
-                $parent->setEmpty(false);
-                $parent->update();
-                
-                // Clear cache on parent
-                $parent->controller->deleteCache();
-            }
-            
-            // Add message
-            MessageManager::addFileMessage($name);
-            
-            // Check if logged in
-            if (Me::isLoggedIn()) {
-                // Add history element
-                $history = new History();
-                $history->setUser(Me::getId());
-                $history->setFile($element->getId());
-                $history->save();
-                
-                // Add karma
-                $karma = new Karma();
-                $karma->setUser(Me::getId());
-                $karma->setFile($element->getId());
-                $karma->save();
-                
-                // Add karma to user
-                Me::increaseKarmaPending(5);
-                Me::update();
-            }
-            
-            // Send successful code
-            $this->setData('code', 200);
         }
         else {
             $this->setData('code', 500);

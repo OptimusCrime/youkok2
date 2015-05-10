@@ -1066,6 +1066,10 @@ $(document).ready(function () {
                                 display_message([{'text': 'Et element med denne URLen finnes fra før!', 'type': 'danger'}]);
                                 $('#archive-create-link-form-submit').html('Lagre').prop('disabled', false);
                             }
+                            else if (json.code == 401) {
+                                display_message([{'text': 'Navnet på linken er for kort. Minst 4 bokstaver. La feltet så tomt hvis du ønsker å bruke URLen.', 'type': 'danger'}]);
+                                $('#archive-create-link-form-submit').html('Lagre').prop('disabled', false);
+                            }
                             else {
                                 display_message([{'text': 'Noe gikk visst galt her!', 'type': 'danger'}]);
                                 $('#archive-create-link-form-submit').html('Lagre').prop('disabled', false);
