@@ -1,5 +1,6 @@
 [[+include file="archive_sidebar_upload.tpl"]]
 
+[[+nocache]]
 [[+if isset($ARCHIVE_EXAM)]]
     <div id="archive-exam" class="sidebar-element">
         <h3>Eksamen</h3>
@@ -11,6 +12,7 @@
         </div>
     </div>
 [[+/if]]
+[[+/nocache]]
 
 <div id="archive-help" class="sidebar-element">
     <h3>Hjelp</h3>
