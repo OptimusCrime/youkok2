@@ -36,7 +36,7 @@
             </div>
             <div id="admin-graph1-display"></div>
         </div>
-        <h2>Nedlastninger acc</h2>
+        <h2>Nedlastninger akkumulert</h2>
         <div class="admin-graph" id="admin-graph-acc">
             <div class="admin-graph-hidden">
                 [[+$ADMIN_GRAPH_DATA_ACC]]

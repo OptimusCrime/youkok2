@@ -135,8 +135,12 @@ class Admin extends Base {
          */
         
         // Courses
-        $get_course_number  = "SELECT COUNT(id) AS 'num_couses'" . PHP_EOL;
-        $get_course_number .= "FROM course";
+        $get_dirs_number  = "SELECT COUNT(id) AS 'num_courses'" . PHP_EOL;
+        $get_dirs_number .= "FROM archive" . PHP_EOL;
+        $get_dirs_number .= "WHERE is_directory = 1" . PHP_EOL;
+        $get_dirs_number .= "AND url IS NULL" . PHP_EOL;
+        $get_dirs_number .= "AND parent IS NULL" . PHP_EOL;
+        $get_dirs_number .= "AND is_visible = 1";
         
         $get_course_number_query = Database::$db->query($get_course_number);
         $get_course_number_result = $get_course_number_query->fetch(\PDO::FETCH_ASSOC);
@@ -166,13 +170,14 @@ class Admin extends Base {
         $get_dirs_number .= "FROM archive" . PHP_EOL;
         $get_dirs_number .= "WHERE is_directory = 1" . PHP_EOL;
         $get_dirs_number .= "AND url IS NULL" . PHP_EOL;
+        $get_dirs_number .= "AND parent IS NOT NULL" . PHP_EOL;
         $get_dirs_number .= "AND is_visible = 1";
         
         $get_dirs_number_query = Database::$db->query($get_dirs_number);
         $get_dirs_number_result = $get_dirs_number_query->fetch(\PDO::FETCH_ASSOC);
         
         // Assign
-        $this->template->assign('ADMIN_NUM_COURSES', number_format($get_course_number_result['num_couses']));
+        $this->template->assign('ADMIN_NUM_COURSES', number_format($get_course_number_result['num_courses']));
         $this->template->assign('ADMIN_NUM_FILES', number_format($get_files_number_result['num_files']));
         $this->template->assign('ADMIN_NUM_LINKS', number_format($get_links_number_result['num_links']));
         $this->template->assign('ADMIN_NUM_DIRS', number_format($get_dirs_number_result['num_dirs']));
