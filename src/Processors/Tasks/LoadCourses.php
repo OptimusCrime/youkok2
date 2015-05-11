@@ -109,7 +109,7 @@ class LoadCourses extends Base {
                         if (strlen($exam_data['date']) > 0) {
                             // Parse date to timestamp
                             $exam_date_split = explode('-', $exam_data['date']);
-                            $date_timestamp = mktime(0, 0, 0, $exam_date_split[1], $exam_date_split[2], $exam_date_split[0]);
+                            $date_timestamp = mktime(9, 0, 0, $exam_date_split[1], $exam_date_split[2], $exam_date_split[0]);
                             
                             // Check if date is in the future or not
                             if ($date_timestamp > time()) {
@@ -126,7 +126,8 @@ class LoadCourses extends Base {
                 $result[] = ['code' => $v['courseCode'],
                     'name' => $v['courseName'],
                     'url_friendly' => Utilities::urlSafe($v['courseCode']),
-                    'exam' => $exam];
+                    'exam' => $exam,
+                    'url' => $v['courseUrl']];
                 
                 // Inc fetched
                 $fetched++;
@@ -137,9 +138,43 @@ class LoadCourses extends Base {
                 // Clean
                 $insert_name = $v['code'] . '||' . $v['name'];
                 
-                if ($v['exam'] !== null) {
-                    $v['exam'] = date('Y-m-d', $v['exam']) . ' 09:00:00';
-                }
+                // Check if any exam date was found
+               /* if ($v['exam'] !== null) {
+                    // Try to fetch the actual date with time
+                    $course_site = file_get_contents($v['url']);
+                    
+                    // Try to split the contnet
+                    $course_site_split = explode(date('d.m.Y', $v['exam']), $course_site);
+                    
+                    // Check if anything was returned
+                    if (count($course_site_split) > 1) {
+                        $course_time_offset = substr($course_site_split[1], 0, 40);
+                        $course_time_split = explode('td', $course_time_offset);
+                        
+                        // Clean each part of the split and find the time
+                        foreach ($course_time_split as $s) {
+                            $s_temp = str_replace(array('<', '>', '/'), '', preg_replace('/\s+/', '', $s));
+                            
+                            // Check if the remaining time has a length of 5 (HH:MM)
+                            if (strlen($s_temp) == 5) {
+                                // Split the time:min
+                                $exam_time = explode(':', $s_temp);
+                                
+                                // Parse to timestamp
+                                $v['exam'] = mktime($exam_time[0], $exam_time[1], 0, date('n', $v['exam']),
+                                                         date('j', $v['exam']), date('Y', $v['exam']));
+                                
+                                // Break out of the loop
+                                break;
+                            }
+                        }
+                        
+                    }
+                    else {
+                        // Reset exam date
+                        $v['exam'] = null;
+                    }
+                }*/
                 
                 // Check if course is in database
                 $check_current_course  = "SELECT id" . PHP_EOL;
