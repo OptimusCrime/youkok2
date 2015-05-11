@@ -43,24 +43,9 @@ $(document).ready(function () {
         
         // Clear
         $('#modal-admin-script .modal-body').html('');
-        
-        // Variables
-        var script = 'check_files_404.php';
-        var script_data = $(this).data('script');
-        
-        // Get the correct script
-        if (script_data == 'cleaccache') {
-            script = 'clear_cache.php';
-        }
-        else if (script_data == 'loadcourses') {
-            script = 'load_courses_ntnu.php';
-        }
-        else if (script_data == 'updateimages') {
-            script = 'update_file_image.php';
-        }
-        
+                
         // Show modal
-        $('#modal-admin-script .modal-body').html('<iframe id="modal-admin-iframe" src="' + $('#search-base').val() + '../scripts/' + script + '"></iframe>');
+        $('#modal-admin-script .modal-body').html('<iframe id="modal-admin-iframe" src="' + site_data.search_base + '../' + $(this).data('endpoint') + '"></iframe>');
         $('#modal-admin-script .modal-title').html($(this).text());
         $('#modal-admin-script').modal('show');
     });

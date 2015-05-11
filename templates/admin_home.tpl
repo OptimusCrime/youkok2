@@ -24,10 +24,10 @@
         <p>De <strong>[[+$ADMIN_FILES]]</strong> filene utgjør totalt <strong>[[+$ADMIN_SIZE]]</strong>. De totalt <strong>[[+$ADMIN_DOWNLOADS]]</strong> nedlastningene utgjør <strong>[[+$ADMIN_BANDWIDTH]]</strong> bandwidth forbruk.</p>
         <h2>Scripts</h2>
         <ul id="admin-scripts">
-            <li><a href="#" data-script="cleaccache">Clear cache</a></li>
-            <li><a href="#" data-script="checkfiles">Check files 404</a></li>
-            <li><a href="#" data-script="loadcourses">Load courses</a></li>
-            <li><a href="#" data-script="updateimages">Update images</a></li>
+            <li><a href="#" data-endpoint="processor/tasks/clearcache">Clear cache</a></li>
+            <li><a href="#" data-endpoint="processor/tasks/check404">Check 404</a></li>
+            <li><a href="#" data-endpoint="processor/tasks/courses">Load courses</a></li>
+            <li><a href="#" data-endpoint="processor/tasks/coursesjson">Force update courses.json</a></li>
         </ul>
         <h2>Nedlastninger</h2>
         <div class="admin-graph" id="admin-graph">

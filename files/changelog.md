@@ -1,5 +1,13 @@
+Youkok2 - 1.3.0-pl  (11. mai 2014)
+====================================
+
+- [Info] Bugfixes, meldinger og nedtelling
+- [Enhanced] Backend stuff.
+- [New] Statiske medlinger.
+- [New] Nedtelling til eksamen!
+
 Youkok2 - 1.2.2-pl  (11. april 2014)
-==================================== 
+====================================
 
 - [Info] Minor, tekst og meny
 - [Removed] Privacy-siden er fjernet da den egentlig ikke ga noen mening.
