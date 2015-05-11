@@ -176,6 +176,8 @@ class LoadCourses extends Base {
                     }
                 }*/
                 
+                $v['exam'] = date('Y-m-d H:i:s', $v['exam']);
+                
                 // Check if course is in database
                 $check_current_course  = "SELECT id" . PHP_EOL;
                 $check_current_course .= "FROM archive" . PHP_EOL;
