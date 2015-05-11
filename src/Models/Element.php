@@ -39,6 +39,7 @@ class Element {
     private $directory;
     private $accepted;
     private $visible;
+    private $exam;
     private $url;
     private $added;
     
@@ -65,6 +66,7 @@ class Element {
         $this->directory = false;
         $this->accepted = false;
         $this->visible = true;
+        $this->exam = null;
         $this->url = null;
     }
     
@@ -117,6 +119,9 @@ class Element {
     public function isVisible() {
         return (bool) $this->visible;
     }
+    public function getExam() {
+        return $this->exam;
+    }
     public function getUrl() {
         return $this->url;
     }
@@ -166,6 +171,9 @@ class Element {
     }
     public function setVisible($visible) {
         $this->visible = (bool) $visible;
+    }
+    public function setExam($exam) {
+        $this->exam = $exam;
     }
     public function setUrl($url) {
         $this->url = $url;

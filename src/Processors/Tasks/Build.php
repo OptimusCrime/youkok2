@@ -59,6 +59,7 @@ class Build extends Base {
         $minifier->add(BASE_PATH . '/assets/js/libs/typeahead.bundle.min.js');
         $minifier->add(BASE_PATH . '/assets/js/libs/jquery.fileupload.js');
         $minifier->add(BASE_PATH . '/assets/js/libs/jquery.ba-outside-events.min.js');
+        $minifier->add(BASE_PATH . '/assets/js/libs/jquery.countdown.min.js');
         $minifier->add(BASE_PATH . '/assets/js/youkok.js');
         $minifier->add(BASE_PATH . '/assets/js/youkok.admin.js');
         

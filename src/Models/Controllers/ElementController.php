@@ -83,7 +83,7 @@ class ElementController implements BaseController {
         // Init array for the query
         $this->query = array('select' => array('a.name', 'a.parent', 'a.empty', 'a.checksum', 'a.is_directory', 
                 'a.url_friendly', 'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 
-                'a.added', 'a.size', 'a.url'), 
+                'a.added', 'a.size', 'a.exam', 'a.url'), 
             'join' => array(), 
             'where' => array('WHERE a.id = :id'),
             'groupby' => array(),
@@ -194,6 +194,7 @@ class ElementController implements BaseController {
                     $this->model->setVisible($row['is_visible']);
                     $this->model->setAdded($row['added']);
                     $this->model->setSize($row['size']);
+                    $this->model->setExam($row['exam']);
                     $this->model->setUrl($row['url']);
 
                     // Check if we should cache this Item
@@ -575,7 +576,7 @@ class ElementController implements BaseController {
         $cache_temp = array();
         $fields = array('getId', 'getName', 'isDirectory', 'getUrlFriendly', 'getParent', 'isEmpty', 'getChecksum',
             'getMimeType', 'getMissingImage', 'isAccepted', 'isVisible', 'getAdded', 'getSize', 
-            'getCourse', 'getUrl');
+            'getCourse', 'getExam', 'getUrl');
         
         // Loop each field
         foreach ($fields as $v) {
@@ -804,8 +805,8 @@ class ElementController implements BaseController {
      */
     
     public function save() {
-        $insert_element  = "INSERT INTO archive (name, url_friendly, owner, parent, empty, checksum, mime_type, missing_image, size, is_directory, is_accepted, is_visible, url, added) " . PHP_EOL;
-        $insert_element .= "VALUES (:name, :url_friendly, :owner, :parent, :empty, :checksum, :mime_type, :missing_image, :size, :is_directory, :is_accepted, :is_visible, :url, NOW())";
+        $insert_element  = "INSERT INTO archive (name, url_friendly, owner, parent, empty, checksum, mime_type, missing_image, size, is_directory, is_accepted, is_visible, exam, url, added) " . PHP_EOL;
+        $insert_element .= "VALUES (:name, :url_friendly, :owner, :parent, :empty, :checksum, :mime_type, :missing_image, :size, :is_directory, :is_accepted, :is_visible, :exam, :url, NOW())";
 
         $insert_element_query = Database::$db->prepare($insert_element);
         $insert_element_query->execute([':name' => $this->model->getName(),
@@ -820,6 +821,7 @@ class ElementController implements BaseController {
             ':is_directory' => (int) $this->model->isDirectory(),
             ':is_accepted' => (int) $this->model->isAccepted(),
             ':is_visible' => (int) $this->model->isVisible(),
+            ':exam' => $this->model->getExam(),
             ':url' => $this->model->getUrl(),
         ]);
 
@@ -848,6 +850,7 @@ class ElementController implements BaseController {
         $update_element .= "is_directory = :is_directory," . PHP_EOL;
         $update_element .= "is_accepted = :is_accepted," . PHP_EOL;
         $update_element .= "is_visible = :is_visible," . PHP_EOL;
+        $update_element .= "exam = :exam," . PHP_EOL;
         $update_element .= "url = :url" . PHP_EOL;
         $update_element .= "WHERE id = :id" . PHP_EOL;
         $update_element .= "LIMIT 1";
@@ -865,10 +868,10 @@ class ElementController implements BaseController {
             ':is_directory' => (int) $this->model->isDirectory(),
             ':is_accepted' => (int) $this->model->isAccepted(),
             ':is_visible' => (int) $this->model->isVisible(),
+            ':exam' => $this->model->getExam(),
             ':url' => $this->model->getUrl(),
             ':id' => $this->model->getId(),
         ]);
-        
         // Cache
         $this->cache();
     }

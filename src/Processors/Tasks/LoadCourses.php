@@ -83,6 +83,7 @@ class LoadCourses extends Base {
         $added = [];
         $fetched = 0;
         $new = 0;
+        $updated = 0;
 
         // Fetch the courses
         while (true) {
@@ -98,16 +99,48 @@ class LoadCourses extends Base {
             // Clean
             $result = [];
             foreach ($json_result['courses'] as $v) {
+                $exam = null;
+                
+                // Check for exam
+                if (isset($v['exam'])) {
+                    // Loop all exam entries
+                    foreach ($v['exam'] as $exam_data) {
+                        // Check if exam exists
+                        if (strlen($exam_data['date']) > 0) {
+                            // Parse date to timestamp
+                            $exam_date_split = explode('-', $exam_data['date']);
+                            $date_timestamp = mktime(0, 0, 0, $exam_date_split[1], $exam_date_split[2], $exam_date_split[0]);
+                            
+                            // Check if date is in the future or not
+                            if ($date_timestamp > time()) {
+                                // This exam date is in the future. If it is smaller than the current on, add to array
+                                if ($exam == null or $date_timestamp < $exam) {
+                                    $exam = $date_timestamp;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Add to result
                 $result[] = ['code' => $v['courseCode'],
                     'name' => $v['courseName'],
-                    'url_friendly' => Utilities::urlSafe($v['courseCode'])];
+                    'url_friendly' => Utilities::urlSafe($v['courseCode']),
+                    'exam' => $exam];
                 
                 // Inc fetched
                 $fetched++;
             }
-
+            
             // Loop every single course
             foreach ($result as $v) {
+                // Clean
+                $insert_name = $v['code'] . '||' . $v['name'];
+                
+                if ($v['exam'] !== null) {
+                    $v['exam'] = date('Y-m-d', $v['exam']) . ' 09:00:00';
+                }
+                
                 // Check if course is in database
                 $check_current_course  = "SELECT id" . PHP_EOL;
                 $check_current_course .= "FROM archive" . PHP_EOL;
@@ -115,19 +148,25 @@ class LoadCourses extends Base {
                 $check_current_course .= "LIMIT 1";
                 
                 $check_current_course_query = Database::$db->prepare($check_current_course);
-                $check_current_course_query->execute(array(':name' => $v['code'] . '||' . $v['name']));
+                $check_current_course_query->execute(array(':name' => $insert_name));
                 $row = $check_current_course_query->fetch(\PDO::FETCH_ASSOC);
 
                 // Check if exists
                 if (!isset($row['id'])) {
                     // New Element
                     $element = new Element();
-                    $element->setname($v['code'] . '||' . $v['name']);
+                    $element->setname($insert_name);
                     $element->setUrlFriendly($v['url_friendly']);
                     $element->setParent(null);
-                    $element->setLocation(null);
                     $element->setAccepted(true);
                     $element->setDirectory(true);
+                    
+                    // Add exam date (if present)
+                    if ($v['exam'] !== null) {
+                        $element->setExam($v['exam']);
+                    }
+                    
+                    // Save element
                     $element->save();
                     
                     // Add text
@@ -135,6 +174,25 @@ class LoadCourses extends Base {
                     
                     // Inc added
                     $new++;
+                }
+                else {
+                    // Exists, check if exam is presented
+                    if ($v['exam'] !== null) {
+                        
+                        // Get object
+                        $element = new Element();
+                        $element->createById($row['id']);
+                        
+                        // Check if exam date differs
+                        if ($element->controller->wasFound() and $element->getExam() != $v['exam']) {
+                            // Update exam
+                            $element->setExam($v['exam']);
+                            $element->update();
+                            
+                            // Inc updated
+                            $updated++;
+                        }
+                    }
                 }
             }
             
@@ -150,6 +208,6 @@ class LoadCourses extends Base {
         }
         
         // Set message
-        $this->setData('msg', ['Fetched' => $fetched, 'New' => $new, 'Added' => $added]);
+        $this->setData('msg', ['Fetched' => $fetched, 'New' => $new, 'Added' => $added, 'Exams updated' => $updated]);
     }
 } 

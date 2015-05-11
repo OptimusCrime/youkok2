@@ -17,6 +17,7 @@ use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Routes as Routes;
+use \Youkok2\Utilities\Utilities as Utilities;
 
 
 /*
@@ -209,6 +210,12 @@ class Archive extends Base {
             $course = $element->controller->getCourse();
             $archive_title = '<h1>' . $course['code'] . '</h1>';
             $archive_title .= '<span> &mdash; </span><h2>' . $course['name'] . '</h2>';
+            
+            // Check if the course has an exam date
+            if ($element->getExam() !== null and strlen($element->getExam()) > 0) {
+                $this->template->assign('ARCHIVE_EXAM', $element->getExam());
+                $this->template->assign('ARCHIVE_EXAM_PRETTY', Utilities::prettifySQLDate($element->getExam()));
+            }
         }
         else {
             $archive_title = '<h1>' . $element->getName() . '</h1>';

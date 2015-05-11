@@ -1,7 +1,6 @@
 [[+include file="header.tpl"]]
 [[+include file="archive_modals.tpl"]]
-[[+nocache]]
-[[+/nocache]]
+
 <div class="row">
     <div id="archive-top" class="col-xs-12 col-md-8">
         <ol class="breadcrumb" id="archive-breadcrumbs">
