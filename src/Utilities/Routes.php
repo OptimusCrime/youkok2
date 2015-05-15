@@ -106,6 +106,9 @@ class Routes {
         'Tasks\\LoadExams' => array(
             '/tasks/exams',
         ),
+        'Tasks\\FindDuplicates' => array(
+            '/tasks/duplicates',
+        ),
         
         /*
          * Syncs
