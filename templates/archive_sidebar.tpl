@@ -8,7 +8,6 @@
         <div class="sidebar-element-inner">
             <div class="countdown-wrapper" data-exam="[[+$ARCHIVE_EXAM]]">
             </div>
-            <p>NB: Denne klokken tar utgangspunkt i at eksamen er klokka 09:00. En mer korrekt klokke dukker opp seinere.</p>
         </div>
     </div>
 [[+/if]]
