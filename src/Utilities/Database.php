@@ -26,8 +26,9 @@ class Database {
     
     public static function connect() {
         try {
-            self::$db = new PDO2\PDO2(DATABASE_CONNECTION, DATABASE_USER, DATABASE_PASSWORD, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-                \PDO::ATTR_ERRMODE, DATABASE_ERROR_MODE));
+            self::$db = new PDO2\PDO2(DATABASE_CONNECTION, DATABASE_USER, DATABASE_PASSWORD, array(
+                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+            self::$db->setAttribute(\PDO::ATTR_ERRMODE, DATABASE_ERROR_MODE);
         }
         catch (\Exception $e) {
             throw new \Exception('Could not connect to the database');

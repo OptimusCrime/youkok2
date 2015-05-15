@@ -128,8 +128,10 @@ class ElementController implements BaseController {
                 $k_actual = 'set' . ucfirst($k);
                 // Check that the field exists as a property/attribute in this class
                 if (method_exists('\Youkok2\Models\Element', $k_actual)) {
-                    // Set value
-                    call_user_func_array(array($this->model, $k_actual), array($v));
+                    // Only call if value is not empty, instead use the default values
+                    if (strlen($v) != 0) {
+                        call_user_func_array(array($this->model, $k_actual), array($v));
+                    }
                 }
             }
 
@@ -837,41 +839,48 @@ class ElementController implements BaseController {
      */
     
     public function update() {
-        $update_element  = "UPDATE archive SET" . PHP_EOL;
-        $update_element .= "name = :name," . PHP_EOL;
-        $update_element .= "url_friendly = :url_friendly," . PHP_EOL;
-        $update_element .= "owner = :owner," . PHP_EOL;
-        $update_element .= "parent = :parent," . PHP_EOL;
-        $update_element .= "empty = :empty," . PHP_EOL;
-        $update_element .= "checksum = :checksum," . PHP_EOL;
-        $update_element .= "mime_type = :mime_type," . PHP_EOL;
-        $update_element .= "missing_image = :missing_image," . PHP_EOL;
-        $update_element .= "size = :size," . PHP_EOL;
-        $update_element .= "is_directory = :is_directory," . PHP_EOL;
-        $update_element .= "is_accepted = :is_accepted," . PHP_EOL;
-        $update_element .= "is_visible = :is_visible," . PHP_EOL;
-        $update_element .= "exam = :exam," . PHP_EOL;
-        $update_element .= "url = :url" . PHP_EOL;
-        $update_element .= "WHERE id = :id" . PHP_EOL;
-        $update_element .= "LIMIT 1";
+        try {
+            $update_element  = "UPDATE archive SET" . PHP_EOL;
+            $update_element .= "name = :name," . PHP_EOL;
+            $update_element .= "url_friendly = :url_friendly," . PHP_EOL;
+            $update_element .= "owner = :owner," . PHP_EOL;
+            $update_element .= "parent = :parent," . PHP_EOL;
+            $update_element .= "empty = :empty," . PHP_EOL;
+            $update_element .= "checksum = :checksum," . PHP_EOL;
+            $update_element .= "mime_type = :mime_type," . PHP_EOL;
+            $update_element .= "missing_image = :missing_image," . PHP_EOL;
+            $update_element .= "size = :size," . PHP_EOL;
+            $update_element .= "is_directory = :is_directory," . PHP_EOL;
+            $update_element .= "is_accepted = :is_accepted," . PHP_EOL;
+            $update_element .= "is_visible = :is_visible," . PHP_EOL;
+            $update_element .= "exam = :exam," . PHP_EOL;
+            $update_element .= "url = :url" . PHP_EOL;
+            $update_element .= "WHERE id = :id" . PHP_EOL;
+            $update_element .= "LIMIT 1";
+            
+            $update_element_query = Database::$db->prepare($update_element);
+            $update_element_query->execute([':name' => $this->model->getName(),
+                ':url_friendly' => $this->model->getUrlFriendly(),
+                ':owner' => $this->model->getOwner(),
+                ':parent' => $this->model->getParent(),
+                ':empty' => $this->model->isEmpty(),
+                ':checksum' => $this->model->getChecksum(),
+                ':mime_type' => $this->model->getMimeType(),
+                ':missing_image' => (int) $this->model->getMissingImage(),
+                ':size' => $this->model->getSize(),
+                ':is_directory' => (int) $this->model->isDirectory(),
+                ':is_accepted' => (int) $this->model->isAccepted(),
+                ':is_visible' => (int) $this->model->isVisible(),
+                ':exam' => $this->model->getExam(),
+                ':url' => $this->model->getUrl(),
+                ':id' => $this->model->getId(),
+            ]);
+        }
+        catch (\PDOException  $e) {
+            print_r($e->getMessage());
+            die();
+        }
         
-        $update_element_query = Database::$db->prepare($update_element);
-        $update_element_query->execute([':name' => $this->model->getName(),
-            ':url_friendly' => $this->model->getUrlFriendly(),
-            ':owner' => $this->model->getOwner(),
-            ':parent' => $this->model->getParent(),
-            ':empty' => $this->model->isEmpty(),
-            ':checksum' => $this->model->getChecksum(),
-            ':mime_type' => $this->model->getMimeType(),
-            ':missing_image' => (int) $this->model->getMissingImage(),
-            ':size' => $this->model->getSize(),
-            ':is_directory' => (int) $this->model->isDirectory(),
-            ':is_accepted' => (int) $this->model->isAccepted(),
-            ':is_visible' => (int) $this->model->isVisible(),
-            ':exam' => $this->model->getExam(),
-            ':url' => $this->model->getUrl(),
-            ':id' => $this->model->getId(),
-        ]);
         // Cache
         $this->cache();
     }

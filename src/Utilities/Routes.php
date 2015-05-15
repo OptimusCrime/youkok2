@@ -109,6 +109,9 @@ class Routes {
         'Tasks\\FindDuplicates' => array(
             '/tasks/duplicates',
         ),
+        'Tasks\\GetCacheData' => array(
+            '/tasks/cachedata',
+        ),
         
         /*
          * Syncs
