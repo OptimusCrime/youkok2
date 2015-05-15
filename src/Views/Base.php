@@ -128,6 +128,14 @@ class Base extends Youkok2 {
             else {
                 $this->template->assign('SITE_USE_GA', false);
             }
+            
+            // Use compression
+            if (defined('COMPRESS_ASSETS') and COMPRESS_ASSETS == false) {
+                $this->template->assign('COMPRESS_ASSETS', false);
+            }
+            else {
+                $this->template->assign('COMPRESS_ASSETS', true);
+            }
         }
         
         // Init site data array

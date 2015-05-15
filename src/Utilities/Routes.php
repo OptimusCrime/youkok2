@@ -103,6 +103,9 @@ class Routes {
         'Tasks\\LoadCoursesJson' => array(
             '/tasks/coursesjson',
         ),
+        'Tasks\\LoadExams' => array(
+            '/tasks/exams',
+        ),
         
         /*
          * Syncs

@@ -29,6 +29,7 @@ class Base extends Youkok2 {
     private $data;
     private $returnData;
     private $climate;
+    protected $mode;
     
     /*
      * Constructor
@@ -38,6 +39,13 @@ class Base extends Youkok2 {
         $this->returnData = $returnData;
         $this->data = [];
         $this->climate = new \League\CLImate\CLImate;
+        
+        if (!$this->requireCli()) {
+            $this->mode = 'buffer';
+        }
+        else {
+            $this->mode = 'cli';
+        }
     }
     
     /*

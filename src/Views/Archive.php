@@ -212,7 +212,7 @@ class Archive extends Base {
             $archive_title .= '<span> &mdash; </span><h2>' . $course['name'] . '</h2>';
             
             // Check if the course has an exam date
-            if ($element->getExam() !== null and strlen($element->getExam()) > 0) {
+            if ($element->getExam() !== null and strlen($element->getExam()) > 0 and strtotime($element->getExam()) > time()) {
                 $this->template->assign('ARCHIVE_EXAM', $element->getExam());
                 $this->template->assign('ARCHIVE_EXAM_PRETTY', Utilities::prettifySQLDate($element->getExam()));
             }

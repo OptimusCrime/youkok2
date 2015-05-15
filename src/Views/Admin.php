@@ -135,12 +135,12 @@ class Admin extends Base {
          */
         
         // Courses
-        $get_dirs_number  = "SELECT COUNT(id) AS 'num_courses'" . PHP_EOL;
-        $get_dirs_number .= "FROM archive" . PHP_EOL;
-        $get_dirs_number .= "WHERE is_directory = 1" . PHP_EOL;
-        $get_dirs_number .= "AND url IS NULL" . PHP_EOL;
-        $get_dirs_number .= "AND parent IS NULL" . PHP_EOL;
-        $get_dirs_number .= "AND is_visible = 1";
+        $get_course_number  = "SELECT COUNT(id) AS 'num_courses'" . PHP_EOL;
+        $get_course_number .= "FROM archive" . PHP_EOL;
+        $get_course_number .= "WHERE is_directory = 1" . PHP_EOL;
+        $get_course_number .= "AND url IS NULL" . PHP_EOL;
+        $get_course_number .= "AND parent IS NULL" . PHP_EOL;
+        $get_course_number .= "AND is_visible = 1";
         
         $get_course_number_query = Database::$db->query($get_course_number);
         $get_course_number_result = $get_course_number_query->fetch(\PDO::FETCH_ASSOC);

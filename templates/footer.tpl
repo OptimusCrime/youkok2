@@ -40,7 +40,7 @@
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.0/moment.min.js"></script>
 <script type="text/javascript" src="//code.highcharts.com/4.0.4/highcharts.js"></script>
-[[+nocache]][[+if !$DEV]]<script type="text/javascript" src="assets/js/libs/typeahead.bundle.min.js"></script>
+[[+nocache]][[+if !$COMPRESS_ASSETS]] type="text/javascript" src="assets/js/libs/typeahead.bundle.min.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery.fileupload.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery.ba-outside-events.min.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery.countdown.min.js"></script>
