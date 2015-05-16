@@ -19,15 +19,20 @@ class NotFound extends Base {
      * Constructor
      */
 
-    public function __construct($returnData = false) {
+    public function __construct($outputData = false, $returnData = false) {
         // Calling Base' constructor
-        parent::__construct($returnData);
+        parent::__construct($outputData, $returnData);
         
         // Set data
         $this->setData('msg', 'Processor not found');
         $this->setData('code', 500);
         
-        // Return data
-        $this->returnData();
+        // Handle output
+        if ($this->outputData) {
+            $this->outputData();
+        }
+        if ($this->returnData) {
+            return $this->returnData();
+        }
     }
 }

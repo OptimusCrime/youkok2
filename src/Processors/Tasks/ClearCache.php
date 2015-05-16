@@ -24,9 +24,9 @@ Class ClearCache extends Base {
      * Construct
      */
 
-    public function __construct($returnData = false) {
+    public function __construct($outputData = false, $returnData = false) {
         // Calling Base' constructor
-        parent::__construct($returnData);
+        parent::__construct($outputData, $returnData);
         
         // Check access (only cli and admin)
         if (self::requireCli() or self::requireAdmin()) {
@@ -87,7 +87,7 @@ Class ClearCache extends Base {
         }
         
         // Return data
-        $this->returnData();
+        $this->outputData();
     }
     
     private function rmNonemptyDir($dir) {

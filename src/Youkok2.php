@@ -25,7 +25,7 @@ class Youkok2 {
      * Run a processor with a given action
      */
     
-    public static function runProcessor($action, $outputData = false) {
+    public static function runProcessor($action, $outputData = false, $returnData = false) {
         // Check if we should return as json
         if ($outputData == true and !isset($_GET['format'])) {
             header('Content-Type: application/json');
@@ -70,10 +70,10 @@ class Youkok2 {
         
         // New instance
         if ($method === null) {
-            return new $processor($outputData);
+            return new $processor($outputData, $returnData);
         }
         else {
-            $processor_instance = new $processor($outputData);
+            $processor_instance = new $processor($outputData, $returnData);
             return $processor_instance->$method();
         }  
     }

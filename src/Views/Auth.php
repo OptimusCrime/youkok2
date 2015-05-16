@@ -123,8 +123,8 @@ class Auth extends Base {
                 $this->setFormValues('post', ['email' => $_POST['register-form-email']]);
 
                 // Run processor
-                $email_check = ($this->runProcessor('register/email', true, 'checkEmail')->returnData());
-
+                $email_check = $this->runProcessor('register/email', false, true);
+                
                 // Check if valid email
                 if (isset($email_check['code']) and $email_check['code'] == 200 and filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) == true) {
                     // Check passwords

@@ -29,14 +29,16 @@ class Base extends Youkok2 {
     private $data;
     private $climate;
     protected $outputData;
+    protected $returnData;
     protected $mode;
     
     /*
      * Constructor
      */
 
-    public function __construct($outputData = false) {
+    public function __construct($outputData = false, $returnData = false) {
         $this->outputData = $outputData;
+        $this->returnData = $returnData;
         $this->data = [];
         $this->climate = new \League\CLImate\CLImate;
         
@@ -69,10 +71,12 @@ class Base extends Youkok2 {
         
         // Output content
         if (php_sapi_name() !== 'cli') {
+            // Echo JSON content here
             echo json_encode($this->data);
         }
         else {
-            // TODO
+            // Return to console using CLImate
+            $this->climate->json($this->data);
         }
     }
     

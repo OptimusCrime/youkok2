@@ -26,9 +26,9 @@ class LoadHistory extends Base {
      * Constructor
      */
 
-    public function __construct($outputData = false) {
+    public function __construct($outputData = false, $returnData = false) {
         // Calling Base' constructor
-        parent::__construct($outputData);
+        parent::__construct($outputData, $returnData);
         
         // Check database
         if (!$this->makeDatabaseConnection()) {

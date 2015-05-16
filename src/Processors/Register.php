@@ -27,9 +27,9 @@ class Register extends Base {
      * Constructor
      */
 
-    public function __construct($outputData = false) {
+    public function __construct($outputData = false, $returnData = false) {
         // Calling Base' constructor
-        parent::__construct($outputData);
+        parent::__construct($outputData, $returnData);
 
         // Try to connect to the database
         if (!$this->makeDatabaseConnection()) {
@@ -68,6 +68,9 @@ class Register extends Base {
         // Check if we should return the data right away
         if ($this->outputData) {
             $this->outputData();
+        }
+        if ($this->returnData) {
+            return $this->returnData();
         }
     }
 }

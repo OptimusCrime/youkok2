@@ -32,9 +32,9 @@ class CreateFile extends Base {
      * Constructor
      */
 
-    public function __construct($returnData = false) {
+    public function __construct($outputData = false, $returnData = false) {
         // Calling Base' constructor
-        parent::__construct($returnData);
+        parent::__construct($outputData, $returnData);
         
         // Check database
         if ($this->makeDatabaseConnection()) {
@@ -54,7 +54,7 @@ class CreateFile extends Base {
         }
         
         // Return data
-        $this->returnData();
+        $this->outputData();
     }
     
     /*
