@@ -8,7 +8,7 @@
     <meta name="description" content="[[+if isset($SITE_DESCRPTION)]][[+$SITE_DESCRPTION]][[+else]]Youkok2 er den beste kokeboka for studenter på NTNU i en knipen studiehverdag.[[+/if]]" />
     <meta name="keywords" content="ntnu, kok, youkok, kokebok, øvinger, lekser, eksamen, oppgaver, fasit, trondheim" />
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
-    [[+nocache]][[+if $DEV]]<link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
+    [[+nocache]][[+if !$COMPRESS_ASSETS]]<link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/youkok.css?v=[[+$VERSION]]" />[[+else]]<link rel="stylesheet" type="text/css" href="assets/css/youkok.min.css" />[[+/if]]
     [[+if $BASE_USER_IS_ADMIN]]<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjpbLG7YxoVW1zeiEFAEluUhE5tqcEQV0"></script>[[+/if]]
 [[+/nocache]]
