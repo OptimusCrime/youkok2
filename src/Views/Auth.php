@@ -27,9 +27,9 @@ use \Youkok2\Utilities\Utilities as Utilities;
 
 class Auth extends Base {
 
-    //
-    // The constructor for this subclass
-    //
+    /*
+     * Constructor
+     */
 
     public function __construct() {
         // Calling Base' constructor
@@ -37,83 +37,72 @@ class Auth extends Base {
 
         // Reset menu
         $this->template->assign('HEADER_MENU', null);
-
-        // Check query
-        if ($this->queryGet(0) == 'logg-inn') {
-            // Check if logged in
-            if (Me::isLoggedIn()) {
-                Redirect::send('');
-            }
-            else {
-                // Check if submitted
-                if (isset($_POST['login2-email']) or isset($_POST['login-email'])) {
-                    // Change post vars
-                    if (isset($_POST['login2-email'])) {
-                        $_POST['login-email'] = $_POST['login2-email'];
-                        $_POST['login-pw'] = $_POST['login2-pw'];
-                    }
-
-                    // Call method
-                    Me::login();
-                }
-                else {
-                    $this->template->assign('SITE_TITLE', 'Logg inn');
-
-                    if (isset($_SESSION['login_correct_email'])) {
-                        $this->template->assign('LOGIN_EMAIL', $_SESSION['login_correct_email']);
-                        unset($_SESSION['login_correct_email']);
-                    }
-
-                    $this->displayAndCleanup('login.tpl');
-                }
-            }
-        }
-        else if ($this->queryGet(0) == 'logg-ut') {
-            if (!Me::isLoggedIn()) {
-                Redirect::send('');
-            }
-            else {
-                Me::logOut();
-            }
-        }
-        else if ($this->queryGet(0) == 'registrer') {
-            if (Me::isLoggedIn()) {
-                Redirect::send('');
-            }
-            else {
-                $this->template->assign('SITE_TITLE', 'Registrer');
-                $this->register();
-            }
-        }
-        else if ($this->queryGet(0) == 'glemt-passord') {
-            if (Me::isLoggedIn()) {
-                Redirect::send('');
-            }
-            else {
-                $this->template->assign('SITE_TITLE', 'Glemt passord');
-                $this->forgottenPassword();
-            }
-        }
-        else if ($this->queryGet(0) == 'nytt-passord') {
-            if (Me::isLoggedIn() or !isset($_GET['hash'])) {
-                Redirect::send('');
-            }
-            else {
-                $this->template->assign('SITE_TITLE', 'Nytt passord');
-                $this->forgottenPasswordNew();
-            }
+    }
+    
+    /*
+     * Log in
+     */
+    
+    public function displayLogIn() {
+        // Check if logged in
+        if (Me::isLoggedIn()) {
+            Redirect::send('');
         }
         else {
-            // Page not found!
-            $this->display404();
+            // Check if submitted
+            if (isset($_POST['login2-email']) or isset($_POST['login-email'])) {
+                // Change post vars
+                if (isset($_POST['login2-email'])) {
+                    $_POST['login-email'] = $_POST['login2-email'];
+                    $_POST['login-pw'] = $_POST['login2-pw'];
+                }
+
+                // Call method
+                Me::login();
+            }
+            else {
+                $this->template->assign('SITE_TITLE', 'Logg inn');
+
+                if (isset($_SESSION['login_correct_email'])) {
+                    $this->template->assign('LOGIN_EMAIL', $_SESSION['login_correct_email']);
+                    unset($_SESSION['login_correct_email']);
+                }
+
+                $this->displayAndCleanup('login.tpl');
+            }
         }
     }
+    
+    /*
+     * Log out
+     */
+    
+    public function displayLogOut() {
+        // Check if the user is logged in
+        if (!Me::isLoggedIn()) {
+            Redirect::send('');
+            exit();
+        }
+        
+        // Log the user out
+        Me::logOut();
+    }
 
-    //
-    // Method for registering a user
-    //
+    /*
+     * Register
+     */
 
-    private function register() {
+    public function displayRegister() {
+        // Check if the user is logged in
+        if (Me::isLoggedIn()) {
+            Redirect::send('');
+            exit();
+        }
+        
+        // Set menu
+        $this->template->assign('SITE_TITLE', 'Registrer');
+        
+        // Handle registration
         if (!isset($_POST['register-form-email'])) {
             $this->displayAndCleanup('register.tpl');
         }
@@ -194,11 +183,20 @@ class Auth extends Base {
         }
     }
 
-    //
-    // Method for forgotten password
-    //
+    /*
+     * Forgotten password
+     */
 
-    private function forgottenPassword() {
+    public function displayForgottenPassword() {
+        if (Me::isLoggedIn()) {
+            Redirect::send('');
+            exit();
+        }
+        
+        // The menu
+        $this->template->assign('SITE_TITLE', 'Glemt passord');
+        
+        // Handle forgotten password
         if (isset($_POST['forgotten-email'])) {
             // Handle stuff here
             $get_login_user  = "SELECT id" . PHP_EOL;
@@ -255,11 +253,20 @@ class Auth extends Base {
         }
     }
 
-    //
-    // Method for changing password
-    //
+    /*
+     * Forgotten new password
+     */
 
-    private function forgottenPasswordNew() {
+    public function displayForgottenPasswordNew() {
+        // Check if user can display this view
+        if (Me::isLoggedIn() or !isset($_GET['hash'])) {
+            Redirect::send('');
+            exit();
+        }
+        
+        // Set menu
+        $this->template->assign('SITE_TITLE', 'Nytt passord');
+        
         // Check if changepassword was found
         $change_password = new ChangePassword();
         $change_password->createByHash($_GET['hash']);

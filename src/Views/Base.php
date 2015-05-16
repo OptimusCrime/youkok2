@@ -91,7 +91,7 @@ class Base extends Youkok2 {
         $this->template->assign('HEADER_MENU', 'HOME');
                 
         // Set some site data
-        $this->addSiteData('search_base', URL_FULL . substr(Routes::getRoutes()['Archive'][0], 1) . '/');
+        $this->addSiteData('search_base', URL_FULL . substr(Routes::getRoutes()['Archive'][0]['path'], 1) . '/');
         
         // Check if we should kill the view
         if ($kill == false) {

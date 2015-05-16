@@ -711,7 +711,24 @@ class ElementController implements BaseController {
                 $endfix .= 'data-ts="' . $this->model->getAdded() . '">Laster...</span>]';
             }
             else if ($mode == 'most-popular') {
-                $endfix .= ' [' . number_format($this->getDownloadCount(self::$delta[Me::getMostPopularDelta($special)])) . ']';
+                // Get correct delta
+                $user_delta = 0;
+                if (Me::isLoggedIn()) {
+                    $user_delta = Me::getMostPopularDelta();
+                }
+                else {
+                    if (isset($_COOKIE['delta'])) {
+                        $user_delta = $_COOKIE['delta'];
+                    }
+                }
+                
+                // Make sure user delta is valid
+                if ($user_delta < 0 or $user_delta > 4) {
+                    $user_delta = 0;
+                }
+                
+                // Supply endfix
+                $endfix .= ' [' . number_format($this->getDownloadCount(self::$delta[$user_delta])) . ']';
             }
             else if ($mode == 'favorites') {
                 $list_classes .= ' list-group-star';

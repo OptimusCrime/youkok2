@@ -106,7 +106,7 @@ class Me {
                             'email' => array('value' => self::$email),
                             'password' => array('value' => self::$password),
                             'nick' => array('value' => self::$nick),
-                            'mostPopularDelta' => array('value' => self::$mostPopularDelta, 'db' => 'id'),
+                            'mostPopularDelta' => array('value' => self::$mostPopularDelta, 'db' => 'most_popular_delta'),
                             'lastSeen' => array('value' => self::$lastSeen, 'db' => 'last_seen'),
                             'karma' => array('value' => self::$karma),
                             'karmaPending' => array('value' => self::$karmaPending, 'db' => 'karma_pending'),
@@ -150,23 +150,8 @@ class Me {
             return self::$nick;
         }
     }
-    public static function getMostPopularDelta($override = null) {
-        if ($override == null) {
-            if (self::isLoggedIn()) {
-                return self::$mostPopularDelta;
-            }
-            else {
-                if (isset($_COOKIE['home_popular'])) {
-                    return $_COOKIE['home_popular'];
-                }
-                else {
-                    return 1;
-                }
-            }
-        }
-        else {
-            return $override;
-        }
+    public static function getMostPopularDelta() {
+        return self::$mostPopularDelta;
     }
     public static function getLastSeen() {
         return self::$lastSeen;
@@ -259,20 +244,31 @@ class Me {
         // Build sub query
         $subquery = [];
         $binds = [];
-        foreach ($updated as $v) {
-            $subquery[] = $v['field'] . ' = :' . $v['field'];
-            $binds[':' . $v['field']] = $v['value'];
+        
+        // Check if anything was updated
+        if (count($updated) > 0) {
+            // Loop the updated and build sub query
+            foreach ($updated as $v) {
+                $subquery[] = $v['field'] . ' = :' . $v['field'];
+                $binds[':' . $v['field']] = $v['value'];
+            }
+
+            // Add user id
+            $binds[':id'] = self::$id;
+
+            // Build query
+            try {
+                $query = 'UPDATE user SET ' . implode(', ', $subquery) . ' WHERE id = :id';
+                
+                // Run query
+                $create_user_query = Database::$db->prepare($query);
+                $create_user_query->execute($binds);
+            }
+            catch (\PDOException $e) {
+                print_r($e->getMessage());
+                die();
+            }
         }
-
-        // Add user id
-        $binds[':id'] = self::$id;
-
-        // Build query
-        $query = 'UPDATE user SET ' . implode(', ', $subquery) . ' WHERE id = :id';
-
-        // Run query
-        $create_user_query = Database::$db->prepare($query);
-        $create_user_query->execute($binds);
     }
     
     /*

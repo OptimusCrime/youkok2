@@ -51,25 +51,15 @@ class Module extends Base {
     }
     
     /*
-     * TODO
+     * Fetch module data
      */
     
-    public function update() {
-        $ret = '';
-        
-        // Get correct delta
-        if (!isset($_POST['delta'])) {
-            $user_delta = Me::getMostPopularDelta();
-        }
-        else {
-            $user_delta = $_POST['delta'];
-        }
-
+    public function get() {
         // Load most popular files from the system
         $get_most_popular  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
         $get_most_popular .= "FROM download d" . PHP_EOL;
         $get_most_popular .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
-        $get_most_popular .= ElementController::$delta[$user_delta] . PHP_EOL;
+        $get_most_popular .= ElementController::$delta[Me::getMostPopularDelta()] . PHP_EOL;
         $get_most_popular .= "GROUP BY d.file" . PHP_EOL;
         $get_most_popular .= "ORDER BY downloaded_times DESC, a.added DESC" . PHP_EOL;
         $get_most_popular .= "LIMIT 15";
@@ -93,6 +83,52 @@ class Module extends Base {
         // Check if null
         if ($ret == '') {
             $ret = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet.</li>';
+        }
+    }
+    
+    /*
+     * TODO
+     */
+    
+    public function update() {
+        // Init user
+        Me::init();
+        
+        // Variable for return response
+        $ret = '';
+        
+        // Get correct delta
+        $user_delta = 0;
+        if (!isset($_POST['delta'])) {
+            if (Me::isLoggedIn()) {
+                $user_delta = Me::getMostPopularDelta();
+            }
+            else {
+                if (isset($_COOKIE['delta'])) {
+                    $user_delta = $_COOKIE['delta'];
+                }
+            }
+        }
+        else {
+            $user_delta = $_POST['delta'];
+            
+            // Quality check here
+            if ($user_delta < 0 or $user_delta > 4) {
+                $user_delta = 0;
+            }
+            
+            // Check if we should update user preferences
+            if (Me::isLoggedIn()) {
+                // Set the new delta
+                Me::setMostPopularDelta($user_delta);
+                
+                // Update user
+                Me::update();
+            }
+            else {
+                // Set cookie
+                setcookie('delta', $user_delta, (time() + (60*60*24*30)), '/');
+            }
         }
         
         $this->setData('code', 200);

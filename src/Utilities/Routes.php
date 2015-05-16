@@ -25,56 +25,59 @@ class Routes {
     
     private static $routes = array(
         'Home' => array(
-            '/',
+            array('path' => '/'),
         ),
-
+        
+        'Courses' => array(
+            array('path' => self::ARCHIVE, 'subpath' => false),
+        ),
+        
         'Archive' => array(
-            self::ARCHIVE,
+            array('path' => self::ARCHIVE, 'subpath' => true),
         ),
 
         'Profile' => array(
-            '/profil',
+            array('path' => '/profil'),
         ),
 
         'Download' => array(
-            self::DOWNLOAD,
+            array('path' => self::DOWNLOAD),
         ),
 
         'Flat' => array(
-            '/om',
-            '/retningslinjer',
-            '/hjelp',
-            '/karma',
-            '/changelog.txt',
+            array('path' => '/om', 'method' => 'displayAbout'),
+            array('path' => '/retningslinjer', 'method' => 'displayTerms'),
+            array('path' => '/hjelp', 'method' => 'displayHelp'),
+            array('path' => '/karma', 'method' => 'displayKarma'),
+            array('path' => '/changelog.txt', 'method' => 'displayChangeLog'),
         ),
 
         'NotFound' => array(
-            '/404',
+            array('path' => '/404'),
         ),
 
         'Auth' => array(
-            '/logg-inn',
-            '/logg-ut',
-            '/registrer',
-            '/glemt-passord',
-            '/nytt-passord',
-            '/verifiser',
+            array('path' => '/logg-inn', 'method' => 'displayLogIn'),
+            array('path' => '/logg-ut', 'method' => 'displayLogOut'),
+            array('path' => '/registrer', 'method' => 'displayRegister'),
+            array('path' => '/glemt-passord', 'method' => 'displayForgottenPassword'),
+            array('path' => '/nytt-passord', 'method' => 'displayForgottenPasswordNew'),
         ),
 
         'Graybox' => array(
-            '/graybox',
+            array('path' => '/graybox'),
         ),
 
         'Search' => array(
-            '/sok',
+            array('path' => '/sok'),
         ),
 
         'Admin' => array(
-            '/admin',
+            array('path' => '/admin'),
         ),
 
         'Redirect' => array(
-            self::REDIRECT,
+            array('path' => self::REDIRECT),
         ),
     );
     
