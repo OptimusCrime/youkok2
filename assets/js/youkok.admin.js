@@ -189,4 +189,47 @@ $(document).ready(function () {
     
     init();
     
+    google.maps.event.addDomListener(window, 'load', initialize);
+    
 });
+
+var map;
+function initialize() {
+    var mapOptions = {
+        center: {
+            lat: 63.45375683210663, 
+            lng: 10.414453125000023
+        },
+        zoom: 3
+    };
+    
+    map = new google.maps.Map(
+        document.getElementById('admin-map'),
+        mapOptions);
+    
+    // Load downloads
+     $.ajax({
+        cache: false,
+        type: "post",
+        url: "processor/admin/loaddownloads",
+        success: function(json) {
+            var infowindow = new google.maps.InfoWindow();
+            var marker, i;
+            console.log(json.data);
+            for (i = 0; i < json.data.length; i++) {
+                console.log(json.data[i]);
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(json.data[i]['lat'], json.data[i]['lng']),
+                    map: map
+                });
+
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        infowindow.setContent(locations[i][0]);
+                        infowindow.open(map, marker);
+                    }
+                })(marker, i));
+            }
+        }
+    });
+}

@@ -147,6 +147,9 @@ class Routes {
         'LinkTitle' => array(
             array('path' => '/link/title'),
         ),
+        'Admin\\LoadDownloads' => array(
+            array('path' => '/admin/loaddownloads'),
+        ),
         
         /*
          * Creates

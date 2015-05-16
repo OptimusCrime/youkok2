@@ -43,13 +43,8 @@
             </div>
             <div id="admin-graph2-display"></div>
         </div>
-        <h2>Tall</h2>
-        <ul>
-            <li><strong>Antall fag:</strong> [[+$ADMIN_NUM_COURSES]]</li>
-            <li><strong>Antall filer:</strong> [[+$ADMIN_NUM_FILES]]</li>
-            <li><strong>Antall linker:</strong> [[+$ADMIN_NUM_LINKS]]</li>
-            <li><strong>Antall mapper:</strong> [[+$ADMIN_NUM_DIRS]]</li>
-        </ul>
+        <h2>Kart over nedlastninger</h2>
+        <div id="admin-map"></div>
     </div>
     <div id="sidebar" class="col-xs-12 col-md-4">
         <div class="sidebar-element">
@@ -57,6 +52,17 @@
             <div class="sidebar-element-inner">
                 <ul>
                     [[+$ADMIN_DOWNLOADS_PR_DAY]]
+                </ul>
+            </div>
+        </div>
+        <div class="sidebar-element">
+            <h3>Tall</h3>
+            <div class="sidebar-element-inner">
+                <ul>
+                    <li><strong>Antall fag:</strong> [[+$ADMIN_NUM_COURSES]]</li>
+                    <li><strong>Antall filer:</strong> [[+$ADMIN_NUM_FILES]]</li>
+                    <li><strong>Antall linker:</strong> [[+$ADMIN_NUM_LINKS]]</li>
+                    <li><strong>Antall mapper:</strong> [[+$ADMIN_NUM_DIRS]]</li>
                 </ul>
             </div>
         </div>
