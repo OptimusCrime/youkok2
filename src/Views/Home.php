@@ -28,7 +28,7 @@ class Home extends Base {
      */
 
     public function __construct($kill = false) {
-        parent::__construct();
+        parent::__construct($kill);
         
         // Load default boxes
         $this->template->assign('HOME_NEWEST', Elements::getNewest());
@@ -50,9 +50,9 @@ class Home extends Base {
         $this->displayAndCleanup('index.tpl');
     }
     
-    //
-    // Method for loading infobox (users not logged in)
-    //
+    /*
+     * Method for loading infobox (users not logged in)
+     */
     
     private function loadInfobox() {
         // Load users

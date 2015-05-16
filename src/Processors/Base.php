@@ -27,16 +27,16 @@ class Base extends Youkok2 {
      */
     
     private $data;
-    private $returnData;
     private $climate;
+    protected $outputData;
     protected $mode;
     
     /*
      * Constructor
      */
 
-    public function __construct($returnData = false) {
-        $this->returnData = $returnData;
+    public function __construct($outputData = false) {
+        $this->outputData = $outputData;
         $this->data = [];
         $this->climate = new \League\CLImate\CLImate;
         
@@ -60,26 +60,29 @@ class Base extends Youkok2 {
     }
     
     /*
+     * Output data
+     */
+    
+    public function outputData() {
+        // Close db
+        $this->closeConnection();
+        
+        // Output content
+        if (php_sapi_name() !== 'cli') {
+            echo json_encode($this->data);
+        }
+        else {
+            // TODO
+        }
+    }
+    
+    /*
      * Return data
      */
     
     public function returnData() {
-        // Check if we should return or output
-        if ($this->returnData) {
-            // Return
-            return $this->data;
-        }
-        else {
-            // Output the data
-            if (php_sapi_name() !== 'cli') {
-                // Return as json
-                echo json_encode($this->data);
-            }
-            else {
-                // Return to console using CLImate
-                $this->climate->json($this->data);
-            }
-        }
+        // Return data
+        return $this->data;
     }
     
     /*
@@ -122,10 +125,6 @@ class Base extends Youkok2 {
     }
 
     /*
-     * Derp
-     */
-
-    /*
      * Check if we can connect to the database
      */
 
@@ -145,6 +144,16 @@ class Base extends Youkok2 {
             $this->setData('msg', 'Could not connect to database');
 
             return false;
+        }
+    }
+    
+    /*
+     * Close database (if open)
+     */
+    
+    public function closeConnection () {
+        if (Database::$db !== null) {
+            Database::close();
         }
     }
 }

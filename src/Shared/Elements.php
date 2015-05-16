@@ -67,7 +67,7 @@ class Elements {
      */
 
     public static function getMostPopular($override = null) {
-        return Youkok2::runProcessor('/module/update', true)->returnData()['html'];
+        return Youkok2::runProcessor('/module/get')['html'];
     }
     
     /*

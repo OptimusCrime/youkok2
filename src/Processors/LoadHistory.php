@@ -26,30 +26,21 @@ class LoadHistory extends Base {
      * Constructor
      */
 
-    public function __construct($returnData = false) {
+    public function __construct($outputData = false) {
         // Calling Base' constructor
-        parent::__construct($returnData);
+        parent::__construct($outputData);
         
         // Check database
-        if ($this->makeDatabaseConnection()) {
-            $this->load();
-            
-            // Close database connection
-            Database::close();
-        }
-        else {
+        if (!$this->makeDatabaseConnection()) {
             $this->setError();
         }
-        
-        // Return data
-        $this->returnData();
     }
     
     /*
      * Load data
      */
     
-    public function load() {
+    public function getHistory() {
         $ret = '';
         
         // Check if supplied correct data
@@ -90,6 +81,11 @@ class LoadHistory extends Base {
         else {
             // Id not provided, return error
             $this->setError();
+        }
+        
+        // Handle output
+        if ($this->outputData) {
+            $this->outputData();
         }
     }
 }

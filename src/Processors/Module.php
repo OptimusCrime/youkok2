@@ -28,26 +28,17 @@ class Module extends Base {
      * Constructor
      */
 
-    public function __construct($returnData = false) {
+    public function __construct($outputData = false) {
         // Calling Base' constructor
-        parent::__construct($returnData);
+        parent::__construct($outputData);
         
         // Check database
-        if ($this->makeDatabaseConnection()) {
-            // TODO
-            $this->update();
-            
-            // Close database connection
-            if (!$returnData) {
-                Database::close();
-            }
-        }
-        else {
+        if (!$this->makeDatabaseConnection()) {
             $this->setError();
         }
-        
-        // Return data
-        $this->returnData();
+        else {
+            Me::init();
+        }
     }
     
     /*
@@ -55,6 +46,9 @@ class Module extends Base {
      */
     
     public function get() {
+        // For returning content
+        $ret = '';
+        
         // Load most popular files from the system
         $get_most_popular  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
         $get_most_popular .= "FROM download d" . PHP_EOL;
@@ -73,65 +67,56 @@ class Module extends Base {
             // Check if valid Element
             if ($element !== null) {
                 // Set download count
-                $element->controller->setDownloadCount($user_delta, $row['downloaded_times']);
+                $element->controller->setDownloadCount(Me::getMostPopularDelta(), $row['downloaded_times']);
                 
                 // Generate string
-                $ret .= $element->controller->getFrontpageLink('most-popular', $user_delta);
+                $ret .= $element->controller->getFrontpageLink('most-popular', Me::getMostPopularDelta());
             }
         }
 
         // Check if null
         if ($ret == '') {
             $ret = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet.</li>';
+            
+        }
+        
+        // Set data
+        $this->setData('html', $ret);
+        $this->setData('code', 200);
+        
+        // Handle output
+        if ($this->outputData) {
+            $this->outputData();
+        }
+        else {
+            return $this->returnData();
         }
     }
     
     /*
-     * TODO
+     * Update module information
      */
     
     public function update() {
-        // Init user
-        Me::init();
-        
-        // Variable for return response
-        $ret = '';
-        
-        // Get correct delta
         $user_delta = 0;
-        if (!isset($_POST['delta'])) {
-            if (Me::isLoggedIn()) {
-                $user_delta = Me::getMostPopularDelta();
-            }
-            else {
-                if (isset($_COOKIE['delta'])) {
-                    $user_delta = $_COOKIE['delta'];
-                }
-            }
-        }
-        else {
+        if (isset($_POST['delta'])) {
             $user_delta = $_POST['delta'];
-            
-            // Quality check here
-            if ($user_delta < 0 or $user_delta > 4) {
-                $user_delta = 0;
-            }
-            
-            // Check if we should update user preferences
-            if (Me::isLoggedIn()) {
-                // Set the new delta
-                Me::setMostPopularDelta($user_delta);
-                
-                // Update user
-                Me::update();
-            }
-            else {
-                // Set cookie
-                setcookie('delta', $user_delta, (time() + (60*60*24*30)), '/');
-            }
         }
         
-        $this->setData('code', 200);
-        $this->setData('html', $ret);
+        // Quality check here
+        if ($user_delta < 0 or $user_delta > 4) {
+            $user_delta = 0;
+        }
+        
+        // Set the new delta
+        Me::setMostPopularDelta($user_delta);
+        
+        // Check if we should update user preferences
+        if (Me::isLoggedIn()) {
+            // Update user
+            Me::update();
+        }
+        
+        return $this->get();
     }
 }

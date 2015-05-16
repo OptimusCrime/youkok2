@@ -18,58 +18,32 @@ use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Loader as Loader;
 
 /*
- * The Static class, extending Base class
+ * Registration stuff for user
  */
 
-class Register extends Base
-{
+class Register extends Base {
 
     /*
      * Constructor
      */
 
-    public function __construct($returnData = false, $method = null, $data = []) {
+    public function __construct($outputData = false) {
         // Calling Base' constructor
-        parent::__construct($returnData);
+        parent::__construct($outputData);
 
         // Try to connect to the database
-        if ($this->makeDatabaseConnection()) {
-            // Check if a method was provided
-            if ($method !== null and method_exists($this, $method)) {
-                // Call method directory
-                call_user_func_array(array($this, $method), $data);
-            }
-            else {
-                // Get actual request
-                $request = Loader::getQuery();
-
-                // Find what request is made
-                if ($request == 'processor/register/email') {
-                    // Check if provided email already is in the system
-                    $this->checkEmail();
-                }
-                else {
-                    // Processor not found
-                    $this->setData('msg', 'Processor not found');
-                    $this->setData('code', 500);
-                }
-            }
-        }
-        else {
+        if (!$this->makeDatabaseConnection()) {
             $this->setError();
         }
-
-        // Return data
-        $this->returnData();
     }
 
     /*
      * Method for checking if email is already in the system
      */
 
-    private function checkEmail() {
+    public function checkEmail() {
         // Check if valid request
-        if (isset($_POST['email'])) {
+        if (Database::$db !== null and isset($_POST['email'])) {
 
             $check_email  = "SELECT COUNT(id) as num" . PHP_EOL;
             $check_email .= "FROM user" . PHP_EOL;
@@ -89,6 +63,11 @@ class Register extends Base
         }
         else {
             $this->setData('code', 500);
+        }
+        
+        // Check if we should return the data right away
+        if ($this->outputData) {
+            $this->outputData();
         }
     }
 }

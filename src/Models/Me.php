@@ -32,11 +32,11 @@ class Me {
     private static $email;
     private static $password;
     private static $nick;
-    private static $mostPopularDelta;
     private static $lastSeen;
     private static $karma;
     private static $karmaPending;
     private static $banned;
+    private static $mostPopularDelta = null;
     private static $initialData = [];
 
     // Other variables
@@ -151,7 +151,20 @@ class Me {
         }
     }
     public static function getMostPopularDelta() {
-        return self::$mostPopularDelta;
+        // Check what to return
+        if (self::isLoggedIn() or self::$mostPopularDelta != null) {
+            // Return the actual delta
+            return self::$mostPopularDelta;
+        }
+        else {
+            // Check if cookie is set
+            if (isset($_COOKIE['delta']) and $_COOKIE['delta'] >= 0 and $_COOKIE['delta'] <= 4) {
+                return $_COOKIE['delta'];
+            }
+        }
+        
+        // Last resort, default value
+        return 0;
     }
     public static function getLastSeen() {
         return self::$lastSeen;
@@ -188,7 +201,14 @@ class Me {
         self::$nick = $nick;
     }
     public static function setMostPopularDelta($delta) {
+        // Always store in variable
         self::$mostPopularDelta = $delta;
+        
+        // Check if we should set cookie for later too
+        if (!self::isLoggedIn()) {
+            // Set cookie
+            setcookie('delta', $delta, (time() + (60*60*24*30)), '/');
+        }
     }
     public static function increaseKarma($karma) {
         self::$karma += $karma;

@@ -92,28 +92,28 @@ class Routes {
          */
         
         'Tasks\\Build' => array(
-            '/tasks/build',
+            array('path' => '/tasks/build'),
         ),
         'Tasks\\ClearCache' => array(
-            '/tasks/clearcache',
+            array('path' => '/tasks/clearcache'),
          ),
         'Tasks\\Check404' => array(
-            '/tasks/check404',
+            array('path' => '/tasks/check404'),
         ),
         'Tasks\\LoadCourses' => array(
-            '/tasks/courses',
+            array('path' => '/tasks/courses'),
         ),
         'Tasks\\LoadCoursesJson' => array(
-            '/tasks/coursesjson',
+            array('path' => '/tasks/coursesjson'),
         ),
         'Tasks\\LoadExams' => array(
-            '/tasks/exams',
+            array('path' => '/tasks/exams'),
         ),
         'Tasks\\FindDuplicates' => array(
-            '/tasks/duplicates',
+            array('path' => '/tasks/duplicates'),
         ),
         'Tasks\\GetCacheData' => array(
-            '/tasks/cachedata',
+            array('path' => '/tasks/cachedata'),
         ),
         
         /*
@@ -121,7 +121,7 @@ class Routes {
          */
         
         'Tasks\\Sync\\SyncEmpty' => array(
-            '/tasks/sync/syncempty',
+            array('path' => '/tasks/sync/syncempty'),
         ),
         
         /*
@@ -129,22 +129,23 @@ class Routes {
          */
         
         'Favorite' => array(
-            '/favorite',
+            array('path' => '/favorite'),
         ),
         'Module' => array (
-            '/module/update',
+            array('path' => '/module/get', 'method' => 'get'),
+            array('path' => '/module/update', 'method' => 'update'),
         ),
         'Register' => array(
-            '/register/email',
+            array('path' => '/register/email', 'method' => 'checkEmail'),
         ),
         'StaticReturner' => array(
-            '/search/courses.json',
+            array('path' => '/search/courses.json'),
         ),
         'LoadHistory' => array(
-            '/history/get',
+            array('path' => '/history/get', 'method' => 'getHistory'),
         ),
         'LinkTitle' => array(
-            '/link/title',
+            array('path' => '/link/title'),
         ),
         
         /*
@@ -152,13 +153,13 @@ class Routes {
          */
         
         'CreateFile' => array(
-            '/file/create',
+            array('path' => '/file/create'),
         ),
         'CreateLink' => array(
-            '/link/create',
+            array('path' => '/link/create'),
         ),
         'CreateFolder' => array(
-            '/folder/create',
+            array('path' => '/folder/create'),
         ),
     );
     

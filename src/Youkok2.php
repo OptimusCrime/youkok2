@@ -25,9 +25,9 @@ class Youkok2 {
      * Run a processor with a given action
      */
     
-    public static function runProcessor($action, $returnData = false, $method = null, $data = []) {
+    public static function runProcessor($action, $outputData = false) {
         // Check if we should return as json
-        if (php_sapi_name() !== 'cli' and $returnData == false and !isset($_GET['format'])) {
+        if ($outputData == true and !isset($_GET['format'])) {
             header('Content-Type: application/json');
         }
         
@@ -41,14 +41,22 @@ class Youkok2 {
         // Loop the path-array and find what view to load
         $found = false;
         $processor = '\Youkok2\Processors\\';
+        $method = null;
         $processors = Routes::getProcessors();
         
         // Loop the routes
         foreach ($processors as $k => $v) {
             foreach ($v as $iv) {
-                if ($iv == $action or substr($iv, 1) == $action) {
+                if ($iv['path'] == $action or substr($iv['path'], 1) == $action) {
                     // We found matching url-pattern, store name
                     $processor .= $k;
+                    
+                    // Check if we should call a given method
+                    if (isset($iv['method'])) {
+                        $method = $iv['method'];
+                    }
+                    
+                    // Set to found and break out of the 
                     $found = true;
                     break;
                 }
@@ -61,13 +69,13 @@ class Youkok2 {
         }
         
         // New instance
-        if ($returnData) {
-            return new $processor($returnData, $method, $data);
+        if ($method === null) {
+            return new $processor($outputData);
         }
         else {
-            new $processor($returnData, $method, $data);
-        }
-
+            $processor_instance = new $processor($outputData);
+            return $processor_instance->$method();
+        }  
     }
 
     /*
