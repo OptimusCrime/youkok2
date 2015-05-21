@@ -1529,10 +1529,10 @@ $(document).ready(function () {
     if ($('.countdown-wrapper').length > 0) {
         // Template
         var template  = '<div class="time">';
-            template += '    <span class="count curr top"></span>';
-            template += '    <span class="count next top">></span>';
-            template += '    <span class="count next bottom"></span>';
-            template += '    <span class="count curr bottom"></span>';
+            template += '    <span class="count curr top">00</span>';
+            template += '    <span class="count next top">00</span>';
+            template += '    <span class="count next bottom">00</span>';
+            template += '    <span class="count curr bottom">00</span>';
             template += '    <span class="label"></span>';
             template += '</div>';
         
@@ -1547,7 +1547,7 @@ $(document).ready(function () {
             var parsed = str.split(':'),
             obj = {};
             labels.forEach(function(label, i) {
-                obj[label] = parsed[i]
+                obj[label] = parsed[i];
             });
             return obj;
         }
