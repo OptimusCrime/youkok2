@@ -188,12 +188,12 @@ class ElementController implements BaseController {
                     $this->model->setDirectory($row['is_directory']);
                     $this->model->setUrlFriendly($row['url_friendly']);
                     $this->model->setParent($row['parent']);
-                    $this->model->setEmpty($row['empty']);
+                    $this->model->setEmpty((($row['empty'] == '0') ? false : true));
                     $this->model->setChecksum($row['checksum']);
                     $this->model->setMimeType($row['mime_type']);
                     $this->model->setMissingImage($row['missing_image']);
-                    $this->model->setAccepted($row['is_accepted']);
-                    $this->model->setVisible($row['is_visible']);
+                    $this->model->setAccepted((($row['is_accepted'] == '0') ? false : true));
+                    $this->model->setVisible((($row['is_visible'] == '0') ? false : true));
                     $this->model->setAdded($row['added']);
                     $this->model->setSize($row['size']);
                     $this->model->setExam($row['exam']);
@@ -574,7 +574,7 @@ class ElementController implements BaseController {
      * Create cache string for this Element
      */
 
-    private function cacheFormat() {
+    public function cacheFormat() {
         $cache_temp = array();
         $fields = array('getId', 'getName', 'isDirectory', 'getUrlFriendly', 'getParent', 'isEmpty', 'getChecksum',
             'getMimeType', 'getMissingImage', 'isAccepted', 'isVisible', 'getAdded', 'getSize', 
@@ -582,6 +582,7 @@ class ElementController implements BaseController {
         
         // Loop each field
         foreach ($fields as $v) {
+            // Rename cache call fuction
             if (substr($v, 0, 3) == 'get') {
                 $v_pretty = strtolower(substr($v, 3));
             }
@@ -589,8 +590,31 @@ class ElementController implements BaseController {
                 $v_pretty = strtolower(substr($v, 2));
             }
             
+            
             if (method_exists('\Youkok2\Models\Element', $v)) {
-                $cache_temp[] = "'" . $v_pretty . "' => '" . addslashes(call_user_func(array($this->model, $v))) . "'";
+                // Get the value
+                $val = call_user_func(array($this->model, $v));
+                
+                // Check if we should wrap in quotes
+                $wrap = true;
+                if (is_bool($val) or is_null($val)) {
+                    $wrap = false;
+                    
+                    if (is_bool($val)) {
+                        $val = (int) $val;
+                    }
+                    if (is_null($val)) {
+                        $val = 'null';
+                    }
+                }
+                
+                // Add to cache array
+                if ($wrap) {
+                    $cache_temp[] = "'" . $v_pretty . "' => '" . addslashes($val) . "'";
+                }
+                else {
+                    $cache_temp[] = "'" . $v_pretty . "' => " . $val;
+                }
             }
         }
         
@@ -816,7 +840,7 @@ class ElementController implements BaseController {
             ':url_friendly' => $this->model->getUrlFriendly(),
             ':owner' => $this->model->getOwner(),
             ':parent' => $this->model->getParent(),
-            ':empty' => $this->model->isEmpty(),
+            ':empty' => (int) $this->model->isEmpty(),
             ':checksum' => $this->model->getChecksum(),
             ':mime_type' => $this->model->getMimeType(),
             ':missing_image' => (int) $this->model->getMissingImage(),
@@ -864,7 +888,7 @@ class ElementController implements BaseController {
                 ':url_friendly' => $this->model->getUrlFriendly(),
                 ':owner' => $this->model->getOwner(),
                 ':parent' => $this->model->getParent(),
-                ':empty' => $this->model->isEmpty(),
+                ':empty' => (int) $this->model->isEmpty(),
                 ':checksum' => $this->model->getChecksum(),
                 ':mime_type' => $this->model->getMimeType(),
                 ':missing_image' => (int) $this->model->getMissingImage(),

@@ -1,3 +1,15 @@
+Youkok2 - 1.3.2-pl  (22. mai 2014)
+====================================
+
+- [Info] Bugfixes
+- [Fixed] Fikset bugs relatert til caching.
+
+Youkok2 - 1.3.1-pl  (16. mai 2014)
+====================================
+
+- [Info] Bugfixes
+- [Fixed] Fikset nedtelling til eksamen.
+
 Youkok2 - 1.3.0-pl  (11. mai 2014)
 ====================================
 

@@ -83,7 +83,7 @@ Class CacheManager {
         }
         else {
             // Validate first
-            if (self::isCached($id)) {
+            if (self::isCached($id, $type)) {
                 // Is valid
                 return self::evalAndClean(self::$currentContent);
             }

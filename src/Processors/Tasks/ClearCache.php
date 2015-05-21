@@ -87,7 +87,12 @@ Class ClearCache extends Base {
         }
         
         // Return data
-        $this->outputData();
+        if ($this->returnData) {
+            $this->returnData();
+        }
+        if ($this->outputData) {
+            $this->outputData();
+        }
     }
     
     private function rmNonemptyDir($dir) {

@@ -27,13 +27,14 @@ class GetCacheData extends Base {
      * Constructor
      */
 
-    public function __construct($returnData = false) {
+    public function __construct($outputData = false, $returnData = false) {
         // Calling Base' constructor
-        parent::__construct($returnData);
+        parent::__construct($outputData, $returnData);
         
         if (self::requireCli() or self::requireAdmin()) {
             // Check database
-            if ($this->checkDatabase()) {
+            if ($this->makeDatabaseConnection()) {
+                // Get the data
                 $this->getCacheData();
                 
                 // Close database connection
@@ -48,37 +49,12 @@ class GetCacheData extends Base {
             $this->noAccess();
         }
         
-        // Return data
-        $this->returnData();
-    }
-
-    /*
-     * Check if we can connect to the database
-     */
-
-    private function checkDatabase() {
-        try {
-            Database::connect();
-
-            return true;
+        if ($this->outputData) {
+            $this->outputData();
         }
-        catch (Exception $e) {
-            $this->setData('code', 500);
-            $this->setData('msg', 'Could not connect to database');
-
-            return false;
+        if ($this->returnData) {
+            $this->returnData();
         }
-    }
-    
-    /*
-     * Reset exam information here
-     */
-    
-    private function resetExamData() {
-        $reset_exam  = "UPDATE archive" . PHP_EOL;
-        $reset_exam .= "SET exam = NULL" . PHP_EOL;
-        
-        Database::$db->query($reset_exam);
     }
 
     /*
@@ -92,12 +68,46 @@ class GetCacheData extends Base {
             
             if ($element->controller->wasFound()) {
                 $cache = CacheManager::getCache($element->getId(), 'i');
-                $this->setData('data', $cache);
-                var_dump($element);
+                
+                if ($cache === null) {
+                    $this->setData('code', 300);
+                    $this->setData('msg', 'Not cached');
+                }
+                else {
+                    $this->setData('code', 200);
+                    $this->setData('cache', $cache);
+                }
             }
+            
+            // Add cache format
+            $this->setData('cache_format', $element->controller->cacheFormat());
+            
+            // Add data
+            $this->setData('data', [
+                'id' => $element->getId(),
+                'name' => $element->getName(),
+                'url_friendly' => $element->getUrlFriendly(),
+                'owner' => $element->getOwner(),
+                'parent' => $element->getParent(),
+                'empty' => $element->isEmpty(),
+                'checksum' => $element->getChecksum(),
+                'mime_type' => $element->getMimeType(),
+                'missing_image' => $element->getMissingImage(),
+                'size' => $element->getSize(),
+                'directory' => $element->isDirectory(),
+                'link' => $element->isLink(),
+                'file' => $element->isFile(),
+                'accepted' => $element->isAccepted(),
+                'visible' => $element->isVisible(),
+                'exam' => $element->getExam(),
+                'url' => $element->getUrl(),
+                'added' => $element->getAdded()
+            ]);
         }
         else {
-            $this->setData('code', 200);
+            // Missing id
+            $this->setData('code', 500);
+            $this->setData('msg', 'No id');
         }
     }
 } 

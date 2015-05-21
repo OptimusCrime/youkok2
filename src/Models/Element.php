@@ -58,7 +58,7 @@ class Element {
         $this->urlFriendly = '';
         $this->owner = null;
         $this->parent = null;
-        $this->empty = 1;
+        $this->empty = true;
         $this->checksum = null;
         $this->mimeType = null;
         $this->missingImage = 0;
