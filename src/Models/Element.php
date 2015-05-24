@@ -12,13 +12,14 @@ namespace Youkok2\Models;
  * Load different classes into namespace
  */
 
+use \Youkok2\Models\BaseModel as BaseModel;
 use \Youkok2\Models\Controllers\ElementController as ElementController;
 
 /*
  * Model for a Element
  */
 
-class Element {
+class Element extends BaseModel {
 
     /*
      * Variables
@@ -44,6 +45,95 @@ class Element {
     private $added;
     
     /*
+     * Schema
+     */
+    
+    private $schema = [
+        'id' => [
+            'type' => 'integer',
+            'null' => false,
+        ],
+        'name' => [
+            'type' => 'string',
+            'null' => false,
+        ],
+        'url_friendly' => [
+            'method' => 'urlFriendly',
+            'type' => 'string',
+            'null' => false,
+        ],
+        'owner' => [
+            'type' => 'integer',
+            'null' => true,
+            'default' => null,
+        ],
+        'parent' => [
+            'type' => 'integer',
+            'null' => true,
+            'default' => null,
+        ],
+        'empty' => [
+            'type' => 'integer',
+            'null' => false,
+            'default' => 1,
+        ],
+        'checksum' => [
+            'type' => 'string',
+            'null' => true,
+            'default' => null,
+        ],
+        'mime_type' => [
+            'method' => 'mimeType',
+            'type' => 'string',
+            'null' => true,
+            'default' => null,
+        ],
+        'missing_image' => [
+            'method' => 'missingImage',
+            'type' => 'integer',
+            'null' => false,
+            'default' => 0,
+        ],
+        'size' => [
+            'type' => 'integer',
+            'null' => true,
+            'default' => null,
+        ],
+        'is_directory' => [
+            'method' => 'directory',
+            'type' => 'integer',
+            'null' => false,
+            'default' => 0,
+        ],
+        'is_accepted' => [
+            'method' => 'accepted',
+            'type' => 'integer',
+            'null' => false,
+            'default' => 0,
+        ],
+        'is_visible' => [
+            'method' => 'visible',
+            'type' => 'integer',
+            'null' => false,
+            'default' => 1,
+        ],
+        'exam' => [
+            'type' => 'datetime',
+            'null' => true,
+            'default' => null,
+        ],
+        'url' => [
+            'type' => 'string',
+            'null' => true,
+            'default' => null,
+        ],
+        'added' => [
+            'type' => 'datetime',
+            'null' => false,
+        ],
+    ];
+    
+    /*
      * Constructor
      */
     
@@ -54,20 +144,7 @@ class Element {
          * Set some default values
          */
         
-        $this->name = '';
-        $this->urlFriendly = '';
-        $this->owner = null;
-        $this->parent = null;
-        $this->empty = true;
-        $this->checksum = null;
-        $this->mimeType = null;
-        $this->missingImage = 0;
-        $this->size = null;
-        $this->directory = false;
-        $this->accepted = false;
-        $this->visible = true;
-        $this->exam = null;
-        $this->url = null;
+        $this->setDefaults($this, $this->schema);
     }
     
     /*

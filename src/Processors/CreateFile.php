@@ -53,8 +53,13 @@ class CreateFile extends Base {
             $this->setError();
         }
         
-        // Return data
-        $this->outputData();
+        // Handle output
+        if ($this->outputData) {
+            $this->outputData();
+        }
+        if ($this->returnData) {
+            return $this->returnData();
+        }
     }
     
     /*
@@ -79,75 +84,10 @@ class CreateFile extends Base {
                     // Get allowed filetypes
                     $allowed_filetypes = explode(',', ACCEPTED_FILEENDINGS);
                     
-                    // Check if .zip
-                    if (strtolower($file_type) == 'zip') {
-                        // TODO
-                        /*
-                        // Create random folder for the zip archive
-                        $tmp_dir = FILE_ROOT . '/tmp/' . substr(md5(rand(0, 1000000)), 0, 15) . time() . '/';
-                        mkdir($tmp_dir);
-                        
-                        // Extract
-                        $zipArchive = new ZipArchive();
-                        $result = $zipArchive->open($_FILES['files']['tmp_name'][0]);
-                        if ($result) {
-                            $zipArchive->extractTo($tmp_dir);
-                            $zipArchive->close();
-                        }
-                        
-                        // Get content of archive
-                        $iter = new RecursiveIteratorIterator(
-                            new RecursiveDirectoryIterator($tmp_dir, RecursiveDirectoryIterator::SKIP_DOTS),
-                                RecursiveIteratorIterator::SELF_FIRST,
-                                RecursiveIteratorIterator::CATCH_GET_CHILD
-                        );
-
-                        $zip_archive = array();
-                        foreach ($iter as $path => $dir) {
-                            if (!$dir->isDir()) {
-                                $zip_archive[] = $path;
-                            }
-                        }
-                        
-                        // Analyze content
-                        foreach ($zip_archive as $v) {
-                            if ($can_be_added) {
-                                $zip_archive_file_split = explode('.', $v);
-                                
-                                if (!in_array($zip_archive_file_split[count($zip_archive_file_split) - 1], $allowed_filetypes) or 
-                                    $zip_archive_file_split[count($zip_archive_file_split) - 1] == 'zip') {
-                                    // This file is not allowed!
-                                    $can_be_added = false;
-                                    
-                                    // Add error message
-                                    $this->addMessage('\'' . $_FILES['files']['name'][0] . '\' kunne ikke lastes opp fordi den inneholder fil(er) av typer som ikke er godkjent.', 'danger');
-                                    die($zip_archive_file_split[count($zip_archive_file_split) - 1]);
-                                    // Break
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        // Remove folder
-                        $iter2 = new RecursiveIteratorIterator(
-                        new RecursiveDirectoryIterator($tmp_dir, RecursiveDirectoryIterator::SKIP_DOTS),
-                        RecursiveIteratorIterator::CHILD_FIRST
-                        );
-
-                        foreach ($iter2 as $fileinfo) {
-                            $remove_op = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
-                            $remove_op($fileinfo->getRealPath());
-                        }
-
-                        rmdir($tmp_dir);
-                        */
-                    }
-                    else {
-                        // Check filetype
-                        if (in_array($file_type, $allowed_filetypes)) {
-                            // Valid request
-                            $request_ok = true;
-                        }
+                    // Check filetype
+                    if (in_array($file_type, $allowed_filetypes)) {
+                        // Valid request
+                        $request_ok = true;
                     }
                 }
             }
@@ -234,9 +174,6 @@ class CreateFile extends Base {
             if (Me::isLoggedIn() and $parent->isEmpty()) {
                 $parent->setEmpty(false);
                 $parent->update();
-                
-                // Clear cache on parent
-                $parent->controller->deleteCache();
             }
             
             // Add message

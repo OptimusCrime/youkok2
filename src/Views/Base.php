@@ -312,7 +312,7 @@ class Base extends Youkok2 {
         $this->addSiteData('cache_time', CacheManager::loadTypeaheadCache());
         
         // Load site data
-        $this->template->assign('SITE_DATA', json_encode($this->siteData));
+        $this->template->assign('SITE_DATA', addslashes(json_encode($this->siteData)));
         
         // Display load time
         $time = \PHP_Timer::stop();

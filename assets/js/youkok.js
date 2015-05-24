@@ -128,7 +128,7 @@ $(document).ready(function () {
     //
     //
     
-    site_data = jQuery.parseJSON($('#site-data').html());
+    site_data = jQuery.parseJSON(SITE_DATA);
     
     //
     // Moment.js

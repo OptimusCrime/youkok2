@@ -53,8 +53,13 @@ class CreateFolder extends Base {
             $this->setError();
         }
         
-        // Return data
-        $this->outputData();
+        // Handle output
+        if ($this->outputData) {
+            $this->outputData();
+        }
+        if ($this->returnData) {
+            return $this->returnData();
+        }
     }
     
     /*
@@ -80,8 +85,11 @@ class CreateFolder extends Base {
         // Check if we are good to go            
         if ($request_ok) {
             // Check duplicates for url friendly
-            $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
-            $url_friendly = Utilities::urlSafe($_POST['name'], true);
+            $num = 2;
+            $url_friendly_base = Utilities::urlSafe($_POST['name']);
+            $url_friendly = Utilities::urlSafe($_POST['name']);
+            
+            // Loop 'till no collides
             while (true) {
                 $get_duplicate = "SELECT id
                 FROM archive 
@@ -92,8 +100,45 @@ class CreateFolder extends Base {
                 $get_duplicate_query->execute(array(':id' => $parent->getId(),
                     ':url_friendly' => $url_friendly));
                 $row_duplicate = $get_duplicate_query->fetch(\PDO::FETCH_ASSOC);
+                
+                // Check if any url patterns collide
                 if (isset($row_duplicate['id'])) {
-                    $url_friendly = Utilities::urlSafe($letters[rand(0, count($letters) - 1)] . $url_friendly);
+                    // Generate new url friendly
+                    $url_friendly = Utilities::urlSafe($url_friendly_base . '-' . $num);
+                    
+                    // Increase num
+                    $num++;
+                }
+                else {
+                    // Gogog
+                    break;
+                }
+            }
+            
+            // Check duplicates for names
+            $num = 2;
+            $name_base = $_POST['name'];
+            $name = $_POST['name'];
+            
+            // Loop 'till no collides
+            while (true) {
+                $get_duplicate2 = "SELECT id
+                FROM archive 
+                WHERE parent = :id
+                AND name = :name";
+                
+                $get_duplicate2_query = Database::$db->prepare($get_duplicate2);
+                $get_duplicate2_query->execute(array(':id' => $parent->getId(),
+                    ':name' => $name));
+                $row_duplicate2 = $get_duplicate2_query->fetch(\PDO::FETCH_ASSOC);
+                
+                // Check if any url patterns collide
+                if (isset($row_duplicate2['id'])) {
+                    // Generate new url friendly
+                    $name = $name_base . ' (' . $num . ')';
+                    
+                    // Increase num
+                    $num++;
                 }
                 else {
                     // Gogog
@@ -103,7 +148,7 @@ class CreateFolder extends Base {
             
             // Set information
             $element = new Element();
-            $element->setName($_POST['name']);
+            $element->setName($name);
             $element->setUrlFriendly($url_friendly);
             $element->setParent($parent->getId());
             $element->setDirectory(true);

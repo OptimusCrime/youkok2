@@ -28,13 +28,14 @@ class SyncEmpty extends Base {
      * Constructor
      */
 
-    public function __construct($returnData = false) {
+    public function __construct($outputData = false, $returnData = false) {
         // Calling Base' constructor
-        parent::__construct($returnData);
+        parent::__construct($outputData, $returnData);
         
+        // Check access (only cli and admin)
         if (self::requireCli() or self::requireAdmin()) {
             // Check database
-            if ($this->checkDatabase()) {
+            if ($this->makeDatabaseConnection()) {
                 // Sync
                 $this->syncElements();
                 
@@ -50,25 +51,12 @@ class SyncEmpty extends Base {
             $this->noAccess();
         }
         
-        // Return data
-        $this->returnData();
-    }
-
-    /*
-     * Check if we can connect to the database
-     */
-
-    private function checkDatabase() {
-        try {
-            Database::connect();
-
-            return true;
+        // Handle output
+        if ($this->outputData) {
+            $this->outputData();
         }
-        catch (Exception $e) {
-            $this->setData('code', 500);
-            $this->setData('msg', 'Could not connect to database');
-
-            return false;
+        if ($this->returnData) {
+            return $this->returnData();
         }
     }
 
@@ -81,14 +69,15 @@ class SyncEmpty extends Base {
         $this->setData('code', 200);
         $update_num = 0;
         
-        $get_all_elements  = "SELECT id, empty" . PHP_EOL;
-        $get_all_elements .= "FROM archive";
+        $get_all_directories  = "SELECT id, empty" . PHP_EOL;
+        $get_all_directories .= "FROM archive";
+        $get_all_directories .= "WHERE is_directory = 1";
         
-        $get_all_elements_query = Database::$db->prepare($get_all_elements);
-        $get_all_elements_query->execute();
+        $get_all_directories_query = Database::$db->prepare($get_all_directories);
+        $get_all_directories_query->execute();
         
         // Append to array
-        while ($row = $get_all_elements_query->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $get_all_directories_query->fetch(\PDO::FETCH_ASSOC)) {
             // Check if is actully empty
             $check_empty  = "SELECT id" . PHP_EOL;
             $check_empty .= "FROM archive" . PHP_EOL;
@@ -121,6 +110,8 @@ class SyncEmpty extends Base {
                 $update_num++;
             }
         }
+        
+        $this->setData('updated', $update_num);
         
         // Check if we should clear cache
         if ($update_num > 0) {

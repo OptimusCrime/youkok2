@@ -10,19 +10,20 @@
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
     [[+nocache]][[+if !$COMPRESS_ASSETS]]<link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/youkok.css?v=[[+$VERSION]]" />[[+else]]<link rel="stylesheet" type="text/css" href="assets/css/youkok.min.css" />[[+/if]]
+    
     [[+if $BASE_USER_IS_ADMIN]]<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjpbLG7YxoVW1zeiEFAEluUhE5tqcEQV0"></script>[[+/if]]
-[[+/nocache]]
+    
+    <script type="text/javascript">var SITE_DATA = "[[+$SITE_DATA]]";</script>[[+/nocache]]
 </head>
 <body>
-[[+nocache]]<div id="site-data">[[+$SITE_DATA]]</div>[[+/nocache]]
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="[[+$SITE_RELATIVE]]">Youkok2.com</a>
         </div>[[+nocache]]
@@ -34,8 +35,7 @@
                 <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om Youkok2</a></li>
                 <li[[+if $HEADER_MENU == 'HELP']] class="active"[[+/if]]><a href="hjelp">Hjelp</a></li>
                 [[+if $BASE_USER_IS_LOGGED_IN == true]]<li class="hidden"><a href="profil/innstillinger">Min bruker</a></li>
-                <li class="hidden"><a href="logg-ut">Logg ut</a></li>
-                [[+else]]<li class="hidden"><a href="logg-inn">Logg inn</a></li>[[+/if]]
+                <li class="hidden"><a href="logg-ut">Logg ut</a></li>[[+else]]<li class="hidden"><a href="logg-inn">Logg inn</a></li>[[+/if]]
 
             </ul>
             <ul class="nav navbar-nav navbar-right" id="navbar-dropdown-outer">[[+if $BASE_USER_IS_LOGGED_IN == true]]
@@ -48,6 +48,7 @@
                         <li><a href="profil/innstillinger">Innstillinger</a></li>
                         <li><a href="profil/historikk">Karma / Historikk</a></li>
                         [[+if $BASE_USER_IS_ADMIN == true]]<li><a href="admin">Admin</a></li>[[+/if]]
+                        
                         <li class="divider"></li>
                         <li><a href="logg-ut">Logg ut</a></li>
                     </ul>
@@ -95,9 +96,6 @@
 </div>
 <div class="container" id="main">
     <div class="row">
-        [[+nocache]]
-            [[+if $SITE_MESSAGES != '']]
-                [[+$SITE_MESSAGES]]
-            [[+/if]]
-        [[+/nocache]]
+        [[+nocache]][[+if $SITE_MESSAGES != '']][[+$SITE_MESSAGES]][[+/if]][[+/nocache]]
+        
         <div class="col-xs-12">

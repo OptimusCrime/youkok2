@@ -155,7 +155,7 @@ class Base extends Youkok2 {
      * Close database (if open)
      */
     
-    public function closeConnection () {
+    public function closeConnection() {
         if (Database::$db !== null) {
             Database::close();
         }

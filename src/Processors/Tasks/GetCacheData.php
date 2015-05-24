@@ -64,6 +64,30 @@ class GetCacheData extends Base {
     private function getCacheData() {
         if (isset($_GET['id']) and is_numeric($_GET['id'])) {
             $element = new Element();
+            
+            // Add pre data
+            $this->setData('pre', [
+                'id' => $element->getId(),
+                'name' => $element->getName(),
+                'url_friendly' => $element->getUrlFriendly(),
+                'owner' => $element->getOwner(),
+                'parent' => $element->getParent(),
+                'empty' => $element->isEmpty(),
+                'checksum' => $element->getChecksum(),
+                'mime_type' => $element->getMimeType(),
+                'missing_image' => $element->getMissingImage(),
+                'size' => $element->getSize(),
+                'directory' => $element->isDirectory(),
+                'link' => $element->isLink(),
+                'file' => $element->isFile(),
+                'accepted' => $element->isAccepted(),
+                'visible' => $element->isVisible(),
+                'exam' => $element->getExam(),
+                'url' => $element->getUrl(),
+                'added' => $element->getAdded()
+            ]);
+            
+            // Create element
             $element->createById($_GET['id']);
             
             if ($element->controller->wasFound()) {
