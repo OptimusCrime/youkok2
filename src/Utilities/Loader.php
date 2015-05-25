@@ -207,11 +207,13 @@ class Loader {
                 else {
                     // Simply set the entire url as params, something is fucked
                     $this->basePath = '/' . $request_path;
-                    $this->fullPath = '/' . $request_path;
                     
                     // Get number of slashes in string
                     $this->pathLength = substr_count($request_path, '/');
                 }
+                
+                // Set full path to everything either way
+                $this->fullPath = '/' . $request_path;
             }
             else {
                 // Store the paths first
