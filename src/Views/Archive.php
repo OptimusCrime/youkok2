@@ -34,8 +34,8 @@ class Archive extends Base {
         parent::__construct();
         
         // Set information to site data
-        $this->addSiteData('user_online', Me::isLoggedIn());
-        $this->addSiteData('user_can_contribute', Me::canContribute());
+        $this->addSiteData('view', 'archive');
+        $this->addSiteData('can_contribute', Me::canContribute());
         
         // Set information directly to Smarty
         $this->template->assign('ARCHIVE_USER_CAN_CONTRIBUTE', 'ARCHIVE');
