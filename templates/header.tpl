@@ -3,6 +3,8 @@
 <head>
     <base href="[[+$SITE_URL_FULL]]" />
     <title>Youkok2.com :: [[+$SITE_TITLE]]</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" href="favicon.png" />
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="description" content="[[+if isset($SITE_DESCRPTION)]][[+$SITE_DESCRPTION]][[+else]]Youkok2 er den beste kokeboka for studenter på NTNU i en knipen studiehverdag.[[+/if]]" />

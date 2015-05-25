@@ -49,9 +49,15 @@ class Routes {
             array('path' => '/retningslinjer', 'method' => 'displayTerms'),
             array('path' => '/hjelp', 'method' => 'displayHelp'),
             array('path' => '/karma', 'method' => 'displayKarma'),
-            array('path' => '/changelog.txt', 'method' => 'displayChangeLog'),
+            
         ),
-
+        
+        'StaticFiles' => array(
+            array('path' => '/changelog.txt', 'method' => 'returnChangelog'),
+            array('path' => '/favicon.ico', 'method' => 'returnFavicon'),
+            array('path' => '/favicon.png', 'method' => 'returnFavicon'),
+        ),
+        
         'NotFound' => array(
             array('path' => '/404'),
         ),

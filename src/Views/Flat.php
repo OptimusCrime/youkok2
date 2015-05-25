@@ -77,17 +77,4 @@ class Flat extends Base {
         // Display the page
         $this->displayAndCleanup('flat_karma.tpl');
     }
-    public function displayChangeLog() {
-        // Get changelog content
-        $content = file_get_contents(BASE_PATH . '/files/changelog.md');
-        
-        // Assign content to placeholder
-        $this->template->assign('CHANGELOG_CONTENT', $content);
-        
-        // Set headers (to fix unicode fuckup)
-        header('Content-Type: text/plain; charset=utf-8');
-        
-        // Render
-        $this->displayAndCleanup('changelog.tpl');
-    }
 }
