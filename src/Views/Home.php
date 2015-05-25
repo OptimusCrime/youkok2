@@ -13,8 +13,8 @@ namespace Youkok2\Views;
  */
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
+use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
-use \Youkok2\Shared\Elements as Elements;
 use \Youkok2\Utilities\Database as Database;
 
 /*
@@ -31,13 +31,13 @@ class Home extends Base {
         parent::__construct($kill);
         
         // Load default boxes
-        $this->template->assign('HOME_NEWEST', Elements::getNewest());
-        $this->template->assign('HOME_MOST_POPULAR', Elements::getMostPopular());
+        $this->template->assign('HOME_NEWEST', Element::getNewest());
+        $this->template->assign('HOME_MOST_POPULAR', Element::getMostPopular());
         
         // Check if this user is logged in
         if (Me::isLoggedIn()) {
             $this->template->assign('HOME_USER_LATEST', Me::loadLastDownloads());
-            $this->template->assign('HOME_USER_FAVORITES', Elements::getFavorites());
+            $this->template->assign('HOME_USER_FAVORITES', Element::getFavorites());
         }
         else {
             $this->loadInfobox();

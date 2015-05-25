@@ -14,6 +14,7 @@ namespace Youkok2\Models;
 
 use \Youkok2\Models\BaseModel as BaseModel;
 use \Youkok2\Models\Controllers\ElementController as ElementController;
+use \Youkok2\Models\StaticControllers\ElementStaticController as ElementStaticController;
 
 /*
  * Model for a Element
@@ -274,5 +275,18 @@ class Element extends BaseModel {
     }
     public function update() {
         $this->controller->update();
+    }
+    
+     /*
+     * Static functions overload
+     */
+    
+    public static function __callStatic($name, $arguments) {
+        // Check if method exists
+        if (method_exists('\Youkok2\Models\StaticControllers\ElementStaticController', $name)) {
+            // Call method and return response
+            return call_user_func_array(array('\Youkok2\Models\StaticControllers\ElementStaticController', 
+                $name), $arguments);
+        }
     }
 } 

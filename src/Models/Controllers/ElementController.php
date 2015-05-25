@@ -14,7 +14,6 @@ namespace Youkok2\Models\Controllers;
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
-use \Youkok2\Shared\Elements as Elements;
 use \Youkok2\Models\Course as Course;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\CacheManager as CacheManager;

@@ -13,7 +13,7 @@ namespace Youkok2\Views;
  * Define what classes to use
  */
 
-use \Youkok2\Shared\Elements as SharedElements;
+use \Youkok2\Models\Element as Element;
 use \Youkok2\Utilities\Database as Database;
 
 /*
@@ -93,7 +93,7 @@ class Graybox extends Base {
      */
     
     private function generateNewest() {
-        echo '<ul class="list-group">' . SharedElements::getNewest() . '</ul>';
+        echo '<ul class="list-group">' . Element::getNewest() . '</ul>';
     }
     
     /*
@@ -101,7 +101,7 @@ class Graybox extends Base {
      */
     
     private function generateDownloads() {
-        echo '<ul class="list-group">' . SharedElements::getMostPopular(4) . '</ul>';
+        echo '<ul class="list-group">' . Element::getMostPopular(4) . '</ul>';
     }
     
     /*

@@ -1,15 +1,15 @@
 <?php
 /*
- * File: Elements.php
- * Holds: Methods for fetching several Elements in a cluser
- * Created: 02.10.13
+ * File: ElementStaticController.php
+ * Holds: Holds methods for the static Element class
+ * Created: 26.05.2015
  * Project: Youkok2
 */
 
-namespace Youkok2\Shared;
+namespace Youkok2\models\StaticControllers;
 
 /*
- * Define what classes to use
+ * Loads other classes
  */
 
 use \Youkok2\Youkok2 as Youkok2;
@@ -21,10 +21,10 @@ use \Youkok2\Utilities\Routes as Routes;
 use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
- * The class Elements, represents loading of a clusered collection Element
+ * The Course class
  */
 
-class Elements {
+class ElementStaticController {
     
     /*
      * Fetch newest Elements
