@@ -94,6 +94,10 @@ class Harness {
         echo "\033[32m╚═══════════════════════════════════════════════════════════════════╝\033[0m\n";
         echo "\n\n";
         
+        // Drop foreign keys on drop table (for eazy sake)
+        Database::$db->query('SET foreign_key_checks = 0');
+        
+        // Loop till all tables are dropped
         while (true) {
             $get_all_tables = "SHOW TABLES
             FROM youkok2_tests";
@@ -112,6 +116,9 @@ class Harness {
                 $drop_table_query = Database::$db->exec($drop_table);
             }
         }
+        
+        // Use foreign key constraints again
+        Database::$db->query('SET foreign_key_checks = 1');
     }
     
     /*
