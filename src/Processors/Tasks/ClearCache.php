@@ -60,14 +60,12 @@ Class ClearCache extends Base {
             // Copy
             if (file_exists(BASE_PATH . '/courses.json')) {
                 copy(BASE_PATH . '/courses.json', CACHE_PATH . '/courses.json');
+                unlink(BASE_PATH . '/courses.json');
             }
             if (file_exists(BASE_PATH . '/typeahead.json')) {
                 copy(BASE_PATH . '/typeahead.json', CACHE_PATH . '/typeahead.json');
+                unlink(BASE_PATH . '/typeahead.json');
             }
-            
-            // Delete
-            unlink(BASE_PATH . '/courses.json');
-            unlink(BASE_PATH . '/typeahead.json');
             
             /*
              * Youkok2 cache

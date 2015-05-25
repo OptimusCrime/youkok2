@@ -1,4 +1,10 @@
 <?php
+/*
+ * File: UtilitiesTest.php
+ * Holds: Testes the Utilities class
+ * Created: 25.05.2015
+ * Project: Youkok2
+ */
 
 use \Youkok2\Utilities\Utilities as Utilities;
 

@@ -109,7 +109,7 @@ Class CacheManager {
         if ($force) {
             // Check if directory exists
             $hash = self::getHash($id, $type);
-            $parent_dir = BASE_PATH . '/cache/elements/' . substr($hash, 0, 1);
+            $parent_dir = CACHE_PATH . '/elements/' . substr($hash, 0, 1);
             if (!file_exists($parent_dir)) {
                 mkdir($parent_dir);
             }
@@ -174,7 +174,7 @@ Class CacheManager {
 
     private static function getFileName($id, $type) {
         $hash = self::getHash($id, $type);
-        return BASE_PATH . '/cache/elements/' . substr($hash, 0, 1) . '/' . substr($hash, 1, 1) . '/' . $hash . '_' . $type . '_' . $id . '_c.php';
+        return CACHE_PATH . '/elements/' . substr($hash, 0, 1) . '/' . substr($hash, 1, 1) . '/' . $hash . '_' . $type . '_' . $id . '_c.php';
     }
 
     /*

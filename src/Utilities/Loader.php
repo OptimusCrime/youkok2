@@ -24,14 +24,28 @@ class Loader {
      * Constructor
      */
     
+    private $override;
     private $basePath;
     private $fullPath;
     private $pathLength;
+    private $providedPath;
+    private $match;
 
-    public function __construct() {
-        // Get the base path (/[something])
+    public function __construct($path = null) {
+        // Check if overriding
+        if ($path !== null) {
+            // Overriding
+            $this->override = true;
+            $this->providedPath = $path;
+        }
+        else {
+            // We are not overriding
+            $this->override = false;
+        }
+        
+        // Get the correct (dynamic) base path
         $this->getBasePath();
-
+        
         // Check if proseccor or view is requested
         if ($this->basePath == Routes::PROSECESSOR) {
             // Get processor
@@ -133,12 +147,19 @@ class Loader {
             $view .= 'NotFound';
         }
         
-        // Run instance
-        $view_instance = new $view();
-        
-        // Check if we should call method on view
-        if ($method !== null) {
-            $view_instance->$method();
+        // Check if override
+        if ($this->override) {
+            // We are overriding, simply set view and method, if set
+            $this->match = $view . ($method === null ? '' : '.' . $method);
+        }
+        else {
+            // Run instance
+            $view_instance = new $view();
+            
+            // Check if we should call method on view
+            if ($method !== null) {
+                $view_instance->$method();
+            }
         }
     }
     
@@ -147,31 +168,58 @@ class Loader {
      */
     
     private function getBasePath() {
-        // Checking wether the path is set or not
-
-        $request_path = self::getQuery();
-
+        // Check if overriding
+        if ($this->override) {
+            $request_path = $this->providedPath;
+        }
+        else {
+            // Checking wether the path is set or not
+            $request_path = self::getQuery();
+        }
+        
         if (isset($request_path)) {
-            // Store the paths first
-            $this->basePath = '/' . $request_path;
-            $this->fullPath = '/' . $request_path;
-            
-            // Set path length to 1
-            $this->pathLength = 1;
-            
             // We have a path, find the base-path to include the correct script
-            if (strpos($request_path, '/') !== false) {
-                // We have multiple slashed, use the first one as base for path-lookup
-                $path_split = explode('/', $request_path);
-                $this->basePath = '/' . $path_split[0];
+            if ($request_path == '' or $request_path == '/') {
+                // Store the paths first
+                $this->basePath = '/';
+                $this->fullPath = '/';
                 
-                // Update path to the actual number
-                $this->pathLength = 0;
+                // Set path length to 1
+                $this->pathLength = 1;
+            }
+            elseif (strpos($request_path, '/') !== false) {
+                // We have multiple slashed, use the first which has a length one as base for path-lookup
+                $path_split = explode('/', $request_path);
+                
+                // Clean the path
+                $path_clean = [];
                 foreach ($path_split as $path_split_seq) {
                     if (strlen($path_split_seq) > 0) {
-                        $this->pathLength++;
+                        $path_clean[] = $path_split_seq;
                     }
                 }
+                
+                // Check if anything was found after cleaning
+                if (count($path_clean) > 0) {
+                    $this->basePath = '/' . $path_clean[0];
+                    $this->pathLength = count($path_clean);
+                }
+                else {
+                    // Simply set the entire url as params, something is fucked
+                    $this->basePath = '/' . $request_path;
+                    $this->fullPath = '/' . $request_path;
+                    
+                    // Get number of slashes in string
+                    $this->pathLength = substr_count($request_path, '/');
+                }
+            }
+            else {
+                // Store the paths first
+                $this->basePath = '/' . $request_path;
+                $this->fullPath = '/' . $request_path;
+                
+                // Set path length to 1
+                $this->pathLength = 1;
             }
         }
         else {
@@ -205,5 +253,13 @@ class Loader {
             // Apache/nginx/etc
             return (isset($_GET['q']) ? $_GET['q'] : '/');
         }
+    }
+    
+    /*
+     * Return whatever was matches
+     */
+    
+    public function getMatch() {
+        return $this->match;
     }
 }

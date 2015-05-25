@@ -6,6 +6,7 @@
  * Project: Youkok2
 */
 
+use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Utilities\Database as Database;
 
 /*
@@ -70,6 +71,15 @@ class Harness {
         // Create cache directory
         if (!is_dir(CACHE_PATH)) {
             mkdir(CACHE_PATH);
+        }
+        
+        // Create cache elemet sub directory
+        if (!is_dir(CACHE_PATH . '/elements/')) {
+            mkdir(CACHE_PATH . '/elements/');
+        }
+        else {
+            // Clear cache
+            Youkok2::runProcessor('tasks/clearcache');
         }
     }
     
