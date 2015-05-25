@@ -88,6 +88,7 @@ a:visited {
     border-color: #dddddd;
     background-color: #fff;
     padding: 10px 15px;
+    margin-bottom: 22px;
 }
 .list-group-item {
     word-wrap: break-word;
@@ -591,10 +592,14 @@ a:visited {
     border-top: 1px solid #dddddd;
     padding-top: 5px;
     margin-top: 10px;
+    padding-bottom: 15px;
 }
 #archive-title h1,
 #archive-title h2 {
     display: inline-block;
+}
+#archive-title h1 {
+    margin: 0px;
 }
 #archive-title h2 {
     font-size: 22px;
@@ -618,6 +623,12 @@ a:visited {
     border-bottom: 1px solid #dddddd;
     padding-bottom: 10px;
     margin-bottom: 5px;
+}
+.sidebar-controlls .sidebar-element-inner {
+    padding-bottom: 0px;
+}
+#archive-create-controlls button {
+    margin-bottom: 15px;
 }
 #archive-create-link-name-holder {
     display: none;
@@ -814,6 +825,14 @@ a:visited {
 @media all and (max-width: 990px) {
     .archive-item-dropdown-arrow {
         display: block;
+    }
+    #archive-title {
+        padding-bottom: 10px;
+    }
+}
+@media all and (max-width: 768px) {
+     #archive-title {
+        padding-bottom: 10px;
     }
 }
 

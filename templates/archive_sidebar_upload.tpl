@@ -1,6 +1,5 @@
 [[+nocache]]
-<div id="archive-controlls" class="sidebar-element[[+if !$BASE_USER_IS_LOGGED_IN]] archive-controlls-offline[[+/if]]">
-    <h3>Kontroller</h3>
+<div id="archive-controlls" class="sidebar-controlls sidebar-element[[+if !$BASE_USER_IS_LOGGED_IN]] archive-controlls-offline[[+/if]]">
     <div class="sidebar-element-inner">
         [[+if $ARCHIVE_USER_CAN_CONTRIBUTE or !$BASE_USER_IS_LOGGED_IN]]
             <div id="archive-create-controlls">
