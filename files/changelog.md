@@ -1,3 +1,11 @@
+Youkok2 - 1.3.4-pl  (26. mai 2014)
+====================================
+
+- [Info] Bugfixes och søk
+- [Fixed] Diverse bugs.
+- [Fixed] Søk funker igjen.
+- [Other] Mindre speedboost.
+
 Youkok2 - 1.3.3-pl  (25. mai 2014)
 ====================================
 
