@@ -1,35 +1,3 @@
-//
-// Searching
-//
-
-function check_check_search(target) {
-    // Find what values to use
-    var val = $('#' + target).val();
-    
-    // Some variables
-    var datums = courses.index.datums;
-    var datums_size = datums.length;
-    var was_found = false;
-
-    // Now loop 'em
-    for (var i = 0; i < datums_size; i++) {
-        // Store reference
-        var current_datum = datums[i];
-
-        // Check if match
-        if (current_datum.course == val) {
-            // Match!
-            was_found = true;
-            window.location = site_data.search_base + current_datum.url;
-            break;
-        }
-    }
-
-    // Check if was found or not
-    if (!was_found) {
-        $('#' + target).parent().parent().parent().submit();
-    }
-}
 
 //
 // Variables
@@ -49,89 +17,11 @@ $(document).ready(function () {
     // Typeahead
     //
     
-    // Check if we should clear cache first
-    if (site_data.cache_time != localStorage.getItem('ts')) {
-        // Clear first
-        localStorage.clear();
-        
-        // Assign ts
-        localStorage.setItem('ts', site_data.cache_time);
-    }
-    $('#prefetch .typeahead,#prefetch2 .typeahead').typeahead({
-        hint: true,
-        highlight: true,
-    }, {
-        name: 'courses',
-        displayKey: 'course',
-        source: courses.ttAdapter(),	
-    }).on('typeahead:selected', function($e, datum) {
-        check_check_search($e.target.id);
-    });
-
-    //
-    // Search
-    //
-
-    $('#s,#s2').on('keyup', function(e) {
-        if (e.keyCode == 13) {
-            check_check_search(this.id);
-        }
-    });
-    $('#nav-search,#nav-search2').on('click', function() {
-        check_check_search($(this).parent().find('.tt-input').attr('id'));
-    });
     
-    //
-    // Archive context menu2
-    //
     
-    $('.archive-item-dropdown').on('click', function () {
-        var $caret = $('i', this);
-        var $dropdown = $('.archive-dropdown-content', this);
-        
-        if ($dropdown.is(':visible')) {
-            $dropdown.slideUp(400, function () {
-                $caret.removeClass('fa-caret-up').addClass('fa-caret-down');
-            });
-        }
-        else {
-            $dropdown.slideDown(400, function () {
-                $caret.removeClass('fa-caret-down').addClass('fa-caret-up');
-            });
-        }
-    });
-    $('.archive-dropdown-close').on('click', function(e) {
-        e.preventDefault();
-        $(this).parent().parent().parent().parent().find('.archive-item-dropdown-arrow').trigger('click');
-    });
-    
-    //
-    // Archive context menu
-    //
 
-    var archive_id = 0;
-    var $archive_right_click = null;
-    var $archive_context_menu = $('#archive-context-menu');
-    var ignore_click_outside = false;
-    
-    if (site_data.user_online != 1) {
-        $('#archive-context-newflag-outer').hide();
-        $('#archive-context-report').parent().hide();
-    }
-    if ($('#archive-can-c').val() != 1) {
-        $('#archive-context-newflag-outer').hide();
-    }
 
-    $archive_context_menu.bind('clickoutside', function(e) {
-        if (ignore_click_outside) {
-            ignore_click_outside = false;
-        }
-        else {
-            if ($archive_context_menu.is(':visible')) {
-                $archive_context_menu.hide();
-            }
-        }
-    });
+
     /*$('body').on('contextmenu', '.archive-item', function(e) {
         ignore_click_outside = true;
 
@@ -286,50 +176,6 @@ $(document).ready(function () {
         $('#modal-report').modal('show');
     });
 
-    //
-    // Favorite
-    //
-
-    $('#archive-heading-star').on('click', function () {
-        // Store
-        var $that = $(this);
-
-        // Check which way to favorite
-        var favorite_type = 'add';
-        
-        if ($that.hasClass('archive-heading-star-1')) {
-            favorite_type = 'remove';
-        }
-
-        // Gogogo request
-        $.ajax({
-            cache: false,
-            type: "post",
-            url: 'processor/favorite',
-            data: { 
-                id: $that.data('archive-id') ,
-                type: favorite_type
-            },
-            success: function(json) {
-                if (json.code == 200) {
-                    // Everything went better than expected :)
-                    if (favorite_type == 'add') {
-                        $that.removeClass('archive-heading-star-0').addClass('archive-heading-star-1');
-                    }
-                    else {
-                        $that.removeClass('archive-heading-star-1').addClass('archive-heading-star-0');
-                    }
-
-                    // Display message
-                    display_message(json.msg);
-                }
-                else {
-                    // Something went wrong
-                    alert('Noe gikk visst galt her. Ups!');
-                }
-            }
-        });
-    });
 
 
     //
@@ -885,24 +731,6 @@ $(document).ready(function () {
         
         return false;
     });
-
-    //
-    // History
-    //
-
-    if ($('#archive-history').length > 0) {
-        $.ajax({
-            cache: false,
-            type: "post",
-            url: "processor/history/get",
-            data: {
-                id: site_data.archive_id, 
-            },
-            success: function(json) {
-                $('#archive-history ul').html(json.html);
-            }
-        });
-    }
 
     //
     // Alerts

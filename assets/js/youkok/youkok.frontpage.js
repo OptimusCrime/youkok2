@@ -6,6 +6,15 @@ var Youkok = (function (module) {
     module.frontpage = {
         
         /*
+         * Init the module
+         */
+        init: function() {
+            $('#home-most-popular-dropdown li').on('click', Youkok.frontpage.changeMostPopular);
+            $('#home-most-popular-dropdown li').on('click', Youkok.frontpage.changeMostPopular);
+            $('.star-remove').on('click', Youkok.frontpage.removeFavorite);
+        },
+        
+        /*
          * Change most popular choice
          */
          changeMostPopular: function(e) {

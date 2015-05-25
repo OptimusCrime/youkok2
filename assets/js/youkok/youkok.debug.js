@@ -6,10 +6,22 @@ var Youkok = (function (module) {
     module.debug = {
         
         /*
+         * Init the module
+         */
+        init: function () {
+            // Add listeners
+            $('#toggle-queries').on('click', Youkok.debug.toggleQueries);
+            $('#toggle-cache-loads').on('click', Youkok.debug.toggleCache);
+        },
+        
+        /*
          * Toggle display/collaps for debug queries
          */
         toggleQueries: function(e) {
+            // Prevent default
             e.preventDefault();
+            
+            // Save scope
             var $that = $(this);
             
             // Hide other
@@ -36,7 +48,10 @@ var Youkok = (function (module) {
          * Toggle display/collaps for debug cache
          */
         toggleCache: function(e) {
+            // Prevent default
             e.preventDefault();
+            
+            // Save scope
             var $that = $(this);
             
             // Hide other

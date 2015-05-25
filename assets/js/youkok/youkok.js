@@ -4,7 +4,6 @@ var Youkok = (function (module) {
      * Private variables
      */
     var data; // Holds the site information
-    var courses; // Holds Bloodhound
     
     /*
      * Init function
@@ -41,14 +40,27 @@ var Youkok = (function (module) {
         // Apply tooltips
         $('.list-group-item a, .list-group-item .moment-timestamp').tooltip();
         
-        // Start Bloodhound
-        courses = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('course'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            limit: 10,
-            prefetch: 'processor/search/courses.json',
-        });
-        courses.initialize();
+        // Init submodules
+        Youkok.initSubModules();
+    };
+    
+    /*
+     * Init different sub modules
+     */
+    module.initSubModules = function() {
+        // Independent sub modules (always loaded)
+        Youkok.search.init();
+        Youkok.debug.init();
+        
+        // Archive
+        if (Youkok.getData('view') == 'archive') {
+            Youkok.archive.init();
+        }
+        
+        // Frontpage
+        if (Youkok.getData('view') == 'frontpage') {
+            Youkok.frontpage.init();
+        }
     };
     
     /*
