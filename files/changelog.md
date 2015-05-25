@@ -1,3 +1,10 @@
+Youkok2 - 1.3.3-pl  (25. mai 2014)
+====================================
+
+- [Info] Bugfixes
+- [Fixed] Fikset bugs relatert til caching (igjen).
+- [New] Favicon!!!!!
+
 Youkok2 - 1.3.2-pl  (22. mai 2014)
 ====================================
 
