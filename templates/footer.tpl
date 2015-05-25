@@ -44,7 +44,7 @@
 <script type="text/javascript" src="assets/js/libs/jquery.fileupload.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery.ba-outside-events.min.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery.countdown.min.js"></script>
-[[+$JS_MODULES]][[+else]]<script type="text/javascript" src="assets/js/youkok.min.js"></script>[[+/if]]
+<script type="text/javascript" src="assets/js/youkok.min.js"></script>[[+else]]<script type="text/javascript" src="assets/js/youkok.min.js"></script>[[+/if]]
 [[+/nocache]][[+if $SITE_USE_GA == true]]
 <script>
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

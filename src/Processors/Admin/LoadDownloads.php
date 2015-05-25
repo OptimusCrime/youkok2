@@ -48,8 +48,13 @@ class LoadDownloads extends Base {
             $this->setError();
         }
         
-        // Return data
-        $this->outputData();
+        // Handle output
+        if ($this->outputData) {
+            $this->outputData();
+        }
+        if ($this->returnData) {
+            return $this->returnData();
+        }
     }
     
     /*

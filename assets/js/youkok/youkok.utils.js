@@ -8,13 +8,13 @@ var Youkok = (function (module) {
         /*
          * Regex validation for email
          */
-        validateEmail: function(str) {
-            var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
-            return filter.test(str);
+        validateEmail: function(email) {
+            var rgx = new RegExp("/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i");
+            return rgx.test(email);
         },
         
         /*
-         * Regex for validating valid email
+         * Regex for validating valid urls
          */
         validateUrl: function(url) {
             var rgx = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
@@ -22,7 +22,7 @@ var Youkok = (function (module) {
         },
         
         /*
-         * Regex for validating valid email
+         * Prettifies file sizes
          */
         prettyFileSize: function(bytes, si) {
             var thresh = si ? 1000 : 1024;
