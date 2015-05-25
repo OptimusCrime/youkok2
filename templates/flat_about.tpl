@@ -34,6 +34,7 @@
             <li><a href="https://phpunit.de" target="_blank">PHPUnit</a></li>
             <li><a href="https://github.com/sebastianbergmann/php-timer/" target="_blank">PHP_Timer</a></li>
             <li><a href="https://github.com/matthiasmullie/minify" target="_blank">Minify</a></li>
+            <li><a href="https://github.com/deceze/Kunststube-CSRFP" target="_blank">Kunststube\CSRFP</a></li>
         </ul>
         <ul>
             <li><a href="http://getbootstrap.com" target="_blank">Bootstrap</a></li>
