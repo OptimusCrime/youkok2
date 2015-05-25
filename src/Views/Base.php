@@ -17,6 +17,7 @@ use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Models\Message as Message;
 use \Youkok2\Utilities\CacheManager as CacheManager;
+use \Youkok2\Utilities\CsrfManager as CsrfManager;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Loader as Loader;
 use \Youkok2\Utilities\MessageManager as MessageManager;
@@ -36,6 +37,7 @@ class Base extends Youkok2 {
     private $query;
     private $sqlLog;
     private $siteData;
+    protected $signer;
     
     /*
      * Constructor
@@ -136,6 +138,8 @@ class Base extends Youkok2 {
             else {
                 $this->template->assign('COMPRESS_ASSETS', true);
             }
+            
+            $this->template->assign('CSRF_TOKEN', htmlspecialchars(CsrfManager::getSignature()));
         }
         
         // Init site data array

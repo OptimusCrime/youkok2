@@ -94,3 +94,8 @@ if (!defined('EMAIL_CONTACT')) {
 if (!defined('DISPLAY_INSTEAD_OF_DOWNLOAD')) {
     define('DISPLAY_INSTEAD_OF_DOWNLOAD', 'text_x-python-script,text_plain,application_pdf');
 }
+
+// CSRF token
+if (!defined('CSRF_KEY')) {
+    define('CSRF_KEY', 'foobar');
+}

@@ -73,6 +73,7 @@ ini_set('display_errors', ERROR_DISPLAY);
 
 
 
+ 
 /*
  * Set the timezone
  */

@@ -8,8 +8,15 @@
 
 namespace Youkok2\Utilities;
 
+/*
+ * Define what classes to use
+ */
+
 use \Youkok2\Utilities\Database as Database;
 
+/*
+ * The redirect class
+ */
 
 class Redirect {
 

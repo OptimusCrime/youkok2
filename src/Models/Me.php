@@ -13,6 +13,7 @@ namespace Youkok2\Models;
  */
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
+use \Youkok2\Utilities\CsrfManager as CsrfManager;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
 use \Youkok2\Utilities\MessageManager as MessageManager;
@@ -371,7 +372,13 @@ class Me {
         // Check if logged in
         if (!self::isLoggedIn()) {
             // Okey
-            if (isset($_POST['login-email']) and isset($_POST['login-pw'])) {
+            if (isset($_POST['login-email']) and isset($_POST['login-pw']) and isset($_POST['_token'])) {
+                // Check CSRF token
+                if (!CsrfManager::validateSignature($_POST['_token'])) {
+                    header('HTTP/1.0 400 Bad Request');
+                    exit;
+                }
+                
                 // Try to fetch email
                 $get_login_user  = "SELECT id, email, password" . PHP_EOL;
                 $get_login_user .= "FROM user" . PHP_EOL;
@@ -475,12 +482,19 @@ class Me {
 
     public static function logOut() {
         // Check if logged in
-        if (self::isLoggedIn()) {
+        if (self::isLoggedIn() and $_GET['_token']) {
+            // Unset session
             unset($_SESSION['youkok2']);
+            
+            // Unset token
             setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
 
             // Set message
             MessageManager::addMessage('Du har nå logget ut.', 'success');
+        }
+        else {
+            // Simply redirect home
+            Redirect::send('');
         }
 
         // Check if we should redirect the user back to the previous page

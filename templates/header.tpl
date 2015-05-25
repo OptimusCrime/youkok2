@@ -52,7 +52,7 @@
                         [[+if $BASE_USER_IS_ADMIN == true]]<li><a href="admin">Admin</a></li>[[+/if]]
                         
                         <li class="divider"></li>
-                        <li><a href="logg-ut">Logg ut</a></li>
+                        <li><a href="logg-ut?_token=[[+$CSRF_TOKEN]]">Logg ut</a></li>
                     </ul>
                 </li>[[+else]]
 
@@ -61,6 +61,7 @@
                     <ul class="dropdown-menu" id="login-dropdown">
                         <li>
                             <form role="form" action="logg-inn" method="post">
+                                <input type="hidden" name="_token" value="[[+$CSRF_TOKEN]]" />
                                 <div class="form-group">
                                     <label for="login-email">E-post</label>
                                     <input type="email" name="login-email" class="form-control" id="login-email" value="[[+if isset($LOGIN_EMAIL)]][[+$LOGIN_EMAIL]][[+/if]]" placeholder="" />

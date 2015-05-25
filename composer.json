@@ -7,6 +7,7 @@
         "phpunit/php-timer": "~1.0",
         "filp/whoops": "~1.0",
         "league/climate": "~2.0",
-        "matthiasmullie/minify": "dev-master"
+        "matthiasmullie/minify": "dev-master",
+        "kunststube/csrfp": "dev-master"
     }
 }
