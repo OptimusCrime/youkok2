@@ -7,19 +7,29 @@
  * 
 */
 
-//
-// The SearchController class
-//
+namespace Youkok2\Views;
 
-class SearchController extends Base {
+/*
+ * Define what classes to use
+ */
 
-    //
-    // The constructor for this subclass
-    //
+use \Youkok2\Models\Element as Element;
+use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Utilities\Routes as Routes;
 
-    public function __construct($routes) {
+/*
+ * The search class, taking care of searching
+ */
+
+class Search extends Base {
+
+    /*
+     * Constructor
+     */
+
+    public function __construct() {
         // Calling Base' constructor
-        parent::__construct($routes);
+        parent::__construct();
         
         if (!isset($_GET['s']) or strlen($_GET['s']) == 0) {
             $this->template->assign('SEARCH_MODE', 'info');
@@ -32,9 +42,9 @@ class SearchController extends Base {
         $this->displayAndCleanup('search.tpl');
     }
 
-    //
-    // Method for searching for courses
-    //
+    /*
+     * Method for searching for courses
+     */
 
     private function search () {
         // Assign the search
@@ -54,52 +64,37 @@ class SearchController extends Base {
 
         // Check if anything was clean as fuck
         if (count($input_clean) > 0) {
-            // Search by course code
+            
             $course_code = array();
+            $course_name = array();
+            
+            // Search by course code
             foreach ($input_clean as $v) {
-                $search_by_code = "SELECT id
-                FROM course
-                WHERE code LIKE :query";
+                $search_by_code  = "SELECT id" . PHP_EOL;
+                $search_by_code .= "FROM archive" . PHP_EOL;
+                $search_by_code .= "WHERE name LIKE :query" . PHP_EOL;
+                $search_by_code .= "AND parent IS NULL";
                 
-                $search_by_code_query = $this->db->prepare($search_by_code);
-                $search_by_code_query->execute(array(':query' => $v));
-                while ($row = $search_by_code_query->fetch(PDO::FETCH_ASSOC)) {
+                $search_by_code_query = Database::$db->prepare($search_by_code);
+                $search_by_code_query->execute(array(':query' => '%' . $v . '%\|\|%'));
+                while ($row = $search_by_code_query->fetch(\PDO::FETCH_ASSOC)) {
                     if (!in_array($row['id'], $course_code)) {
                         $course_code[] = $row['id'];
                     }
                 }
             }
 
-            // Search by course name
-            $course_name = array();
-            if (count($course_code) > 0) {
-                foreach ($input_clean as $v) {
-                    $search_by_name = "SELECT id
-                    FROM course
-                    WHERE name LIKE :query
-                    AND id IN (" . implode(',', $course_code) . ")";
-                    
-                    $search_by_name_query = $this->db->prepare($search_by_name);
-                    $search_by_name_query->execute(array(':query' => $v));
-                    while ($row = $search_by_name_query->fetch(PDO::FETCH_ASSOC)) {
-                        if (!in_array($row['id'], $course_name)) {
-                            $course_name[] = $row['id'];
-                        }
-                    }
-                }
-            }
-            else {
-                foreach ($input_clean as $v) {
-                    $search_by_name = "SELECT id
-                    FROM course
-                    WHERE name LIKE :query";
-                    
-                    $search_by_name_query = $this->db->prepare($search_by_name);
-                    $search_by_name_query->execute(array(':query' => $v));
-                    while ($row = $search_by_name_query->fetch(PDO::FETCH_ASSOC)) {
-                        if (!in_array($row['id'], $course_name)) {
-                            $course_name[] = $row['id'];
-                        }
+            foreach ($input_clean as $v) {
+                $search_by_name  = "SELECT id" . PHP_EOL;
+                $search_by_name .= "FROM archive" . PHP_EOL;
+                $search_by_name .= "WHERE name LIKE :query" . PHP_EOL;
+                $search_by_name .= "AND parent IS NULL";
+                
+                $search_by_name_query = Database::$db->prepare($search_by_name);
+                $search_by_name_query->execute(array(':query' => '%\|\|%' . $v . '%'));
+                while ($row = $search_by_name_query->fetch(\PDO::FETCH_ASSOC)) {
+                    if (!in_array($row['id'], $course_name)) {
+                        $course_name[] = $row['id'];
                     }
                 }
             }
@@ -135,39 +130,35 @@ class SearchController extends Base {
                 // Get the final results
                 $ret = '';
                 $num = 0;
-
+                
+                // Loop all the search results
                 foreach ($search_results as $k => $v) {
-                    $get_seach_object = "SELECT id
-                    FROM archive
-                    WHERE course = :course
-                    AND is_visible = 1";
+                    // Create new element
+                    $element = new Element();
+                    $element->createById($k);
                     
-                    $get_seach_object_query = $this->db->prepare($get_seach_object);
-                    $get_seach_object_query->execute(array(':course' => $k));
-                    $get_seach_object_result = $get_seach_object_query->fetch(PDO::FETCH_ASSOC);
-                    if (isset($get_seach_object_result['id'])) {
-                        // Create object
-                        $element = new Item($this);
-                        $element->createById($get_seach_object_result['id']);
-                        if ($element->wasFound()) {
-                            // Increase number of hits
-                            $num++;
+                    // Check if element was found
+                    if ($element->controller->wasFound()) {
+                        // Increase number of hits
+                        $num++;
 
-                            // Highlight names
-                            $match_names = array($element->getName(), $element->getCourse()->getName());
-                            for ($i = 0; $i <= 1; $i++) {
-                                foreach ($input_clean as $iv) {
-                                    $iv_clean = str_replace('%', '.', $iv);
-                                    if (preg_match('/^' . $iv_clean . '/i', $match_names[$i])) {
-                                        $match_names[$i] = preg_replace('/^' . str_replace('%', '(.*)', $iv) . '/i', '<strong>${0}</strong>', $match_names[$i]);
-                                        break;
-                                    }
+                        // Highlight names
+                        $course = $element->controller->getCourse();
+                        $match_names = array($course['name'], $course['code']);
+                        for ($i = 0; $i <= 1; $i++) {
+                            foreach ($input_clean as $iv) {
+                                $iv_clean = str_replace('%', '.', $iv);
+                                if (preg_match('/^' . $iv_clean . '/i', $match_names[$i])) {
+                                    $match_names[$i] = preg_replace('/^' . str_replace('%', '(.*)', $iv) . '/i', '<strong>${0}</strong>', $match_names[$i]);
+                                    break;
                                 }
-                            }                            
+                            }
+                        }                            
 
-                            // Build string
-                            $ret .= '<p><a href="' . $element->generateUrl($this->routes['archive'][0]) . '">' . $match_names[0] . ' - ' . $match_names[1] . '</a></p>';
-                        }
+                        // Build string
+                        $ret .= '<li class="' . ($element->isEmpty() ? 'course-empty ' : '') . 'list-group-item">';
+                        $ret .= '    <a href="' . $element->controller->generateUrl(Routes::ARCHIVE) . '"><strong>' . $match_names[1] . '</strong> &mdash; ' . $match_names[0] . '</a>';
+                        $ret .= '</li>';
                     }
                 }
 
@@ -187,9 +178,3 @@ class SearchController extends Base {
         }
     }
 }
-
-//
-// Return the class name
-//
-
-return 'SearchController';

@@ -12,13 +12,19 @@
             </div>
         </form>
         [[+if $SEARCH_MODE == 'search']]
-            <p>Ditt søk på <strong>[[+$SEARCH_QUERY]]</strong> returnerte <strong>[[+$SEARCH_NUM]]</strong> treff.</p>
-            <p>Du kan bruke stjerne (*) som wildcard når du søker. Søket vil kun treffe på fagkoder og fagnavn. Dersom et fag mangler i listen kan du <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">kontakte oss</a>, så legger vi det til.</p>
+            <p>Ditt søk på "<strong>[[+$SEARCH_QUERY]]</strong>" returnerte <strong>[[+$SEARCH_NUM]]</strong> treff.</p>
+            <p>Søket vil kun treffe på fagkoder og fagnavn. Dersom et fag mangler i listen kan du <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">kontakte oss</a>, så legger vi det til.</p>
             <hr />
-            [[+$SEARCH_RESULT]]
+            <div class="row">
+                <div class="col-xs-12 col-md-6 course-box">
+                    <ul class="list-group">
+                        [[+$SEARCH_RESULT]]
+                    </ul>
+                </div>
+            </div>
          [[+else]]
             <p>Søk i feltet ovenfor på enten fagkoder eller fagnavn.</p>
-            <p>Du kan bruke stjerne (*) som wildcard når du søker. Søket vil kun treffe på fagkoder og fagnavn. Dersom et fag mangler i listen kan du <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">kontakte oss</a>, så legger vi det til.</p>
+            <p>Søket vil kun treffe på fagkoder og fagnavn. Dersom et fag mangler i listen kan du <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">kontakte oss</a>, så legger vi det til.</p>
          [[+/if]]
     </div>
     <div class="col-xs-12 col-md-4">
