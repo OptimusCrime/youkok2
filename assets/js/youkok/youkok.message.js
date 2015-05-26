@@ -6,6 +6,17 @@ var Youkok = (function (module) {
     module.message = {
         
         /*
+         * Init messages
+         */
+        init: function() {
+            // Fire auto close
+            Youkok.message.autoClose();
+            
+            // Add listener
+            $('#main').on('click', '.alert-close', Youkok.message.close);
+        },
+        
+        /*
          * Display message
          */
         add: function(msg) {
@@ -18,6 +29,35 @@ var Youkok = (function (module) {
                     $('.alert-close', $msg_obj_inner).trigger('click');
                 }, 10000, $msg_obj);
             }
+        },
+        
+        /*
+         * Autoclose messages
+         */
+        autoClose: function () {
+            if ($('.alert').length > 0) {
+                // Loop each alert
+                $('.alert').each(function () {
+                    // Check if it can be auto closed
+                    if (!$(this).hasClass('no-close-auto')) {
+                        setTimeout(function (target) {
+                            console.log(target);
+                            // Close all messages
+                            $(target).find('.alert-close').trigger('click');
+                        }, 10000, $(this));
+                    }
+                });
+            };
+        },
+        
+        /*
+         * Close message
+         */
+        close: function () {
+            // Remove
+            $(this).parent().slideUp(400, function () {
+                $(this).remove();
+            });
         },
     };
 

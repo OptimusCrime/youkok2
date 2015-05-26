@@ -49,12 +49,20 @@ var Youkok = (function (module) {
      */
     module.initSubModules = function() {
         // Independent sub modules (always loaded)
+        Youkok.message.init();
+        Youkok.general.init();
+        Youkok.grayboxes.init();
         Youkok.search.init();
         Youkok.debug.init();
         
         // Archive
         if (Youkok.getData('view') == 'archive') {
             Youkok.archive.init();
+            
+            // Init submodule for logged in archive
+            if (Youkok.getData('online') == true) {
+                Youkok.createDirectory.init();
+            }
         }
         
         // Frontpage

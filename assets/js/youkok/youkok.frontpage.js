@@ -9,7 +9,7 @@ var Youkok = (function (module) {
          * Init the module
          */
         init: function() {
-            $('#home-most-popular-dropdown li').on('click', Youkok.frontpage.changeMostPopular);
+            // Add listeners
             $('#home-most-popular-dropdown li').on('click', Youkok.frontpage.changeMostPopular);
             $('.star-remove').on('click', Youkok.frontpage.removeFavorite);
         },

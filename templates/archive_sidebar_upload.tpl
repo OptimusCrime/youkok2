@@ -17,7 +17,7 @@
                             <label for="archive-create-folder-name"><strong>Name</strong></label>
                             <input type="text" name="archive-create-folder-name" class="form-control" id="archive-create-folder-name" value="" placeholder="Navn på mappen du ønsker å opprette" />
                         </div>
-                        <button id="archive-create-folder-form-submit" type="submit" class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
+                        <button id="archive-create-folder-form-submit" type="submit" disabled class="btn btn-default">Lagre</button> eller <a href="#">avbryt</a>.
                     </form>
                 </div>
             [[+/if]]

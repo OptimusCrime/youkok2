@@ -176,92 +176,11 @@ $(document).ready(function () {
         $('#modal-report').modal('show');
     });
 
-
-
-    //
-    // Home
-    //
-
-    $('#home-most-popular-dropdown li').on('click', function (e) {
-        
-    });
-
-    //
-    // Login
-    //
-
-    $('#login-dropdown label, #login-dropdown input').on('click', function(e) {
-        e.stopPropagation();
-    });
-
     //
     // Create directory
     //
 
-    $('#archive-create-folder').on('click', function () {
-        if ($('#archive-create-folder-div').is(':visible')) {
-            $('#archive-create-folder-div').stop().slideUp();
-        }
-        else {
-            $('#archive-create-folder-div').stop().slideDown(400, function () {
-                $('archive-create-folder-name').focus();
-            });
-            $('#archive-create-file-div').stop().slideUp();
-            $('#archive-create-link-div').stop().slideUp();
-        }
-    });
-    $('#archive-create-folder-div a').on('click', function(e) {
-        e.preventDefault();
-        $('#archive-create-folder-div').stop().slideUp(400, function () {
-            $('#archive-create-folder-name').val('');
-        });
-    });
-    var submitting_archive_create_folder_form = false;
-    $('#archive-create-folder-form').on('submit', function () {
-        if ($('#archive-create-folder-name').val().length == 0) {
-            alert('Error: Du har ikke gitt mappen noen navn!');
-        }
-        else {
-            // Update queue
-            if (!submitting_archive_create_folder_form) {
-                submitting_archive_create_folder_form = true;
-
-                // Update working
-                $('#archive-create-folder-form-submit').html('Jobber...').prop('disabled', true);
-
-                $.ajax({
-                    cache: false,
-                    type: "post",
-                    url: 'processor/folder/create',
-                    data: { 
-                        id: site_data.archive_id, 
-                        name: $('#archive-create-folder-name').val() 
-                    },
-                    success: function(json) {
-                        submitting_archive_create_folder_form = false;
-                        if (json.code == 200) {
-                            // Refresh
-                            window.location.reload();
-                        }
-                        else if (json.code == 400) {
-                            display_message([{'text': 'Et element med dette navnet finnes fra før!', 'type': 'danger'}]);
-                            $('#archive-create-folder-form-submit').html('Lagre').prop('disabled', false);
-                        }
-                        else if (json.code == 401) {
-                            display_message([{'text': 'Navnet på elementet er fort kort. Minst 4 tegn.', 'type': 'danger'}]);
-                            $('#archive-create-folder-form-submit').html('Lagre').prop('disabled', false);
-                        }
-                        else {
-                            display_message([{'text': 'Noe gikk visst galt her!', 'type': 'danger'}]);
-                            $('#archive-create-folder-form-submit').html('Lagre').prop('disabled', false);
-                        }
-                    }
-                });
-            }
-        }
-        
-        return false;
-    });
+    
 
     //
     // Report
@@ -733,30 +652,6 @@ $(document).ready(function () {
     });
 
     //
-    // Alerts
-    //
-
-    $('#main').on('click', '.alert-close', function () {
-        // Remove
-        $(this).parent().slideUp(400, function () {
-            $(this).remove();
-        });
-    });
-    if ($('.alert').length > 0) {
-        // Loop each alert
-        $('.alert').each(function () {
-            // Check if it can be auto closed
-            if (!$(this).hasClass('no-close-auto')) {
-                setTimeout(function (target) {
-                    console.log(target);
-                    // Close all messages
-                    $(target).find('.alert-close').trigger('click');
-                }, 10000, $(this));
-            }
-        });
-    };
-
-    //
     // New flags
     //
 
@@ -915,56 +810,6 @@ $(document).ready(function () {
             }
         }
     });
-
-    //
-    // Grayboxes
-    //
-
-    if ($('#archive-sidebar-newest-inner').length > 0) {
-        $.ajax({
-            cache: false,
-            url: 'graybox/newest',
-            success: function(html) {
-                // Set content
-                $('#archive-sidebar-newest-inner').html(html);
-
-                // Load moment
-                $('#archive-sidebar-newest-inner .moment-timestamp').each(function () {
-                    $that = $(this);
-                    $that.html(moment($(this).data('ts')).fromNow());
-                });
-            }
-        });
-    }
-    
-    if ($('#archive-sidebar-last-downloads-inner').length > 0) {
-        $.ajax({
-            cache: false,
-            url: 'graybox/downloads',
-            success: function(html) {
-                // Set content
-                $('#archive-sidebar-last-downloads-inner').html(html);
-
-                // Load moment
-                $('#archive-sidebar-last-downloads-inner .moment-timestamp').each(function () {
-                    $that = $(this);
-                    $that.html(moment($(this).data('ts')).fromNow());
-                });
-            }
-        });
-    }
-    
-    if ($('#archive-sidebar-numbers-inner').length > 0) {
-        $.ajax({
-            cache: false,
-            url: 'graybox/numbers',
-            success: function(html) {
-                // Set content
-                $('#archive-sidebar-numbers-inner').html(html);
-            }
-        });
-    }
-
     
     //
     // Info modal

@@ -18,8 +18,8 @@ var Youkok = (function (module) {
             Youkok.search.initTypeahead();
             
             // Add listeners
-            $('#s, #s2').on('keyup', Youkok.search.searchEnter);
-            $('#nav-search, #nav-search2').on('click', Youkok.search.searchSelect);
+            $('#s, #s2').on('keyup', Youkok.search.enter);
+            $('#nav-search, #nav-search2').on('click', Youkok.search.click);
         },
         
         /*
@@ -57,30 +57,30 @@ var Youkok = (function (module) {
                 displayKey: 'course',
                 source: courses.ttAdapter(),	
             }).on('typeahead:selected', function($e, datum) {
-                Youkok.search.searchSubmit($e.target.id);
+                Youkok.search.submit($e.target.id);
             });
         },
         
         /*
          * Handles enter press in search field
          */
-        searchEnter: function (e) {
+        enter: function (e) {
             if (e.keyCode == 13) {
-                Youkok.search.searchSubmit(this.id);
+                Youkok.search.submit(this.id);
             }
         },
         
         /*
          * Handles click on search elements
          */
-        searchSelect: function () {
-            Youkok.search.searchSubmit($(this).parent().find('.tt-input').attr('id'));
+        click: function () {
+            Youkok.search.submit($(this).parent().find('.tt-input').attr('id'));
         },
         
         /*
          * Handle search
          */
-        searchSubmit: function(target) {
+        submit: function(target) {
             // Find what values to use
             var val = $('#' + target).val();
             

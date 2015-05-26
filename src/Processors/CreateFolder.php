@@ -192,7 +192,7 @@ class CreateFolder extends Base {
         else {
             // Check what kind of error we encountered
             if (isset($_POST['name']) and strlen($_POST['name']) < 4) {
-                $this->setData('code', 401);
+                $this->setData('code', 400);
             }
             else {
                 $this->setData('code', 500);
