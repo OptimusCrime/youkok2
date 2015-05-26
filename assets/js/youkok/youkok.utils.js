@@ -35,7 +35,7 @@ var Youkok = (function (module) {
             var u = -1;
 
             do {
-                bytes = division(bytes, thresh);
+                bytes = bytes / thresh;
                 ++u;
             } while(bytes >= thresh);
 

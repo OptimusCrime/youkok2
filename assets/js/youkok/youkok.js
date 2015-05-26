@@ -6,6 +6,35 @@ var Youkok = (function (module) {
     var data; // Holds the site information
     
     /*
+     * Init different sub modules
+     */
+    var initSubModules = function() {
+        // Independent sub modules (always loaded)
+        Youkok.message.init();
+        Youkok.general.init();
+        Youkok.grayboxes.init();
+        Youkok.search.init();
+        Youkok.debug.init();
+        
+        // Archive
+        if (Youkok.getData('view') == 'archive') {
+            Youkok.archive.init();
+            Youkok.createFile.init();
+            Youkok.createLink.init();
+            
+            // Init submodule for logged in archive
+            if (Youkok.getData('online') == true) {
+                Youkok.createDirectory.init();
+            }
+        }
+        
+        // Frontpage
+        if (Youkok.getData('view') == 'frontpage') {
+            Youkok.frontpage.init();
+        }
+    };
+    
+    /*
      * Init function
      */
     module.init = function () {
@@ -41,35 +70,7 @@ var Youkok = (function (module) {
         $('.list-group-item a, .list-group-item .moment-timestamp').tooltip();
         
         // Init submodules
-        Youkok.initSubModules();
-    };
-    
-    /*
-     * Init different sub modules
-     */
-    module.initSubModules = function() {
-        // Independent sub modules (always loaded)
-        Youkok.message.init();
-        Youkok.general.init();
-        Youkok.grayboxes.init();
-        Youkok.search.init();
-        Youkok.debug.init();
-        
-        // Archive
-        if (Youkok.getData('view') == 'archive') {
-            Youkok.archive.init();
-            Youkok.createLink.init();
-            
-            // Init submodule for logged in archive
-            if (Youkok.getData('online') == true) {
-                Youkok.createDirectory.init();
-            }
-        }
-        
-        // Frontpage
-        if (Youkok.getData('view') == 'frontpage') {
-            Youkok.frontpage.init();
-        }
+        initSubModules();
     };
     
     /*
