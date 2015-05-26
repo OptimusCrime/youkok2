@@ -58,6 +58,7 @@ var Youkok = (function (module) {
         // Archive
         if (Youkok.getData('view') == 'archive') {
             Youkok.archive.init();
+            Youkok.createLink.init();
             
             // Init submodule for logged in archive
             if (Youkok.getData('online') == true) {

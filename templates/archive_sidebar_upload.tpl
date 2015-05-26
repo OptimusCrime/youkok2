@@ -55,7 +55,7 @@
                             <input type="text" name="archive-create-link-name" class="form-control" id="archive-create-link-name" value="" placeholder="Alternativt navn" />
                         </div>
                     </div>
-                    <button id="archive-create-link-form-submit" type="submit" disabled="disabled" class="btn btn-default">Post link</button> eller <a href="#">avbryt</a>.
+                    <button id="archive-create-link-form-submit" type="submit" disabled class="btn btn-default">Post link</button> eller <a href="#">avbryt</a>.
                 </form>
             </div>
             

@@ -53,12 +53,17 @@ class CreateLink extends Base {
             $this->setError();
         }
         
-        // Return data
-        $this->outputData();
+        // Handle output
+        if ($this->outputData) {
+            $this->outputData();
+        }
+        if ($this->returnData) {
+            return $this->returnData();
+        }
     }
     
     /*
-     * Process upload
+     * Process link
      */
     
     private function process() {
@@ -69,7 +74,7 @@ class CreateLink extends Base {
             $parent = ElementCollection::get($_POST['id']);
 
             // Check if valid Element
-            if ($parent !== null) {
+            if ($parent->controller->wasFound()) {
                 // Check if any files was sent
                 if (isset($_POST['url']) and filter_var($_POST['url'], FILTER_VALIDATE_URL)) {
                     // This url is a valid url (according to php)
@@ -102,57 +107,76 @@ class CreateLink extends Base {
             
             // Check if we can post
             if ($can_post) {
-                // Set information
-                $element = new Element();
-                $element->setName($name);
-                $element->setParent($parent->getId());
-                $element->setUrl($_POST['url']);
+                // Check if duplicates exists
+                $get_duplicate  = "SELECT id" . PHP_EOL;
+                $get_duplicate .= "FROM archive " . PHP_EOL;
+                $get_duplicate .= "WHERE parent = :id" . PHP_EOL;
+                $get_duplicate .= "AND url = :url";
                 
-                // Check if we should auto hide the element
-                if (!Me::isLoggedIn()) {
-                    $element->setVisible(false);
+                $get_duplicate_query = Database::$db->prepare($get_duplicate);
+                $get_duplicate_query->execute(array(':id' => $parent->getId(),
+                    ':url' => $_POST['url']));
+                $row_duplicate = $get_duplicate_query->fetch(\PDO::FETCH_ASSOC);
+                
+                // Check if any url patterns collide
+                if (!isset($row_duplicate['id'])) {
+                    // Set information
+                    $element = new Element();
+                    $element->setName($name);
+                    $element->setUrlFriendly('');
+                    $element->setParent($parent->getId());
+                    $element->setUrl($_POST['url']);
+                    
+                    // Check if we should auto hide the element
+                    if (!Me::isLoggedIn()) {
+                        $element->setVisible(false);
+                    }
+                    else {
+                        // User is logged in, set owner
+                        $element->setOwner(Me::getId());
+                    }
+                    
+                    // Save element
+                    $element->save();
+                    
+                    // Check if parent was sat to empty and if we should update that
+                    if (Me::isLoggedIn() and $parent->isEmpty()) {
+                        $parent->setEmpty(false);
+                        $parent->update();
+                        
+                        // Clear cache on parent
+                        $parent->controller->deleteCache();
+                    }
+                    
+                    // Add message
+                    MessageManager::addFileMessage($name);
+                    
+                    // Check if logged in
+                    if (Me::isLoggedIn()) {
+                        // Add history element
+                        $history = new History();
+                        $history->setUser(Me::getId());
+                        $history->setFile($element->getId());
+                        $history->save();
+                        
+                        // Add karma
+                        $karma = new Karma();
+                        $karma->setUser(Me::getId());
+                        $karma->setFile($element->getId());
+                        $karma->save();
+                        
+                        // Add karma to user
+                        Me::increaseKarmaPending(5);
+                        Me::update();
+                    }
+                    
+                    // Send successful code
+                    $this->setData('code', 200);
                 }
                 else {
-                    // User is logged in, set owner
-                    $element->setOwner(Me::getId());
+                    // Duplicate!
+                    $this->setData('code', 400);
                 }
-                
-                // Save element
-                $element->save();
-                
-                // Check if parent was sat to empty and if we should update that
-                if (Me::isLoggedIn() and $parent->isEmpty()) {
-                    $parent->setEmpty(false);
-                    $parent->update();
-                    
-                    // Clear cache on parent
-                    $parent->controller->deleteCache();
-                }
-                
-                // Add message
-                MessageManager::addFileMessage($name);
-                
-                // Check if logged in
-                if (Me::isLoggedIn()) {
-                    // Add history element
-                    $history = new History();
-                    $history->setUser(Me::getId());
-                    $history->setFile($element->getId());
-                    $history->save();
-                    
-                    // Add karma
-                    $karma = new Karma();
-                    $karma->setUser(Me::getId());
-                    $karma->setFile($element->getId());
-                    $karma->save();
-                    
-                    // Add karma to user
-                    Me::increaseKarmaPending(5);
-                    Me::update();
-                }
-                
-                // Send successful code
-                $this->setData('code', 200);
             }
             else {
                 // Name is too short
