@@ -41,7 +41,6 @@ var Youkok = (function (module) {
                     // Check if it can be auto closed
                     if (!$(this).hasClass('no-close-auto')) {
                         setTimeout(function (target) {
-                            console.log(target);
                             // Close all messages
                             $(target).find('.alert-close').trigger('click');
                         }, 10000, $(this));
