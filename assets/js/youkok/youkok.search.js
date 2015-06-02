@@ -39,7 +39,7 @@ var Youkok = (function (module) {
             displayKey: 'course',
             source: courses.ttAdapter(),	
         }).on('typeahead:selected', function($e, datum) {
-            Youkok.search.submit($e.target.id);
+            submit($e.target.id);
         });
     };
     
@@ -48,7 +48,7 @@ var Youkok = (function (module) {
      */
     var enter = function (e) {
         if (e.keyCode == 13) {
-            Youkok.search.submit(this.id);
+            submit(this.id);
         }
     };
     
@@ -56,7 +56,7 @@ var Youkok = (function (module) {
      * Handles click on search elements
      */
     var click = function () {
-        Youkok.search.submit($(this).parent().find('.tt-input').attr('id'));
+        submit($(this).parent().find('.tt-input').attr('id'));
     };
     
     /*
