@@ -94,11 +94,15 @@ class Base extends Youkok2 {
                 
         // Set some site data
         $this->addSiteData('search_base', URL_FULL . substr(Routes::getRoutes()['Archive'][0]['path'], 1) . '/');
+        $this->addSiteData('view', 'general');
         
         // Check if we should kill the view
         if ($kill == false) {
             // Init the user
             Me::init();
+            
+            // Add to site data
+            $this->addSiteData('online', Me::isLoggedIn());
             
             // Set BASE_USER_* information to the template
             $this->template->assign('BASE_USER_IS_LOGGED_IN', Me::isLoggedIn());
@@ -304,6 +308,19 @@ class Base extends Youkok2 {
             
             $this->template->assign('DEV_QUERIES_BACKTRACE', $this->cleanSqlLog($this->sqlLog));
             $this->template->assign('DEV_CACHE_LOAD_BACKTRACE', $this->cleanCacheLoadLog(CacheManager::getBacktrace()));
+        }
+        
+        // Import js modules
+        if ($dh = opendir(BASE_PATH . '/assets/js/youkok/')) {
+            $js_modules = '';
+            while (($file = readdir($dh)) !== false) {
+                if ($file != '.' and $file != '..') {
+                    $js_modules .= '<script type="text/javascript" src="assets/js/youkok/' . $file  . '?v=' . VERSION . '"></script>' . PHP_EOL;
+                }
+            }
+            closedir($dh);
+            
+            $this->template->assign('JS_MODULES', $js_modules);
         }
         
         // Close database and process cache

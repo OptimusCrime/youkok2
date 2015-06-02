@@ -24,7 +24,7 @@ class Routes {
     const PROSECESSOR = '/processor';
     
     private static $routes = array(
-        'Home' => array(
+        'Frontpage' => array(
             array('path' => '/'),
         ),
         

@@ -1,6 +1,6 @@
 <?php
 /*
- * File: Home.php
+ * File: Frontpage.php
  * Holds: The frontpage view
  * Created: 02.10.13
  * Project: Youkok2
@@ -18,10 +18,10 @@ use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
 
 /*
- * The Home class, extending Base class
+ * The Frontpage class, extending Base class
  */
 
-class Home extends Base {
+class Frontpage extends Base {
 
     /*
      * Constructor
@@ -29,6 +29,9 @@ class Home extends Base {
 
     public function __construct($kill = false) {
         parent::__construct($kill);
+        
+        // Set view
+        $this->addSiteData('view', 'frontpage');
         
         // Load default boxes
         $this->template->assign('HOME_NEWEST', Element::getNewest());

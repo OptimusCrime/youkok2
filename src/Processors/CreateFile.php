@@ -100,8 +100,10 @@ class CreateFile extends Base {
             $file_name = implode('.', $file_type_split);
             
             // Check duplicates for url friendly
-            $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
-            $url_friendly = Utilities::urlSafe($file_name, true);
+            $num = 2;
+            $url_friendly_base = Utilities::urlSafe($file_name);
+            $url_friendly = Utilities::urlSafe($file_name);
+            
             while (true) {
                 $get_duplicate = "SELECT id
                 FROM archive 
@@ -113,7 +115,42 @@ class CreateFile extends Base {
                     ':url_friendly' => $url_friendly));
                 $row_duplicate = $get_duplicate_query->fetch(\PDO::FETCH_ASSOC);
                 if (isset($row_duplicate['id'])) {
-                    $url_friendly = Utilities::urlSafe($letters[rand(0, count($letters) - 1)] . $url_friendly);
+                    // Generate new url friendly
+                    $url_friendly = Utilities::urlSafe($url_friendly_base . '-' . $num);
+                    
+                    // Increase num
+                    $num++;
+                }
+                else {
+                    // Gogog
+                    break;
+                }
+            }
+            
+            // Check duplicates for names
+            $num = 2;
+            $name_base = $file_name;
+            $name = $file_name . '.' . $file_type;
+            
+            // Loop 'till no collides
+            while (true) {
+                $get_duplicate2  = "SELECT id" . PHP_EOL;
+                $get_duplicate2 .= "FROM archive" . PHP_EOL; 
+                $get_duplicate2 .= "WHERE parent = :id" . PHP_EOL;
+                $get_duplicate2 .= "AND name = :name";
+                
+                $get_duplicate2_query = Database::$db->prepare($get_duplicate2);
+                $get_duplicate2_query->execute(array(':id' => $parent->getId(),
+                    ':name' => $name));
+                $row_duplicate2 = $get_duplicate2_query->fetch(\PDO::FETCH_ASSOC);
+                
+                // Check if any url patterns collide
+                if (isset($row_duplicate2['id'])) {
+                    // Generate new url friendly
+                    $name = $name_base . ' (' . $num . ')' . '.' . $file_type;
+                    
+                    // Increase num
+                    $num++;
                 }
                 else {
                     // Gogog
@@ -135,7 +172,7 @@ class CreateFile extends Base {
             
             // Set information
             $element = new Element();
-            $element->setName($file_name . '.' . $file_type);
+            $element->setName($name);
             $element->setUrlFriendly($url_friendly);
             $element->setChecksum($checksum);
             $element->setParent($parent->getId());

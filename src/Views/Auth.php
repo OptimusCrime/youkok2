@@ -99,6 +99,9 @@ class Auth extends Base {
             exit();
         }
         
+        // Set view
+        $this->addSiteData('view', 'register');
+        
         // Set menu
         $this->template->assign('SITE_TITLE', 'Registrer');
         
@@ -263,6 +266,9 @@ class Auth extends Base {
             Redirect::send('');
             exit();
         }
+        
+        // Set view
+        $this->addSiteData('view', 'forgotten-password');
         
         // Set menu
         $this->template->assign('SITE_TITLE', 'Nytt passord');

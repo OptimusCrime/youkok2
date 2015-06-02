@@ -25,25 +25,30 @@ class Build extends Base {
      * Constructor
      */
 
-    public function __construct($returnData = false) {
-        parent::__construct($returnData);
+    public function __construct($outputData = false, $returnData = false) {
+        // Calling Base' constructor
+        parent::__construct($outputData, $returnData);
         
         // Check permissions
         if (self::requireCli() or self::requireAdmin()) {
             // Build stuff
             $this->buildJS();
-            $this->buildCSS();
-            
-            // Return data
-            $this->returnData();
+            //$this->buildCSS();
             
             // Run LineCounter
-            $this->runLineCounter();
+            //$this->runLineCounter();
         }
         else {
             // No access
             $this->noAccess();
-            $this->returnData();
+        }
+        
+        // Handle output
+        if ($this->outputData) {
+            $this->outputData();
+        }
+        if ($this->returnData) {
+            return $this->returnData();
         }
     }
 
@@ -55,16 +60,32 @@ class Build extends Base {
         // New instance
         $minifier = new \MatthiasMullie\Minify\JS();
         
-        // Add all files
-        $minifier->add(BASE_PATH . '/assets/js/libs/typeahead.bundle.min.js');
-        $minifier->add(BASE_PATH . '/assets/js/libs/jquery.fileupload.js');
-        $minifier->add(BASE_PATH . '/assets/js/libs/jquery.ba-outside-events.min.js');
-        $minifier->add(BASE_PATH . '/assets/js/libs/jquery.countdown.min.js');
-        $minifier->add(BASE_PATH . '/assets/js/youkok.js');
-        $minifier->add(BASE_PATH . '/assets/js/youkok.admin.js');
+        // Add all module files
+        if ($dh = opendir(BASE_PATH . '/assets/js/youkok/')) {
+            $js_modules = '';
+            while (($file = readdir($dh)) !== false) {
+                if ($file != '.' and $file != '..') {
+                    echo BASE_PATH . '/assets/js/youkok/' . $file . '<br />';
+                    $minifier->add(BASE_PATH . '/assets/js/youkok/' . $file);
+                }
+            }
+            closedir($dh);
+        }
         
         // Minify!
-        $minifier->minify(BASE_PATH . '/assets/js/youkok.min.js');
+        $minifier->minify(BASE_PATH . '/assets/js/youkok.min.temp.js');
+        
+        // Put content on one line
+        $minified_sigle_line = '';
+        $handle = fopen(BASE_PATH . '/assets/js/youkok.min.temp.js', 'r');
+        if ($handle) {
+            while (($line = fgets($handle)) !== false) {
+                $minified_sigle_line .= rtrim($line);
+            }
+        }
+        fclose($handle);
+        
+        file_put_contents(BASE_PATH . '/assets/js/youkok.min.js', $minified_sigle_line);
         
         // Add message
         $this->setData('msg', 'Built JS files');

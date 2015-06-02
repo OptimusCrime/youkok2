@@ -42,10 +42,10 @@ class LinkTitle extends Base {
              if (filter_var($_POST['url'], FILTER_VALIDATE_URL)) {
                 // Valid url, fetch content of page
                 try {
-                    $site_content = file_get_contents($_POST['url']);
+                    $site_content = @file_get_contents($_POST['url']);
                     
                     // Check if anything was returned
-                    if (strlen($site_content) > 0) {
+                    if ($site_content !== null and strlen($site_content) > 0) {
                         // Try to match the title
                         preg_match("/\<title\>(.*)\<\/title\>/", $site_content, $title);
                         
