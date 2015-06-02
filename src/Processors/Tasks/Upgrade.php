@@ -63,7 +63,6 @@ class Upgrade extends Base {
             $js_modules = '';
             while (($file = readdir($dh)) !== false) {
                 if ($file != '.' and $file != '..') {
-                    echo BASE_PATH . '/assets/js/youkok/' . $file . '<br />';
                     $minifier->add(BASE_PATH . '/assets/js/youkok/' . $file);
                 }
             }
@@ -86,7 +85,7 @@ class Upgrade extends Base {
         file_put_contents(BASE_PATH . '/assets/js/youkok.min.js', $minified_sigle_line);
         
         // Add message
-        $this->setData('msg', 'Built JS files');
+        $this->setData('js', 'Successfully build JS files');
     }
     
     /*
@@ -105,6 +104,6 @@ class Upgrade extends Base {
         $minifier->minify(BASE_PATH . '/assets/css/youkok.min.css');
         
         // Add message
-        $this->setData('msg', 'Built CSS files');
+        $this->setData('css', 'Successfully build CSS files');
     }
 } 

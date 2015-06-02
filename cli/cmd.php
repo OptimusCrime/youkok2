@@ -43,5 +43,5 @@ else {
      * Script goes here
      */
     
-    Youkok2::runProcessor($_SERVER['argv'][1]);
+    Youkok2::runProcessor($_SERVER['argv'][1], true);
 }
