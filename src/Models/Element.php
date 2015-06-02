@@ -15,6 +15,7 @@ namespace Youkok2\Models;
 use \Youkok2\Models\BaseModel as BaseModel;
 use \Youkok2\Models\Controllers\ElementController as ElementController;
 use \Youkok2\Models\StaticControllers\ElementStaticController as ElementStaticController;
+use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
  * Model for a Element

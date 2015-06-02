@@ -44,6 +44,13 @@ class Download extends Base {
                 // Check if zip download or not
                 if (!$element->isDirectory()) {
                     if (file_exists($file_location)) {
+                        // Check if wget
+                        if (strpos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false or strpos($_SERVER['HTTP_USER_AGENT'], 'Wget') !== false) {
+                            // Wget attempt, serve false file
+                            $this->loadFileDownload(BASE_PATH . '/files/wget_file.txt', $element->getName());
+                            exit;
+                        }
+                        
                         // Check if we should log download
                         if (!isset($_GET['donotlogthisdownload'])) {
                             // Log download
@@ -52,29 +59,24 @@ class Download extends Base {
     
                         // Check if we should return fake http response to facebook crawler
                         if (isset($_SERVER['HTTP_USER_AGENT']) and strpos($_SERVER['HTTP_USER_AGENT'], 'facebook') !== false) {
-                            // TODO
-                            /*
+
                             // Facebook crawler
                             $this->template->assign('DOWNLOAD_FILE', $element->getName());
-                            $this->template->assign('DOWNLOAD_SIZE', $element->getSizePretty());
+                            $this->template->assign('DOWNLOAD_SIZE', $element->getSize(true));
                             $this->template->assign('DOWNLOAD_URL', $_SERVER['REQUEST_URI']);
     
                             // Get item parent information
                             $download_parent = '';
-                            $root_parent = $element->getRootParent();
-                            if ($element->getParent() != $root_parent->getId()) {
-                                $local_dir_element = $this->collection->get($element->getParent());
-                                $download_parent = $local_dir_element->getName() . ', ';
-                            }
+                            $root_parent = $element->controller->getRootParent();
                             if ($root_parent != null) {
-                                $download_parent .= $root_parent->getName() . ' ';
+                                $course = $root_parent->controller->getCourse();
+                                $download_parent .= $course['code'] . ' - ' . $course['name'];
                             }
                             
                             $this->template->assign('DOWNLOAD_PARENT', $download_parent);
                             
                             // Display fake http response for Facebook
                             $this->displayAndCleanup('download.tpl');
-                            */
                         }
                         else {
                             // Close database connection
