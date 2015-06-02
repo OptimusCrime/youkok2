@@ -29,3 +29,8 @@ npm-debug.log
 # And those fuckings DS_Stores
 .DS_Store
 ._*
+
+# And build files
+/assets/js/youkok.min.js
+/assets/js/youkok.min.temp.js
+/assets/css/youkok.min.css
