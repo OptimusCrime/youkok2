@@ -74,6 +74,25 @@ class Upgrade extends Base {
         
         // Put content on one line
         $minified_sigle_line = '';
+        
+        // Read libs
+        if ($dh = opendir(BASE_PATH . '/assets/js/libs/')) {
+            $js_modules = '';
+            while (($file = readdir($dh)) !== false) {
+                if ($file != '.' and $file != '..') {
+                    $handle = fopen(BASE_PATH . '/assets/js/libs/' . $file, 'r');
+                    if ($handle) {
+                        while (($line = fgets($handle)) !== false) {
+                            $minified_sigle_line .= rtrim($line);
+                        }
+                    }
+                    fclose($handle);
+                }
+            }
+            closedir($dh);
+        }
+        
+        // Read the temp js file
         $handle = fopen(BASE_PATH . '/assets/js/youkok.min.temp.js', 'r');
         if ($handle) {
             while (($line = fgets($handle)) !== false) {
