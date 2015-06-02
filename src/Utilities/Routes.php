@@ -100,6 +100,9 @@ class Routes {
         'Tasks\\Build' => array(
             array('path' => '/tasks/build'),
         ),
+        'Tasks\\Upgrade' => array(
+            array('path' => '/tasks/upgrade'),
+        ),
         'Tasks\\ClearCache' => array(
             array('path' => '/tasks/clearcache'),
          ),

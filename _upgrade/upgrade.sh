@@ -9,6 +9,9 @@ echo "\n\033[0;33mExecuting git fetch\033[0m \n"
 git fetch --progress
 echo "All done."
 
+echo "\n\033[0;33mUpgradig JS and CSS\033[0m \n"
+php cli/cmd.php tasks/upgrade $CHECKSUM
+
 echo "\n\033[0;33mClearing cache\033[0m \n"
 php cli/cmd.php tasks/clearcache $CHECKSUM
 

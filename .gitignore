@@ -31,6 +31,6 @@ npm-debug.log
 ._*
 
 # And build files
-/assets/js/youkok.min.js
-/assets/js/youkok.min.temp.js
-/assets/css/youkok.min.css
+assets/js/youkok.min.js
+assets/js/youkok.min.temp.js
+assets/css/youkok.min.css
