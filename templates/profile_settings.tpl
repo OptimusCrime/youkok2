@@ -41,7 +41,7 @@
                     <input type="hidden" value="info" name="source" />
                     <div class="form-group">
                         <label for="register-form-email">E-post <span style="color: red;">*</span></label>
-                        <input type="email" class="form-control" id="register-form-email" name="register-form-email" placeholder="Skriv din e-post her" value="[[+$PROFILE_USER_EMAIL]]" />
+                        <input type="email" class="form-control" data-original="[[+$PROFILE_USER_EMAIL]]" id="register-form-email" name="register-form-email" placeholder="Skriv din e-post her" value="[[+$PROFILE_USER_EMAIL]]" />
                         <p><span id="register-form-email-error1">Dette krever en gyldig e-post</span> og <span id="register-form-email-error2">e-posten kan ikke være i våre systemer fra før.</span></p>
                     </div>
 

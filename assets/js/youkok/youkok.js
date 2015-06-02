@@ -10,6 +10,7 @@ var Youkok = (function (module) {
      */
     var initSubModules = function() {
         // Independent sub modules (always loaded)
+        Youkok.user.init();
         Youkok.message.init();
         Youkok.general.init();
         Youkok.grayboxes.init();
@@ -31,6 +32,16 @@ var Youkok = (function (module) {
         // Frontpage
         if (Youkok.getData('view') == 'frontpage') {
             Youkok.frontpage.init();
+        }
+        
+        // Forgotten password
+        if (Youkok.getData('view') == 'forgotten-password') {
+            Youkok.forgottenPassword.init();
+        }
+        
+        // Register
+        if (Youkok.getData('view') == 'register') {
+            Youkok.register.init();
         }
     };
     

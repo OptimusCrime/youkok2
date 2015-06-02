@@ -9,7 +9,7 @@ var Youkok = (function (module) {
          * Regex validation for email
          */
         validateEmail: function(email) {
-            var rgx = new RegExp("/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i");
+            var rgx = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
             return rgx.test(email);
         },
         
