@@ -277,6 +277,19 @@ class Element extends BaseModel {
     public function update() {
         $this->controller->update();
     }
+
+    /*
+     * Functions overload
+     */
+
+    public function __call($name, $arguments) {
+        // Check if method exists
+        if (method_exists('\Youkok2\Models\Controllers\ElementController', $name)) {
+            // Call method and return response
+            return call_user_func_array(array($this->controller,
+                $name), $arguments);
+        }
+    }
     
      /*
      * Static functions overload

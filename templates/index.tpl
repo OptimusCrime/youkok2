@@ -41,77 +41,78 @@
                      </div>
                 </div>
             </div>[[+/if]]
-            
+
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
                     <div class="list-header">
                         <h2>Mine favoritter</h2>
                     </div>
                     <ul class="list-group" id="favorites-list">
-                        [[+if $BASE_USER_IS_LOGGED_IN == true]]
-                            [[+$HOME_USER_FAVORITES]]
-                        [[+else]]
-                            <li class="list-group-item">
-                                <em><a href="logg-inn" class="elm-md-smaller">Logg inn</a><a href="logg-inn" data-toggle="dropdown" class="login-opener elm-md-bigger">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em>
-                            </li>
-                        [[+/if]]
-                    </ul>
+                    [[+if $BASE_USER_IS_LOGGED_IN == true]]
+                        [[+$HOME_USER_FAVORITES]]
+                    [[+else]]    <li class="list-group-item">
+                            <em>
+                                <a href="logg-inn" class="elm-md-smaller">Logg inn</a>
+                                <a href="logg-inn" data-toggle="dropdown" class="login-opener elm-md-bigger">Logg inn</a> eller
+                                <a href="registrer">registrer deg</a>.
+                            </em>
+                        </li>
+                    [[+/if]]</ul>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                     <div class="list-header">
                         <h2>Mine siste nedlastninger</h2>
                     </div>
                     <ul class="list-group">
-                        [[+if $BASE_USER_IS_LOGGED_IN == true]]
-                            [[+$HOME_USER_LATEST]]
-                        [[+else]]
-                            <li class="list-group-item">
-                                <em><a href="logg-inn" class="elm-md-smaller">Logg inn</a><a href="logg-inn" data-toggle="dropdown" class="login-opener elm-md-bigger">Logg inn</a> eller <a href="registrer">registrer deg</a>.</em>
-                            </li>
-                        [[+/if]]
+                    [[+if $BASE_USER_IS_LOGGED_IN == true]]
+                        [[+$HOME_USER_LATEST]]
+                    [[+else]]    <li class="list-group-item">
+                            <em>
+                                <a href="logg-inn" class="elm-md-smaller">Logg inn</a>
+                                <a href="logg-inn" data-toggle="dropdown" class="login-opener elm-md-bigger">Logg inn</a> eller
+                                <a href="registrer">registrer deg</a>.
+                            </em>
+                        </li>
+                    [[+/if]]</ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <div class="list-header">
+                        <h2>Nyeste elementer</h2>
+                    </div>
+                    <ul class="list-group">
+                    [[+if count($HOME_NEWEST) == 0]]    <li class="list-group-item"><em>Du har ingen favoritter</em></li>[[+else]][[+foreach from=$HOME_NEWEST item=element]]    <li class="list-group-item">
+                            <a rel="nofollow" target="_blank" href="[[+$element->generateUrl('lol')]]">
+                                [[+$element->getName()]]
+                            </a> @ xxx
+                        </li>
+                    [[+/foreach]]
+ [[+/if]]</ul>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="list-header">
+                        <h2 class="can-i-be-inline">Mest populære</h2>
+                        <div class="btn-group" id="frontpage-most-popular-dropdown">
+                            <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                            <span id="home-most-popular-selected">
+                                [[+if $HOME_MOST_POPULAR_DELTA == 0]]Denne uka[[+else if $HOME_MOST_POPULAR_DELTA == 1]]Denne måneden[[+else if $HOME_MOST_POPULAR_DELTA == 2]]Dette året[[+else if $HOME_MOST_POPULAR_DELTA == 4]]I dag[[+else]]Alltid[[+/if]]
+
+                            </span>
+                            <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="home-most-popular-dropdown">
+                                <li[[+if $HOME_MOST_POPULAR_DELTA == 4]] class="disabled"[[+/if]]><a data-delta="4" href="#">I dag</a></li>
+                                <li[[+if $HOME_MOST_POPULAR_DELTA == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Denne uka</a></li>
+                                <li[[+if $HOME_MOST_POPULAR_DELTA == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">Denne måneden</a></li>
+                                <li[[+if $HOME_MOST_POPULAR_DELTA == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Dette året</a></li>
+                                <li[[+if $HOME_MOST_POPULAR_DELTA == 3]] class="disabled"[[+/if]]><a data-delta="3" href="#">Alltid</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <ul class="list-group" id="home-most-popular">
+                        [[+$HOME_MOST_POPULAR]]
                     </ul>
                 </div>
             </div>
-
-<div class="row">
-    <div class="col-xs-12 col-sm-6">
-        <div class="list-header">
-            <h2>Nyeste elementer</h2>
-        </div>
-        <ul class="list-group">
-            [[+$HOME_NEWEST]]
-        </ul>
-    </div>
-    <div class="col-xs-12 col-sm-6">
-        <div class="list-header">
-            <h2 class="can-i-be-inline">Mest populære</h2>
-            <div class="btn-group" id="frontpage-most-popular-dropdown">
-                <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                <span id="home-most-popular-selected">[[+if $HOME_MOST_POPULAR_DELTA == 0]]
-                    Denne uka
-                [[+else if $HOME_MOST_POPULAR_DELTA == 1]]
-                    Denne måneden
-                [[+else if $HOME_MOST_POPULAR_DELTA == 2]]
-                    Dette året
-                [[+else if $HOME_MOST_POPULAR_DELTA == 4]]
-                    I dag
-                [[+else]]
-                    Alltid
-                [[+/if]]</span> <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" id="home-most-popular-dropdown">
-                    <li[[+if $HOME_MOST_POPULAR_DELTA == 4]] class="disabled"[[+/if]]><a data-delta="4" href="#">I dag</a></li>
-                    <li[[+if $HOME_MOST_POPULAR_DELTA == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Denne uka</a></li>
-                    <li[[+if $HOME_MOST_POPULAR_DELTA == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">Denne måneden</a></li>
-                    <li[[+if $HOME_MOST_POPULAR_DELTA == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Dette året</a></li>
-                    <li[[+if $HOME_MOST_POPULAR_DELTA == 3]] class="disabled"[[+/if]]><a data-delta="3" href="#">Alltid</a></li>
-                </ul>
-            </div>
-        </div>
-        <ul class="list-group" id="home-most-popular">
-            [[+$HOME_MOST_POPULAR]]
-        </ul>
-    </div>
-</div>
-
 [[+include file="footer.tpl"]]

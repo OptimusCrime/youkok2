@@ -100,5 +100,4 @@
 <div class="container" id="main">
     <div class="row">
         [[+nocache]][[+if $SITE_MESSAGES != '']][[+$SITE_MESSAGES]][[+/if]][[+/nocache]]
-        
-        <div class="col-xs-12">
+<div class="col-xs-12">

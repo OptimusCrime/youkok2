@@ -31,10 +31,10 @@ class ElementStaticController {
      */
     
     public static function getNewest() {
-        // Declear variable for storing content
-        $ret = '';
+        // For storing the collection
+        $collection = '';
         
-        // Loading newest files from the system TODO add filter
+        // Loading newest files from the system
         $get_newest  = "SELECT id" . PHP_EOL;
         $get_newest .= "FROM archive" . PHP_EOL;
         $get_newest .= "WHERE is_directory = 0" . PHP_EOL;
@@ -48,18 +48,13 @@ class ElementStaticController {
             $element = ElementCollection::get($row['id'], array('root'));
 
             // Check if valid Element
-            if ($element !== null) {
-                $ret .= $element->controller->getFrontpageLink('added');
+            if ($element->wasFound()) {
+                $collection[] = $element;
             }
-        }
-
-        // Check if null
-        if ($ret == '') {
-            $ret = '<li class="list-group-item">Det er visst ingen filer her.</li>';
         }
         
         // Return the content
-        return $ret;
+        return $collection;
     }
 
     /*
