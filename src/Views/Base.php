@@ -13,7 +13,6 @@ namespace Youkok2\Views;
  */
 
 use \Youkok2\Youkok2 as Youkok2;
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Models\Message as Message;
 use \Youkok2\Utilities\CacheManager as CacheManager;
@@ -91,6 +90,12 @@ class Base extends Youkok2 {
         $this->template->assign('SITE_EMAIL_CONTACT', EMAIL_CONTACT);
         $this->template->assign('SEARCH_QUERY', '');
         $this->template->assign('HEADER_MENU', 'HOME');
+
+        // Route variables
+        $this->template->assign('ROUTE_ARCHIVE', Routes::ARCHIVE);
+        $this->template->assign('ROUTE_DOWNLOAD', Routes::DOWNLOAD);
+        $this->template->assign('ROUTE_REDIRECT', Routes::REDIRECT);
+        $this->template->assign('ROUTE_PROCESSOR', Routes::PROCESSOR);
                 
         // Set some site data
         $this->addSiteData('search_base', URL_FULL . substr(Routes::getRoutes()['Archive'][0]['path'], 1) . '/');
@@ -303,7 +308,7 @@ class Base extends Youkok2 {
         // If develop, assign dev variables
         if (DEV) {
             $this->template->assign('DEV_QUERIES_NUM', Database::getCount());
-            $this->template->assign('DEV_ELEMENT_COLLECTION_NUM', ElementCollection::getSize());
+            $this->template->assign('DEV_ELEMENT_COLLECTION_NUM', '');
             $this->template->assign('DEV_CACHE_LOAD_NUM', CacheManager::getFetches());
             
             $this->template->assign('DEV_QUERIES_BACKTRACE', $this->cleanSqlLog($this->sqlLog));
@@ -401,17 +406,7 @@ class Base extends Youkok2 {
     }
     private function cleanCacheLoadLog($arr) {
         $str = '';
-        
-        // Loop stack elements
-        if (count($arr) > 0) {
-            foreach ($arr as $stack_element) {
-                $str .= $this->structureBacktrace($stack_element['backtrace']);
-                $str .= '<pre>';
-                $str .= 'Id: ' . $stack_element['id'] . ' || Type: ' . $stack_element['type'] . ' || Collection: ';
-                $str .= (ElementCollection::isStored($stack_element['id']) ? 'Ja' : 'Nei') . "\n";
-                $str .= '</pre>';
-            }
-        }
+
         
         // Return resulting string
         return $str;

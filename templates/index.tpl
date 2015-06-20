@@ -82,10 +82,16 @@
                         <h2>Nyeste elementer</h2>
                     </div>
                     <ul class="list-group">
-                    [[+if count($HOME_NEWEST) == 0]]    <li class="list-group-item"><em>Du har ingen favoritter</em></li>[[+else]][[+foreach from=$HOME_NEWEST item=element]]    <li class="list-group-item">
-                            <a rel="nofollow" target="_blank" href="[[+$element->generateUrl('lol')]]">
+                    [[+if count($HOME_NEWEST) == 0]]    <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>[[+else]][[+foreach $HOME_NEWEST as $element]]    <li class="list-group-item">
+                            <a rel="nofollow" target="_blank" href="[[+if $element->isLink()]][[+$element->generateUrl($ROUTE_REDIRECT)]][[+else]][[+$element->generateUrl($ROUTE_DOWNLOAD)]][[+/if]]">
                                 [[+$element->getName()]]
-                            </a> @ xxx
+                            </a>[[+if $element->hasParent()]] @ [[+if $element->getParent(true)->hasParent()]]
+
+                            <a href="[[+$element->getParent(true)->generateUrl($ROUTE_ARCHIVE)]]">[[+$element->getParent(true)->getName()]]</a>, [[+/if]]
+
+                            <a href="[[+$element->getRootParent()->generateUrl($ROUTE_ARCHIVE)]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
+
+                            [<span class="moment-timestamp help" data-toggle="tooltip" title="[[+$element->getAdded(true)]]" data-ts="[[+$element->getAdded(true)]]">Laster...</span>]
                         </li>
                     [[+/foreach]]
  [[+/if]]</ul>
@@ -111,8 +117,19 @@
                         </div>
                     </div>
                     <ul class="list-group" id="home-most-popular">
-                        [[+$HOME_MOST_POPULAR]]
-                    </ul>
+                    [[+if count($HOME_MOST_POPULAR) == 0]]    <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>[[+else]][[+foreach $HOME_MOST_POPULAR as $element]]    <li class="list-group-item">
+                            <a rel="nofollow" target="_blank" href="[[+if $element->isLink()]][[+$element->generateUrl($ROUTE_REDIRECT)]][[+else]][[+$element->generateUrl($ROUTE_DOWNLOAD)]][[+/if]]">
+                                [[+$element->getName()]]
+                            </a>[[+if $element->hasParent()]] @ [[+if $element->getParent(true)->hasParent()]]
+
+                            <a href="[[+$element->getParent(true)->generateUrl($ROUTE_ARCHIVE)]]">[[+$element->getParent(true)->getName()]]</a>, [[+/if]]
+
+                            <a href="[[+$element->getRootParent()->generateUrl($ROUTE_ARCHIVE)]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
+
+                            [[[+$element->getDownLoadCount($HOME_MOST_POPULAR_DELTA)]]]
+                        </li>
+                    [[+/foreach]]
+[[+/if]]</ul>
                 </div>
             </div>
 [[+include file="footer.tpl"]]

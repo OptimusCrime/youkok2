@@ -13,19 +13,48 @@ namespace Youkok2\models\StaticControllers;
  */
 
 use \Youkok2\Youkok2 as Youkok2;
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
-use \Youkok2\Utilities\Routes as Routes;
-use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
  * The Course class
  */
 
 class ElementStaticController {
-    
+
+    /*
+     * Variables
+     */
+
+    private static $collection = [];
+
+    /*
+     * Return new Element object
+     */
+
+    public static function &get($data) {
+        // Check what kind of fetch we should do
+        if (is_numeric($data)) {
+            // Check if we have to create it first
+            if (!isset(self::$collection[$data])) {
+                // Not fetched, new instance
+                $element = new Element($data);
+
+                // Add to collection
+                self::$collection[$data] = &$element;
+            }
+
+            // Return from collection
+            return self::$collection[$data];
+        }
+        else {
+            // Fetching by URL, we can't use the collection here
+            return new Element($data);
+        }
+    }
+
+
     /*
      * Fetch newest Elements
      */
@@ -45,12 +74,7 @@ class ElementStaticController {
         $get_newest_query = Database::$db->query($get_newest);
         while ($row = $get_newest_query->fetch(\PDO::FETCH_ASSOC)) {
             // Get
-            $element = ElementCollection::get($row['id'], array('root'));
-
-            // Check if valid Element
-            if ($element->wasFound()) {
-                $collection[] = $element;
-            }
+            $collection[] = Element::get($row['id']);
         }
         
         // Return the content
@@ -62,7 +86,7 @@ class ElementStaticController {
      */
 
     public static function getMostPopular($override = null) {
-        return Youkok2::runProcessor('/module/get', false, true)['html'];
+        return Youkok2::runProcessor('/module/get', false, true);
     }
     
     /*
@@ -78,7 +102,7 @@ class ElementStaticController {
 
             foreach ($favorites as $favorite) {
                 // Get
-                $element = ElementCollection::get($favorite);
+                $element = Element::get($favorite);
 
                 // Check if valid Element
                 if ($element !== null) {

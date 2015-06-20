@@ -21,7 +21,7 @@ class Routes {
     const ARCHIVE = '/emner';
     const DOWNLOAD = '/last-ned';
     const REDIRECT = '/redirect';
-    const PROSECESSOR = '/processor';
+    const PROCESSOR = '/processor';
     
     private static $routes = array(
         'Frontpage' => array(

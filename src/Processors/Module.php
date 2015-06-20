@@ -13,7 +13,7 @@ namespace Youkok2\Processors;
  * Define what classes to use
  */
 
-use \Youkok2\Collections\ElementCollection as ElementCollection;
+use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Models\Controllers\ElementController as ElementController;
 use \Youkok2\Utilities\Database as Database;
@@ -47,7 +47,7 @@ class Module extends Base {
     
     public function get() {
         // For returning content
-        $ret = '';
+        $collection = [];
         
         // Load most popular files from the system
         $get_most_popular  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
@@ -62,23 +62,12 @@ class Module extends Base {
         $get_most_popular_query->execute();
         while ($row = $get_most_popular_query->fetch(\PDO::FETCH_ASSOC)) {
             // Get
-            $element = ElementCollection::get($row['id'], array('root'));
-
-            // Check if valid Element
-            if ($element !== null) {
-                // Set download count
-                $element->controller->setDownloadCount(Me::getMostPopularDelta(), $row['downloaded_times']);
-                
-                // Generate string
-                $ret .= $element->controller->getFrontpageLink('most-popular', Me::getMostPopularDelta());
-            }
+            $element = Element::get($row['id']);
+            $element->setDownloadCount(Me::getMostPopularDelta(), $row['downloaded_times']);
+            $collection[] = $element;
         }
 
-        // Check if null
-        if ($ret == '') {
-            $ret = '<li class="list-group-item">Det er visst ingen nedlastninger i dette tidsrommet.</li>';
-            
-        }
+        return $collection;
         
         // Set data
         $this->setData('html', $ret);
