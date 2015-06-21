@@ -22,7 +22,7 @@ use \Youkok2\Utilities\Database as Database;
  * The NotFound class, extending Base class
  */
 
-class Module extends Base {
+class Module extends BaseProcessor {
     
     /*
      * Constructor

@@ -18,12 +18,12 @@ class BaseModel {
      * Set default values for the model
      */
     
-    protected function setDefaults($class, $defaults) {
+    protected function setDefaults($class) {
         // Get class name
         $class_name = get_class($class);
 
         // Loop all the defaults
-        foreach ($defaults as $k => $v) {
+        foreach ($class->getSchema()['fields'] as $k => $v) {
             // Find what method to check
             $method_name = 'set' . ucfirst($k);
             

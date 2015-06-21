@@ -22,7 +22,7 @@ use \Youkok2\Utilities\Routes as Routes;
  * The Home class, extending Base class
  */
 
-class Courses extends Base {
+class Courses extends BaseView {
 
     /*
      * Constructor
@@ -63,8 +63,7 @@ class Courses extends Base {
         $get_all_courses .= "FROM archive" . PHP_EOL;
         $get_all_courses .= "WHERE parent IS NULL" . PHP_EOL;
         $get_all_courses .= "AND is_visible = 1" . PHP_EOL;
-        $get_all_courses .= "ORDER BY name ASC" . PHP_EOL;
-        $get_all_courses .= "LIMIT 500";
+        $get_all_courses .= "ORDER BY name ASC";
         
         $get_all_courses_query = Database::$db->query($get_all_courses);
         while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {

@@ -26,7 +26,7 @@ use \Youkok2\Utilities\Routes as Routes;
  * Class that all the controllers extends
  */
 
-class Base extends Youkok2 {
+class BaseView extends Youkok2 {
 
     /*
      * Internal variables
@@ -328,9 +328,6 @@ class Base extends Youkok2 {
             $this->template->assign('JS_MODULES', $js_modules);
         }
         
-        // Close database and process cache
-        $this->close();
-        
         // Load message
         $this->showMessages();
         
@@ -346,6 +343,9 @@ class Base extends Youkok2 {
         
         // Call Smarty
         $this->template->display($template, $sid);
+
+        // Close database and process cache
+        $this->close();
     }
     
     /*

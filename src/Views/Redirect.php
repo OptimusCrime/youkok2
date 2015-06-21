@@ -19,7 +19,7 @@ use \Youkok2\Models\Element as Element;
  * The Redrict class, extending Base class
  */
 
-class Redirect extends Base {
+class Redirect extends BaseView {
 
     //
     // The constructor for this subclass

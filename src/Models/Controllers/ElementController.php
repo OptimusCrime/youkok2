@@ -12,26 +12,23 @@ namespace Youkok2\Models\Controllers;
  * Define what classes to use
  */
 
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
-use \Youkok2\Models\Course as Course;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
-use \Youkok2\Utilities\Routes as Routes;
-use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
  * The class ElementController
  */
 
-class ElementController implements BaseController {
+class ElementController extends BaseController {
     
     /*
      * Variables
      */
     
-    private $model;
+
+    public static $cacheKey = 'i';
 
     // Additional fields in cache
     private $parent;
@@ -82,21 +79,7 @@ class ElementController implements BaseController {
      */
     
     public function __construct($model) {
-        // Set pointer to the model
-        $this->model = $model;
-        
-        // Init array for the query
-        $this->query = array('select' => array('a.name', 'a.parent', 'a.empty', 'a.checksum', 'a.is_directory', 
-                'a.url_friendly', 'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 
-                'a.added', 'a.size', 'a.exam', 'a.url'), 
-            'join' => array(), 
-            'where' => array('WHERE a.id = :id'),
-            'groupby' => array(),
-            'execute' => array());
-
-        // Variables to keep track of what should be loaded at creation
-        $this->loadFlagCount = false;
-        $this->loadIfRemoved = false;
+        parent::__construct($this, $model);
 
         // Other stuff
         $this->flagCount = null;
@@ -115,104 +98,6 @@ class ElementController implements BaseController {
         // Parents and children
         $this->parents = null;
         $this->children = null;
-    }
-    
-    /*
-     * Methods for creating the element
-     */
-    
-    public function createById($id) {
-        $this->model->setId($id);
-
-        // Check if we should check the cache and if it is cached
-        if ($this->cache and CacheManager::isCached($id, 'i')) {
-            // This Item is cached, go ahead and fetch data
-            $temp_cache_data = CacheManager::getCache($id, 'i');
-            // Loop all the fields and apply data
-            foreach ($temp_cache_data as $k => $v) {
-                $k_actual = 'set' . ucfirst($k);
-                // Check that the field exists as a property/attribute in this class
-                if (method_exists('\Youkok2\Models\Element', $k_actual)) {
-                    // Only call if value is not empty, instead use the default values
-                    if (strlen($v) != 0) {
-                        call_user_func_array(array($this->model, $k_actual), array($v));
-                    }
-                }
-            }
-
-            // Cached flagcount?
-            if (isset($temp_cache_data['flagCount'])) {
-                $this->flagCount = $temp_cache_data['flagCount'];
-            }
-        }
-        else {
-            // Add id to dynamic query
-            $this->query['execute'][':id'] = $this->model->getId();
-
-            if (!$this->loadIfRemoved) {
-                $this->query['where'][] = 'a.is_visible = 1';
-            }
-
-            if ($this->loadFlagCount) {
-                $this->query['select'][] = "count(fl.id) as 'flags'";
-                $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file AND fl.active = 1';
-                $this->query['groupby'][] = 'a.id';
-            }
-
-            // Create the actual query
-            $get_item_info = 'SELECT ' . implode(', ', $this->query['select']) . PHP_EOL . 'FROM archive AS a ';
-
-            // Add joins (if there are any)
-            if (count($this->query['join']) > 0) {
-                $get_item_info .= implode(' ', $this->query['join']);
-            }
-
-            // Add where
-            $get_item_info .= PHP_EOL . implode(' AND ', $this->query['where']);;
-
-            // Add group by (again, if there are any)
-            if (count($this->query['groupby']) > 0) {
-                $get_item_info .= PHP_EOL . 'GROUP BY ' . implode(', ', $this->query['groupby']);
-            }
-
-            // Run the actual query
-            $get_item_info_query = Database::$db->prepare($get_item_info);
-            $get_item_info_query->execute($this->query['execute']);
-            $row = $get_item_info_query->fetch(\PDO::FETCH_ASSOC);
-
-            // Check if the query did return anything
-            if (isset($row['name'])) {
-                // Set special fields
-                if (isset($row['flags'])) {
-                    $this->flagCount = $row['flags'];
-                }
-
-                // Set results
-                $this->model->setName($row['name']);
-                $this->model->setDirectory($row['is_directory']);
-                $this->model->setUrlFriendly($row['url_friendly']);
-                $this->model->setParent($row['parent']);
-                $this->model->setEmpty((($row['empty'] == '0') ? false : true));
-                $this->model->setChecksum($row['checksum']);
-                $this->model->setMimeType($row['mime_type']);
-                $this->model->setMissingImage($row['missing_image']);
-                $this->model->setAccepted((($row['is_accepted'] == '0') ? false : true));
-                $this->model->setVisible((($row['is_visible'] == '0') ? false : true));
-                $this->model->setAdded($row['added']);
-                $this->model->setSize($row['size']);
-                $this->model->setExam($row['exam']);
-                $this->model->setUrl($row['url']);
-
-                // Check if we should cache this Item
-                if ($this->cache) {
-                    $this->cache();
-                }
-            }
-            else {
-                // Was not found
-                $this->model->setId(null);
-            }
-        }
     }
     
     public function createByUrl($url) {
@@ -275,6 +160,18 @@ class ElementController implements BaseController {
                 }
             }
         }
+    }
+
+    /*
+     * Check if was found
+     */
+
+    public function wasFound() {
+        if ($this->model->getId() != null and is_numeric($this->model->getId()) and $this->model->isVisible()) {
+            return true;
+        }
+
+        return false;
     }
     
     /*
@@ -461,22 +358,6 @@ class ElementController implements BaseController {
     }
     
     /*
-     * Setter for caching
-     */
-
-    public function setCache($b) {
-        $this->cache = $b;
-    }
-    
-    /*
-     * Cache the current Element
-     */
-    
-    public function cache() {
-        CacheManager::setCache($this->model->getId(), 'i', $this->cacheFormat());
-    }
-    
-    /*
      * Get creator
      */
     
@@ -576,14 +457,6 @@ class ElementController implements BaseController {
         
         // Return full path
         return FILE_PATH . '/' . $folder1 . '/' . $folder2 . '/' . $this->model->getChecksum();
-    }
-    
-    /*
-     * Delete cache
-     */
-    
-    public function deleteCache() {
-        CacheManager::deleteCache($this->model->getId(), 'i');
     }
     
     /*

@@ -25,7 +25,7 @@ use \Youkok2\Utilities\Utilities as Utilities;
  */
 
 
-class Auth extends Base {
+class Auth extends BaseView {
 
     /*
      * Constructor

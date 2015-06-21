@@ -13,7 +13,7 @@ namespace Youkok2\Processors;
  * The LinkTitle class, extending Base class
  */
 
-class LinkTitle extends Base {
+class LinkTitle extends BaseProcessor {
 
     /*
      * Constructor

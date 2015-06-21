@@ -19,7 +19,7 @@ use \Youkok2\Utilities\Loader as Loader;
  * The Static class, extending Base class
  */
 
-class StaticReturner extends Base {
+class StaticReturner extends BaseProcessor {
 
     /*
      * Constructor

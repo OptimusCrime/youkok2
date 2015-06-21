@@ -24,7 +24,7 @@ use \Youkok2\Utilities\Utilities as Utilities;
  * The Home class, extending Base class
  */
 
-class Archive extends Base {
+class Archive extends BaseView {
 
     /*
      * Constructor

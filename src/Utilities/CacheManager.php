@@ -49,7 +49,7 @@ Class CacheManager {
             }
 
             // Check if content is valid (and safe!)
-            if (substr(file_get_contents($file), 0, 19) == '<?php return array(') {
+            if (substr(file_get_contents($file), 0, 13) == '<?php return ') {
                 // Is valid, store current
                 self::$currentChecking = $id;
                 self::$currentContent = $temp_content;
@@ -103,7 +103,7 @@ Class CacheManager {
         $file = self::getFileName($id, $type);
 
         // Build content
-        $data = '<?php return array(' . $content . '); ?>';
+        $data = '<?php return "' . addslashes($content) . '"; ?>';
 
         // Check if we should store to disk at once
         if ($force) {
@@ -165,7 +165,7 @@ Class CacheManager {
      */
 
     private static function evalAndClean($c) {
-        return eval(str_replace(['<?php', '?>'], '', $c));
+        return json_decode(eval(str_replace(['<?php', '?>'], '', $c)), true);
     }
 
     /*

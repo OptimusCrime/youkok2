@@ -20,7 +20,7 @@ use \Youkok2\Utilities\Database as Database;
  * Class that all the processors extends
  */
 
-class Base extends Youkok2 {
+class BaseProcessor extends Youkok2 {
     
     /*
      * Variable for storing data

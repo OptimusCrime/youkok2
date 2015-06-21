@@ -12,7 +12,6 @@ namespace Youkok2\Views;
  * Define what classes to use
  */
 
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
@@ -21,14 +20,14 @@ use \Youkok2\Utilities\Database as Database;
  * The Frontpage class, extending Base class
  */
 
-class Frontpage extends Base {
+class Frontpage extends BaseView {
 
     /*
      * Constructor
      */
 
-    public function __construct($kill = false) {
-        parent::__construct($kill);
+    public function __construct() {
+        parent::__construct();
         
         // Set view
         $this->addSiteData('view', 'frontpage');

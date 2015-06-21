@@ -22,7 +22,7 @@ use \Youkok2\Utilities\Utilities as Utilities;
  * The Profile class, extending Base class
  */
 
-class Profile extends Base {
+class Profile extends BaseView {
 
     /*
      * Constructor

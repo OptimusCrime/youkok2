@@ -13,7 +13,7 @@ namespace Youkok2\Processors\Tasks;
  */
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
-use \Youkok2\Processors\Base as Base;
+use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
 
@@ -21,7 +21,7 @@ use \Youkok2\Utilities\Utilities as Utilities;
  * LoadCoursesJson extending Base
  */
 
-class LoadCoursesJson extends Base {
+class LoadCoursesJson extends BaseProcessor {
 
     /*
      * Constructor

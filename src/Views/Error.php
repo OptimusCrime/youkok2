@@ -13,7 +13,7 @@ namespace Youkok2\Views;
  * The Home class, extending Base class
  */
 
-class Error extends Base {
+class Error extends BaseView {
 
     /*
      * Constructor

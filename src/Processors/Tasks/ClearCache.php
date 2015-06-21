@@ -12,13 +12,13 @@ namespace Youkok2\Processors\Tasks;
  * Define what classes to use
  */
 
-use \Youkok2\Processors\Base as Base;
+use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 
 /*
  * ClearCache extending Base
  */
 
-Class ClearCache extends Base {
+Class ClearCache extends BaseProcessor {
 
     /*
      * Construct

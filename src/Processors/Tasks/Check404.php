@@ -13,7 +13,7 @@ namespace Youkok2\Processors\Tasks;
  */
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
-use \Youkok2\Processors\Base as Base;
+use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Routes as Routes;
 
@@ -21,7 +21,7 @@ use \Youkok2\Utilities\Routes as Routes;
  * LoadCourses extending Base
  */
 
-class Check404 extends Base {
+class Check404 extends BaseProcessor {
 
     /*
      * Constructor

@@ -33,7 +33,7 @@ class ElementStaticController {
      * Return new Element object
      */
 
-    public static function &get($data) {
+    public static function get($data) {
         // Check what kind of fetch we should do
         if (is_numeric($data)) {
             // Check if we have to create it first

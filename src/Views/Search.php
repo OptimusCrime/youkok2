@@ -21,7 +21,7 @@ use \Youkok2\Utilities\Routes as Routes;
  * The search class, taking care of searching
  */
 
-class Search extends Base {
+class Search extends BaseView {
 
     /*
      * Constructor

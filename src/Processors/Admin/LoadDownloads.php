@@ -12,7 +12,7 @@ namespace Youkok2\Processors\Admin;
  * Define what classes to use
  */
 
-use \Youkok2\Processors\Base as Base;
+use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Utilities\Database as Database;
@@ -21,7 +21,7 @@ use \Youkok2\Utilities\Database as Database;
  * Build extending Base
  */
 
-class LoadDownloads extends Base {
+class LoadDownloads extends BaseProcessor {
 
     /*
      * Constructor

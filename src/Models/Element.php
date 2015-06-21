@@ -12,7 +12,6 @@ namespace Youkok2\Models;
  * Load different classes into namespace
  */
 
-use \Youkok2\Models\BaseModel as BaseModel;
 use \Youkok2\Models\Controllers\ElementController as ElementController;
 use \Youkok2\Models\StaticControllers\ElementStaticController as ElementStaticController;
 use \Youkok2\Utilities\Utilities as Utilities;
@@ -52,104 +51,112 @@ class Element extends BaseModel {
      */
     
     private $schema = [
-        'id' => [
-            'type' => 'integer',
-            'null' => false,
-            'db' => true,
+        'meta' => [
+            'table' => 'archive',
         ],
-        'name' => [
-            'type' => 'string',
-            'null' => false,
-            'db' => true,
-        ],
-        'url_friendly' => [
-            'method' => 'urlFriendly',
-            'type' => 'string',
-            'null' => false,
-            'db' => true,
-        ],
-        'owner' => [
-            'type' => 'integer',
-            'null' => true,
-            'default' => null,
-            'db' => true,
-        ],
-        'parent' => [
-            'type' => 'integer',
-            'null' => true,
-            'default' => null,
-            'db' => true,
-        ],
-        'empty' => [
-            'type' => 'integer',
-            'null' => false,
-            'default' => 1,
-            'db' => true,
-        ],
-        'checksum' => [
-            'type' => 'string',
-            'null' => true,
-            'default' => null,
-            'db' => true,
-        ],
-        'mime_type' => [
-            'method' => 'mimeType',
-            'type' => 'string',
-            'null' => true,
-            'default' => null,
-            'db' => true,
-        ],
-        'missing_image' => [
-            'method' => 'missingImage',
-            'type' => 'integer',
-            'null' => false,
-            'default' => 0,
-            'db' => true,
-        ],
-        'size' => [
-            'type' => 'integer',
-            'null' => true,
-            'default' => null,
-            'db' => true,
-        ],
-        'is_directory' => [
-            'method' => 'directory',
-            'type' => 'integer',
-            'null' => false,
-            'default' => 0,
-            'db' => true,
-        ],
-        'is_accepted' => [
-            'method' => 'accepted',
-            'type' => 'integer',
-            'null' => false,
-            'default' => 0,
-            'db' => true,
-        ],
-        'is_visible' => [
-            'method' => 'visible',
-            'type' => 'integer',
-            'null' => false,
-            'default' => 1,
-            'db' => true,
-        ],
-        'exam' => [
-            'type' => 'datetime',
-            'null' => true,
-            'default' => null,
-            'db' => true,
-        ],
-        'url' => [
-            'type' => 'string',
-            'null' => true,
-            'default' => null,
-            'db' => true,
-        ],
-        'added' => [
-            'type' => 'datetime',
-            'null' => false,
-            'db' => true,
-        ],
+        'fields' => [
+            'id' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+            ],
+            'name' => [
+                'type' => 'string',
+                'null' => false,
+                'db' => true,
+            ],
+            'url_friendly' => [
+                'method' => 'urlFriendly',
+                'type' => 'string',
+                'null' => false,
+                'db' => true,
+            ],
+            'owner' => [
+                'type' => 'integer',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'parent' => [
+                'type' => 'integer',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'empty' => [
+                'type' => 'integer',
+                'null' => false,
+                'default' => 1,
+                'db' => true,
+            ],
+            'checksum' => [
+                'type' => 'string',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'mime_type' => [
+                'method' => 'mimeType',
+                'type' => 'string',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'missing_image' => [
+                'method' => 'missingImage',
+                'type' => 'integer',
+                'null' => false,
+                'default' => 0,
+                'db' => true,
+            ],
+            'size' => [
+                'type' => 'integer',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'is_directory' => [
+                'method' => 'directory',
+                'type' => 'integer',
+                'null' => false,
+                'default' => 0,
+                'db' => true,
+                'is' => true
+            ],
+            'is_accepted' => [
+                'method' => 'accepted',
+                'type' => 'integer',
+                'null' => false,
+                'default' => 0,
+                'db' => true,
+                'is' => true
+            ],
+            'is_visible' => [
+                'method' => 'visible',
+                'type' => 'integer',
+                'null' => false,
+                'default' => 1,
+                'db' => true,
+                'is' => true
+            ],
+            'exam' => [
+                'type' => 'datetime',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'url' => [
+                'type' => 'string',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'added' => [
+                'type' => 'datetime',
+                'null' => false,
+                'db' => true,
+            ],
+        ]
     ];
     
     /*
@@ -163,7 +170,7 @@ class Element extends BaseModel {
          * Set some default values
          */
         
-        $this->setDefaults($this, $this->schema);
+        $this->setDefaults($this);
 
         /*
          * Create
@@ -286,6 +293,14 @@ class Element extends BaseModel {
     }
     public function setAdded($added) {
         $this->added = $added;
+    }
+
+    /*
+     * Return schema
+     */
+
+    public function getSchema() {
+        return $this->schema;
     }
 
     /*

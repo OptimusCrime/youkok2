@@ -13,7 +13,7 @@ namespace Youkok2\Views;
  * The NotFound class, extending Base class
  */
 
-class NotFound extends Base {
+class NotFound extends BaseView {
 
     /*
      * Constructor

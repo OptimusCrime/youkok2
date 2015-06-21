@@ -18,7 +18,7 @@ use \Youkok2\Models\Element as Element;
  * The Download class, extending Youkok2 base class
  */
 
-class Download extends Base {
+class Download extends BaseView {
 
     /*
      * Constructor
@@ -32,84 +32,76 @@ class Download extends Base {
         $should_display_404 = false;
         
         // Create new object
-        $element = new Element();
-        $element->createByUrl($this->queryGetClean());
-        
-        // Check if was found or invalid url
-        if ($element->controller->wasFound()) {
-            // Check if visible
-            if ($element->isVisible()) {
-                $file_location = $element->controller->getPhysicalLocation();
-                
-                // Check if zip download or not
-                if (!$element->isDirectory()) {
-                    if (file_exists($file_location)) {
-                        // Check if wget
-                        if (strpos($_SERVER['HTTP_USER_AGENT'], 'wget') !== false or strpos($_SERVER['HTTP_USER_AGENT'], 'Wget') !== false) {
-                            // Wget attempt, serve false file
-                            $this->loadFileDownload(BASE_PATH . '/files/wget_file.txt', $element->getName());
-                            exit;
-                        }
-                        
-                        // Check if we should log download
-                        if (!isset($_GET['donotlogthisdownload'])) {
-                            // Log download
-                            $element->controller->addDownload();
-                        }
-    
-                        // Check if we should return fake http response to facebook crawler
-                        if (isset($_SERVER['HTTP_USER_AGENT']) and strpos($_SERVER['HTTP_USER_AGENT'], 'facebook') !== false) {
+        $element = Element::get($this->queryGetClean());
 
-                            // Facebook crawler
-                            $this->template->assign('DOWNLOAD_FILE', $element->getName());
-                            $this->template->assign('DOWNLOAD_SIZE', $element->getSize(true));
-                            $this->template->assign('DOWNLOAD_URL', $_SERVER['REQUEST_URI']);
-    
-                            // Get item parent information
-                            $download_parent = '';
-                            $root_parent = $element->controller->getRootParent();
-                            if ($root_parent != null) {
-                                $course = $root_parent->controller->getCourse();
-                                $download_parent .= $course['code'] . ' - ' . $course['name'];
-                            }
-                            
-                            $this->template->assign('DOWNLOAD_PARENT', $download_parent);
-                            
-                            // Display fake http response for Facebook
-                            $this->displayAndCleanup('download.tpl');
+        // Check if was found or invalid url
+        if ($element->wasFound() and $element->isVisible()) {
+            $file_location = $element->getPhysicalLocation();
+
+            // Check if zip download or not
+            if (!$element->isDirectory()) {
+                if (file_exists($file_location)) {
+                    // Check if wget
+                    if (!isset($_SERVER['HTTP_USER_AGENT']) or strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'wget') !== false) {
+                        // Wget attempt, serve false file
+                        $this->loadFileDownload(BASE_PATH . '/files/wget_file.txt', $element->getName());
+                        exit;
+                    }
+
+                    // Check if we should log download
+                    if (!isset($_GET['donotlogthisdownload'])) {
+                        // Log download
+                        $element->addDownload();
+                    }
+
+                    // Check if we should return fake http response to facebook crawler
+                    if (strpos($_SERVER['HTTP_USER_AGENT'], 'facebook') !== false) {
+
+                        // Facebook crawler
+                        $this->template->assign('DOWNLOAD_FILE', $element->getName());
+                        $this->template->assign('DOWNLOAD_SIZE', $element->getSize(true));
+                        $this->template->assign('DOWNLOAD_URL', $_SERVER['REQUEST_URI']);
+
+                        // Get item parent information
+                        $download_parent = '';
+                        $root_parent = $element->controller->getRootParent();
+                        if ($root_parent != null) {
+                            $course = $root_parent->controller->getCourse();
+                            $download_parent .= $course['code'] . ' - ' . $course['name'];
                         }
-                        else {
-                            // Close database connection
-                            $this->close();
-                            
-                            // File exists, check if we should display or directly download
-                            $display = false;
-                            $display_instead = explode(',', DISPLAY_INSTEAD_OF_DOWNLOAD);
-                            foreach ($display_instead as $v) {
-                                if ($v == $element->getMimeType()) {
-                                    // Display
-                                    $display = true;
-                                    break;
-                                }
-                            }
-                            
-                            if ($display) {
-                                $this->loadFileDisplay($file_location, $element->getName());
-                            }
-                            else {
-                                $this->loadFileDownload($file_location, $element->getName());
-                            }
-                        }
+
+                        $this->template->assign('DOWNLOAD_PARENT', $download_parent);
+
+                        // Display fake http response for Facebook
+                        $this->displayAndCleanup('download.tpl');
                     }
                     else {
-                        // File was not found, wtf
-                        $should_display_404 = true;
+                        // Close database connection
+                        $this->close();
+
+                        // File exists, check if we should display or directly download
+                        $display = false;
+                        $display_instead = explode(',', DISPLAY_INSTEAD_OF_DOWNLOAD);
+                        foreach ($display_instead as $v) {
+                            if ($v == $element->getMimeType()) {
+                                // Display
+                                $display = true;
+                                break;
+                            }
+                        }
+
+                        if ($display) {
+                            $this->loadFileDisplay($file_location, $element->getName());
+                        }
+                        else {
+                            $this->loadFileDownload($file_location, $element->getName());
+                        }
                     }
                 }
-            }
-            else {
-                // File is not visible
-                $should_display_404 = true;
+                else {
+                    // File was not found, wtf
+                    $should_display_404 = true;
+                }
             }
         }
         else {
@@ -123,9 +115,9 @@ class Download extends Base {
         }
     }
     
-    //
-    // Loading an actual file from the fileserver for displaying
-    //
+    /*
+     * Loading an actual file for displaying
+     */
     
     private function loadFileDisplay($file, $name) {
         // Fetch mime type
@@ -150,10 +142,10 @@ class Download extends Base {
         // Exit the program
         exit;
     }
-    
-    //
-    // Loading an actual file from the fileserver for downloading
-    //
+
+    /*
+     * Loading an actual file for downloading
+     */
     
     private function loadFileDownload($file, $name) {
         // Fetch mime type

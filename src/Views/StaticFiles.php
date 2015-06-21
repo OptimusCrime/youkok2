@@ -13,7 +13,7 @@ namespace Youkok2\Views;
  * The Flat class, extending Base class
  */
 
-class StaticFiles extends Base {
+class StaticFiles extends BaseView {
 
     /*
      * Constructor

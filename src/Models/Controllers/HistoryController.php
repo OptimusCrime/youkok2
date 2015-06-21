@@ -18,7 +18,7 @@ use \Youkok2\Utilities\Database as Database;
  * HistoryController extending BaseController
  */
 
-class HistoryController implements BaseController {
+class HistoryController extends BaseController {
 
     /*
      * Variables

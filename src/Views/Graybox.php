@@ -20,7 +20,7 @@ use \Youkok2\Utilities\Database as Database;
  * The Graybox class, extending Base class
  */
 
-class Graybox extends Base {
+class Graybox extends BaseView {
 
     /*
      * Internal variables

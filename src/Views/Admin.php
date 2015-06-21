@@ -22,7 +22,7 @@ use \Youkok2\Utilities\Utilities as Utilities;
  * The Admin class, extending Base class
  */
 
-class Admin extends Base {
+class Admin extends BaseView {
 
     /*
      * Constructor

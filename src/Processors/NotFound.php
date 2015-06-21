@@ -13,7 +13,7 @@ namespace Youkok2\Processors;
  * The NotFound class, extending Base class
  */
 
-class NotFound extends Base {
+class NotFound extends BaseProcessor {
 
     /*
      * Constructor
