@@ -10,7 +10,7 @@
 namespace Youkok2\Views;
 
 /*
- * The Flat class, extending Base class
+ * The StaticFiles class, extending BaseView
  */
 
 class StaticFiles extends BaseView {
@@ -27,6 +27,7 @@ class StaticFiles extends BaseView {
     /*
      * Different static files
      */
+
     public function returnChangelog() {
         // Get changelog content
         $content = file_get_contents(BASE_PATH . '/files/changelog.md');

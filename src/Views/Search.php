@@ -1,8 +1,8 @@
 <?php
 /*
- * File: search.controller.php
- * Holds: The SearchController-class
- * Created: 06.08.14
+ * File: Search.php
+ * Holds: Handles searches by the user
+ * Created: 06.08.2014
  * Project: Youkok2
  * 
 */
@@ -18,7 +18,7 @@ use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Routes as Routes;
 
 /*
- * The search class, taking care of searching
+ * The Search class, extending BaseView
  */
 
 class Search extends BaseView {

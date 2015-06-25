@@ -29,8 +29,9 @@
         <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">e-post</a>. Vi har en begrenset liste for å minimere sjanser for 
         virus.</p>
         <p><b>Fil-endelser:</b></p>
-        <ul>
-            [[+$ACCEPTED_FILEENDINGS]]
+        <ul>[[+foreach $ACCEPTED_FILEENDINGS as $file_ending]]
+                <li>[[+$file_ending]]</li>
+            [[+/foreach]]
         </ul>
     </div>
     <div id="sidebar" class="col-xs-12 col-md-4">

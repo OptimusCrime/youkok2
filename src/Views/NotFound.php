@@ -2,7 +2,7 @@
 /*
  * File: NotFound.php
  * Holds: Returns 404 error if the view was not found
- * Created: 02.10.13
+ * Created: 02.10.2013
  * Project: Youkok2
  * 
 */
@@ -10,7 +10,7 @@
 namespace Youkok2\Views;
 
 /*
- * The NotFound class, extending Base class
+ * The NotFound class, extending BaseView
  */
 
 class NotFound extends BaseView {

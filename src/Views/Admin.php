@@ -1,8 +1,8 @@
 <?php
 /*
- * File: admin.controller.php
- * Holds: The AdminController-class
- * Created: 06.08.14
+ * File: Admin.php
+ * Holds: Views for the admin's eyes only
+ * Created: 06.08.2014
  * Project: Youkok2
  * 
 */
@@ -19,7 +19,7 @@ use \Youkok2\Utilities\Redirect as Redirect;
 use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
- * The Admin class, extending Base class
+ * The Admin class, extending BaseView
  */
 
 class Admin extends BaseView {

@@ -2,7 +2,7 @@
 /*
  * File: Frontpage.php
  * Holds: The frontpage view
- * Created: 02.10.13
+ * Created: 02.10.2013
  * Project: Youkok2
 */
 
@@ -49,7 +49,7 @@ class Frontpage extends BaseView {
         $this->template->assign('HOME_MOST_POPULAR_DELTA', Me::getMostPopularDelta());
         
         // Display the template
-        $this->displayAndCleanup('index.tpl');
+        $this->displayAndCleanup('frontpage.tpl');
     }
     
     /*

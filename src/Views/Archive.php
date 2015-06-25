@@ -1,8 +1,8 @@
 <?php
 /*
  * File: Archive.php
- * Holds: Archive view
- * Created: 02.10.13
+ * Holds: The complex and horrible archive view
+ * Created: 02.10.2013
  * Project: Youkok2
  * 
 */
@@ -21,7 +21,7 @@ use \Youkok2\Utilities\Utilities as Utilities;
 
 
 /*
- * The Home class, extending Base class
+ * The Archive class, extending BaseView
  */
 
 class Archive extends BaseView {

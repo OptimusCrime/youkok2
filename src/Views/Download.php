@@ -1,21 +1,22 @@
 <?php
 /*
  * File: Download.php
- * Holds: Downloading one or a collection of elements
- * Created: 02.10.13
+ * Holds: Handling for downloading files
+ * Created: 02.10.2013
  * Project: Youkok2
  * 
 */
 
 namespace Youkok2\Views;
 /*
+ *
  * Define what classes to use
  */
 
 use \Youkok2\Models\Element as Element;
 
 /*
- * The Download class, extending Youkok2 base class
+ * The Download class, extending BaseView
  */
 
 class Download extends BaseView {

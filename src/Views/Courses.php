@@ -1,7 +1,7 @@
 <?php
 /*
  * File: Courses.php
- * Holds: Courses view
+ * Holds: Displays a list of courses
  * Created: 16.05.2015
  * Project: Youkok2
  * 
@@ -15,8 +15,6 @@ namespace Youkok2\Views;
 
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Utilities\Database as Database;
-use \Youkok2\Utilities\Routes as Routes;
-
 
 /*
  * The Home class, extending Base class

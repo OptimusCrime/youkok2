@@ -1,7 +1,7 @@
 <?php
 /*
- * File: Base.php
- * Holds: Base view class
+ * File: BaseView.php
+ * Holds: Class extended by the other views
  * Created: 02.10.13
  * Project: Youkok2
 */
