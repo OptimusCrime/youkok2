@@ -25,9 +25,9 @@ class Youkok2 {
      * Run a processor with a given action
      */
     
-    public static function runProcessor($action, $outputData = false, $returnData = false) {
+    public static function runProcessor($action, $noOutput = false) {
         // Check if we should return as json
-        if ($outputData == true and !isset($_GET['format'])) {
+        if (php_sapi_name() != 'cli' and !isset($_GET['format'])) {
             header('Content-Type: application/json');
         }
         
@@ -41,7 +41,7 @@ class Youkok2 {
         // Loop the path-array and find what view to load
         $found = false;
         $processor = '\Youkok2\Processors\\';
-        $method = null;
+        $method = 'run';
         $processors = Routes::getProcessors();
         
         // Loop the routes
@@ -67,15 +67,9 @@ class Youkok2 {
         if (!$found) {
             $processor .= 'NotFound';
         }
-        
-        // New instance
-        if ($method === null) {
-            return new $processor($outputData, $returnData);
-        }
-        else {
-            $processor_instance = new $processor($outputData, $returnData);
-            return $processor_instance->$method();
-        }  
+
+        // New instance of processor, let the magic happen
+        return new $processor($method, $noOutput);
     }
 
     /*

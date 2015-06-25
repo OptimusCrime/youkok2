@@ -311,8 +311,8 @@ class Element extends BaseModel {
         // Check if method exists
         if (method_exists('\Youkok2\Models\Controllers\ElementController', $name)) {
             // Call method and return response
-            return call_user_func_array(array($this->controller,
-                $name), $arguments);
+            return call_user_func_array([$this->controller,
+                $name], $arguments);
         }
     }
     
@@ -324,8 +324,8 @@ class Element extends BaseModel {
         // Check if method exists
         if (method_exists('\Youkok2\Models\StaticControllers\ElementStaticController', $name)) {
             // Call method and return response
-            return call_user_func_array(array('\Youkok2\Models\StaticControllers\ElementStaticController', 
-                $name), $arguments);
+            return call_user_func_array(['\Youkok2\Models\StaticControllers\ElementStaticController',
+                $name], $arguments);
         }
     }
 } 

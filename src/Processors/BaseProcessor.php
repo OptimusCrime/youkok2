@@ -20,34 +20,69 @@ use \Youkok2\Utilities\Database as Database;
  * Class that all the processors extends
  */
 
-class BaseProcessor extends Youkok2 {
+abstract class BaseProcessor extends Youkok2 {
     
     /*
      * Variable for storing data
      */
     
     private $data;
-    private $climate;
-    protected $outputData;
-    protected $returnData;
-    protected $mode;
+    private $noOutput;
     
     /*
      * Constructor
      */
 
-    public function __construct($outputData = false, $returnData = false) {
-        $this->outputData = $outputData;
-        $this->returnData = $returnData;
+    public function __construct($method, $noOutput = false) {
+        // Set data to empty array
         $this->data = [];
-        $this->climate = new \League\CLImate\CLImate;
-        
-        if (!$this->requireCli()) {
-            $this->mode = 'buffer';
+
+        // Set value of noOutput
+        $this->noOutput = $noOutput;
+
+        // Check if user needs database access
+        if ($this->requireDatabase()) {
+            // Try to connect to database
+            if (!$this->makeDatabaseConnection()) {
+                // Handle output
+                return $this->handleOutput();
+            }
+        }
+
+        // Check if user has access
+        if (!$this->checkPermissions()) {
+            // User does not have access to this view
+            $this->setData('code', 500);
+            $this->setData('msg', 'No access');
+
+            // Handle output
+            return $this->handleOutput();
+
         }
         else {
-            $this->mode = 'cli';
+            // Run the method
+            call_user_func_array([$this, $method], []);
+
+            // Handle output
+            return $this->handleOutput();
         }
+
+    }
+
+    /*
+     * Check if user has the correct permissions
+     */
+
+    protected function checkPermissions() {
+        return true;
+    }
+
+    /*
+     * Checks if the user needs connection with the database
+     */
+
+    protected function requireDatabase() {
+        return false;
     }
     
     /*
@@ -65,37 +100,23 @@ class BaseProcessor extends Youkok2 {
      * Output data
      */
     
-    public function outputData() {
-        // Close db
-        $this->closeConnection();
-        
-        // Output content
-        if (php_sapi_name() !== 'cli') {
-            // Echo JSON content here
-            echo json_encode($this->data);
+    protected function handleOutput() {
+        // Check if we should output data at all
+        if (!$this->noOutput) {
+            // Handle CLI and JSON
+            if (php_sapi_name() == 'cli') {
+                // CLI output using CLImate
+                $climate = new \League\CLImate\CLImate;
+                $climate->json($this->data);
+            }
+            else {
+                // Simply echo as JSON content
+                echo json_encode($this->data);
+            }
         }
-        else {
-            // Return to console using CLImate
-            $this->climate->json($this->data);
-        }
-    }
-    
-    /*
-     * Return data
-     */
-    
-    public function returnData() {
-        // Return data
+
+        // Return the data
         return $this->data;
-    }
-    
-    /*
-     * No access
-     */
-    
-    protected function noAccess() {
-        $this->setData('code', 500);
-        $this->setData('msg', 'No access');
     }
     
     /*
@@ -106,39 +127,12 @@ class BaseProcessor extends Youkok2 {
         $this->setData('code', 500);
         $this->setData('msg', 'Something went wrong');
     }
-    
-    /*
-     * Require only one kind of request etc
-     */
-    
-    protected static function requireCli() {
-        return php_sapi_name() == 'cli';
-    }
-    protected static function requireAdmin() {
-        // Check if need to connect to database first
-        if (Database::$db === null) {
-            // Connect to database
-            Database::connect();
-        }
-        
-        // Init user
-        Me::init();
-        
-        // Do the check
-        return (Me::isLoggedIn() and Me::isAdmin());
-    }
 
     /*
-     * Check if we can connect to the database
+     * Connect to the database
      */
 
-    protected function makeDatabaseConnection() {
-        // Check if already connected
-        if (Database::$db !== null) {
-            return true;
-        }
-
-        // Not connected, try
+    private function makeDatabaseConnection() {
         try {
             Database::connect();
             return true;
@@ -155,7 +149,7 @@ class BaseProcessor extends Youkok2 {
      * Close database (if open)
      */
     
-    public function closeConnection() {
+    private function closeConnection() {
         if (Database::$db !== null) {
             Database::close();
         }

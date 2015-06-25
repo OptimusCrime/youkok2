@@ -19,20 +19,19 @@ class NotFound extends BaseProcessor {
      * Constructor
      */
 
-    public function __construct($outputData = false, $returnData = false) {
+    public function __construct($method, $noOutput = false) {
         // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
+        parent::__construct($method, $noOutput);
+    }
+
+    /*
+     * Just to have a function to call or else the abstract class is angry
+     */
+
+    protected function run() {
         // Set data
         $this->setData('msg', 'Processor not found');
         $this->setData('code', 500);
-        
-        // Handle output
-        if ($this->outputData) {
-            $this->outputData();
-        }
-        if ($this->returnData) {
-            return $this->returnData();
-        }
+
     }
 }

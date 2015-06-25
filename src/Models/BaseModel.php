@@ -35,7 +35,11 @@ class BaseModel {
             if (method_exists($class_name, $method_name)) {
                 // Check if default value is defined
                 if (isset($v['default'])) {
-                    call_user_func_array(array($class, $method_name), array($v['default']));
+                    call_user_func_array([
+                        $class, $method_name
+                    ], [
+                        $v['default']
+                    ]);
                 }
             }
         }
