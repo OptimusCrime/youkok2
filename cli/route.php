@@ -2,9 +2,14 @@
 /*
  * File: route.php
  * Holds: Using PHPs built in server solution
- * Created: 14.12.14
+ * Created: 14.12.2014
  * Project: Youkok2
  */
+
+// Set correct port
+if (isset($_SERVER['SERVER_PORT'])) {
+    define('PORT', ':' . $_SERVER['SERVER_PORT']);
+}
 
 // Check if we should strip get params
 $req = $_SERVER['REQUEST_URI'];

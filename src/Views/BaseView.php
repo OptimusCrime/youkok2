@@ -83,10 +83,8 @@ class BaseView extends Youkok2 {
         // Define a few constants in Smarty
         $this->template->assign('VERSION', VERSION);
         $this->template->assign('DEV', DEV);
-        $this->template->assign('SITE_URL', URL);
+        $this->template->assign('SITE_URL', URL . URL_RELATIVE);
         $this->template->assign('SITE_TITLE', 'Den beste kokeboka på nettet');
-        $this->template->assign('SITE_URL_FULL', URL_FULL);
-        $this->template->assign('SITE_RELATIVE', URL_RELATIVE);
         $this->template->assign('SITE_EMAIL_CONTACT', EMAIL_CONTACT);
         $this->template->assign('SEARCH_QUERY', '');
         $this->template->assign('HEADER_MENU', 'HOME');
@@ -98,7 +96,7 @@ class BaseView extends Youkok2 {
         $this->template->assign('ROUTE_PROCESSOR', Routes::PROCESSOR);
                 
         // Set some site data
-        $this->addSiteData('search_base', URL_FULL . substr(Routes::getRoutes()['Archive'][0]['path'], 1) . '/');
+        $this->addSiteData('search_base', URL . URL_RELATIVE . substr(Routes::getRoutes()['Archive'][0]['path'], 1) . '/');
         $this->addSiteData('view', 'general');
         
         // Check if we should kill the view

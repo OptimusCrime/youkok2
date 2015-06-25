@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base href="[[+$SITE_URL_FULL]]" />
+    <base href="[[+$SITE_URL]]" />
     <title>Youkok2.com :: [[+$SITE_TITLE]]</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="icon" type="image/png" href="favicon.png" />
@@ -27,11 +27,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="[[+$SITE_RELATIVE]]">Youkok2.com</a>
+            <a class="navbar-brand" href="[[+$SITE_URL]]">Youkok2.com</a>
         </div>[[+nocache]]
         <div class="navbar-collapse collapse">
             <ul id="main-nav" class="nav navbar-nav">
-                <li[[+if $HEADER_MENU == 'HOME']] class="active"[[+/if]]><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
+                <li[[+if $HEADER_MENU == 'HOME']] class="active"[[+/if]]><a href="[[+$SITE_URL]]">Hjem</a></li>
                 <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="emner/">Emner</a></li>
                 <li class="hidden[[+if $HEADER_MENU == 'SEARCH']] active[[+/if]]"><a href="sok">Søk</a></li>
                 <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om Youkok2</a></li>

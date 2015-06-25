@@ -55,19 +55,20 @@ if (!defined('TIMEZONE')) {
     define('TIMEZONE', 'Europe/London');
 }
 
+// Define port
+if (!defined('PORT')) {
+    // Use no port (default 80)
+    define('PORT', '');
+}
+
 // Define domain
 if (!defined('DOMAIN')) {
-    define('DOMAIN', 'my-site.tld');
+    define('DOMAIN', 'localhost');
 }
 
 // Site url (no trailing slash)
 if (!defined('URL')) {
-    define('URL', 'http://my-site.tld');
-}
-
-// Full site url (trailing slash)
-if (!defined('URL_FULL')) {
-    define('URL_FULL', 'http://my-site.tld');
+    define('URL', 'http://' . DOMAIN . PORT);
 }
 
 // Relative position (trailing slash both before and after, or just / if root)
