@@ -28,17 +28,9 @@ class Module extends BaseProcessor {
      * Constructor
      */
 
-    public function __construct($outputData = false, $returnData = false) {
+    public function __construct($method, $noOutput = false) {
         // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
-        // Check database
-        if (!$this->makeDatabaseConnection()) {
-            $this->setError();
-        }
-        else {
-            Me::init();
-        }
+        parent::__construct($method, $noOutput);
     }
     
     /*

@@ -27,7 +27,7 @@ class Youkok2 {
     
     public static function runProcessor($action, $noOutput = false) {
         // Check if we should return as json
-        if (php_sapi_name() != 'cli' and !isset($_GET['format'])) {
+        if (php_sapi_name() != 'cli' and !isset($_GET['format']) and !$noOutput) {
             header('Content-Type: application/json');
         }
         
