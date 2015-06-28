@@ -261,9 +261,9 @@ class ElementController extends BaseController {
             $get_download_count .= $d . PHP_EOL;
             $get_download_count .= "AND d.file = :file";
             
-            $get_download_count_query = $this->controller->db->prepare($get_download_count);
-            $get_download_count_query->execute(array(':file' => $this->id));
-            $row = $get_download_count_query->fetch(PDO::FETCH_ASSOC);
+            $get_download_count_query = Database::$db->prepare($get_download_count);
+            $get_download_count_query->execute(array(':file' => $this->model->getId()));
+            $row = $get_download_count_query->fetch(\PDO::FETCH_ASSOC);
 
             // Set value
             $this->downloadCount[$index] = $row['downloaded_times'];
