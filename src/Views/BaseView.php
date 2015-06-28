@@ -44,11 +44,11 @@ class BaseView extends Youkok2 {
 
     public function __construct($kill = false) {
         // Check if we're offline
-        if ($kill == false and defined('OFFLINE') and OFFLINE) {
+        if ($kill == false and defined('AVAILABLE') and !AVAILABLE) {
             // We're offline, check if we should be allowed still
-            if (!defined('OFFLINE_WHITELIST') or (defined('OFFLINE_WHITELIST') and OFFLINE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
+            if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
                 // Not whitelisted, kill
-                new Error('offline');
+                new Error('unavailable');
                 die();
             }
         }

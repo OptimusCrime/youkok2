@@ -25,14 +25,20 @@ class Error extends BaseView {
 
         // Check error reason
         if ($reason == 'db') {
+            // Set error code
+            http_response_code(503);
+
             // No database connection
             $this->template->assign('SITE_TITLE', 'Noe gikk galt');
             $this->template->display('error_db.tpl');
         }
-        elseif ($reason == 'offline') {
+        elseif ($reason == 'unavailable') {
+            // Set error code
+            http_response_code(503);
+
             // Application is offline
-            $this->template->assign('SITE_TITLE', 'Youkok2 er offline');
-            $this->template->display('error_offline.tpl');
+            $this->template->assign('SITE_TITLE', 'Youkok2 er ikke tilgjengelig');
+            $this->template->display('error_unavailable.tpl');
         }
         else {
             // Some other error

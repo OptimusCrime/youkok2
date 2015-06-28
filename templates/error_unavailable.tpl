@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>Offline!</h1>
-<p>Youkok2 er offline for øyeblikket. Vi beklager problemene dette medfører. Smør deg med tålmodighet, så kommer vi snart opp igjen.</p>
+<p>Youkok2 er ikke tilgjengelig for øyeblikket. Vi beklager problemene dette medfører. Smør deg med tålmodighet, så kommer vi snart opp igjen.</p>
 <p>Dersom problemene vedvarer setter vi stor pris på om du tar <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">kontakt</a> og melder fra om feilen.</p>
 <p>- Youkok2</p>
 </body>

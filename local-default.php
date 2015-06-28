@@ -6,6 +6,11 @@
  * Project: Youkok2
 */
 
+// Define if the site is available or not
+if (!defined('AVAILABLE')) {
+    define('AVAILABLE', true);
+}
+
 // Version
 if (!defined('VERSION')) {
     define('VERSION', '1.0.0-dev');
