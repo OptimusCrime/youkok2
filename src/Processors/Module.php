@@ -59,19 +59,8 @@ class Module extends BaseProcessor {
             $collection[] = $element;
         }
 
-        return $collection;
-        
-        // Set data
-        $this->setData('html', $ret);
-        $this->setData('code', 200);
-        
-        // Handle output
-        if ($this->outputData) {
-            $this->outputData();
-        }
-        if ($this->returnData) {
-            return $this->returnData();
-        }
+        // Set the data
+        $this->setData('data', $collection);
     }
     
     /*

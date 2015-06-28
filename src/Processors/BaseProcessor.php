@@ -45,7 +45,7 @@ abstract class BaseProcessor extends Youkok2 {
             // Try to connect to database
             if (!$this->makeDatabaseConnection()) {
                 // Handle output
-                return $this->handleOutput();
+                $this->handleOutput();
             }
         }
 
@@ -56,7 +56,7 @@ abstract class BaseProcessor extends Youkok2 {
             $this->setData('msg', 'No access');
 
             // Handle output
-            return $this->handleOutput();
+            $this->handleOutput();
 
         }
         else {
@@ -64,7 +64,7 @@ abstract class BaseProcessor extends Youkok2 {
             call_user_func_array([$this, $method], []);
 
             // Handle output
-            return $this->handleOutput();
+            $this->handleOutput();
         }
 
     }
@@ -92,9 +92,6 @@ abstract class BaseProcessor extends Youkok2 {
     protected function setData($key, $data) {
         $this->data[$key] = $data;
     }
-    protected function getData($key) {
-        return $this->data[$key];
-    }
     
     /*
      * Output data
@@ -114,8 +111,13 @@ abstract class BaseProcessor extends Youkok2 {
                 echo json_encode($this->data);
             }
         }
+    }
 
-        // Return the data
+    /*
+     * Return data
+     */
+
+    public function getData() {
         return $this->data;
     }
     

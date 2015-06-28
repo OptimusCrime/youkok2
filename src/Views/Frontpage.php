@@ -34,7 +34,8 @@ class Frontpage extends BaseView {
         
         // Load default boxes
         $this->template->assign('HOME_NEWEST', Element::getNewest());
-        $this->template->assign('HOME_MOST_POPULAR', Element::getMostPopular());
+
+        $this->template->assign('HOME_MOST_POPULAR', Element::getMostPopular()['data']);
         
         // Check if this user is logged in
         if (Me::isLoggedIn()) {

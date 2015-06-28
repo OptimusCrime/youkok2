@@ -69,7 +69,10 @@ class Youkok2 {
         }
 
         // New instance of processor, let the magic happen
-        return new $processor($method, $noOutput);
+        $processor = new $processor($method, $noOutput);
+
+        // Return the content
+        return $processor->getData();
     }
 
     /*
