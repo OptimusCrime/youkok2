@@ -23,7 +23,36 @@ use \Youkok2\Utilities\Database as Database;
  */
 
 class Module extends BaseProcessor {
-    
+
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
+    }
+
+    /*
+     * Override
+     */
+
+    protected function encodeData($data) {
+        $new_data = [];
+
+        // Loop the data array and run method on each element
+        if (count($data['data']) > 0) {
+            foreach($data['data'] as $v) {
+                $new_data[] = $v->toArray();
+            }
+        }
+
+        // Set new value
+        $data['data'] = $new_data;
+
+        // Return the updated array
+        return $data;
+    }
+
     /*
      * Constructor
      */

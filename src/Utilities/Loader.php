@@ -65,7 +65,7 @@ class Loader {
         $action = substr(str_replace(Routes::PROCESSOR, '', $this->fullPath), 1);
 
         // Run processor
-        Youkok2::runProcessor($action);
+        Youkok2::runProcessor($action, ['output' => true, 'encode' => true]);
     }
     
     /*

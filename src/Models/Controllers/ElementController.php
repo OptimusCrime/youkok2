@@ -543,6 +543,14 @@ class ElementController extends BaseController {
     }
 
     /*
+     * To Array (for output)
+     */
+
+    public function toArray() {
+        return ['id' => (int)$this->model->getId()];
+    }
+
+    /*
      * Various helper methods
      */
 
