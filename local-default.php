@@ -34,8 +34,11 @@ if (!defined('TEST_PATH')) {
 }
 
 // Database
-if (!defined('DATABASE_CONNECTION')) {
-    define('DATABASE_CONNECTION', 'mysql:host=localhost;dbname=youkok2');
+if (!defined('DATABASE_DNS')) {
+    define('DATABASE_DNS', 'mysql:host=localhost');
+}
+if (!defined('DATABASE_NAME')) {
+    define('DATABASE_NAME', 'youkok2');
 }
 if (!defined('DATABASE_USER')) {
     define('DATABASE_USER', 'root');

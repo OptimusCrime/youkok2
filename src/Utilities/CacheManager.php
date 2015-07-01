@@ -99,11 +99,16 @@ Class CacheManager {
      */
 
     public static function setCache($id, $type, $content, $force = false) {
+        // Check if is safe
+        if (!is_array($content)) {
+            return false;
+        }
+
         // Get file name
         $file = self::getFileName($id, $type);
 
         // Build content
-        $data = '<?php return "' . addslashes($content) . '"; ?>';
+        $data = '<?php return "' . addslashes(json_encode($content)) . '"; ?>';
 
         // Check if we should store to disk at once
         if ($force) {
@@ -129,6 +134,9 @@ Class CacheManager {
                 'type' => $type,
                 'content' => $content];
         }
+
+        // Valid, return true
+        return true;
     }
 
     /*

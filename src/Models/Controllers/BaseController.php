@@ -134,7 +134,7 @@ abstract class BaseController {
         }
 
         // Set cache here
-        CacheManager::setCache($this->model->getId(), $this->cacheKey, json_encode($cache_arr));
+        CacheManager::setCache($this->model->getId(), $this->cacheKey, $cache_arr);
     }
 
     /*

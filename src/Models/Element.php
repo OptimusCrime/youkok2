@@ -163,7 +163,7 @@ class Element extends BaseModel {
      * Constructor
      */
     
-    public function __construct($data) {
+    public function __construct($data = null) {
         $this->controller = new ElementController($this);
         
         /*
@@ -179,7 +179,7 @@ class Element extends BaseModel {
         if (is_numeric($data)) {
             $this->controller->createById($data);
         }
-        else {
+        elseif (strlen($data) > 0) {
             $this->controller->createByUrl($data);
         }
     }

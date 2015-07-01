@@ -7,7 +7,6 @@
  */
 
 use \Youkok2\Models\Element as Element;
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 
 class DebugTest extends PHPUnit_Framework_TestCase {
     public function testDebugStuff () {
