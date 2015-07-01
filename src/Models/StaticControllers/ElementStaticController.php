@@ -86,7 +86,7 @@ class ElementStaticController {
      */
 
     public static function getMostPopular($override = null) {
-        return Youkok2::runProcessor('/module/get', ['output' => false, 'encode' => true]);
+        return Youkok2::runProcessor('/module/get', []);
     }
     
     /*

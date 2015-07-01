@@ -67,8 +67,11 @@ abstract class BaseProcessor extends Youkok2 {
             $this->handleOutput();
         }
 
-        // Close connection
-        $this->closeConnection();
+        // Check if we should close the database
+        if (isset($this->settings['close_db']) and $this->settings['close_db']) {
+            // Close connection
+            $this->closeConnection();
+        }
     }
 
     /*
@@ -109,7 +112,7 @@ abstract class BaseProcessor extends Youkok2 {
     
     protected function handleOutput() {
         // Check if we should output data at all
-        if (isset($this->settings['output']) and !$this->settings['output']) {
+        if (isset($this->settings['output']) and $this->settings['output']) {
             $output_data = $this->data;
 
             // Check if we should encode

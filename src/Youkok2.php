@@ -25,9 +25,9 @@ class Youkok2 {
      * Run a processor with a given action
      */
     
-    public static function runProcessor($action, $settings = ['output' => false, 'encode' => false]) {
+    public static function runProcessor($action, $settings = []) {
         // Check if we should return as json
-        if (php_sapi_name() != 'cli' and !isset($_GET['format']) and (isset($settings['output']) and !$settings['output'])) {
+        if (php_sapi_name() != 'cli' and !isset($_GET['format']) and (isset($settings['output']) and $settings['output'])) {
             header('Content-Type: application/json');
         }
         
@@ -73,20 +73,5 @@ class Youkok2 {
 
         // Return the content
         return $processor->getData();
-    }
-
-    /*
-     * Sets variables to post or get variables
-     */
-
-    public function setFormValues($type, $data) {
-        foreach ($data as $k => $v) {
-            if ($type == 'post') {
-                $_POST[$k] = $v;
-            }
-            else {
-                $_GET[$k] = $v;
-            }
-        }
     }
 }
