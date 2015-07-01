@@ -25,9 +25,12 @@ class StaticReturner extends BaseProcessor {
      * Constructor
      */
 
-    public function __construct($method, $noOutput = false) {
+    public function __construct($method, $settings) {
+        // Override settings
+        $settings['output'] = false;
+
         // Calling Base' constructor
-        parent::__construct($method, true);
+        parent::__construct($method, $settings);
     }
     
     /*

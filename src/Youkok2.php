@@ -25,9 +25,9 @@ class Youkok2 {
      * Run a processor with a given action
      */
     
-    public static function runProcessor($action, $noOutput = false) {
+    public static function runProcessor($action, $settings = ['output' => false, 'encode' => false]) {
         // Check if we should return as json
-        if (php_sapi_name() != 'cli' and !isset($_GET['format']) and !$noOutput) {
+        if (php_sapi_name() != 'cli' and !isset($_GET['format']) and (isset($settings['output']) and !$settings['output'])) {
             header('Content-Type: application/json');
         }
         
@@ -69,7 +69,7 @@ class Youkok2 {
         }
 
         // New instance of processor, let the magic happen
-        $processor = new $processor($method, $noOutput);
+        $processor = new $processor($method, $settings);
 
         // Return the content
         return $processor->getData();

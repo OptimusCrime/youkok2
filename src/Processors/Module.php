@@ -28,9 +28,9 @@ class Module extends BaseProcessor {
      * Constructor
      */
 
-    public function __construct($method, $noOutput = false) {
+    public function __construct($method, $settings) {
         // Calling Base' constructor
-        parent::__construct($method, $noOutput);
+        parent::__construct($method, $settings);
     }
     
     /*

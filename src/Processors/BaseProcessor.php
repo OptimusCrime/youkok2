@@ -27,18 +27,18 @@ abstract class BaseProcessor extends Youkok2 {
      */
     
     private $data;
-    private $noOutput;
+    private $settings;
     
     /*
      * Constructor
      */
 
-    public function __construct($method, $noOutput = false) {
+    public function __construct($method, $settings) {
         // Set data to empty array
         $this->data = [];
 
-        // Set value of noOutput
-        $this->noOutput = $noOutput;
+        // Store settings
+        $this->settings = $settings;
 
         // Check if user needs database access
         if ($this->requireDatabase()) {
@@ -67,6 +67,8 @@ abstract class BaseProcessor extends Youkok2 {
             $this->handleOutput();
         }
 
+        // Close connection
+        $this->closeConnection();
     }
 
     /*
@@ -84,6 +86,14 @@ abstract class BaseProcessor extends Youkok2 {
     protected function requireDatabase() {
         return false;
     }
+
+    /*
+     * If the data should be encoded, the encoding of the entire data object is done in this method
+     */
+
+    protected function encodeData($data) {
+        return $data;
+    }
     
     /*
      * Setters and getters for data
@@ -99,16 +109,23 @@ abstract class BaseProcessor extends Youkok2 {
     
     protected function handleOutput() {
         // Check if we should output data at all
-        if (!$this->noOutput) {
+        if (isset($this->settings['output']) and !$this->settings['output']) {
+            $output_data = $this->data;
+
+            // Check if we should encode
+            if (isset($this->settings['encode']) and $this->settings['encode']) {
+                $output_data = $this->encodeData($output_data);
+            }
+
             // Handle CLI and JSON
             if (php_sapi_name() == 'cli') {
                 // CLI output using CLImate
                 $climate = new \League\CLImate\CLImate;
-                $climate->json($this->data);
+                $climate->json($output_data);
             }
             else {
                 // Simply echo as JSON content
-                echo json_encode($this->data);
+                echo json_encode($output_data);
             }
         }
     }
@@ -118,7 +135,16 @@ abstract class BaseProcessor extends Youkok2 {
      */
 
     public function getData() {
-        return $this->data;
+        // Store data in new variable
+        $return_data = $this->data;
+
+        // Check if we should encode
+        if (isset($this->settings['encode']) and $this->settings['encode']) {
+            $return_data = $this->encodeData($return_data);
+        }
+
+        // Return the corect data
+        return $return_data;
     }
     
     /*
