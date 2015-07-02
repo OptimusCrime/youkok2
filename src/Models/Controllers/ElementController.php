@@ -547,7 +547,11 @@ class ElementController extends BaseController {
      */
 
     public function toArray() {
-        return ['id' => (int)$this->model->getId()];
+        // Get the initial fields from the array
+        $arr = $this->model->toArrayInitial();
+
+        // Return the array
+        return $arr;
     }
 
     /*

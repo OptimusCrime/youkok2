@@ -59,11 +59,13 @@ class Element extends BaseModel {
                 'type' => 'integer',
                 'null' => false,
                 'db' => true,
+                'arr' => true,
             ],
             'name' => [
                 'type' => 'string',
                 'null' => false,
                 'db' => true,
+                'arr' => true,
             ],
             'url_friendly' => [
                 'method' => 'urlFriendly',
@@ -76,6 +78,7 @@ class Element extends BaseModel {
                 'null' => true,
                 'default' => null,
                 'db' => true,
+                'arr' => true,
             ],
             'parent' => [
                 'type' => 'integer',
@@ -88,6 +91,7 @@ class Element extends BaseModel {
                 'null' => false,
                 'default' => 1,
                 'db' => true,
+                'arr' => true,
             ],
             'checksum' => [
                 'type' => 'string',
@@ -121,7 +125,8 @@ class Element extends BaseModel {
                 'null' => false,
                 'default' => 0,
                 'db' => true,
-                'is' => true
+                'is' => true,
+                'arr' => true,
             ],
             'is_accepted' => [
                 'method' => 'accepted',
@@ -150,11 +155,13 @@ class Element extends BaseModel {
                 'null' => true,
                 'default' => null,
                 'db' => true,
+                'arr' => true,
             ],
             'added' => [
                 'type' => 'datetime',
                 'null' => false,
                 'db' => true,
+                'arr' => true,
             ],
         ]
     ];
@@ -170,7 +177,7 @@ class Element extends BaseModel {
          * Set some default values
          */
         
-        $this->setDefaults($this);
+        $this->setDefaults();
 
         /*
          * Create
