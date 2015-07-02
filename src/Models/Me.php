@@ -572,18 +572,6 @@ class Me {
     }
 
     /*
-     * Set user status
-     */
-
-    public static function setUserStatus(&$scope, $prefix) {
-        // User status
-        $scope->template->assign($prefix . '_USER_BANNED', Me::isBanned());
-        $scope->template->assign($prefix . '_USER_HAS_KARMA', Me::hasKarma());
-        $scope->template->assign($prefix . '_USER_CAN_CONTRIBUTE', Me::canContribute());
-        $scope->template->assign($prefix . '_USER_ONLINE', Me::isLoggedIn());
-    }
-
-    /*
      * Get user karma elements
      */
 

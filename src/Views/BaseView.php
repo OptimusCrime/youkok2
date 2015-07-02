@@ -108,11 +108,13 @@ class BaseView extends Youkok2 {
             $this->addSiteData('online', Me::isLoggedIn());
             
             // Set BASE_USER_* information to the template
-            $this->template->assign('BASE_USER_IS_LOGGED_IN', Me::isLoggedIn());
-            $this->template->assign('BASE_USER_NICK', Me::getNick());
-            $this->template->assign('BASE_USER_KARMA', Me::getKarma());
-            $this->template->assign('BASE_USER_KARMA_PENDING', Me::getKarmaPending());
-            $this->template->assign('BASE_USER_IS_ADMIN', Me::isAdmin());
+            $this->template->assign('USER_IS_LOGGED_IN', Me::isLoggedIn());
+            $this->template->assign('USER_NICK', Me::getNick());
+            $this->template->assign('USER_KARMA', Me::getKarma());
+            $this->template->assign('USER_KARMA_PENDING', Me::getKarmaPending());
+            $this->template->assign('USER_IS_ADMIN', Me::isAdmin());
+            $this->template->assign('USER_IS_BANNED', Me::isBanned());
+            $this->template->assign('USER_CAN_CONTRIBUTE', Me::canContribute());
             
             // Check if we should validate login
             if (isset($_POST['login-email'])) {

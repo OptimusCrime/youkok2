@@ -34,6 +34,7 @@ class ElementController extends BaseController {
     private $parent;
     private $rootParent;
     private $fullUrl;
+    private $parents;
 
 
     // The query
@@ -58,7 +59,7 @@ class ElementController extends BaseController {
     private $cache;
     
     // Parents and children
-    private $parents;
+
     private $children;
     
     // Static options
@@ -81,6 +82,9 @@ class ElementController extends BaseController {
     public function __construct($model) {
         parent::__construct($this, $model);
 
+        // Parents and children
+        $this->parents = null;
+
         // Other stuff
         $this->flagCount = null;
         $this->downloadCount = array(0 => null, 1 => null, 2 => null, 3 => null);
@@ -95,8 +99,7 @@ class ElementController extends BaseController {
         // Set caching to true as default
         $this->cache = true;
         
-        // Parents and children
-        $this->parents = null;
+
         $this->children = null;
     }
     
@@ -573,6 +576,28 @@ class ElementController extends BaseController {
         }
 
         return $this->parent;
+    }
+    public function getParents() {
+        $arr = [$this->model];
+
+        if ($this->hasParent()) {
+            $temp_obj = $this->getParentObject();
+            while (true) {
+                // Derp
+                $arr[] = $temp_obj;
+
+                if ($temp_obj->hasParent()) {
+                    $temp_obj = $temp_obj->getParentObject();
+                }
+                else {
+                    break;
+                }
+
+            }
+        }
+
+        // Return collection of parents
+        return $arr;
     }
     public function getRootParent() {
         if ($this->rootParent === null) {

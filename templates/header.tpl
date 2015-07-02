@@ -13,7 +13,7 @@
     [[+nocache]][[+if !$COMPRESS_ASSETS]]<link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/youkok.css?v=[[+$VERSION]]" />[[+else]]<link rel="stylesheet" type="text/css" href="assets/css/youkok.min.css" />[[+/if]]
     
-    [[+if $BASE_USER_IS_ADMIN]]<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjpbLG7YxoVW1zeiEFAEluUhE5tqcEQV0"></script>[[+/if]]
+    [[+if $USER_IS_ADMIN]]<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjpbLG7YxoVW1zeiEFAEluUhE5tqcEQV0"></script>[[+/if]]
     
     <script type="text/javascript">var SITE_DATA = "[[+$SITE_DATA]]";</script>[[+/nocache]]
 </head>
@@ -36,20 +36,20 @@
                 <li class="hidden[[+if $HEADER_MENU == 'SEARCH']] active[[+/if]]"><a href="sok">Søk</a></li>
                 <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om Youkok2</a></li>
                 <li[[+if $HEADER_MENU == 'HELP']] class="active"[[+/if]]><a href="hjelp">Hjelp</a></li>
-                [[+if $BASE_USER_IS_LOGGED_IN == true]]<li class="hidden"><a href="profil/innstillinger">Min bruker</a></li>
+                [[+if $USER_IS_LOGGED_IN == true]]<li class="hidden"><a href="profil/innstillinger">Min bruker</a></li>
                 <li class="hidden"><a href="logg-ut">Logg ut</a></li>[[+else]]<li class="hidden"><a href="logg-inn">Logg inn</a></li>[[+/if]]
 
             </ul>
-            <ul class="nav navbar-nav navbar-right" id="navbar-dropdown-outer">[[+if $BASE_USER_IS_LOGGED_IN == true]]
+            <ul class="nav navbar-nav navbar-right" id="navbar-dropdown-outer">[[+if $USER_IS_LOGGED_IN == true]]
 
                 <li>
-                    <a href="#" data-toggle="dropdown">Min bruker <span class="badge"><span title="Din karma: [[+$BASE_USER_KARMA]]">[[+$BASE_USER_KARMA]]</span>[[+if $BASE_USER_KARMA_PENDING != 0]] <span title="Din pending karma: [[+$BASE_USER_KARMA_PENDING]]"> /  [[+$BASE_USER_KARMA_PENDING]]</span>[[+/if]]</span> <b class="caret"></b></a>
+                    <a href="#" data-toggle="dropdown">Min bruker <span class="badge"><span title="Din karma: [[+$USER_KARMA]]">[[+$USER_KARMA]]</span>[[+if $USER_KARMA_PENDING != 0]] <span title="Din pending karma: [[+$USER_KARMA_PENDING]]"> /  [[+$USER_KARMA_PENDING]]</span>[[+/if]]</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu" id="user-dropdown">
-                        <li role="presentation" class="dropdown-header">[[+$BASE_USER_NICK]]</li>
+                        <li role="presentation" class="dropdown-header">[[+$USER_NICK]]</li>
                         <li class="divider"></li>
                         <li><a href="profil/innstillinger">Innstillinger</a></li>
                         <li><a href="profil/historikk">Karma / Historikk</a></li>
-                        [[+if $BASE_USER_IS_ADMIN == true]]<li><a href="admin">Admin</a></li>[[+/if]]
+                        [[+if $USER_IS_ADMIN == true]]<li><a href="admin">Admin</a></li>[[+/if]]
                         
                         <li class="divider"></li>
                         <li><a href="logg-ut?_token=[[+$CSRF_TOKEN]]">Logg ut</a></li>

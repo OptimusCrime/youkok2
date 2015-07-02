@@ -36,14 +36,10 @@ class Archive extends BaseView {
         // Set information to site data
         $this->addSiteData('view', 'archive');
         $this->addSiteData('can_contribute', Me::canContribute());
-        
-        // Set information directly to Smarty
-        $this->template->assign('ARCHIVE_USER_CAN_CONTRIBUTE', 'ARCHIVE');
-        $this->template->assign('ARCHIVE_USER_BANNED', 'ARCHIVE');
-        $this->template->assign('ARCHIVE_USER_HAS_KARMA', 'ARCHIVE');
+        $this->addSiteData('file_types', explode(',', ACCEPTED_FILEENDINGS));
         
         // Load the archive
-        $this->loadArchive();
+        $this->checkValidArchive();
 
         // Set stuff
         $this->template->assign('HEADER_MENU', 'ARCHIVE');
@@ -54,19 +50,15 @@ class Archive extends BaseView {
     }
     
     /*
-     * Load archive for a directory
+     * Check if archive is valid or not
      */
     
-    private function loadArchive() {
+    private function checkValidArchive() {
         // Try to create new element
-        $element = new Element();
-        $element->createByUrl($this->queryGetClean());
+        $element = Element::get($this->queryGetClean());
 
         // Check if element was found and is directory
-        if ($element->controller->wasFound() and $element->isDirectory()) {
-            // Set archive information to Smarty
-            $this->setArchiveInformation();
-            
+        if ($element->wasFound() and $element->isDirectory()) {
             // Set information related to the Element
             $this->setElementInformation($element);
         }
@@ -76,62 +68,29 @@ class Archive extends BaseView {
     }
     
     /*
-     * Set information needed in the archive view
-     */
-    
-    private function setArchiveInformation() {
-        // Set state
-        $this->template->assign('HEADER_MENU', 'ARCHIVE');
-
-        // Set user status
-        Me::setUserStatus($this, 'ARCHIVE');
-
-        // File types
-        $accepted_fileending = explode(',', ACCEPTED_FILEENDINGS);
-        $this->addSiteData('file_types', $accepted_fileending);
-    }
-    
-    /*
      * Set information related to the Element we are browsing
      */
     
     private function setElementInformation($element) {
         // Set id
         $this->addSiteData('archive_id', $element->getId());
-        
-        // Set title
-        if ($element->controller->isCourse()) {
-            $course = $element->controller->getCourse();
-            $archive_title = '<h1>' . $course['code'] . '</h1>';
-            $archive_title .= '<span> &mdash; </span><h2>' . $course['name'] . '</h2>';
-            
-            // Check if the course has an exam date
-            if ($element->getExam() !== null and strlen($element->getExam()) > 0 and strtotime($element->getExam()) > time()) {
-                $this->template->assign('ARCHIVE_EXAM', $element->getExam());
-                $this->template->assign('ARCHIVE_EXAM_PRETTY', Utilities::prettifySQLDate($element->getExam()));
-            }
-        }
-        else {
-            $archive_title = '<h1>' . $element->getName() . '</h1>';
-        }
-        
-        // Check if we should add the star for adding / removing favorites too
-        if (Me::isLoggedIn()) {
-            $archive_title .= ' <i class="fa fa-star archive-heading-star-' . Me::isFavorite($element->getId()) . '" data-archive-id="' . $element->getId() . '" id="archive-heading-star"></i>';
-        }
-        $this->template->assign('ARCHIVE_TITLE', $archive_title);
+
+        // Add element to Smarty
+        $this->template->assign('ARCHIVE_ELEMENT', $element);
+
+        // Get breadcrumbs
+        $this->template->assign('ARCHIVE_ELEMENT_PARENTS', array_reverse($element->getParents()));
         
         // Metadata
-        if (!$element->controller->isCourse()) {
-            $element_root = $element->controller->getRootParent();
-            $course = $element_root->controller->getCourse();
+        if (!$element->isCourse()) {
+            $element_root = $element->getRootParent();
+            $course = $element_root->getCourse();
         }
         
-        $site_description = $course['code'] . ' &mdash; ' . $course['name'] . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
+        $site_description = $course['code'] . ' - ' . $course['name'] . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
         $this->template->assign('SITE_DESCRPTION', $site_description);
         
-        // Get breadcrumbs
-        $this->template->assign('ARCHIVE_BREADCRUMBS', $this->loadBreadcrumbs($element));
+
         
         // Check if archive is empty
         if ($element->isEmpty()) {
@@ -150,13 +109,13 @@ class Archive extends BaseView {
     private function loadBreadcrumbs($element) {
         // Some variables
         $ret = array();
-        $collection = $element->controller->getParents();
+        $collection = $element->getParents();
         
         // Loop and build list
         foreach ($collection as $v) {
             // Check if si course
-            if ($v->controller->isCourse()) {
-                $course = $v->controller->getCourse();
+            if ($v->isCourse()) {
+                $course = $v->getCourse();
                 $name = $course['code'];
             }
             else {
@@ -170,7 +129,7 @@ class Archive extends BaseView {
             }
             else {
                 // Not current element, add link
-                $ret[] = '<li><a href="' . $v->controller->generateUrl(Routes::ARCHIVE) . '">' . $name . '</a></li>';
+                $ret[] = '<li><a href="' . $v->generateUrl(Routes::ARCHIVE) . '">' . $name . '</a></li>';
             }
             
         }
@@ -204,7 +163,7 @@ class Archive extends BaseView {
         $ret = '';
         
         // Get children
-        $children = $element->controller->getChildren();
+        $children = $element->getChildren();
         
         // Loop children
         foreach ($children as $child) {
@@ -215,14 +174,14 @@ class Archive extends BaseView {
             if ($child->isDirectory()) {
                 // Directory
                 $title = $child->getName();
-                $url = $child->controller->generateUrl(Routes::ARCHIVE);
+                $url = $child->generateUrl(Routes::ARCHIVE);
                 $image = 'folder.png';
                 $type = 'dir';
             }
             else if ($child->isLink()) {
                 // Link
                 $title = 'Link til: ' . $child->getUrl();
-                $url = $child->controller->generateUrl(Routes::REDIRECT);
+                $url = $child->generateUrl(Routes::REDIRECT);
                 $url_target = ' target="_blank"';
                 $image = 'link.png';
                 $type = 'link';
@@ -230,7 +189,7 @@ class Archive extends BaseView {
             else {
                 // Normal file
                 $title = $child->getName();
-                $url = $child->controller->generateUrl(Routes::DOWNLOAD);
+                $url = $child->generateUrl(Routes::DOWNLOAD);
                 $url_target = ' target="_blank"';
                 $image = (($child->getMissingImage() == 1) ? 'unknown' : $child->getMimeType()) . '.png';
                 $type = 'file';
@@ -239,7 +198,7 @@ class Archive extends BaseView {
             
             // Flag
             $div_flag = '';
-            if ($child->controller->getFlagCount() > 0) {
+            if ($child->getFlagCount() > 0) {
                 $div_flag = '<div class="archive-badge">' . $child->controller->getFlagCount() . '</div>';
             }
             
@@ -253,7 +212,7 @@ class Archive extends BaseView {
             $data[] = 'data-id="' . $child->getId() . '"';
             $data[] = 'data-type="' . $type . '"';
             $data[] = 'data-name="' . $child->getName() . '"';
-            $data[] = 'data-flags="' . $child->controller->getFlagCount() . '"';
+            $data[] = 'data-flags="' . $child->getFlagCount() . '"';
             $data[] = 'data-favorite="' . (int) Me::isFavorite($child->getId()) . '"';
             
             $dropdown  = '';
