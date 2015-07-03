@@ -74,11 +74,6 @@ if (!defined('DOMAIN')) {
     define('DOMAIN', 'localhost');
 }
 
-// Site url (no trailing slash)
-if (!defined('URL')) {
-    define('URL', 'http://' . DOMAIN . PORT);
-}
-
 // Relative position (trailing slash both before and after, or just / if root)
 if (!defined('URL_RELATIVE')) {
     define('URL_RELATIVE', '/');
@@ -108,3 +103,7 @@ if (!defined('DISPLAY_INSTEAD_OF_DOWNLOAD')) {
 if (!defined('CSRF_KEY')) {
     define('CSRF_KEY', 'foobar');
 }
+
+// Define URLs
+define('URL', 'http://' . DOMAIN . ((PORT == 80) ? '' : (':' . PORT)));
+define('URL_FULL', URL . URL_RELATIVE);

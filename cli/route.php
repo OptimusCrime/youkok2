@@ -8,7 +8,7 @@
 
 // Set correct port
 if (isset($_SERVER['SERVER_PORT'])) {
-    define('PORT', ':' . $_SERVER['SERVER_PORT']);
+    define('PORT', $_SERVER['SERVER_PORT']);
 }
 
 // Check if we should strip get params

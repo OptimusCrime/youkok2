@@ -83,7 +83,7 @@ class BaseView extends Youkok2 {
         // Define a few constants in Smarty
         $this->template->assign('VERSION', VERSION);
         $this->template->assign('DEV', DEV);
-        $this->template->assign('SITE_URL', URL . URL_RELATIVE);
+        $this->template->assign('SITE_URL', URL_FULL);
         $this->template->assign('SITE_TITLE', 'Den beste kokeboka på nettet');
         $this->template->assign('SITE_EMAIL_CONTACT', EMAIL_CONTACT);
         $this->template->assign('SEARCH_QUERY', '');
