@@ -318,36 +318,7 @@ class Me {
     }
     
     /*
-     * Favorites
-     */
-    
-    public static function getFavorites() {
-        // Check if already loaded
-        if (self::$favorites === null) {
-            // Set favorites to array
-            self::$favorites = array();
-            
-            // Run query
-            $get_favorites  = "SELECT f.file" . PHP_EOL;
-            $get_favorites .= "FROM favorite AS f" . PHP_EOL;
-            $get_favorites .= "LEFT JOIN archive AS a ON a.id = f.file" . PHP_EOL;
-            $get_favorites .= "WHERE f.user = :user" . PHP_EOL;
-            $get_favorites .= "AND a.is_visible = 1" . PHP_EOL;
-            $get_favorites .= "ORDER BY f.id ASC";
-            
-            $get_favorites_query = Database::$db->prepare($get_favorites);
-            $get_favorites_query->execute(array(':user' => self::$id));
-            while ($row = $get_favorites_query->fetch(\PDO::FETCH_ASSOC)) {
-                self::$favorites[] = $row['file'];
-            }
-        }
-        
-        // Return entire list of elements
-        return self::$favorites;
-    }
-    
-    /*
-     * Check if one Element is favorite
+     * Check if one Element is favorite TODO
      */
     
     public static function isFavorite($id) {
@@ -517,14 +488,42 @@ class Me {
             Redirect::send('');
         }
     }
+
+    /*
+     * Favorites
+     */
+
+    public static function getFavorites() {
+        // Check if already loaded
+        if (self::$favorites === null) {
+            // Set favorites to array
+            self::$favorites = array();
+
+            // Run query
+            $get_favorites  = "SELECT f.file" . PHP_EOL;
+            $get_favorites .= "FROM favorite AS f" . PHP_EOL;
+            $get_favorites .= "LEFT JOIN archive AS a ON a.id = f.file" . PHP_EOL;
+            $get_favorites .= "WHERE f.user = :user" . PHP_EOL;
+            $get_favorites .= "AND a.is_visible = 1" . PHP_EOL;
+            $get_favorites .= "ORDER BY f.id ASC";
+
+            $get_favorites_query = Database::$db->prepare($get_favorites);
+            $get_favorites_query->execute(array(':user' => self::$id));
+            while ($row = $get_favorites_query->fetch(\PDO::FETCH_ASSOC)) {
+                self::$favorites[] = Element::get($row['file']);
+            }
+        }
+
+        // Return entire list of elements
+        return self::$favorites;
+    }
     
     /*
      * Get latest downloads
      */
     
-    public static function loadLastDownloads() {
-        // Declear variable for storing content
-        $ret = '';
+    public static function getLastDownloads() {
+        $elements = [];
         
         // Load all favorites
         $get_last_downloads  = "SELECT d.file" . PHP_EOL;
@@ -544,31 +543,11 @@ class Me {
         $get_last_downloads_query = Database::$db->prepare($get_last_downloads);
         $get_last_downloads_query->execute(array(':user' => Self::getId()));
         while ($row = $get_last_downloads_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Get element
-            $element = ElementCollection::get($row['file']);
-
-            // Get file if not cached
-            if ($element == null) {
-                $element = new Element();
-                $element->controller->setLoadRootParent(true);
-                $element->createById($row['file']);
-                ElementCollection::add($element);
-            }
-
-            // Check if valid Element
-            if ($element->controller->wasFound()) {
-                ElementCollection::add($element);
-                $ret .= $element->controller->getFrontpageLink('latestdownloaded');
-            }
-        }
-        
-        // Check if null
-        if ($ret == '') {
-            $ret .= '<li class="list-group-item"><em>Du har ikke lastet ned noen filer enda...</em></li>';
+            $elements[] = Element::get($row['file']);
         }
 
-        // Return the content
-        return $ret;
+        // Return elements
+        return $elements;
     }
 
     /*

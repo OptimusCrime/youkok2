@@ -14,7 +14,6 @@ namespace Youkok2\models\StaticControllers;
 
 use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Models\Element as Element;
-use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
 
 /*
@@ -87,36 +86,5 @@ class ElementStaticController {
 
     public static function getMostPopular($override = null) {
         return Youkok2::runProcessor('/module/get', []);
-    }
-    
-    /*
-     * Fetch Me favorites
-     */
-    
-    public static function getFavorites() {
-        $ret = '';
-        $favorites = Me::getFavorites();
-
-        // Check if user has any favorites at all
-        if (count($favorites) > 0) {
-
-            foreach ($favorites as $favorite) {
-                // Get
-                $element = Element::get($favorite);
-
-                // Check if valid Element
-                if ($element !== null) {
-                    $ret .= $element->controller->getFrontpageLink('favorites');
-                }
-            }
-        }
-
-        // Check if anything was found
-        if (count($favorites) == 0 or $ret == '') {
-            $ret = '<li class="list-group-item"><em>Du har ingen favoritter</em></li>';
-        }
-
-        // Return the list
-        return $ret;
     }
 }
