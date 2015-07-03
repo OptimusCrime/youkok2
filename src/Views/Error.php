@@ -2,7 +2,7 @@
 /*
  * File: Error.php
  * Holds: Displaying an error message to the user
- * Created: 02.05.14
+ * Created: 02.05.2014
  * Project: Youkok2
  * 
 */
@@ -10,10 +10,10 @@
 namespace Youkok2\Views;
 
 /*
- * The Home class, extending Base class
+ * The Error class, extending BaseView
  */
 
-class Error extends Base {
+class Error extends BaseView {
 
     /*
      * Constructor
@@ -23,17 +23,25 @@ class Error extends Base {
         // Calling Base' constructor
         parent::__construct(true);
 
+        // Check error reason
         if ($reason == 'db') {
+            // Set error code
+            http_response_code(503);
+
+            // No database connection
             $this->template->assign('SITE_TITLE', 'Noe gikk galt');
             $this->template->display('error_db.tpl');
         }
-        elseif ($reason == 'offline') {
-            // Dette er ikke implementert enda
-            $this->template->assign('SITE_TITLE', 'Youkok2 er offline');
-            $this->template->display('error_offline.tpl');
+        elseif ($reason == 'unavailable') {
+            // Set error code
+            http_response_code(503);
+
+            // Application is offline
+            $this->template->assign('SITE_TITLE', 'Youkok2 er ikke tilgjengelig');
+            $this->template->display('error_unavailable.tpl');
         }
         else {
-            // Dette er ikke implementert enda
+            // Some other error
             $this->template->assign('SITE_TITLE', 'Noe gikk galt');
             $this->template->display('error_generic.tpl');
         }

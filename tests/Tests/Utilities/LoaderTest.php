@@ -25,8 +25,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
         $loader2 = new Loader('/');
         
         // Test them
-        $this->assertEquals('\Youkok2\Views\Home', $loader1->getMatch());
-        $this->assertEquals('\Youkok2\Views\Home', $loader2->getMatch());
+        $this->assertEquals('\Youkok2\Views\Frontpage', $loader1->getMatch());
+        $this->assertEquals('\Youkok2\Views\Frontpage', $loader2->getMatch());
     }
     
     /*

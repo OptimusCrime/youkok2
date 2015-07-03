@@ -1,4 +1,4 @@
-Youkok2 - 1.3.4-pl  (26. mai 2014)
+Youkok2 - 1.3.4-pl  (26. mai 2015)
 ====================================
 
 - [Info] Bugfixes och søk
@@ -6,26 +6,26 @@ Youkok2 - 1.3.4-pl  (26. mai 2014)
 - [Fixed] Søk funker igjen.
 - [Other] Mindre speedboost.
 
-Youkok2 - 1.3.3-pl  (25. mai 2014)
+Youkok2 - 1.3.3-pl  (25. mai 2015)
 ====================================
 
 - [Info] Bugfixes
 - [Fixed] Fikset bugs relatert til caching (igjen).
 - [New] Favicon!!!!!
 
-Youkok2 - 1.3.2-pl  (22. mai 2014)
+Youkok2 - 1.3.2-pl  (22. mai 2015)
 ====================================
 
 - [Info] Bugfixes
 - [Fixed] Fikset bugs relatert til caching.
 
-Youkok2 - 1.3.1-pl  (16. mai 2014)
+Youkok2 - 1.3.1-pl  (16. mai 2015)
 ====================================
 
 - [Info] Bugfixes
 - [Fixed] Fikset nedtelling til eksamen.
 
-Youkok2 - 1.3.0-pl  (11. mai 2014)
+Youkok2 - 1.3.0-pl  (11. mai 2015)
 ====================================
 
 - [Info] Bugfixes, meldinger og nedtelling
@@ -33,7 +33,7 @@ Youkok2 - 1.3.0-pl  (11. mai 2014)
 - [New] Statiske medlinger.
 - [New] Nedtelling til eksamen!
 
-Youkok2 - 1.2.2-pl  (11. april 2014)
+Youkok2 - 1.2.2-pl  (11. april 2015)
 ====================================
 
 - [Info] Minor, tekst og meny
@@ -44,7 +44,7 @@ Youkok2 - 1.2.2-pl  (11. april 2014)
 - [New] Reintrodusert menyen for hvert enkelt element i kokeboka. Menyen gjør ikke så mye i dag, men mye av funksjonaliteten
         som ble fjernet ved overgangen til 1.0.0 vil legges til her igjen.
 
-Youkok2 - 1.2.1-pl  (25. februar 2014)
+Youkok2 - 1.2.1-pl  (25. februar 2015)
 ====================================== 
 
 - [Info] Minor og bugfixes
@@ -54,7 +54,7 @@ Youkok2 - 1.2.1-pl  (25. februar 2014)
 - [Enhanced] Byggescript.
 - [Enhanced] Fjernet flere legacy ting i databasen.
 
-Youkok2 - 1.2.0-pl  (25. februar 2014)
+Youkok2 - 1.2.0-pl  (25. februar 2015)
 ====================================== 
 
 - [Info] Bugfixes og reimplementering
@@ -261,8 +261,7 @@ Youkok2 - 0.0.1-a (18. april, 2014)
 - [New] Implementasjon av 'Slett'- og 'Nytt navn'-flagg.
 - [Other] Masse, masse andre fixes og forbedringer.
 
-Youkok2 - 0.0.1-dev (14. april, 2014)
-=====================================
+Youkok2 - 0.0.0-dev (1. oktober, 2013)
+======================================
 
-- [Info] Closed Developer Version
-- [New] Denne fila.
+- [Info] Initial commit

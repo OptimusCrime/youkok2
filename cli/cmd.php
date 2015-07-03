@@ -2,7 +2,7 @@
 /*
  * File: cli.php
  * Holds: Calling processors from the command line
- * Created: 05.12.14
+ * Created: 05.12.2014
  * Project: Youkok2
  */
 
@@ -43,5 +43,5 @@ else {
      * Script goes here
      */
     
-    Youkok2::runProcessor($_SERVER['argv'][1], true);
+    Youkok2::runProcessor($_SERVER['argv'][1], ['output' => true, 'encode' => true, 'close_db' => true]);
 }

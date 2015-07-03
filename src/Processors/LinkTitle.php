@@ -2,7 +2,7 @@
 /*
  * File: LinkTitle.php
  * Holds: Tries to fetch title for a url
- * Created: 25.02.15
+ * Created: 25.02.2015
  * Project: Youkok2
  * 
 */
@@ -13,27 +13,22 @@ namespace Youkok2\Processors;
  * The LinkTitle class, extending Base class
  */
 
-class LinkTitle extends Base {
+class LinkTitle extends BaseProcessor {
 
     /*
      * Constructor
      */
 
-    public function __construct($outputData = false, $returnData = false) {
+    public function __construct($method, $settings) {
         // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
-        $this->fetchTitle();
-        
-        // Return data
-        $this->outputData();
+        parent::__construct($method, $settings);
     }
 
     /*
      * Try to fetch title
      */
 
-    private function fetchTitle() {
+    protected function run() {
         if (isset($_POST['url'])) {
             // Trim away
             $_POST['url'] = rtrim(trim($_POST['url']));

@@ -38,7 +38,7 @@ class CacheManagerTest extends PHPUnit_Framework_TestCase {
     
     public function testCacheStatus2() {
         // Cache one element
-        CacheManager::setCache(1, 'i', '"foo" => "bar"', true);
+        CacheManager::setCache(1, 'i', ['foo' => 'bar'], true);
         
         // Get cache result
         $cache1 = CacheManager::isCached(1, 'i');
@@ -59,7 +59,7 @@ class CacheManagerTest extends PHPUnit_Framework_TestCase {
     
     public function testCacheStore() {
         // Cache one element
-        CacheManager::setCache(2, 'i', '"foo" => "bar"');
+        CacheManager::setCache(2, 'i', ['foo' => 'bar']);
         
         // Get cache result without storing
         $cache1 = CacheManager::isCached(2, 'i');
@@ -81,7 +81,7 @@ class CacheManagerTest extends PHPUnit_Framework_TestCase {
     
     public function testCacheGet() {
         // Cache one element
-        CacheManager::setCache(9999, 'i', '"foo" => "bar"', true);
+        CacheManager::setCache(9999, 'i', ['foo' => 'bar'], true);
         
         // Get actual cache data
         $cache_data1 = CacheManager::getCache(9999, 'i');
@@ -99,7 +99,7 @@ class CacheManagerTest extends PHPUnit_Framework_TestCase {
     
     public function testCacheDelete() {
         // Cache and delete cache, then check status
-        CacheManager::setCache(999999, 'i', '"foo" => "bar"', true);
+        CacheManager::setCache(999999, 'i', ['foo' => 'bar'], true);
         CacheManager::deleteCache(999999, 'i');
         
         // Get status

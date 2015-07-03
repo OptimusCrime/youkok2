@@ -26,7 +26,7 @@ use \Youkok2\Utilities\Utilities as Utilities;
  * The Static class, extending Base class
  */
 
-class CreateLink extends Base {
+class CreateLink extends BaseProcessor {
 
     /*
      * Constructor

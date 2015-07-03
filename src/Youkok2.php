@@ -25,9 +25,9 @@ class Youkok2 {
      * Run a processor with a given action
      */
     
-    public static function runProcessor($action, $outputData = false, $returnData = false) {
+    public static function runProcessor($action, $settings = []) {
         // Check if we should return as json
-        if ($outputData == true and !isset($_GET['format'])) {
+        if (php_sapi_name() != 'cli' and !isset($_GET['format']) and (isset($settings['output']) and $settings['output'])) {
             header('Content-Type: application/json');
         }
         
@@ -41,7 +41,7 @@ class Youkok2 {
         // Loop the path-array and find what view to load
         $found = false;
         $processor = '\Youkok2\Processors\\';
-        $method = null;
+        $method = 'run';
         $processors = Routes::getProcessors();
         
         // Loop the routes
@@ -67,29 +67,11 @@ class Youkok2 {
         if (!$found) {
             $processor .= 'NotFound';
         }
-        
-        // New instance
-        if ($method === null) {
-            return new $processor($outputData, $returnData);
-        }
-        else {
-            $processor_instance = new $processor($outputData, $returnData);
-            return $processor_instance->$method();
-        }  
-    }
 
-    /*
-     * Sets variables to post or get variables
-     */
+        // New instance of processor, let the magic happen
+        $processor = new $processor($method, $settings);
 
-    public function setFormValues($type, $data) {
-        foreach ($data as $k => $v) {
-            if ($type == 'post') {
-                $_POST[$k] = $v;
-            }
-            else {
-                $_GET[$k] = $v;
-            }
-        }
+        // Return the content
+        return $processor->getData();
     }
 }

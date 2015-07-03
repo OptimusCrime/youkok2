@@ -26,7 +26,7 @@ use \Youkok2\Utilities\Utilities as Utilities;
  * The Static class, extending Base class
  */
 
-class CreateFolder extends Base {
+class CreateFolder extends BaseProcessor {
 
     /*
      * Constructor

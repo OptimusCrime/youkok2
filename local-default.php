@@ -6,6 +6,11 @@
  * Project: Youkok2
 */
 
+// Define if the site is available or not
+if (!defined('AVAILABLE')) {
+    define('AVAILABLE', true);
+}
+
 // Version
 if (!defined('VERSION')) {
     define('VERSION', '1.0.0-dev');
@@ -29,8 +34,11 @@ if (!defined('TEST_PATH')) {
 }
 
 // Database
-if (!defined('DATABASE_CONNECTION')) {
-    define('DATABASE_CONNECTION', 'mysql:host=localhost;dbname=youkok2');
+if (!defined('DATABASE_DNS')) {
+    define('DATABASE_DNS', 'mysql:host=localhost');
+}
+if (!defined('DATABASE_NAME')) {
+    define('DATABASE_NAME', 'youkok2');
 }
 if (!defined('DATABASE_USER')) {
     define('DATABASE_USER', 'root');
@@ -55,19 +63,15 @@ if (!defined('TIMEZONE')) {
     define('TIMEZONE', 'Europe/London');
 }
 
+// Define port
+if (!defined('PORT')) {
+    // Use no port (default 80)
+    define('PORT', '');
+}
+
 // Define domain
 if (!defined('DOMAIN')) {
-    define('DOMAIN', 'my-site.tld');
-}
-
-// Site url (no trailing slash)
-if (!defined('URL')) {
-    define('URL', 'http://my-site.tld');
-}
-
-// Full site url (trailing slash)
-if (!defined('URL_FULL')) {
-    define('URL_FULL', 'http://my-site.tld');
+    define('DOMAIN', 'localhost');
 }
 
 // Relative position (trailing slash both before and after, or just / if root)
@@ -99,3 +103,7 @@ if (!defined('DISPLAY_INSTEAD_OF_DOWNLOAD')) {
 if (!defined('CSRF_KEY')) {
     define('CSRF_KEY', 'foobar');
 }
+
+// Define URLs
+define('URL', 'http://' . DOMAIN . ((PORT == 80) ? '' : (':' . PORT)));
+define('URL_FULL', URL . URL_RELATIVE);

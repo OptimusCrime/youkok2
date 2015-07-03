@@ -21,7 +21,7 @@ use \Youkok2\Utilities\Loader as Loader;
  * Registration stuff for user
  */
 
-class Register extends Base {
+class Register extends BaseProcessor {
 
     /*
      * Constructor

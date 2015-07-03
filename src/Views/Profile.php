@@ -2,7 +2,7 @@
 /*
  * File: Profile.php
  * Holds: Views for the profile
- * Created: 02.10.13
+ * Created: 02.10.2013
  * Project: Youkok2
  * 
 */
@@ -19,10 +19,10 @@ use \Youkok2\Utilities\Redirect as Redirect;
 use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
- * The Profile class, extending Base class
+ * The Profile class, extending BaseView
  */
 
-class Profile extends Base {
+class Profile extends BaseView {
 
     /*
      * Constructor

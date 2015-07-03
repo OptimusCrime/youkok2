@@ -2,7 +2,7 @@
 /*
  * File: Frontpage.php
  * Holds: The frontpage view
- * Created: 02.10.13
+ * Created: 02.10.2013
  * Project: Youkok2
 */
 
@@ -12,7 +12,6 @@ namespace Youkok2\Views;
  * Define what classes to use
  */
 
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
@@ -21,26 +20,27 @@ use \Youkok2\Utilities\Database as Database;
  * The Frontpage class, extending Base class
  */
 
-class Frontpage extends Base {
+class Frontpage extends BaseView {
 
     /*
      * Constructor
      */
 
-    public function __construct($kill = false) {
-        parent::__construct($kill);
+    public function __construct() {
+        parent::__construct();
         
         // Set view
         $this->addSiteData('view', 'frontpage');
         
         // Load default boxes
         $this->template->assign('HOME_NEWEST', Element::getNewest());
-        $this->template->assign('HOME_MOST_POPULAR', Element::getMostPopular());
+
+        $this->template->assign('HOME_MOST_POPULAR', Element::getMostPopular()['data']);
         
         // Check if this user is logged in
         if (Me::isLoggedIn()) {
-            $this->template->assign('HOME_USER_LATEST', Me::loadLastDownloads());
-            $this->template->assign('HOME_USER_FAVORITES', Element::getFavorites());
+            $this->template->assign('HOME_USER_FAVORITES', Me::getFavorites());
+            $this->template->assign('HOME_USER_LATEST', Me::getLastDownloads());
         }
         else {
             $this->loadInfobox();
@@ -50,7 +50,7 @@ class Frontpage extends Base {
         $this->template->assign('HOME_MOST_POPULAR_DELTA', Me::getMostPopularDelta());
         
         // Display the template
-        $this->displayAndCleanup('index.tpl');
+        $this->displayAndCleanup('frontpage.tpl');
     }
     
     /*

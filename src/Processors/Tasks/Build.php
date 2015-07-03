@@ -12,14 +12,14 @@ namespace Youkok2\Processors\Tasks;
  * Define what classes to use
  */
 
-use \Youkok2\Processors\Base as Base;
+use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\LineCounter as LineCounter;
 
 /*
  * Build extending Base
  */
 
-class Build extends Base {
+class Build extends BaseProcessor {
 
     /*
      * Constructor

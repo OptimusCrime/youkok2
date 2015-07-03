@@ -12,27 +12,31 @@ namespace Youkok2\Models\Controllers;
  * Define what classes to use
  */
 
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
-use \Youkok2\Models\Course as Course;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
-use \Youkok2\Utilities\Routes as Routes;
-use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
  * The class ElementController
  */
 
-class ElementController implements BaseController {
+class ElementController extends BaseController {
     
     /*
      * Variables
      */
     
-    private $model;
-    
+
+    public static $cacheKey = 'i';
+
+    // Additional fields in cache
+    private $parent;
+    private $rootParent;
+    private $fullUrl;
+    private $parents;
+
+
     // The query
     private $query;
     
@@ -55,7 +59,7 @@ class ElementController implements BaseController {
     private $cache;
     
     // Parents and children
-    private $parents;
+
     private $children;
     
     // Static options
@@ -76,21 +80,10 @@ class ElementController implements BaseController {
      */
     
     public function __construct($model) {
-        // Set pointer to the model
-        $this->model = $model;
-        
-        // Init array for the query
-        $this->query = array('select' => array('a.name', 'a.parent', 'a.empty', 'a.checksum', 'a.is_directory', 
-                'a.url_friendly', 'a.mime_type', 'a.missing_image', 'a.is_accepted', 'a.is_visible', 
-                'a.added', 'a.size', 'a.exam', 'a.url'), 
-            'join' => array(), 
-            'where' => array('WHERE a.id = :id'),
-            'groupby' => array(),
-            'execute' => array());
+        parent::__construct($this, $model);
 
-        // Variables to keep track of what should be loaded at creation
-        $this->loadFlagCount = false;
-        $this->loadIfRemoved = false;
+        // Parents and children
+        $this->parents = null;
 
         // Other stuff
         $this->flagCount = null;
@@ -106,109 +99,8 @@ class ElementController implements BaseController {
         // Set caching to true as default
         $this->cache = true;
         
-        // Parents and children
-        $this->parents = null;
+
         $this->children = null;
-    }
-    
-    /*
-     * Methods for creating the element
-     */
-    
-    public function createById($id, $skip_db = false) {
-        $this->model->setId($id);
-
-        // Check if we should check the cache and if it is cached
-        if ($this->cache and CacheManager::isCached($id, 'i')) {
-            // This Item is cached, go ahead and fetch data
-            $temp_cache_data = CacheManager::getCache($id, 'i');
-            // Loop all the fields and apply data
-            foreach ($temp_cache_data as $k => $v) {
-                $k_actual = 'set' . ucfirst($k);
-                // Check that the field exists as a property/attribute in this class
-                if (method_exists('\Youkok2\Models\Element', $k_actual)) {
-                    // Only call if value is not empty, instead use the default values
-                    if (strlen($v) != 0) {
-                        call_user_func_array(array($this->model, $k_actual), array($v));
-                    }
-                }
-            }
-
-            // Cached flagcount?
-            if (isset($temp_cache_data['flagCount'])) {
-                $this->flagCount = $temp_cache_data['flagCount'];
-            }
-        }
-        else {
-            if (!$skip_db) {
-                // Add id to dynamic query
-                $this->query['execute'][':id'] = $this->model->getId();
-                
-                if (!$this->loadIfRemoved) {
-                    $this->query['where'][] = 'a.is_visible = 1';
-                }
-                
-                if ($this->loadFlagCount) {
-                    $this->query['select'][] = "count(fl.id) as 'flags'";
-                    $this->query['join'][] = PHP_EOL . 'LEFT JOIN flag as fl on a.id = fl.file AND fl.active = 1';
-                    $this->query['groupby'][] = 'a.id';
-                }
-                
-                // Create the actual query
-                $get_item_info = 'SELECT ' . implode(', ', $this->query['select']) . PHP_EOL . 'FROM archive AS a ';
-                
-                // Add joins (if there are any)
-                if (count($this->query['join']) > 0) {
-                    $get_item_info .= implode(' ', $this->query['join']);
-                }
-                
-                // Add where
-                $get_item_info .= PHP_EOL . implode(' AND ', $this->query['where']);;
-                
-                // Add group by (again, if there are any)
-                if (count($this->query['groupby']) > 0) {
-                    $get_item_info .= PHP_EOL . 'GROUP BY ' . implode(', ', $this->query['groupby']);
-                }
-                
-                // Run the actual query
-                $get_item_info_query = Database::$db->prepare($get_item_info);
-                $get_item_info_query->execute($this->query['execute']);
-                $row = $get_item_info_query->fetch(\PDO::FETCH_ASSOC);
-                
-                // Check if the query did return anything
-                if (isset($row['name'])) {
-                    // Set special fields
-                    if (isset($row['flags'])) {
-                        $this->flagCount = $row['flags'];
-                    }
-                    
-                    // Set results
-                    $this->model->setName($row['name']);
-                    $this->model->setDirectory($row['is_directory']);
-                    $this->model->setUrlFriendly($row['url_friendly']);
-                    $this->model->setParent($row['parent']);
-                    $this->model->setEmpty((($row['empty'] == '0') ? false : true));
-                    $this->model->setChecksum($row['checksum']);
-                    $this->model->setMimeType($row['mime_type']);
-                    $this->model->setMissingImage($row['missing_image']);
-                    $this->model->setAccepted((($row['is_accepted'] == '0') ? false : true));
-                    $this->model->setVisible((($row['is_visible'] == '0') ? false : true));
-                    $this->model->setAdded($row['added']);
-                    $this->model->setSize($row['size']);
-                    $this->model->setExam($row['exam']);
-                    $this->model->setUrl($row['url']);
-
-                    // Check if we should cache this Item
-                    if ($this->cache) {
-                        $this->cache();
-                    }
-                }
-                else {
-                    // Was not found
-                    $this->model->setId(null);
-                }
-            }
-        }
     }
     
     public function createByUrl($url) {
@@ -266,82 +158,23 @@ class ElementController implements BaseController {
                         $temp_parent = $row['id'];
                         
                         // Check if this object already exists
-                        $temp_item = ElementCollection::get($temp_parent);
-                        
-                        // Check if already cached, or not
-                        if ($temp_item == null) {
-                            // Should cache, just in case
-                            $temp_item = new Element();
-                            $temp_item->createById($temp_parent);
-                            ElementCollection::add($temp_item);
-                        }
+                        $temp_item = Element::get($temp_parent);
                     }
                 }
             }
         }
     }
-        
-    /*
-     * Setters to load additional information when loaded
-     */
-     
-    public function setLoadFlagCount($b) {
-        $this->loadFlagCount = $b;
-    }
 
-    public function setLoadIfRemoved($b) {
-        $this->loadIfRemoved = $b;
-        $this->cache = false;
-    }
-    
     /*
-     * Check if the Element was found or not
+     * Check if was found
      */
 
     public function wasFound() {
         if ($this->model->getId() != null and is_numeric($this->model->getId()) and $this->model->isVisible()) {
             return true;
         }
-        else {
-            return false;
-        }
-    }
-    
-    /*
-     * Generic method for storing all the parents for a given resource
-     */
-    
-    public function getParents() {
-        if ($this->parents === null) {
-            $this->parents = array($this->model);
-            $temp_parent_id = $this->model->getParent();
-            
-            // Loop untill we reach the root
-            while ($temp_parent_id != null) {
-                // Check if this object already exists
-                $temp_parent = ElementCollection::get($temp_parent_id);
-                
-                // Check if already cached
-                if ($temp_parent == null) {
-                    // Create new object
-                    $temp_parent = new Element();
-                    $temp_parent->createById($temp_parent_id);
-                    ElementCollection::add($temp_parent);
-                }
-                
-                // Add node to parents
-                $this->parents[] = $temp_parent;
-                
-                // Set new parent id
-                $temp_parent_id = $temp_parent->getParent();
-            }
-            
-            // Reverse
-            $this->parents = array_reverse($this->parents);
-        }
-        
-        // Return array
-        return $this->parents;
+
+        return false;
     }
     
     /*
@@ -372,24 +205,6 @@ class ElementController implements BaseController {
         
         return $this->children;
     }
-    
-    /*
-     * Check if element is course
-     */
-    
-    public function isCourse() {
-        return strpos($this->model->getName(), '||') !== false;
-    }
-    
-    /*
-     * Return course from element
-     */
-    
-    public function getCourse() {
-        $course = $this->model->getName();
-        $course_split = explode('||', $course);
-        return array('code' => $course_split[0], 'name' => $course_split[1]);
-    }
 
     /*
      * Generate url for the current Element
@@ -400,21 +215,28 @@ class ElementController implements BaseController {
         if ($this->model->isLink()) {
             return substr($path, 1) . '/' . $this->model->getId();
         }
-        
-        // Check if we should load parents
-        if ($this->parents === null) {
-            // Load parents first
-            $this->getParents();
+
+        // Check if already loaded (or cached)
+        if ($this->fullUrl === null) {
+            $temp_element = $this->model;
+            $temp_url = [$this->model->getUrlFriendly()];
+
+            while (true) {
+                if ($temp_element->hasParent()) {
+                    $temp_element = $temp_element->getParent(true);
+                }
+                else {
+                    break;
+                }
+
+                $temp_url[] = $temp_element->getUrlFriendly();
+            }
+
+            $this->fullUrl = implode('/', array_reverse($temp_url));
         }
-        
-        // Loop the parents and build the url
-        $full_url = array();
-        foreach ($this->parents as $v) {
-            $full_url[] = $v->getUrlFriendly();
-        }
-        
+
         // Return goes here!
-        return substr($path, 1) . '/' . implode('/', $full_url) . ($this->model->isDirectory() ? '/' : '');
+        return substr($path, 1) . '/' . $this->fullUrl . ($this->model->isDirectory() ? '/' : '');
     }
 
     /*
@@ -442,9 +264,9 @@ class ElementController implements BaseController {
             $get_download_count .= $d . PHP_EOL;
             $get_download_count .= "AND d.file = :file";
             
-            $get_download_count_query = $this->controller->db->prepare($get_download_count);
-            $get_download_count_query->execute(array(':file' => $this->id));
-            $row = $get_download_count_query->fetch(PDO::FETCH_ASSOC);
+            $get_download_count_query = Database::$db->prepare($get_download_count);
+            $get_download_count_query->execute(array(':file' => $this->model->getId()));
+            $row = $get_download_count_query->fetch(\PDO::FETCH_ASSOC);
 
             // Set value
             $this->downloadCount[$index] = $row['downloaded_times'];
@@ -536,92 +358,6 @@ class ElementController implements BaseController {
         }
         
         return $this->flags;
-    }
-
-    /*
-     * Root parent
-     */
-
-    public function getRootParent() {
-        // Check if we should load parents
-        if ($this->parents === null) {
-            // Load parents first
-            $this->getParents();
-        }
-        
-        // Return first element in the stack
-        return $this->parents[0];
-    }
-    
-    /*
-     * Setter for caching
-     */
-
-    public function setCache($b) {
-        $this->cache = $b;
-    }
-    
-    /*
-     * Cache the current Element
-     */
-    
-    public function cache() {
-        CacheManager::setCache($this->model->getId(), 'i', $this->cacheFormat());
-    }
-
-    /*
-     * Create cache string for this Element
-     */
-
-    public function cacheFormat() {
-        $cache_temp = array();
-        $fields = array('getId', 'getName', 'isDirectory', 'getUrlFriendly', 'getParent', 'isEmpty', 'getChecksum',
-            'getMimeType', 'getMissingImage', 'isAccepted', 'isVisible', 'getAdded', 'getSize', 
-            'getCourse', 'getExam', 'getUrl');
-        
-        // Loop each field
-        foreach ($fields as $v) {
-            // Rename cache call fuction
-            if (substr($v, 0, 3) == 'get') {
-                $v_pretty = strtolower(substr($v, 3));
-            }
-            else {
-                $v_pretty = strtolower(substr($v, 2));
-            }
-            
-            
-            if (method_exists('\Youkok2\Models\Element', $v)) {
-                // Get the value
-                $val = call_user_func(array($this->model, $v));
-                
-                // Check if we should wrap in quotes
-                $wrap = true;
-                if (is_bool($val) or is_null($val)) {
-                    $wrap = false;
-                    
-                    if (is_bool($val)) {
-                        $val = (int) $val;
-                    }
-                    if (is_null($val)) {
-                        $val = 'null';
-                    }
-                }
-                
-                // Add to cache array
-                if ($wrap) {
-                    $cache_temp[] = "'" . $v_pretty . "' => '" . addslashes($val) . "'";
-                }
-                else {
-                    $cache_temp[] = "'" . $v_pretty . "' => " . $val;
-                }
-            }
-        }
-        
-        // Add flag count
-         $cache_temp[] = "'flagcount' => '" . addslashes($this->getFlagCount()) . "'";
-         
-        // Implode and return
-        return implode(', ', $cache_temp);
     }
     
     /*
@@ -716,98 +452,6 @@ class ElementController implements BaseController {
         return json_encode($output);
     }
     
-    /*
-     * Generate frontpage link for the current Element
-     */
-    
-    public function getFrontpageLink($mode = null, $special = null) {
-        // Some variable we are going to eed
-        $ret = '';
-        $endfix = '';
-        $list_classes = 'list-group-item';
-        $root_parent = $this->getRootParent();
-        
-        // Check if we should load additional information
-        if ($mode != null) {
-            if ($mode == 'added') {
-                $endfix .= ' [<span class="moment-timestamp help" data-toggle="tooltip" title="' . Utilities::prettifySQLDate($this->model->getAdded()) . '" ';
-                $endfix .= 'data-ts="' . $this->model->getAdded() . '">Laster...</span>]';
-            }
-            else if ($mode == 'most-popular') {
-                // Supply endfix
-                $endfix .= ' [' . number_format($this->getDownloadCount(self::$delta[Me::getMostPopularDelta()])) . ']';
-            }
-            else if ($mode == 'favorites') {
-                $list_classes .= ' list-group-star';
-                $endfix = '    <i title="Fjern favoritt" data-id="' . $this->model->getId() . '" class="fa fa-times-circle star-remove"></i>';
-            }
-        }
-        
-        // The different types of Elements requires different links
-        if ($this->model->isLink()) {
-            $element_url = $this->generateUrl(Routes::REDIRECT);
-            $element_title = ' data-toggle="tooltip" class="help" title="Link til: ' . $this->model->getUrl() . '"';
-        }
-        else if ($this->model->isFile()) {
-            $element_url = $this->generateUrl(Routes::DOWNLOAD);
-            $element_title = '';
-        }
-        
-        // Begin the list
-        $ret .= '<li class="' . $list_classes . '">' . PHP_EOL;
-        
-        // Check if directory
-        if ($this->model->isDirectory()) {
-            $ret .= '    <a href="' . $this->generateUrl(Routes::ARCHIVE) . '">';
-            
-            // Check if has course
-            if ($this->isCourse()) {
-                $course = $this->getCourse();
-                $ret .= $course['code'] . ' &mdash; ' . $course['name'];
-            }
-            else {
-                $ret .= $this->model->getName();
-            }
-            
-            // Close link
-            $ret .= '</a>' . PHP_EOL;
-        }
-        else {
-            // The link itself
-            $ret .= '    <a rel="nofollow" target="_blank"' . $element_title . ' href="' . $element_url . '">' . $this->model->getName() . '</a> @ ' . PHP_EOL;
-            
-            // Load parent
-            $parent = ElementCollection::get($this->model->getParent());
-            
-            // Just to be sure
-            if ($parent != null) {
-                // Check if element is placed directly in course
-                if ($parent->controller->isCourse()) {
-                    // Parent is course
-                    $parent_course = $parent->controller->getCourse();
-                    $ret .= '    <a href="' . $parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" ';
-                    $ret .= ' data-placement="top" class="help" title="' . $parent_course['name'] . '">' . $parent_course['code'] . '</a>' . PHP_EOL;
-                }
-                else {
-                    // Parent is not course
-                    $ret .= '    <a href="' . $parent->controller->generateUrl(Routes::ARCHIVE) . '">' . $parent->getName() . '</a>, ' . PHP_EOL;
-                    
-                    // Load root parent
-                    $parent_course = $root_parent->controller->getCourse();
-                    $ret .= '    <a href="' . $root_parent->controller->generateUrl(Routes::ARCHIVE) . '" data-toggle="tooltip" ';
-                    $ret .= ' data-placement="top" class="help" title="' . $parent_course['name'] . '">' . $parent_course['code'] . '</a>' . PHP_EOL;
-                }
-            }
-        }
-        
-        // Close the list
-        $ret .= $endfix . PHP_EOL;
-        $ret .= '</li>' . PHP_EOL;
-        
-        // Return the entire string
-        return $ret;
-    }
-    
     public function getPhysicalLocation() {
         // Get directories
         $checksum = $this->model->getChecksum();
@@ -816,14 +460,6 @@ class ElementController implements BaseController {
         
         // Return full path
         return FILE_PATH . '/' . $folder1 . '/' . $folder2 . '/' . $this->model->getChecksum();
-    }
-    
-    /*
-     * Delete cache
-     */
-    
-    public function deleteCache() {
-        CacheManager::deleteCache($this->model->getId(), 'i');
     }
     
     /*
@@ -907,5 +543,84 @@ class ElementController implements BaseController {
         
         // Cache
         $this->cache();
+    }
+
+    /*
+     * To Array (for output)
+     */
+
+    public function toArray() {
+        // Get the initial fields from the array
+        $arr = $this->model->toArrayInitial();
+
+        // Return the array
+        return $arr;
+    }
+
+    /*
+     * Various helper methods
+     */
+
+    public function hasParent() {
+        return $this->model->getParent() != null and $this->model->getParent() != 1;
+    }
+    public function isLink() {
+        return ($this->model->getUrl() != null);
+    }
+    public function isFile() {
+        return ($this->model->getUrl() == null and !$this->model->isDirectory());
+    }
+    public function getParentObject() {
+        if ($this->parent === null) {
+            $this->parent = Element::get($this->model->getParent());
+        }
+
+        return $this->parent;
+    }
+    public function getParents() {
+        $arr = [$this->model];
+
+        if ($this->hasParent()) {
+            $temp_obj = $this->getParentObject();
+            while (true) {
+                // Derp
+                $arr[] = $temp_obj;
+
+                if ($temp_obj->hasParent()) {
+                    $temp_obj = $temp_obj->getParentObject();
+                }
+                else {
+                    break;
+                }
+
+            }
+        }
+
+        // Return collection of parents
+        return $arr;
+    }
+    public function getRootParent() {
+        if ($this->rootParent === null) {
+
+            $temp_element = $this->model;
+
+            while (true) {
+                if ($temp_element->hasParent()) {
+                    $temp_element = $temp_element->getParent(true);
+                }
+                else {
+                    $this->rootParent = &$temp_element;
+                    break;
+                }
+            }
+        }
+
+        return $this->rootParent;
+    }
+    public function getCourseName() {
+        return explode('||', $this->model->getName())[1];
+    }
+    public function getCourseCode() {
+        return explode('||', $this->model->getName())[0];
     }
 }

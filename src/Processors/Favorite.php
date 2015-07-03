@@ -20,7 +20,7 @@ use \Youkok2\Utilities\Database as Database;
  * The Static class, extending Base class
  */
 
-class Favorite extends Base {
+class Favorite extends BaseProcessor {
 
     /*
      * Constructor

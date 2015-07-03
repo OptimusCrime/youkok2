@@ -69,18 +69,18 @@ class Harness {
         echo "\n\n";
         
         // Create cache directory
-        if (!is_dir(CACHE_PATH)) {
-            mkdir(CACHE_PATH);
-        }
+        //if (!is_dir(CACHE_PATH)) {
+        //    mkdir(CACHE_PATH);
+        //}
         
         // Create cache elemet sub directory
-        if (!is_dir(CACHE_PATH . '/elements/')) {
-            mkdir(CACHE_PATH . '/elements/');
-        }
-        else {
+        //if (!is_dir(CACHE_PATH . '/elements/')) {
+        //    mkdir(CACHE_PATH . '/elements/');
+        //}
+        //else {
             // Clear cache
-            Youkok2::runProcessor('tasks/clearcache');
-        }
+        //Youkok2::runProcessor('tasks/clearcache');
+        //}
     }
     
     /*

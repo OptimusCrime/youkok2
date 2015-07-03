@@ -2,7 +2,7 @@
 /*
  * File: Flat.php
  * Holds: Class for displaying flat files
- * Created: 02.10.13
+ * Created: 02.10.2013
  * Project: Youkok2
  * 
 */
@@ -10,10 +10,10 @@
 namespace Youkok2\Views;
 
 /*
- * The Flat class, extending Base class
+ * The Flat class, extending BaseView
  */
 
-class Flat extends Base {
+class Flat extends BaseView {
 
     /*
      * Constructor
@@ -45,12 +45,8 @@ class Flat extends Base {
         $this->template->assign('SITE_TITLE', 'Retningslinjer for Youkok2');
         
         // Fix list for filendings
-        $endings = explode(',', ACCEPTED_FILEENDINGS);
-        $endings_string = '';
-        foreach ($endings as $v) {
-            $endings_string .= '<li>.' . $v . '</li>';
-        }
-        $this->template->assign('ACCEPTED_FILEENDINGS', $endings_string);
+        $file_endings = explode(',', ACCEPTED_FILEENDINGS);
+        $this->template->assign('ACCEPTED_FILEENDINGS', $file_endings);
         
         // Display the page
         $this->displayAndCleanup('flat_retningslinjer.tpl');

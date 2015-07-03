@@ -13,7 +13,7 @@ namespace Youkok2\Processors\Tasks;
  */
 
 use \Youkok2\Models\Element as Element;
-use \Youkok2\Processors\Base as Base;
+use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 
@@ -21,7 +21,7 @@ use \Youkok2\Utilities\CacheManager as CacheManager;
  * LoadExams extending Base
  */
 
-class GetCacheData extends Base {
+class GetCacheData extends BaseProcessor {
     
     /*
      * Constructor

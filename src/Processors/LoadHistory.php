@@ -20,7 +20,7 @@ use \Youkok2\Utilities\Database as Database;
  * The NotFound class, extending Base class
  */
 
-class LoadHistory extends Base {
+class LoadHistory extends BaseProcessor {
     
     /*
      * Constructor

@@ -47,7 +47,7 @@ class Loader {
         $this->getBasePath();
         
         // Check if proseccor or view is requested
-        if ($this->basePath == Routes::PROSECESSOR) {
+        if ($this->basePath == Routes::PROCESSOR) {
             // Get processor
             $this->getProcessor();
         }
@@ -62,10 +62,10 @@ class Loader {
     
     private function getProcessor() {
         // Trim the fullPath
-        $action = substr(str_replace(Routes::PROSECESSOR, '', $this->fullPath), 1);
+        $action = substr(str_replace(Routes::PROCESSOR, '', $this->fullPath), 1);
 
         // Run processor
-        Youkok2::runProcessor($action, true);
+        Youkok2::runProcessor($action, ['output' => true, 'encode' => true]);
     }
     
     /*

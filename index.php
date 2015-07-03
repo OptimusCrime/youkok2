@@ -1,9 +1,8 @@
 <?php
 /*
  * File: index.php
- * Holds: The Loader class that loads the correct class based on the method being called, setting
- * output and including all the stuff we need
- * Created: 02.10.13
+ * Holds: Define stuff, create autoloader function
+ * Created: 02.10.2013
  * Project: Youkok2
  */
 
@@ -68,13 +67,6 @@ error_reporting(ERROR_MODE);
 ini_set('display_errors', ERROR_DISPLAY);
 
 /*
- * Apply Whoops if dev
- */
-
-
-
- 
-/*
  * Set the timezone
  */
 
@@ -100,4 +92,3 @@ else {
 if ($call_loader) {
     $loader = new \Youkok2\Utilities\Loader();
 }
-?>

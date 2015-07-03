@@ -12,7 +12,6 @@ namespace Youkok2\Models;
  * Load different classes into namespace
  */
 
-use \Youkok2\Models\BaseModel as BaseModel;
 use \Youkok2\Models\Controllers\ElementController as ElementController;
 use \Youkok2\Models\StaticControllers\ElementStaticController as ElementStaticController;
 use \Youkok2\Utilities\Utilities as Utilities;
@@ -27,8 +26,9 @@ class Element extends BaseModel {
      * Variables
      */
 
-    public $controller;
+    private $controller;
 
+    // Fields in the database
     private $id;
     private $name;
     private $urlFriendly;
@@ -51,102 +51,144 @@ class Element extends BaseModel {
      */
     
     private $schema = [
-        'id' => [
-            'type' => 'integer',
-            'null' => false,
+        'meta' => [
+            'table' => 'archive',
         ],
-        'name' => [
-            'type' => 'string',
-            'null' => false,
-        ],
-        'url_friendly' => [
-            'method' => 'urlFriendly',
-            'type' => 'string',
-            'null' => false,
-        ],
-        'owner' => [
-            'type' => 'integer',
-            'null' => true,
-            'default' => null,
-        ],
-        'parent' => [
-            'type' => 'integer',
-            'null' => true,
-            'default' => null,
-        ],
-        'empty' => [
-            'type' => 'integer',
-            'null' => false,
-            'default' => 1,
-        ],
-        'checksum' => [
-            'type' => 'string',
-            'null' => true,
-            'default' => null,
-        ],
-        'mime_type' => [
-            'method' => 'mimeType',
-            'type' => 'string',
-            'null' => true,
-            'default' => null,
-        ],
-        'missing_image' => [
-            'method' => 'missingImage',
-            'type' => 'integer',
-            'null' => false,
-            'default' => 0,
-        ],
-        'size' => [
-            'type' => 'integer',
-            'null' => true,
-            'default' => null,
-        ],
-        'is_directory' => [
-            'method' => 'directory',
-            'type' => 'integer',
-            'null' => false,
-            'default' => 0,
-        ],
-        'is_accepted' => [
-            'method' => 'accepted',
-            'type' => 'integer',
-            'null' => false,
-            'default' => 0,
-        ],
-        'is_visible' => [
-            'method' => 'visible',
-            'type' => 'integer',
-            'null' => false,
-            'default' => 1,
-        ],
-        'exam' => [
-            'type' => 'datetime',
-            'null' => true,
-            'default' => null,
-        ],
-        'url' => [
-            'type' => 'string',
-            'null' => true,
-            'default' => null,
-        ],
-        'added' => [
-            'type' => 'datetime',
-            'null' => false,
-        ],
+        'fields' => [
+            'id' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+                'arr' => true,
+            ],
+            'name' => [
+                'type' => 'string',
+                'null' => false,
+                'db' => true,
+                'arr' => true,
+            ],
+            'url_friendly' => [
+                'method' => 'urlFriendly',
+                'type' => 'string',
+                'null' => false,
+                'db' => true,
+            ],
+            'owner' => [
+                'type' => 'integer',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+                'arr' => true,
+            ],
+            'parent' => [
+                'type' => 'integer',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'empty' => [
+                'type' => 'integer',
+                'null' => false,
+                'default' => 1,
+                'db' => true,
+                'arr' => true,
+            ],
+            'checksum' => [
+                'type' => 'string',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'mime_type' => [
+                'method' => 'mimeType',
+                'type' => 'string',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'missing_image' => [
+                'method' => 'missingImage',
+                'type' => 'integer',
+                'null' => false,
+                'default' => 0,
+                'db' => true,
+            ],
+            'size' => [
+                'type' => 'integer',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'is_directory' => [
+                'method' => 'directory',
+                'type' => 'integer',
+                'null' => false,
+                'default' => 0,
+                'db' => true,
+                'is' => true,
+                'arr' => true,
+            ],
+            'is_accepted' => [
+                'method' => 'accepted',
+                'type' => 'integer',
+                'null' => false,
+                'default' => 0,
+                'db' => true,
+                'is' => true
+            ],
+            'is_visible' => [
+                'method' => 'visible',
+                'type' => 'integer',
+                'null' => false,
+                'default' => 1,
+                'db' => true,
+                'is' => true
+            ],
+            'exam' => [
+                'type' => 'datetime',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+            ],
+            'url' => [
+                'type' => 'string',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+                'arr' => true,
+            ],
+            'added' => [
+                'type' => 'datetime',
+                'null' => false,
+                'db' => true,
+                'arr' => true,
+            ],
+        ]
     ];
     
     /*
      * Constructor
      */
     
-    public function __construct() {
+    public function __construct($data = null) {
         $this->controller = new ElementController($this);
         
         /*
          * Set some default values
          */
         
-        $this->setDefaults($this, $this->schema);
+        $this->setDefaults();
+
+        /*
+         * Create
+         */
+
+        if (is_numeric($data)) {
+            $this->controller->createById($data);
+        }
+        elseif (strlen($data) > 0) {
+            $this->controller->createByUrl($data);
+        }
     }
     
     /*
@@ -165,8 +207,13 @@ class Element extends BaseModel {
     public function getOwner() {
         return $this->owner;
     }
-    public function getParent() {
-        return $this->parent;
+    public function getParent($object = false) {
+        if ($object === false) {
+            return $this->parent;
+        }
+        else {
+            return $this->controller->getParentObject();
+        }
     }
     public function isEmpty() {
         return (bool) $this->empty;
@@ -186,12 +233,6 @@ class Element extends BaseModel {
     public function isDirectory() {
         return (bool) $this->directory;
     }
-    public function isLink() {
-        return ($this->url != null);
-    }
-    public function isFile() {
-        return ($this->url == null and !$this->directory);
-    }
     public function isAccepted() {
         return (bool) $this->accepted;
     }
@@ -204,8 +245,8 @@ class Element extends BaseModel {
     public function getUrl() {
         return $this->url;
     }
-    public function getAdded() {
-        return $this->added;
+    public function getAdded($pretty = false) {
+        return $pretty ? Utilities::prettifySQLDate($this->added) : $this->added;
     }
 
     /*
@@ -260,22 +301,26 @@ class Element extends BaseModel {
     public function setAdded($added) {
         $this->added = $added;
     }
-    
+
     /*
-     * Redirectors
+     * Return schema
      */
-    
-    public function createById($id, $skip_db = false) {
-        $this->controller->createById($id, $skip_db);
+
+    public function getSchema() {
+        return $this->schema;
     }
-    public function createByUrl($url) {
-        $this->controller->createByUrl($url);
-    }
-    public function save() {
-        $this->controller->save();
-    }
-    public function update() {
-        $this->controller->update();
+
+    /*
+     * Functions overload
+     */
+
+    public function __call($name, $arguments) {
+        // Check if method exists
+        if (method_exists('\Youkok2\Models\Controllers\ElementController', $name)) {
+            // Call method and return response
+            return call_user_func_array([$this->controller,
+                $name], $arguments);
+        }
     }
     
      /*
@@ -286,8 +331,8 @@ class Element extends BaseModel {
         // Check if method exists
         if (method_exists('\Youkok2\Models\StaticControllers\ElementStaticController', $name)) {
             // Call method and return response
-            return call_user_func_array(array('\Youkok2\Models\StaticControllers\ElementStaticController', 
-                $name), $arguments);
+            return call_user_func_array(['\Youkok2\Models\StaticControllers\ElementStaticController',
+                $name], $arguments);
         }
     }
 } 

@@ -1,7 +1,7 @@
 <?php
 /*
- * File: Base.php
- * Holds: Base view class
+ * File: BaseView.php
+ * Holds: Class extended by the other views
  * Created: 02.10.13
  * Project: Youkok2
 */
@@ -13,7 +13,6 @@ namespace Youkok2\Views;
  */
 
 use \Youkok2\Youkok2 as Youkok2;
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Models\Message as Message;
 use \Youkok2\Utilities\CacheManager as CacheManager;
@@ -27,7 +26,7 @@ use \Youkok2\Utilities\Routes as Routes;
  * Class that all the controllers extends
  */
 
-class Base extends Youkok2 {
+class BaseView extends Youkok2 {
 
     /*
      * Internal variables
@@ -45,11 +44,11 @@ class Base extends Youkok2 {
 
     public function __construct($kill = false) {
         // Check if we're offline
-        if ($kill == false and defined('OFFLINE') and OFFLINE) {
+        if ($kill == false and defined('AVAILABLE') and !AVAILABLE) {
             // We're offline, check if we should be allowed still
-            if (!defined('OFFLINE_WHITELIST') or (defined('OFFLINE_WHITELIST') and OFFLINE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
+            if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
                 // Not whitelisted, kill
-                new Error('offline');
+                new Error('unavailable');
                 die();
             }
         }
@@ -84,16 +83,20 @@ class Base extends Youkok2 {
         // Define a few constants in Smarty
         $this->template->assign('VERSION', VERSION);
         $this->template->assign('DEV', DEV);
-        $this->template->assign('SITE_URL', URL);
+        $this->template->assign('SITE_URL', URL_FULL);
         $this->template->assign('SITE_TITLE', 'Den beste kokeboka på nettet');
-        $this->template->assign('SITE_URL_FULL', URL_FULL);
-        $this->template->assign('SITE_RELATIVE', URL_RELATIVE);
         $this->template->assign('SITE_EMAIL_CONTACT', EMAIL_CONTACT);
         $this->template->assign('SEARCH_QUERY', '');
         $this->template->assign('HEADER_MENU', 'HOME');
+
+        // Route variables
+        $this->template->assign('ROUTE_ARCHIVE', Routes::ARCHIVE);
+        $this->template->assign('ROUTE_DOWNLOAD', Routes::DOWNLOAD);
+        $this->template->assign('ROUTE_REDIRECT', Routes::REDIRECT);
+        $this->template->assign('ROUTE_PROCESSOR', Routes::PROCESSOR);
                 
         // Set some site data
-        $this->addSiteData('search_base', URL_FULL . substr(Routes::getRoutes()['Archive'][0]['path'], 1) . '/');
+        $this->addSiteData('search_base', URL . URL_RELATIVE . substr(Routes::getRoutes()['Archive'][0]['path'], 1) . '/');
         $this->addSiteData('view', 'general');
         
         // Check if we should kill the view
@@ -105,11 +108,13 @@ class Base extends Youkok2 {
             $this->addSiteData('online', Me::isLoggedIn());
             
             // Set BASE_USER_* information to the template
-            $this->template->assign('BASE_USER_IS_LOGGED_IN', Me::isLoggedIn());
-            $this->template->assign('BASE_USER_NICK', Me::getNick());
-            $this->template->assign('BASE_USER_KARMA', Me::getKarma());
-            $this->template->assign('BASE_USER_KARMA_PENDING', Me::getKarmaPending());
-            $this->template->assign('BASE_USER_IS_ADMIN', Me::isAdmin());
+            $this->template->assign('USER_IS_LOGGED_IN', Me::isLoggedIn());
+            $this->template->assign('USER_NICK', Me::getNick());
+            $this->template->assign('USER_KARMA', Me::getKarma());
+            $this->template->assign('USER_KARMA_PENDING', Me::getKarmaPending());
+            $this->template->assign('USER_IS_ADMIN', Me::isAdmin());
+            $this->template->assign('USER_IS_BANNED', Me::isBanned());
+            $this->template->assign('USER_CAN_CONTRIBUTE', Me::canContribute());
             
             // Check if we should validate login
             if (isset($_POST['login-email'])) {
@@ -303,7 +308,7 @@ class Base extends Youkok2 {
         // If develop, assign dev variables
         if (DEV) {
             $this->template->assign('DEV_QUERIES_NUM', Database::getCount());
-            $this->template->assign('DEV_ELEMENT_COLLECTION_NUM', ElementCollection::getSize());
+            $this->template->assign('DEV_ELEMENT_COLLECTION_NUM', '');
             $this->template->assign('DEV_CACHE_LOAD_NUM', CacheManager::getFetches());
             
             $this->template->assign('DEV_QUERIES_BACKTRACE', $this->cleanSqlLog($this->sqlLog));
@@ -323,9 +328,6 @@ class Base extends Youkok2 {
             $this->template->assign('JS_MODULES', $js_modules);
         }
         
-        // Close database and process cache
-        $this->close();
-        
         // Load message
         $this->showMessages();
         
@@ -341,6 +343,9 @@ class Base extends Youkok2 {
         
         // Call Smarty
         $this->template->display($template, $sid);
+
+        // Close database and process cache
+        $this->close();
     }
     
     /*
@@ -401,17 +406,7 @@ class Base extends Youkok2 {
     }
     private function cleanCacheLoadLog($arr) {
         $str = '';
-        
-        // Loop stack elements
-        if (count($arr) > 0) {
-            foreach ($arr as $stack_element) {
-                $str .= $this->structureBacktrace($stack_element['backtrace']);
-                $str .= '<pre>';
-                $str .= 'Id: ' . $stack_element['id'] . ' || Type: ' . $stack_element['type'] . ' || Collection: ';
-                $str .= (ElementCollection::isStored($stack_element['id']) ? 'Ja' : 'Nei') . "\n";
-                $str .= '</pre>';
-            }
-        }
+
         
         // Return resulting string
         return $str;
