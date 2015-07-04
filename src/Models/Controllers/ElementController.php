@@ -182,7 +182,11 @@ class ElementController extends BaseController {
      */
     
     public function getChildren() {
+        // Check if the children collection is null
         if ($this->children === null) {
+            // Set children to array
+            $this->children = [];
+
             // Load all favorites
             $get_children_ids  = "SELECT id" . PHP_EOL;
             $get_children_ids .= "FROM archive" . PHP_EOL;
@@ -193,16 +197,12 @@ class ElementController extends BaseController {
             $get_children_ids_query = Database::$db->prepare($get_children_ids);
             $get_children_ids_query->execute(array(':parent' => $this->model->getId()));
             while ($row = $get_children_ids_query->fetch(\PDO::FETCH_ASSOC)) {
-                // Create new element
-                $element = ElementCollection::get($row['id'], array('flag'));
-                
-                // Add if found
-                if ($element != null and $element->controller->wasFound()) {
-                    $this->children[] = $element;
-                }
+                // Get element and add to collection
+                $this->children[] = Element::get($row['id']);
             }
         }
-        
+
+        // Return the children collection
         return $this->children;
     }
 

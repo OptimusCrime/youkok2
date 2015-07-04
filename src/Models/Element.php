@@ -53,6 +53,7 @@ class Element extends BaseModel {
     private $schema = [
         'meta' => [
             'table' => 'archive',
+            'cacheable' => true,
         ],
         'fields' => [
             'id' => [
@@ -180,11 +181,14 @@ class Element extends BaseModel {
         $this->setDefaults();
 
         /*
-         * Create
+         * Various create methods are called here
          */
 
         if (is_numeric($data)) {
             $this->controller->createById($data);
+        }
+        elseif (is_array($data)) {
+            $this->controller->createByArray($data);
         }
         elseif (strlen($data) > 0) {
             $this->controller->createByUrl($data);
@@ -300,14 +304,6 @@ class Element extends BaseModel {
     }
     public function setAdded($added) {
         $this->added = $added;
-    }
-
-    /*
-     * Return schema
-     */
-
-    public function getSchema() {
-        return $this->schema;
     }
 
     /*

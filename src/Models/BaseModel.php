@@ -1,7 +1,7 @@
 <?php
 /*
  * File: BaseModel.php
- * Holds: Base element for all models
+ * Holds: Base class for all models
  * Created: 25.05.2015
  * Project: Youkok2
 */
@@ -69,5 +69,13 @@ class BaseModel {
 
         // Return the array
         return $arr;
+    }
+
+    /*
+     * Return schema
+     */
+
+    public function getSchema() {
+        return $this->schema;
     }
 }

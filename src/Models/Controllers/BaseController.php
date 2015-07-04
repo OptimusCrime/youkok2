@@ -44,7 +44,10 @@ abstract class BaseController {
         $this->cacheKey = get_class_vars(get_class($this->class))['cacheKey'];
     }
 
-    // Derp
+    /*
+     * Creating objects by id
+     */
+
     public function createById($id) {
         // Check if already cached
         if (CacheManager::isCached($id, $this->cacheKey)) {
@@ -108,6 +111,14 @@ abstract class BaseController {
                 $this->cache();
             }
         }
+    }
+
+    /*
+     * Create objects by array
+     */
+
+    public function createByArray($arr) {
+        // TODO
     }
     
     /*

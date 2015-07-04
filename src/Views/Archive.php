@@ -81,16 +81,18 @@ class Archive extends BaseView {
         // Get breadcrumbs
         $this->template->assign('ARCHIVE_ELEMENT_PARENTS', array_reverse($element->getParents()));
         
-        // Metadata
+        // Set root element
         if (!$element->isCourse()) {
             $element_root = $element->getRootParent();
-            $course = $element_root->getCourse();
         }
+        else {
+            $element_root = $element;
+        }
+        $this->template->assign('ARCHIVE_ELEMENT_ROOT', $element_root);
         
-        $site_description = $course['code'] . ' - ' . $course['name'] . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
-        $this->template->assign('SITE_DESCRPTION', $site_description);
-        
-
+        // TODO
+        //$site_description = $course['code'] . ' - ' . $course['name'] . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
+        //$this->template->assign('SITE_DESCRPTION', $site_description);
         
         // Check if archive is empty
         if ($element->isEmpty()) {
@@ -98,44 +100,8 @@ class Archive extends BaseView {
         }
         else {
             $this->template->assign('ARCHIVE_EMPTY', false);
-            $this->template->assign('ARCHIVE_CONTENT', $this->getElementContent($element));
+            $this->template->assign('ARCHIVE_CONTENT', $element->getChildren());
         }
-    }
-
-    //
-    // Method for loading breadcrumbs
-    //
-
-    private function loadBreadcrumbs($element) {
-        // Some variables
-        $ret = array();
-        $collection = $element->getParents();
-        
-        // Loop and build list
-        foreach ($collection as $v) {
-            // Check if si course
-            if ($v->isCourse()) {
-                $course = $v->getCourse();
-                $name = $course['code'];
-            }
-            else {
-                $name = $v->getName();
-            }
-            
-            // Find out what kind of element to use
-            if ($v->getId() == $element->getId()) {
-                // Current element, no link
-                $ret[] = '<li class="active">' . $name . '</li>';
-            }
-            else {
-                // Not current element, add link
-                $ret[] = '<li><a href="' . $v->generateUrl(Routes::ARCHIVE) . '">' . $name . '</a></li>';
-            }
-            
-        }
-
-        // Return breadcrumbs
-        return implode('', $ret);
     }
     
     private function loadBredcrumbsTitle($element) {
@@ -160,13 +126,9 @@ class Archive extends BaseView {
     //
 
     private function getElementContent($element) {
-        $ret = '';
-        
-        // Get children
-        $children = $element->getChildren();
         
         // Loop children
-        foreach ($children as $child) {
+        /*foreach ($children as $child) {
             $data = array();
             $url_target = '';
             
@@ -242,7 +204,7 @@ class Archive extends BaseView {
             $ret .= '        </div>';
             $ret .= '    </a>';
             $ret .= '</li>';
-        }
+        }*/
 
         // Return the content here
         return $ret;
