@@ -67,20 +67,24 @@ class Harness {
         echo "\033[32m║                                                                   ║\033[0m\n";
         echo "\033[32m╚═══════════════════════════════════════════════════════════════════╝\033[0m\n";
         echo "\n\n";
-        
-        // Create cache directory
-        //if (!is_dir(CACHE_PATH)) {
-        //    mkdir(CACHE_PATH);
-        //}
-        
-        // Create cache elemet sub directory
-        //if (!is_dir(CACHE_PATH . '/elements/')) {
-        //    mkdir(CACHE_PATH . '/elements/');
-        //}
-        //else {
-            // Clear cache
-        //Youkok2::runProcessor('tasks/clearcache');
-        //}
+
+        // Delete cache directory
+        $dir = CACHE_PATH;
+        $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ($files as $file) {
+            if ($file->isDir()) {
+                rmdir($file->getRealPath());
+            }
+            else {
+                unlink($file->getRealPath());
+            }
+        }
+        rmdir($dir);
+
+        // Recreate directories
+        @mkdir(CACHE_PATH);
+        @mkdir(CACHE_PATH . '/elements/');
     }
     
     /*
