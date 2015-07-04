@@ -93,14 +93,14 @@ class ElementTest extends PHPUnit_Framework_TestCase
         $element1->setUrlFriendly('foo1');
         $element1->save();
 
-        // Create element1
+        // Create element2
         $element2 = Element::get();
         $element2->setName('Foo2');
         $element2->setUrlFriendly('foo2');
         $element2->setParent($element1->getId());
         $element2->save();
 
-        // Check that the relationship is true for id
+        // Check that the relationship is true
         $this->assertEquals($element1->getId(), $element2->getParent());
     }
 
