@@ -50,7 +50,7 @@ class Element extends BaseModel {
      * Schema
      */
     
-    private $schema = [
+    protected $schema = [
         'meta' => [
             'table' => 'archive',
             'cacheable' => true,
@@ -92,6 +92,7 @@ class Element extends BaseModel {
                 'null' => false,
                 'default' => 1,
                 'db' => true,
+                'is' => true,
                 'arr' => true,
             ],
             'checksum' => [
