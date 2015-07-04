@@ -25,12 +25,14 @@
         </div>
     </div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+[[+nocache]][[+if $OFFLINE]]<script type="text/javascript" src="assets/js/libs/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="assets/js/libs/bootstrap-3.3.5.min.js"></script>[[+else]]
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.0/moment.min.js"></script>
-<script type="text/javascript" src="//code.highcharts.com/4.0.4/highcharts.js"></script>
-[[+nocache]][[+if !$COMPRESS_ASSETS]]<script type="text/javascript" src="assets/js/libs/typeahead.bundle.min.js"></script>
+<script type="text/javascript" src="//code.highcharts.com/4.0.4/highcharts.js"></script>[[+/if]]
+
+[[+if !$COMPRESS_ASSETS]]<script type="text/javascript" src="assets/js/libs/typeahead.bundle.min.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery.fileupload.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery.ba-outside-events.min.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery.countdown.min.js"></script>
@@ -44,5 +46,6 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', 'UA-50619069-1', 'youkok2.com');
 ga('send', 'pageview');
 </script>[[+/if]]
+
 </body>
 </html>

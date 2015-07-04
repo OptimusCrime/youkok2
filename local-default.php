@@ -11,6 +11,11 @@ if (!defined('AVAILABLE')) {
     define('AVAILABLE', true);
 }
 
+// Define if we're developing offline or not
+if (!defined('OFFLINE')) {
+    define('OFFLINE', false);
+}
+
 // Version
 if (!defined('VERSION')) {
     define('VERSION', '1.0.0-dev');
