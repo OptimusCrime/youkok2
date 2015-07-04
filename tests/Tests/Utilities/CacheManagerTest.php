@@ -31,6 +31,22 @@ class CacheManagerTest extends PHPUnit_Framework_TestCase {
         $this->assertFalse($cache3);
         $this->assertFalse($cache4);
     }
+
+    /*
+     * Test isCache when creating invalid element
+     */
+
+    public function testCacheValidy() {
+        // Cache one element with correct data
+        $cache1 = CacheManager::setCache(1, 'i', ['foo' => 'bar'], true);
+
+        // Cache one element with incorret data
+        $cache2 = CacheManager::setCache(1, 'i', "foo", true);
+
+        // Test validty
+        $this->assertTrue($cache1);
+        $this->assertFalse($cache2);
+    }
     
     /*
      * Test isCached when creating one cached element
@@ -108,4 +124,6 @@ class CacheManagerTest extends PHPUnit_Framework_TestCase {
         // Chech that cache is indeed not present
         $this->assertFalse($cache_status);
     }
+
+    // TODO test that setCache added last is the last to be inserted too
 }
