@@ -19,8 +19,7 @@ class ElementTest extends PHPUnit_Framework_TestCase
      * Test element default values
      */
 
-    public function testElementDefault()
-    {
+    public function testElementDefault() {
         // Create new element
         $element = Element::get();
 
@@ -48,8 +47,7 @@ class ElementTest extends PHPUnit_Framework_TestCase
      * Test element save
      */
 
-    public function testElementSave()
-    {
+    public function testElementSave() {
         // Create new element
         $element = Element::get();
 
@@ -68,8 +66,7 @@ class ElementTest extends PHPUnit_Framework_TestCase
      * Test getter functionality
      */
 
-    public function testElementGet()
-    {
+    public function testElementGet() {
         // Create element
         $element = Element::get();
         $element->setName('Foo1');
@@ -89,8 +86,7 @@ class ElementTest extends PHPUnit_Framework_TestCase
      * Test element relationship
      */
 
-    public function testElementRelationship()
-    {
+    public function testElementRelationship() {
         // Create element1
         $element1 = Element::get();
         $element1->setName('Foo1');
