@@ -20,8 +20,8 @@
                             <h3>[[+$SUB_COLLECTION.letter]]</h3>
                             <ul class="list-group">[[+foreach $SUB_COLLECTION.courses as $element]]
 
-                                <li class="[[+if $element->isEmpty()]]course-empty [[+/if]]list-group-item">
-                                    <a href="[[+$element->generateUrl($ROUTE_ARCHIVE)]]"><strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]</a>
+                                <li class="[[+if $element.empty]]course-empty [[+/if]]list-group-item">
+                                    <a href="[[+$element.url]]"><strong>[[+$element.code]]</strong> &mdash; [[+$element.name]]</a>
                                 </li>[[+/foreach]]
 
                             </ul>
