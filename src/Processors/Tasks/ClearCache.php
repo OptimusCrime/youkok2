@@ -21,76 +21,77 @@ use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 Class ClearCache extends BaseProcessor {
 
     /*
+     * Override
+     */
+
+    protected function checkPermissions() {
+        return $this->requireCli() or $this->requireAdmin();
+    }
+
+    /*
      * Construct
      */
 
-    public function __construct($outputData = false, $returnData = false) {
+    public function __construct($method, $settings) {
         // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
+        parent::__construct($method, $settings);
+    }
+
         
-        // Check access (only cli and admin)
-        if (self::requireCli() or self::requireAdmin()) {
-            /*
-             * Typeahead
-             */
-         
-            if (file_exists(CACHE_PATH . '/courses.json')) {
-                copy(CACHE_PATH . '/courses.json', BASE_PATH . '/courses.json');
-            }
-            if (file_exists(CACHE_PATH . '/typeahead.json')) {
-                copy(CACHE_PATH . '/typeahead.json', BASE_PATH . '/typeahead.json');
-            }
+    /*
+     * Run method
+     */
 
-            /*
-             * Smarty
-             */
+    protected function run() {
+        /*
+         * Typeahead
+         */
 
-            // New Smarty instance
-            $smarty = new \Smarty();
-            $smarty->setCacheDir(CACHE_PATH . '/smarty/');
+        if (file_exists(CACHE_PATH . '/courses.json')) {
+            copy(CACHE_PATH . '/courses.json', BASE_PATH . '/courses.json');
+        }
+        if (file_exists(CACHE_PATH . '/typeahead.json')) {
+            copy(CACHE_PATH . '/typeahead.json', BASE_PATH . '/typeahead.json');
+        }
 
-            // Clear cache and compiled templates
-            $smarty->clearAllCache();
-            $smarty->clearCompiledTemplate();
-            
-            /*
-             * Restore Typeahead
-             */
-            
-            // Copy
-            if (file_exists(BASE_PATH . '/courses.json')) {
-                copy(BASE_PATH . '/courses.json', CACHE_PATH . '/courses.json');
-                unlink(BASE_PATH . '/courses.json');
-            }
-            if (file_exists(BASE_PATH . '/typeahead.json')) {
-                copy(BASE_PATH . '/typeahead.json', CACHE_PATH . '/typeahead.json');
-                unlink(BASE_PATH . '/typeahead.json');
-            }
-            
-            /*
-             * Youkok2 cache
-             */
-            
-            foreach (array_filter(glob(CACHE_PATH . '/elements/*'), 'is_dir') as $v) {
-                $this->rmNonemptyDir($v);
-            }
-            
-            // Set data
-            $this->setData('code', 200);
-            $this->setData('msg', 'Cache cleared');
+        /*
+         * Smarty
+         */
+
+        // New Smarty instance
+        $smarty = new \Smarty();
+        $smarty->setCompileDir(CACHE_PATH . '/smarty/compiled/');
+        $smarty->setCacheDir(CACHE_PATH . '/smarty/cache/');
+
+        // Clear cache and compiled templates
+        $smarty->clearAllCache();
+        $smarty->clearCompiledTemplate();
+
+        /*
+         * Restore Typeahead
+         */
+
+        // Copy
+        if (file_exists(BASE_PATH . '/courses.json')) {
+            copy(BASE_PATH . '/courses.json', CACHE_PATH . '/courses.json');
+            unlink(BASE_PATH . '/courses.json');
         }
-        else {
-            // No access
-            $this->noAccess();
+        if (file_exists(BASE_PATH . '/typeahead.json')) {
+            copy(BASE_PATH . '/typeahead.json', CACHE_PATH . '/typeahead.json');
+            unlink(BASE_PATH . '/typeahead.json');
         }
-        
-        // Return data
-        if ($this->returnData) {
-            $this->returnData();
+
+        /*
+         * Youkok2 cache
+         */
+
+        foreach (array_filter(glob(CACHE_PATH . '/elements/*'), 'is_dir') as $v) {
+            $this->rmNonemptyDir($v);
         }
-        if ($this->outputData) {
-            $this->outputData();
-        }
+
+        // Set data
+        $this->setData('code', 200);
+        $this->setData('msg', 'Cache cleared');
     }
     
     private function rmNonemptyDir($dir) {

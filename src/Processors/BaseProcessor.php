@@ -83,6 +83,27 @@ abstract class BaseProcessor extends Youkok2 {
     }
 
     /*
+     * Different types of permissions
+     */
+    protected function requireCli() {
+        return php_sapi_name() == 'cli';
+    }
+    protected function requireAdmin() {
+        // Check if database is initiated
+        if (Database::$db === null) {
+            if (!$this->makeDatabaseConnection()) {
+                return false;
+            }
+        }
+
+        // Init user is not already inited
+        Me::init();
+
+        // Check if the user is admin
+        return Me::isAdmin();
+    }
+
+    /*
      * Checks if the user needs connection with the database
      */
 
