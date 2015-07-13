@@ -76,9 +76,9 @@ class BaseView extends Youkok2 {
         $this->template = new \Smarty();
         $this->template->left_delimiter = '[[+'; 
         $this->template->right_delimiter = ']]';
-        
+
         // Set caching and compile dir
-        $this->template->setCacheDir(CACHE_PATH . '/smarty/compiled/');
+        $this->template->setCompileDir(CACHE_PATH . '/smarty/compiled/');
         $this->template->setCacheDir(CACHE_PATH . '/smarty/cache/');
         
         // Define a few constants in Smarty
