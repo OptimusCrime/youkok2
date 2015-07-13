@@ -211,32 +211,7 @@ class ElementController extends BaseController {
      */
 
     public function generateUrl($path) {
-        // If generating url for a link, we don't need to fetch the parents
-        if ($this->model->isLink()) {
-            return substr($path, 1) . '/' . $this->model->getId();
-        }
-
-        // Check if already loaded (or cached)
-        if ($this->fullUrl === null) {
-            $temp_element = $this->model;
-            $temp_url = [$this->model->getUrlFriendly()];
-
-            while (true) {
-                if ($temp_element->hasParent()) {
-                    $temp_element = $temp_element->getParent(true);
-                }
-                else {
-                    break;
-                }
-
-                $temp_url[] = $temp_element->getUrlFriendly();
-            }
-
-            $this->fullUrl = implode('/', array_reverse($temp_url));
-        }
-
-        // Return goes here!
-        return substr($path, 1) . '/' . $this->fullUrl . ($this->model->isDirectory() ? '/' : '');
+        return $this->getFullUrl($path);
     }
 
     /*
@@ -622,5 +597,44 @@ class ElementController extends BaseController {
     }
     public function getCourseCode() {
         return explode('||', $this->model->getName())[0];
+    }
+    public function getFullUrl($path = null) {
+        // Check if we already have the url fetched
+        if ($this->fullUrl === null) {
+            // Not fetched, generate
+            if ($this->model->isLink()) {
+                $this->fullUrl = $this->model->getId();
+            }
+
+            // Check if already loaded (or cached)
+            if ($this->fullUrl === null) {
+                $temp_element = $this->model;
+                $temp_url = [$this->model->getUrlFriendly()];
+
+                while (true) {
+                    if ($temp_element->hasParent()) {
+                        $temp_element = $temp_element->getParent(true);
+                    }
+                    else {
+                        break;
+                    }
+
+                    $temp_url[] = $temp_element->getUrlFriendly();
+                }
+
+                $this->fullUrl = implode('/', array_reverse($temp_url))  . ($this->model->isDirectory() ? '/' : '');
+            }
+        }
+
+        // If we dont have any path, just return the full url
+        if ($path === null) {
+            return $this->fullUrl;
+        }
+
+        // Return url with path here
+        return substr($path, 1) . '/' . $this->fullUrl;
+    }
+    public function setFullUrl($url) {
+        $this->fullUrl = $url;
     }
 }

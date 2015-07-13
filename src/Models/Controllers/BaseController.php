@@ -73,7 +73,7 @@ abstract class BaseController {
             // Not cached, find out what to fetch
             $query_arr = [];
             foreach ($this->schema['fields'] as $k => $v) {
-                if (isset($v['db'])) {
+                if (isset($v['db']) and $v['db']) {
                     $query_arr[] = '`' . $this->schema['meta']['table'] . '`.`'  . $k . '`';
                 }
             }
@@ -141,7 +141,7 @@ abstract class BaseController {
                 $method = $method_prefix . ucfirst($v['method']);
             }
 
-            $cache_arr[$k] = call_user_func_array(array($this->model, $method), []);
+            $cache_arr[$k] = call_user_func_array([$this->model, $method], []);
         }
 
         // Set cache here

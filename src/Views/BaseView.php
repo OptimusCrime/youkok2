@@ -310,11 +310,9 @@ class BaseView extends Youkok2 {
         // If develop, assign dev variables
         if (DEV) {
             $this->template->assign('DEV_QUERIES_NUM', Database::getCount());
-            $this->template->assign('DEV_ELEMENT_COLLECTION_NUM', '');
-            $this->template->assign('DEV_CACHE_LOAD_NUM', CacheManager::getFetches());
+            $this->template->assign('DEV_CACHE_LOAD_NUM', CacheManager::getCount());
             
             $this->template->assign('DEV_QUERIES_BACKTRACE', $this->cleanSqlLog($this->sqlLog));
-            $this->template->assign('DEV_CACHE_LOAD_BACKTRACE', $this->cleanCacheLoadLog(CacheManager::getBacktrace()));
         }
         
         // Import js modules

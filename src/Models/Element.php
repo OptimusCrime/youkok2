@@ -56,6 +56,7 @@ class Element extends BaseModel {
             'cacheable' => true,
         ],
         'fields' => [
+            // Database fields
             'id' => [
                 'type' => 'integer',
                 'null' => false,
@@ -165,6 +166,14 @@ class Element extends BaseModel {
                 'db' => true,
                 'arr' => true,
             ],
+
+            // Additional cache fields
+            'full_url' => [
+                'type' => 'string',
+                'null' => true,
+                'db' => false,
+                'method' => 'fullUrl',
+            ]
         ]
     ];
     
