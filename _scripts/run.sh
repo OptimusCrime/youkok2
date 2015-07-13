@@ -10,7 +10,7 @@ if [ $# -ne 0 ]
 fi
 
 # Create command to run
-CMD="php -S localhost:$PORT -t . cli/route.php $PORT"
+CMD="php -S localhost:$PORT -t . cli/router.php $PORT"
 
 # Eval the command and run
 eval ${CMD}

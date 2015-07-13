@@ -1,6 +1,6 @@
 <?php
 /*
- * File: cli.php
+ * File: cmd.php
  * Holds: Calling processors from the command line
  * Created: 05.12.2014
  * Project: Youkok2
