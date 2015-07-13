@@ -93,6 +93,9 @@ a:visited {
 .list-group-item {
     word-wrap: break-word;
 }
+.list-group-item.selected a {
+    font-weight: bold;
+}
 
 /*
  * Menu
