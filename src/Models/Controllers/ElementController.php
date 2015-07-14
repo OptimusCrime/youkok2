@@ -207,37 +207,28 @@ class ElementController extends BaseController {
     }
 
     /*
-     * Generate url for the current Element
-     */
-
-    public function generateUrl($path) {
-        return $this->getFullUrl($path);
-    }
-
-    /*
      * Download methods
      */
     
-    public function getDownloadCount($d) {
+    public function getDownloadCount($delta) {
         // Get the delta index
         $index = 0;
         foreach (self::$delta as $k => $v) {
-            if ($v == $d) {
+            if ($k == $delta) {
                 $index = $k;
                 break;
             }
         }
         
-        // Check if null
+        // Check if this value is already cached
         if ($this->downloadCount[$index] == null) {
-            // TODO, check what is fetched!
-
             // This count is not cached, run query to fetch the download number
-            $get_download_count  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
+            $get_download_count  = "SELECT COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
             $get_download_count .= "FROM download d" . PHP_EOL;
             $get_download_count .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
-            $get_download_count .= $d . PHP_EOL;
+            $get_download_count .= self::$delta[$index] . PHP_EOL;
             $get_download_count .= "AND d.file = :file";
+            echo $get_download_count;
             
             $get_download_count_query = Database::$db->prepare($get_download_count);
             $get_download_count_query->execute(array(':file' => $this->model->getId()));
@@ -245,14 +236,10 @@ class ElementController extends BaseController {
 
             // Set value
             $this->downloadCount[$index] = $row['downloaded_times'];
+        }
 
-            // Return value
-            return $row['downloaded_times'];
-        }
-        else {
-            // Cached result, just return
-            return $this->downloadCount[$index];
-        }
+        // Return the result
+        return $this->downloadCount[$index];
     }
     
     public function setDownloadCount($delta, $value) {

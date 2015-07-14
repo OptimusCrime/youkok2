@@ -47,7 +47,7 @@
                         <li class="list-group-item"><em>Du har ingen favoritter</em></li>[[+else]][[+foreach $HOME_USER_FAVORITES as $element]]
 
                         <li class="list-group-item">
-                            <a [[+if !$element->isDirectory()]]target="_blank" [[+/if]]href="[[+if $element->isLink()]][[+$element->generateUrl($ROUTE_REDIRECT)]][[+elseif $element->isDirectory()]][[+$element->generateUrl($ROUTE_ARCHIVE)]][[+else]][[+$element->generateUrl($ROUTE_DOWNLOAD)]][[+/if]]">[[+if !$element->hasParent()]]<strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]][[+else]][[+$element->getName()]][[+/if]]</a>
+                            <a [[+if !$element->isDirectory()]]target="_blank" [[+/if]]href="[[+if $element->isLink()]][[+$element->getFullUrl($ROUTE_REDIRECT)]][[+elseif $element->isDirectory()]][[+$element->getFullUrl($ROUTE_ARCHIVE)]][[+else]][[+$element->getFullUrl($ROUTE_DOWNLOAD)]][[+/if]]">[[+if !$element->hasParent()]]<strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]][[+else]][[+$element->getName()]][[+/if]]</a>
                             <i title="Fjern favoritt" data-id="[[+$element->getId()]]" class="fa fa-times-circle star-remove"></i>
                         </li>[[+/foreach]]
                         [[+/if]]
@@ -72,13 +72,13 @@
                         <li class="list-group-item"><em>Du har ingen nedlastninger</em></li>[[+else]][[+foreach $HOME_USER_LATEST as $element]]
 
                         <li class="list-group-item">
-                            <a rel="nofollow" target="_blank" href="[[+if $element->isLink()]][[+$element->generateUrl($ROUTE_REDIRECT)]][[+else]][[+$element->generateUrl($ROUTE_DOWNLOAD)]][[+/if]]">
+                            <a rel="nofollow" target="_blank" href="[[+if $element->isLink()]][[+$element->getFullUrl($ROUTE_REDIRECT)]][[+else]][[+$element->getFullUrl($ROUTE_DOWNLOAD)]][[+/if]]">
                                 [[+$element->getName()]]
                             </a>[[+if $element->hasParent()]] @ [[+if $element->getParent(true)->hasParent()]]
 
-                            <a href="[[+$element->getParent(true)->generateUrl($ROUTE_ARCHIVE)]]">[[+$element->getParent(true)->getName()]]</a>, [[+/if]]
+                            <a href="[[+$element->getParent(true)->getFullUrl($ROUTE_ARCHIVE)]]">[[+$element->getParent(true)->getName()]]</a>, [[+/if]]
 
-                            <a href="[[+$element->getRootParent()->generateUrl($ROUTE_ARCHIVE)]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
+                            <a href="[[+$element->getRootParent()->getFullUrl($ROUTE_ARCHIVE)]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
 
                         </li>[[+/foreach]]
                         [[+/if]]
@@ -102,13 +102,13 @@
                     </div>
                     <ul class="list-group">
                     [[+if count($HOME_NEWEST) == 0]]    <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>[[+else]][[+foreach $HOME_NEWEST as $element]]    <li class="list-group-item">
-                            <a rel="nofollow" target="_blank" href="[[+if $element->isLink()]][[+$element->generateUrl($ROUTE_REDIRECT)]][[+else]][[+$element->generateUrl($ROUTE_DOWNLOAD)]][[+/if]]">
+                            <a rel="nofollow" target="_blank" href="[[+if $element->isLink()]][[+$element->getFullUrl($ROUTE_REDIRECT)]][[+else]][[+$element->getFullUrl($ROUTE_DOWNLOAD)]][[+/if]]">
                                 [[+$element->getName()]]
                             </a>[[+if $element->hasParent()]] @ [[+if $element->getParent(true)->hasParent()]]
 
-                            <a href="[[+$element->getParent(true)->generateUrl($ROUTE_ARCHIVE)]]">[[+$element->getParent(true)->getName()]]</a>, [[+/if]]
+                            <a href="[[+$element->getParent(true)->getFullUrl($ROUTE_ARCHIVE)]]">[[+$element->getParent(true)->getName()]]</a>, [[+/if]]
 
-                            <a href="[[+$element->getRootParent()->generateUrl($ROUTE_ARCHIVE)]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
+                            <a href="[[+$element->getRootParent()->getFullUrl($ROUTE_ARCHIVE)]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
 
                             [<span class="moment-timestamp help" data-toggle="tooltip" title="[[+$element->getAdded(true)]]" data-ts="[[+$element->getAdded(true)]]">Laster...</span>]
                         </li>
@@ -121,31 +121,31 @@
                         <div class="btn-group" id="frontpage-most-popular-dropdown">
                             <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                             <span id="home-most-popular-selected">
-                                [[+if $HOME_MOST_POPULAR_DELTA == 0]]Denne uka[[+else if $HOME_MOST_POPULAR_DELTA == 1]]Denne måneden[[+else if $HOME_MOST_POPULAR_DELTA == 2]]Dette året[[+else if $HOME_MOST_POPULAR_DELTA == 4]]I dag[[+else]]Alltid[[+/if]]
+                                [[+if $USER_MOST_POPULAR_DELTA == 0]]Denne uka[[+else if $USER_MOST_POPULAR_DELTA == 1]]Denne måneden[[+else if $USER_MOST_POPULAR_DELTA == 2]]Dette året[[+else if $USER_MOST_POPULAR_DELTA == 4]]I dag[[+else]]Alltid[[+/if]]
 
                             </span>
                             <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" id="home-most-popular-dropdown">
-                                <li[[+if $HOME_MOST_POPULAR_DELTA == 4]] class="disabled"[[+/if]]><a data-delta="4" href="#">I dag</a></li>
-                                <li[[+if $HOME_MOST_POPULAR_DELTA == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Denne uka</a></li>
-                                <li[[+if $HOME_MOST_POPULAR_DELTA == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">Denne måneden</a></li>
-                                <li[[+if $HOME_MOST_POPULAR_DELTA == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Dette året</a></li>
-                                <li[[+if $HOME_MOST_POPULAR_DELTA == 3]] class="disabled"[[+/if]]><a data-delta="3" href="#">Alltid</a></li>
+                                <li[[+if $USER_MOST_POPULAR_DELTA == 4]] class="disabled"[[+/if]]><a data-delta="4" href="#">I dag</a></li>
+                                <li[[+if $USER_MOST_POPULAR_DELTA == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Denne uka</a></li>
+                                <li[[+if $USER_MOST_POPULAR_DELTA == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">Denne måneden</a></li>
+                                <li[[+if $USER_MOST_POPULAR_DELTA == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Dette året</a></li>
+                                <li[[+if $USER_MOST_POPULAR_DELTA == 3]] class="disabled"[[+/if]]><a data-delta="3" href="#">Alltid</a></li>
                             </ul>
                         </div>
                     </div>
                     <ul class="list-group" id="home-most-popular">
                     [[+if count($HOME_MOST_POPULAR) == 0]]    <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>[[+else]][[+foreach $HOME_MOST_POPULAR as $element]]    <li class="list-group-item">
-                            <a rel="nofollow" target="_blank" href="[[+if $element->isLink()]][[+$element->generateUrl($ROUTE_REDIRECT)]][[+else]][[+$element->generateUrl($ROUTE_DOWNLOAD)]][[+/if]]">
+                            <a rel="nofollow" target="_blank" href="[[+if $element->isLink()]][[+$element->getFullUrl($ROUTE_REDIRECT)]][[+else]][[+$element->getFullUrl($ROUTE_DOWNLOAD)]][[+/if]]">
                                 [[+$element->getName()]]
                             </a>[[+if $element->hasParent()]] @ [[+if $element->getParent(true)->hasParent()]]
 
-                            <a href="[[+$element->getParent(true)->generateUrl($ROUTE_ARCHIVE)]]">[[+$element->getParent(true)->getName()]]</a>, [[+/if]]
+                            <a href="[[+$element->getParent(true)->getFullUrl($ROUTE_ARCHIVE)]]">[[+$element->getParent(true)->getName()]]</a>, [[+/if]]
 
-                            <a href="[[+$element->getRootParent()->generateUrl($ROUTE_ARCHIVE)]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
+                            <a href="[[+$element->getRootParent()->getFullUrl($ROUTE_ARCHIVE)]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
 
-                            [[[+$element->getDownLoadCount($HOME_MOST_POPULAR_DELTA)]]]
+                            [[[+$element->getDownLoadCount($USER_MOST_POPULAR_DELTA)]]]
                         </li>
                     [[+/foreach]]
 [[+/if]]</ul>

@@ -14,6 +14,7 @@ namespace Youkok2\Views;
  */
 
 use \Youkok2\Models\Element as Element;
+use \Youkok2\Utilities\Loader as Loader;
 
 /*
  * The Redirect class, extending BaseView
@@ -30,8 +31,8 @@ class Redirect extends BaseView {
         parent::__construct();
         
         // Check query
-        if ($this->queryGetSize() > 0) {
-            $id = $this->queryGet($this->queryGetSize() - 1);
+        if (Loader::queryGetSize() > 0) {
+            $id = Loader::queryGet(Loader::queryGetSize() - 1);
             if (is_numeric($id)) {
                 $element = Element::get($id);
                 
