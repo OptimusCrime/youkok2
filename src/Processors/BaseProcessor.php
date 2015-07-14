@@ -181,6 +181,15 @@ abstract class BaseProcessor extends Youkok2 {
     }
 
     /*
+     * Set ok
+     */
+
+    protected function setOk() {
+        $this->setData('code', 200);
+        $this->setData('msg', 'OK');
+    }
+
+    /*
      * Connect to the database
      */
 

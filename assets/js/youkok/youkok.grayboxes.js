@@ -13,7 +13,7 @@ var Youkok = (function (module) {
             if ($('#archive-sidebar-newest-inner').length > 0) {
                 $.ajax({
                     cache: false,
-                    url: 'graybox/newest',
+                    url: 'processor/graybox/newest',
                     success: function(html) {
                         // Set content
                         $('#archive-sidebar-newest-inner').html(html);
@@ -31,7 +31,7 @@ var Youkok = (function (module) {
             if ($('#archive-sidebar-last-downloads-inner').length > 0) {
                 $.ajax({
                     cache: false,
-                    url: 'graybox/downloads',
+                    url: 'processor/graybox/downloads',
                     success: function(html) {
                         // Set content
                         $('#archive-sidebar-last-downloads-inner').html(html);
@@ -49,7 +49,7 @@ var Youkok = (function (module) {
             if ($('#archive-sidebar-numbers-inner').length > 0) {
                 $.ajax({
                     cache: false,
-                    url: 'graybox/numbers',
+                    url: 'processor/graybox/commits',
                     success: function(html) {
                         // Set content
                         $('#archive-sidebar-numbers-inner').html(html);

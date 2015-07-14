@@ -15,6 +15,7 @@ namespace Youkok2\Views;
 
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Utilities\Loader as Loader;
 use \Youkok2\Utilities\Routes as Routes;
 
 /*
@@ -37,14 +38,14 @@ class Courses extends BaseView {
         $this->template->assign('HEADER_MENU', 'ARCHIVE');
 
         // Check if cached
-        if (!$this->template->isCached('courses.tpl', $this->queryGetClean())) {
+        if (!$this->template->isCached('courses.tpl', Loader::queryGetClean())) {
 
             // Load content
             $this->loadCourses();
         }
 
         // Display
-        $this->displayAndCleanup('courses.tpl', $this->queryGetClean());
+        $this->displayAndCleanup('courses.tpl', Loader::queryGetClean());
     }
     
     /*
@@ -90,7 +91,7 @@ class Courses extends BaseView {
             // Add to collection
             $collection[$index]['courses'][] = [
                 'empty' => $element->isEmpty(),
-                'url' => $element->generateUrl(Routes::ARCHIVE),
+                'url' => $element->getFullUrl(Routes::ARCHIVE),
                 'code' => $element->getCourseCode(),
                 'name' => $element->getCourseNae(),
             ];
