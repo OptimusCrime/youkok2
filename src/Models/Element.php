@@ -26,7 +26,7 @@ class Element extends BaseModel {
      * Variables
      */
 
-    private $controller;
+    protected $controller;
 
     // Fields in the database
     private $id;
@@ -314,19 +314,6 @@ class Element extends BaseModel {
     }
     public function setAdded($added) {
         $this->added = $added;
-    }
-
-    /*
-     * Functions overload
-     */
-
-    public function __call($name, $arguments) {
-        // Check if method exists
-        if (method_exists('\Youkok2\Models\Controllers\ElementController', $name)) {
-            // Call method and return response
-            return call_user_func_array([$this->controller,
-                $name], $arguments);
-        }
     }
     
      /*

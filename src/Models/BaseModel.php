@@ -78,4 +78,17 @@ class BaseModel {
     public function getSchema() {
         return $this->schema;
     }
+
+    /*
+     * Functions overload
+     */
+
+    public function __call($name, $arguments) {
+        // Check if method exists
+        if (method_exists($this->controller, $name)) {
+            // Call method and return response
+            return call_user_func_array([$this->controller,
+                $name], $arguments);
+        }
+    }
 }

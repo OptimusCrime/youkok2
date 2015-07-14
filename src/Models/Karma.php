@@ -24,8 +24,9 @@ class Karma {
      * Variables
      */
 
-    public $controller;
+    protected $controller;
 
+    // Fields in the database
     private $id;
     private $user;
     private $file;

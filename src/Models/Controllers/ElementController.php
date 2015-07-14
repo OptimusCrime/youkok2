@@ -12,6 +12,7 @@ namespace Youkok2\Models\Controllers;
  * Define what classes to use
  */
 
+use \Youkok2\Models\Download as Download;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\CacheManager as CacheManager;
@@ -247,28 +248,21 @@ class ElementController extends BaseController {
     }
 
     public function addDownload() {
+        // New instance for download
+        $download = new Download();
+
+        // Set values
+        $download->setFile($this->model->getId());
+        $download->setIp($_SERVER['REMOTE_ADDR']);
+        $download->setAgent($_SERVER['HTTP_USER_AGENT']);
+
         // Check if user is logged in
         if (Me::isLoggedIn()) {
-            // User is logged in
-            $insert_user_download  = "INSERT INTO download (file, ip, agent, user)" . PHP_EOL;
-            $insert_user_download .= "VALUES (:file, :ip, :agent, :user)";
-            
-            $insert_user_download_query = Database::$db->prepare($insert_user_download);
-            $insert_user_download_query->execute(array(':file' => $this->model->getId(), 
-               ':ip' => $_SERVER['REMOTE_ADDR'], 
-               ':agent' => $_SERVER['HTTP_USER_AGENT'], 
-               ':user' => Me::getId()));
+            $download->setUser(Me::getId());
         }
-        else {
-            // Is not logged in
-            $insert_anon_download  = "INSERT INTO download (file, ip, agent)" . PHP_EOL;
-            $insert_anon_download .= "VALUES (:file, :ip, :agent)";
-            
-            $insert_anon_download_query = Database::$db->prepare($insert_anon_download);
-            $insert_anon_download_query->execute(array(':file' => $this->model->getId(), 
-                ':ip' => $_SERVER['REMOTE_ADDR'], 
-                ':agent' => $_SERVER['HTTP_USER_AGENT']));
-        }
+
+        // Save the object
+        $download->save();
     }
 
     /*

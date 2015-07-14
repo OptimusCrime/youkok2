@@ -25,6 +25,9 @@ class Message extends BaseModel {
      * Variables
      */
 
+    protected $controller;
+
+    // Fields in the database
     private $id;
     private $timeStart;
     private $timeEnd;
