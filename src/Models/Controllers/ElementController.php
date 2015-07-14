@@ -76,7 +76,7 @@ class ElementController extends BaseController {
         'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1');
     
     /*
-     * Consutrctor
+     * Constructor
      */
     
     public function __construct($model) {

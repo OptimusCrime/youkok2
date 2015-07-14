@@ -118,7 +118,20 @@ abstract class BaseController {
      */
 
     public function createByArray($arr) {
-        // TODO
+        // Loop the fields in the schema
+        foreach ($this->schema['fields'] as $k => $v) {
+            // Check if this field is a database field
+            if (isset($arr[$k])) {
+                // Find out what method to call
+                $method = 'set' . ucfirst($k);
+                if (isset($v['method'])) {
+                    $method = 'set' . ucfirst($v['method']);
+                }
+
+                // Set the data
+                call_user_func_array([$this->model, $method], [$arr[$k]]);
+            }
+        }
     }
     
     /*
