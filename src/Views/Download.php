@@ -14,6 +14,7 @@ namespace Youkok2\Views;
  */
 
 use \Youkok2\Models\Element as Element;
+use \Youkok2\Utilities\Loader as Loader;
 
 /*
  * The Download class, extending BaseView
@@ -33,7 +34,7 @@ class Download extends BaseView {
         $should_display_404 = false;
         
         // Create new object
-        $element = Element::get($this->queryGetClean());
+        $element = Element::get(Loader::queryGetClean());
 
         // Check if was found or invalid url
         if ($element->wasFound() and $element->isVisible()) {

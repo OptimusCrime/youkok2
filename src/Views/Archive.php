@@ -15,9 +15,8 @@ namespace Youkok2\Views;
 
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
-use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Routes as Routes;
-use \Youkok2\Utilities\Utilities as Utilities;
+use \Youkok2\Utilities\Loader as Loader;
 
 
 /*
@@ -55,7 +54,7 @@ class Archive extends BaseView {
     
     private function checkValidArchive() {
         // Try to create new element
-        $element = Element::get($this->queryGetClean());
+        $element = Element::get(Loader::queryGetClean());
 
         // Check if element was found and is directory
         if ($element->wasFound() and $element->isDirectory()) {

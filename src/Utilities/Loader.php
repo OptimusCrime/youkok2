@@ -23,13 +23,15 @@ class Loader {
     /*
      * Constructor
      */
-    
+
+    private static $query;
     private $override;
     private $basePath;
     private $fullPath;
     private $pathLength;
     private $providedPath;
     private $match;
+
 
     public function __construct($path = null) {
         // Check if overriding
@@ -45,6 +47,9 @@ class Loader {
         
         // Get the correct (dynamic) base path
         $this->getBasePath();
+
+        // Analyze the path
+        self::queryAnalyze();
         
         // Check if proseccor or view is requested
         if ($this->basePath == Routes::PROCESSOR) {
@@ -263,5 +268,57 @@ class Loader {
     
     public function getMatch() {
         return $this->match;
+    }
+
+    /*
+     * Methods for analyzing, reading and returning the query
+     */
+
+    private static function queryAnalyze() {
+        // Init array
+        self::$query = [];
+
+        // Split query
+        $q = explode('/', Loader::getQuery());
+
+        // Read fragments
+        if (count($q) > 0) {
+            foreach ($q as $v) {
+                if (strlen($v) > 0) {
+                    self::$query[] = $v;
+                }
+            }
+        }
+    }
+
+    /*
+     * Get the length of the query
+     */
+
+    public static function queryGetSize() {
+        return count(self::query);
+    }
+
+    /*
+     * Get a fragment from the query
+     */
+
+    public static function queryGet($i, $prefix = '', $endfix = '') {
+        if (count(self::$query) >= $i) {
+            return $prefix . self::$query[$i] . $endfix;
+        }
+    }
+
+    /*
+     * Get the entire query
+     */
+
+    public static function queryGetClean($prefix = '', $endfix = '') {
+        if (count(self::$query) > 0) {
+            return $prefix . implode('/', self::$query) . $endfix;
+        }
+        else {
+            return null;
+        }
     }
 }

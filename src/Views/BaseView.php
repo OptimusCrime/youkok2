@@ -43,8 +43,35 @@ class BaseView extends Youkok2 {
      */
 
     public function __construct($kill = false) {
+        // Init template and assign the default tags
+        $this->initTemplateEngine();
+
+        // If we should kill the script, then we do so here
+        if ($kill) {
+            return;
+        }
+
+        // Init the site itself
+        $this->initSite();
+                
+        // Set some site data
+        $this->addSiteData('search_base', URL . URL_RELATIVE . substr(Routes::getRoutes()['Archive'][0]['path'], 1) . '/');
+        $this->addSiteData('view', 'general');
+
+        // Init the user object
+        $this->initUser();
+
+        // Set environment settings
+        $this->setEnvSettings();
+    }
+
+    /*
+     * Init the site and check what we should do
+     */
+
+    private function initSite() {
         // Check if we're offline
-        if ($kill == false and defined('AVAILABLE') and !AVAILABLE) {
+        if (defined('AVAILABLE') and !AVAILABLE) {
             // We're offline, check if we should be allowed still
             if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
                 // Not whitelisted, kill
@@ -52,35 +79,39 @@ class BaseView extends Youkok2 {
                 die();
             }
         }
-        
+
         // Trying to connect to the database
-        if ($kill == false) {
-            try {
-                Database::connect();
-                
-                // Set debug log
-                if (DEV) {
-                    $this->sqlLog = [];
-                    Database::setLog($this->sqlLog);
-                }
-            }
-            catch (\Exception $e) {
-                $this->db = null;
-                
-                new Error('db');
-                die();
+        try {
+            Database::connect();
+
+            // Set debug log
+            if (DEV) {
+                $this->sqlLog = [];
+                Database::setLog($this->sqlLog);
             }
         }
-        
+        catch (\Exception $e) {
+            $this->db = null;
+
+            new Error('db');
+            die();
+        }
+    }
+
+    /*
+     * Init the template engine
+     */
+
+    private function initTemplateEngine() {
         // Init Smarty
         $this->template = new \Smarty();
-        $this->template->left_delimiter = '[[+'; 
+        $this->template->left_delimiter = '[[+';
         $this->template->right_delimiter = ']]';
 
         // Set caching and compile dir
         $this->template->setCompileDir(CACHE_PATH . '/smarty/compiled/');
         $this->template->setCacheDir(CACHE_PATH . '/smarty/cache/');
-        
+
         // Define a few constants in Smarty
         $this->template->assign('VERSION', VERSION);
         $this->template->assign('DEV', DEV);
@@ -96,118 +127,77 @@ class BaseView extends Youkok2 {
         $this->template->assign('ROUTE_DOWNLOAD', Routes::DOWNLOAD);
         $this->template->assign('ROUTE_REDIRECT', Routes::REDIRECT);
         $this->template->assign('ROUTE_PROCESSOR', Routes::PROCESSOR);
-                
-        // Set some site data
-        $this->addSiteData('search_base', URL . URL_RELATIVE . substr(Routes::getRoutes()['Archive'][0]['path'], 1) . '/');
-        $this->addSiteData('view', 'general');
-        
-        // Check if we should kill the view
-        if ($kill == false) {
-            // Init the user
-            Me::init();
-            
-            // Add to site data
-            $this->addSiteData('online', Me::isLoggedIn());
-            
-            // Set BASE_USER_* information to the template
-            $this->template->assign('USER_IS_LOGGED_IN', Me::isLoggedIn());
-            $this->template->assign('USER_NICK', Me::getNick());
-            $this->template->assign('USER_KARMA', Me::getKarma());
-            $this->template->assign('USER_KARMA_PENDING', Me::getKarmaPending());
-            $this->template->assign('USER_IS_ADMIN', Me::isAdmin());
-            $this->template->assign('USER_IS_BANNED', Me::isBanned());
-            $this->template->assign('USER_CAN_CONTRIBUTE', Me::canContribute());
-            
-            // Check if we should validate login
-            if (isset($_POST['login-email'])) {
-                Me::logIn();
-            }
 
-            // Analyze the query
-            $this->queryAnalyze();
-            
-            // Assign query
-            $this->template->assign('BASE_QUERY', Loader::getQuery());
-            
-            // Google Analytics
-            if (USE_GA) {
-                if (Me::isAdmin()) {
-                    $this->template->assign('SITE_USE_GA', false);
-                }
-                else {
-                    $this->template->assign('SITE_USE_GA', true);
-                }
-            }
-            else {
+        // Assign query
+        $this->template->assign('BASE_QUERY', Loader::getQuery());
+    }
+
+    /*
+     * Init the user objects and set various information
+     */
+
+    private function initUser() {
+        // Init the user
+        Me::init();
+
+        // Add to site data
+        $this->addSiteData('online', Me::isLoggedIn());
+
+        // Set BASE_USER_* information to the template
+        $this->template->assign('USER_IS_LOGGED_IN', Me::isLoggedIn());
+        $this->template->assign('USER_NICK', Me::getNick());
+        $this->template->assign('USER_KARMA', Me::getKarma());
+        $this->template->assign('USER_KARMA_PENDING', Me::getKarmaPending());
+        $this->template->assign('USER_IS_ADMIN', Me::isAdmin());
+        $this->template->assign('USER_IS_BANNED', Me::isBanned());
+        $this->template->assign('USER_CAN_CONTRIBUTE', Me::canContribute());
+
+        // Check if we should validate login
+        if (isset($_POST['login-email'])) {
+            Me::logIn();
+        }
+    }
+
+    /*
+     * Set various environment settings
+     */
+
+    private function setEnvSettings() {
+        // Google Analytics
+        if (USE_GA) {
+            if (Me::isAdmin()) {
                 $this->template->assign('SITE_USE_GA', false);
             }
-            
-            // Use compression
-            if (defined('COMPRESS_ASSETS') and COMPRESS_ASSETS == false) {
-                $this->template->assign('COMPRESS_ASSETS', false);
-            }
             else {
-                $this->template->assign('COMPRESS_ASSETS', true);
+                $this->template->assign('SITE_USE_GA', true);
             }
-            
-            $this->template->assign('CSRF_TOKEN', htmlspecialchars(CsrfManager::getSignature()));
-        }
-        
-        // Init site data array
-        $siteData = [];
-    }
-    
-    /*
-     * Methods for analyzing, reading and returning the query
-     */
-    
-    private function queryAnalyze() {
-        // Init array
-        $this->query = [];
-
-        // Split query
-        $q = explode('/', Loader::getQuery());
-
-        // Read fragments
-        if (count($q) > 0) {
-            foreach ($q as $v) {
-                if (strlen($v) > 0) {
-                    $this->query[] = $v;
-                }
-            }
-        }
-    }
-    protected function queryGetSize() {
-        return count($this->query);
-    }
-    protected function queryGet($i, $prefix = '', $endfix = '') {
-        if (count($this->query) >= $i) {
-            return $prefix . $this->query[$i] . $endfix;
-        }
-    }
-    protected function queryGetAll() {
-        return $this->query;
-    }
-    protected function queryGetClean($prefix = '', $endfix = '') {
-        if (count($this->query) > 0) {
-            return $prefix . implode('/', $this->query) . $endfix;
         }
         else {
-            return null;
+            $this->template->assign('SITE_USE_GA', false);
         }
+
+        // Use compression
+        if (defined('COMPRESS_ASSETS') and COMPRESS_ASSETS == false) {
+            $this->template->assign('COMPRESS_ASSETS', false);
+        }
+        else {
+            $this->template->assign('COMPRESS_ASSETS', true);
+        }
+
+        $this->template->assign('CSRF_TOKEN', htmlspecialchars(CsrfManager::getSignature()));
     }
-    
+
     /*
      * Returning 404 page
      */
     
     protected function display404() {
         // New instance
-        $controller = new NotFound();
+        new NotFound();
     }
     
     /*
-     * Close the database-connection and process queued cache
+     * Close the database connection and process queued cache
      */
     
     protected function close() {
@@ -400,13 +390,6 @@ class BaseView extends Youkok2 {
                 }
             }
         }
-        
-        // Return resulting string
-        return $str;
-    }
-    private function cleanCacheLoadLog($arr) {
-        $str = '';
-
         
         // Return resulting string
         return $str;

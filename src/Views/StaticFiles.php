@@ -10,6 +10,12 @@
 namespace Youkok2\Views;
 
 /*
+ * Define what classes to use
+ */
+
+use \Youkok2\Utilities\Loader as Loader;
+
+/*
  * The StaticFiles class, extending BaseView
  */
 
@@ -43,7 +49,7 @@ class StaticFiles extends BaseView {
     }
     public function returnFavicon() {
         // Get the right file
-        $file = $this->queryGet(0);
+        $file = Loader::queryGet(0);
         
         // Open the file
         $name = BASE_PATH . '/files/' . $file;
