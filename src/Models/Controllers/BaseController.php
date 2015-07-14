@@ -50,7 +50,7 @@ abstract class BaseController {
 
     public function createById($id) {
         // Check if already cached
-        if (CacheManager::isCached($id, $this->cacheKey)) {
+        if ($this->schema['meta']['cacheable'] and CacheManager::isCached($id, $this->cacheKey)) {
             // Get cache data
             $cache_data = CacheManager::getCache($id, $this->cacheKey);
 
@@ -107,8 +107,11 @@ abstract class BaseController {
                     }
                 }
 
-                // Cache element
-                $this->cache();
+                // Check if we should cache the element
+                if ($this->schema['meta']['cacheable']) {
+                    // Add to cache queue
+                    $this->cache();
+                }
             }
         }
     }
