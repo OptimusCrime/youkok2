@@ -1,6 +1,6 @@
 /*
-    Stuff
-*/
+ * Stuff
+ */
 
 body,
 html {
@@ -34,7 +34,7 @@ a:visited {
 
 /*
  * Main
-*/
+ */
 
 #main {
     background-color: #FAFAFA;
@@ -93,10 +93,13 @@ a:visited {
 .list-group-item {
     word-wrap: break-word;
 }
+.list-group-item.selected a {
+    font-weight: bold;
+}
 
 /*
  * Menu
-*/
+ */
 
 .navbar {
     background-color: #375A7F;
@@ -172,7 +175,7 @@ a:visited {
 
 /*
  * Typeahead
-*/
+ */
 
 .tt-query, .tt-hint {
     width: 396px;
@@ -222,7 +225,7 @@ a:visited {
 
 /*
  * Login
-*/
+ */
 
 #dropdown-menu-opener {
     margin-left: 15px;
@@ -268,7 +271,7 @@ a:visited {
 
 /*
  * Home
-*/
+ */
 
 #frontpage-hello {
     text-align: center;
@@ -383,7 +386,7 @@ a:visited {
 
 /*
  * Archive
-*/
+ */
 
 .archive-course ul {
     background-color: #ededed;
@@ -636,7 +639,7 @@ a:visited {
 
 /*
  * Modals
-*/
+ */
 
 #modal-report .dropdown {
     display: inline;
@@ -667,7 +670,7 @@ a:visited {
 
 /*
  * Footer
-*/
+ */
 
 #footer {
     padding-top: 10px;
@@ -695,7 +698,7 @@ a:visited {
 
 /*
  * Fileupload
-*/
+ */
 
 .fileinput-button {
   position: relative;
@@ -757,7 +760,7 @@ a:visited {
 
 /*
  * Alerts
-*/
+ */
 
 .alert {
     position: relative;
@@ -776,7 +779,7 @@ a:visited {
 
 /*
  * Misc
-*/
+ */
 
 .can-i-be-inline {
     display: inline-block;
@@ -798,7 +801,7 @@ a:visited {
 
 /*
  * Header hax
-*/
+ */
 
 @media all and (max-width: 990px) {
     .navbar-form {
@@ -838,7 +841,7 @@ a:visited {
 
 /*
  * Profile
-*/
+ */
 
 .tab-pane {
     margin-top: 10px;
@@ -850,7 +853,7 @@ a:visited {
 
 /*
  * Other stuff
-*/
+ */
 
 #archive-asd {
     display: none;
@@ -865,7 +868,7 @@ a:visited {
 
 /*
  * Debug
-*/
+ */
 
 #queries,
 #cache-load {
@@ -881,7 +884,7 @@ a:visited {
 
 /*
  * Info modal
-*/
+ */
 
 .modal-col {
     width: 25%;
@@ -899,7 +902,7 @@ a:visited {
 
 /*
  * Admin
-*/
+ */
 
 .admin-graph-hidden {
     display: none;

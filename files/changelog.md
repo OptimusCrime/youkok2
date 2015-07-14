@@ -1,3 +1,12 @@
+Youkok2 - 1.4.0-pl  (xx. august 2015)
+=====================================
+
+- [Info] Prettification
+- [Enhanced] Flyttet alt av HTML ut av programmeringsstuff.
+- [Enhanced] Vårrengjøring av ymse.
+- [Enhanced] Skrevet om store deler av kildekoden.
+- [Enhanced] Skrevet om caching, den burde være bedre nå.
+
 Youkok2 - 1.3.4-pl  (26. mai 2015)
 ====================================
 

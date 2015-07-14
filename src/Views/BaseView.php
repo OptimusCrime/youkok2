@@ -2,7 +2,7 @@
 /*
  * File: BaseView.php
  * Holds: Class extended by the other views
- * Created: 02.10.13
+ * Created: 02.10.2013
  * Project: Youkok2
 */
 
@@ -76,13 +76,15 @@ class BaseView extends Youkok2 {
         $this->template = new \Smarty();
         $this->template->left_delimiter = '[[+'; 
         $this->template->right_delimiter = ']]';
-        
-        // Set caching
-        $this->template->setCacheDir(CACHE_PATH . '/smarty/');
+
+        // Set caching and compile dir
+        $this->template->setCompileDir(CACHE_PATH . '/smarty/compiled/');
+        $this->template->setCacheDir(CACHE_PATH . '/smarty/cache/');
         
         // Define a few constants in Smarty
         $this->template->assign('VERSION', VERSION);
         $this->template->assign('DEV', DEV);
+        $this->template->assign('OFFLINE', OFFLINE);
         $this->template->assign('SITE_URL', URL_FULL);
         $this->template->assign('SITE_TITLE', 'Den beste kokeboka på nettet');
         $this->template->assign('SITE_EMAIL_CONTACT', EMAIL_CONTACT);
@@ -308,11 +310,9 @@ class BaseView extends Youkok2 {
         // If develop, assign dev variables
         if (DEV) {
             $this->template->assign('DEV_QUERIES_NUM', Database::getCount());
-            $this->template->assign('DEV_ELEMENT_COLLECTION_NUM', '');
-            $this->template->assign('DEV_CACHE_LOAD_NUM', CacheManager::getFetches());
+            $this->template->assign('DEV_CACHE_LOAD_NUM', CacheManager::getCount());
             
             $this->template->assign('DEV_QUERIES_BACKTRACE', $this->cleanSqlLog($this->sqlLog));
-            $this->template->assign('DEV_CACHE_LOAD_BACKTRACE', $this->cleanCacheLoadLog(CacheManager::getBacktrace()));
         }
         
         // Import js modules

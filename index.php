@@ -84,7 +84,7 @@ if (get_included_files()[0] == __FILE__) {
 else {
     // Check if running the built in server
     $boot = explode('/', get_included_files()[0]);
-    if ($boot[count($boot) - 1] == 'route.php') {
+    if ($boot[count($boot) - 1] == 'router.php') {
         $call_loader = true;
     }
 }

@@ -22,7 +22,7 @@ Class CacheManager {
     private static $cacheArr = [];
     private static $currentChecking = null;
     private static $currentContent = null;
-    private static $fetches = 0;
+    private static $count = 0;
     private static $bactrace = array();
     
     /*
@@ -39,7 +39,7 @@ Class CacheManager {
             $temp_content = file_get_contents($file);
             
             // Increase fetch
-            self::$fetches++;
+            self::$count++;
             
             // Debug
             if (DEV) {
@@ -222,15 +222,7 @@ Class CacheManager {
      * Return number of fetches
      */
     
-    public static function getFetches() {
-        return self::$fetches;
-    }
-    
-    /*
-     * Return the backtrace array
-     */
-    
-    public static function getBacktrace() {
-        return self::$bactrace;
+    public static function getCount() {
+        return self::$count;
     }
 }

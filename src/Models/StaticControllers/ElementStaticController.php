@@ -32,7 +32,7 @@ class ElementStaticController {
      * Return new Element object
      */
 
-    public static function get($data) {
+    public static function get($data = null) {
         // Check what kind of fetch we should do
         if (is_numeric($data)) {
             // Check if we have to create it first
@@ -48,7 +48,7 @@ class ElementStaticController {
             return self::$collection[$data];
         }
         else {
-            // Fetching by URL, we can't use the collection here
+            // Fetching by URL, we can't use the collection here, or data is null. Either way...
             return new Element($data);
         }
     }

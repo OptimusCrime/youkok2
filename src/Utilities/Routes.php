@@ -96,10 +96,7 @@ class Routes {
         /*
          * Tasks
          */
-        
-        'Tasks\\Build' => array(
-            array('path' => '/tasks/build'),
-        ),
+
         'Tasks\\Upgrade' => array(
             array('path' => '/tasks/upgrade'),
         ),

@@ -50,11 +50,13 @@ class Element extends BaseModel {
      * Schema
      */
     
-    private $schema = [
+    protected $schema = [
         'meta' => [
             'table' => 'archive',
+            'cacheable' => true,
         ],
         'fields' => [
+            // Database fields
             'id' => [
                 'type' => 'integer',
                 'null' => false,
@@ -91,6 +93,7 @@ class Element extends BaseModel {
                 'null' => false,
                 'default' => 1,
                 'db' => true,
+                'is' => true,
                 'arr' => true,
             ],
             'checksum' => [
@@ -163,6 +166,14 @@ class Element extends BaseModel {
                 'db' => true,
                 'arr' => true,
             ],
+
+            // Additional cache fields
+            'full_url' => [
+                'type' => 'string',
+                'null' => true,
+                'db' => false,
+                'method' => 'fullUrl',
+            ]
         ]
     ];
     
@@ -180,11 +191,14 @@ class Element extends BaseModel {
         $this->setDefaults();
 
         /*
-         * Create
+         * Various create methods are called here
          */
 
         if (is_numeric($data)) {
             $this->controller->createById($data);
+        }
+        elseif (is_array($data)) {
+            $this->controller->createByArray($data);
         }
         elseif (strlen($data) > 0) {
             $this->controller->createByUrl($data);
@@ -300,14 +314,6 @@ class Element extends BaseModel {
     }
     public function setAdded($added) {
         $this->added = $added;
-    }
-
-    /*
-     * Return schema
-     */
-
-    public function getSchema() {
-        return $this->schema;
     }
 
     /*
