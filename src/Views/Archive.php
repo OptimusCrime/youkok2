@@ -45,7 +45,7 @@ class Archive extends BaseView {
         $this->template->assign('ARCHIVE_PATH', Routes::ARCHIVE);
 
         // Display
-        $this->displayAndCleanup('archive.tpl', $this->queryGetClean());
+        $this->displayAndCleanup('archive.tpl', Loader::queryGetClean());
     }
     
     /*

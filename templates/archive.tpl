@@ -5,7 +5,7 @@
                         <li><a href="[[+$SITE_URL]]">Hjem</a></li>
                         <li><a href="emner/">Emner</a></li>[[+foreach $ARCHIVE_ELEMENT_PARENTS as $element]]
 
-                        <li>[[+if $element->getId() == $ARCHIVE_ELEMENT->getId()]][[+if !$ARCHIVE_ELEMENT->hasParent()]][[+$ARCHIVE_ELEMENT->getCourseCode()]][[+else]][[+$element->getName()]][[+/if]][[+else]]<a href="[[+$element->generateUrl($ROUTE_ARCHIVE)]]">[[+if !$element->hasParent()]][[+$element->getCourseCode()]][[+else]][[+$element->getName()]][[+/if]]</a>[[+/if]]</li>[[+/foreach]]
+                        <li>[[+if $element->getId() == $ARCHIVE_ELEMENT->getId()]][[+if !$ARCHIVE_ELEMENT->hasParent()]][[+$ARCHIVE_ELEMENT->getCourseCode()]][[+else]][[+$element->getName()]][[+/if]][[+else]]<a href="[[+$element->getFullUrl($ROUTE_ARCHIVE)]]">[[+if !$element->hasParent()]][[+$element->getCourseCode()]][[+else]][[+$element->getName()]][[+/if]]</a>[[+/if]]</li>[[+/foreach]]
 
                     </ol>
                     [[+nocache]]<div id="archive-title">

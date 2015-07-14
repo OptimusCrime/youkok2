@@ -46,9 +46,6 @@ class Frontpage extends BaseView {
             $this->loadInfobox();
         }
         
-        // Assign other stuff
-        $this->template->assign('HOME_MOST_POPULAR_DELTA', Me::getMostPopularDelta());
-        
         // Display the template
         $this->displayAndCleanup('frontpage.tpl');
     }
