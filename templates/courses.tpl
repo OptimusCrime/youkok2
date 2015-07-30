@@ -4,7 +4,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <ol class="breadcrumb" id="archive-breadcrumbs">
-                            <li><a href="[[+$SITE_RELATIVE]]">Hjem</a></li>
+                            <li><a href="[[+$SITE_URL]]">Hjem</a></li>
                             <li class="active">Emner</li>
                         </ol>
                     </div>
@@ -20,8 +20,8 @@
                             <h3>[[+$SUB_COLLECTION.letter]]</h3>
                             <ul class="list-group">[[+foreach $SUB_COLLECTION.courses as $element]]
 
-                                <li class="[[+if $element.empty]]course-empty [[+/if]]list-group-item">
-                                    <a href="[[+$element.url]]"><strong>[[+$element.code]]</strong> &mdash; [[+$element.name]]</a>
+                                <li class="[[+if $element->isEmpty()]]course-empty [[+/if]]list-group-item">
+                                    <a href="[[+$element->getFullUrl($ROUTE_ARCHIVE)]]"><strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]</a>
                                 </li>[[+/foreach]]
 
                             </ul>

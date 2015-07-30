@@ -16,7 +16,6 @@ namespace Youkok2\Views;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Loader as Loader;
-use \Youkok2\Utilities\Routes as Routes;
 
 /*
  * The Home class, extending Base class
@@ -59,7 +58,7 @@ class Courses extends BaseView {
         $collection = null;
 
         // Load all the courses
-        $get_all_courses  = "SELECT id" . PHP_EOL;
+        $get_all_courses  = "SELECT id, name, url_friendly, parent, empty" . PHP_EOL;
         $get_all_courses .= "FROM archive" . PHP_EOL;
         $get_all_courses .= "WHERE parent IS NULL" . PHP_EOL;
         $get_all_courses .= "AND is_visible = 1" . PHP_EOL;
@@ -68,7 +67,7 @@ class Courses extends BaseView {
         $get_all_courses_query = Database::$db->query($get_all_courses);
         while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
             // Get element
-            $element = new Element($row['id']);
+            $element = new Element($row);
 
             // Find the current letter
             $letter = substr($element->getCourseCode(), 0, 1);
@@ -89,12 +88,7 @@ class Courses extends BaseView {
             }
 
             // Add to collection
-            $collection[$index]['courses'][] = [
-                'empty' => $element->isEmpty(),
-                'url' => $element->getFullUrl(Routes::ARCHIVE),
-                'code' => $element->getCourseCode(),
-                'name' => $element->getCourseNae(),
-            ];
+            $collection[$index]['courses'][] = $element;
         }
 
         // Return collection
