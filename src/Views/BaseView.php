@@ -180,9 +180,8 @@ class BaseView extends Youkok2 {
         // Version with Git hash
         if (DEV) {
             $git_hash = exec('git rev-parse HEAD');
-            if (strlen($git_hash) > 0) {
-                $this->template->assign('VERSION', VERSION . '-' . substr($git_hash, 0, 7));
-            }
+            $this->template->assign('GIT_HASH', $git_hash);
+            $this->template->assign('GIT_HASH_SHORT', substr($git_hash, 0, 7));
         }
 
         // Use compression
