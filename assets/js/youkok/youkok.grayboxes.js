@@ -28,19 +28,18 @@ var Youkok = (function (module) {
             }
             
             // Init last downloads
-            if ($('#archive-sidebar-last-downloads-inner').length > 0) {
+            if ($('#archive-sidebar-popular-inner').length > 0) {
                 $.ajax({
                     cache: false,
-                    url: 'processor/graybox/downloads',
-                    success: function(html) {
-                        // Set content
-                        $('#archive-sidebar-last-downloads-inner').html(html);
+                    url: 'processor/graybox/popular',
+                    success: function(json) {
+                        // Get template
+                        var template_sidebar_popular = _.template(
+                            $( "script.template-sidebar-popular" ).html()
+                        );
 
-                        // Load moment
-                        $('#archive-sidebar-last-downloads-inner .moment-timestamp').each(function () {
-                            $that = $(this);
-                            $that.html(moment($(this).data('ts')).fromNow());
-                        });
+                        // Set content
+                        $('#archive-sidebar-popular-inner').html(template_sidebar_popular({'elements': json.data}));
                     }
                 });
             }
@@ -50,9 +49,14 @@ var Youkok = (function (module) {
                 $.ajax({
                     cache: false,
                     url: 'processor/graybox/commits',
-                    success: function(html) {
+                    success: function(json) {
+                        // Get template
+                        var template_sidebar_commits = _.template(
+                            $( "script.template-sidebar-commits" ).html()
+                        );
+
                         // Set content
-                        $('#archive-sidebar-numbers-inner').html(html);
+                        $('#archive-sidebar-numbers-inner').html(template_sidebar_commits({'commits': json.data}));
                     }
                 });
             }

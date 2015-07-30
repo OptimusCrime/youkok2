@@ -74,13 +74,13 @@ class Element extends BaseModel {
                 'type' => 'string',
                 'null' => false,
                 'db' => true,
+                'arr' => false,
             ],
             'owner' => [
                 'type' => 'integer',
                 'null' => true,
                 'default' => null,
                 'db' => true,
-                'arr' => true,
             ],
             'parent' => [
                 'type' => 'integer',
@@ -94,7 +94,6 @@ class Element extends BaseModel {
                 'default' => 1,
                 'db' => true,
                 'is' => true,
-                'arr' => true,
             ],
             'checksum' => [
                 'type' => 'string',
@@ -129,7 +128,6 @@ class Element extends BaseModel {
                 'default' => 0,
                 'db' => true,
                 'is' => true,
-                'arr' => true,
             ],
             'is_accepted' => [
                 'method' => 'accepted',
@@ -173,6 +171,7 @@ class Element extends BaseModel {
                 'null' => true,
                 'db' => false,
                 'method' => 'fullUrl',
+                'arr' => true,
             ]
         ]
     ];

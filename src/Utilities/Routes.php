@@ -118,7 +118,7 @@ class Routes {
         'Graybox' => [
             ['path' => 'graybox/commits', 'method' => 'getCommits'],
             ['path' => 'graybox/newest', 'method' => 'getNewest'],
-            ['path' => 'graybox/popular', 'method' => 'getMostPopular'],
+            ['path' => 'graybox/popular', 'method' => 'getPopular'],
         ],
 
         /*

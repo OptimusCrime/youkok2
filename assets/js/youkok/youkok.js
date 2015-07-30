@@ -70,6 +70,9 @@ var Youkok = (function (module) {
                 yy: "%d år"
             }
         });
+
+        // Underscorejs settings
+        _.templateSettings.variable = 'rc';
         
         // Apply moment.js
         $('.moment-timestamp').each(function () {

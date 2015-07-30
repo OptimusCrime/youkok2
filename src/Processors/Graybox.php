@@ -10,7 +10,13 @@
 namespace Youkok2\Processors;
 
 /*
- * The LinkTitle class, extending Base class
+ * Define what classes to use
+ */
+
+use \Youkok2\Models\Element as Element;
+
+/*
+ * The Graybox class, extending BaseProcessor
  */
 
 class Graybox extends BaseProcessor {
@@ -93,6 +99,26 @@ class Graybox extends BaseProcessor {
 
         // Set to data
         $this->setData('data', $commits);
+
+        // Set OK
+        $this->setOk();
+    }
+
+    /*
+     * Get most popular downloads
+     */
+
+    public function getPopular() {
+        // Array for storing random commits
+        $commits = [];
+
+        $data = Element::getMostPopular([
+            'output' => false,
+            'encode' => true,
+            'close_db' => false]);
+
+        // Set to data
+        $this->setData('data', $data['data']);
 
         // Set OK
         $this->setOk();

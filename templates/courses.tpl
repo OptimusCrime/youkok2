@@ -21,7 +21,7 @@
                         <ul class="list-group">[[+foreach $SUB_COLLECTION.courses as $element]]
 
                             <li class="[[+if $element->isEmpty()]]course-empty [[+/if]]list-group-item">
-                                <a href="[[+$element->getFullUrl($ROUTE_ARCHIVE)]]"><strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]</a>
+                                <a href="[[+$element->getFullUrl()]]"><strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]</a>
                             </li>[[+/foreach]]
 
                         </ul>
@@ -58,3 +58,5 @@
             </div>
         </div>
 [[+include file="footer.tpl"]]
+</body>
+</html>
