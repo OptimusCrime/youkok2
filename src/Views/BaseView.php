@@ -177,6 +177,14 @@ class BaseView extends Youkok2 {
             $this->template->assign('SITE_USE_GA', false);
         }
 
+        // Version with Git hash
+        if (DEV) {
+            $git_hash = exec('git rev-parse HEAD');
+            if (strlen($git_hash) > 0) {
+                $this->template->assign('VERSION', VERSION . '-' . substr($git_hash, 0, 7));
+            }
+        }
+
         // Use compression
         if (defined('COMPRESS_ASSETS') and COMPRESS_ASSETS == false) {
             $this->template->assign('COMPRESS_ASSETS', false);
