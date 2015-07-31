@@ -676,9 +676,18 @@ a:visited {
     padding-top: 10px;
     text-align: center;
 }
-#footer p span {
-    padding-left: 7.5px;
-    padding-right: 7.5px;
+#footer p > * {
+    margin-right: 10px;
+}
+#footer p > *:last-child {
+    margin-right: 0px;
+}
+#footer p > *::before {
+    content: "::";
+    padding-right: 10px;
+}
+#footer p > *:first-child::before {
+    content: none;
 }
 #footer p, #footer p a {
     color: #000;

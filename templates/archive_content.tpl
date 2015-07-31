@@ -14,7 +14,7 @@
                                     </ul>
                                 </div>
                             </div>
-                            <a href="[[+if $element->isLink()]][[+$element->generateUrl($ROUTE_REDIRECT)]][[+elseif $element->isLink()]][[+$element->generateUrl($ROUTE_DOWNLOAD)]][[+else]][[+$element->generateUrl($ROUTE_ARCHIVE)]][[+/if]]" [[+if !$element->isDirectory()]] target="_blank"[[+/if]][[+if $element->isLink()]] title="Link til: [[+$element->getUrl()]]"[[+/if]]>
+                            <a href="[[+$element->getFullUrl()]]"[[+if !$element->isDirectory()]] target="_blank"[[+/if]][[+if $element->isLink()]] title="Link til: [[+$element->getUrl()]]"[[+/if]]>
                                 <div class="archive-item">
                                     <div class="archive-badge archive-badge-right hidden">
                                         <i class="fa fa-comments-o"></i>

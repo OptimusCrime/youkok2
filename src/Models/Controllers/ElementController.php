@@ -14,7 +14,7 @@ namespace Youkok2\Models\Controllers;
 
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
-use \Youkok2\Utilities\CacheManager as CacheManager;
+use \Youkok2\Utilities\Routes as Routes;
 use \Youkok2\Utilities\Database as Database;
 
 /*
@@ -76,7 +76,7 @@ class ElementController extends BaseController {
         'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1');
     
     /*
-     * Consutrctor
+     * Constructor
      */
     
     public function __construct($model) {
@@ -247,28 +247,21 @@ class ElementController extends BaseController {
     }
 
     public function addDownload() {
+        // New instance for download
+        $download = new Download();
+
+        // Set values
+        $download->setFile($this->model->getId());
+        $download->setIp($_SERVER['REMOTE_ADDR']);
+        $download->setAgent($_SERVER['HTTP_USER_AGENT']);
+
         // Check if user is logged in
         if (Me::isLoggedIn()) {
-            // User is logged in
-            $insert_user_download  = "INSERT INTO download (file, ip, agent, user)" . PHP_EOL;
-            $insert_user_download .= "VALUES (:file, :ip, :agent, :user)";
-            
-            $insert_user_download_query = Database::$db->prepare($insert_user_download);
-            $insert_user_download_query->execute(array(':file' => $this->model->getId(), 
-               ':ip' => $_SERVER['REMOTE_ADDR'], 
-               ':agent' => $_SERVER['HTTP_USER_AGENT'], 
-               ':user' => Me::getId()));
+            $download->setUser(Me::getId());
         }
-        else {
-            // Is not logged in
-            $insert_anon_download  = "INSERT INTO download (file, ip, agent)" . PHP_EOL;
-            $insert_anon_download .= "VALUES (:file, :ip, :agent)";
-            
-            $insert_anon_download_query = Database::$db->prepare($insert_anon_download);
-            $insert_anon_download_query->execute(array(':file' => $this->model->getId(), 
-                ':ip' => $_SERVER['REMOTE_ADDR'], 
-                ':agent' => $_SERVER['HTTP_USER_AGENT']));
-        }
+
+        // Save the object
+        $download->save();
     }
 
     /*
@@ -511,9 +504,33 @@ class ElementController extends BaseController {
      * To Array (for output)
      */
 
-    public function toArray() {
+    public function toArray($nest = true) {
         // Get the initial fields from the array
         $arr = $this->model->toArrayInitial();
+
+        // Swap name for course information for courses
+        if (!$this->hasParent()) {
+            $arr['course_code'] = $this->getCourseCode();
+            $arr['course_name'] = $this->getCourseName();
+            unset($arr['name']);
+        }
+
+        // Check if we should nest (applying parents)
+        if ($nest) {
+            // Check if the object has some parents at all
+            if ($this->hasParent()) {
+                $arr['parents'] = [];
+
+                // Check if the parent is the root object or if we have multiple depth
+                $root_parent = $this->getRootParent();
+                if ($root_parent->getId() != $this->model->getParent()) {
+                    $arr['parents'][] = $this->model->getParent(true)->toArray(false);
+                }
+
+                // Add the root parent
+                $arr['parents'][] = $root_parent->toArray(false);
+            }
+        }
 
         // Return the array
         return $arr;
@@ -585,18 +602,21 @@ class ElementController extends BaseController {
     public function getCourseCode() {
         return explode('||', $this->model->getName())[0];
     }
-    public function getFullUrl($path = null) {
+    public function getFullUrl() {
         // Check if we already have the url fetched
         if ($this->fullUrl === null) {
             // Not fetched, generate
+            $temp_url = [];
+
+            // Check if this object is a link
             if ($this->model->isLink()) {
-                $this->fullUrl = $this->model->getId();
+                $temp_url[] = $this->model->getId();
             }
 
             // Check if already loaded (or cached)
-            if ($this->fullUrl === null) {
+            if (count($temp_url) == 0) {
                 $temp_element = $this->model;
-                $temp_url = [$this->model->getUrlFriendly()];
+                $temp_url[] = $this->model->getUrlFriendly();
 
                 while (true) {
                     if ($temp_element->hasParent()) {
@@ -608,18 +628,24 @@ class ElementController extends BaseController {
 
                     $temp_url[] = $temp_element->getUrlFriendly();
                 }
-
-                $this->fullUrl = implode('/', array_reverse($temp_url))  . ($this->model->isDirectory() ? '/' : '');
             }
+
+            // Find the correct prefix
+            $path = Routes::DOWNLOAD;
+            if ($this->model->isLink()) {
+                $path = Routes::REDIRECT;
+            }
+            else if ($this->model->isDirectory()) {
+                $path = Routes::ARCHIVE;
+            }
+            $temp_url[] = substr($path, 1);
+
+            // Generate the final url
+            $this->fullUrl = implode('/', array_reverse($temp_url))  . ($this->model->isDirectory() ? '/' : '');
         }
 
-        // If we dont have any path, just return the full url
-        if ($path === null) {
-            return $this->fullUrl;
-        }
-
-        // Return url with path here
-        return substr($path, 1) . '/' . $this->fullUrl;
+        // Return the final url here
+        return $this->fullUrl;
     }
     public function setFullUrl($url) {
         $this->fullUrl = $url;

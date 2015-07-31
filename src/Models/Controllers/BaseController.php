@@ -50,7 +50,7 @@ abstract class BaseController {
 
     public function createById($id) {
         // Check if already cached
-        if (CacheManager::isCached($id, $this->cacheKey)) {
+        if ($this->schema['meta']['cacheable'] and CacheManager::isCached($id, $this->cacheKey)) {
             // Get cache data
             $cache_data = CacheManager::getCache($id, $this->cacheKey);
 
@@ -107,8 +107,11 @@ abstract class BaseController {
                     }
                 }
 
-                // Cache element
-                $this->cache();
+                // Check if we should cache the element
+                if ($this->schema['meta']['cacheable']) {
+                    // Add to cache queue
+                    $this->cache();
+                }
             }
         }
     }
@@ -118,7 +121,20 @@ abstract class BaseController {
      */
 
     public function createByArray($arr) {
-        // TODO
+        // Loop the fields in the schema
+        foreach ($this->schema['fields'] as $k => $v) {
+            // Check if this field is a database field
+            if (isset($arr[$k])) {
+                // Find out what method to call
+                $method = 'set' . ucfirst($k);
+                if (isset($v['method'])) {
+                    $method = 'set' . ucfirst($v['method']);
+                }
+
+                // Set the data
+                call_user_func_array([$this->model, $method], [$arr[$k]]);
+            }
+        }
     }
     
     /*
@@ -135,12 +151,12 @@ abstract class BaseController {
             if (isset($v['is'])) {
                 $method_prefix = 'is';
             }
-
             $method = $method_prefix . ucfirst($k);
             if (isset($v['method'])) {
                 $method = $method_prefix . ucfirst($v['method']);
             }
 
+            // Get value
             $cache_arr[$k] = call_user_func_array([$this->model, $method], []);
         }
 
@@ -156,9 +172,51 @@ abstract class BaseController {
         CacheManager::deleteCache($this->model->getId(), $this->cacheKey);
     }
     
-    // Method for saving
-    public function save() {
+    /*
+     * Save
+     */
 
+    public function save() {
+        // Arrays for building the query
+        $attributes_arr = [];
+        $bindings_arr = [];
+        $values_arr = [];
+
+        foreach ($this->schema['fields'] as $k => $v) {
+            if (isset($v['db']) and $v['db'] and !isset($v['ignore_insert'])) {
+                // Set attribute
+                $attributes_arr[] = '`'  . $k . '`';
+
+                // Get binding
+                $binding = ':'. $k;
+
+                // Find out what method to call
+                $method_prefix = 'get';
+                if (isset($v['is'])) {
+                    $method_prefix = 'is';
+                }
+                $method = $method_prefix . ucfirst($k);
+                if (isset($v['method'])) {
+                    $method = $method_prefix . ucfirst($v['method']);
+                }
+
+                // Get value
+                $value = call_user_func_array([$this->model, $method], []);
+
+                // Set to bindings arr
+                $bindings_arr[] = $binding;
+
+                // Set to values
+                $values_arr[$binding] = $value;
+            }
+        }
+
+        // Build query string
+        $query_string  = "INSERT INTO `" . $this->schema['meta']['table'] . "` (" . implode(', ', $attributes_arr) . ")" . PHP_EOL;
+        $query_string .= "VALUES (" . implode(', ', $bindings_arr) . ")";
+
+        $result = Database::$db->prepare($query_string);
+        $result->execute($values_arr);
     }
     
     // Method for updating

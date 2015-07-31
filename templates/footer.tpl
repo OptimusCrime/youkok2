@@ -5,18 +5,19 @@
     <div class="row">
         <div class="col-xs-12" id="footer">
             <p>
-                <a href="changelog.txt"><span class="first">Youkok2 v[[+$VERSION]]</span></a>::
-                <span><a href="om">Om Youkok2</a></span>::
-                <span><a href="retningslinjer">Retningslinjer</a></span>::
-                <span><a href="hjelp">Hjelp</a></span>::
-                <span><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>::
-                <span class="last">[[+nocache]][[+$TIMER]][[+/nocache]]</span>
+                <a href="changelog.txt">Youkok2 v[[+$VERSION]]</a>
+                [[+nocache]][[+if $DEV]]<a href="https://github.com/OptimusCrime/youkok2/commit/[[+$GIT_HASH]]" target="_blank">[[+$GIT_HASH_SHORT]]</a>[[+/if]][[+/nocache]]
+                <a href="om">Om Youkok2</a>
+                <a href="retningslinjer">Retningslinjer</a>
+                <a href="hjelp">Hjelp</a>
+                <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a>
+                <span>[[+nocache]][[+$TIMER]][[+/nocache]]</span>
             </p>[[+nocache]][[+if $DEV]]
 
             <p>
-                <span>Antall queries: [[+$DEV_QUERIES_NUM]]</span> ::
-                <span>Antall fetches: [[+$DEV_CACHE_LOAD_NUM]]</span> ::
-                <span><a id="toggle-queries" href="#"><span class="nopadd">Vis</span> alle queries</a></span>
+                <span>Antall queries: [[+$DEV_QUERIES_NUM]]</span>
+                <span>Antall fetches: [[+$DEV_CACHE_LOAD_NUM]]</span>
+                <a id="toggle-queries" href="#"><span class="nopadd">Vis</span> alle queries</a>
             </p>
             <div id="queries">
                 [[+$DEV_QUERIES_BACKTRACE]]
@@ -28,12 +29,14 @@
 [[+nocache]][[+if $OFFLINE]]<script type="text/javascript" src="assets/js/libs/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery-ui-1.11.4.min.js"></script>
 <script type="text/javascript" src="assets/js/libs/bootstrap-3.3.5.min.js"></script>
-<script type="text/javascript" src="assets/js/libs/moment-2.10.3.min.js"></script>[[+else]]
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
-<script type="text/javascript" src="//code.highcharts.com/4.0.4/highcharts.js"></script>[[+/if]]
+<script type="text/javascript" src="assets/js/libs/moment-2.10.3.min.js"></script>
+<script type="text/javascript" src="assets/js/libs/underscore-1.8.3.min.js"></script>[[+else]]
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script type="text/javascript" src="https:https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<script type="text/javascript" src="https://code.highcharts.com/4.0.4/highcharts.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>[[+/if]]
 
 [[+if !$COMPRESS_ASSETS]]<script type="text/javascript" src="assets/js/libs/typeahead.bundle.min.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery.fileupload.js"></script>
@@ -49,6 +52,3 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', 'UA-50619069-1', 'youkok2.com');
 ga('send', 'pageview');
 </script>[[+/if]]
-
-</body>
-</html>

@@ -84,7 +84,7 @@ class ElementStaticController {
      * Fetch most popular Elements
      */
 
-    public static function getMostPopular($override = null) {
-        return Youkok2::runProcessor('/module/get', []);
+    public static function getMostPopular($settings = []) {
+        return Youkok2::runProcessor('/module/get', $settings);
     }
 }

@@ -13,7 +13,7 @@ var Youkok = (function (module) {
             if ($('#archive-sidebar-newest-inner').length > 0) {
                 $.ajax({
                     cache: false,
-                    url: 'graybox/newest',
+                    url: 'processor/graybox/newest',
                     success: function(html) {
                         // Set content
                         $('#archive-sidebar-newest-inner').html(html);
@@ -28,19 +28,18 @@ var Youkok = (function (module) {
             }
             
             // Init last downloads
-            if ($('#archive-sidebar-last-downloads-inner').length > 0) {
+            if ($('#archive-sidebar-popular-inner').length > 0) {
                 $.ajax({
                     cache: false,
-                    url: 'graybox/downloads',
-                    success: function(html) {
-                        // Set content
-                        $('#archive-sidebar-last-downloads-inner').html(html);
+                    url: 'processor/graybox/popular',
+                    success: function(json) {
+                        // Get template
+                        var template_sidebar_popular = _.template(
+                            $( "script.template-sidebar-popular" ).html()
+                        );
 
-                        // Load moment
-                        $('#archive-sidebar-last-downloads-inner .moment-timestamp').each(function () {
-                            $that = $(this);
-                            $that.html(moment($(this).data('ts')).fromNow());
-                        });
+                        // Set content
+                        $('#archive-sidebar-popular-inner').html(template_sidebar_popular({'elements': json.data}));
                     }
                 });
             }
@@ -49,10 +48,15 @@ var Youkok = (function (module) {
             if ($('#archive-sidebar-numbers-inner').length > 0) {
                 $.ajax({
                     cache: false,
-                    url: 'graybox/numbers',
-                    success: function(html) {
+                    url: 'processor/graybox/commits',
+                    success: function(json) {
+                        // Get template
+                        var template_sidebar_commits = _.template(
+                            $( "script.template-sidebar-commits" ).html()
+                        );
+
                         // Set content
-                        $('#archive-sidebar-numbers-inner').html(html);
+                        $('#archive-sidebar-numbers-inner').html(template_sidebar_commits({'commits': json.data}));
                     }
                 });
             }

@@ -20,9 +20,9 @@
                             <p>Laster...</p>
                         </div>
                     </div>
-                    <div id="archive-sidebar-last-downloads" class="sidebar-element">
-                        <h3>Siste nedlastninger</h3>
-                        <div id="archive-sidebar-last-downloads-inner">
+                    <div id="archive-sidebar-popular" class="sidebar-element">
+                        <h3>Populære nå</h3>
+                        <div id="archive-sidebar-popular-inner">
                             <p>Laster...</p>
                         </div>
                     </div>

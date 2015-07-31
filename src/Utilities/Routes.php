@@ -23,163 +23,164 @@ class Routes {
     const REDIRECT = '/redirect';
     const PROCESSOR = '/processor';
     
-    private static $routes = array(
-        'Frontpage' => array(
-            array('path' => '/'),
-        ),
+    private static $routes = [
+        'Frontpage' => [
+            ['path' => '/'],
+        ],
         
-        'Courses' => array(
-            array('path' => self::ARCHIVE, 'subpath' => false),
-        ),
+        'Courses' => [
+            ['path' => self::ARCHIVE, 'subpath' => false],
+        ],
         
-        'Archive' => array(
-            array('path' => self::ARCHIVE, 'subpath' => true),
-        ),
+        'Archive' => [
+            ['path' => self::ARCHIVE, 'subpath' => true],
+        ],
 
-        'Profile' => array(
-            array('path' => '/profil'),
-        ),
+        'Profile' => [
+            ['path' => '/profil'],
+        ],
 
-        'Download' => array(
-            array('path' => self::DOWNLOAD),
-        ),
+        'Download' => [
+            ['path' => self::DOWNLOAD],
+        ],
 
-        'Flat' => array(
-            array('path' => '/om', 'method' => 'displayAbout'),
-            array('path' => '/retningslinjer', 'method' => 'displayTerms'),
-            array('path' => '/hjelp', 'method' => 'displayHelp'),
-            array('path' => '/karma', 'method' => 'displayKarma'),
+        'Flat' => [
+            ['path' => '/om', 'method' => 'displayAbout'],
+            ['path' => '/retningslinjer', 'method' => 'displayTerms'],
+            ['path' => '/hjelp', 'method' => 'displayHelp'],
+            ['path' => '/karma', 'method' => 'displayKarma'],
             
-        ),
+        ],
         
-        'StaticFiles' => array(
-            array('path' => '/changelog.txt', 'method' => 'returnChangelog'),
-            array('path' => '/favicon.ico', 'method' => 'returnFavicon'),
-            array('path' => '/favicon.png', 'method' => 'returnFavicon'),
-        ),
+        'StaticFiles' => [
+            ['path' => '/changelog.txt', 'method' => 'returnChangelog'],
+            ['path' => '/favicon.ico', 'method' => 'returnFavicon'],
+            ['path' => '/favicon.png', 'method' => 'returnFavicon'],
+        ],
         
-        'NotFound' => array(
-            array('path' => '/404'),
-        ),
+        'NotFound' => [
+            ['path' => '/404'],
+        ],
 
-        'Auth' => array(
-            array('path' => '/logg-inn', 'method' => 'displayLogIn'),
-            array('path' => '/logg-ut', 'method' => 'displayLogOut'),
-            array('path' => '/registrer', 'method' => 'displayRegister'),
-            array('path' => '/glemt-passord', 'method' => 'displayForgottenPassword'),
-            array('path' => '/nytt-passord', 'method' => 'displayForgottenPasswordNew'),
-        ),
+        'Auth' => [
+            ['path' => '/logg-inn', 'method' => 'displayLogIn'],
+            ['path' => '/logg-ut', 'method' => 'displayLogOut'],
+            ['path' => '/registrer', 'method' => 'displayRegister'],
+            ['path' => '/glemt-passord', 'method' => 'displayForgottenPassword'],
+            ['path' => '/nytt-passord', 'method' => 'displayForgottenPasswordNew'],
+        ],
 
-        'Graybox' => array(
-            array('path' => '/graybox'),
-        ),
+        'Search' => [
+            ['path' => '/sok'],
+        ],
 
-        'Search' => array(
-            array('path' => '/sok'),
-        ),
+        'Admin' => [
+            ['path' => '/admin'],
+        ],
 
-        'Admin' => array(
-            array('path' => '/admin'),
-        ),
-
-        'Redirect' => array(
-            array('path' => self::REDIRECT),
-        ),
-    );
+        'Redirect' => [
+            ['path' => self::REDIRECT],
+        ],
+    ];
     
     /*
      * Array with processors
      */
     
-    private static $processors = array(
-        
+    private static $processors = [
+
+        /*
+         * Normal processors
+         */
+
+        'Favorite' => [
+            ['path' => '/favorite'],
+        ],
+        'Module' => [
+            ['path' => '/module/get', 'method' => 'get'],
+            ['path' => '/module/update', 'method' => 'update'],
+        ],
+        'Register' => [
+            ['path' => '/register/email', 'method' => 'checkEmail'],
+        ],
+        'StaticReturner' => [
+            ['path' => '/search/courses.json'],
+        ],
+        'LoadHistory' => [
+            ['path' => '/history/get', 'method' => 'getHistory'],
+        ],
+        'LinkTitle' => [
+            ['path' => '/link/title'],
+        ],
+        'Admin\\LoadDownloads' => [
+            ['path' => '/admin/loaddownloads'],
+        ],
+        'Graybox' => [
+            ['path' => 'graybox/commits', 'method' => 'getCommits'],
+            ['path' => 'graybox/newest', 'method' => 'getNewest'],
+            ['path' => 'graybox/popular', 'method' => 'getPopular'],
+        ],
+
+        /*
+         * Creates
+         */
+
+        'CreateFile' => [
+            ['path' => '/file/create'],
+        ],
+        'CreateLink' => [
+            ['path' => '/link/create'],
+        ],
+        'CreateFolder' => [
+            ['path' => '/folder/create'],
+        ],
+
         /*
          * Tasks
          */
 
-        'Tasks\\Upgrade' => array(
-            array('path' => '/tasks/upgrade'),
-        ),
-        'Tasks\\ClearCache' => array(
-            array('path' => '/tasks/clearcache'),
-         ),
-        'Tasks\\Check404' => array(
-            array('path' => '/tasks/check404'),
-        ),
-        'Tasks\\LoadCourses' => array(
-            array('path' => '/tasks/courses'),
-        ),
-        'Tasks\\LoadCoursesJson' => array(
-            array('path' => '/tasks/coursesjson'),
-        ),
-        'Tasks\\LoadExams' => array(
-            array('path' => '/tasks/exams'),
-        ),
-        'Tasks\\FindDuplicates' => array(
-            array('path' => '/tasks/duplicates'),
-        ),
-        'Tasks\\GetCacheData' => array(
-            array('path' => '/tasks/cachedata'),
-        ),
+        'Tasks\\Upgrade' => [
+            ['path' => '/tasks/upgrade'],
+        ],
+        'Tasks\\ClearCache' => [
+            ['path' => '/tasks/clearcache'],
+        ],
+        'Tasks\\Check404' => [
+            ['path' => '/tasks/check404'],
+        ],
+        'Tasks\\LoadCourses' => [
+            ['path' => '/tasks/courses'],
+        ],
+        'Tasks\\LoadCoursesJson' => [
+            ['path' => '/tasks/coursesjson'],
+        ],
+        'Tasks\\LoadExams' => [
+            ['path' => '/tasks/exams'],
+        ],
+        'Tasks\\FindDuplicates' => [
+            ['path' => '/tasks/duplicates'],
+        ],
+        'Tasks\\GetCacheData' => [
+            ['path' => '/tasks/cachedata'],
+        ],
         
         /*
          * Syncs
          */
         
-        'Tasks\\Sync\\SyncEmpty' => array(
-            array('path' => '/tasks/sync/syncempty'),
-        ),
-        
-        /*
-         * Other stuff
-         */
-        
-        'Favorite' => array(
-            array('path' => '/favorite'),
-        ),
-        'Module' => array (
-            array('path' => '/module/get', 'method' => 'get'),
-            array('path' => '/module/update', 'method' => 'update'),
-        ),
-        'Register' => array(
-            array('path' => '/register/email', 'method' => 'checkEmail'),
-        ),
-        'StaticReturner' => array(
-            array('path' => '/search/courses.json'),
-        ),
-        'LoadHistory' => array(
-            array('path' => '/history/get', 'method' => 'getHistory'),
-        ),
-        'LinkTitle' => array(
-            array('path' => '/link/title'),
-        ),
-        'Admin\\LoadDownloads' => array(
-            array('path' => '/admin/loaddownloads'),
-        ),
-        
-        /*
-         * Creates
-         */
-        
-        'CreateFile' => array(
-            array('path' => '/file/create'),
-        ),
-        'CreateLink' => array(
-            array('path' => '/link/create'),
-        ),
-        'CreateFolder' => array(
-            array('path' => '/folder/create'),
-        ),
-    );
+        'Tasks\\Sync\\SyncEmpty' => [
+            ['path' => '/tasks/sync/syncempty'],
+        ],
+    ];
     
     /*
      * Array with redirects
      */
     
-    private static $redirects = array(
+    private static $redirects = [
         '/kokeboka/emner*' => '/emner*',
         '/kokeboka*' => '/emner*',
-    );
+    ];
     
     /*
      * Return the internal variables

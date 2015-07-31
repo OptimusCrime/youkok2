@@ -41,8 +41,7 @@ class MessageStaticController {
         $get_messages_query = Database::$db->prepare($get_messages);
         $get_messages_query->execute(array(':pattern' => $pattern));
         while ($row = $get_messages_query->fetch(\PDO::FETCH_ASSOC)) {
-            $collection[] = new Message($row['id'], $row['time_start'], $row['time_end'], $row['message'], $row['type'], 
-                                        $row['pattern']);
+            $collection[] = new Message($row);
         }
         
         // Return collection

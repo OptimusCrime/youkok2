@@ -12,36 +12,107 @@ namespace Youkok2\models;
  * Loads other classes
  */
 
+use \Youkok2\Models\Controllers\MessageController as MessageController;
 use \Youkok2\Models\StaticControllers\MessageStaticController as MessageStaticController;
 
 /*
  * The Course class
  */
 
-class Message {
+class Message extends BaseModel {
 
     /*
      * Variables
      */
 
+    protected $controller;
+
+    // Fields in the database
     private $id;
-    private $time_start;
-    private $time_end;
+    private $timeStart;
+    private $timeEnd;
     private $message;
     private $type;
     private $pattern;
 
     /*
+     * Schema
+     */
+
+    protected $schema = [
+        'meta' => [
+            'table' => 'message',
+            'cacheable' => false,
+        ],
+        'fields' => [
+            // Database fields
+            'id' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+                'arr' => true,
+            ],
+            'time_start' => [
+                'method' => 'timeStart',
+                'type' => 'date',
+                'null' => false,
+                'db' => true,
+                'arr' => true,
+            ],
+            'time_end' => [
+                'method' => 'timeEnd',
+                'type' => 'date',
+                'null' => false,
+                'db' => true,
+                'arr' => true,
+            ],
+            'message' => [
+                'type' => 'string',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+                'arr' => true,
+            ],
+            'type' => [
+                'type' => 'string',
+                'null' => true,
+                'default' => 'success',
+                'db' => true,
+                'arr' => true,
+            ],
+            'pattern' => [
+                'type' => 'string',
+                'null' => true,
+                'default' => '*',
+                'db' => true,
+                'arr' => true,
+            ]
+        ]
+    ];
+
+    /*
      * Constructor
      */
 
-    public function __construct($id, $timeStart, $timeEnd, $message, $type, $pattern) {
-        $this->id = $id;
-        $this->timeStart = $timeStart;
-        $this->timeEnd = $timeEnd;
-        $this->message = $message;
-        $this->type = $type;
-        $this->pattern = $pattern;
+    public function __construct($data = null) {
+        $this->controller = new MessageController($this);
+
+        /*
+         * Set some default values
+         */
+
+        $this->setDefaults();
+
+        /*
+         * Various create methods are called here
+         */
+
+        if (is_numeric($data)) {
+            $this->controller->createById($data);
+        }
+        elseif (is_array($data)) {
+            $this->controller->createByArray($data);
+        }
     }
 
     /*
@@ -52,10 +123,10 @@ class Message {
         return $this->id;
     }
     public function getTimeStart() {
-        return $this->time_start;
+        return $this->timeStart;
     }
     public function getTimeEnd() {
-        return $this->time_end;
+        return $this->timeEnd;
     }
     public function getMessage() {
         return $this->message;
@@ -65,6 +136,29 @@ class Message {
     }
     public function getPattern() {
         return $this->pattern;
+    }
+
+    /*
+     * Setters
+     */
+
+    public function setId($id) {
+        $this->id = $id;
+    }
+    public function setTimeStart($time) {
+        $this->timeStart = $time;
+    }
+    public function setTimeEnd($time) {
+        $this->timeEnd = $time;
+    }
+    public function setMessage($msg) {
+        $this->message = $msg;
+    }
+    public function setType($type) {
+        $this->type = $type;
+    }
+    public function setPattern($pattern) {
+        $this->pattern = $pattern;
     }
     
     /*
