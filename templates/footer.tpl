@@ -7,6 +7,7 @@
             <p>
                 <a href="changelog.txt">Youkok2 v[[+$VERSION]]</a>
                 [[+nocache]][[+if $DEV]]<a href="https://github.com/OptimusCrime/youkok2/commit/[[+$GIT_HASH]]" target="_blank">[[+$GIT_HASH_SHORT]]</a>[[+/if]][[+/nocache]]
+
                 <a href="om">Om Youkok2</a>
                 <a href="retningslinjer">Retningslinjer</a>
                 <a href="hjelp">Hjelp</a>

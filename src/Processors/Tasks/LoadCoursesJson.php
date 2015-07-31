@@ -12,10 +12,9 @@ namespace Youkok2\Processors\Tasks;
  * Define what classes to use
  */
 
-use \Youkok2\Collections\ElementCollection as ElementCollection;
+use \Youkok2\Models\Element as Element;
 use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\Database as Database;
-use \Youkok2\Utilities\Utilities as Utilities;
 
 /*
  * LoadCoursesJson extending Base
@@ -24,39 +23,27 @@ use \Youkok2\Utilities\Utilities as Utilities;
 class LoadCoursesJson extends BaseProcessor {
 
     /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
+    }
+
+    /*
      * Constructor
      */
 
-    public function __construct($returnData = false) {
-        parent::__construct($returnData);
-        
-        if (self::requireCli() or self::requireAdmin()) {
-            // Check database
-            if ($this->makeDatabaseConnection()) {
-                // Build search file
-                $this->buildSearchFile();
-                
-                // Close database connection
-                Database::close();
-            }
-            else {
-                $this->setError();
-            }
-        }
-        else {
-            // No access
-            $this->noAccess();
-        }
-        
-        // Return data
-        $this->returnData();
+    public function __construct($method, $settings) {
+        // Calling Base' constructor
+        parent::__construct($method, $settings);
     }
     
     /*
      * Fetch all courses and build a search file
      */
     
-    private function buildSearchFile() {
+    public function run() {
         $courses = [];
         
         // Build query
@@ -70,17 +57,12 @@ class LoadCoursesJson extends BaseProcessor {
         
         // Append to array
         while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
-            $element = ElementCollection::get($row['id']);
-            
-            // Check if valid Element
-            if ($element !== null) {
-                // Get course info
-                $course = $element->controller->getCourse();
-                
-                // Append to array
-                $courses[] = array('course' => $course['code'] . ' - ' . $course['name'],
-                    'url' => $element->getUrlFriendly());
-            }
+            $element = Element::get($row['id']);
+
+            // Append to array
+            $courses[] = array(
+                'course' => $element->getCourseCode() . ' - ' . $element->getCourseName(),
+                'url' => $element->getFullUrl());
         }
         
         // Put content to file
