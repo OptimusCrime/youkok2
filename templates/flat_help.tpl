@@ -20,6 +20,7 @@
                     filopplastning.</p>
                 </div>
                 <div class="col-xs-12 col-md-4" id="sidebar">
+[[+include file="sidebar_read.tpl"]]
 [[+include file="sidebar.tpl"]]
                 </div>
             </div>

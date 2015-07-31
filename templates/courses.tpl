@@ -37,26 +37,10 @@
                         <p>Dersom du savner et fag i listen kan du <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">kontakte oss</a>, så legger vi det til.</p>
                     </div>
                 </div>
-                <div id="archive-sidebar-numbers" class="sidebar-element">
-                    <h3>Commits</h3>
-                    <div id="archive-sidebar-numbers-inner">
-                        <p>Laster...</p>
-                    </div>
-                </div>
-                <div id="archive-sidebar-newest" class="sidebar-element">
-                    <h3>Nyeste elementer</h3>
-                    <div id="archive-sidebar-newest-inner">
-                        <p>Laster...</p>
-                    </div>
-                </div>
-                <div id="archive-sidebar-last-downloads" class="sidebar-element">
-                    <h3>Siste nedlastninger</h3>
-                    <div id="archive-sidebar-last-downloads-inner">
-                        <p>Laster...</p>
-                    </div>
-                </div>
+[[+include file="sidebar.tpl"]]
             </div>
         </div>
 [[+include file="footer.tpl"]]
+[[+include file="sidebar_templates.tpl"]]
 </body>
 </html>

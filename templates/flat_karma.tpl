@@ -57,9 +57,11 @@
                     <p>Legg merke til at disse verdiene kan endre seg.</p>
                 </div>
                 <div id="sidebar" class="col-xs-12 col-md-4">
- [[+include file="sidebar.tpl"]]
+[[+include file="sidebar_read.tpl"]]
+[[+include file="sidebar.tpl"]]
                 </div>
             </div>
 [[+include file="footer.tpl"]]
+[[+include file="sidebar_templates.tpl"]]
 </body>
 </html>

@@ -27,5 +27,6 @@
                 </div>
             </div>
 [[+include file="footer.tpl"]]
+[[+include file="sidebar_templates.tpl"]]
 </body>
 </html>

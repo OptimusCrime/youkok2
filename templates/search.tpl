@@ -23,7 +23,7 @@
                                         <strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]
                                     </a>
                                 </li>[[+/foreach]]
-                                
+
                             </ul>
                         </div>
                     </div>[[+else]]
@@ -37,5 +37,6 @@
                 </div>
             </div>
 [[+include file="footer.tpl"]]
+[[+include file="sidebar_templates.tpl"]]
 </body>
 </html>

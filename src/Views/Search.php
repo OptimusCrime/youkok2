@@ -30,7 +30,10 @@ class Search extends BaseView {
     public function __construct() {
         // Calling Base' constructor
         parent::__construct();
-        
+
+        // Set menu
+        $this->template->assign('HEADER_MENU', '');
+
         if (!isset($_GET['s']) or strlen($_GET['s']) == 0) {
             $this->template->assign('SEARCH_MODE', 'info');
         }
