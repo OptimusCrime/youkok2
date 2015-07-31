@@ -26,4 +26,5 @@
                                 </div>
                             </a>
                         </li>[[+/foreach]]
+
                     </ul>
