@@ -62,6 +62,7 @@ class Element extends BaseModel {
                 'null' => false,
                 'db' => true,
                 'arr' => true,
+                'ignore_insert' => true,
             ],
             'name' => [
                 'type' => 'string',

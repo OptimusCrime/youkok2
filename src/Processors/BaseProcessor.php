@@ -102,6 +102,20 @@ abstract class BaseProcessor extends Youkok2 {
         // Check if the user is admin
         return Me::isAdmin();
     }
+    protected function requireLoggedIn() {
+        // Check if database is initiated
+        if (Database::$db === null) {
+            if (!$this->makeDatabaseConnection()) {
+                return false;
+            }
+        }
+
+        // Init user is not already inited
+        Me::init();
+
+        // Check if the user is admin
+        return Me::isLoggedIn();
+    }
 
     /*
      * Checks if the user needs connection with the database

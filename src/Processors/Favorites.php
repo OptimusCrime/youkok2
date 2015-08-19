@@ -13,6 +13,7 @@ namespace Youkok2\Processors;
  * Define what classes to use
  */
 
+use \Youkok2\Models\Favorite as Favorite;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
 
@@ -20,42 +21,38 @@ use \Youkok2\Utilities\Database as Database;
  * The Static class, extending Base class
  */
 
-class Favorite extends BaseProcessor {
+class Favorites extends BaseProcessor {
+    
+    /*
+     * Override
+     */
 
+    protected function checkPermissions() {
+        return $this->requireLoggedIn();
+    }
+    
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
+    }
+    
     /*
      * Constructor
      */
 
-    public function __construct($outputData = false, $returnData = false) {
+    public function __construct($method, $settings) {
         // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
-        // Check database
-        if ($this->makeDatabaseConnection()) {
-            // Init user
-            Me::init();
-            
-            // Check if online
-            if (Me::isLoggedIn()) {
-                $this->updateFavorite();
-            }
-            else {
-                $this->setError();
-            }
-        }
-        else {
-            $this->setError();
-        }
-        
-        // Return data
-        $this->outputData();
+        parent::__construct($method, $settings);
     }
 
     /*
      * Set or remove favorite for a element
      */
 
-    private function updateFavorite() {
+    public function run() {
         if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['type']) and 
             ($_POST['type'] == 'add' or $_POST['type'] == 'remove')) {
             

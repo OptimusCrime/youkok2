@@ -49,6 +49,7 @@ class ChangePassword extends BaseModel {
                 'type' => 'integer',
                 'null' => false,
                 'db' => true,
+                'ignore_insert' => true,
             ],
             'user' => [
                 'type' => 'integer',

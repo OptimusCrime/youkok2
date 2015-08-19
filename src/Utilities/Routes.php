@@ -93,7 +93,7 @@ class Routes {
          * Normal processors
          */
 
-        'Favorite' => [
+        'Favorites' => [
             ['path' => '/favorite'],
         ],
         'Module' => [
