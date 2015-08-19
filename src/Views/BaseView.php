@@ -55,7 +55,6 @@ class BaseView extends Youkok2 {
         $this->initSite();
                 
         // Set some site data
-        $this->addSiteData('search_base', URL . URL_RELATIVE . substr(Routes::getRoutes()['Archive'][0]['path'], 1) . '/');
         $this->addSiteData('view', 'general');
 
         // Init the user object

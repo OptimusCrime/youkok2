@@ -30,5 +30,8 @@ class Redirect {
 
         // Redirect
         header('Location: ' . URL_FULL . $p);
+
+        // Kill process
+        exit();
     }
 } 

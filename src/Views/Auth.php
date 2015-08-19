@@ -14,6 +14,7 @@ namespace Youkok2\Views;
  */
 
 use \Youkok2\Models\Me as Me;
+use \Youkok2\Models\ChangePassword as ChangePassword;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Redirect as Redirect;
 use \Youkok2\Utilities\MessageManager as MessageManager;
@@ -80,7 +81,6 @@ class Auth extends BaseView {
         // Check if the user is logged in
         if (!Me::isLoggedIn()) {
             Redirect::send('');
-            exit();
         }
         
         // Log the user out
@@ -95,7 +95,6 @@ class Auth extends BaseView {
         // Check if the user is logged in
         if (Me::isLoggedIn()) {
             Redirect::send('');
-            exit();
         }
         
         // Set view
@@ -192,7 +191,6 @@ class Auth extends BaseView {
     public function displayForgottenPassword() {
         if (Me::isLoggedIn()) {
             Redirect::send('');
-            exit();
         }
         
         // The menu

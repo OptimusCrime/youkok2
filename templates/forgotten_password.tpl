@@ -11,9 +11,10 @@
                     </form>
                 </div>
                 <div id="sidebar" class="col-xs-12 col-md-4">
-                    [[+include file="sidebar.tpl"]]
+[[+include file="sidebar.tpl"]]
                 </div>
             </div>
 [[+include file="footer.tpl"]]
+[[+include file="sidebar_templates.tpl"]]
 </body>
 </html>

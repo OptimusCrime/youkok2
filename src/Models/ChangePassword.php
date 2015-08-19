@@ -8,26 +8,65 @@
 
 namespace Youkok2\models;
 
+
 /*
  * Loads other classes
  */
 
-use \Youkok2\Models\Controllers\ChangePasswordController as ChangePasswordController;
+use \Youkok2\Models\Controllers\MessageController as MessageController;
+use \Youkok2\Models\StaticControllers\MessageStaticController as MessageStaticController;
 
 /*
  * The Course class
  */
 
-class ChangePassword {
+class ChangePassword extends BaseModel {
 
     /*
      * Variables
      */
 
+    protected $controller;
+
+    // Fields in the database
     private $id;
     private $user;
     private $hash;
     private $timeout;
+
+    /*
+     * Schema
+     */
+
+    protected $schema = [
+        'meta' => [
+            'table' => 'changepassword',
+            'cacheable' => false,
+        ],
+        'fields' => [
+            // Database fields
+            'id' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+            ],
+            'user' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+            ],
+            'hash' => [
+                'type' => 'string',
+                'null' => false,
+                'db' => true,
+            ],
+            'timeout' => [
+                'type' => 'datetime',
+                'null' => false,
+                'db' => true,
+            ]
+        ]
+    ];
 
     /*
      * Constructor

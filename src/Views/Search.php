@@ -30,7 +30,10 @@ class Search extends BaseView {
     public function __construct() {
         // Calling Base' constructor
         parent::__construct();
-        
+
+        // Set menu
+        $this->template->assign('HEADER_MENU', '');
+
         if (!isset($_GET['s']) or strlen($_GET['s']) == 0) {
             $this->template->assign('SEARCH_MODE', 'info');
         }
@@ -47,6 +50,9 @@ class Search extends BaseView {
      */
 
     private function search () {
+        // Variable to keep track of the results
+        $collection = [];
+
         // Assign the search
         $this->template->assign('SEARCH_MODE', 'search');
         $this->template->assign('SEARCH_QUERY', $_GET['s']);
@@ -64,17 +70,17 @@ class Search extends BaseView {
 
         // Check if anything was clean as fuck
         if (count($input_clean) > 0) {
-            
+
             $course_code = array();
             $course_name = array();
-            
+
             // Search by course code
             foreach ($input_clean as $v) {
-                $search_by_code  = "SELECT id" . PHP_EOL;
+                $search_by_code = "SELECT id" . PHP_EOL;
                 $search_by_code .= "FROM archive" . PHP_EOL;
                 $search_by_code .= "WHERE name LIKE :query" . PHP_EOL;
                 $search_by_code .= "AND parent IS NULL";
-                
+
                 $search_by_code_query = Database::$db->prepare($search_by_code);
                 $search_by_code_query->execute(array(':query' => '%' . $v . '%\|\|%'));
                 while ($row = $search_by_code_query->fetch(\PDO::FETCH_ASSOC)) {
@@ -85,11 +91,11 @@ class Search extends BaseView {
             }
 
             foreach ($input_clean as $v) {
-                $search_by_name  = "SELECT id" . PHP_EOL;
+                $search_by_name = "SELECT id" . PHP_EOL;
                 $search_by_name .= "FROM archive" . PHP_EOL;
                 $search_by_name .= "WHERE name LIKE :query" . PHP_EOL;
                 $search_by_name .= "AND parent IS NULL";
-                
+
                 $search_by_name_query = Database::$db->prepare($search_by_name);
                 $search_by_name_query->execute(array(':query' => '%\|\|%' . $v . '%'));
                 while ($row = $search_by_name_query->fetch(\PDO::FETCH_ASSOC)) {
@@ -105,8 +111,7 @@ class Search extends BaseView {
                 foreach ($course_code as $v) {
                     if (!array_key_exists($v, $search_results)) {
                         $search_results[$v] = 1;
-                    }
-                    else {
+                    } else {
                         $search_results[$v]++;
                     }
                 }
@@ -115,8 +120,7 @@ class Search extends BaseView {
                 foreach ($course_name as $v) {
                     if (!array_key_exists($v, $search_results)) {
                         $search_results[$v] = 1;
-                    }
-                    else {
+                    } else {
                         $search_results[$v]++;
                     }
                 }
@@ -130,21 +134,20 @@ class Search extends BaseView {
                 // Get the final results
                 $ret = '';
                 $num = 0;
-                
+
                 // Loop all the search results
                 foreach ($search_results as $k => $v) {
                     // Create new element
                     $element = new Element();
                     $element->createById($k);
-                    
+
                     // Check if element was found
-                    if ($element->controller->wasFound()) {
+                    if ($element->wasFound()) {
                         // Increase number of hits
                         $num++;
 
                         // Highlight names
-                        $course = $element->controller->getCourse();
-                        $match_names = array($course['name'], $course['code']);
+                        $match_names = [$element->getCourseCode(), $element->getCourseName()];
                         for ($i = 0; $i <= 1; $i++) {
                             foreach ($input_clean as $iv) {
                                 $iv_clean = str_replace('%', '.', $iv);
@@ -153,28 +156,19 @@ class Search extends BaseView {
                                     break;
                                 }
                             }
-                        }                            
+                        }
 
-                        // Build string
-                        $ret .= '<li class="' . ($element->isEmpty() ? 'course-empty ' : '') . 'list-group-item">';
-                        $ret .= '    <a href="' . $element->controller->generateUrl(Routes::ARCHIVE) . '"><strong>' . $match_names[1] . '</strong> &mdash; ' . $match_names[0] . '</a>';
-                        $ret .= '</li>';
+                        // Set data
+                        $element->setName($match_names[0] . '||' . $match_names[1]);
+
+                        // Store to collection
+                        $collection[] = $element;
                     }
                 }
+            }
+        }
 
-                // Assign template variables
-                $this->template->assign('SEARCH_NUM', number_format($num));
-                $this->template->assign('SEARCH_RESULT', $ret);
-            }
-            else {
-                // No results
-                $this->template->assign('SEARCH_NUM', 'ingen');
-                $this->template->assign('SEARCH_RESULT', 'Ditt søk returnerte ingen treff!');
-            }
-        }
-        else {
-            $this->template->assign('SEARCH_NUM', 'ingen');
-            $this->template->assign('SEARCH_RESULT', 'Ditt søk returnerte ingen treff!');
-        }
+        // Assign variables
+        $this->template->assign('ELEMENTS', $collection);
     }
 }
