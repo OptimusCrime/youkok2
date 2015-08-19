@@ -22,19 +22,22 @@ use \Youkok2\Utilities\Loader as Loader;
  */
 
 class Register extends BaseProcessor {
+    
+    /*
+     * Override
+     */
 
+    protected function requireDatabase() {
+        return true;
+    }
+    
     /*
      * Constructor
      */
 
-    public function __construct($outputData = false, $returnData = false) {
+    public function __construct($method, $settings) {
         // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-
-        // Try to connect to the database
-        if (!$this->makeDatabaseConnection()) {
-            $this->setError();
-        }
+        parent::__construct($method, $settings);
     }
 
     /*
@@ -63,14 +66,6 @@ class Register extends BaseProcessor {
         }
         else {
             $this->setData('code', 500);
-        }
-        
-        // Check if we should return the data right away
-        if ($this->outputData) {
-            $this->outputData();
-        }
-        if ($this->returnData) {
-            return $this->returnData();
         }
     }
 }

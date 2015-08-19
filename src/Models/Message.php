@@ -6,7 +6,7 @@
  * Project: Youkok2
 */
 
-namespace Youkok2\models;
+namespace Youkok2\Models;
 
 /*
  * Loads other classes
