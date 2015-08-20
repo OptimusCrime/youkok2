@@ -15,9 +15,11 @@ namespace Youkok2\Views;
 use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Models\Message as Message;
+use \Youkok2\Utilities\BacktraceManager as BacktraceManager;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\CsrfManager as CsrfManager;
 use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Utilities\JavaScriptLoader as JavaScriptLoader;
 use \Youkok2\Utilities\Loader as Loader;
 use \Youkok2\Utilities\MessageManager as MessageManager;
 use \Youkok2\Utilities\Routes as Routes;
@@ -33,10 +35,7 @@ class BaseView extends Youkok2 {
      */
 
     public $template;
-    private $query;
-    private $sqlLog;
     private $siteData;
-    protected $signer;
     
     /*
      * Constructor
@@ -53,9 +52,6 @@ class BaseView extends Youkok2 {
 
         // Init the site itself
         $this->initSite();
-                
-        // Set some site data
-        $this->addSiteData('view', 'general');
 
         // Init the user object
         $this->initUser();
@@ -63,40 +59,7 @@ class BaseView extends Youkok2 {
         // Set environment settings
         $this->setEnvSettings();
     }
-
-    /*
-     * Init the site and check what we should do
-     */
-
-    private function initSite() {
-        // Check if we're offline
-        if (defined('AVAILABLE') and !AVAILABLE) {
-            // We're offline, check if we should be allowed still
-            if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
-                // Not whitelisted, kill
-                new Error('unavailable');
-                die();
-            }
-        }
-
-        // Trying to connect to the database
-        try {
-            Database::connect();
-
-            // Set debug log
-            if (DEV) {
-                $this->sqlLog = [];
-                Database::setLog($this->sqlLog);
-            }
-        }
-        catch (\Exception $e) {
-            $this->db = null;
-
-            new Error('db');
-            die();
-        }
-    }
-
+    
     /*
      * Init the template engine
      */
@@ -129,6 +92,36 @@ class BaseView extends Youkok2 {
 
         // Assign query
         $this->template->assign('BASE_QUERY', Loader::getQuery());
+    }
+
+    /*
+     * Init the site and check what we should do
+     */
+
+    private function initSite() {
+        // Check if we're offline
+        if (defined('AVAILABLE') and !AVAILABLE) {
+            // We're offline, check if we should be allowed still
+            if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
+                // Not whitelisted, kill
+                new Error('unavailable');
+                die();
+            }
+        }
+
+        // Trying to connect to the database
+        try {
+            Database::connect();
+        }
+        catch (\Exception $e) {
+            $this->db = null;
+
+            new Error('db');
+            die();
+        }
+        
+        // Set some site data
+        $this->addSiteData('view', 'general');
     }
 
     /*
@@ -193,7 +186,60 @@ class BaseView extends Youkok2 {
 
         $this->template->assign('CSRF_TOKEN', htmlspecialchars(CsrfManager::getSignature()));
     }
+    
+    /*
+     * Add data to the json object displayed at all pages
+     */
+    
+    protected function addSiteData($key, $value) {
+        $this->siteData[$key] = $value;
+    }
+    
+    /*
+     * Override default display method from Smarty
+     */
 
+    protected function displayAndCleanup($template, $sid = null) {
+        // Get messages
+        $messages = Message::getMessages(Loader::getQuery());
+        
+        // Check (and handle) message
+        if (count($messages) > 0) {
+            foreach ($messages as $message) {
+                MessageManager::addMessage($message->getMessage(), $message->getType(), true);
+            }
+        }
+        
+        // If develop, assign dev variables
+        if (DEV) {
+            $this->template->assign('DEV_QUERIES_NUM', Database::getQueryCount());
+            $this->template->assign('DEV_CACHE_LOAD_NUM', CacheManager::getCount());
+            $this->template->assign('DEV_QUERIES_BACKTRACE', Database::getQueryBacktrace());
+        }
+        
+        // Assign the js module list
+        $this->template->assign('JS_MODULES', JavaScriptLoader::get());
+        
+        // Load message
+        $this->showMessages();
+        
+        // Load cache
+        $this->addSiteData('cache_time', CacheManager::loadTypeaheadCache());
+        
+        // Load site data
+        $this->template->assign('SITE_DATA', addslashes(json_encode($this->siteData)));
+        
+        // Display load time
+        $time = \PHP_Timer::stop();
+        $this->template->assign('TIMER', \PHP_Timer::secondsToTimeString($time));
+        
+        // Call Smarty
+        $this->template->display($template, $sid);
+
+        // Close database and process cache
+        $this->close();
+    }
+    
     /*
      * Returning 404 page
      */
@@ -215,14 +261,6 @@ class BaseView extends Youkok2 {
         Database::close();
     }
     
-    /*
-     * Add date to the json object displayed at all pages
-     */
-    
-    protected function addSiteData($key, $value) {
-        $this->siteData[$key] = $value;
-    }
-
     /*
      * Display message (if any) TODO REMOVE
      */
@@ -286,145 +324,6 @@ class BaseView extends Youkok2 {
         }
         else {
             $this->template->assign('SITE_MESSAGES', null);
-        }
-    }
-    
-    /*
-     * Override default display method from Smarty
-     */
-
-    protected function displayAndCleanup($template, $sid = null) {
-        // Get messages
-        $messages = Message::getMessages(Loader::getQuery());
-        
-        // Check (and handle) message
-        if (count($messages) > 0) {
-            foreach ($messages as $message) {
-                MessageManager::addMessage($message->getMessage(), $message->getType(), true);
-            }
-        }
-        
-        // If develop, assign dev variables
-        if (DEV) {
-            $this->template->assign('DEV_QUERIES_NUM', Database::getCount());
-            $this->template->assign('DEV_CACHE_LOAD_NUM', CacheManager::getCount());
-            
-            $this->template->assign('DEV_QUERIES_BACKTRACE', $this->cleanSqlLog($this->sqlLog));
-        }
-        
-        // Import js modules
-        if ($dh = opendir(BASE_PATH . '/assets/js/youkok/')) {
-            $js_modules = [];
-            while (($file = readdir($dh)) !== false) {
-                if ($file != '.' and $file != '..') {
-                    $js_modules[] = '<script type="text/javascript" src="assets/js/youkok/' . $file  . '?v=' . VERSION . '"></script>';
-                }
-            }
-            closedir($dh);
-            
-            // Assign the js module list
-            $this->template->assign('JS_MODULES', implode(PHP_EOL, $js_modules));
-        }
-        
-        // Load message
-        $this->showMessages();
-        
-        // Load cache
-        $this->addSiteData('cache_time', CacheManager::loadTypeaheadCache());
-        
-        // Load site data
-        $this->template->assign('SITE_DATA', addslashes(json_encode($this->siteData)));
-        
-        // Display load time
-        $time = \PHP_Timer::stop();
-        $this->template->assign('TIMER', \PHP_Timer::secondsToTimeString($time));
-        
-        // Call Smarty
-        $this->template->display($template, $sid);
-
-        // Close database and process cache
-        $this->close();
-    }
-    
-    /*
-     * Clean up SQL log TODO REMOVE
-     */
-    
-    private function cleanSqlLog($arr) {
-        // Some variables
-        $str = '';
-        $has_prepare = false;
-        $prepare_val = [];
-        
-        // Check that we have some acutal queries here
-        if (count($arr) > 0) {
-            // Loop each post
-            foreach ($arr as $v) {
-                // Temp variables
-                $temp_loc = $temp_loc = $this->structureBacktrace($v['backtrace']);
-                $temp_query = '';
-                
-                // Check what kind of query we're dealing with
-                if (isset($v['query'])) {
-                    // Normal query (no binds)
-                    $temp_query = $v['query'];
-                }
-                else if (isset($v['exec'])) {
-                    // Normal exec (no binds)
-                    $temp_query = $v['exec'];
-                }
-                else {
-                    // Either bind or prepare
-                    if (isset($v['prepare'])) {
-                        // Query is being preared
-                        $has_prepare = true;
-                        $prepare_val = $v['prepare'];
-                    }
-                    else if (isset($v['execute'])) {
-                        // Query is executed with binds, check if binds are found
-                        if ($has_prepare) {
-                            // Binds are found, replace keys with bind values
-                            $temp_query = str_replace(array_keys($v['execute']), $v['execute'], $prepare_val);
-                            
-                            // Reset prepare-value
-                            $has_prepare = false;
-                        }
-                    }
-                }
-                
-                // Clean up n stuff
-                if (!$has_prepare) {
-                    $str .= $temp_loc . '<pre>' . $temp_query . '</pre>';
-                }
-            }
-        }
-        
-        // Return resulting string
-        return $str;
-    }
-    
-    /*
-     * Structures the backtraces TODO REMOVE
-     */
-    
-    private function structureBacktrace($arr) {
-        if (count($arr) > 0) {
-            $trace = $arr[0];
-            if (count($arr) == 1) {
-                return '<p>' . $trace['file'] . ' @ line ' . $trace['line'] . ':</p>';
-            }
-            else {
-                $tooltip = '';
-                $lim = ((count($arr) > 15) ? 14 : (count($arr) - 1));
-                
-                for ($i = 1; $i <= $lim; $i++) {
-                    $trace_temp = $arr[$i];
-                    if (isset($trace_temp['file'])) {
-                        $tooltip .= ($i + 1) . '. ' . $trace_temp['file'] . ' @ line ' . $trace_temp['line'] . "&#xA;";
-                    }
-                }
-                return '<p style="cursor: help;" title="' . $tooltip . '">' . $trace['file'] . ' @ line ' . $trace['line'] . ':</p>';
-            }
         }
     }
 }

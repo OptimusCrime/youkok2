@@ -9,86 +9,111 @@
 
 namespace Youkok2\Utilities\PDO2;
 
+/*
+ * Dirty require once here because autoloading does not work here
+ */
+
 require_once dirname(__FILE__) . '/PDOStatement2.php';
+
+/*
+ * PDO2 class that extends the regular PDO class with custom logging for easier debugging
+ */
 
 class PDO2 extends \PDO {
     
-    //
-    // Variables
-    //
+    /*
+     * Variables
+     */
     
-    private $queryCount = 0;
-    private $debug = false;
-    protected $log;
+    private $queryCount;
+    private $queryLog;
     
-    //
-    // Set debug value
-    //
+    /*
+     * Constructor
+     */
     
-    public function setLog(&$log) {
-        $this->debug = true;
-        $this->log = &$log;
+    public function __construct($dsn, $username = null, $password = null, $options = []) {
+        // Call parent constructor first
+        parent::__construct($dsn, $username, $password, $options);
         
-        $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array('Youkok2\\Utilities\\PDO2\\PDOStatement2', array($this, &$log)));
+        // Check if this is dev environment
+        if (DEFINED('DEV') and DEV) {
+            $this->queryCount = 0;
+            $this->queryLog = [];
+            
+            // Set logging to this query log
+            $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array('Youkok2\\Utilities\\PDO2\\PDOStatement2', array($this, &$this->queryLog)));
+        }
     }
     
-    //
-    // pdo->query override
-    //
+    /*
+     * Override PDO->query
+     */
     
     public function query($query) {
-        // Increase counter
-        $this->queryCount++;
-        
-        // Do logging?
-        if ($this->debug) {
-            $this->log[] = array('query' => $query, 'backtrace' => debug_backtrace());
+        // Check if this is dev environment
+        if (DEFINED('DEV') and DEV) {
+            // Increase the count
+            $this->queryCount++;
+            
+            // Add to log
+            $this->queryLog[] = array('query' => $query, 'backtrace' => debug_backtrace());
         }
         
-        // Call parent
+        // Call parent method
         return parent::query($query);
     }
     
-    //
-    // pdo->exec override
-    //
+    /*
+     * Override PDO->exec
+     */
     
     public function exec($statement) {
-        // Increase counter
-        $this->queryCount++;
-        
-        // Do logging?
-        if ($this->debug) {
-            $this->log[] = array('exec' => $statement, 'backtrace' => debug_backtrace());
+        // Check if this is dev environment
+        if (DEFINED('DEV') and DEV) {
+            // Increase the count
+            $this->queryCount++;
+            
+            // Add to log
+            $this->queryLog[] = array('exec' => $statement, 'backtrace' => debug_backtrace());
         }
         
-        // Call parent
+        // Call parent method
         return parent::exec($statement);
     }
     
-    //
-    // pdo->prepare
-    //
+    /*
+     * Override PDO->prepare
+     */
     
     public function prepare($statement, $options = null) {
-        // Increase counter
-        $this->queryCount++;
-        
-        // Do logging?
-        if ($this->debug) {
-            $this->log[] = array('prepare' => $statement, 'backtrace' => debug_backtrace());
+        // Check if this is dev environment
+        if (DEFINED('DEV') and DEV) {
+            // Increase the count
+            $this->queryCount++;
+            
+            // Add to log
+            $this->queryLog[] = array('prepare' => $statement, 'backtrace' => debug_backtrace());
         }
         
-        // Call parent
+        // Call parent method
         return parent::prepare($statement);
     }
     
-    //
-    // Public method for returning the number of queries ran
-    //
+    /*
+     * Return the number of queries here
+     */
     
-    public function getCount() {
+    public function getQueryCount() {
         // Returning the current count
         return $this->queryCount;
+    }
+    
+    /*
+     * Return the query log here
+     */
+    
+    public function getQueryLog() {
+        return $this->queryLog;
     }
 }
