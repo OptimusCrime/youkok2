@@ -231,14 +231,22 @@ abstract class BaseProcessor extends Youkok2 {
     }
     
     /*
-     * Get from settings
+     * Get settings
      */
     
-    protected function getSettings($key) {
+    protected function getSetting($key) {
         if (!isset($this->settings[$key])) {
             return null;
         }
         
         return $this->settings[$key];
+    }
+    
+    /*
+     * Set settings
+     */
+    
+    protected function setSetting($key, $value) {
+        $this->settings[$key] = $value;
     }
 }

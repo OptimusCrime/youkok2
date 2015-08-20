@@ -14,18 +14,23 @@ var Youkok = (function (module) {
                 $.ajax({
                     cache: false,
                     url: 'processor/graybox/newest',
-                    success: function(html) {
-                        // Set content
-                        $('#archive-sidebar-newest-inner').html(html);
+                    success: function(json) {
+                        // Get template
+                        var template_sidebar_newest = _.template(
+                            $('script.template-sidebar-newest').html()
+                        );
 
-                        // Load moment
+                        // Set content
+                        $('#archive-sidebar-newest-inner').html(template_sidebar_newest({'elements': json.data}));
+                        
+                         // Apply moment.js
                         $('#archive-sidebar-newest-inner .moment-timestamp').each(function () {
-                            $that = $(this);
+                            var $that = $(this);
                             $that.html(moment($(this).data('ts')).fromNow());
                         });
                         
                         // Tooltip
-                        $('#archive-sidebar-newest-inner a').tooltip();
+                        $('#archive-sidebar-newest-inner .moment-timestamp').tooltip();
                     }
                 });
             }
@@ -38,7 +43,7 @@ var Youkok = (function (module) {
                     success: function(json) {
                         // Get template
                         var template_sidebar_popular = _.template(
-                            $( "script.template-sidebar-popular" ).html()
+                            $('script.template-sidebar-popular').html()
                         );
 
                         // Set content
@@ -58,7 +63,7 @@ var Youkok = (function (module) {
                     success: function(json) {
                         // Get template
                         var template_sidebar_commits = _.template(
-                            $( "script.template-sidebar-commits" ).html()
+                            $('script.template-sidebar-commits').html()
                         );
 
                         // Set content

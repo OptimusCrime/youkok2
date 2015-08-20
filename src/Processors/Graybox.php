@@ -104,6 +104,27 @@ class Graybox extends BaseProcessor {
         // Set OK
         $this->setOk();
     }
+    
+    /*
+     * Get the newest elements
+     */
+    
+    public function getNewest() {
+        // Get the collection
+        $raw_collection = Element::getNewest();
+        
+        // Encode the raw collection
+        $collection = [];
+        foreach ($raw_collection as $v) {
+            $collection[] = $v->toArray();
+        }
+        
+        // Set to data
+        $this->setData('data', $collection);
+        
+        // Set OK
+        $this->setOk();
+    }
 
     /*
      * Get most popular downloads
@@ -122,5 +143,4 @@ class Graybox extends BaseProcessor {
         // Set OK
         $this->setOk();
     }
-
 }

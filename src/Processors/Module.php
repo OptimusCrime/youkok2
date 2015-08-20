@@ -71,8 +71,8 @@ class Module extends BaseProcessor {
         $collection = [];
         
         // Get the correct delta
-        if ($this->getSettings('delta') !== null) {
-            $delta_numeric = $this->getSettings('delta');
+        if ($this->getSetting('delta') !== null) {
+            $delta_numeric = $this->getSetting('delta');
         }
         else {
             $delta_numeric = Me::getMostPopularDelta();

@@ -416,89 +416,6 @@ class ElementController extends BaseController {
         // Return full path
         return FILE_PATH . '/' . $folder1 . '/' . $folder2 . '/' . $this->model->getChecksum();
     }
-    
-    /*
-     * Save the current Element
-     */
-    
-    public function save() {
-        $insert_element  = "INSERT INTO archive (name, url_friendly, owner, parent, empty, checksum, mime_type, missing_image, size, is_directory, is_accepted, is_visible, exam, url, added) " . PHP_EOL;
-        $insert_element .= "VALUES (:name, :url_friendly, :owner, :parent, :empty, :checksum, :mime_type, :missing_image, :size, :is_directory, :is_accepted, :is_visible, :exam, :url, NOW())";
-
-        $insert_element_query = Database::$db->prepare($insert_element);
-        $insert_element_query->execute([':name' => $this->model->getName(),
-            ':url_friendly' => $this->model->getUrlFriendly(),
-            ':owner' => $this->model->getOwner(),
-            ':parent' => $this->model->getParent(),
-            ':empty' => (int) $this->model->isEmpty(),
-            ':checksum' => $this->model->getChecksum(),
-            ':mime_type' => $this->model->getMimeType(),
-            ':missing_image' => (int) $this->model->getMissingImage(),
-            ':size' => $this->model->getSize(),
-            ':is_directory' => (int) $this->model->isDirectory(),
-            ':is_accepted' => (int) $this->model->isAccepted(),
-            ':is_visible' => (int) $this->model->isVisible(),
-            ':exam' => $this->model->getExam(),
-            ':url' => $this->model->getUrl(),
-        ]);
-
-        // Set id to model
-        $this->model->setId(Database::$db->lastInsertId());
-        
-        // Cache
-        $this->cache();
-    }
-    
-    /*
-     * Update the current Element
-     */
-    
-    public function update() {
-        try {
-            $update_element  = "UPDATE archive SET" . PHP_EOL;
-            $update_element .= "name = :name," . PHP_EOL;
-            $update_element .= "url_friendly = :url_friendly," . PHP_EOL;
-            $update_element .= "owner = :owner," . PHP_EOL;
-            $update_element .= "parent = :parent," . PHP_EOL;
-            $update_element .= "empty = :empty," . PHP_EOL;
-            $update_element .= "checksum = :checksum," . PHP_EOL;
-            $update_element .= "mime_type = :mime_type," . PHP_EOL;
-            $update_element .= "missing_image = :missing_image," . PHP_EOL;
-            $update_element .= "size = :size," . PHP_EOL;
-            $update_element .= "is_directory = :is_directory," . PHP_EOL;
-            $update_element .= "is_accepted = :is_accepted," . PHP_EOL;
-            $update_element .= "is_visible = :is_visible," . PHP_EOL;
-            $update_element .= "exam = :exam," . PHP_EOL;
-            $update_element .= "url = :url" . PHP_EOL;
-            $update_element .= "WHERE id = :id" . PHP_EOL;
-            $update_element .= "LIMIT 1";
-            
-            $update_element_query = Database::$db->prepare($update_element);
-            $update_element_query->execute([':name' => $this->model->getName(),
-                ':url_friendly' => $this->model->getUrlFriendly(),
-                ':owner' => $this->model->getOwner(),
-                ':parent' => $this->model->getParent(),
-                ':empty' => (int) $this->model->isEmpty(),
-                ':checksum' => $this->model->getChecksum(),
-                ':mime_type' => $this->model->getMimeType(),
-                ':missing_image' => (int) $this->model->getMissingImage(),
-                ':size' => $this->model->getSize(),
-                ':is_directory' => (int) $this->model->isDirectory(),
-                ':is_accepted' => (int) $this->model->isAccepted(),
-                ':is_visible' => (int) $this->model->isVisible(),
-                ':exam' => $this->model->getExam(),
-                ':url' => $this->model->getUrl(),
-                ':id' => $this->model->getId(),
-            ]);
-        }
-        catch (\PDOException  $e) {
-            print_r($e->getMessage());
-            die();
-        }
-        
-        // Cache
-        $this->cache();
-    }
 
     /*
      * To Array (for output)
@@ -507,7 +424,10 @@ class ElementController extends BaseController {
     public function toArray($nest = true) {
         // Get the initial fields from the array
         $arr = $this->model->toArrayInitial();
-
+        
+        // Get added pretty
+        $arr['added_pretty'] = $this->model->getAdded(true);
+        
         // Swap name for course information for courses
         if (!$this->hasParent()) {
             $arr['course_code'] = $this->getCourseCode();
