@@ -224,7 +224,7 @@ class BaseView extends Youkok2 {
     }
 
     /*
-     * Display message (if any)
+     * Display message (if any) TODO REMOVE
      */
 
     private function showMessages() {
@@ -314,15 +314,16 @@ class BaseView extends Youkok2 {
         
         // Import js modules
         if ($dh = opendir(BASE_PATH . '/assets/js/youkok/')) {
-            $js_modules = '';
+            $js_modules = [];
             while (($file = readdir($dh)) !== false) {
                 if ($file != '.' and $file != '..') {
-                    $js_modules .= '<script type="text/javascript" src="assets/js/youkok/' . $file  . '?v=' . VERSION . '"></script>' . PHP_EOL;
+                    $js_modules[] = '<script type="text/javascript" src="assets/js/youkok/' . $file  . '?v=' . VERSION . '"></script>';
                 }
             }
             closedir($dh);
             
-            $this->template->assign('JS_MODULES', $js_modules);
+            // Assign the js module list
+            $this->template->assign('JS_MODULES', implode(PHP_EOL, $js_modules));
         }
         
         // Load message
@@ -346,7 +347,7 @@ class BaseView extends Youkok2 {
     }
     
     /*
-     * Clean up SQL log
+     * Clean up SQL log TODO REMOVE
      */
     
     private function cleanSqlLog($arr) {
@@ -403,7 +404,7 @@ class BaseView extends Youkok2 {
     }
     
     /*
-     * Structures the backtraces
+     * Structures the backtraces TODO REMOVE
      */
     
     private function structureBacktrace($arr) {
