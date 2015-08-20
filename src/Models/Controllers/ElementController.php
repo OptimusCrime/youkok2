@@ -437,7 +437,7 @@ class ElementController extends BaseController {
         
         // Add download count if present
         foreach ($this->downloadCount as $v) {
-            if ($v !== 0) {
+            if ($v > 0) {
                 $arr['download_count'] = $v;
             }
         }

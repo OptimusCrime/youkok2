@@ -28,8 +28,27 @@ var Youkok = (function (module) {
                 if (json.code == 200) {
                     // Change was successfull
                     $('#home-most-popular').slideUp(400, function () {
-                        $(this).html(json.html).slideDown(400);
-                        $('#home-most-popular a').tooltip();
+                        // Check if actually have any elements to display
+                        if (json.data.length > 0) {
+                            // Get template
+                            var template_frontpage_popular = _.template(
+                                $('script.template-frontpage-popular').html()
+                            );
+                            
+                            // Set content
+                            $('#home-most-popular').html(template_frontpage_popular({'elements': json.data}));
+                            
+                            // Tooltip
+                            $('#home-most-popular a').tooltip();
+                        }
+                        else {
+                            $('#home-most-popular').html(_.template(
+                                $('script.template-frontpage-no-popular').html()
+                            ));
+                        }
+                        
+                        // Slide up again
+                        $('#home-most-popular').slideDown(400);
                     });
                 }
                 else {

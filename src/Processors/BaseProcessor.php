@@ -140,6 +140,21 @@ abstract class BaseProcessor extends Youkok2 {
     protected function setData($key, $data) {
         $this->data[$key] = $data;
     }
+    protected function setAllData($data) {
+        $this->data = $data;
+    }
+    public function getData() {
+        // Store data in new variable
+        $return_data = $this->data;
+
+        // Check if we should encode
+        if (isset($this->settings['encode']) and $this->settings['encode']) {
+            $return_data = $this->encodeData($return_data);
+        }
+
+        // Return the corect data
+        return $return_data;
+    }
     
     /*
      * Output data
@@ -166,23 +181,6 @@ abstract class BaseProcessor extends Youkok2 {
                 echo json_encode($output_data);
             }
         }
-    }
-
-    /*
-     * Return data
-     */
-
-    public function getData() {
-        // Store data in new variable
-        $return_data = $this->data;
-
-        // Check if we should encode
-        if (isset($this->settings['encode']) and $this->settings['encode']) {
-            $return_data = $this->encodeData($return_data);
-        }
-
-        // Return the corect data
-        return $return_data;
     }
     
     /*

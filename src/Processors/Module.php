@@ -84,6 +84,7 @@ class Module extends BaseProcessor {
         $get_most_popular .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
         $get_most_popular .= ElementController::$delta[$delta_numeric] . PHP_EOL;
         $get_most_popular .= "GROUP BY d.file" . PHP_EOL;
+        $get_most_popular .= "HAVING COUNT(d.id) > 0" . PHP_EOL;
         $get_most_popular .= "ORDER BY downloaded_times DESC, a.added DESC" . PHP_EOL;
         $get_most_popular .= "LIMIT 15";
 
@@ -98,6 +99,9 @@ class Module extends BaseProcessor {
 
         // Set the data
         $this->setData('data', $collection);
+        
+        // Set ok
+        $this->setOK();
     }
     
     /*
