@@ -5,20 +5,20 @@
     <div class="row">
         <div class="col-xs-12" id="footer">
             <p>
-                <a href="changelog.txt">Youkok2 v[[+$VERSION]]</a>
-                [[+nocache]][[+if $DEV]]<a href="https://github.com/OptimusCrime/youkok2/commit/[[+$GIT_HASH]]" target="_blank">[[+$GIT_HASH_SHORT]]</a>[[+/if]][[+/nocache]]
+                <span><a href="changelog.txt">Youkok2 v[[+$VERSION]]</a></span>
+                [[+nocache]][[+if $DEV]]<span><a href="https://github.com/OptimusCrime/youkok2/commit/[[+$GIT_HASH]]" target="_blank">[[+$GIT_HASH_SHORT]]</a></span>[[+/if]][[+/nocache]]
 
-                <a href="om">Om Youkok2</a>
-                <a href="retningslinjer">Retningslinjer</a>
-                <a href="hjelp">Hjelp</a>
-                <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a>
+                <span><a href="om">Om Youkok2</a></span>
+                <span><a href="retningslinjer">Retningslinjer</a></span>
+                <span><a href="hjelp">Hjelp</a></span>
+                <span><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>
                 <span>[[+nocache]][[+$TIMER]][[+/nocache]]</span>
             </p>[[+nocache]][[+if $DEV]]
 
             <p>
                 <span>Antall queries: [[+$DEV_QUERIES_NUM]]</span>
                 <span>Antall fetches: [[+$DEV_CACHE_LOAD_NUM]]</span>
-                <a id="toggle-queries" href="#"><span class="nopadd">Vis</span> alle queries</a>
+                <span><a id="toggle-queries" href="#"><span class="nopadd">Vis</span> alle queries</a></span>
             </p>
             <div id="queries">
                 [[+$DEV_QUERIES_BACKTRACE]]

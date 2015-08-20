@@ -676,17 +676,17 @@ a:visited {
     padding-top: 10px;
     text-align: center;
 }
-#footer p > * {
+#footer span {
     margin-right: 10px;
 }
-#footer p > *:last-child {
+#footer span:last-child {
     margin-right: 0px;
 }
-#footer p > *::before {
+#footer span::before {
     content: "::";
     padding-right: 10px;
 }
-#footer p > *:first-child::before {
+#footer span:first-child::before {
     content: none;
 }
 #footer p, #footer p a {
@@ -697,12 +697,6 @@ a:visited {
 }
 #footer p a:hover {
     text-decoration: underline;
-}
-#footer .first {
-    padding-left: 0px;
-}
-#footer .last {
-    padding-right: 0px;
 }
 
 /*
