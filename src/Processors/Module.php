@@ -70,11 +70,19 @@ class Module extends BaseProcessor {
         // For returning content
         $collection = [];
         
+        // Get the correct delta
+        if ($this->getSettings('delta') !== null) {
+            $delta_numeric = $this->getSettings('delta');
+        }
+        else {
+            $delta_numeric = Me::getMostPopularDelta();
+        }
+        
         // Load most popular files from the system
         $get_most_popular  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
         $get_most_popular .= "FROM download d" . PHP_EOL;
         $get_most_popular .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
-        $get_most_popular .= ElementController::$delta[Me::getMostPopularDelta()] . PHP_EOL;
+        $get_most_popular .= ElementController::$delta[$delta_numeric] . PHP_EOL;
         $get_most_popular .= "GROUP BY d.file" . PHP_EOL;
         $get_most_popular .= "ORDER BY downloaded_times DESC, a.added DESC" . PHP_EOL;
         $get_most_popular .= "LIMIT 15";
@@ -84,7 +92,7 @@ class Module extends BaseProcessor {
         while ($row = $get_most_popular_query->fetch(\PDO::FETCH_ASSOC)) {
             // Get
             $element = Element::get($row['id']);
-            $element->setDownloadCount(Me::getMostPopularDelta(), $row['downloaded_times']);
+            $element->setDownloadCount($delta_numeric, $row['downloaded_times']);
             $collection[] = $element;
         }
 

@@ -13,6 +13,7 @@ namespace Youkok2\Processors;
  * Define what classes to use
  */
 
+use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Models\Element as Element;
 
 /*
@@ -109,13 +110,11 @@ class Graybox extends BaseProcessor {
      */
 
     public function getPopular() {
-        // Array for storing random commits
-        $commits = [];
-
-        $data = Element::getMostPopular([
+        $data = Youkok2::runProcessor('/module/get',[
             'output' => false,
             'encode' => true,
-            'close_db' => false]);
+            'close_db' => false,
+            'delta' => 3]);
 
         // Set to data
         $this->setData('data', $data['data']);

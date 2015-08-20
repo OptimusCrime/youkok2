@@ -23,6 +23,9 @@ var Youkok = (function (module) {
                             $that = $(this);
                             $that.html(moment($(this).data('ts')).fromNow());
                         });
+                        
+                        // Tooltip
+                        $('#archive-sidebar-newest-inner a').tooltip();
                     }
                 });
             }
@@ -40,6 +43,9 @@ var Youkok = (function (module) {
 
                         // Set content
                         $('#archive-sidebar-popular-inner').html(template_sidebar_popular({'elements': json.data}));
+                        
+                        // Tooltip
+                        $('#archive-sidebar-popular-inner a').tooltip();
                     }
                 });
             }

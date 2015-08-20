@@ -229,4 +229,16 @@ abstract class BaseProcessor extends Youkok2 {
             Database::close();
         }
     }
+    
+    /*
+     * Get from settings
+     */
+    
+    protected function getSettings($key) {
+        if (!isset($this->settings[$key])) {
+            return null;
+        }
+        
+        return $this->settings[$key];
+    }
 }

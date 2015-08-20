@@ -514,6 +514,13 @@ class ElementController extends BaseController {
             $arr['course_name'] = $this->getCourseName();
             unset($arr['name']);
         }
+        
+        // Add download count if present
+        foreach ($this->downloadCount as $v) {
+            if ($v !== 0) {
+                $arr['download_count'] = $v;
+            }
+        }
 
         // Check if we should nest (applying parents)
         if ($nest) {
