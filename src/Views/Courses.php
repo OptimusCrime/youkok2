@@ -58,7 +58,7 @@ class Courses extends BaseView {
         $collection = null;
 
         // Load all the courses
-        $get_all_courses  = "SELECT id, name, url_friendly, parent, empty" . PHP_EOL;
+        $get_all_courses  = "SELECT id, name, url_friendly, parent, empty, url, is_directory" . PHP_EOL;
         $get_all_courses .= "FROM archive" . PHP_EOL;
         $get_all_courses .= "WHERE parent IS NULL" . PHP_EOL;
         $get_all_courses .= "AND is_visible = 1" . PHP_EOL;
