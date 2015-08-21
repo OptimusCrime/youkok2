@@ -62,7 +62,7 @@ class BacktraceManager {
                 
                 // Clean up n stuff
                 if (!$has_prepare) {
-                    $str .= $temp_loc . '<pre>' . $temp_query . '</pre>';
+                    $str .= $temp_loc . '<pre>' . htmlspecialchars($temp_query) . '</pre>';
                 }
             }
         }

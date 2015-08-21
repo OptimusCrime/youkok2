@@ -524,10 +524,10 @@ class ElementController extends BaseController {
         return $this->rootParent;
     }
     public function getCourseName() {
-        return explode('||', $this->model->getName())[1];
+        return htmlspecialchars(explode('||', $this->model->getName())[1]);
     }
     public function getCourseCode() {
-        return explode('||', $this->model->getName())[0];
+        return htmlspecialchars(explode('||', $this->model->getName())[0]);
     }
     public function getFullUrl() {
         // Check if we already have the url fetched

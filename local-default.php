@@ -110,5 +110,5 @@ if (!defined('CSRF_KEY')) {
 }
 
 // Define URLs
-define('URL', 'http://' . DOMAIN . ((PORT == 80) ? '' : (':' . PORT)));
+define('URL', 'http://' . DOMAIN . ((PORT == 80 or PORT == '') ? '' : (':' . PORT)));
 define('URL_FULL', URL . URL_RELATIVE);
