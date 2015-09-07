@@ -4,8 +4,9 @@
                     <h1>Hei og velkommen til Youkok2</h1>
                     <h3>Den beste kokeboka på nettet!</h3>
                 </div>
-            </div>
-            [[+if $USER_IS_LOGGED_IN == FALSE]]<div class="row" id="frontpage-wellholder">
+            </div>[[+if $USER_IS_LOGGED_IN == FALSE]]
+            
+            <div class="row" id="frontpage-wellholder">
                 <div class="well">
                     <div class="row">
                         <div class="col-xs-12 col-sm-9" id="frontpage-info">

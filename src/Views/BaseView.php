@@ -193,15 +193,6 @@ class BaseView extends Youkok2 {
      */
 
     protected function displayAndCleanup($template, $sid = null) {
-        // Get messages
-        $messages = Message::getMessages(Loader::getQuery());
-        
-        // Check (and handle) message
-        if (count($messages) > 0) {
-            foreach ($messages as $message) {
-                MessageManager::addMessage($message->getMessage(), $message->getType(), true);
-            }
-        }
         
         // If develop, assign dev variables
         if (DEV) {
@@ -214,7 +205,7 @@ class BaseView extends Youkok2 {
         $this->template->assign('JS_MODULES', JavaScriptLoader::get());
         
         // Load message
-        $this->showMessages();
+        $this->template->assign('SITE_MESSAGES', MessageManager::get(Loader::getQuery()));
         
         // Load cache
         $this->addSiteData('cache_time', CacheManager::loadTypeaheadCache());
@@ -252,71 +243,5 @@ class BaseView extends Youkok2 {
 
         // Close connection
         Database::close();
-    }
-    
-    /*
-     * Display message (if any) TODO REMOVE
-     */
-
-    private function showMessages() {
-        // Keep the string here
-        $ret = '';
-        
-        // Check if any message was found
-        if (MessageManager::hasMessages()) {
-            // Check for files
-            if (isset($_SESSION['youkok2_files']) and count($_SESSION['youkok2_files']) > 0) {
-                $file_msg = '';
-
-                // Loop all files and make the message "pretty"
-                foreach ($_SESSION['youkok2_files'] as $k => $v) {
-                    if (count($_SESSION['youkok2_files']) == 1) {
-                        $file_msg .= $v;
-                    }
-                    else if (count($_SESSION['youkok2_files']) == 2 and $k == 1) {
-                        $file_msg .= ' og ' . $v;
-                    }
-                    else {
-                        if ((count($_SESSION['youkok2_files']) - 1) == $k) {
-                            $file_msg .= ' og ' . $v;
-                        }
-                        else {
-                            $file_msg .= ', ' . $v;
-                        }
-                    }
-                }
-                
-                // Remove the ugly part
-                if (count($_SESSION['youkok2_files']) > 1) {
-                    $file_msg = substr($file_msg, 2);
-                }
-                
-                // Build final string
-                $ret .= '<div class="alert alert-success">' . $file_msg . ' ble lagt til. '
-                      . 'Takk for ditt bidrag!<div class="alert-close"><i class="fa fa-times"></i></div></div>';
-                
-                // Unset the session variable
-                unset($_SESSION['youkok2_files']);
-            }
-            
-            // Check for normal messages
-            if (isset($_SESSION['youkok2_message']) and count($_SESSION['youkok2_message']) > 0) {
-                foreach ($_SESSION['youkok2_message'] as $v) {
-                    $ret .= '<div class="alert alert-' . $v['type'] . '">' . $v['text']
-                          . '<div class="alert-close"><i class="fa fa-times"></i></div></div>';
-                }
-                
-                // Unset the session variable
-                unset($_SESSION['youkok2_message']);
-            }
-        }
-        
-        // Check if any message was found
-        if (strlen($ret) > 0) {
-            $this->template->assign('SITE_MESSAGES', $ret);
-        }
-        else {
-            $this->template->assign('SITE_MESSAGES', null);
-        }
     }
 }

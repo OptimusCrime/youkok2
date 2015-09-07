@@ -9,6 +9,8 @@
 
 namespace Youkok2\Utilities;
 
+use \Youkok2\Models\Message as Message;
+
 class MessageManager {
     
     /*
@@ -69,17 +71,70 @@ class MessageManager {
     }
     
     /*
-     * Returns true if any message is queued
+     * Return the full array of messages
      */
     
-    public static function hasMessages() {
-        // Check if any messages
-        if ((isset($_SESSION['youkok2_files']) and count($_SESSION['youkok2_files']) > 0) or 
-            (isset($_SESSION['youkok2_message']) and count($_SESSION['youkok2_message']) > 0)) {
-            return true;
+    public static function get($query) {
+        // Get messages
+        $messages = Message::getMessages($query);
+        
+        // File message
+        if (isset($_SESSION['youkok2_files']) and count($_SESSION['youkok2_files']) > 0) {
+            $message_text = '';
+
+            // Loop all files and make the message "pretty"
+            foreach ($_SESSION['youkok2_files'] as $k => $v) {
+                if (count($_SESSION['youkok2_files']) == 1) {
+                    $message_text .= $v;
+                }
+                else if (count($_SESSION['youkok2_files']) == 2 and $k == 1) {
+                    $message_text .= ' og ' . $v;
+                }
+                else {
+                    if ((count($_SESSION['youkok2_files']) - 1) == $k) {
+                        $message_text .= ' og ' . $v;
+                    }
+                    else {
+                        $message_text .= ', ' . $v;
+                    }
+                }
+            }
+            
+            // Remove the ugly part
+            if (count($_SESSION['youkok2_files']) > 1) {
+                $message_text = substr($message_text, 2);
+            }
+            
+            // New message
+            $message = new Message();
+            $message->setMessage($message_text . ' ble lagt til. Takk for ditt bidrag!');
+            $message->setType('success');
+            
+            // Unset the session variable
+            unset($_SESSION['youkok2_files']);
+            
+            // Add to message array
+            $messages[] = $message;
         }
         
-        // No messages
-        return false;
+        // Check for normal messages
+        if (isset($_SESSION['youkok2_message']) and count($_SESSION['youkok2_message']) > 0) {
+            // Loop the message array
+            foreach ($_SESSION['youkok2_message'] as $v) {
+                // New message
+                $message = new Message();
+                $message->setMessage($v['text']);
+                $message->setType($v['type']);
+                
+                // Add to message array
+                $messages[] = $message;
+            }
+            
+            // Unset the session variable
+            unset($_SESSION['youkok2_message']);
+        }
+        
+        // Return the final array
+        return $messages;
     }
 } 

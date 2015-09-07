@@ -98,6 +98,15 @@
     </div>  
 </div>
 <div class="container" id="main">
-    <div class="row">
-        [[+nocache]][[+if $SITE_MESSAGES != '']][[+$SITE_MESSAGES]][[+/if]][[+/nocache]]
-<div class="col-xs-12">
+    <div class="row">[[+nocache]][[+if count($SITE_MESSAGES) > 0]]
+        [[+foreach $SITE_MESSAGES as $message]]
+        
+        <div class="alert alert-[[+$message->getType()]]">
+            <p>[[+$message->getMessage()]]</p>
+            <div class="alert-close">
+                <i class="fa fa-times"></i>
+            </div>
+        </div>[[+/foreach]]
+        [[+/if]][[+/nocache]]
+        
+        <div class="col-xs-12">
