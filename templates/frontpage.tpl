@@ -55,9 +55,7 @@
 
                         <li class="list-group-item">
                             <em>
-                                <a href="logg-inn" class="elm-md-smaller">Logg inn</a>
-                                <a href="logg-inn" data-toggle="dropdown" class="login-opener elm-md-bigger">Logg inn</a> eller
-                                <a href="registrer">registrer deg</a>.
+                                <a href="logg-inn">Logg inn</a> eller <a href="registrer">registrer deg</a>.
                             </em>
                         </li>[[+/if]]
 
@@ -86,9 +84,7 @@
 
                         <li class="list-group-item">
                             <em>
-                                <a href="logg-inn" class="elm-md-smaller">Logg inn</a>
-                                <a href="logg-inn" data-toggle="dropdown" class="login-opener elm-md-bigger">Logg inn</a> eller
-                                <a href="registrer">registrer deg</a>.
+                                <a href="logg-inn">Logg inn</a> eller <a href="registrer">registrer deg</a>.
                             </em>
                         </li>[[+/if]]
 
