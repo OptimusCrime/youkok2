@@ -1,9 +1,14 @@
 <script type="text/template" class="template-sidebar-commits">
     <ul class="list-group">
-        <% _.each(rc.commits,function(commit) { %>
-            <li class="list-group-item"><%- commit %></li>
-        <% }); %>
+    <% _.each(rc.commits,function(commit) { %>
+        <li class="list-group-item"><%- commit %></li>
+    <% }); %>
     </ul>
+</script>
+<script type="text/template" class="template-sidebar-history">
+    <% _.each(rc.histories,function(history) { %>
+        <li class="list-group-item"><%= history.history_text %></li>
+    <% }); %>
 </script>
 <script type="text/template" class="template-sidebar-newest">
     <ul class="list-group">

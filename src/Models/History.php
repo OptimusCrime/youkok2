@@ -11,14 +11,15 @@ namespace Youkok2\Models;
 
 use \Youkok2\Models\Controllers\HistoryController as HistoryController;
 
-class History {
+class History extends BaseModel {
 
     /*
      * Variables
      */
 
-    public $controller;
+    protected $controller;
 
+    // Fields in the database
     private $id;
     private $user;
     private $file;
@@ -27,22 +28,80 @@ class History {
     private $visible;
     
     /*
+     * Schema
+     */
+
+    protected $schema = [
+        'meta' => [
+            'table' => 'history',
+            'cacheable' => false,
+        ],
+        'fields' => [
+            // Database fields
+            'id' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+                'ignore_insert' => true,
+            ],
+            'user' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+            ],
+            'file' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+            ],
+            'history_text' => [
+                'method' => 'historyText',
+                'type' => 'string',
+                'null' => false,
+                'db' => true,
+                'arr' => true,
+            ],
+            'added' => [
+                'type' => 'integer',
+                'default' => 'NOW()',
+                'null' => false,
+                'db' => true,
+                'arr' => true,
+            ],
+            'visible' => [
+                'method' => 'visible',
+                'type' => 'integer',
+                'null' => false,
+                'default' => 1,
+                'db' => true,
+                'is' => true
+            ],
+        ]
+    ];
+    
+    /*
      * Constructor
      */
     
-    public function __construct() {
+    public function __construct($data = null) {
         $this->controller = new HistoryController($this);
         
         /*
          * Set some default values
          */
 
-        $this->id = 0;
-        $this->user = null;
-        $this->file = null;
-        $this->historyText = null;
-        $this->added = null;
-        $this->visible = 1;
+        $this->setDefaults();
+
+        /*
+         * Various create methods are called here
+         */
+
+        if (is_numeric($data)) {
+            $this->controller->createById($data);
+        }
+        elseif (is_array($data)) {
+            $this->controller->createByArray($data);
+        }
     }
     
     /*
@@ -84,19 +143,23 @@ class History {
     public function setHistoryText($historyText) {
         $this->historyText = $historyText;
     }
+    public function setAdded($added) {
+        $this->added = $added;
+    }
     public function setVisible($visible) {
         $this->visible = $visible;
     }
     
     /*
-     * Redirectors
+     * Static functions overload
      */
     
-    public function save() {
-        $this->controller->save();
+    public static function __callStatic($name, $arguments) {
+        // Check if method exists
+        if (method_exists('\Youkok2\Models\StaticControllers\HistoryStaticController', $name)) {
+            // Call method and return response
+            return call_user_func_array(array('\Youkok2\Models\StaticControllers\HistoryStaticController', 
+                $name), $arguments);
+        }
     }
-    public function update() {
-        $this->controller->update();
-    }
-
 } 

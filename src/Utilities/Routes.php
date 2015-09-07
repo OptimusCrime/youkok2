@@ -104,7 +104,7 @@ class Routes {
             ['path' => '/search/courses.json'],
         ],
         'LoadHistory' => [
-            ['path' => '/history/get', 'method' => 'getHistory'],
+            ['path' => '/history/get'],
         ],
         'LinkTitle' => [
             ['path' => '/link/title'],

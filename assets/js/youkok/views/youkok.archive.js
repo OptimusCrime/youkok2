@@ -89,7 +89,13 @@ var Youkok = (function (module) {
                 id: Youkok.getData('archive_id'), 
             },
             success: function(json) {
-                $('#archive-history ul').html(json.html);
+                // Get template
+                var template_sidebar_history = _.template(
+                    $('script.template-sidebar-history').html()
+                );
+
+                // Set content
+                $('#archive-history ul').html(template_sidebar_history({'histories': json.data}));
             }
         });
     };

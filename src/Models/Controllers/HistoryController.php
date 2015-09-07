@@ -9,47 +9,22 @@
 
 namespace Youkok2\Models\Controllers;
 
-use \Youkok2\Utilities\Database as Database;
-
 class HistoryController extends BaseController {
-
-    /*
-     * Variables
-     */
-
-    private $model;
-
+    
     /*
      * Constructor
      */
 
     public function __construct($model) {
-        // Set pointer to the model
-        $this->model = $model;
+        parent::__construct($this, $model);
     }
     
     /*
-     * Save method
+     * To Array (for output)
      */
-    
-    public function save() {
-        $insert_history  = "INSERT INTO history (user, file, history_text) " . PHP_EOL;
-        $insert_history .= "VALUES (:user, :file, :text)";
 
-        $insert_history_query = Database::$db->prepare($insert_history);
-        $insert_history_query->execute([':user' => $this->model->getUser(),
-            ':file' => $this->model->getFile(),
-            ':text' => $this->model->getHistoryText()]);
-        
-        // Set id to model
-        $this->model->setId(Database::$db->lastInsertId());
+    public function toArray() {
+        // Get the initial fields from the array
+        return $this->model->toArrayInitial();
     }
-    
-    /*
-     * Not implemented
-     */
-    
-    public function cache() {}
-    public function update() {}
-    public function delete() {}
 }
