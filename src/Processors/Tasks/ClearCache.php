@@ -4,19 +4,12 @@
  * Holds: Clears all the cache (Smarty and Youkok2)
  * Created: 17.12.14
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Processors\Tasks;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Processors\BaseProcessor as BaseProcessor;
-
-/*
- * ClearCache extending Base
- */
 
 Class ClearCache extends BaseProcessor {
     

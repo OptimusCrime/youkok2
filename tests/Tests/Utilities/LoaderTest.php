@@ -4,14 +4,11 @@
  * Holds: Testes the Loader class
  * Created: 25.05.2015
  * Project: Youkok2
+ * 
  */
 
 use \Youkok2\Utilities\Loader as Loader;
 use \Youkok2\Utilities\Routes as Routes;
-
-/*
- * Test different methods in the Utility class
- */
 
 class LoaderTest extends PHPUnit_Framework_TestCase {
     

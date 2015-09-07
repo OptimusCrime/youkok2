@@ -4,21 +4,13 @@
  * Holds: Holds element for changing a password
  * Created: 30.12.2014
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\models;
 
-
-/*
- * Loads other classes
- */
-
 use \Youkok2\Models\Controllers\MessageController as MessageController;
 use \Youkok2\Models\StaticControllers\MessageStaticController as MessageStaticController;
-
-/*
- * The Course class
- */
 
 class ChangePassword extends BaseModel {
 

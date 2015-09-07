@@ -4,23 +4,16 @@
  * Holds: Finds duplicates in the database
  * Created: 15.05.2015
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Processors\Tasks;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
 use \Youkok2\Collections\ElementCollection as ElementCollection;
-
-/*
- * FindDuplicates extending Base
- */
 
 class FindDuplicates extends BaseProcessor {
     

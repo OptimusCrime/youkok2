@@ -5,13 +5,9 @@
  * Created: 25.02.2015
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Processors;
-
-/*
- * The LinkTitle class, extending Base class
- */
 
 class LinkTitle extends BaseProcessor {
 

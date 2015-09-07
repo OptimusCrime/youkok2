@@ -4,22 +4,15 @@
  * Holds: Controller for the model Element
  * Created: 06.11.2014
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Models\Controllers;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Routes as Routes;
 use \Youkok2\Utilities\Database as Database;
-
-/*
- * The class ElementController
- */
 
 class ElementController extends BaseController {
     

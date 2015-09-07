@@ -4,13 +4,10 @@
  * Holds: Class extended by the other views
  * Created: 02.10.2013
  * Project: Youkok2
-*/
+ * 
+ */
 
 namespace Youkok2\Views;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Models\Me as Me;
@@ -23,10 +20,6 @@ use \Youkok2\Utilities\JavaScriptLoader as JavaScriptLoader;
 use \Youkok2\Utilities\Loader as Loader;
 use \Youkok2\Utilities\MessageManager as MessageManager;
 use \Youkok2\Utilities\Routes as Routes;
-
-/*
- * Class that all the controllers extends
- */
 
 class BaseView extends Youkok2 {
 

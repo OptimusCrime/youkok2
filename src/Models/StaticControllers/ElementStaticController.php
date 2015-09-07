@@ -4,21 +4,14 @@
  * Holds: Holds methods for the static Element class
  * Created: 26.05.2015
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\models\StaticControllers;
-
-/*
- * Loads other classes
- */
 
 use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Utilities\Database as Database;
-
-/*
- * The Course class
- */
 
 class ElementStaticController {
 

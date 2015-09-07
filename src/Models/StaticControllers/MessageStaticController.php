@@ -4,20 +4,13 @@
  * Holds: Holds methods for the static Message class
  * Created: 10.05.2015
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\models\StaticControllers;
 
-/*
- * Loads other classes
- */
-
 use \Youkok2\Models\Message as Message;
 use \Youkok2\Utilities\Database as Database;
-
-/*
- * The Course class
- */
 
 class MessageStaticController {
     

@@ -5,7 +5,7 @@
  * Created: 23.06.14
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Utilities;
 

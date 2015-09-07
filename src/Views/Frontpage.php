@@ -4,21 +4,14 @@
  * Holds: The frontpage view
  * Created: 02.10.2013
  * Project: Youkok2
-*/
+ * 
+ */
 
 namespace Youkok2\Views;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
-
-/*
- * The Frontpage class, extending Base class
- */
 
 class Frontpage extends BaseView {
 

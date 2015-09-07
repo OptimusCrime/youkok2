@@ -4,13 +4,10 @@
  * Holds: Holds all the routes the Loader matches urls against
  * Created: 02.11.2014
  * Project: Youkok2
+ * 
  */
 
 namespace Youkok2\Utilities;
-
-/*
- * Static class Routes. Holds and returnes the routes for the application
- */
 
 class Routes {
     

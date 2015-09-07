@@ -1,17 +1,13 @@
 <?php
 /*
  * File: Auth.php
- * Holds: The Auth-class
+ * Holds: Various authentification related views
  * Created: 14.04.2014
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Views;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Models\ChangePassword as ChangePassword;
@@ -19,11 +15,6 @@ use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Redirect as Redirect;
 use \Youkok2\Utilities\MessageManager as MessageManager;
 use \Youkok2\Utilities\Utilities as Utilities;
-
-/*
- * The Flat class, extending BaseView
- */
-
 
 class Auth extends BaseView {
 

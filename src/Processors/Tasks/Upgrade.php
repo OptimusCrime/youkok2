@@ -4,20 +4,13 @@
  * Holds: Upgrades the system
  * Created: 03.06.2015
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Processors\Tasks;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\LineCounter as LineCounter;
-
-/*
- * Upgrade extending Base
- */
 
 class Upgrade extends BaseProcessor {
 

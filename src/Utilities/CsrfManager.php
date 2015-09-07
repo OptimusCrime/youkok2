@@ -4,19 +4,12 @@
  * Holds: Wrapper for CSRF stuff
  * Created: 26.05.2015
  * Project: Youkok2
+ * 
  */
 
 namespace Youkok2\Utilities;
 
-/*
- * Define what classes to use
- */
-
 use \Kunststube\CSRFP\SignatureGenerator as SignatureGenerator;
-
-/*
- * The CsrfManager class
- */
 
 class CsrfManager {
     

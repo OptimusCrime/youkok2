@@ -4,21 +4,14 @@
  * Holds: Puts Courses in a JSON file
  * Created: 29.01.15
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Processors\Tasks;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\Database as Database;
-
-/*
- * LoadCoursesJson extending Base
- */
 
 class LoadCoursesJson extends BaseProcessor {
 

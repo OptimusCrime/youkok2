@@ -2,24 +2,16 @@
 /*
  * File: Register.php
  * Holds: Handlers for registering for a user
- * Created: 23.12.14
+ * Created: 23.12.2014
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Processors;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Loader as Loader;
-
-/*
- * Registration stuff for user
- */
 
 class Register extends BaseProcessor {
     

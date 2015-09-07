@@ -1,23 +1,15 @@
 <?php
 /*
- * File: pdo2.class.php
+ * File: PDO2.php
  * Holds: Class that overrides the normal PDO-class to log queries etc
- * Created: 27.05.14
+ * Created: 27.05.2014
  * Project: Youkok2
  * 
 */
 
 namespace Youkok2\Utilities\PDO2;
 
-/*
- * Dirty require once here because autoloading does not work here
- */
-
 require_once dirname(__FILE__) . '/PDOStatement2.php';
-
-/*
- * PDO2 class that extends the regular PDO class with custom logging for easier debugging
- */
 
 class PDO2 extends \PDO {
     

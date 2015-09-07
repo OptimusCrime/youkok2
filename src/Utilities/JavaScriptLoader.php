@@ -4,13 +4,10 @@
  * Holds: Helper class that loads all the Youkok2 JavaScripts
  * Created: 20.08.2015
  * Project: Youkok2
+ * 
  */
 
 namespace Youkok2\Utilities;
-
-/*
- * The redirect class
- */
 
 class JavaScriptLoader {
 

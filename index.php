@@ -4,6 +4,7 @@
  * Holds: Define stuff, create autoloader function
  * Created: 02.10.2013
  * Project: Youkok2
+ * 
  */
 
 if (session_status() === PHP_SESSION_NONE) {

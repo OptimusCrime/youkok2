@@ -5,22 +5,14 @@
  * Created: 06.08.2014
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Views;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Redirect as Redirect;
 use \Youkok2\Utilities\Utilities as Utilities;
-
-/*
- * The Admin class, extending BaseView
- */
 
 class Admin extends BaseView {
 

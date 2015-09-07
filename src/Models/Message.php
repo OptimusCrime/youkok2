@@ -4,20 +4,13 @@
  * Holds: Holds element for a message
  * Created: 10.05.2015
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Models;
 
-/*
- * Loads other classes
- */
-
 use \Youkok2\Models\Controllers\MessageController as MessageController;
 use \Youkok2\Models\StaticControllers\MessageStaticController as MessageStaticController;
-
-/*
- * The Course class
- */
 
 class Message extends BaseModel {
 

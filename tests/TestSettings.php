@@ -1,6 +1,10 @@
 <?php
 /*
- * Override stuff
+ * File: TestSettings.php
+ * Holds: Override settings for testing
+ * Created: 07.09.2015
+ * Project: Youkok2
+ *
  */
 
 // Directories

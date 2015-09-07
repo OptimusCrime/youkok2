@@ -2,16 +2,12 @@
 /*
  * File: NotFound.php
  * Holds: Returns error because processor was not found
- * Created: 02.10.13
+ * Created: 02.10.2013
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Processors;
-
-/*
- * The NotFound class, extending Base class
- */
 
 class NotFound extends BaseProcessor {
 

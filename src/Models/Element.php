@@ -4,21 +4,14 @@
  * Holds: Holds a Element
  * Created: 11.11.2014
  * Project: Youkok2
-*/
+ * 
+ */
 
 namespace Youkok2\Models;
-
-/*
- * Load different classes into namespace
- */
 
 use \Youkok2\Models\Controllers\ElementController as ElementController;
 use \Youkok2\Models\StaticControllers\ElementStaticController as ElementStaticController;
 use \Youkok2\Utilities\Utilities as Utilities;
-
-/*
- * Model for a Element
- */
 
 class Element extends BaseModel {
 

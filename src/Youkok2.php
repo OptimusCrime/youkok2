@@ -5,19 +5,11 @@
  * Created: 01.11.14
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Utilities\Routes as Routes;
-
-/*
- * The base class Youkok2
- */
 
 class Youkok2 {
     

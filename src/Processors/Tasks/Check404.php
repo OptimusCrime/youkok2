@@ -2,24 +2,17 @@
 /*
  * File: Check404.php
  * Holds: Checks if an element generated 404 error
- * Created: 17.12.14
+ * Created: 17.12.2014
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Processors\Tasks;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Routes as Routes;
-
-/*
- * LoadCourses extending Base
- */
 
 class Check404 extends BaseProcessor {
 

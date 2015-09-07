@@ -5,20 +5,12 @@
  * Created: 02.10.2013
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Views;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Utilities\Loader as Loader;
-
-/*
- * The Download class, extending BaseView
- */
 
 class Download extends BaseView {
 

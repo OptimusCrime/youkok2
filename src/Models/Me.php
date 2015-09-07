@@ -4,13 +4,10 @@
  * Holds: Static class for the current user
  * Created: 06.11.2014
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Models;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Utilities\CsrfManager as CsrfManager;
@@ -18,10 +15,6 @@ use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
 use \Youkok2\Utilities\MessageManager as MessageManager;
 use \Youkok2\Utilities\Redirect as Redirect;
-
-/*
- * The class Me, called statically
- */
 
 class Me {
     

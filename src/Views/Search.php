@@ -9,17 +9,9 @@
 
 namespace Youkok2\Views;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Routes as Routes;
-
-/*
- * The Search class, extending BaseView
- */
 
 class Search extends BaseView {
 

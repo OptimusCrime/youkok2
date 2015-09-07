@@ -2,21 +2,14 @@
 /*
  * File: Karma.php
  * Holds: Holds a Karma
- * Created: 24.02.15
+ * Created: 24.02.2015
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Models;
 
-/*
- * Load different classes into namespace
- */
-
 use \Youkok2\Models\Controllers\KarmaController as KarmaController;
-
-/*
- * Model for a Element
- */
 
 class Karma {
 

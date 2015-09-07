@@ -5,13 +5,9 @@
  * Created: 13.06.14
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Utilities;
-
-/*
- * The CacheManager class
- */
 
 Class CacheManager {
 

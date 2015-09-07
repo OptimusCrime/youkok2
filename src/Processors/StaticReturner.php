@@ -2,22 +2,14 @@
 /*
  * File: StaticReturner.php
  * Holds: Returns static content
- * Created: 16.12.14
+ * Created: 16.12.2014
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Processors;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Utilities\Loader as Loader;
-
-/*
- * The Static class, extending Base class
- */
 
 class StaticReturner extends BaseProcessor {
 

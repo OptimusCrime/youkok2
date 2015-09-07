@@ -4,13 +4,10 @@
  * Holds: Controller for the model Favorite
  * Created: 20.08.2015
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Models\Controllers;
-
-/*
- * The class ElementController
- */
 
 class FavoriteController extends BaseController {
 

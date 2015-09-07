@@ -4,13 +4,10 @@
  * Holds: Base class for all models
  * Created: 25.05.2015
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Models;
-
-/*
- * The class
- */
 
 class BaseModel {
     

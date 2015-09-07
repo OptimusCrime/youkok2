@@ -4,19 +4,12 @@
  * Holds: Holds the database-connection in a static class
  * Created: 02.11.14
  * Project: Youkok2
-*/
+ * 
+ */
 
 namespace Youkok2\Utilities;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Utilities\BacktraceManager as BacktraceManager;
-
-/*
- * Simple class to abstract the database layer
- */
 
 class Database {
     

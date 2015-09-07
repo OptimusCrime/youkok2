@@ -2,23 +2,15 @@
 /*
  * File: Module.php
  * Holds: Change module settings
- * Created: 11.01.15
+ * Created: 11.01.2015
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Processors;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Utilities\Database as Database;
-
-/*
- * The NotFound class, extending Base class
- */
 
 class LoadHistory extends BaseProcessor {
     

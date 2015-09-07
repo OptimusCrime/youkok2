@@ -4,19 +4,12 @@
  * Holds: The Loader class that runs a new instance of the view based on the url matching from Routes
  * Created: 02.11.2014
  * Project: Youkok2
+ * 
  */
  
 namespace Youkok2\Utilities;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Youkok2 as Youkok2;
-
-/*
- * The Loader class. Loads the correct view based on the url
- */
 
 class Loader {
     

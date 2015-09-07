@@ -2,24 +2,17 @@
 /*
  * File: LoadCourses.php
  * Holds: Load courses
- * Created: 17.12.14
+ * Created: 17.12.2014
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Processors\Tasks;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
-
-/*
- * LoadCourses extending Base
- */
 
 class LoadCourses extends BaseProcessor {
 

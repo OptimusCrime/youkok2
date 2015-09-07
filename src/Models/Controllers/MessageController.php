@@ -4,13 +4,10 @@
  * Holds: Controller for the model Message
  * Created: 14.07.2015
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Models\Controllers;
-
-/*
- * The class ElementController
- */
 
 class MessageController extends BaseController {
 

@@ -4,13 +4,10 @@
  * Holds: Testes the Utilities class
  * Created: 25.05.2015
  * Project: Youkok2
+ * 
  */
 
 use \Youkok2\Utilities\Utilities as Utilities;
-
-/*
- * Test different methods in the Utility class
- */
 
 class UtilitiesTest extends PHPUnit_Framework_TestCase {
     

@@ -4,22 +4,15 @@
  * Holds: Returns the actual cache data for a file
  * Created: 15.05.2015
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Processors\Tasks;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\CacheManager as CacheManager;
-
-/*
- * LoadExams extending Base
- */
 
 class GetCacheData extends BaseProcessor {
     

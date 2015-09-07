@@ -9,18 +9,10 @@
 
 namespace Youkok2\Views;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\MessageManager as MessageManager;
 use \Youkok2\Utilities\Redirect as Redirect;
 use \Youkok2\Utilities\Utilities as Utilities;
-
-/*
- * The Profile class, extending BaseView
- */
 
 class Profile extends BaseView {
 

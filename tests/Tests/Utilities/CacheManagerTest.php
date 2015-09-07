@@ -4,13 +4,10 @@
  * Holds: Tests the CacheManager
  * Created: 25.05.2015
  * Project: Youkok2
+ * 
  */
 
 use \Youkok2\Utilities\CacheManager as CacheManager;
-
-/*
- * Test different methods in the Utility class
- */
 
 class CacheManagerTest extends PHPUnit_Framework_TestCase {
     

@@ -5,13 +5,9 @@
  * Created: 02.05.2014
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Views;
-
-/*
- * The Error class, extending BaseView
- */
 
 class Error extends BaseView {
 

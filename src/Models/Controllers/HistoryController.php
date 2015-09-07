@@ -2,21 +2,14 @@
 /*
  * File: HistoryController.php
  * Holds: Interface for the controllers
- * Created: 24.02.15
+ * Created: 24.02.2015
  * Project: Youkok2
-*/
+ * 
+ */
 
 namespace Youkok2\Models\Controllers;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Utilities\Database as Database;
-
-/*
- * HistoryController extending BaseController
- */
 
 class HistoryController extends BaseController {
 

@@ -4,16 +4,12 @@
  * Holds: Tests the Element model
  * Created: 25.05.2015
  * Project: Youkok2
+ *
  */
 
 use \Youkok2\Models\Element as Element;
 
-/*
- * Test different methods in the Utility class
- */
-
-class ElementTest extends PHPUnit_Framework_TestCase
-{
+class ElementTest extends PHPUnit_Framework_TestCase {
 
     /*
      * Test element default values

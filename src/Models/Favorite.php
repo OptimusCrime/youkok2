@@ -4,20 +4,13 @@
  * Holds: Holds a favorite entry
  * Created: 20.08.2015
  * Project: Youkok2
-*/
+ * 
+ */
 
 namespace Youkok2\Models;
 
-/*
- * Loads other classes
- */
-
 use \Youkok2\Models\Controllers\FavoriteController as FavoriteController;
 use \Youkok2\Models\StaticControllers\FavoriteStaticController as FavoriteStaticController;
-
-/*
- * The Course class
- */
 
 class Favorite extends BaseModel {
 

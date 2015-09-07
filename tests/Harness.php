@@ -1,31 +1,19 @@
 <?php
 /*
  * File: Harness.php
- * Holds: Some stuff to make Youkok2 testready
+ * Holds: Some stuff to make Youkok2 test ready
  * Created: 19.11.2014
  * Project: Youkok2
-*/
+ *
+ */
 
 use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Utilities\Database as Database;
 
-/*
- * Include settings
- */
-
 require_once dirname(__FILE__) . '/TestSettings.php';
 require_once BASE_PATH . '/local.php';
 require_once BASE_PATH . '/local-default.php';
-
-/*
- * Include the bootstrap file
- */
-
 require_once BASE_PATH . '/index.php';
-
-/*
- * Harness class
-*/
 
 class Harness {
     
@@ -157,9 +145,5 @@ class Harness {
         }
     }
 }
-
-/*
- * Load class
- */
 
 new Harness();

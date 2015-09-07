@@ -4,19 +4,12 @@
  * Holds: Script that redirects
  * Created: 28.11.2014
  * Project: Youkok2
+ * 
  */
 
 namespace Youkok2\Utilities;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Utilities\Database as Database;
-
-/*
- * The redirect class
- */
 
 class Redirect {
 

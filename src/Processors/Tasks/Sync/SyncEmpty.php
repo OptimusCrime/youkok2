@@ -2,25 +2,18 @@
 /*
  * File: SyncEmpty.php
  * Holds: Syncs empty elements to their correct state
- * Created: 11.01.15
+ * Created: 11.01.2015
  * Project: Youkok2
-*/
+ *
+ */
 
 namespace Youkok2\Processors\Tasks\Sync;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Models\Course as Course;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Processors\Base as Base;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
-
-/*
- * LoadCourses extending Base
- */
 
 class SyncEmpty extends Base {
 

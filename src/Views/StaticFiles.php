@@ -9,15 +9,7 @@
 
 namespace Youkok2\Views;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Utilities\Loader as Loader;
-
-/*
- * The StaticFiles class, extending BaseView
- */
 
 class StaticFiles extends BaseView {
 

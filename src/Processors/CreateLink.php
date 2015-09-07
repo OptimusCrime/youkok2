@@ -2,16 +2,12 @@
 /*
  * File: CreateLink.php
  * Holds: Create a new link
- * Created: 25.02.15
+ * Created: 25.02.2015
  * Project: Youkok2
  * 
 */
 
 namespace Youkok2\Processors;
-
-/*
- * Define what classes to use
- */
 
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
@@ -21,10 +17,6 @@ use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\MessageManager as MessageManager;
 use \Youkok2\Utilities\Utilities as Utilities;
-
-/*
- * The Static class, extending Base class
- */
 
 class CreateLink extends BaseProcessor {
 

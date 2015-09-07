@@ -9,16 +9,8 @@
 
 namespace Youkok2\Views;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Utilities\Loader as Loader;
-
-/*
- * The Redirect class, extending BaseView
- */
 
 class Redirect extends BaseView {
 

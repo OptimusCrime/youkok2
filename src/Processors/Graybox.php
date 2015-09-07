@@ -5,20 +5,12 @@
  * Created: 14.07.2015
  * Project: Youkok2
  *
-*/
+ */
 
 namespace Youkok2\Processors;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Models\Element as Element;
-
-/*
- * The Graybox class, extending BaseProcessor
- */
 
 class Graybox extends BaseProcessor {
 

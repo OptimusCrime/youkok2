@@ -5,13 +5,9 @@
  * Created: 02.10.2013
  * Project: Youkok2
  * 
-*/
+ */
 
 namespace Youkok2\Views;
-
-/*
- * The Flat class, extending BaseView
- */
 
 class Flat extends BaseView {
 

@@ -4,13 +4,10 @@
  * Holds: Prettifies queries displayed in the footer in views
  * Created: 20.08.2015
  * Project: Youkok2
+ * 
  */
 
 namespace Youkok2\Utilities;
-
-/*
- * The BacktraceManager class
- */
 
 class BacktraceManager {
     

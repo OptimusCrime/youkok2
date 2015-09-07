@@ -1,22 +1,15 @@
 <?php
 /*
- * File: Message.php
- * Holds: Holds element for a message
+ * File: Download.php
+ * Holds: Contains a download entry
  * Created: 10.05.2015
  * Project: Youkok2
-*/
+ * 
+ */
 
 namespace Youkok2\models;
 
-/*
- * Loads other classes
- */
-
 use \Youkok2\Models\Controllers\DownloadController as DownloadController;
-
-/*
- * The Course class
- */
 
 class Download extends BaseModel {
 

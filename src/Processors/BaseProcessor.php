@@ -2,23 +2,15 @@
 /*
  * File: Base.php
  * Holds: Base processor class
- * Created: 056.12.14
+ * Created: 056.12.2014
  * Project: Youkok2
 */
 
 namespace Youkok2\Processors;
 
-/*
- * Define what classes to use
- */
-
 use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Database as Database;
-
-/*
- * Class that all the processors extends
- */
 
 abstract class BaseProcessor extends Youkok2 {
     
