@@ -20,7 +20,7 @@
 
                                 <li class="[[+if $element->isEmpty()]]course-empty [[+/if]]list-group-item">
                                     <a href="[[+$element->getFullUrl()]]">
-                                        <strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]
+                                        [[+$element->getCourseCode()|unescape]] &mdash; [[+$element->getCourseName()]]
                                     </a>
                                 </li>[[+/foreach]]
 
