@@ -18,13 +18,4 @@ class HistoryController extends BaseController {
     public function __construct($model) {
         parent::__construct($this, $model);
     }
-    
-    /*
-     * To Array (for output)
-     */
-
-    public function toArray() {
-        // Get the initial fields from the array
-        return $this->model->toArrayInitial();
-    }
 }

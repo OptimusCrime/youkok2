@@ -40,6 +40,11 @@ abstract class BaseProcessor extends Youkok2 {
                 $this->handleOutput();
             }
         }
+        
+        // Check if we could try to log the user in
+        if ($this->canBeLoggedIn()) {
+            Me::init();
+        }
 
         // Check if user has access
         if (!$this->checkPermissions()) {
@@ -114,6 +119,14 @@ abstract class BaseProcessor extends Youkok2 {
      */
 
     protected function requireDatabase() {
+        return false;
+    }
+    
+    /*
+     * If this is set to true we can try to log the user in, but it is not required
+     */
+
+    protected function canBeLoggedIn() {
         return false;
     }
 

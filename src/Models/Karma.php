@@ -11,7 +11,7 @@ namespace Youkok2\Models;
 
 use \Youkok2\Models\Controllers\KarmaController as KarmaController;
 
-class Karma {
+class Karma extends BaseModel {
 
     /*
      * Variables
@@ -23,27 +23,73 @@ class Karma {
     private $id;
     private $user;
     private $file;
-    private $historyText;
+    private $value;
+    private $pending;
     private $added;
-    private $visible;
+    
+    /*
+     * Schema
+     */
+
+    protected $schema = [
+        'meta' => [
+            'table' => 'karma',
+            'cacheable' => false,
+        ],
+        'fields' => [
+            // Database fields
+            'id' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+                'ignore_insert' => true,
+            ],
+            'user' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+            ],
+            'file' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+            ],
+            'value' => [
+                'type' => 'integer',
+                'null' => false,
+                'default' => 5,
+                'db' => true,
+            ],
+            'pending' => [
+                'type' => 'integer',
+                'null' => false,
+                'default' => 1,
+                'db' => true,
+                'is' => true
+            ],
+            'added' => [
+                'type' => 'integer',
+                'default' => 'NOW()',
+                'null' => false,
+                'db' => true,
+                'arr' => true,
+            ],
+            
+        ]
+    ];
     
     /*
      * Constructor
      */
     
-    public function __construct() {
+    public function __construct($data = null) {
         $this->controller = new KarmaController($this);
         
         /*
          * Set some default values
          */
 
-        $this->id = 0;
-        $this->user = null;
-        $this->file = null;
-        $this->value = 5;
-        $this->pending = true;
-        $this->added = null;
+        $this->setDefaults();
     }
     
     /*
@@ -63,7 +109,7 @@ class Karma {
         return $this->value;
     }
     public function isPending() {
-        return (bool) $this->pending;
+        return $this->pending;
     }
     public function getAdded() {
         return $this->added;
@@ -88,16 +134,7 @@ class Karma {
     public function setPending($pending) {
         $this->pending = $pending;
     }
-    
-    /*
-     * Redirectors
-     */
-    
-    public function save() {
-        $this->controller->save();
+    public function setAdded($added) {
+        $this->added = $added;
     }
-    public function update() {
-        $this->controller->update();
-    }
-
 } 

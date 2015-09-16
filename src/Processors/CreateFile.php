@@ -9,7 +9,6 @@
 
 namespace Youkok2\Processors;
 
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\History as History;
 use \Youkok2\Models\Karma as Karma;
@@ -19,51 +18,42 @@ use \Youkok2\Utilities\MessageManager as MessageManager;
 use \Youkok2\Utilities\Utilities as Utilities;
 
 class CreateFile extends BaseProcessor {
+    
+    /*
+     * Override
+     */
 
+    protected function canBeLoggedIn() {
+        return true;
+    }
+    
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
+    }
+    
     /*
      * Constructor
      */
 
-    public function __construct($outputData = false, $returnData = false) {
+    public function __construct($method, $settings) {
         // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
-        // Check database
-        if ($this->makeDatabaseConnection()) {
-            // Init user
-            Me::init();
-            
-            // Check if online
-            if (!Me::isLoggedIn() or (Me::isLoggedIn() and Me::canContribute())) {
-                $this->process();
-            }
-            else {
-                $this->setError();
-            }
-        }
-        else {
-            $this->setError();
-        }
-        
-        // Handle output
-        if ($this->outputData) {
-            $this->outputData();
-        }
-        if ($this->returnData) {
-            return $this->returnData();
-        }
+        parent::__construct($method, $settings);
     }
     
     /*
      * Process upload
      */
     
-    private function process() {
+    public function run() {
         $request_ok = false;
         
         // Check parent
         if (isset($_GET['parent']) and is_numeric($_GET['parent'])) {
-            $parent = ElementCollection::get($_GET['parent']);
+            $parent = Element::get($_GET['parent']);
 
             // Check if valid Element
             if ($parent !== null) {
@@ -214,6 +204,7 @@ class CreateFile extends BaseProcessor {
                 $history = new History();
                 $history->setUser(Me::getId());
                 $history->setFile($element->getId());
+                $history->setHistoryText('%u lastet opp ' . $element->getName());
                 $history->save();
                 
                 // Add karma

@@ -72,9 +72,4 @@ class User {
     public function isBanned() {
         return $this->banned;
     }
-    
-    /*
-     * Setters
-     */
-    
 }

@@ -9,7 +9,6 @@
 
 namespace Youkok2\Processors;
 
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\History as History;
 use \Youkok2\Models\Karma as Karma;
@@ -19,54 +18,45 @@ use \Youkok2\Utilities\MessageManager as MessageManager;
 use \Youkok2\Utilities\Utilities as Utilities;
 
 class CreateFolder extends BaseProcessor {
+    
+    /*
+     * Override
+     */
 
+    protected function checkPermissions() {
+        return $this->requireLoggedIn();
+    }
+    
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
+    }
+    
     /*
      * Constructor
      */
 
-    public function __construct($outputData = false, $returnData = false) {
+    public function __construct($method, $settings) {
         // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
-        // Check database
-        if ($this->makeDatabaseConnection()) {
-            // Init user
-            Me::init();
-            
-            // Check if online
-            if (Me::isLoggedIn()) {
-                $this->process();
-            }
-            else {
-                $this->setError();
-            }
-        }
-        else {
-            $this->setError();
-        }
-        
-        // Handle output
-        if ($this->outputData) {
-            $this->outputData();
-        }
-        if ($this->returnData) {
-            return $this->returnData();
-        }
+        parent::__construct($method, $settings);
     }
     
     /*
      * Process upload
      */
     
-    private function process() {
+    public function run() {
         $request_ok = false;
         
         // Check parent
         if (isset($_POST['id']) and is_numeric($_POST['id'])) {
-            $parent = ElementCollection::get($_POST['id']);
+            $parent = Element::get($_POST['id']);
 
             // Check if valid Element
-            if ($parent !== null) {
+            if ($parent->wasFound()) {
                 // Check if name was sent
                 if (isset($_POST['name']) and strlen($_POST['name']) >= 4) {
                     $request_ok = true;
@@ -165,6 +155,7 @@ class CreateFolder extends BaseProcessor {
             $history = new History();
             $history->setUser(Me::getId());
             $history->setFile($element->getId());
+            $history->setHistoryText('%u opprettet ' . $element->getName());
             $history->save();
             
             // Add karma

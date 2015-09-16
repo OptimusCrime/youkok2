@@ -131,6 +131,15 @@ abstract class BaseController {
     }
     
     /*
+     * The default toArray method
+     */
+    
+    public function toArray() {
+        // Get the initial fields from the array
+        return $this->model->toArrayInitial();
+    }
+    
+    /*
      * Set cache
      */
 
@@ -193,27 +202,81 @@ abstract class BaseController {
                     $method = $method_prefix . ucfirst($v['method']);
                 }
 
-                // Get value
-                $value = call_user_func_array([$this->model, $method], []);
+                // Get bindings and the actual value
+                if (isset($v['default']) and $v['default'] === 'NOW()') {
+                    // Handle edge case for NOW() inserts
+                    $bindings_arr[] = 'NOW()';
+                }
+                else {
+                    // Get value
+                    $value = call_user_func_array([$this->model, $method], []);
+                    
+                    // Set to bindings arr
+                    $bindings_arr[] = $binding;
 
-                // Set to bindings arr
-                $bindings_arr[] = $binding;
-
-                // Set to values
-                $values_arr[$binding] = $value;
+                    // Set to values
+                    $values_arr[$binding] = $value;
+                }
             }
         }
 
         // Build query string
         $query_string  = "INSERT INTO `" . $this->schema['meta']['table'] . "` (" . implode(', ', $attributes_arr) . ")" . PHP_EOL;
         $query_string .= "VALUES (" . implode(', ', $bindings_arr) . ")";
-
+        
         $result = Database::$db->prepare($query_string);
         $result->execute($values_arr);
+        
+        // Set the ID
+        call_user_func_array([$this->model, 'setId'], [Database::$db->lastInsertId()]);
     }
     
     // Method for updating
     public function update() {
+        // Arrays for building the query
+        $attributes_arr = [];
+        $update_arr = [];
+        $values_arr = [];
 
+        foreach ($this->schema['fields'] as $k => $v) {
+            if (isset($v['db']) and $v['db'] and !isset($v['ignore_update'])) {
+                // Set attribute
+                $attributes_arr[] = '`'  . $k . '`';
+
+                // Get binding
+                $binding = ':'. $k;
+
+                // Find out what method to call
+                $method_prefix = 'get';
+                if (isset($v['is'])) {
+                    $method_prefix = 'is';
+                }
+                $method = $method_prefix . ucfirst($k);
+                if (isset($v['method'])) {
+                    $method = $method_prefix . ucfirst($v['method']);
+                }
+
+                // Get value
+                $value = call_user_func_array([$this->model, $method], []);
+                
+                // Set to bindings arr
+                $update_arr[] = '`' . $k . '` = ' . $binding;
+
+                // Set to values
+                $values_arr[$binding] = $value;
+            }
+        }
+        
+        // Add id to value
+        $values_arr[':id'] = call_user_func_array([$this->model, 'getId'], []);
+
+        // Build query string
+        $query_string  = "UPDATE `" . $this->schema['meta']['table'] . "`" . PHP_EOL;
+        $query_string .= "SET " . implode(', ', $update_arr) . PHP_EOL;
+        $query_string .= "WHERE `id` = :id" . PHP_EOL;
+        $query_string .= "LIMIT 1";
+        
+        $result = Database::$db->prepare($query_string);
+        $result->execute($values_arr);
     }
 }

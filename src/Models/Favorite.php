@@ -10,7 +10,6 @@
 namespace Youkok2\Models;
 
 use \Youkok2\Models\Controllers\FavoriteController as FavoriteController;
-use \Youkok2\Models\StaticControllers\FavoriteStaticController as FavoriteStaticController;
 
 class Favorite extends BaseModel {
 
@@ -124,18 +123,5 @@ class Favorite extends BaseModel {
     }
     public function setFavoritedTime($time) {
         $this->favoritedTime = $time;
-    }
-    
-    /*
-     * Static functions overload
-     */
-    
-    public static function __callStatic($name, $arguments) {
-        // Check if method exists
-        if (method_exists('\Youkok2\Models\StaticControllers\FavoriteStaticController', $name)) {
-            // Call method and return response
-            return call_user_func_array(array('\Youkok2\Models\StaticControllers\FavoriteStaticController', 
-                $name), $arguments);
-        }
     }
 } 

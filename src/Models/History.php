@@ -46,7 +46,8 @@ class History extends BaseModel {
             ],
             'user' => [
                 'type' => 'integer',
-                'null' => false,
+                'null' => true,
+                'default' => null,
                 'db' => true,
             ],
             'file' => [
@@ -91,11 +92,11 @@ class History extends BaseModel {
          */
 
         $this->setDefaults();
-
+        
         /*
          * Various create methods are called here
          */
-
+        
         if (is_numeric($data)) {
             $this->controller->createById($data);
         }
@@ -148,18 +149,5 @@ class History extends BaseModel {
     }
     public function setVisible($visible) {
         $this->visible = $visible;
-    }
-    
-    /*
-     * Static functions overload
-     */
-    
-    public static function __callStatic($name, $arguments) {
-        // Check if method exists
-        if (method_exists('\Youkok2\Models\StaticControllers\HistoryStaticController', $name)) {
-            // Call method and return response
-            return call_user_func_array(array('\Youkok2\Models\StaticControllers\HistoryStaticController', 
-                $name), $arguments);
-        }
     }
 } 

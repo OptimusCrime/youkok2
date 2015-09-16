@@ -56,6 +56,7 @@ class Element extends BaseModel {
                 'db' => true,
                 'arr' => true,
                 'ignore_insert' => true,
+                'ignore_update' => true,
             ],
             'name' => [
                 'type' => 'string',
@@ -157,6 +158,7 @@ class Element extends BaseModel {
                 'null' => false,
                 'db' => true,
                 'arr' => true,
+                'ignore_update' => true,
             ],
 
             // Additional cache fields
