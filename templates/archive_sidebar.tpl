@@ -64,11 +64,11 @@
                             <p>Du har <strong>0</strong> i karma. På grunn av dette kan du ikke lenger bidra på Youok2.</p>[[+/if]][[+/if]]
 
                         </div>
-                    </div>[[+if isset($ARCHIVE_EXAM)]]<div id="archive-exam" class="sidebar-element">
+                    </div>[[+if $ARCHIVE_EXAM]]<div id="archive-exam" class="sidebar-element">
                             <h3>Eksamen</h3>
-                            <span class="exam-date">[[+$ARCHIVE_EXAM_PRETTY]]</span>
+                            <span class="exam-date">[[+$ARCHIVE_EXAM_OBJECT->getExam(true)]]</span>
                             <div class="sidebar-element-inner">
-                                <div class="countdown-wrapper" data-exam="[[+$ARCHIVE_EXAM]]">
+                                <div class="countdown-wrapper" data-exam="[[+$ARCHIVE_EXAM_OBJECT->getExam()]]">
                                 </div>
                             </div>
                         </div>[[+/if]][[+/nocache]]

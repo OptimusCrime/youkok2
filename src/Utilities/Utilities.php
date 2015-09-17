@@ -10,7 +10,7 @@
 namespace Youkok2\Utilities;
 
 class Utilities {
-
+    
     /*
      * Prettify SQL dates
      */
@@ -18,6 +18,7 @@ class Utilities {
     public static function prettifySQLDate($d, $include_time = true) {
         $norwegian_months = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
                                  'okt', 'nov', 'des');
+        
         $split1 = explode(' ', $d);
         $split2 = explode('-', $split1[0]);
         

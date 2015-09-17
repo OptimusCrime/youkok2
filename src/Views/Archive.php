@@ -72,17 +72,19 @@ class Archive extends BaseView {
         $this->template->assign('ARCHIVE_ELEMENT_PARENTS', array_reverse($element->getParents()));
         
         // Set root element
-        if (!$element->isCourse()) {
+        if ($element->hasParent()) {
             $element_root = $element->getRootParent();
+            $element_pretty_name = $element_root->getName();
         }
         else {
             $element_root = $element;
+            $element_pretty_name = $element->getCourseCode() . ' - ' . $element->getCourseName();
         }
         $this->template->assign('ARCHIVE_ELEMENT_ROOT', $element_root);
         
-        // TODO
-        //$site_description = $course['code'] . ' - ' . $course['name'] . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
-        //$this->template->assign('SITE_DESCRPTION', $site_description);
+        // Set the site description
+        $site_description = $element_pretty_name . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
+        $this->template->assign('SITE_DESCRPTION', $site_description);
         
         // Check if archive is empty
         if ($element->isEmpty()) {
@@ -91,6 +93,15 @@ class Archive extends BaseView {
         else {
             $this->template->assign('ARCHIVE_EMPTY', false);
             $this->template->assign('ARCHIVE_CONTENT', $element->getChildren());
+        }
+        
+        // Check for exam
+        if ($element_root->getExam() !== null and strtotime($element_root->getExam()) > time()) {
+            $this->template->assign('ARCHIVE_EXAM', true);
+            $this->template->assign('ARCHIVE_EXAM_OBJECT', $element_root);
+        }
+        else {
+            $this->template->assign('ARCHIVE_EXAM', false);
         }
     }
     

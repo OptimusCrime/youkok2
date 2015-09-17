@@ -248,8 +248,8 @@ class Element extends BaseModel {
     public function isVisible() {
         return (bool) $this->visible;
     }
-    public function getExam() {
-        return $this->exam;
+    public function getExam($pretty = false) {
+        return $pretty ? Utilities::prettifySQLDate($this->exam, false) : $this->exam;
     }
     public function getUrl() {
         return $this->url;
