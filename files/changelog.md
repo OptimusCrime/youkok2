@@ -1,4 +1,4 @@
-Youkok2 - 1.4.0-pl  (xx. august 2015)
+Youkok2 - 2.0.0-pl  (xx. oktober 2015)
 =====================================
 
 - [Info] Prettification

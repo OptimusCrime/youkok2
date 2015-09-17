@@ -19,7 +19,7 @@ if (!defined('OFFLINE')) {
 
 // Version
 if (!defined('VERSION')) {
-    define('VERSION', '1.0.0-dev');
+    define('VERSION', '2.0.0-pl');
 }
 if (!defined('DEV')) {
     define('DEV', false);
