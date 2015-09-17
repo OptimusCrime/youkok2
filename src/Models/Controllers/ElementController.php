@@ -9,6 +9,7 @@
 
 namespace Youkok2\Models\Controllers;
 
+use \Youkok2\Models\Download as Download;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Utilities\Routes as Routes;

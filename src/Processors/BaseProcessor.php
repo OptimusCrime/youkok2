@@ -167,23 +167,25 @@ abstract class BaseProcessor extends Youkok2 {
     
     protected function handleOutput() {
         // Check if we should output data at all
-        if (isset($this->settings['output']) and $this->settings['output']) {
-            $output_data = $this->data;
+        if (!isset($_GET['format']) or (isset($_GET['format']) and $_GET['format'] != 'html')) {
+            if (isset($this->settings['output']) and $this->settings['output']) {
+                $output_data = $this->data;
 
-            // Check if we should encode
-            if (isset($this->settings['encode']) and $this->settings['encode']) {
-                $output_data = $this->encodeData($output_data);
-            }
+                // Check if we should encode
+                if (isset($this->settings['encode']) and $this->settings['encode']) {
+                    $output_data = $this->encodeData($output_data);
+                }
 
-            // Handle CLI and JSON
-            if (php_sapi_name() == 'cli') {
-                // CLI output using CLImate
-                $climate = new \League\CLImate\CLImate;
-                $climate->json($output_data);
-            }
-            else {
-                // Simply echo as JSON content
-                echo json_encode($output_data);
+                // Handle CLI and JSON
+                if (php_sapi_name() == 'cli') {
+                    // CLI output using CLImate
+                    $climate = new \League\CLImate\CLImate;
+                    $climate->json($output_data);
+                }
+                else {
+                    // Simply echo as JSON content
+                    echo json_encode($output_data);
+                }
             }
         }
     }

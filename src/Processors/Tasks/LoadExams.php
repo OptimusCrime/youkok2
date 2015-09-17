@@ -13,64 +13,32 @@ use \Youkok2\Models\Element as Element;
 use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 
-class LoadExams extends Base {
+Class LoadExams extends BaseProcessor {
     
     /*
-     * Constructor
+     * Override
      */
 
-    public function __construct($returnData = false) {
-        // Calling Base' constructor
-        parent::__construct($returnData);
-        
-        if (self::requireCli() or self::requireAdmin()) {
-            // Check if we should turn on buffering
-            if (!self::requireCli()) {
-                ob_start();
-            }
-            
-            // Check database
-            if ($this->checkDatabase()) {
-                // Reset
-                $this->resetExamData();
-                
-                // Fetch
-                $this->fetch();
-                
-                // Close database connection
-                Database::close();
-            }
-            else {
-                $this->setError();
-            }
-        }
-        else {
-            // No access
-            $this->noAccess();
-        }
-        
-        // Return data
-        $this->returnData();
+    protected function checkPermissions() {
+        return $this->requireCli() or $this->requireAdmin();
+    }
+    
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
     }
 
     /*
-     * Check if we can connect to the database
+     * Construct
      */
 
-    private function checkDatabase() {
-        try {
-            Database::connect();
-
-            return true;
-        }
-        catch (Exception $e) {
-            $this->setData('code', 500);
-            $this->setData('msg', 'Could not connect to database');
-
-            return false;
-        }
+    public function __construct($method, $settings) {
+        // Calling Base' constructor
+        parent::__construct($method, $settings);
     }
     
     /*
@@ -88,7 +56,7 @@ class LoadExams extends Base {
      * Fetch the actual data here
      */
 
-    private function fetch() {
+    public function run() {
         // Set code to 200
         $this->setData('code', 200);
         
@@ -104,12 +72,12 @@ class LoadExams extends Base {
         $get_all_courses_query = Database::$db->query($get_all_courses);
         while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
             // Get
-            $element = ElementCollection::get($row['id']);
+            $element = Element::get($row['id']);
 
             // Check if valid Element
-            if ($element !== null) {
+            if ($element->wasFound()) {
                 // Fetch API contents
-                $ch = curl_init('http://www.ime.ntnu.no/api/course/' . $element->controller->getCourse()['code']);
+                $ch = curl_init('http://www.ime.ntnu.no/api/course/' . $element->getCourseCode());
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 
                 // Store data
@@ -158,33 +126,34 @@ class LoadExams extends Base {
                             $element->update();
                             
                             // Check if we should output buffer
-                            if ($this->mode == 'buffer') {
-                                echo '<p style="color: green;">Updated ' . $element->getName() . ', exam = ' . $element->getExam() . '</p>';
+                            if ($this->getSetting('output')) {
+                                echo '<p style="color: green;">Updated ' . $element->getCourseCode() . ', exam = ' . $element->getExam() . '</p>';
                             }
                             
                             // Increase counter
                             $updated++;
                         }
                         else {
-                            if ($this->mode == 'buffer') {
-                                echo '<p style="color: red;">Could not find exam data for ' . $element->controller->getCourse()['code'] . '</p>';
+                            if ($this->getSetting('output')) {
+                                echo '<p style="color: red;">Could not find exam data for ' . $element->getCourseCode() . '</p>';
                             }
                         }
                     }
                     else {
-                        if ($this->mode == 'buffer') {
-                            echo '<p style="color: red;">Could not find exam data for ' . $element->controller->getCourse()['code'] . '</p>';
+                        if ($this->getSetting('output')) {
+                            echo '<p style="color: red;">Could not find exam data for ' . $element->getCourseCode() . '</p>';
                         }
                     }
                 }
                 else {
-                    if ($this->mode == 'buffer') {
-                        echo '<p style="color: red;">Got http code ' . $httpcode . ' for '  . $element->controller->getCourse()['code'] . '</p>';
+                    if ($this->getSetting('output')) {
+                        echo '<p style="color: red;">Got http code ' . $httpcode . ' for '  . $element->getCourseCode() . '</p>';
                     }
                 }
             }
             
-            if ($this->mode == 'buffer') {
+            // Check if we should flush the buffer
+            if ($this->getSetting('output')) {
                 ob_flush();
                 flush();
             }

@@ -289,7 +289,7 @@ class Loader {
      */
 
     public static function queryGetSize() {
-        return count(self::query);
+        return count(self::$query);
     }
 
     /*

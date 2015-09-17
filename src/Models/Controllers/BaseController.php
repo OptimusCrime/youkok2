@@ -231,7 +231,10 @@ abstract class BaseController {
         call_user_func_array([$this->model, 'setId'], [Database::$db->lastInsertId()]);
     }
     
-    // Method for updating
+    /*
+     * Update
+     */
+    
     public function update() {
         // Arrays for building the query
         $attributes_arr = [];
