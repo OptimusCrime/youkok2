@@ -10,6 +10,7 @@
 namespace Youkok2\Models;
 
 use \Youkok2\Models\Controllers\KarmaController as KarmaController;
+use \Youkok2\Utilities\Utilities as Utilities;
 
 class Karma extends BaseModel {
 
@@ -131,8 +132,8 @@ class Karma extends BaseModel {
     public function getState() {
         return $this->state;
     }
-    public function getAdded() {
-        return $this->added;
+    public function getAdded($pretty = false) {
+        return $pretty ? Utilities::prettifySQLDate($this->added) : $this->added;
     }
     
     /*

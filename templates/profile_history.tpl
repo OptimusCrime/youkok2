@@ -15,7 +15,7 @@
                                     [[+if $karma->getFile(true) == null]]???[[+else]][[+if $karma->getFile(true)->isDirectory()]]Ny mappe[[+elseif $karma->getFile(true)->isLink()]]Ny link[[+else]]Ny fil[[+/if]][[+/if]]
                                 </div>
                                 <div class="width33">
-                                    <span class="moment-timestamp" style="cursor: help;" title="[[+$karma->getAdded(true)]]" data-ts="[[+$karma->getAdded(true)]]">
+                                    <span class="moment-timestamp" style="cursor: help;" title="[[+$karma->getAdded(true)]]" data-ts="[[+$karma->getAdded()]]">
                                         Laster...
                                     </span>
                                     <span class="badge">[[+if $karma->getState() == 1]]+[[+else]]-[[+/if]][[+$karma->getValue()]]</span></div>
