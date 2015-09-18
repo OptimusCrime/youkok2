@@ -300,6 +300,7 @@ class Loader {
         if (count(self::$query) >= $i) {
             return $prefix . self::$query[$i] . $endfix;
         }
+        return null;
     }
 
     /*

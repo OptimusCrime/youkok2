@@ -67,6 +67,12 @@ class Karma extends BaseModel {
                 'db' => true,
                 'is' => true
             ],
+            'state' => [
+                'type' => 'integer',
+                'null' => false,
+                'default' => 1,
+                'db' => true,
+            ],
             'added' => [
                 'type' => 'integer',
                 'default' => 'NOW()',
@@ -90,6 +96,17 @@ class Karma extends BaseModel {
          */
 
         $this->setDefaults();
+        
+        /*
+         * Various create methods are called here
+         */
+
+        if (is_numeric($data)) {
+            $this->controller->createById($data);
+        }
+        elseif (is_array($data)) {
+            $this->controller->createByArray($data);
+        }
     }
     
     /*
@@ -102,14 +119,17 @@ class Karma extends BaseModel {
     public function getUser() {
         return $this->user;
     }
-    public function getFile() {
-        return $this->file;
+    public function getFile($object = false) {
+        return $object ? Element::get($this->file) : $this->file;
     }
     public function getValue() {
         return $this->value;
     }
     public function isPending() {
         return $this->pending;
+    }
+    public function getState() {
+        return $this->state;
     }
     public function getAdded() {
         return $this->added;
@@ -133,6 +153,9 @@ class Karma extends BaseModel {
     }
     public function setPending($pending) {
         $this->pending = $pending;
+    }
+    public function setState($state) {
+        $this->state = $state;
     }
     public function setAdded($added) {
         $this->added = $added;

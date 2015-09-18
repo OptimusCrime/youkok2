@@ -862,11 +862,14 @@ a:visited {
     display: none;
 }
 .width33 {
-    width: 33.333%;
+    width: 33%;
     display: inline-block;
 }
 .list-group-item .badge {
     float: right;
+}
+.list-group-item-gray  * {
+    opacity: 0.8;
 }
 
 /*

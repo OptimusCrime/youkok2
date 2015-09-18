@@ -9,7 +9,6 @@
 
 namespace Youkok2\Models;
 
-use \Youkok2\Collections\ElementCollection as ElementCollection;
 use \Youkok2\Utilities\CsrfManager as CsrfManager;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
@@ -548,21 +547,21 @@ class Me {
      */
 
     public static function getKarmaElements() {
-        $elements = [];
+        $collection = [];
 
         // Run query
-        $get_user_karma_elements  = "SELECT id" . PHP_EOL;
-        $get_user_karma_elements .= "FROM history" . PHP_EOL;
+        $get_user_karma_elements  = "SELECT id, user, file, value, pending, state, added" . PHP_EOL;
+        $get_user_karma_elements .= "FROM karma" . PHP_EOL;
         $get_user_karma_elements .= "WHERE user = :user" . PHP_EOL;
         $get_user_karma_elements .= "ORDER BY added DESC";
 
         $get_user_karma_elements_query = Database::$db->prepare($get_user_karma_elements);
         $get_user_karma_elements_query->execute(array(':user' => Me::getId()));
         while ($row = $get_user_karma_elements_query->fetch(\PDO::FETCH_ASSOC)) {
-            $elements[] = $row['id'];
+            $collection[] = new Karma($row);
         }
 
         // Return elements
-        return $elements;
+        return $collection;
     }
 }
