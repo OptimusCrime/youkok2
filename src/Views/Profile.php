@@ -24,6 +24,9 @@ class Profile extends BaseView {
     public function __construct() {
         // Calling Base' constructor
         parent::__construct();
+        
+        // Set menu
+        $this->template->assign('HEADER_MENU', '');
 
         // Make sure user us logged in
         if (!Me::isLoggedIn()) {
