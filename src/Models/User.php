@@ -7,11 +7,11 @@
  *
  */
 
-namespace Youkok2\models;
+namespace Youkok2\Models;
 
-use \Youkok2\models\models\UserController as UserController;
+use \Youkok2\Models\Controllers\UserController as UserController;
 
-class User {
+class User extends BaseModel {
     
     /*
      * Variables
@@ -19,10 +19,10 @@ class User {
     
     public $controller;
     
+    // Fields in the database
     private $id;
     private $email;
     private $password;
-    private $salt;
     private $nick;
     private $mostPopularDelta;
     private $lastSeen;
@@ -31,11 +31,107 @@ class User {
     private $banned;
     
     /*
+     * Schema
+     */
+
+    protected $schema = [
+        'meta' => [
+            'table' => 'user',
+            'cacheable' => false,
+        ],
+        'fields' => [
+            // Database fields
+            'id' => [
+                'type' => 'integer',
+                'null' => false,
+                'db' => true,
+                'arr' => true,
+                'ignore_insert' => true,
+                'ignore_update' => true,
+            ],
+            'email' => [
+                'type' => 'string',
+                'null' => false,
+                'db' => true,
+                'arr' => true,
+            ],
+            'password' => [
+                'type' => 'string',
+                'null' => false,
+                'db' => true,
+            ],
+            'nick' => [
+                'type' => 'string',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+                'arr' => true,
+            ],
+            'most_popular_delta' => [
+                'method' => 'mostPopularDelta',
+                'type' => 'integer',
+                'null' => false,
+                'default' => 1,
+                'db' => true,
+                'arr' => true,
+            ],
+            'last_seen' => [
+                'method' => 'lastSeen',
+                'type' => 'datetime',
+                'null' => false,
+                'default' => 'NOW()',
+                'db' => true,
+                'arr' => true,
+            ],
+            'karma' => [
+                'type' => 'integer',
+                'null' => false,
+                'default' => 5,
+                'db' => true,
+                'arr' => true,
+            ],
+            'karma_pending' => [
+                'method' => 'karmaPending',
+                'type' => 'integer',
+                'null' => false,
+                'default' => 0,
+                'db' => true,
+                'arr' => true,
+            ],
+            'banned' => [
+                'type' => 'integer',
+                'null' => false,
+                'default' => 0,
+                'db' => true,
+                'arr' => true,
+                'is' => true
+            ],
+        ]
+    ];
+    
+    /*
      * Constructor
      */
-    
-    public function __construct() {
+
+    public function __construct($data = null) {
         $this->controller = new UserController($this);
+
+        /*
+         * Set some default values
+         */
+
+        $this->setDefaults();
+
+        /*
+         * Various create methods are called here
+         */
+
+        if (is_numeric($data)) {
+            $this->controller->createById($data);
+        }
+        elseif (is_array($data)) {
+            $this->controller->createByArray($data);
+        }
     }
     
     /*
@@ -50,9 +146,6 @@ class User {
     }
     public function getPassword() {
         return $this->password;
-    }
-    public function getSalt() {
-        return $this->salt;
     }
     public function getNick() {
         return $this->nick;
@@ -71,5 +164,37 @@ class User {
     }
     public function isBanned() {
         return $this->banned;
+    }
+    
+    /*
+     * Setters
+     */
+    
+    public function setId($id) {
+        $this->id = $id;
+    }
+    public function setEmail($email) {
+        $this->email = $email;
+    }
+    public function setPassword($password) {
+        $this->password = $password;
+    }
+    public function setNick($nick) {
+        $this->nick = $nick;
+    }
+    public function setMostPopularDelta($delta) {
+        $this->mostPopularDelta = $delta;
+    }
+    public function setLastSeen($time) {
+        $this->lastSeen = $time;
+    }
+    public function setKarma($karma) {
+        $this->karma = $karma;
+    }
+    public function setKarmaPending($karma) {
+        $this->karmaPending = $karma;
+    }
+    public function setBanned($banned) {
+        $this->banned = $banned;
     }
 }

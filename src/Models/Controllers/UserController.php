@@ -1,15 +1,15 @@
 <?php
 /*
- * File: KarmaController.php
- * Holds: Interface for the controllers
- * Created: 17.09.2015
+ * File: UserController.php
+ * Holds: The controller for the class User
+ * Created: 19.09.2015
  * Project: Youkok2
  * 
  */
 
 namespace Youkok2\Models\Controllers;
 
-class KarmaController extends BaseController {
+class UserController extends BaseController {
     
     /*
      * Constructor

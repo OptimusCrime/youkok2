@@ -168,6 +168,9 @@ class Routes {
         'Tasks\\Sync\\SyncEmpty' => [
             ['path' => '/tasks/sync/syncempty'],
         ],
+        'Tasks\\Sync\\SyncKarma' => [
+            ['path' => '/tasks/sync/synckarma'],
+        ],
     ];
     
     /*
