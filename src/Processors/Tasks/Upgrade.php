@@ -68,42 +68,44 @@ class Upgrade extends BaseProcessor {
         
         // Use the iterator to loop all the files
         foreach ($iter as $file) {
-            $minifier->add($file->getPathname());
+            if (!$file->isDir()) {
+                $minifier->add($file->getPathname());
+            }
         }
         
         // Minify!
         $minifier->minify(BASE_PATH . '/assets/js/youkok.min.temp.js');
         
         // Put content on one line
-        $minified_sigle_line = '';
+        $js_content = '';
         
-        // Read libs
-        if ($dh = opendir(BASE_PATH . '/assets/js/libs/')) {
-            $js_modules = '';
-            while (($file = readdir($dh)) !== false) {
-                if ($file != '.' and $file != '..') {
-                    $handle = fopen(BASE_PATH . '/assets/js/libs/' . $file, 'r');
-                    if ($handle) {
-                        while (($line = fgets($handle)) !== false) {
-                            $minified_sigle_line .= rtrim($line);
-                        }
-                    }
-                    fclose($handle);
-                }
-            }
-            closedir($dh);
+        $libs = [
+            'jquery-2.1.4.min.js',
+            'jquery-ui-1.11.4.min.js',
+            'jquery.fileupload.js',
+            'jquery.ba-outside-events.min.js',
+            'jquery.countdown.min.js',
+            'typeahead.bundle.min.js',
+            'moment-2.10.3.min.js',
+            'underscore-1.8.3.min.js',
+            'bootstrap-3.3.5.min.js',
+        ];
+        
+        // Read each lib
+        foreach ($libs as $lib) {
+            $js_content .= file_get_contents(BASE_PATH . '/assets/js/libs/' . $lib) . PHP_EOL;
         }
         
         // Read the temp js file
         $handle = fopen(BASE_PATH . '/assets/js/youkok.min.temp.js', 'r');
         if ($handle) {
             while (($line = fgets($handle)) !== false) {
-                $minified_sigle_line .= rtrim($line);
+                $js_content .= $line;
             }
         }
         fclose($handle);
         
-        file_put_contents(BASE_PATH . '/assets/js/youkok.min.js', $minified_sigle_line);
+        file_put_contents(BASE_PATH . '/assets/js/youkok.min.js', $js_content);
         
         // Add message
         $this->setData('js', 'Successfully build JS files');

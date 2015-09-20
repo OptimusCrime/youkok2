@@ -17,9 +17,7 @@ class JavaScriptLoader {
 
     public static function get() {
         // Loop and look for files
-        $files = self::findFiles([
-            '<script type="text/javascript" src="assets/js/load.js?v=' . VERSION . '"></script>'
-        ], '/assets/js/youkok/');
+        $files = self::findFiles([], '/assets/js/youkok/');
        
         // Implode the list and return the result
         return implode(PHP_EOL, $files);
