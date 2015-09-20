@@ -1,5 +1,5 @@
-Youkok2 - 2.0.0-pl  (xx. oktober 2015)
-=====================================
+Youkok2 - 2.0.0-pl  (20. september 2015)
+========================================
 
 - [Info] Prettification
 - [Enhanced] Flyttet alt av HTML ut av programmeringsstuff.
