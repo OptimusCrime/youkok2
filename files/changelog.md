@@ -6,6 +6,9 @@ Youkok2 - 2.0.0-pl  (xx. oktober 2015)
 - [Enhanced] Vårrengjøring av ymse.
 - [Enhanced] Skrevet om store deler av kildekoden.
 - [Enhanced] Skrevet om caching, den burde være bedre nå.
+- [Fixed] Det er nå mulig å logge inn fra 'Logg inn'-viewet og ikke bare dropdown-menyen.
+- [Fixed] Korrekt brukernavn blir nå lagret i databasen.
+- [Fixed] Valg av element i søkemenyen funker igjen.
 
 Youkok2 - 1.3.4-pl  (26. mai 2015)
 ====================================
