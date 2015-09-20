@@ -148,13 +148,25 @@ class Profile extends BaseView {
 
     private function profileUpdateInfo() {
         if (isset($_POST['register-form-email']) and isset($_POST['register-form-nick'])) {
-            $error = false;
-
+            // Make sure there is no other users with this email
+            $email_processor = null;
+            if ($_POST['register-form-email'] != Me::getEmail()) {
+                $_POST['email'] = $_POST['register-form-email'];
+                $_POST['ignore'] = 1;
+                
+                $email_processor = self::runProcessor('/register/email',[
+                    'output' => false,
+                    'close_db' => false]);
+            }
+            
             // Check if we should update e-mail
-            if ($_POST['register-form-email'] != Me::getEmail()
+            if (($email_processor != null and $email_processor['code'] == 200)
+                and $_POST['register-form-email'] != Me::getEmail()
                 and strlen($_POST['register-form-email']) > 0
                 and filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL)) {
-
+                
+                
+                
                 // Set data
                 Me::setEmail($_POST['register-form-email']);
 

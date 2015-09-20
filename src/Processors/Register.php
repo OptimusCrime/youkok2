@@ -38,22 +38,52 @@ class Register extends BaseProcessor {
 
     public function checkEmail() {
         // Check if valid request
-        if (Database::$db !== null and isset($_POST['email'])) {
+        if (isset($_POST['email'])) {
+            if (isset($_POST['ignore'])) {
+                // Log the user in
+                Me::init();
+                
+                // Make sure we actually logged in
+                if (Me::isLoggedIn()) {
+                    $check_email  = "SELECT COUNT(id) as num" . PHP_EOL;
+                    $check_email .= "FROM user" . PHP_EOL;
+                    $check_email .= "WHERE email = :email" . PHP_EOL;
+                    $check_email .= "AND email != :email_old";
 
-            $check_email  = "SELECT COUNT(id) as num" . PHP_EOL;
-            $check_email .= "FROM user" . PHP_EOL;
-            $check_email .= "WHERE email = :email";
-
-            $check_email_query = Database::$db->prepare($check_email);
-            $check_email_query->execute(array(':email' => $_POST['email']));
-            $row = $check_email_query->fetch(\PDO::FETCH_ASSOC);
-
-            // Check if flag was returned
-            if ((!isset($_POST['ignore']) and $row['num'] > 0) or (isset($_POST['ignore']) and $row['num'] > 1)) {
-                $this->setData('code', 500);
+                    $check_email_query = Database::$db->prepare($check_email);
+                    $check_email_query->execute(array(':email' => $_POST['email'],
+                        ':email_old' => Me::getEmail()));
+                    $row = $check_email_query->fetch(\PDO::FETCH_ASSOC);
+                    
+                    // Check if flag was returned
+                    if ($row['num'] > 0) {
+                        $this->setData('code', 500);
+                    }
+                    else {
+                        $this->setData('code', 200);
+                    }
+                }
+                else {
+                    // Could not log in, can't check the email correctly
+                    $this->setData('code', 500);
+                }
             }
             else {
-                $this->setData('code', 200);
+                $check_email  = "SELECT COUNT(id) as num" . PHP_EOL;
+                $check_email .= "FROM user" . PHP_EOL;
+                $check_email .= "WHERE email = :email";
+
+                $check_email_query = Database::$db->prepare($check_email);
+                $check_email_query->execute(array(':email' => $_POST['email']));
+                $row = $check_email_query->fetch(\PDO::FETCH_ASSOC);
+
+                // Check if flag was returned
+                if ($row['num'] > 0) {
+                    $this->setData('code', 500);
+                }
+                else {
+                    $this->setData('code', 200);
+                }
             }
         }
         else {
