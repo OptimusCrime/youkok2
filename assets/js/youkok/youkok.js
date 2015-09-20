@@ -53,7 +53,7 @@ var Youkok = (function (module) {
         data = jQuery.parseJSON(SITE_DATA);
         
         // Start moment.js
-        moment.lang('en', {
+        moment.locale('en', {
             relativeTime : {
                 future: "Om %s",
                 past:   "%s siden",
