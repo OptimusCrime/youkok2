@@ -35,7 +35,7 @@ var Youkok = (function (module) {
         }
         
         // Forgotten password
-        if (Youkok.getData('view') == 'forgotten-password') {
+        if (Youkok.getData('view') == 'forgotten-password' || Youkok.getData('view') == 'profile') {
             Youkok.forgottenPassword.init();
         }
         

@@ -3,8 +3,7 @@ var Youkok = (function (module) {
     /*
      * Public methods
      */
-    module.forgottenPassword
-    = {
+    module.forgottenPassword = {
         
         /*
          * Init the module

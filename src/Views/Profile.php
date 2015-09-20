@@ -54,7 +54,11 @@ class Profile extends BaseView {
      */
     
     private function profileSettings() {
-         if (!isset($_POST['source'])) {
+        // Set view
+        $this->addSiteData('view', 'profile');
+        
+        // Check what we should display
+        if (!isset($_POST['source'])) {
             // Set title
             $this->template->assign('SITE_TITLE', 'Mine innstillinger');
 
