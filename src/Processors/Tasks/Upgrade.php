@@ -15,34 +15,42 @@ use \Youkok2\Utilities\LineCounter as LineCounter;
 class Upgrade extends BaseProcessor {
 
     /*
-     * Constructor
+     * Override
      */
 
-    public function __construct($outputData = false, $returnData = false) {
-        // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
-        // Check permissions
-        if (self::requireCli() or self::requireAdmin()) {
-            // Build stuff
-            $this->buildJS();
-            $this->buildCSS();
-            
-        }
-        else {
-            // No access
-            $this->noAccess();
-        }
-        
-        // Handle output
-        if ($this->outputData) {
-            $this->outputData();
-        }
-        if ($this->returnData) {
-            return $this->returnData();
-        }
+    protected function checkPermissions() {
+        return $this->requireCli() or $this->requireAdmin();
+    }
+    
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
     }
 
+    /*
+     * Construct
+     */
+
+    public function __construct($method, $settings) {
+        // Calling Base' constructor
+        parent::__construct($method, $settings);
+    }
+    
+    /*
+     * Method ran by the processor
+     */
+    
+    public function run() {
+        $this->buildJS();
+        $this->buildCSS();
+    }
+    
+    /*
+     * Reccursivly add js files for the 
+    
     /*
      * Build the JS files
      */
@@ -51,15 +59,16 @@ class Upgrade extends BaseProcessor {
         // New instance
         $minifier = new \MatthiasMullie\Minify\JS();
         
-        // Add all module files
-        if ($dh = opendir(BASE_PATH . '/assets/js/youkok/')) {
-            $js_modules = '';
-            while (($file = readdir($dh)) !== false) {
-                if ($file != '.' and $file != '..') {
-                    $minifier->add(BASE_PATH . '/assets/js/youkok/' . $file);
-                }
-            }
-            closedir($dh);
+        // Use the RecursiveIteratorIterator to loop all subdirectories
+        $iter = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(BASE_PATH . '/assets/js/youkok/', \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST,
+            \RecursiveIteratorIterator::CATCH_GET_CHILD
+        );
+        
+        // Use the iterator to loop all the files
+        foreach ($iter as $file) {
+            $minifier->add($file->getPathname());
         }
         
         // Minify!
