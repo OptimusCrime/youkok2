@@ -130,7 +130,7 @@ class BaseView extends Youkok2 {
         
         // Set user information to the template
         $this->template->assign('USER_IS_LOGGED_IN', Me::isLoggedIn());
-        $this->template->assign('USER_NICK', Me::getNick());
+        $this->template->assign('USER_NICK', Me::getNick(false));
         $this->template->assign('USER_KARMA', Me::getKarma());
         $this->template->assign('USER_KARMA_PENDING', Me::getKarmaPending());
         $this->template->assign('USER_IS_ADMIN', Me::isAdmin());

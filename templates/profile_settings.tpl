@@ -17,9 +17,9 @@
                         <h3 class="panel-title">Generelt</h3>
                     </div>
                     <div class="panel-body">
-                        <p><b>E-post:</b> [[+$PROFILE_USER_EMAIL]]</p>
-                        <p><b>Kallenavn:</b> [[+$BASE_USER_NICK]]</p>
-                        <p><b>Karma:</b> [[+$BASE_USER_KARMA]] / [[+$BASE_USER_KARMA_PENDING]]</p>
+                        <p><b>E-post:</b> [[+$USER_EMAIL]]</p>
+                        <p><b>Kallenavn:</b> [[+$USER_NICK]]</p>
+                        <p><b>Karma:</b> [[+$USER_KARMA]] / [[+$USER_KARMA_PENDING]]</p>
                     </div>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                         <h3 class="panel-title">Annet</h3>
                     </div>
                     <div class="panel-body">
-                        <p><b>Kan bidra:</b> [[+if $PROFILE_USER_CAN_CONTRIBUTE == 1]]<i class="fa fa-check" style="color: green;"></i>[[+else]]<i class="fa fa-times" style="color: red;"></i>[[+/if]]</p>
+                        <p><b>Kan bidra:</b> [[+if $USER_CAN_CONTRIBUTE == 1]]<i class="fa fa-check" style="color: green;"></i>[[+else]]<i class="fa fa-times" style="color: red;"></i>[[+/if]]</p>
                     </div>
                 </div>
             </div>
@@ -41,13 +41,13 @@
                     <input type="hidden" value="info" name="source" />
                     <div class="form-group">
                         <label for="register-form-email">E-post <span style="color: red;">*</span></label>
-                        <input type="email" class="form-control" data-original="[[+$PROFILE_USER_EMAIL]]" id="register-form-email" name="register-form-email" placeholder="Skriv din e-post her" value="[[+$PROFILE_USER_EMAIL]]" />
+                        <input type="email" class="form-control" data-original="[[+$USER_EMAIL]]" id="register-form-email" name="register-form-email" placeholder="Skriv din e-post her" value="[[+$USER_EMAIL]]" />
                         <p><span id="register-form-email-error1">Dette krever en gyldig e-post</span> og <span id="register-form-email-error2">e-posten kan ikke være i våre systemer fra før.</span></p>
                     </div>
 
                     <div class="form-group">
                         <label for="register-form-nick">Kallenavn</label>
-                        <input type="text" class="form-control" id="register-form-nick" name="register-form-nick" placeholder="Skriv ønsket kallenavn her" value="[[+if $PROFILE_USER_NICK != '<em>Anonym</em>']][[+$PROFILE_USER_NICK]][[+/if]]" />
+                        <input type="text" class="form-control" id="register-form-nick" name="register-form-nick" placeholder="Skriv ønsket kallenavn her" value="[[+if $USER_NICK != '<em>Anonym</em>']][[+$USER_NICK]][[+/if]]" />
                         <p>La det stå tom for <em>Anonym</em>.</p>
                     </div>
 

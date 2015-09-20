@@ -59,9 +59,7 @@ class Profile extends BaseView {
             $this->template->assign('SITE_TITLE', 'Mine innstillinger');
 
             // For info
-            $this->template->assign('PROFILE_USER_EMAIL', Me::getEmail());
-            $this->template->assign('PROFILE_USER_EMAIL', Me::getEmail());
-            $this->template->assign('PROFILE_USER_NICK', Me::getNick());
+            $this->template->assign('USER_EMAIL', Me::getEmail());
 
             // Display
             $this->displayAndCleanup('profile_settings.tpl');
@@ -177,7 +175,7 @@ class Profile extends BaseView {
             }
 
             // Check if we should update nick
-            if ($_POST['register-form-nick'] != Me::getNickReal()) {
+            if (($_POST['register-form-nick'] == '' and Me::getNick() != '<em>Anonym</em>') or ($_POST['register-form-nick'] != Me::getNickReal())) {
                 Me::setNick($_POST['register-form-nick']);
             }
 

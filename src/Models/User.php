@@ -147,7 +147,13 @@ class User extends BaseModel {
     public function getPassword() {
         return $this->password;
     }
-    public function getNick() {
+    public function getNick($raw = true) {
+        // Check if we should return the actual database value
+        if ($raw) {
+            return $this->nick;
+        }
+        
+        // This is used to pretty the nick
         if ($this->nick === null or $this->nick == '') {
             return '<em>Anonym</em>';
         }

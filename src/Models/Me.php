@@ -92,14 +92,6 @@ class Me {
      * Getters (override for storing information in the User object)
      */
     
-    public static function getNickReal() {
-        if (self::$nick == '<em>Anonym</em>') {
-            return '';
-        }
-        else {
-            return self::$nick;
-        }
-    }
     public static function getMostPopularDelta() {
         // Check what to return
         if (self::$user !== null) {
