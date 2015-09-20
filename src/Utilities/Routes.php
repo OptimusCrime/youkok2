@@ -142,9 +142,6 @@ class Routes {
         'Tasks\\ClearCache' => [
             ['path' => '/tasks/clearcache'],
         ],
-        'Tasks\\Check404' => [
-            ['path' => '/tasks/check404'],
-        ],
         'Tasks\\LoadCourses' => [
             ['path' => '/tasks/courses'],
         ],
