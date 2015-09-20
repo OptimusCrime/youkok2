@@ -15,7 +15,15 @@ use \Youkok2\Models\Controllers\ElementController as ElementController;
 use \Youkok2\Utilities\Database as Database;
 
 class Module extends BaseProcessor {
+    
+    /*
+     * Override
+     */
 
+    protected function canBeLoggedIn() {
+        return true;
+    }
+    
     /*
      * Override
      */

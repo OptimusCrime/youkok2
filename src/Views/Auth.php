@@ -10,6 +10,7 @@
 namespace Youkok2\Views;
 
 use \Youkok2\Models\Me as Me;
+use \Youkok2\Models\User as User;
 use \Youkok2\Models\ChangePassword as ChangePassword;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Redirect as Redirect;
@@ -112,7 +113,7 @@ class Auth extends BaseView {
             // Check if missing data
             if (!$err) {
                 // Set post variables
-                $this->setFormValues('post', ['email' => $_POST['register-form-email']]);
+                $_POST['email'] = $_POST['register-form-email'];
 
                 // Run processor
                 $email_check = $this->runProcessor('register/email', false, true);
@@ -123,7 +124,10 @@ class Auth extends BaseView {
                     if ($_POST['register-form-password1'] == $_POST['register-form-password2']) {
                         // Match, create new password
                         $hash = Utilities::hashPassword($_POST['register-form-password1'], Utilities::generateSalt());
-
+                        
+                        // New instace of me
+                        Me::create();
+                        
                         // Insert to database
                         Me::setEmail($_POST['register-form-email']);
                         Me::setPassword($hash);
@@ -207,6 +211,7 @@ class Auth extends BaseView {
                 $change_password = new ChangePassword();
                 $change_password->setUser($row['id']);
                 $change_password->setHash($hash);
+                $change_password->setTimeout(date('Y-m-d H:i:s', (time() + (60 * 60 * 24))));
 
                 // Save
                 $change_password->save();
@@ -264,7 +269,7 @@ class Auth extends BaseView {
         // Check if changepassword was found
         $change_password = new ChangePassword();
         $change_password->createByHash($_GET['hash']);
-
+        
         // Check if valid or not
         if ($change_password->getId() != null) {
             // Check if submitted
@@ -275,14 +280,16 @@ class Auth extends BaseView {
             else {
                 // Check if the two passwords are identical
                 if ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2']) {
-
+                    // Get the correct user object
+                    $user = new User($change_password->getUser());
+                    
                     // New hash
                     $hash_salt = Utilities::generateSalt();
                     $hash = Utilities::hashPassword($_POST['forgotten-password-new-form-password1'], $hash_salt);
 
                     // Insert
-                    Me::setPassword($hash);
-                    Me::update();
+                    $user->setPassword($hash);
+                    $user->update();
 
                     // Delete from changepassword
                     $change_password->delete();
@@ -291,7 +298,7 @@ class Auth extends BaseView {
                     MessageManager::addMessage('Passordet er endret!', 'success');
 
                     // Log in (only session)
-                    Me::setLogin($hash, Me::getEmail());
+                    Me::setLogin($hash, $user->getEmail());
 
                     Redirect::send('');
                 }

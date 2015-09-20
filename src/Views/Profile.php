@@ -58,9 +58,6 @@ class Profile extends BaseView {
             // Set title
             $this->template->assign('SITE_TITLE', 'Mine innstillinger');
 
-            // Set status
-            Me::setUserStatus($this, 'PROFILE');
-
             // For info
             $this->template->assign('PROFILE_USER_EMAIL', Me::getEmail());
             $this->template->assign('PROFILE_USER_EMAIL', Me::getEmail());

@@ -57,7 +57,7 @@
 
                             <div id="archive-warning">
                                 <p>Du er ikke logget inn og eventuelle bidrag vil ikke ha noen tilknyttning til deg. Disse innsendingene må manuelt godkjennes av en administrator før de vises på siden. Om du <a href="retningslinjer">registrerer deg</a> vil filene være øyeblikkelig synlig. Du får også mulighet til å opprette mapper.</p>
-                            </div>[[+/if]][[+else]][[+if $USER_BANNED]]
+                            </div>[[+/if]][[+else]][[+if $USER_IS_BANNED]]
 
                             <p>Du er bannet fra systemet og kan dermed ikke bidra på Youkok2 lenger.</p>[[+else]]
 

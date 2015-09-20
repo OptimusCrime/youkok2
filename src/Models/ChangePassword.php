@@ -7,9 +7,9 @@
  *
  */
 
-namespace Youkok2\models;
+namespace Youkok2\Models;
 
-use \Youkok2\Models\Controllers\MessageController as MessageController;
+use \Youkok2\Models\Controllers\ChangePasswordController as ChangePasswordController;
 use \Youkok2\Models\StaticControllers\MessageStaticController as MessageStaticController;
 
 class ChangePassword extends BaseModel {
@@ -65,8 +65,15 @@ class ChangePassword extends BaseModel {
      * Constructor
      */
 
-    public function __construct() {
+    public function __construct($data = null) {
         $this->controller = new ChangePasswordController($this);
+        
+        if (is_string($data)) {
+            $this->controller->createByHash($data);
+        }
+        elseif (is_array($data)) {
+            $this->controller->createByArray($data);
+        }
     }
 
     /*
@@ -101,22 +108,5 @@ class ChangePassword extends BaseModel {
     }
     public function setTimeout($timeout) {
         $this->timeout = $timeout;
-    }
-
-    /*
-     * Redirectors
-     */
-
-    public function createByHash($hash) {
-        $this->controller->createByHash($hash);
-    }
-    public function save() {
-        $this->controller->save();
-    }
-    public function update() {
-        $this->controller->update();
-    }
-    public function delete() {
-        $this->controller->delete();
     }
 } 

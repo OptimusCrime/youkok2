@@ -148,6 +148,9 @@ class User extends BaseModel {
         return $this->password;
     }
     public function getNick() {
+        if ($this->nick === null or $this->nick == '') {
+            return '<em>Anonym</em>';
+        }
         return $this->nick;
     }
     public function getMostPopularDelta() {

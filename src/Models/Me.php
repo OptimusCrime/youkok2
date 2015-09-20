@@ -9,6 +9,7 @@
 
 namespace Youkok2\Models;
 
+use \Youkok2\Models\User as User;
 use \Youkok2\Utilities\CsrfManager as CsrfManager;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
@@ -21,19 +22,9 @@ class Me {
      * Variables for the user
      */
     
-    private static $id;
-    private static $email;
-    private static $password;
-    private static $nick;
-    private static $lastSeen;
-    private static $karma;
-    private static $karmaPending;
-    private static $banned;
-    private static $mostPopularDelta = null;
-    private static $initialData = [];
+    private static $user;
 
     // Other variables
-    private static $loggedIn;
     private static $favorites;
     private static $inited;
 
@@ -46,8 +37,6 @@ class Me {
         if (self::$inited === null or !self::$inited) {
             // Set initial
             self::$inited = true;
-            self::$loggedIn = false;
-            self::$nick = null;
             self::$favorites = null;
 
             // Check if we have anything stored
@@ -77,37 +66,9 @@ class Me {
                     $row = $get_current_user_query->fetch(\PDO::FETCH_ASSOC);
 
                     // Check if anything want returned
-                    if (isset($row['id'])) {
-                        // The user is logged in, gogo
-                        self::$loggedIn = true;
-
-                        // Set attributes
-                        self::$id = $row['id'];
-                        self::$email = $row['email'];
-                        self::$password = $row['password'];
-                        self::$nick = (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']);
-                        self::$mostPopularDelta = (int) $row['most_popular_delta'];
-                        self::$lastSeen = (int)  $row['last_seen'];
-                        self::$karma = (int) $row['karma'];
-                        self::$karmaPending = (int) $row['karma_pending'];
-                        self::$banned = (boolean) $row['banned'];
-
-
-                        // Set to initial data
-                        self::$initialData = [
-                            'id' => array('value' => self::$id),
-                            'email' => array('value' => self::$email),
-                            'password' => array('value' => self::$password),
-                            'nick' => array('value' => self::$nick),
-                            'mostPopularDelta' => array('value' => self::$mostPopularDelta, 'db' => 'most_popular_delta'),
-                            'lastSeen' => array('value' => self::$lastSeen, 'db' => 'last_seen'),
-                            'karma' => array('value' => self::$karma),
-                            'karmaPending' => array('value' => self::$karmaPending, 'db' => 'karma_pending'),
-                            'banned' => array('value' => self::$banned),
-                        ];
-
-                        // Update last seen
-                        self::updateLastSeen();
+                    if (isset($row['id'])) {                        
+                        // Create a new instace of the user object
+                        self::$user = new User($row);
                     }
                     else {
                         // Unset all
@@ -120,21 +81,17 @@ class Me {
     }
     
     /*
-     * Getters for the database information
+     * Create new instance of the User object (used for registration)
      */
     
-    public static function getId() {
-        return self::$id;
+    public static function create() {
+        self::$user = new User();
     }
-    public static function getEmail() {
-        return self::$email;
-    }
-    public static function getPassword() {
-        return self::$password;
-    }
-    public static function getNick() {
-        return self::$nick;
-    }
+    
+    /*
+     * Getters (override for storing information in the User object)
+     */
+    
     public static function getNickReal() {
         if (self::$nick == '<em>Anonym</em>') {
             return '';
@@ -145,9 +102,9 @@ class Me {
     }
     public static function getMostPopularDelta() {
         // Check what to return
-        if (self::isLoggedIn() or self::$mostPopularDelta != null) {
+        if (self::$user !== null) {
             // Return the actual delta
-            return self::$mostPopularDelta;
+            return self::$user->getMostPopularDelta();
         }
         else {
             // Check if cookie is set
@@ -159,181 +116,60 @@ class Me {
         // Last resort, default value
         return 0;
     }
-    public static function getLastSeen() {
-        return self::$lastSeen;
-    }
-    public static function getKarma() {
-        return self::$karma;
-    }
-    public static function getKarmaPending() {
-        return self::$karmaPending;
-    }
-    public static function isBanned() {
-        return self::$banned;
-    }
 
     /*
-     * Setters for the database information
+     * Setters (override for storing information in the User object)
      */
 
-    public static function setId($id) {
-        self::$id = $id;
-    }
-    public static function setEmail($email) {
-        self::$email = $email;
-    }
-    public static function setPassword($password) {
-        self::$password = $password;
-    }
     public static function setNick($nick) {
         if ($nick == '') {
-            $nick = '<em>Anonym</em>';
+            $nick = null;
         }
 
         // Set
-        self::$nick = $nick;
+        self::$user->setNick($nick);
     }
     public static function setMostPopularDelta($delta) {
-        // Always store in variable
-        self::$mostPopularDelta = $delta;
-        
         // Check if we should set cookie for later too
-        if (!self::isLoggedIn()) {
+        if (self::$user === null) {
             // Set cookie
             setcookie('delta', $delta, (time() + (60*60*24*30)), '/');
         }
+        else {
+            self::$user->setMostPopularDelta($delta);
+        }
     }
     public static function increaseKarma($karma) {
-        self::$karma += $karma;
+        self::$user->setKarma(self::$user->getKarma() + $karma);
     }
     public static function increaseKarmaPending($pending) {
-        self::$karmaPending += $pending;
-    }
-    public static function setBanned($banned) {
-        self::$banned = $banned;
-    }
-
-    /*
-     * Save
-     */
-
-    public static function save() {
-        $create_user  = "INSERT INTO user" . PHP_EOL;
-        $create_user .= "(email, password, nick)" . PHP_EOL;
-        $create_user .= "VALUES (:email, :password, :nick)";
-
-        $create_user_query = Database::$db->prepare($create_user);
-        $create_user_query->execute([':email' => self::$email,
-            ':password' => self::$password,
-            ':nick' => self::$nick]);
-    }
-
-    /*
-     * Update
-     */
-
-    public static function update() {
-        // Check what should be updated
-        $updated = [];
-
-        foreach (self::$initialData as $k => $v) {
-            if (self::$$k != $v['value']) {
-                // Get data
-                $value = self::$$k;
-                if ($k == 'nick') {
-                    $value = self::getNickReal();
-                }
-
-                // Find database field
-                if (isset($v['db'])) {
-                    $updated[] = array('field' => $v['db'], 'value' => $value);
-                }
-                else {
-                    $updated[] = array('field' => $k, 'value' => $value);
-                }
-            }
-        }
-
-        // Build sub query
-        $subquery = [];
-        $binds = [];
-        
-        // Check if anything was updated
-        if (count($updated) > 0) {
-            // Loop the updated and build sub query
-            foreach ($updated as $v) {
-                $subquery[] = $v['field'] . ' = :' . $v['field'];
-                $binds[':' . $v['field']] = $v['value'];
-            }
-
-            // Add user id
-            $binds[':id'] = self::$id;
-
-            // Build query
-            try {
-                $query = 'UPDATE user SET ' . implode(', ', $subquery) . ' WHERE id = :id';
-                
-                // Run query
-                $create_user_query = Database::$db->prepare($query);
-                $create_user_query->execute($binds);
-            }
-            catch (\PDOException $e) {
-                print_r($e->getMessage());
-                die();
-            }
-        }
+        self::$user->setKarmaPending(self::$user->getKarmaPending() + $pending);
     }
     
     /*
-     * Other getters
+     * Conditional stuff
      */
     
     public static function isLoggedIn() {
-        return self::$loggedIn;
+        return self::$user !== null;
     }
     public static function isAdmin() {
-        return (self::$id == 10000 or self::$id == 1);
+        return (self::$user !== null and (self::$user->getId() == 10000 or self::$user->getId() == 1));
     }
     public static function hasKarma() {
-        return self::$karma > 0;
+        return self::$user !== null and self::$user->getKarma() > 0;
     }
     public static function canContribute() {
         return (self::hasKarma() and !self::isBanned());
     }
     
     /*
-     * Other stuff
-     */
-    
-    public static function updateLastSeen() {
-        //
-    }
-    
-    /*
-     * Check if one Element is favorite TODO
-     */
-    
-    public static function isFavorite($id) {
-        // Check if we should load
-        if (self::$favorites === null) {
-            self::getFavorites();
-        }
-        
-        if (in_array($id, self::$favorites)) {
-            return true;
-        }
-        
-        // If we came all this was, it is not a favorite
-        return false;
-    }
-
-    /*
      * Login
      */
 
     public static function logIn() {
         // Check if logged in
-        if (!self::isLoggedIn()) {
+        if (!self::$user !== null) {
             // Okey
             if (isset($_POST['login-email']) and isset($_POST['login-pw']) and isset($_POST['_token'])) {
                 // Check CSRF token
@@ -445,7 +281,7 @@ class Me {
 
     public static function logOut() {
         // Check if logged in
-        if (self::isLoggedIn() and $_GET['_token']) {
+        if (self::$user !== null and $_GET['_token']) {
             // Unset session
             unset($_SESSION['youkok2']);
             
@@ -500,7 +336,7 @@ class Me {
             $get_favorites .= "ORDER BY f.id ASC";
 
             $get_favorites_query = Database::$db->prepare($get_favorites);
-            $get_favorites_query->execute(array(':user' => self::$id));
+            $get_favorites_query->execute(array(':user' => self::$user->getId()));
             while ($row = $get_favorites_query->fetch(\PDO::FETCH_ASSOC)) {
                 self::$favorites[] = Element::get($row['file']);
             }
@@ -508,6 +344,24 @@ class Me {
 
         // Return entire list of elements
         return self::$favorites;
+    }
+    
+    /*
+     * Check if one Element is favorite
+     */
+    
+    public static function isFavorite($id) {
+        // Check if we should load
+        if (self::$favorites === null) {
+            self::getFavorites();
+        }
+        
+        if (in_array($id, self::$favorites)) {
+            return true;
+        }
+        
+        // If we came all this was, it is not a favorite
+        return false;
     }
     
     /*
@@ -533,7 +387,7 @@ class Me {
         $get_last_downloads .= "LIMIT 15";
         
         $get_last_downloads_query = Database::$db->prepare($get_last_downloads);
-        $get_last_downloads_query->execute(array(':user' => Self::getId()));
+        $get_last_downloads_query->execute(array(':user' => self::$user->getId()));
         while ($row = $get_last_downloads_query->fetch(\PDO::FETCH_ASSOC)) {
             $elements[] = Element::get($row['file']);
         }
@@ -556,12 +410,40 @@ class Me {
         $get_user_karma_elements .= "ORDER BY added DESC";
 
         $get_user_karma_elements_query = Database::$db->prepare($get_user_karma_elements);
-        $get_user_karma_elements_query->execute(array(':user' => Me::getId()));
+        $get_user_karma_elements_query->execute(array(':user' => self::$user->getId()));
         while ($row = $get_user_karma_elements_query->fetch(\PDO::FETCH_ASSOC)) {
             $collection[] = new Karma($row);
         }
 
         // Return elements
         return $collection;
+    }
+    
+    /*
+     * Override save and update because the __callStatic method does not work for these calls
+     */
+    
+    public static function update() {
+        if (self::$user !== null) {
+            self::$user->update();
+        }
+    }
+    public static function save() {
+        if (self::$user !== null) {
+            self::$user->save();
+        }
+    }
+    
+    /*
+     * Static functions overload
+     */
+    
+    public static function __callStatic($name, $arguments) {
+        // Check if method exists
+        if (self::$user != null and method_exists(self::$user, $name)) {
+            // Call method and return response
+            return call_user_func_array([self::$user,
+                $name], $arguments);
+        }
     }
 }

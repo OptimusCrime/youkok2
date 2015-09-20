@@ -62,7 +62,7 @@ class SyncKarma extends BaseProcessor {
         while ($user_row = $get_all_users_query->fetch(\PDO::FETCH_ASSOC)) {
             $user = new User($user_row['id']);
             // Get the actual amout of karma here
-            $new_karma = 0;
+            $new_karma = 5;
             $new_karma_pending = 0;
             
             $get_user_karma  = "SELECT id, user, file, value, pending, state, added" . PHP_EOL;
@@ -88,6 +88,8 @@ class SyncKarma extends BaseProcessor {
                     }
                 }
             }
+            
+            
             
             // Evaluate the new and old karma
             if ($user->getKarma() != $new_karma or $user->getKarmaPending() != $new_karma_pending) {

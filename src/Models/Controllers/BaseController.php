@@ -282,4 +282,23 @@ abstract class BaseController {
         $result = Database::$db->prepare($query_string);
         $result->execute($values_arr);
     }
+    
+    /*
+     * Delete
+     */
+    
+    public function delete() {
+        $values_arr = [];
+        
+        // Add id to value
+        $values_arr[':id'] = call_user_func_array([$this->model, 'getId'], []);
+        
+        // Build query string
+        $query_string  = "DELETE FROM `" . $this->schema['meta']['table'] . "`" . PHP_EOL;
+        $query_string .= "WHERE `id` = :id" . PHP_EOL;
+        $query_string .= "LIMIT 1";
+        
+        $result = Database::$db->prepare($query_string);
+        $result->execute($values_arr);
+    }
 }
