@@ -15,46 +15,37 @@ use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 
 class GetCacheData extends BaseProcessor {
-    
+
     /*
-     * Constructor
+     * Override
      */
 
-    public function __construct($outputData = false, $returnData = false) {
-        // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
-        if (self::requireCli() or self::requireAdmin()) {
-            // Check database
-            if ($this->makeDatabaseConnection()) {
-                // Get the data
-                $this->getCacheData();
-                
-                // Close database connection
-                Database::close();
-            }
-            else {
-                $this->setError();
-            }
-        }
-        else {
-            // No access
-            $this->noAccess();
-        }
-        
-        if ($this->outputData) {
-            $this->outputData();
-        }
-        if ($this->returnData) {
-            $this->returnData();
-        }
+    protected function checkPermissions() {
+        return $this->requireCli() or $this->requireAdmin();
+    }
+    
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
     }
 
     /*
-     * Fetch the actual data here
+     * Construct
      */
 
-    private function getCacheData() {
+    public function __construct($method, $settings) {
+        // Calling Base' constructor
+        parent::__construct($method, $settings);
+    }
+    
+    /*
+     * Method ran by the processor
+     */
+    
+    public function run() {
         if (isset($_GET['id']) and is_numeric($_GET['id'])) {
             $element = new Element();
             
@@ -83,7 +74,7 @@ class GetCacheData extends BaseProcessor {
             // Create element
             $element->createById($_GET['id']);
             
-            if ($element->controller->wasFound()) {
+            if ($element->wasFound()) {
                 $cache = CacheManager::getCache($element->getId(), 'i');
                 
                 if ($cache === null) {
@@ -97,7 +88,7 @@ class GetCacheData extends BaseProcessor {
             }
             
             // Add cache format
-            $this->setData('cache_format', $element->controller->cacheFormat());
+            $this->setData('cache_format', $element->cacheFormat());
             
             // Add data
             $this->setData('data', [

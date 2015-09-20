@@ -11,59 +11,48 @@ namespace Youkok2\Processors\Tasks\Sync;
 
 use \Youkok2\Models\Course as Course;
 use \Youkok2\Models\Element as Element;
-use \Youkok2\Processors\Base as Base;
+use \Youkok2\Processors\BaseProcessor as BaseProcessor;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Utilities\Utilities as Utilities;
 
-class SyncEmpty extends Base {
+class SyncEmpty extends BaseProcessor {
 
     /*
-     * Constructor
+     * Override
      */
 
-    public function __construct($outputData = false, $returnData = false) {
-        // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
-        // Check access (only cli and admin)
-        if (self::requireCli() or self::requireAdmin()) {
-            // Check database
-            if ($this->makeDatabaseConnection()) {
-                // Sync
-                $this->syncElements();
-                
-                // Close database connection
-                Database::close();
-            }
-            else {
-                $this->setError();
-            }
-        }
-        else {
-            // No access
-            $this->noAccess();
-        }
-        
-        // Handle output
-        if ($this->outputData) {
-            $this->outputData();
-        }
-        if ($this->returnData) {
-            return $this->returnData();
-        }
+    protected function checkPermissions() {
+        return $this->requireCli() or $this->requireAdmin();
+    }
+    
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
     }
 
     /*
-     * Syncs empty courses
+     * Construct
      */
 
-    private function syncElements() {
+    public function __construct($method, $settings) {
+        // Calling Base' constructor
+        parent::__construct($method, $settings);
+    }
+    
+    /*
+     * Method ran by the processor
+     */
+    
+    public function run() {
         // Set code to 200
         $this->setData('code', 200);
         $update_num = 0;
         
         $get_all_directories  = "SELECT id, empty" . PHP_EOL;
-        $get_all_directories .= "FROM archive";
+        $get_all_directories .= "FROM archive" . PHP_EOL;
         $get_all_directories .= "WHERE is_directory = 1";
         
         $get_all_directories_query = Database::$db->prepare($get_all_directories);

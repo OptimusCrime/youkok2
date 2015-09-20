@@ -17,58 +17,35 @@ use \Youkok2\Utilities\Utilities as Utilities;
 class LoadCourses extends BaseProcessor {
 
     /*
-     * Constructor
+     * Override
      */
 
-    public function __construct($outputData = false, $returnData = false) {
+    protected function checkPermissions() {
+        return $this->requireCli() or $this->requireAdmin();
+    }
+    
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
+    }
+
+    /*
+     * Construct
+     */
+
+    public function __construct($method, $settings) {
         // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
-        if (self::requireCli() or self::requireAdmin()) {
-            // Check database
-            if ($this->checkDatabase()) {
-                // Fetch
-                $this->fetchData();
-                
-                // Close database connection
-                Database::close();
-            }
-            else {
-                $this->setError();
-            }
-        }
-        else {
-            // No access
-            $this->noAccess();
-        }
-        
-        // Return data
-        $this->returnData();
+        parent::__construct($method, $settings);
     }
-
+    
     /*
-     * Check if we can connect to the database
+     * Method ran by the processor
      */
-
-    private function checkDatabase() {
-        try {
-            Database::connect();
-
-            return true;
-        }
-        catch (Exception $e) {
-            $this->setData('code', 500);
-            $this->setData('msg', 'Could not connect to database');
-
-            return false;
-        }
-    }
-
-    /*
-     * Fetch the actual data here
-     */
-
-    private function fetchData() {
+    
+    public function run() {
         // Set code to 200
         $this->setData('code', 200);
 
@@ -93,16 +70,17 @@ class LoadCourses extends BaseProcessor {
         // Loop every single course
         foreach ($result as $v) {
             // Clean
+            $search_name = $v['code'] . '||%';
             $insert_name = $v['code'] . '||' . $v['name'];
             
             // Check if course is in database
             $check_current_course  = "SELECT id" . PHP_EOL;
             $check_current_course .= "FROM archive" . PHP_EOL;
-            $check_current_course .= "WHERE name = :name" . PHP_EOL;
+            $check_current_course .= "WHERE name LIKE :name" . PHP_EOL;
             $check_current_course .= "LIMIT 1";
             
             $check_current_course_query = Database::$db->prepare($check_current_course);
-            $check_current_course_query->execute(array(':name' => $insert_name));
+            $check_current_course_query->execute(array(':name' => $search_name));
             $row = $check_current_course_query->fetch(\PDO::FETCH_ASSOC);
 
             // Check if exists
