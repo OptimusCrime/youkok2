@@ -294,10 +294,10 @@ a:visited {
 #frontpage-wellholder h1 {
     font-size: 24px;
 }
-.list-group-star .star-remove {
+.list-group-item .star-remove {
     display: none;
 }
-.list-group-star:hover .star-remove {
+.list-group-item:hover .star-remove {
     display: block;
 }
 .star-remove {
@@ -313,6 +313,9 @@ a:visited {
     #frontpage-links {
         padding-top: 10px;
         border-top: 1px solid #dddddd;
+    }
+    .list-group-item .star-remove {
+        display: block;
     }
 }
 @media all and (min-width: 768px) {

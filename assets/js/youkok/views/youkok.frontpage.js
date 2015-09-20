@@ -62,7 +62,11 @@ var Youkok = (function (module) {
      /*
       * Remove favorite
       */
-     var removeFavorite = function() {
+     var removeFavorite = function(e) {
+        // Avoid window jumping
+        e.preventDefault();
+        
+        // Store reference, just because
         $el = $(this);
         
         // Check if we are currently removing this object
