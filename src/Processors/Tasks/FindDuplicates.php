@@ -16,79 +16,37 @@ use \Youkok2\Utilities\Utilities as Utilities;
 use \Youkok2\Collections\ElementCollection as ElementCollection;
 
 class FindDuplicates extends BaseProcessor {
-    
+
     /*
-     * Constructor
+     * Override
      */
 
-    public function __construct($returnData = false) {
+    protected function checkPermissions() {
+        return $this->requireCli() or $this->requireAdmin();
+    }
+    
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
+    }
+
+    /*
+     * Construct
+     */
+
+    public function __construct($method, $settings) {
         // Calling Base' constructor
-        parent::__construct($returnData);
-        
-        if (self::requireCli() or self::requireAdmin()) {
-            // Check if we should turn on buffering
-            if (!self::requireCli()) {
-                ob_start();
-            }
-            
-            // Check database
-            if ($this->checkDatabase()) {
-                // Reset
-                $this->resetExamData();
-                
-                // Fetch
-                $this->fetch();
-                
-                // Close database connection
-                Database::close();
-            }
-            else {
-                $this->setError();
-            }
-        }
-        else {
-            // No access
-            $this->noAccess();
-        }
-        
-        // Return data
-        $this->returnData();
-    }
-
-    /*
-     * Check if we can connect to the database
-     */
-
-    private function checkDatabase() {
-        try {
-            Database::connect();
-
-            return true;
-        }
-        catch (Exception $e) {
-            $this->setData('code', 500);
-            $this->setData('msg', 'Could not connect to database');
-
-            return false;
-        }
+        parent::__construct($method, $settings);
     }
     
     /*
-     * Reset exam information here
+     * Method ran by the processor
      */
     
-    private function resetExamData() {
-        $reset_exam  = "UPDATE archive" . PHP_EOL;
-        $reset_exam .= "SET exam = NULL" . PHP_EOL;
-        
-        Database::$db->query($reset_exam);
-    }
-
-    /*
-     * Fetch the actual data here
-     */
-
-    private function fetch() {
+    public function run() {
         // Set code to 200
         $this->setData('code', 200);
         
@@ -121,6 +79,11 @@ class FindDuplicates extends BaseProcessor {
             if ($v > 1) {
                 $duplicates[] = $k;
             }
+        }
+        
+        // Check if we should just dump everything for HTML view
+        if (isset($_GET['format']) and $_GET['format'] == 'html') {
+            print_r($duplicates);
         }
         
         // Output
