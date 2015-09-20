@@ -5,6 +5,7 @@
                     <p>Fyll inn din e-post og ditt passord for å logge inn på Youkok2.</p>
                     <p>Dersom du har glemt ditt passord kan du prøve å resette passordet ditt <a href="glemt-passord">her</a>.
                     <form action="logg-inn" method="post">
+                        <input type="hidden" name="_token" value="[[+$CSRF_TOKEN]]" />
                         <label for="login2-email">E-post</label>
                         <input type="email" name="login2-email" class="form-control" id="login2-email" value="[[+if isset($LOGIN_EMAIL)]][[+$LOGIN_EMAIL]][[+/if]]" placeholder="E-post" />
                         <label for="login2-pw">Passord</label>
