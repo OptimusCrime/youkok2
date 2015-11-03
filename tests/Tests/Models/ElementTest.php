@@ -99,6 +99,4 @@ class ElementTest extends PHPUnit_Framework_TestCase {
         // Check that the relationship is true
         $this->assertEquals($element1->getId(), $element2->getParent());
     }
-
-    // TODO add a lot of stuff here
 }

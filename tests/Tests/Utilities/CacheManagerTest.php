@@ -7,6 +7,7 @@
  * 
  */
 
+use \Youkok2\Models\Element as Element;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 
 class CacheManagerTest extends PHPUnit_Framework_TestCase {
@@ -122,5 +123,28 @@ class CacheManagerTest extends PHPUnit_Framework_TestCase {
         $this->assertFalse($cache_status);
     }
 
-    // TODO test that setCache added last is the last to be inserted too
+    /*
+     * Test multiple caches on same object
+     */
+    public function testCacheCascade() {
+        // Create the first element
+        $element = new Element();
+        $element->setUrlFriendly('foo');
+        $element->setName('foo');
+        $element->save();
+        
+        // Update and cache again
+        $element->setName('bar');
+        $element->cache();
+        
+        // Store all pending caches
+        CacheManager::store();
+        
+        // Get the cache for the object
+        $element_cache = Element::get($element->getId());
+        
+        // Make sure the names match
+        $this->assertEquals($element->getName(), $element_cache->getName());
+        
+    }
 }

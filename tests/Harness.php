@@ -8,6 +8,7 @@
  */
 
 use \Youkok2\Youkok2 as Youkok2;
+use \Youkok2\Models\User as User;
 use \Youkok2\Utilities\Database as Database;
 
 require_once dirname(__FILE__) . '/TestSettings.php';
@@ -31,6 +32,9 @@ class Harness {
         
         // Migrations
         $this->migrateDatabase();
+        
+        // Populate the database
+        $this->populateDatabase();
         
         // Finish
         echo "\n";
@@ -143,6 +147,17 @@ class Harness {
         foreach ($output as $v) {
             echo $v . "\n";
         }
+    }
+    
+    /*
+     * Populate the database with some database
+     */
+    
+    private function populateDatabase() {
+        $user = new User();
+        $user->setEmail('foo@bar.com');
+        $user->setPassword('123456789');
+        $user->save();
     }
 }
 
