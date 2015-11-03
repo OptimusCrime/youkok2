@@ -1,3 +1,9 @@
+Youkok2 - 2.0.1-pl  (3. november 2015)
+======================================
+
+- [Info] Småfixes
+- [Enhanced] Viser nå eksamensdatoer for dag som har mappearbeid.
+
 Youkok2 - 2.0.0-pl  (20. september 2015)
 ========================================
 

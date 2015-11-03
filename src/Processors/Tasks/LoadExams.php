@@ -100,7 +100,7 @@ Class LoadExams extends BaseProcessor {
                         // Loop content
                         foreach ($json_result['course']['assessment'] as $exam_data) {
                             // Check if current node is written exam
-                            if (isset($exam_data['code']) and $exam_data['code'] == 'S' and isset($exam_data['date']) and isset($exam_data['appearanceTime'])) {
+                            if (isset($exam_data['code']) and isset($exam_data['date']) and isset($exam_data['appearanceTime'])) {
                                 // Split data
                                 $date_split = explode('-', $exam_data['date']);
                                 $time_split = explode(':', $exam_data['appearanceTime']);
