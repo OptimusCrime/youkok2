@@ -145,7 +145,7 @@ class CreateFolder extends BaseProcessor {
                 $parent->update();
                 
                 // Clear cache on parent
-                $parent->controller->deleteCache();
+                $parent->deleteCache();
             }
             
             // Add message
