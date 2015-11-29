@@ -10,6 +10,7 @@ namespace Youkok2\Processors;
 
 use \Youkok2\Youkok2 as Youkok2;
 use \Youkok2\Models\Me as Me;
+use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
 
 abstract class BaseProcessor extends Youkok2 {
@@ -166,6 +167,9 @@ abstract class BaseProcessor extends Youkok2 {
      */
     
     protected function handleOutput() {
+        // About to output, make sure cachemanager is storing everything
+        CacheManager::store();
+        
         // Check if we should output data at all
         if (!isset($_GET['format']) or (isset($_GET['format']) and $_GET['format'] != 'html')) {
             if (isset($this->settings['output']) and $this->settings['output']) {

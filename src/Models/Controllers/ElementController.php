@@ -21,7 +21,6 @@ class ElementController extends BaseController {
      * Variables
      */
     
-
     public static $cacheKey = 'i';
 
     // Additional fields in cache

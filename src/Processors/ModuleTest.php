@@ -9,6 +9,7 @@
 
 namespace Youkok2\Processors;
 
+use \Youkok2\Models\CourseDownloads as CourseDownloads;
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Models\Me as Me;
 use \Youkok2\Models\Controllers\ElementController as ElementController;
@@ -122,6 +123,14 @@ class ModuleTest extends BaseProcessor {
                 break;
             }
         }
+        
+        // Create a new instance of the model
+        $course_downloads = new CourseDownloads();
+        $course_downloads->setId(3);
+        $course_downloads->setData(json_encode($result_array));
+        
+        // Cache the element
+        $course_downloads->cache();
 
         // Set the data
         $this->setData('data', $result_array);
