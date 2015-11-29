@@ -13,7 +13,7 @@
                 <span><a href="hjelp">Hjelp</a></span>
                 <span><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>
                 <span>[[+nocache]][[+$TIMER]][[+/nocache]]</span>
-                <span><a href="https://github.com/OptimusCrime/youkok2" target="_blank">GiHhub</a></span>
+                <span><a href="https://github.com/OptimusCrime/youkok2" target="_blank">GitHub</a></span>
             </p>[[+nocache]][[+if $DEV]]
 
             <p>
