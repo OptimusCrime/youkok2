@@ -1,52 +1,57 @@
 <?php
 /*
- * File: ModuleTest.php
- * Holds: WIP
- * Created: 20.11.2015
+ * File: CourseDownloadUpdater.php
+ * Holds: Job that updates the most popular downloads
+ * Created: 29.11.2015
  * Project: Youkok2
- * 
 */
 
-namespace Youkok2\Processors;
+namespace Youkok2\Jobs;
 
 use \Youkok2\Models\CourseDownloads as CourseDownloads;
-use \Youkok2\Models\Element as Element;
-use \Youkok2\Models\Me as Me;
-use \Youkok2\Models\Controllers\ElementController as ElementController;
+use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
+use \Youkok2\Youkok2 as Youkok2;
 
-class ModuleTest extends BaseProcessor {
+class CourseDownloadUpdater extends Youkok2 {
     
     /*
-     * Override
+     * Intervals for the query
      */
-
-    protected function canBeLoggedIn() {
-        return true;
-    }
+    
+    public static $timeIntervals = [
+        'WHERE a.is_visible = 1', // All
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1', // Day
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', // Week 
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.is_visible = 1', // Month
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', // Year
+    ];
+        
     
     /*
-     * Override
-     */
-
-    protected function requireDatabase() {
-        return true;
-    }
-
-    /*
-     * Constructor
-     */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
-    }
-    
-    /*
-     * Fetch module data
+     * Runs the actual job
      */
     
     public function run() {
+        for ($i = 0; $i < 4; $i++) {
+            $this->fetchCourseDownloads($i);
+        }
+    }
+    
+    /*
+     * Called once the job is finished
+     */
+    
+    public function done() {
+        // Force cache manager to store all cache
+        CacheManager::store();
+    }
+    
+    /*
+     * Fetch and store the actual data
+     */
+    
+    private function fetchCourseDownloads($interval_index) {
         // For returning content
         $collection = [];
         
@@ -54,7 +59,7 @@ class ModuleTest extends BaseProcessor {
         $get_most_popular_courses  = "SELECT a.id, a.parent, COUNT(d.file) as 'downloaded_times'" . PHP_EOL;
         $get_most_popular_courses .= "FROM archive a" . PHP_EOL;
         $get_most_popular_courses .= "LEFT JOIN download AS d ON d.file = a.id" . PHP_EOL;
-        $get_most_popular_courses .= "WHERE a.is_visible = 1" . PHP_EOL;
+        $get_most_popular_courses .= CourseDownloadUpdater::$timeIntervals[$interval_index] . PHP_EOL;
         $get_most_popular_courses .= "GROUP BY a.id" . PHP_EOL;
         
         $get_most_popular_courses_query = Database::$db->prepare($get_most_popular_courses);
@@ -126,16 +131,10 @@ class ModuleTest extends BaseProcessor {
         
         // Create a new instance of the model
         $course_downloads = new CourseDownloads();
-        $course_downloads->setId(3);
+        $course_downloads->setId($interval_index);
         $course_downloads->setData(json_encode($result_array));
         
         // Cache the element
         $course_downloads->cache();
-
-        // Set the data
-        $this->setData('data', $result_array);
-        
-        // Set ok
-        $this->setOK();
     }
 }

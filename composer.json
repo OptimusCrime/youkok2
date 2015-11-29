@@ -8,6 +8,7 @@
         "filp/whoops": "~1.0",
         "league/climate": "~2.0",
         "matthiasmullie/minify": "dev-master",
-        "kunststube/csrfp": "dev-master"
+        "kunststube/csrfp": "dev-master",
+        "mtdowling/cron-expression": "^1.0"
     }
 }
