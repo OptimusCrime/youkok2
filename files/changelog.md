@@ -1,3 +1,10 @@
+Youkok2 - 2.1.0-pl  (29. november 2015)
+=======================================
+
+- [Info] Fixes og mest populære fag
+- [Fixes] Stavet GitHub korrekt i footeren.
+- [New] På forsiden vises nå de mest populære fagene.
+
 Youkok2 - 2.0.1-pl  (3. november 2015)
 ======================================
 
