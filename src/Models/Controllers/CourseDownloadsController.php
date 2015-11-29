@@ -12,6 +12,18 @@ namespace Youkok2\Models\Controllers;
 class CourseDownloadsController extends BaseController {
     
     /*
+     * Intervals for the query
+     */
+    
+    public static $timeIntervals = [
+        '', // All
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1', // Day
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', // Week 
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.is_visible = 1', // Month
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', // Year
+    ];
+    
+    /*
      * Variables
      */
     

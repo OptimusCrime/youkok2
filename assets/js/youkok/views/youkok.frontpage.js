@@ -3,52 +3,80 @@ var Youkok = (function (module) {
     /*
      * Change most popular choice
      */
-     var changeMostPopular = function(e) {
+    var changeMostPopular = function(e) {
         // Default
         e.preventDefault();
 
+        // Get the current module class
+        $module_obj = $(this).closest('.frontpage-module');
+
         // Swap content
-        $('#home-most-popular-selected').html($('a', this).html());
+        $module_obj.find('.most-popular-label').html($('a', this).html());
 
         // Swap disabled
-        $('#home-most-popular-dropdown li').removeClass('disabled');
+        $module_obj.find('li.disabled').removeClass('disabled');
         $(this).addClass('disabled');
+
+        // Get the module id and variable
+        var module_id = $module_obj.data('id');
+        var module_variable = $module_obj.data('variable');
+
+        // Create the ajax data object
+        var ajax_data = {
+            module: module_id
+        };
+        ajax_data[module_variable] = $('a', $(this)).data('delta');
 
         // Send ajax call
         $.ajax({
             cache: false,
             type: "post",
             url: "processor/module/update",
-            data: {
-                id: 0,
-                delta: $('a', $(this)).data('delta') 
-            },
+            data: ajax_data,
             success: function(json) {
                 // Check status code
                 if (json.code == 200) {
                     // Change was successfull
-                    $('#home-most-popular').slideUp(400, function () {
-                        // Check if actually have any elements to display
-                        if (json.data.length > 0) {
-                            // Get template
-                            var template_frontpage_popular = _.template(
-                                $('script.template-frontpage-popular').html()
-                            );
+                    $module_obj.find('.list-group').slideUp(400, function () {
+                        // Check for the correct module
+                        if (module_id == 1 || module_id == 2) {
+                            // Check if actually have any elements to display
+                            if (json.data.length > 0) {
+                                // Get template
+                                var template_frontpage_popular;
+                                if (module_id == 1) {
+                                    template_frontpage_popular = _.template(
+                                        $('script.template-frontpage-popular-elements').html()
+                                    );
+                                }
+                                else {
+                                    template_frontpage_popular = _.template(
+                                        $('script.template-frontpage-popular-courses').html()
+                                    );
+                                }
+                                
+                                // Set content
+                                $module_obj.find('.list-group').html(template_frontpage_popular({'elements': json.data}));
+                                
+                                // Tooltip
+                                $module_obj.find('.list-group a').tooltip();
+                            }
+                            else {
+                                if (module_id == 1) {
+                                    $module_obj.find('.list-group').html(_.template(
+                                        $('script.template-frontpage-no-popular-elements').html()
+                                    ));
+                                }
+                                else {
+                                    $module_obj.find('.list-group').html(_.template(
+                                        $('script.template-frontpage-no-popular-courses').html()
+                                    ));
+                                }
+                            }
                             
-                            // Set content
-                            $('#home-most-popular').html(template_frontpage_popular({'elements': json.data}));
-                            
-                            // Tooltip
-                            $('#home-most-popular a').tooltip();
+                            // Slide up again
+                            $module_obj.find('.list-group').slideDown(400);
                         }
-                        else {
-                            $('#home-most-popular').html(_.template(
-                                $('script.template-frontpage-no-popular').html()
-                            ));
-                        }
-                        
-                        // Slide up again
-                        $('#home-most-popular').slideDown(400);
                     });
                 }
                 else {
@@ -57,7 +85,7 @@ var Youkok = (function (module) {
                 }
             }
         });
-     };
+    };
      
      /*
       * Remove favorite
@@ -120,7 +148,7 @@ var Youkok = (function (module) {
          */
         init: function() {
             // Add listeners
-            $('#home-most-popular-dropdown li').on('click', changeMostPopular);
+            $('.home-most-popular-dropdown li').on('click', changeMostPopular);
             $('.star-remove').on('click', removeFavorite);
         },
     };

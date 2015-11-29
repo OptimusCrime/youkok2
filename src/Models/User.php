@@ -24,7 +24,7 @@ class User extends BaseModel {
     private $email;
     private $password;
     private $nick;
-    private $mostPopularDelta;
+    private $moduleSettings;
     private $lastSeen;
     private $karma;
     private $karmaPending;
@@ -67,11 +67,11 @@ class User extends BaseModel {
                 'db' => true,
                 'arr' => true,
             ],
-            'most_popular_delta' => [
-                'method' => 'mostPopularDelta',
-                'type' => 'integer',
-                'null' => false,
-                'default' => 1,
+            'module_settings' => [
+                'method' => 'moduleSettings',
+                'type' => 'text',
+                'null' => true,
+                'default' => null,
                 'db' => true,
                 'arr' => true,
             ],
@@ -159,8 +159,8 @@ class User extends BaseModel {
         }
         return $this->nick;
     }
-    public function getMostPopularDelta() {
-        return $this->mostPopularDelta;
+    public function getModuleSettings() {
+        return $this->moduleSettings;
     }
     public function getLastSeen() {
         return $this->lastSeen;
@@ -191,8 +191,8 @@ class User extends BaseModel {
     public function setNick($nick) {
         $this->nick = $nick;
     }
-    public function setMostPopularDelta($delta) {
-        $this->mostPopularDelta = $delta;
+    public function setModuleSettings($settings) {
+        $this->moduleSettings = $settings;
     }
     public function setLastSeen($time) {
         $this->lastSeen = $time;

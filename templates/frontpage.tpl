@@ -112,28 +112,28 @@
                     [[+/foreach]]
  [[+/if]]</ul>
                 </div>
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-xs-12 col-sm-6 frontpage-module" data-id="1" data-variable="module1_delta">
                     <div class="list-header">
                         <h2 class="can-i-be-inline">Mest populære</h2>
-                        <div class="btn-group" id="frontpage-most-popular-dropdown">
+                        <div class="btn-group">
                             <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                            <span id="home-most-popular-selected">
-                                [[+if $USER_MOST_POPULAR_DELTA == 0]]Denne uka[[+else if $USER_MOST_POPULAR_DELTA == 1]]Denne måneden[[+else if $USER_MOST_POPULAR_DELTA == 2]]Dette året[[+else if $USER_MOST_POPULAR_DELTA == 4]]I dag[[+else]]Alltid[[+/if]]
+                            <span class="most-popular-label">
+                                [[+if $USER_MOST_POPULAR_ELEMENT == 1]]I dag[[+else if $USER_MOST_POPULAR_ELEMENT == 2]]Denne uka[[+else if $USER_MOST_POPULAR_ELEMENT == 3]]Dette måneden[[+else if $USER_MOST_POPULAR_ELEMENT == 4]]Dette året[[+else]]Alltid[[+/if]]
 
                             </span>
                             <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu" id="home-most-popular-dropdown">
-                                <li[[+if $USER_MOST_POPULAR_DELTA == 4]] class="disabled"[[+/if]]><a data-delta="4" href="#">I dag</a></li>
-                                <li[[+if $USER_MOST_POPULAR_DELTA == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Denne uka</a></li>
-                                <li[[+if $USER_MOST_POPULAR_DELTA == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">Denne måneden</a></li>
-                                <li[[+if $USER_MOST_POPULAR_DELTA == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Dette året</a></li>
-                                <li[[+if $USER_MOST_POPULAR_DELTA == 3]] class="disabled"[[+/if]]><a data-delta="3" href="#">Alltid</a></li>
+                            <ul class="dropdown-menu home-most-popular-dropdown">
+                                <li[[+if $USER_MOST_POPULAR_ELEMENT == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">I dag</a></li>
+                                <li[[+if $USER_MOST_POPULAR_ELEMENT == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Denne uka</a></li>
+                                <li[[+if $USER_MOST_POPULAR_ELEMENT == 3]] class="disabled"[[+/if]]><a data-delta="3" href="#">Denne måneden</a></li>
+                                <li[[+if $USER_MOST_POPULAR_ELEMENT == 4]] class="disabled"[[+/if]]><a data-delta="4" href="#">Dette året</a></li>
+                                <li[[+if $USER_MOST_POPULAR_ELEMENT == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Alltid</a></li>
                             </ul>
                         </div>
                     </div>
-                    <ul class="list-group" id="home-most-popular">
-                    [[+if count($HOME_MOST_POPULAR) == 0]]    <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>[[+else]][[+foreach $HOME_MOST_POPULAR as $element]]    <li class="list-group-item">
+                    <ul class="list-group">
+                    [[+if count($HOME_MOST_POPULAR_ELEMENTS) == 0]]    <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>[[+else]][[+foreach $HOME_MOST_POPULAR_ELEMENTS as $element]]    <li class="list-group-item">
                             <a rel="nofollow" target="_blank" href="[[+$element->getFullUrl()]]">
                                 [[+$element->getName()]]
                             </a>[[+if $element->hasParent()]] @ [[+if $element->getParent(true)->hasParent()]]
@@ -142,14 +142,45 @@
 
                             <a href="[[+$element->getRootParent()->getFullUrl()]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
 
-                            [[[+$element->getDownLoadCount($USER_MOST_POPULAR_DELTA)]]]
+                            [[[+$element->getDownLoadCount($USER_MOST_POPULAR_ELEMENT)]]]
+                        </li>
+                    [[+/foreach]]
+[[+/if]]</ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 frontpage-module" data-id="2" data-variable="module2_delta">
+                    <div class="list-header">
+                        <h2 class="can-i-be-inline">Mest populære fag</h2>
+                        <div class="btn-group">
+                            <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                            <span class="most-popular-label">
+                                [[+if $USER_MOST_POPULAR_COURSES == 1]]I dag[[+else if $USER_MOST_POPULAR_COURSES == 2]]Denne uka[[+else if $USER_MOST_POPULAR_COURSES == 3]]Dette måneden[[+else if $USER_MOST_POPULAR_COURSES == 4]]Dette året[[+else]]Alltid[[+/if]]
+
+                            </span>
+                            <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu home-most-popular-dropdown">
+                                <li[[+if $USER_MOST_POPULAR_COURSES == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">I dag</a></li>
+                                <li[[+if $USER_MOST_POPULAR_COURSES == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Denne uka</a></li>
+                                <li[[+if $USER_MOST_POPULAR_COURSES == 3]] class="disabled"[[+/if]]><a data-delta="3" href="#">Denne måneden</a></li>
+                                <li[[+if $USER_MOST_POPULAR_COURSES == 4]] class="disabled"[[+/if]]><a data-delta="4" href="#">Dette året</a></li>
+                                <li[[+if $USER_MOST_POPULAR_COURSES == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Alltid</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <ul class="list-group">
+                    [[+if count($HOME_MOST_POPULAR_ELEMENTS) == 0]]    <li class="list-group-item"><em>Det er visst ingen fag her</em></li>[[+else]][[+foreach $HOME_MOST_POPULAR_COURSES as $element]]    <li class="list-group-item">
+                            <a rel="nofollow" target="_blank" href="[[+$element->getFullUrl()]]">
+                                <strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]
+                            </a> [~[[+$element->getDownLoadCount($USER_MOST_POPULAR_COURSES)]]]
                         </li>
                     [[+/foreach]]
 [[+/if]]</ul>
                 </div>
             </div>
 [[+include file="footer.tpl"]]
-<script type="text/template" class="template-frontpage-popular">
+<script type="text/template" class="template-frontpage-popular-elements">
     <ul class="list-group">
         <% _.each(rc.elements,function(element) { %>
             <li class="list-group-item">
@@ -164,10 +195,28 @@
         <% }); %>
     </ul>
 </script>
-<script type="text/template" class="template-frontpage-no-popular">
+<script type="text/template" class="template-frontpage-no-popular-elements">
     <ul class="list-group">
         <li class="list-group-item">
             <em>Det er visst ingen nedlastninger her</em>
+        </li>
+    </ul>
+</script>
+<script type="text/template" class="template-frontpage-popular-courses">
+    <ul class="list-group">
+        <% _.each(rc.elements,function(element) { %>
+            <li class="list-group-item">
+                <a href="<%- element.full_url %>">
+                    <strong><%- element.course_code %></strong> &mdash; <%- element.course_name %>
+                </a> [~<%- element.download_count %>]
+            </li>
+        <% }); %>
+    </ul>
+</script>
+<script type="text/template" class="template-frontpage-no-popular-courses">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <em>Det er visst ingen fag her</em>
         </li>
     </ul>
 </script>

@@ -72,12 +72,4 @@ class ElementStaticController {
         // Return the content
         return $collection;
     }
-
-    /*
-     * Fetch most popular Elements
-     */
-
-    public static function getMostPopular($settings = []) {
-        return Youkok2::runProcessor('/module/get', $settings);
-    }
 }

@@ -9,6 +9,7 @@
 namespace Youkok2\Jobs;
 
 use \Youkok2\Models\CourseDownloads as CourseDownloads;
+use \Youkok2\Models\Controllers\CourseDownloadsController as CourseDownloadsController;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 use \Youkok2\Utilities\Database as Database;
 use \Youkok2\Youkok2 as Youkok2;
@@ -16,24 +17,11 @@ use \Youkok2\Youkok2 as Youkok2;
 class CourseDownloadUpdater extends Youkok2 {
     
     /*
-     * Intervals for the query
-     */
-    
-    public static $timeIntervals = [
-        'WHERE a.is_visible = 1', // All
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1', // Day
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', // Week 
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.is_visible = 1', // Month
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', // Year
-    ];
-        
-    
-    /*
      * Runs the actual job
      */
     
     public function run() {
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 0; $i <= 4; $i++) {
             $this->fetchCourseDownloads($i);
         }
     }
@@ -50,26 +38,42 @@ class CourseDownloadUpdater extends Youkok2 {
     /*
      * Fetch and store the actual data
      */
-    
     private function fetchCourseDownloads($interval_index) {
         // For returning content
         $collection = [];
         
-        // Load most popular files from the system
-        $get_most_popular_courses  = "SELECT a.id, a.parent, COUNT(d.file) as 'downloaded_times'" . PHP_EOL;
-        $get_most_popular_courses .= "FROM archive a" . PHP_EOL;
-        $get_most_popular_courses .= "LEFT JOIN download AS d ON d.file = a.id" . PHP_EOL;
-        $get_most_popular_courses .= CourseDownloadUpdater::$timeIntervals[$interval_index] . PHP_EOL;
-        $get_most_popular_courses .= "GROUP BY a.id" . PHP_EOL;
+        // Load the courses
+        $get_all_downloaded_data  = "SELECT a.id, a.parent" . PHP_EOL;
+        $get_all_downloaded_data .= "FROM archive a" . PHP_EOL;
+        $get_all_downloaded_data .= "WHERE a.is_visible = 1";
         
-        $get_most_popular_courses_query = Database::$db->prepare($get_most_popular_courses);
-        $get_most_popular_courses_query->execute();
-        while ($row = $get_most_popular_courses_query->fetch(\PDO::FETCH_ASSOC)) {
+        $get_all_downloaded_data_query = Database::$db->prepare($get_all_downloaded_data);
+        $get_all_downloaded_data_query->execute();
+        while ($row = $get_all_downloaded_data_query->fetch(\PDO::FETCH_ASSOC)) {
             $collection['element_' . $row['id']] = [
                 'id' => $row['id'],
-                'downloaded' => $row['downloaded_times'],
+                'downloaded' => 0,
                 'parent' => $row['parent']];
         }
+        
+        // Get the downloaded information
+        $get_downloads_in_period  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
+        $get_downloads_in_period .= "FROM download d" . PHP_EOL;
+        $get_downloads_in_period .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
+        $get_downloads_in_period .= CourseDownloadsController::$timeIntervals[$interval_index] . PHP_EOL;
+        $get_downloads_in_period .= "GROUP BY d.file" . PHP_EOL;
+        $get_downloads_in_period .= "HAVING COUNT(d.id) > 0" . PHP_EOL;
+        $get_downloads_in_period .= "ORDER BY downloaded_times DESC, a.added DESC" . PHP_EOL;
+        
+        $get_downloads_in_period_query = Database::$db->prepare($get_downloads_in_period);
+        $get_downloads_in_period_query->execute();
+        while ($row = $get_downloads_in_period_query->fetch(\PDO::FETCH_ASSOC)) {
+            // Apply the dowloaded information to the collection array
+            if (isset($collection['element_' . $row['id']])) {
+                $collection['element_' . $row['id']]['downloaded'] = $row['downloaded_times'];
+            }
+        }
+        
         
         // Propagate the values to the parents
         while (true) {

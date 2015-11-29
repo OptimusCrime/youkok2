@@ -17,6 +17,21 @@ use \Youkok2\Utilities\Database as Database;
 class Module extends BaseProcessor {
     
     /*
+     * List of modules
+     */
+    
+    private static $modules = [
+        '\Youkok2\Processors\Modules\MostPopularElements' => 1,
+        '\Youkok2\Processors\Modules\MostPopularCourses' => 2,
+    ];
+    
+    /*
+     * Module to run
+     */
+    
+    private $module = null;
+    
+    /*
      * Override
      */
 
@@ -40,7 +55,7 @@ class Module extends BaseProcessor {
         $new_data = [];
 
         // Loop the data array and run method on each element
-        if (count($data['data']) > 0) {
+        if (isset($data['data']) and count($data['data']) > 0) {
             foreach($data['data'] as $v) {
                 $new_data[] = $v->toArray();
             }
@@ -58,50 +73,52 @@ class Module extends BaseProcessor {
      */
 
     public function __construct($method, $settings) {
-        // Calling Base' constructor
         parent::__construct($method, $settings);
     }
+    
+    /*
+     * Returns the correct module
+     */
+    
+    private function getModule() {
+        // Get the correct module
+        foreach (self::$modules as $k => $v) {
+            if ($v == $this->getSetting('module')) {
+                $this->module = $k;
+                break;
+            }
+        }
+    }
+    
+    
     
     /*
      * Fetch module data
      */
     
     public function get() {
-        // For returning content
-        $collection = [];
+        // Set the correct module
+        $this->getModule();
         
-        // Get the correct delta
-        if ($this->getSetting('delta') !== null) {
-            $delta_numeric = $this->getSetting('delta');
+        // Make sure we tell the model processor not to output anything
+        $settings = $this->getSetting();
+        $settings['output'] = false;
+        
+        // Check if the current module exists
+        if ($this->module != null) {
+            // Create a new instance of the module
+            $module_instance = new $this->module($this->getMethod(), $settings);
+            
+            // Set the data
+            $this->setData('data', $module_instance->getData()['data']);
+            
+            // Set ok
+            $this->setOK();
         }
         else {
-            $delta_numeric = Me::getMostPopularDelta();
+            // Module does not exist
+            $this->setError();
         }
-        
-        // Load most popular files from the system
-        $get_most_popular  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
-        $get_most_popular .= "FROM download d" . PHP_EOL;
-        $get_most_popular .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
-        $get_most_popular .= ElementController::$delta[$delta_numeric] . PHP_EOL;
-        $get_most_popular .= "GROUP BY d.file" . PHP_EOL;
-        $get_most_popular .= "HAVING COUNT(d.id) > 0" . PHP_EOL;
-        $get_most_popular .= "ORDER BY downloaded_times DESC, a.added DESC" . PHP_EOL;
-        $get_most_popular .= "LIMIT 15";
-
-        $get_most_popular_query = Database::$db->prepare($get_most_popular);
-        $get_most_popular_query->execute();
-        while ($row = $get_most_popular_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Get
-            $element = Element::get($row['id']);
-            $element->setDownloadCount($delta_numeric, $row['downloaded_times']);
-            $collection[] = $element;
-        }
-
-        // Set the data
-        $this->setData('data', $collection);
-        
-        // Set ok
-        $this->setOK();
     }
     
     /*
@@ -109,25 +126,27 @@ class Module extends BaseProcessor {
      */
     
     public function update() {
-        $user_delta = 0;
-        if (isset($_POST['delta'])) {
-            $user_delta = $_POST['delta'];
+        // Set the correct module
+        $this->getModule();
+        
+        // Make sure we tell the model processor not to output anything
+        $settings = $this->getSetting();
+        $settings['output'] = false;
+        
+        // Check if the current module exists
+        if ($this->module != null) {
+            // Create a new instance of the module
+            $module_instance = new $this->module($this->getMethod(), $settings);
+            
+            // Set the data
+            $this->setData('data', $module_instance->getData()['data']);
+            
+            // Set ok
+            $this->setOK();
         }
-        
-        // Quality check here
-        if ($user_delta < 0 or $user_delta > 4) {
-            $user_delta = 0;
+        else {
+            // Module does not exist
+            $this->setError();
         }
-        
-        // Set the new delta
-        Me::setMostPopularDelta($user_delta);
-        
-        // Check if we should update user preferences
-        if (Me::isLoggedIn()) {
-            // Update user
-            Me::update();
-        }
-        
-        return $this->get();
     }
 }

@@ -55,7 +55,7 @@ class Me {
                 $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
                 if (count($hash_split) == 2) {
                     // Fetch from database to see if online
-                    $get_current_user  = "SELECT id, email, password, nick, most_popular_delta, last_seen, karma, karma_pending, banned" . PHP_EOL;
+                    $get_current_user  = "SELECT id, email, password, nick, module_settings, last_seen, karma, karma_pending, banned" . PHP_EOL;
                     $get_current_user .= "FROM user " . PHP_EOL;
                     $get_current_user .= "WHERE email = :email" . PHP_EOL;
                     $get_current_user .= "AND password = :password";
@@ -92,21 +92,51 @@ class Me {
      * Getters (override for storing information in the User object)
      */
     
-    public static function getMostPopularDelta() {
+    public static function getModuleSettings($key = null) {
         // Check what to return
+        $settings_data = null;
         if (self::$user !== null) {
             // Return the actual delta
-            return self::$user->getMostPopularDelta();
+            $settings_data = self::$user->getModuleSettings();
         }
         else {
             // Check if cookie is set
-            if (isset($_COOKIE['delta']) and $_COOKIE['delta'] >= 0 and $_COOKIE['delta'] <= 4) {
-                return $_COOKIE['delta'];
+            if (isset($_COOKIE['module_settings']) and strlen($_COOKIE['module_settings']) > 0) {
+                $settings_data = $_COOKIE['module_settings'];
             }
         }
         
-        // Last resort, default value
-        return 0;
+        // Check if we returned anything
+        if ($settings_data != null) {
+            $settings_data_decoded = json_decode($settings_data, true);
+            
+            // Make sure we have a array
+            if (is_array($settings_data_decoded)) {
+                // Check if we should fetch all the settings
+                if ($key == null) {
+                    // Just return all the settings
+                    return $settings_data_decoded;
+                }
+                else {
+                    // Try to fetch the one settings
+                    if (isset($settings_data_decoded[$key])) {
+                        return $settings_data_decoded[$key];
+                    }
+                }
+            }
+        }
+        
+        // Last resort, return default values
+        if ($key == null) {
+            return null;
+        }
+        elseif ($key == 'module1_delta' or $key == 'module2_delta') {
+            return 3;
+        }
+        else {
+            return null;
+        }
+        
     }
 
     /*
@@ -121,14 +151,26 @@ class Me {
         // Set
         self::$user->setNick($nick);
     }
-    public static function setMostPopularDelta($delta) {
+    public static function setModuleSettings($key, $value) {
+        // Get the current settings
+        $settings = self::getModuleSettings();
+        
+        // Make sure we have a array
+        if ($settings == null) {
+            $settings = [];
+        }
+        
+        // Apply the new settings
+        $settings[$key] = $value;
+        
+        
         // Check if we should set cookie for later too
         if (self::$user === null) {
             // Set cookie
-            setcookie('delta', $delta, (time() + (60*60*24*30)), '/');
+            setcookie('module_settings', json_encode($settings), (time() + (60*60*24*30)), '/');
         }
         else {
-            self::$user->setMostPopularDelta($delta);
+            self::$user->setModuleSettings(json_encode($settings));
         }
     }
     public static function increaseKarma($karma) {

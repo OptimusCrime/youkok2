@@ -62,11 +62,13 @@ class ElementController extends BaseController {
     public static $accumulated = 0;
     public static $single = 1;
     
-    public static $delta = array('WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', 
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.is_visible = 1', 
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', 
-        'WHERE a.is_visible = 1',
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1');
+    public static $timeIntervals = [
+        'WHERE a.is_visible = 1', // All
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1', // Day
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', // Week
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.is_visible = 1', // Month
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', // Year
+    ];
     
     /*
      * Constructor
@@ -206,7 +208,7 @@ class ElementController extends BaseController {
     public function getDownloadCount($delta) {
         // Get the delta index
         $index = 0;
-        foreach (self::$delta as $k => $v) {
+        foreach (self::$timeIntervals as $k => $v) {
             if ($k == $delta) {
                 $index = $k;
                 break;
@@ -219,9 +221,8 @@ class ElementController extends BaseController {
             $get_download_count  = "SELECT COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
             $get_download_count .= "FROM download d" . PHP_EOL;
             $get_download_count .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
-            $get_download_count .= self::$delta[$index] . PHP_EOL;
+            $get_download_count .= self::$timeIntervals[$index] . PHP_EOL;
             $get_download_count .= "AND d.file = :file";
-            echo $get_download_count;
             
             $get_download_count_query = Database::$db->prepare($get_download_count);
             $get_download_count_query->execute(array(':file' => $this->model->getId()));

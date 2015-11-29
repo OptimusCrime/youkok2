@@ -136,8 +136,9 @@ class BaseView extends Youkok2 {
         $this->template->assign('USER_IS_ADMIN', Me::isAdmin());
         $this->template->assign('USER_IS_BANNED', Me::isBanned());
         $this->template->assign('USER_CAN_CONTRIBUTE', Me::canContribute());
-        $this->template->assign('USER_MOST_POPULAR_DELTA', Me::getMostPopularDelta());
-
+        $this->template->assign('USER_MOST_POPULAR_ELEMENT', Me::getModuleSettings('module1_delta'));
+        $this->template->assign('USER_MOST_POPULAR_COURSES', Me::getModuleSettings('module2_delta'));
+        
         // Check if we should validate login
         if (isset($_POST['login-email'])) {
             Me::logIn();

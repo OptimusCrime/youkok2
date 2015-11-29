@@ -19,15 +19,9 @@ class JobScheduler extends Youkok2 {
      */
     
     private static $jobs = [
-        '* * * * *' => [
-            'CourseDownloadUpdater',
-        ],
-        
-        /*
         '0 0 * * *' => [
             'CourseDownloadUpdater',
         ],
-        */
     ];
     
     /*

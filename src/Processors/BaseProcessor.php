@@ -19,6 +19,7 @@ abstract class BaseProcessor extends Youkok2 {
      * Variable for storing data
      */
     
+    private $method;
     private $data;
     private $settings;
     
@@ -30,7 +31,8 @@ abstract class BaseProcessor extends Youkok2 {
         // Set data to empty array
         $this->data = [];
 
-        // Store settings
+        // Store method and settings
+        $this->method = $method;
         $this->settings = $settings;
 
         // Check if user needs database access
@@ -243,12 +245,25 @@ abstract class BaseProcessor extends Youkok2 {
      * Get settings
      */
     
-    protected function getSetting($key) {
-        if (!isset($this->settings[$key])) {
-            return null;
+    protected function getSetting($key = null) {
+        // Check if we should return all settings
+        if ($key == null) {
+            return $this->settings;
         }
         
-        return $this->settings[$key];
+        // Traverse all the settings from post -> get -> cli
+        if (isset($_POST[$key])) {
+            return $_POST[$key];
+        }
+        if (isset($_GET[$key])) {
+            return $_GET[$key];
+        }
+        if (isset($this->settings[$key])) {
+            return $this->settings[$key];
+        }
+        
+        // No settings
+        return [];
     }
     
     /*
@@ -257,5 +272,13 @@ abstract class BaseProcessor extends Youkok2 {
     
     protected function setSetting($key, $value) {
         $this->settings[$key] = $value;
+    }
+    
+    /*
+     * Get method
+     */
+    
+    protected function getMethod() {
+        return $this->method;
     }
 }

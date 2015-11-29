@@ -59,7 +59,7 @@ class Youkok2 {
         if (!$found) {
             $processor .= 'NotFound';
         }
-
+        
         // New instance of processor, let the magic happen
         $processor = new $processor($method, $settings);
 
