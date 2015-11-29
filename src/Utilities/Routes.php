@@ -117,6 +117,14 @@ class Routes {
             ['path' => 'graybox/newest', 'method' => 'getNewest'],
             ['path' => 'graybox/popular', 'method' => 'getPopular'],
         ],
+        
+        /*
+         * WIP
+         */
+        
+        'ModuleTest' => [
+            ['path' => '/moduletest'],
+        ],
 
         /*
          * Creates
