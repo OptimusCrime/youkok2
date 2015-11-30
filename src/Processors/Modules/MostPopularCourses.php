@@ -31,8 +31,7 @@ class MostPopularCourses extends ModuleProcessor {
      */
     
     public function get() {
-        // Get the correct delta
-        if ($this->getSetting('module2_delta') !== null and (is_array($this->getSetting('module2_delta')) and count($this->getSetting('module2_delta')) > 0)) {
+        if ($this->getSetting('module2_delta') !== null and (strlen($this->getSetting('module2_delta')) > 0)) {
             $delta_numeric = $this->getSetting('module2_delta');
         }
         else {
