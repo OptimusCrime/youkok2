@@ -170,7 +170,7 @@
                         </div>
                     </div>
                     <ul class="list-group">
-                    [[+if count($HOME_MOST_POPULAR_ELEMENTS) == 0]]    <li class="list-group-item"><em>Det er visst ingen fag her</em></li>[[+else]][[+foreach $HOME_MOST_POPULAR_COURSES as $element]]    <li class="list-group-item">
+                    [[+if count($HOME_MOST_POPULAR_COURSES) == 0]]    <li class="list-group-item"><em>Det er visst ingen fag her</em></li>[[+else]][[+foreach $HOME_MOST_POPULAR_COURSES as $element]]    <li class="list-group-item">
                             <a rel="nofollow" target="_blank" href="[[+$element->getFullUrl()]]">
                                 <strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]
                             </a> [~[[+$element->getDownLoadCount($USER_MOST_POPULAR_COURSES)]]]
