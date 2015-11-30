@@ -13,4 +13,11 @@ require_once BASE_PATH . '/index.php';
 
 use \Youkok2\Utilities\JobScheduler as JobScheduler;
 
-JobScheduler::init();
+// Check if we should force jobs
+$force = false;
+if (count($_SERVER['argv']) == 2 and $_SERVER['argv'][1] == 'force') {
+    $force = true;
+}
+
+// Init the scheduler
+JobScheduler::init($force);

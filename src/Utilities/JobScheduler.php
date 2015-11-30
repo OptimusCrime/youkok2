@@ -15,6 +15,12 @@ use \Youkok2\Youkok2 as Youkok2;
 class JobScheduler extends Youkok2 {
     
     /*
+     * Variables
+     */
+    
+    private static $force;
+    
+    /*
      * Array with jobs
      */
     
@@ -28,7 +34,9 @@ class JobScheduler extends Youkok2 {
      * Init the scheduler
      */
     
-    public static function init() {
+    public static function init($force = false) {
+        self::$force = $force;
+        
         // Create a database connection
         if (self::databaseConnect()) {
             // Find out what jobs to run
@@ -64,7 +72,7 @@ class JobScheduler extends Youkok2 {
             $cron = \Cron\CronExpression::factory($k);
             
             // Check if this expression is due
-            if ($cron->isDue()) {
+            if ($cron->isDue() or self::$force) {
                 // Expression is due, loop all the jobs
                 foreach ($v as $iv) {
                     $job_queue[] = $iv;
