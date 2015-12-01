@@ -30,7 +30,7 @@ class MostPopularElements extends ModuleProcessor {
     
     public function get() {
         // Get the correct delta
-        if ($this->getSetting('module1_delta') !== null) {
+         if ($this->getSetting('module1_delta') !== null and !is_array($this->getSetting('module1_delta'))) {
             $delta_numeric = $this->getSetting('module1_delta');
         }
         else {
