@@ -175,7 +175,7 @@ class Admin extends BaseView {
         $this->template->assign('ADMIN_NUM_DIRS', number_format($get_dirs_number_result['num_dirs']));
         
         // Display
-        $this->displayAndCleanup('admin_home.tpl');
+        $this->displayAndCleanup('admin/home.tpl');
     }
     
     /*
