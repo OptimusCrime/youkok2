@@ -1,3 +1,9 @@
+Youkok2 - 2.1.1-pl  (1. desember 2015)
+======================================
+
+- [Info] Bugfixes
+- [Fixed] Forsiden viste feil tall for populære fag og elementer.
+
 Youkok2 - 2.1.0-pl  (29. november 2015)
 =======================================
 
