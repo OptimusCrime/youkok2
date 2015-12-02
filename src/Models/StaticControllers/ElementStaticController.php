@@ -51,7 +51,7 @@ class ElementStaticController {
      * Fetch newest Elements
      */
     
-    public static function getNewest() {
+    public static function getNewest($limit = 15) {
         // For storing the collection
         $collection = '';
         
@@ -61,7 +61,7 @@ class ElementStaticController {
         $get_newest .= "WHERE is_directory = 0" . PHP_EOL;
         $get_newest .= "AND is_visible = 1" . PHP_EOL;
         $get_newest .= "ORDER BY added DESC, name DESC" . PHP_EOL;
-        $get_newest .= "LIMIT 15";
+        $get_newest .= "LIMIT " . $limit;
         
         $get_newest_query = Database::$db->query($get_newest);
         while ($row = $get_newest_query->fetch(\PDO::FETCH_ASSOC)) {

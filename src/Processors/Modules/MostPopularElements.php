@@ -30,11 +30,17 @@ class MostPopularElements extends ModuleProcessor {
     
     public function get() {
         // Get the correct delta
-         if ($this->getSetting('module1_delta') !== null and !is_array($this->getSetting('module1_delta'))) {
+        if ($this->getSetting('module1_delta') !== null and !is_array($this->getSetting('module1_delta'))) {
             $delta_numeric = $this->getSetting('module1_delta');
         }
         else {
             $delta_numeric = Me::getModuleSettings('module1_delta');
+        }
+        
+        // Get the correct limit
+        $limit = 15;
+        if ($this->getSetting('limit') !== null and !is_array($this->getSetting('limit')) and is_numeric($this->getSetting('limit'))) {
+            $limit = $this->getSetting('limit');
         }
         
         // Make sure we have a delta
@@ -50,7 +56,7 @@ class MostPopularElements extends ModuleProcessor {
         $get_most_popular .= "GROUP BY d.file" . PHP_EOL;
         $get_most_popular .= "HAVING COUNT(d.id) > 0" . PHP_EOL;
         $get_most_popular .= "ORDER BY downloaded_times DESC, a.added DESC" . PHP_EOL;
-        $get_most_popular .= "LIMIT 15";
+        $get_most_popular .= "LIMIT " . $limit;
         
         $get_most_popular_query = Database::$db->prepare($get_most_popular);
         $get_most_popular_query->execute();

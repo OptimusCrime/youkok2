@@ -103,7 +103,7 @@ class Graybox extends BaseProcessor {
     
     public function getNewest() {
         // Get the collection
-        $raw_collection = Element::getNewest();
+        $raw_collection = Element::getNewest(5);
         
         // Encode the raw collection
         $collection = [];
@@ -127,7 +127,9 @@ class Graybox extends BaseProcessor {
             'output' => false,
             'encode' => true,
             'close_db' => false,
-            'delta' => 3]);
+            'module' => 1,
+            'limit' => 5,
+            'module1_delta' => 3]);
 
         // Set to data
         $this->setData('data', $data['data']);
