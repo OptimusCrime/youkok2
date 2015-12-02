@@ -1,6 +1,6 @@
 # Youkok2
 
-Youkok2 is a website for NTNU students that need a helping hand. The site has a huge collection of various course resources, old exams, and much more. The application is written in PHP and is mostly just a "just for fun" project by a sole developer. Feel free to contribute.
+Youkok2 is a website for NTNU students that need a helping hand. The site has a huge collection of various course resources, old exams, and much more. Youkok2 is written in PHP and is mostly a "just for fun" project by a sole developer. Feel free to contribute.
 
 ## Visit Online
 
