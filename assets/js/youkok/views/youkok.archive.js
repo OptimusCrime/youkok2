@@ -89,13 +89,24 @@ var Youkok = (function (module) {
                 id: Youkok.getData('archive_id'), 
             },
             success: function(json) {
-                // Get template
-                var template_sidebar_history = _.template(
-                    $('script.template-sidebar-history').html()
-                );
+                // Check if anything was returned
+                if (json.data.length > 0) {
+                    // Results, parse with underscorejs
+                    var template_sidebar_history = _.template(
+                        $('script.template-sidebar-history').html()
+                    );
 
-                // Set content
-                $('#archive-history ul').html(template_sidebar_history({'histories': json.data}));
+                    // Set content
+                    $('#archive-history ul').html(template_sidebar_history({'histories': json.data}));
+                }
+                else {
+                    var template_sidebar_history = _.template(
+                        $('script.template-sidebar-no-history').html()
+                    );
+
+                    // Set content
+                    $('#archive-history ul').html(template_sidebar_history());
+                }
             }
         });
     };

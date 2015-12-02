@@ -28,5 +28,6 @@
             </div>
 [[+include file="footer.tpl"]]
 [[+include file="sidebar_templates.tpl"]]
+[[+include file="sidebar_archive.tpl"]]
 </body>
 </html>
