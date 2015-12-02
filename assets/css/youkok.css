@@ -622,7 +622,7 @@ a:visited {
     margin-top: 20px;
 }
 #archive-warning {
-    padding-top: 10px;
+    padding-bottom: 15px;
 }
 #archive-controlls.archive-controlls-offline #archive-create-file-div,
 #archive-controlls.archive-controlls-offline #archive-create-link-div {
