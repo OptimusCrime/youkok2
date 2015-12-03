@@ -3,6 +3,7 @@
 
 # Except this
 !.gitignore
+!.htaccess
 
 # And element directory
 !/elements/
