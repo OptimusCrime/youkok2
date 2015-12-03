@@ -6,5 +6,5 @@
 !.htaccess
 
 # And element directory
-!/elements/
+!/youkok/
 !/smarty/
