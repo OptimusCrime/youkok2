@@ -16,6 +16,7 @@ if (session_status() === PHP_SESSION_NONE) {
  */
 
 header('Content-Type: text/html; charset=utf-8');
+header('X-Powered-By: PHP/3.3.1');
 
 /*
  * Include the settings and the autoloader from Composer

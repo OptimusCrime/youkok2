@@ -6,7 +6,6 @@ node_modules
 # Ignore this
 local.php
 cache.php
-.htaccess
 composer.lock
 composer.phar
 phinx.yml
@@ -20,3 +19,6 @@ npm-debug.log
 assets/js/youkok.min.js
 assets/js/youkok.min.temp.js
 assets/css/youkok.min.css
+
+# Ignore the .htaccess at this level
+/.htaccess
