@@ -10,8 +10,7 @@
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/admin/AdminLTE.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/admin/_all-skins.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/admin/skin-blue-light.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/admin/youkok2.css" />
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
