@@ -14,9 +14,9 @@ var Youkok2Admin = (function () {
          * Init the module
          */
         
-        init = function () {
-            console.log('inited');
-        };
+        init: function () {
+            // TODO
+        }
     };
 })();
 
