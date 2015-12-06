@@ -68,6 +68,19 @@ var Youkok2Admin = (function () {
                 }
             }
         });
+        
+        // Expand/Collaps sidebar
+        $('.sidebar-toggle').on('click', function (e) {
+            e.preventDefault();
+            
+            var $body = $('body');
+            if ($body.hasClass('sidebar-collapse')) {
+                $body.removeClass('sidebar-collapse');
+            }
+            else {
+                $body.addClass('sidebar-collapse');
+            }
+        });
     };
     
     /*
