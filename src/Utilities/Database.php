@@ -27,11 +27,11 @@ class Database {
     public static function connect() {
         try {
             self::$db = new PDO2\PDO2(DATABASE_DNS . ';dbname=' . DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, [
-                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"]);
+                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8']);
             self::$db->setAttribute(\PDO::ATTR_ERRMODE, DATABASE_ERROR_MODE);
             
             // Check if we should profile
-            if (defined('PROFILE_QUERIES') and PROFILE_QUERIES) {
+            if (defined('PROFILING') and PROFILING) {
                 self::$db->query('SET profiling_history_size = 1000');
                 self::$db->query('SET profiling = 1');
             }

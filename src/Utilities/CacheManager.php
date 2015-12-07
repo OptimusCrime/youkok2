@@ -20,12 +20,20 @@ Class CacheManager {
     private static $currentContent = null;
     private static $count = 0;
     private static $bactrace = array();
+    private static $profilingDuration = 0;
     
     /*
      * Check if cached
      */
 
     public static function isCached($id, $type) {
+        $ret = false;
+        
+        // Start profiling
+        if (defined('PROFILING') and PROFILING) {
+            $start_time = microtime(true);
+        }
+        
         // Generate full path for item
         $file = self::getFileName($id, $type);
 
@@ -50,8 +58,8 @@ Class CacheManager {
                 self::$currentChecking = $id;
                 self::$currentContent = $temp_content;
 
-                // Return true
-                return true;
+                // Set return to true
+                $ret = true;
             }
             else {
                 // Delete invalid cache
@@ -62,10 +70,15 @@ Class CacheManager {
             // Reset current
             self::$currentChecking = null;
             self::$currentContent = null;
-
-            // Return status
-            return false;
         }
+        
+        // Add profiling
+        if (defined('PROFILING') and PROFILING) {
+            self::$profilingDuration += microtime(true) - $start_time;
+        }
+        
+        // Return the status
+        return $ret;
     }
 
     /*
@@ -73,21 +86,33 @@ Class CacheManager {
      */
 
     public static function getCache($id, $type) {
+        // For the return
+        $content = null;
+        
+        // Start profiling
+        if (defined('PROFILING') and PROFILING) {
+            $start_time = microtime(true);
+        }
+        
         // Check if already validated
         if (self::$currentChecking == $id) {
-            return self::evalAndClean(self::$currentContent);
+            $content = self::evalAndClean(self::$currentContent);
         }
         else {
             // Validate first
             if (self::isCached($id, $type)) {
                 // Is valid
-                return self::evalAndClean(self::$currentContent);
-            }
-            else {
-                // Return null, this is not a valid cache
-                return null;
+                $content = self::evalAndClean(self::$currentContent);
             }
         }
+        
+        // Add profiling
+        if (defined('PROFILING') and PROFILING) {
+            self::$profilingDuration += microtime(true) - $start_time;
+        }
+        
+        // Return the content (whatever it was)
+        return $content;
     }
 
     /*
@@ -158,6 +183,11 @@ Class CacheManager {
      */
 
     public static function store() {
+        // Start profiling
+        if (defined('PROFILING') and PROFILING) {
+            $start_time = microtime(true);
+        }
+        
         // Check if we got something queued
         if (count(self::$cacheArr) > 0) {
             // Loop all cache items
@@ -167,6 +197,11 @@ Class CacheManager {
 
             // Clear array
             self::$cacheArr = [];
+        }
+        
+        // Add profiling
+        if (defined('PROFILING') and PROFILING) {
+            self::$profilingDuration += microtime(true) - $start_time;
         }
     }
 
@@ -226,5 +261,13 @@ Class CacheManager {
     
     public static function getCount() {
         return self::$count;
+    }
+    
+    /*
+     * Return the profiling duration
+     */
+    
+    public static function getProfilingDuration() {
+        return round(self::$profilingDuration, 4);
     }
 }

@@ -68,8 +68,8 @@ if (!defined('ERROR_DISPLAY')) {
 if (!defined('COMPRESS_ASSETS')) {
     define('COMPRESS_ASSETS', true);
 }
-if (!defined('PROFILE_QUERIES')) {
-    define('PROFILE_QUERIES', false);
+if (!defined('PROFILING')) {
+    define('PROFILING', false);
 }
 if (!defined('USE_GA')) {
     define('USE_GA', false);

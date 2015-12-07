@@ -31,9 +31,8 @@ class BacktraceManager {
         $profiling_index = 0;
         
         // Check if we are profiling
-        if (defined('PROFILE_QUERIES') and PROFILE_QUERIES) {
+        if (defined('PROFILING') and PROFILING) {
             self::$profilingInformation = Database::getProfilingData();
-            print_r(self::$profilingInformation);
         }
         
         // Check that we have some acutal queries here
@@ -75,7 +74,7 @@ class BacktraceManager {
                 // Clean up n stuff
                 if (!$has_prepare) {
                     // Check if we should add the profiling timestamps
-                    if (defined('PROFILE_QUERIES') and PROFILE_QUERIES) {
+                    if (defined('PROFILING') and PROFILING) {
                         // Make sure to skip the first two queries
                         if ($profiling_index > 1) {
                             $temp_loc .= self::getProfilingInformation($profiling_index);

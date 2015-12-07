@@ -202,8 +202,9 @@ class BaseView extends Youkok2 {
             $this->template->assign('DEV_QUERIES_BACKTRACE', Database::getQueryBacktrace());
             
             // Check if we're profiling
-            if (defined('PROFILE_QUERIES') and PROFILE_QUERIES) {
+            if (defined('PROFILING') and PROFILING) {
                 $this->template->assign('DEV_QUERIES_DURATION', Database::getProfilingDuration());
+                $this->template->assign('DEV_CACHE_DURATION', CacheManager::getProfilingDuration());
             }
         }
         
