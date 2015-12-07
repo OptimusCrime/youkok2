@@ -78,7 +78,7 @@ Class ClearCache extends BaseProcessor {
          * Youkok2 cache
          */
 
-        foreach (array_filter(glob(CACHE_PATH . '/elements/*'), 'is_dir') as $v) {
+        foreach (array_filter(glob(CACHE_PATH . '/youkok/*'), 'is_dir') as $v) {
             $this->rmNonemptyDir($v);
         }
 
