@@ -219,6 +219,11 @@ abstract class BaseProcessor extends Youkok2 {
      */
 
     private function makeDatabaseConnection() {
+        // Make sure we don't already have a database connection running
+        if (Database::$db !== null) {
+            return true;
+        }
+        
         try {
             Database::connect();
             return true;
