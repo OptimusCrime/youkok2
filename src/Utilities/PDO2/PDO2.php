@@ -29,7 +29,7 @@ class PDO2 extends \PDO {
         parent::__construct($dsn, $username, $password, $options);
         
         // Check if this is dev environment
-        if (DEFINED('DEV') and DEV) {
+        if (defined('DEV') and DEV) {
             $this->queryCount = 0;
             $this->queryLog = [];
             
@@ -44,7 +44,7 @@ class PDO2 extends \PDO {
     
     public function query($query) {
         // Check if this is dev environment
-        if (DEFINED('DEV') and DEV) {
+        if (defined('DEV') and DEV) {
             // Increase the count
             $this->queryCount++;
             
@@ -62,7 +62,7 @@ class PDO2 extends \PDO {
     
     public function exec($statement) {
         // Check if this is dev environment
-        if (DEFINED('DEV') and DEV) {
+        if (defined('DEV') and DEV) {
             // Increase the count
             $this->queryCount++;
             
@@ -80,7 +80,7 @@ class PDO2 extends \PDO {
     
     public function prepare($statement, $options = null) {
         // Check if this is dev environment
-        if (DEFINED('DEV') and DEV) {
+        if (defined('DEV') and DEV) {
             // Increase the count
             $this->queryCount++;
             

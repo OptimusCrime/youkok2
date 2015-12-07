@@ -200,6 +200,11 @@ class BaseView extends Youkok2 {
             $this->template->assign('DEV_QUERIES_NUM', Database::getQueryCount());
             $this->template->assign('DEV_CACHE_LOAD_NUM', CacheManager::getCount());
             $this->template->assign('DEV_QUERIES_BACKTRACE', Database::getQueryBacktrace());
+            
+            // Check if we're profiling
+            if (defined('PROFILE_QUERIES') and PROFILE_QUERIES) {
+                $this->template->assign('DEV_QUERIES_DURATION', Database::getProfilingDuration());
+            }
         }
         
         // Assign the js module list

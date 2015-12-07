@@ -25,7 +25,7 @@ if (!defined('DEV')) {
     define('DEV', false);
 }
 
-// Paths
+// File paths
 if (!defined('BASE_PATH')) {
     define('BASE_PATH', dirname(__FILE__));
 }
@@ -64,35 +64,35 @@ if (!defined('ERROR_DISPLAY')) {
     define('ERROR_DISPLAY', 0);
 }
 
-// Timezone
+// Various production/development things
+if (!defined('COMPRESS_ASSETS')) {
+    define('COMPRESS_ASSETS', true);
+}
+if (!defined('PROFILE_QUERIES')) {
+    define('PROFILE_QUERIES', false);
+}
+if (!defined('USE_GA')) {
+    define('USE_GA', false);
+}
+if (!defined('CSRF_KEY')) {
+    define('CSRF_KEY', 'foobar');
+}
 if (!defined('TIMEZONE')) {
     define('TIMEZONE', 'Europe/London');
 }
 
-// Define port
+// URL and port settings
 if (!defined('PORT')) {
     // Use no port (default 80)
     define('PORT', '');
 }
-
-// Define domain
 if (!defined('DOMAIN')) {
+    // Just the domain
     define('DOMAIN', 'localhost');
 }
-
-// Relative position (trailing slash both before and after, or just / if root)
 if (!defined('URL_RELATIVE')) {
+    // The relative URL (use / if on the root)
     define('URL_RELATIVE', '/');
-}
-
-// Accepted filetypes
-if (!defined('ACCEPTED_FILEENDINGS')) {
-    define('ACCEPTED_FILEENDINGS', 'pdf,txt,java,py,html,htm,sql,zip');
-}
-
-// Google analytics
-if (!defined('USE_GA')) {
-    define('USE_GA', false);
 }
 
 // Email
@@ -100,14 +100,12 @@ if (!defined('EMAIL_CONTACT')) {
     define('EMAIL_CONTACT', 'post@my-site.tld');
 }
 
-// Display instead of download
+// File system handler information
 if (!defined('DISPLAY_INSTEAD_OF_DOWNLOAD')) {
     define('DISPLAY_INSTEAD_OF_DOWNLOAD', 'text_x-python-script,text_plain,application_pdf');
 }
-
-// CSRF token
-if (!defined('CSRF_KEY')) {
-    define('CSRF_KEY', 'foobar');
+if (!defined('ACCEPTED_FILEENDINGS')) {
+    define('ACCEPTED_FILEENDINGS', 'pdf,txt,java,py,html,htm,sql,zip');
 }
 
 // Define URLs

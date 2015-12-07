@@ -29,6 +29,13 @@ class Database {
             self::$db = new PDO2\PDO2(DATABASE_DNS . ';dbname=' . DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, [
                 \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"]);
             self::$db->setAttribute(\PDO::ATTR_ERRMODE, DATABASE_ERROR_MODE);
+            
+            // Check if we should profile
+            if (defined('PROFILE_QUERIES') and PROFILE_QUERIES) {
+                self::$db->query('SET profiling_history_size = 1000');
+                self::$db->query('SET profiling = 1');
+            }
+            
         }
         catch (\Exception $e) {
             throw new \Exception('Could not connect to the database');
@@ -56,5 +63,35 @@ class Database {
     
     public static function close() {
         self::$db = null;
+    }
+    
+    /*
+     * Get the total profilig duration
+     */
+    
+    public static function getProfilingDuration() {
+        $sum = 0;
+        
+        $get_profiles_query = self::$db->query('SHOW profiles');
+        while ($row = $get_profiles_query->fetch(\PDO::FETCH_ASSOC)) {
+            $sum += $row['Duration'];
+        }
+        
+        return round(($sum * 1000), 4);
+    }
+    
+    /*
+     * Get the profiling information
+     */
+    
+    public static function getProfilingData() {
+        $data = [];
+        
+        $get_profiles_query = self::$db->query('SHOW profiles');
+        while ($row = $get_profiles_query->fetch(\PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        
+        return $data;
     }
 }

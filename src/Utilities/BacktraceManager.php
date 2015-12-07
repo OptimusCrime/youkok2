@@ -9,7 +9,15 @@
 
 namespace Youkok2\Utilities;
 
+use \Youkok2\Utilities\Database as Database;
+
 class BacktraceManager {
+    
+    /*
+     * Various variables
+     */
+    
+    private static $profilingInformation = [];
     
     /*
      * Clean up SQL log
@@ -20,13 +28,20 @@ class BacktraceManager {
         $str = '';
         $has_prepare = false;
         $prepare_val = [];
+        $profiling_index = 0;
+        
+        // Check if we are profiling
+        if (defined('PROFILE_QUERIES') and PROFILE_QUERIES) {
+            self::$profilingInformation = Database::getProfilingData();
+            print_r(self::$profilingInformation);
+        }
         
         // Check that we have some acutal queries here
         if (count($arr) > 0) {
             // Loop each post
-            foreach ($arr as $v) {
+            foreach ($arr as $k => $v) {
                 // Temp variables
-                $temp_loc = $temp_loc = self::structureBacktrace($v['backtrace']);
+                $temp_loc = self::structureBacktrace($v['backtrace']);
                 $temp_query = '';
                 
                 // Check what kind of query we're dealing with
@@ -59,7 +74,19 @@ class BacktraceManager {
                 
                 // Clean up n stuff
                 if (!$has_prepare) {
-                    $str .= $temp_loc . '<pre>' . htmlspecialchars($temp_query) . '</pre>';
+                    // Check if we should add the profiling timestamps
+                    if (defined('PROFILE_QUERIES') and PROFILE_QUERIES) {
+                        // Make sure to skip the first two queries
+                        if ($profiling_index > 1) {
+                            $temp_loc .= self::getProfilingInformation($profiling_index);
+                        }
+                        
+                        // Increase profiling index
+                        $profiling_index++;
+                    }
+                    
+                    // Apply the final string
+                    $str .= $temp_loc . '</p><pre>' . htmlspecialchars($temp_query) . '</pre>';
                 }
             }
         }
@@ -76,7 +103,7 @@ class BacktraceManager {
         if (count($arr) > 0) {
             $trace = $arr[0];
             if (count($arr) == 1) {
-                return '<p>' . $trace['file'] . ' @ line ' . $trace['line'] . ':</p>';
+                $line = '<p>' . $trace['file'] . ' @ line ' . $trace['line'];
             }
             else {
                 $tooltip = '';
@@ -88,8 +115,20 @@ class BacktraceManager {
                         $tooltip .= ($i + 1) . '. ' . $trace_temp['file'] . ' @ line ' . $trace_temp['line'] . "&#xA;";
                     }
                 }
-                return '<p style="cursor: help;" title="' . $tooltip . '">' . $trace['file'] . ' @ line ' . $trace['line'] . ':</p>';
+                
+                $line = '<p style="cursor: help;" title="' . $tooltip . '">' . $trace['file'] . ' @ line ' . $trace['line'];
             }
+            
+            // Return the final line
+            return $line;
         }
+    }
+    
+    /*
+     * Returns the profiling execution time
+     */
+    
+    private static function getProfilingInformation($idx) {
+        return ' [' . round((self::$profilingInformation[$idx - 2]['Duration'] * 1000), 4) . ' ms]';
     }
 } 
