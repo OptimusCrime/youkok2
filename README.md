@@ -8,4 +8,4 @@ Youkok2 is available at [youkok2.com](http://youkok2.com).
 
 ## Technologies
 
-Various technologies as used in the Youkok2-project. Most of which has been written from the ground up. This includes a dynamic URL pattern matching, a robust MVC pattern, a minimalistic ORM, a processor handler, job scheduler and a custom cache handler.
+Various technologies are used in the Youkok2-project. Most of which has been written from the ground up. This includes a dynamic URL pattern matching, a robust MVC pattern, a minimalistic ORM, a processor handler, job scheduler, and a custom cache handler.
