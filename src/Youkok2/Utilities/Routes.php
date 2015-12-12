@@ -22,15 +22,15 @@ class Routes {
     
     private static $routes = [
         'Frontpage' => [
-            ['path' => '/'],
+            ['path' => '/', 'identifier' => 'frontpage'],
         ],
         
         'Courses' => [
-            ['path' => self::ARCHIVE, 'subpath' => false],
+            ['path' => self::ARCHIVE, 'subpath' => false, 'identifier' => 'courses'],
         ],
         
         'Archive' => [
-            ['path' => self::ARCHIVE, 'subpath' => true],
+            ['path' => self::ARCHIVE, 'subpath' => true, 'identifier' => 'archive'],
         ],
 
         'Profile' => [
@@ -42,15 +42,13 @@ class Routes {
         ],
 
         'Flat' => [
-            ['path' => '/om', 'method' => 'displayAbout'],
-            ['path' => '/retningslinjer', 'method' => 'displayTerms'],
-            ['path' => '/hjelp', 'method' => 'displayHelp'],
-            ['path' => '/karma', 'method' => 'displayKarma'],
-            
+            ['path' => '/om', 'method' => 'displayAbout', 'identifier' => 'flat_about'],
+            ['path' => '/retningslinjer', 'method' => 'displayTerms', 'identifier' => 'flat_terms'],
+            ['path' => '/hjelp', 'method' => 'displayHelp', 'identifier' => 'flat_help'],
         ],
         
         'StaticFiles' => [
-            ['path' => '/changelog.txt', 'method' => 'returnChangelog'],
+            ['path' => '/changelog.txt', 'method' => 'returnChangelog', 'identifier' => 'changelog'],
             ['path' => '/favicon.ico', 'method' => 'returnFavicon'],
             ['path' => '/favicon.png', 'method' => 'returnFavicon'],
         ],
@@ -60,23 +58,23 @@ class Routes {
         ],
 
         'Auth' => [
-            ['path' => '/logg-inn', 'method' => 'displayLogIn'],
-            ['path' => '/logg-ut', 'method' => 'displayLogOut'],
-            ['path' => '/registrer', 'method' => 'displayRegister'],
-            ['path' => '/glemt-passord', 'method' => 'displayForgottenPassword'],
-            ['path' => '/nytt-passord', 'method' => 'displayForgottenPasswordNew'],
+            ['path' => '/logg-inn', 'method' => 'displayLogIn', 'identifier' => 'auth_login'],
+            ['path' => '/logg-ut', 'method' => 'displayLogOut', 'identifier' => 'auth_logout'],
+            ['path' => '/registrer', 'method' => 'displayRegister', 'identifier' => 'auth_register'],
+            ['path' => '/glemt-passord', 'method' => 'displayForgottenPassword', 'identifier' => 'auth_forgotten_password'],
+            ['path' => '/nytt-passord', 'method' => 'displayForgottenPasswordNew', 'identifier' => 'auth_new_password'],
         ],
 
         'Search' => [
-            ['path' => '/sok'],
+            ['path' => '/sok', 'identifier' => 'search'],
         ],
 
         'Admin' => [
-            ['path' => '/admin'],
+            ['path' => '/admin', 'identifier' => 'admin'],
         ],
 
         'Redirect' => [
-            ['path' => self::REDIRECT],
+            ['path' => self::REDIRECT, 'identifier' => 'redirect'],
         ],
     ];
     

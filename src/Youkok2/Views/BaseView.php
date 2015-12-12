@@ -20,6 +20,7 @@ use Youkok2\Utilities\JavaScriptLoader;
 use Youkok2\Utilities\Loader;
 use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\Routes;
+use Youkok2\Utilities\TemplateHelper;
 
 class BaseView extends Youkok2 {
 
@@ -62,6 +63,9 @@ class BaseView extends Youkok2 {
         $this->template = new \Smarty();
         $this->template->left_delimiter = '[[+';
         $this->template->right_delimiter = ']]';
+        
+        // Assign the url_for method
+        $this->template->registerClass('TemplateHelper', 'Youkok2\Utilities\TemplateHelper');
 
         // Set caching and compile dir
         $this->template->setCompileDir(CACHE_PATH . '/smarty/compiled/');
