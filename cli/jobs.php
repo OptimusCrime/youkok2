@@ -11,7 +11,7 @@ require_once dirname(__FILE__) . '/../local.php';
 require_once dirname(__FILE__) . '/../local-default.php';
 require_once BASE_PATH . '/index.php';
 
-use \Youkok2\Utilities\JobScheduler as JobScheduler;
+use Youkok2\Utilities\JobScheduler;
 
 // Check if we should force jobs
 $force = false;

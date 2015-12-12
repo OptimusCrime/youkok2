@@ -11,8 +11,8 @@ require_once dirname(__FILE__) . '/../local.php';
 require_once dirname(__FILE__) . '/../local-default.php';
 require_once BASE_PATH . '/index.php';
 
-use \Youkok2\Youkok2 as Youkok2;
-use \League\CLImate\CLImate as CLImate;
+use Youkok2\Youkok2;
+use League\CLImate\CLImate;
 
 /*
  * Run the code

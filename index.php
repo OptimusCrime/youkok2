@@ -32,7 +32,7 @@ require_once BASE_PATH . '/vendor/autoload.php';
 
 spl_autoload_register(function ($class) {
     // project-specific namespace prefix
-    $prefix = 'Youkok2\\';
+    $prefix = '';
     
     // does the class use the namespace prefix?
     $len = strlen($prefix);
