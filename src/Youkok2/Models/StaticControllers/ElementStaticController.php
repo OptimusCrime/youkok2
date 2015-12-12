@@ -7,7 +7,7 @@
  *
  */
 
-namespace Youkok2\models\StaticControllers;
+namespace Youkok2\Models\StaticControllers;
 
 use Youkok2\Youkok2;
 use Youkok2\Models\Element;

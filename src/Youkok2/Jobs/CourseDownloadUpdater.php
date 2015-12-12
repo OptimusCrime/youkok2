@@ -9,8 +9,8 @@
 namespace Youkok2\Jobs;
 
 use Youkok2\Models\Element;
-use Youkok2\Models\CourseDownloads;
-use Youkok2\Models\Controllers\CourseDownloadsController;
+use Youkok2\Models\Cache\CourseDownloads;
+use Youkok2\Models\Controllers\Cache\CourseDownloadsController;
 use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;
 use Youkok2\Youkok2;

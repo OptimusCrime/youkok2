@@ -1,17 +1,18 @@
 <?php
 /*
- * File: CourseDownloads.php
- * Holds: Holds data for a course download count
- * Created: 29.11.2015
+ * File: MeDownloads.php
+ * Holds: Holds data for personal downloads
+ * Created: 12.12.2015
  * Project: Youkok2
  *
  */
 
-namespace Youkok2\Models;
+namespace Youkok2\Models\Cache;
 
-use Youkok2\Models\Controllers\CourseDownloadsController;
+use Youkok2\Models\BaseModel;
+use Youkok2\Models\Controllers\Cache\MeDownloadsController;
 
-class CourseDownloads extends BaseModel {
+class MeDownloads extends BaseModel {
 
     /*
      * Variables
@@ -55,7 +56,7 @@ class CourseDownloads extends BaseModel {
      */
 
     public function __construct($data = null) {
-        $this->controller = new CourseDownloadsController($this);
+        $this->controller = new MeDownloadsController($this);
 
         /*
          * Set some default values
@@ -95,5 +96,18 @@ class CourseDownloads extends BaseModel {
     }
     public function setData($data) {
         $this->data = $data;
+    }
+    
+    /*
+     * Static functions overload
+     */
+    
+    public static function __callStatic($name, $arguments) {
+        // Check if method exists
+        if (method_exists('Youkok2\Models\StaticControllers\Cache\MeDownloadsStaticController', $name)) {
+            // Call method and return response
+            return call_user_func_array(['Youkok2\Models\StaticControllers\Cache\MeDownloadsStaticController',
+                $name], $arguments);
+        }
     }
 } 

@@ -12,6 +12,7 @@ namespace Youkok2\Views;
 use Youkok2\Models\Element;
 use Youkok2\Models\CourseDownloads;
 use Youkok2\Models\Me;
+use Youkok2\Models\Cache\MeDownloads;
 use Youkok2\Utilities\Database;
 
 class Frontpage extends BaseView {
@@ -34,7 +35,7 @@ class Frontpage extends BaseView {
         // Check if this user is logged in
         if (Me::isLoggedIn()) {
             $this->template->assign('HOME_USER_FAVORITES', Me::getFavorites());
-            $this->template->assign('HOME_USER_LATEST', Me::getLastDownloads());
+            $this->template->assign('HOME_USER_LATEST', MeDownloads::get());
         }
         else {
             $this->loadInfobox();

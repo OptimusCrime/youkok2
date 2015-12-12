@@ -10,6 +10,9 @@
 namespace Youkok2\Views;
 
 use Youkok2\Models\Element;
+use Youkok2\Models\Me;
+use Youkok2\Models\Controllers\Cache\MeDownloadsController;
+use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Loader;
 
 class Redirect extends BaseView {
@@ -34,6 +37,12 @@ class Redirect extends BaseView {
                     if (!isset($_GET['donotlogthisdownload'])) {
                         // Log download
                         $element->addDownload();
+                        
+                        // Check if the current user is logged in
+                        if (Me::isLoggedIn()) {
+                            // Clear the cache for the MeDownloads element
+                            CacheManager::deleteCache(Me::getId(), MeDownloadsController::$cacheKey);
+                        }
                     }
                     
                     // Redirect

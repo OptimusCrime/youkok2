@@ -143,7 +143,7 @@ abstract class BaseController {
      * Set cache
      */
 
-    public function cache() {
+    public function cache($force = false) {
         $cache_arr = [];
 
         // Loop all the fields in the schema
@@ -163,7 +163,7 @@ abstract class BaseController {
         }
 
         // Set cache here
-        CacheManager::setCache($this->model->getId(), $this->cacheKey, $cache_arr);
+        CacheManager::setCache($this->model->getId(), $this->cacheKey, $cache_arr, $force);
     }
 
     /*

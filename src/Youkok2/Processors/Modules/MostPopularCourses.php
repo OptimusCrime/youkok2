@@ -9,9 +9,9 @@
 
 namespace Youkok2\Processors\Modules;
 
-use Youkok2\Models\CourseDownloads;
 use Youkok2\Models\Element;
 use Youkok2\Models\Me;
+use Youkok2\Models\Cache\CourseDownloads;
 use Youkok2\Models\Controllers\CourseDownloadsController;
 use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;

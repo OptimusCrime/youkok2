@@ -397,38 +397,6 @@ class Me {
         // If we came all this was, it is not a favorite
         return false;
     }
-    
-    /*
-     * Get latest downloads
-     */
-    
-    public static function getLastDownloads() {
-        $elements = [];
-        
-        // Load all favorites
-        $get_last_downloads  = "SELECT d.file" . PHP_EOL;
-        $get_last_downloads .= "FROM download AS d" . PHP_EOL;
-        $get_last_downloads .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
-        $get_last_downloads .= "WHERE d.user = :user" . PHP_EOL;
-        $get_last_downloads .= "AND a.is_visible = 1" . PHP_EOL;
-        $get_last_downloads .= "AND d.id = (" . PHP_EOL;
-        $get_last_downloads .= "    SELECT dd.id" . PHP_EOL;
-        $get_last_downloads .= "    FROM download dd" . PHP_EOL;
-        $get_last_downloads .= "    WHERE d.file = dd.file" . PHP_EOL;
-        $get_last_downloads .= "    ORDER BY dd.downloaded_time" . PHP_EOL;
-        $get_last_downloads .= "    DESC LIMIT 1)" . PHP_EOL;
-        $get_last_downloads .= "ORDER BY d.downloaded_time DESC" . PHP_EOL;
-        $get_last_downloads .= "LIMIT 15";
-        
-        $get_last_downloads_query = Database::$db->prepare($get_last_downloads);
-        $get_last_downloads_query->execute(array(':user' => self::$user->getId()));
-        while ($row = $get_last_downloads_query->fetch(\PDO::FETCH_ASSOC)) {
-            $elements[] = Element::get($row['file']);
-        }
-
-        // Return elements
-        return $elements;
-    }
 
     /*
      * Get user karma elements

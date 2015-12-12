@@ -7,7 +7,9 @@
  *
  */
 
-namespace Youkok2\Models\Controllers;
+namespace Youkok2\Models\Controllers\Cache;
+
+use Youkok2\Models\Controllers\BaseController;
 
 class CourseDownloadsController extends BaseController {
     
