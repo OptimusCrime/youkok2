@@ -36,6 +36,10 @@ class Database {
                 self::$db->query('SET profiling = 1');
             }
             
+            // Turn off query caching if we are in dev mode
+            if (defined('DEV') and DEV) {
+                self::$db->query('SET SESSION query_cache_type = 0');
+            }
         }
         catch (\Exception $e) {
             throw new \Exception('Could not connect to the database');
