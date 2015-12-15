@@ -43,6 +43,11 @@ var Youkok = (function (module) {
         if (Youkok.getData('view') == 'register') {
             Youkok.register.init();
         }
+        
+        // Admin
+        if (Youkok.getData('admin_view')) {
+            Youkok.admin.init();
+        }
     };
     
     /*

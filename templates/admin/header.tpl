@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/admin/AdminLTE.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/admin/youkok2.css" />
+    [[+nocache]]<script type="text/javascript">var SITE_DATA = "[[+$SITE_DATA]]";</script>[[+/nocache]]
 </head>
 <body class="skin-blue sidebar-mini">
 <div class="wrapper">
@@ -28,41 +29,26 @@
     <aside class="main-sidebar">
         <section class="sidebar">
             <ul class="sidebar-menu">
-                <li class="active treeview">
-                    <a href="#">
-                        <i class="fa fa-home"></i> <span>Forside</span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-upload"></i> <span>Nye bidrag</span> <span class="label label-primary pull-right">0</span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-sitemap"></i> <span>Filer</span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-bar-chart"></i> <span>Statistikk</span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-dashboard"></i> <span>Diagnostikk</span>
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-database"></i> <span>Logger</span>
-                    </a>
-                </li>
-               <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-terminal"></i> <span>Scripts</span>
-                    </a>
-                </li>
+                [[+foreach $ADMIN_SIDEBAR_MENU as $menu_item]]
+                    <li class="[[+if $menu_item.active]]active [[+/if]]treeview">
+                        <a href="[[+$menu_item.url]]">
+                            <i class="fa fa-[[+$menu_item.icon]]"></i> <span>[[+$menu_item.text]]</span>
+                            [[+if array_key_exists('extra', $menu_item)]][[+$menu_item.extra]][[+/if]]
+                        </a>
+                    </li>
+                [[+/foreach]]
             </ul>
         </section>
     </aside>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>
+                Youkok2 Dashboard &mdash; [[+$ADMIN_HEADING]]
+            </h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="[[+$SITE_URL]]">Youkok2</a>
+                </li>
+                <li class="active">Forside</li>
+            </ol>
+        </section>

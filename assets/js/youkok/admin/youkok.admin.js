@@ -2,13 +2,16 @@
  * The Youkok2 admin module
  */
 
-var Youkok2Admin = (function () {
+var Youkok = (function (module) {
+    
+    // Make sure we have a admin module
+    module.admin = module.admin || {};
     
     /*
      * Apply the generic event listeners
      */
     
-    var applyEventListeners = function () {
+    var initGenericListeners = function () {
         // Collaps/Expand modules
         $('[data-widget="collapse"]').on('click', function (e) {
             e.preventDefault();
@@ -84,25 +87,39 @@ var Youkok2Admin = (function () {
     };
     
     /*
+     * Init the subviews
+     */
+    
+    var initSubViews = function () {
+        // Archive
+        if (Youkok.getData('view') == 'admin-home') {
+            Youkok.admin.home.init();
+        }
+    };
+    
+    /*
      * Public methods
      */
     
-    return {
+    module.admin = {
         
         /*
-         * Init the module
-         */
+         * Init the admin (sub)views
+        */
         
         init: function () {
-            applyEventListeners();
+            // Init the generic listeners
+            initGenericListeners();
+            
+            // Init subviews
+            initSubViews();
         }
+        
     };
-})();
-
-/*
- * jQuery goes here
- */
-
-$(document).ready(function () {
-    Youkok2Admin.init();
-});
+    
+    /*
+     * Return the module
+     */
+    
+    return module;
+})(Youkok || {});

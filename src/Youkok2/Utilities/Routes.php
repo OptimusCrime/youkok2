@@ -69,8 +69,8 @@ class Routes {
             ['path' => '/sok', 'identifier' => 'search'],
         ],
 
-        'Admin' => [
-            ['path' => '/admin', 'identifier' => 'admin'],
+        'Admin\\Home' => [
+            ['path' => '/admin', 'method' => 'displayAdminHome', 'identifier' => 'admin_home'],
         ],
 
         'Redirect' => [
@@ -107,9 +107,6 @@ class Routes {
         'LinkTitle' => [
             ['path' => '/link/title'],
         ],
-        'Admin\\LoadDownloads' => [
-            ['path' => '/admin/loaddownloads'],
-        ],
         'Graybox' => [
             ['path' => 'graybox/commits', 'method' => 'getCommits'],
             ['path' => 'graybox/newest', 'method' => 'getNewest'],
@@ -128,6 +125,17 @@ class Routes {
         ],
         'CreateFolder' => [
             ['path' => '/folder/create'],
+        ],
+        
+        /*
+         * Admin
+         */
+        
+        'Admin\\HomeBoxes' => [
+            ['path' => '/admin/homeboxes'],
+        ],
+        'Admin\\HomeGraph' => [
+            ['path' => '/admin/homegraph'],
         ],
 
         /*
