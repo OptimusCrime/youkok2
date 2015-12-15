@@ -27,11 +27,11 @@ abstract class AdminBaseView extends BaseView {
             'url' => 'admin',
             'class' => 'Youkok2\\Views\\Admin\\Home',
         ], [
-            'identifier' => 'new-files',
+            'identifier' => 'contribution',
             'text' => 'Nye bidrag',
             'icon' => 'upload',
             'url' => 'admin/bidrag',
-            'class' => 'Youkok2\\Views\\Admin\\NewFiles',
+            'class' => 'Youkok2\\Views\\Admin\\Contribution',
         ], [
             'identifier' => 'files',
             'text' => 'Filer',
@@ -45,7 +45,7 @@ abstract class AdminBaseView extends BaseView {
             'url' => 'admin/statistikk',
             'class' => null,
         ], [
-            'identifier' => 'diagnostikk',
+            'identifier' => 'diagnostics',
             'text' => 'Diagnostikk',
             'icon' => 'dashboard',
             'url' => 'admin/diagnostikk',

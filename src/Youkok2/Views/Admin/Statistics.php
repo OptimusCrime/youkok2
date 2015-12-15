@@ -1,8 +1,8 @@
 <?php
 /*
- * File: NewFiles.php
- * Holds: Admin view for new files
- * Created: 15.12.2015
+ * File: Statistics.php
+ * Holds: Admin view for statistics view
+ * Created: 16.12.2015
  * Project: Youkok2
  * 
  */
@@ -14,13 +14,13 @@ use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\Utilities;
 
-class NewFiles extends AdminBaseView {
+class Statistics extends AdminBaseView {
     
     /*
      * For the menu and such
      */
     
-    protected $adminMenuIdentifier = 'new-files';
+    protected $adminMenuIdentifier = 'statistics';
     
     /*
      * Constructor
@@ -31,10 +31,11 @@ class NewFiles extends AdminBaseView {
     }
     
     /*
-     * Override
+     * Display
      */
     
-    public static function adminMenuContent() {
-        return '<span class="label label-primary pull-right">0</span>';
+    public function displayAdminStatistics() {
+        // Display
+        $this->displayAndCleanup('admin/empty.tpl');
     }
 }

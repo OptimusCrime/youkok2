@@ -69,12 +69,34 @@ class Routes {
             ['path' => '/sok', 'identifier' => 'search'],
         ],
 
+        'Redirect' => [
+            ['path' => self::REDIRECT, 'identifier' => 'redirect'],
+        ],
+        
+        /*
+         * Admin views
+         */
+        
         'Admin\\Home' => [
             ['path' => '/admin', 'method' => 'displayAdminHome', 'identifier' => 'admin_home'],
         ],
-
-        'Redirect' => [
-            ['path' => self::REDIRECT, 'identifier' => 'redirect'],
+        'Admin\\Contribution' => [
+            ['path' => '/admin/bidrag', 'method' => 'displayAdminContributions', 'identifier' => 'admin_contribution'],
+        ],
+        'Admin\\Files' => [
+            ['path' => '/admin/filer', 'method' => 'displayAdminFiles', 'identifier' => 'admin_files'],
+        ],
+        'Admin\\Statistics' => [
+            ['path' => '/admin/statistikk', 'method' => 'displayAdminStatistics', 'identifier' => 'admin_statistics'],
+        ],
+        'Admin\\Diagnostics' => [
+            ['path' => '/admin/diagnostikk', 'method' => 'displayAdminDiagnostics', 'identifier' => 'admin_diagnostics'],
+        ],
+        'Admin\\Logs' => [
+            ['path' => '/admin/diagnostikk', 'method' => 'displayAdminLogs', 'identifier' => 'admin_logs'],
+        ],
+        'Admin\\Scripts' => [
+            ['path' => '/admin/scripts', 'method' => 'displayAdminScripts', 'identifier' => 'admin_scripts'],
         ],
     ];
     
