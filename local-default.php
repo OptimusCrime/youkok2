@@ -109,5 +109,5 @@ if (!defined('ACCEPTED_FILEENDINGS')) {
 }
 
 // Define URLs
-define('URL', 'http://' . DOMAIN . ((PORT == 80 or PORT == '') ? '' : (':' . PORT)));
+define('URL', 'http' . ((PORT == 443) ? 's' : '')  . '://' . DOMAIN . ((PORT == 80 or PORT == 443 or PORT == '') ? '' : (':' . PORT)));
 define('URL_FULL', URL . URL_RELATIVE);
