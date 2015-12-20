@@ -15,4 +15,4 @@ define('CACHE_PATH', FILE_PATH . '/cache');
  
 // Database
 define('DATABASE_DNS', 'mysql:host=localhost');
-define('DATABASE_NAME', 'youkok2_tests');
+define('DATABASE_NAME', 'youkok2_test');

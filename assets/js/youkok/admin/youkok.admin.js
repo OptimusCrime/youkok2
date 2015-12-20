@@ -101,20 +101,12 @@ var Youkok = (function (module) {
      * Public methods
      */
     
-    module.admin = {
+    module.admin.init = function () {
+        // Init the generic listeners
+        initGenericListeners();
         
-        /*
-         * Init the admin (sub)views
-        */
-        
-        init: function () {
-            // Init the generic listeners
-            initGenericListeners();
-            
-            // Init subviews
-            initSubViews();
-        }
-        
+        // Init subviews
+        initSubViews();
     };
     
     /*
