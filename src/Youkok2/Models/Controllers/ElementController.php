@@ -121,7 +121,7 @@ class ElementController extends BaseController {
             // Loop each fragment
             foreach ($url_pieces as $k => $url_piece_single) {
                 // Run query for this fragment
-                $get_reverse_url  = "SELECT id" . PHP_EOL;
+                $get_reverse_url  = "SELECT id, alias" . PHP_EOL;
                 $get_reverse_url .= "FROM archive " . PHP_EOL;
                 
                 if ($temp_parent === null) {
@@ -145,12 +145,27 @@ class ElementController extends BaseController {
                 if (isset($row['id'])) {
                     // Check if this is the last element
                     if ($k == ($num_pieces - 1)) {
+                        $element_id = $row['id'];
+                        
+                        // Make sure to handle aliases if any are found
+                        if ($temp_parent == null and $row['alias'] !== null) {
+                            // Use the alias id instead
+                            $element_id = $row['alias'];
+                        }
+                        
                         // Last element, just use createById
-                        $this->createById($row['id']);
+                        $this->createById($element_id);
                     }
                     else {
-                        // Was found, update the current id
-                        $temp_parent = $row['id'];
+                        // Make sure to handle aliases if any are found
+                        if ($temp_parent == null and $row['alias'] !== null) {
+                            // Use the alias id instead
+                            $temp_parent = $row['alias'];
+                        }
+                        else {
+                            // Was found, update the current id
+                            $temp_parent = $row['id'];
+                        }
                         
                         // Check if this object already exists
                         $temp_item = Element::get($temp_parent);
