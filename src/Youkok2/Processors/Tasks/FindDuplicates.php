@@ -50,11 +50,19 @@ class FindDuplicates extends BaseProcessor {
         // Set code to 200
         $this->setData('code', 200);
         
+        // Find duplicates by code
+        $this->findDuplicatesByCourseCode();
+        
+        // Find duplicates by course name
+        $this->findDuplicatesByCourseName();
+    }
+    
+    private function findDuplicatesByCourseCode() {
         // Storing data
         $storage = [];
         $duplicates = [];
 
-        // Get all exames
+        // Get all courses
         $get_all_courses  = "SELECT id, name" . PHP_EOL;
         $get_all_courses .= "FROM archive" . PHP_EOL;
         $get_all_courses .= "WHERE is_directory = 1" . PHP_EOL;
@@ -87,6 +95,47 @@ class FindDuplicates extends BaseProcessor {
         }
         
         // Output
-        $this->setData('duplicates', $duplicates);
+        $this->setData('duplicates_code', $duplicates);
+    }
+    
+    private function findDuplicatesByCourseName() {
+        // Storing data
+        $storage = [];
+        $duplicates = [];
+
+        // Get all courses
+        $get_all_courses  = "SELECT id, name" . PHP_EOL;
+        $get_all_courses .= "FROM archive" . PHP_EOL;
+        $get_all_courses .= "WHERE is_directory = 1" . PHP_EOL;
+        $get_all_courses .= "AND parent IS NULL";
+        
+        $get_all_courses_query = Database::$db->query($get_all_courses);
+        while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
+            // Split code and name
+            $name_split = explode('||', $row['name']);
+            
+            // Add value
+            if (isset($storage[$name_split[1]])) {
+                $storage[$name_split[1]] = $storage[$name_split[1]] + 1;
+            }
+            else {
+                $storage[$name_split[1]] = 1;
+            }
+        }
+        
+        // Loop and find duplicates
+        foreach ($storage as $k => $v) {
+            if ($v > 1) {
+                $duplicates[] = $k;
+            }
+        }
+        
+        // Check if we should just dump everything for HTML view
+        if (isset($_GET['format']) and $_GET['format'] == 'html') {
+            print_r($duplicates);
+        }
+        
+        // Output
+        $this->setData('duplicates_name', $duplicates);
     }
 } 
