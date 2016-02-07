@@ -38,6 +38,7 @@ class Element extends BaseModel {
     private $exam;
     private $url;
     private $added;
+    private $alias;
     
     /*
      * Schema
@@ -160,6 +161,13 @@ class Element extends BaseModel {
                 'arr' => true,
                 'ignore_update' => true,
             ],
+            'alias' => [
+                'type' => 'integer',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+                'arr' => true,
+            ],
 
             // Additional cache fields
             'full_url' => [
@@ -257,6 +265,9 @@ class Element extends BaseModel {
     public function getAdded($pretty = false) {
         return $pretty ? Utilities::prettifySQLDate($this->added) : $this->added;
     }
+    public function getAlias() {
+        return $this->alias;
+    }
 
     /*
      * Setters
@@ -309,6 +320,9 @@ class Element extends BaseModel {
     }
     public function setAdded($added) {
         $this->added = $added;
+    }
+    public function setAlias($alias) {
+        $this->alias = $alias;
     }
     
     /*
