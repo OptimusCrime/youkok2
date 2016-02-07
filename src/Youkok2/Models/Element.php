@@ -39,6 +39,7 @@ class Element extends BaseModel {
     private $url;
     private $added;
     private $alias;
+    private $aliasFor;
     
     /*
      * Schema
@@ -176,6 +177,13 @@ class Element extends BaseModel {
                 'db' => false,
                 'method' => 'fullUrl',
                 'arr' => true,
+            ],
+            'alias_for' => [
+                'type' => 'string',
+                'null' => true,
+                'db' => false,
+                'method' => 'aliasFor',
+                'arr' => true,
             ]
         ]
     ];
@@ -268,6 +276,9 @@ class Element extends BaseModel {
     public function getAlias() {
         return $this->alias;
     }
+    public function getAliasFor() {
+        return $this->aliasFor;
+    }
 
     /*
      * Setters
@@ -323,6 +334,9 @@ class Element extends BaseModel {
     }
     public function setAlias($alias) {
         $this->alias = $alias;
+    }
+    public function setAliasFor($aliases) {
+        $this->aliasFor = $aliases;
     }
     
     /*
