@@ -103,6 +103,25 @@ class Archive extends BaseView {
         else {
             $this->template->assign('ARCHIVE_EXAM', false);
         }
+        
+        // Attempt to fetch the aliases for this element
+        $alias_for = [];
+        if ($element->isCourse()) {
+            $alias_ids = $element->getAliasFor();
+            
+            // If any aliases were found, loop the list and create the objects
+            if (count($alias_ids) > 0) {
+                foreach ($alias_ids as $alias_id) {
+                    $element = Element::get($alias_id);
+                    
+                    $alias_for[] = $element;
+                }
+            }
+        }
+        
+        var_dump($alias_for);
+        
+        $this->template->assign('ARCHIVE_ALIAS_FOR', $alias_for);
     }
     
     private function loadBredcrumbsTitle($element) {

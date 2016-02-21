@@ -28,6 +28,7 @@ class ElementController extends BaseController {
     private $rootParent;
     private $fullUrl;
     private $parents;
+    private $aliasFor;
 
 
     // The query
@@ -370,7 +371,7 @@ class ElementController extends BaseController {
     }
     
     /*
-     * Get graph data
+     * Get graph data TODO, this does not work any more
      */
     
     public function getGraphData($type = null) {
@@ -585,5 +586,35 @@ class ElementController extends BaseController {
     }
     public function setFullUrl($url) {
         $this->fullUrl = $url;
+    }
+    public function getAliasFor() {
+        // Check if we already have the aliases fetched
+        if ($this->aliasFor === null) {
+            $aliases = [];
+            
+            $get_alias_elements  = "SELECT id" . PHP_EOL;
+            $get_alias_elements .= "FROM archive" . PHP_EOL;
+            $get_alias_elements .= "WHERE alias = :alias";
+            
+            $get_alias_elements_query = Database::$db->prepare($get_alias_elements);
+            $get_alias_elements_query->execute(array(':alias' => $this->model->getId()));
+            while ($row = $get_alias_elements_query->fetch(\PDO::FETCH_ASSOC)) {
+                // Make sure alias owner is a valid and visible element
+                $element = Element::get($row['id']);
+                
+                if ($element->wasFound() and $element->isVisible()) {
+                    $aliases[] = $row['id'];
+                }
+            }
+            
+            // Add the alias
+            $this->setAliasFor($aliases);
+        }
+        
+        // Return the list of aliases
+        return $this->aliasFor;
+    }
+    public function setAliasFor($aliases) {
+        $this->aliasFor = $aliases;
     }
 }
