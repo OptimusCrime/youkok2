@@ -1,3 +1,16 @@
+Youkok2 - 2.2.0-pl  (21. februar 2015)
+======================================
+
+- [Info] Bugfixes og ymse
+- [Fixed] Småplukk på stylingen i arkivet.
+- [Enhanced] Gråboksene i sidemenyen ser penere ut før de har lastet innholdet sitt.
+- [Enhanced] Forbedret måten caching blir gjort på.
+- [New] Implementert "scheduled" jobber for å avlaste systemet fra tyngre spørringer.
+- [New] Støtte for HTTPS.
+- [New] Funksjonalitet for å deklarere et element som en alias for et annet element. Kan f.eks. brukes til fag som har enten
+        byttet fagkode eller navn.
+- [New] På forsiden vises nå de siste 15 besøkte fagene.
+
 Youkok2 - 2.1.1-pl  (1. desember 2015)
 ======================================
 
