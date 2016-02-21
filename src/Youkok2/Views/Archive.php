@@ -82,6 +82,9 @@ class Archive extends BaseView {
         }
         $this->template->assign('ARCHIVE_ELEMENT_ROOT', $element_root);
         
+        // Update last visited
+        $this->updateLastVisited($element_root);
+        
         // Set the site description
         $site_description = $element_pretty_name . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
         $this->template->assign('SITE_DESCRPTION', $site_description);
@@ -119,9 +122,13 @@ class Archive extends BaseView {
             }
         }
         
-        var_dump($alias_for);
-        
         $this->template->assign('ARCHIVE_ALIAS_FOR', $alias_for);
+    }
+    
+    private function updateLastVisited($obj) {
+        if ($obj != null and $obj->wasFound()) {
+            $obj->updateLastVisited();
+        }
     }
     
     private function loadBredcrumbsTitle($element) {

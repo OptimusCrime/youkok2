@@ -178,6 +178,19 @@
                     [[+/foreach]]
 [[+/if]]</ul>
                 </div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="list-header">
+                        <h2>Sist besøkte fag</h2>
+                    </div>
+                    <ul class="list-group">
+                    [[+if count($HOME_LAST_VISITED) == 0]]    <li class="list-group-item"><em>Det er visst ingen fag her</em></li>[[+else]][[+foreach $HOME_LAST_VISITED as $element]]    <li class="list-group-item">
+                            <a rel="nofollow" target="_blank" href="[[+$element->getFullUrl()]]">
+                                <strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]
+                            </a>
+                        </li>
+                    [[+/foreach]]
+[[+/if]]</ul>
+                </div>
             </div>
 [[+include file="footer.tpl"]]
 <script type="text/template" class="template-frontpage-popular-elements">

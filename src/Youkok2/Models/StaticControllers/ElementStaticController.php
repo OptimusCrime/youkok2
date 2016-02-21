@@ -45,8 +45,7 @@ class ElementStaticController {
             return new Element($data);
         }
     }
-
-
+    
     /*
      * Fetch newest Elements
      */
@@ -65,6 +64,31 @@ class ElementStaticController {
         
         $get_newest_query = Database::$db->query($get_newest);
         while ($row = $get_newest_query->fetch(\PDO::FETCH_ASSOC)) {
+            // Get
+            $collection[] = Element::get($row['id']);
+        }
+        
+        // Return the content
+        return $collection;
+    }
+    
+    /*
+     * Fetch last visited Elements
+     */
+    
+    public static function getLastVisitedElements($limit = 15) {
+        // For storing the collection
+        $collection = '';
+        
+        // Loading last visited elements from the system
+        $get_last_visited  = "SELECT id" . PHP_EOL;
+        $get_last_visited .= "FROM archive" . PHP_EOL;
+        $get_last_visited .= "WHERE last_visited IS NOT NULL" . PHP_EOL;
+        $get_last_visited .= "ORDER BY last_visited DESC" . PHP_EOL;
+        $get_last_visited .= "LIMIT " . $limit;
+        
+        $get_last_visited_query = Database::$db->query($get_last_visited);
+        while ($row = $get_last_visited_query->fetch(\PDO::FETCH_ASSOC)) {
             // Get
             $collection[] = Element::get($row['id']);
         }

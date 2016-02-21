@@ -148,18 +148,20 @@ abstract class BaseController {
 
         // Loop all the fields in the schema
         foreach ($this->schema['fields'] as $k => $v) {
-            // Find out what method to call
-            $method_prefix = 'get';
-            if (isset($v['is'])) {
-                $method_prefix = 'is';
-            }
-            $method = $method_prefix . ucfirst($k);
-            if (isset($v['method'])) {
-                $method = $method_prefix . ucfirst($v['method']);
-            }
+            if (!isset($v['cache']) or (isset($v['cache']) and $v['cache'])) {
+                // Find out what method to call
+                $method_prefix = 'get';
+                if (isset($v['is'])) {
+                    $method_prefix = 'is';
+                }
+                $method = $method_prefix . ucfirst($k);
+                if (isset($v['method'])) {
+                    $method = $method_prefix . ucfirst($v['method']);
+                }
 
-            // Get value
-            $cache_arr[$k] = call_user_func_array([$this->model, $method], []);
+                // Get value
+                $cache_arr[$k] = call_user_func_array([$this->model, $method], []);
+            }
         }
 
         // Set cache here

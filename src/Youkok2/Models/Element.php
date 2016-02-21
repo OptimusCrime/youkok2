@@ -39,6 +39,7 @@ class Element extends BaseModel {
     private $url;
     private $added;
     private $alias;
+    private $lastVisited;
     
     /*
      * Schema
@@ -168,6 +169,15 @@ class Element extends BaseModel {
                 'db' => true,
                 'arr' => true,
             ],
+            'last_visited' => [
+                'method' => 'lastVisited',
+                'type' => 'timestamp',
+                'null' => true,
+                'default' => null,
+                'db' => true,
+                'arr' => true,
+                'cache' => false,
+            ],
 
             // Additional cache fields
             'full_url' => [
@@ -275,6 +285,9 @@ class Element extends BaseModel {
     public function getAlias() {
         return $this->alias;
     }
+    public function getLastVisited() {
+        return $this->lastVisited;
+    }
 
     /*
      * Setters
@@ -330,6 +343,9 @@ class Element extends BaseModel {
     }
     public function setAlias($alias) {
         $this->alias = $alias;
+    }
+    public function setLastVisited($time) {
+        $this->lastVisited = $time;
     }
     
     /*

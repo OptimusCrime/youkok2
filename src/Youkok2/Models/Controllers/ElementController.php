@@ -617,4 +617,20 @@ class ElementController extends BaseController {
     public function setAliasFor($aliases) {
         $this->aliasFor = $aliases;
     }
+    
+    public function updateLastVisited() {
+        $last_visited = date("Y-m-d H:i:s", time());
+        
+        $update_last_visited  = "UPDATE archive" . PHP_EOL;
+        $update_last_visited .= "SET last_visited = :last_visited" . PHP_EOL;
+        $update_last_visited .= "WHERE id = :id";
+        
+        $result = Database::$db->prepare($update_last_visited);
+        $result->execute([
+            ':last_visited' => $last_visited,
+            ':id' => $this->model->getId(),
+        ]);
+        
+        $this->model->setLastVisited($last_visited);
+    }
 }
