@@ -111,3 +111,8 @@ if (!defined('ACCEPTED_FILEENDINGS')) {
 // Define URLs
 define('URL', 'http' . ((PORT == 443) ? 's' : '')  . '://' . DOMAIN . ((PORT == 80 or PORT == 443 or PORT == '') ? '' : (':' . PORT)));
 define('URL_FULL', URL . URL_RELATIVE);
+
+// Partitions to ignore when doing clear cache
+if (!defined('CLEAR_CACHE_IGNORE_PARTITIONS')) {
+    define('CLEAR_CACHE_IGNORE_PARTITIONS', 'md,cd');
+}

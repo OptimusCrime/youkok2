@@ -77,9 +77,17 @@ Class ClearCache extends BaseProcessor {
         /*
          * Youkok2 cache
          */
-
+        
+        $partitions_ignore = explode(',', CLEAR_CACHE_IGNORE_PARTITIONS);
         foreach (array_filter(glob(CACHE_PATH . '/youkok/*'), 'is_dir') as $v) {
-            $this->rmNonemptyDir($v);
+            // Find cache identifier
+            $v_split = explode('/', $v);
+            $cache_identifier = $v_split[count($v_split) - 1];
+            
+            // Check if we should ignore this cache partition
+            if (!in_array($cache_identifier, $partitions_ignore)) {
+                $this->rmNonemptyDir($v);
+            }
         }
 
         // Set data
