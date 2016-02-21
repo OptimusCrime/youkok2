@@ -180,7 +180,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-6">
                     <div class="list-header">
-                        <h2>Sist besøkte fag</h2>
+                        <h2>Siste besøkte fag</h2>
                     </div>
                     <ul class="list-group">
                     [[+if count($HOME_LAST_VISITED) == 0]]    <li class="list-group-item"><em>Det er visst ingen fag her</em></li>[[+else]][[+foreach $HOME_LAST_VISITED as $element]]    <li class="list-group-item">
