@@ -128,6 +128,11 @@ class BacktraceManager {
      */
     
     private static function getProfilingInformation($idx) {
+        // Make sure the information exists
+        if (!isset(self::$profilingInformation[$idx - 2])) {
+            return '';
+        }
+        
         return ' [' . round((self::$profilingInformation[$idx - 2]['Duration'] * 1000), 4) . ' ms]';
     }
 } 
