@@ -20,7 +20,9 @@ class Scripts extends AdminBaseView {
      * For the menu and such
      */
     
-    protected $adminMenuIdentifier = 'scripts';
+    protected $adminIdentifier = 'admin_scripts';
+    protected $adminHeading = 'Scripts';
+    protected $adminBreadcrumbs = ['Scripts'];
     
     /*
      * Constructor

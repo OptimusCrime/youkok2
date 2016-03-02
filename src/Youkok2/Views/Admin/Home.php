@@ -20,7 +20,7 @@ class Home extends AdminBaseView {
      * For the menu and such
      */
     
-    protected $adminIdentifier = 'home';
+    protected $adminIdentifier = 'admin_home';
     protected $adminHeading = 'Forside';
     protected $adminBreadcrumbs = ['Forside'];
     

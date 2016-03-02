@@ -20,7 +20,9 @@ class Logs extends AdminBaseView {
      * For the menu and such
      */
     
-    protected $adminMenuIdentifier = 'logs';
+    protected $adminIdentifier = 'admin_logs';
+    protected $adminHeading = 'Logger';
+    protected $adminBreadcrumbs = ['Logger'];
     
     /*
      * Constructor

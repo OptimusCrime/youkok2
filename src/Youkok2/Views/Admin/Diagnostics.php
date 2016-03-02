@@ -20,7 +20,9 @@ class Diagnostics extends AdminBaseView {
      * For the menu and such
      */
     
-    protected $adminMenuIdentifier = 'diagnostics';
+    protected $adminIdentifier = 'admin_diagnostics';
+    protected $adminHeading = 'Diagnostikk';
+    protected $adminBreadcrumbs = ['Diagnostikk'];
     
     /*
      * Constructor

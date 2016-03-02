@@ -20,7 +20,9 @@ class Statistics extends AdminBaseView {
      * For the menu and such
      */
     
-    protected $adminMenuIdentifier = 'statistics';
+    protected $adminIdentifier = 'admin_statistics';
+    protected $adminHeading = 'Statistikk';
+    protected $adminBreadcrumbs = ['Statistikk'];
     
     /*
      * Constructor

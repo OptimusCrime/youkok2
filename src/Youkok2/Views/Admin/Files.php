@@ -20,7 +20,9 @@ class Files extends AdminBaseView {
      * For the menu and such
      */
     
-    protected $adminMenuIdentifier = 'files';
+    protected $adminIdentifier = 'admin_files';
+    protected $adminHeading = 'Filer';
+    protected $adminBreadcrumbs = ['Filer'];
     
     /*
      * Constructor

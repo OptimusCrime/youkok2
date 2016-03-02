@@ -12,6 +12,8 @@ namespace Youkok2\Views\Admin;
 use Youkok2\Views\BaseView;
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Redirect;
+use Youkok2\Utilities\Routes;
+use Youkok2\Utilities\TemplateHelper;
 
 abstract class AdminBaseView extends BaseView {
     
@@ -21,47 +23,33 @@ abstract class AdminBaseView extends BaseView {
     
     private $menu = [
         [
-            'identifier' => 'home',
+            'identifier' => 'admin_home',
             'text' => 'Forside',
             'icon' => 'home',
-            'url' => 'admin',
-            'class' => 'Youkok2\\Views\\Admin\\Home',
         ], [
-            'identifier' => 'contribution',
+            'identifier' => 'admin_contribution',
             'text' => 'Nye bidrag',
             'icon' => 'upload',
-            'url' => 'admin/bidrag',
-            'class' => 'Youkok2\\Views\\Admin\\Contribution',
         ], [
-            'identifier' => 'files',
+            'identifier' => 'admin_files',
             'text' => 'Filer',
             'icon' => 'sitemap',
-            'url' => 'admin/filer',
-            'class' => null,
         ], [
-            'identifier' => 'statistics',
+            'identifier' => 'admin_statistics',
             'text' => 'Statistikk',
             'icon' => 'bar-chart',
-            'url' => 'admin/statistikk',
-            'class' => null,
         ], [
-            'identifier' => 'diagnostics',
+            'identifier' => 'admin_diagnostics',
             'text' => 'Diagnostikk',
             'icon' => 'dashboard',
-            'url' => 'admin/diagnostikk',
-            'class' => null,
         ], [
-            'identifier' => 'logs',
+            'identifier' => 'admin_logs',
             'text' => 'Logger',
             'icon' => 'database',
-            'url' => 'admin/logger',
-            'class' => null,
         ], [
-            'identifier' => 'scripts',
+            'identifier' => 'admin_scripts',
             'text' => 'Scripts',
             'icon' => 'upload',
-            'url' => 'admin/terminal',
-            'class' => null,
         ]
     ];
     
@@ -110,8 +98,23 @@ abstract class AdminBaseView extends BaseView {
                 $menu_item['active'] = false;
             }
             
-            if (isset($menu_item['class']) and $menu_item['class'] != null) {
-                $menu_item['extra'] = call_user_func($menu_item['class'] . '::adminMenuContent');
+            // Get the URL
+            $menu_item['url'] = TemplateHelper::url_for($menu_item['identifier']);
+            
+            // Get the correct class
+            $class = null;
+            $routes = Routes::getRoutes();
+            foreach ($routes as $view => $list) {
+                foreach ($list as $v) {
+                    if (isset($v['identifier']) and $v['identifier'] == $menu_item['identifier']) {
+                        $class = $view;
+                        break;
+                    }
+                }
+            }
+            
+            if ($class !== null) {
+                $menu_item['extra'] = call_user_func('Youkok2\Views\\' . $class . '::adminMenuContent');
             }
             
             // Append the menu item

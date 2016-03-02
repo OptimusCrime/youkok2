@@ -20,7 +20,9 @@ class Contribution extends AdminBaseView {
      * For the menu and such
      */
     
-    protected $adminMenuIdentifier = 'contribution';
+    protected $adminIdentifier = 'admin_contribution';
+    protected $adminHeading = 'Nye bidrag';
+    protected $adminBreadcrumbs = ['Nye bidrag'];
     
     /*
      * Constructor
