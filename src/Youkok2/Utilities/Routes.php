@@ -15,9 +15,6 @@ class Routes {
      * Array with routes
      */
      
-    const ARCHIVE = '/emner';
-    const DOWNLOAD = '/last-ned';
-    const REDIRECT = '/redirect';
     const PROCESSOR = '/processor';
     
     private static $routes = [
@@ -26,19 +23,21 @@ class Routes {
         ],
         
         'Courses' => [
-            ['path' => self::ARCHIVE, 'subpath' => false, 'identifier' => 'courses'],
+            ['path' => '/emner', 'identifier' => 'courses'],
         ],
         
         'Archive' => [
-            ['path' => self::ARCHIVE, 'subpath' => true, 'identifier' => 'archive'],
+            ['path' => '/emner/+', 'identifier' => 'archive', 'construct' => '+/', 'endfix' => true],
         ],
 
         'Profile' => [
-            ['path' => '/profil'],
+            ['path' => '/profil', 'identifier' => 'profile_home', 'method' => 'profileRedirect'],
+            ['path' => '/profil/innstillinger', 'identifier' => 'profile_settings', 'method' => 'profileSettings'],
+            ['path' => '/profil/historikk', 'identifier' => 'profile_history', 'method' => 'profileHistory'],
         ],
 
         'Download' => [
-            ['path' => self::DOWNLOAD],
+            ['path' => '/last-ned/+', 'identifier' => 'download', 'construct' => '+/'],
         ],
 
         'Flat' => [
@@ -70,7 +69,7 @@ class Routes {
         ],
 
         'Redirect' => [
-            ['path' => self::REDIRECT, 'identifier' => 'redirect'],
+            ['path' => '/redirect/+', 'identifier' => 'redirect', 'construct' => '+/'],
         ],
         
         /*
@@ -93,7 +92,7 @@ class Routes {
             ['path' => '/admin/diagnostikk', 'method' => 'displayAdminDiagnostics', 'identifier' => 'admin_diagnostics'],
         ],
         'Admin\\Logs' => [
-            ['path' => '/admin/diagnostikk', 'method' => 'displayAdminLogs', 'identifier' => 'admin_logs'],
+            ['path' => '/admin/logger', 'method' => 'displayAdminLogs', 'identifier' => 'admin_logs'],
         ],
         'Admin\\Scripts' => [
             ['path' => '/admin/scripts', 'method' => 'displayAdminScripts', 'identifier' => 'admin_scripts'],

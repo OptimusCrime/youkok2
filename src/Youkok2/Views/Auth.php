@@ -15,6 +15,7 @@ use Youkok2\Models\ChangePassword;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\MessageManager;
+use Youkok2\Utilities\TemplateHelper;
 use Youkok2\Utilities\Utilities;
 
 class Auth extends BaseView {
@@ -230,6 +231,7 @@ class Auth extends BaseView {
                 $message = utf8_decode(file_get_contents(BASE_PATH . '/files//mail/forgotten.txt'));
                 $message_keys = array(
                     '{{SITE_URL}}' => URL_FULL,
+                    '{{PATH}}' => TemplateHelper::url_for('auth_new_password'),
                     '{{HASH}}' => $hash);
                 $mail->Body = str_replace(array_keys($message_keys), $message_keys, $message);
                 $mail->send();

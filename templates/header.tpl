@@ -33,11 +33,11 @@
             <ul id="main-nav" class="nav navbar-nav">
                 <li[[+if $HEADER_MENU == 'HOME']] class="active"[[+/if]]><a href="[[+$SITE_URL]]">Hjem</a></li>
                 <li[[+if $HEADER_MENU == 'ARCHIVE']] class="active"[[+/if]]><a href="[[+TemplateHelper::url_for('courses')]]">Emner</a></li>
-                <li class="hidden[[+if $HEADER_MENU == 'SEARCH']] active[[+/if]]"><a href="sok">Søk</a></li>
-                <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="om">Om Youkok2</a></li>
-                <li[[+if $HEADER_MENU == 'HELP']] class="active"[[+/if]]><a href="hjelp">Hjelp</a></li>
-                [[+if $USER_IS_LOGGED_IN == true]]<li class="hidden"><a href="profil/innstillinger">Min bruker</a></li>
-                <li class="hidden"><a href="logg-ut">Logg ut</a></li>[[+else]]<li class="hidden"><a href="logg-inn">Logg inn</a></li>[[+/if]]
+                <li class="hidden[[+if $HEADER_MENU == 'SEARCH']] active[[+/if]]"><a href="[[+TemplateHelper::url_for('search')]]">Søk</a></li>
+                <li[[+if $HEADER_MENU == 'ABOUT']] class="active"[[+/if]]><a href="[[+TemplateHelper::url_for('flat_about')]]">Om Youkok2</a></li>
+                <li[[+if $HEADER_MENU == 'HELP']] class="active"[[+/if]]><a href="[[+TemplateHelper::url_for('flat_help')]]">Hjelp</a></li>
+                [[+if $USER_IS_LOGGED_IN == true]]<li class="hidden"><a href="[[+TemplateHelper::url_for('profile_settings')]]">Min bruker</a></li>
+                <li class="hidden"><a href="logg-ut">Logg ut</a></li>[[+else]]<li class="hidden"><a href="[[+TemplateHelper::url_for('auth_login')]]">Logg inn</a></li>[[+/if]]
 
             </ul>
             <ul class="nav navbar-nav navbar-right" id="navbar-dropdown-outer">[[+if $USER_IS_LOGGED_IN == true]]
@@ -47,12 +47,12 @@
                     <ul class="dropdown-menu" id="user-dropdown">
                         <li role="presentation" class="dropdown-header">[[+$USER_NICK]]</li>
                         <li class="divider"></li>
-                        <li><a href="profil/innstillinger">Innstillinger</a></li>
-                        <li><a href="profil/historikk">Karma / Historikk</a></li>
-                        [[+if $USER_IS_ADMIN == true]]<li><a href="admin">Admin</a></li>[[+/if]]
+                        <li><a href="[[+TemplateHelper::url_for('profile_settings')]]">Innstillinger</a></li>
+                        <li><a href="[[+TemplateHelper::url_for('profile_history')]]">Karma / Historikk</a></li>
+                        [[+if $USER_IS_ADMIN == true]]<li><a href="[[+TemplateHelper::url_for('admin_home')]]">Admin</a></li>[[+/if]]
                         
                         <li class="divider"></li>
-                        <li><a href="logg-ut?_token=[[+$CSRF_TOKEN]]">Logg ut</a></li>
+                        <li><a href="[[+TemplateHelper::url_for('auth_logout')]]?_token=[[+$CSRF_TOKEN]]">Logg ut</a></li>
                     </ul>
                 </li>[[+else]]
 
@@ -60,7 +60,7 @@
                     <a id="dropdown-menu-opener" href="#" data-toggle="dropdown">Logg inn <b class="caret"></b></a>
                     <ul class="dropdown-menu" id="login-dropdown">
                         <li>
-                            <form action="logg-inn" method="post">
+                            <form action="[[+TemplateHelper::url_for('auth_login')]]" method="post">
                                 <input type="hidden" name="_token" value="[[+$CSRF_TOKEN]]" />
                                 <div class="form-group">
                                     <label for="login-email">E-post</label>
@@ -78,15 +78,15 @@
                                     <div class="clear"></div>
                                 </div>
                                 <hr />
-                                <a role="button" href="registrer" class="btn btn-default">Registrer</a>
-                                <a role="button" href="glemt-passord" class="btn btn-default">Glemt passord</a>
+                                <a role="button" href="[[+TemplateHelper::url_for('auth_register')]]" class="btn btn-default">Registrer</a>
+                                <a role="button" href="[[+TemplateHelper::url_for('auth_forgotten_password')]]" class="btn btn-default">Glemt passord</a>
                             </form>
                         </li>
                     </ul>
                 </li>[[+/if]]
 
             </ul>
-            <form class="navbar-form navbar-right" id="search-form" name="search-form" action="sok" method="get">
+            <form class="navbar-form navbar-right" id="search-form" name="search-form" action="[[+TemplateHelper::url_for('search')]]" method="get">
                 <div class="form-group div-relative" id="prefetch">
                     <input type="text" placeholder="Søk etter fag" class="form-control typeahead" value="[[+$SEARCH_QUERY]]" id="s" name="s" />
                     <button class="btn" type="button" id="nav-search">

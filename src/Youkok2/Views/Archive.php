@@ -33,7 +33,6 @@ class Archive extends BaseView {
 
         // Set stuff
         $this->template->assign('HEADER_MENU', 'ARCHIVE');
-        $this->template->assign('ARCHIVE_PATH', Routes::ARCHIVE);
 
         // Display
         $this->displayAndCleanup('archive.tpl', Loader::queryGetClean());

@@ -58,15 +58,4 @@ class Flat extends BaseView {
         // Display the page
         $this->displayAndCleanup('flat_help.tpl');
     }
-    public function displayKarma() {
-        // Turn on caching
-        $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
-        
-        // Assign header and title
-        $this->template->assign('HEADER_MENU', null);
-        $this->template->assign('SITE_TITLE', 'Karma');
-        
-        // Display the page
-        $this->displayAndCleanup('flat_karma.tpl');
-    }
 }

@@ -81,12 +81,6 @@ class BaseView extends Youkok2 {
         $this->template->assign('SEARCH_QUERY', '');
         $this->template->assign('HEADER_MENU', 'HOME');
 
-        // Route variables
-        $this->template->assign('ROUTE_ARCHIVE', Routes::ARCHIVE);
-        $this->template->assign('ROUTE_DOWNLOAD', Routes::DOWNLOAD);
-        $this->template->assign('ROUTE_REDIRECT', Routes::REDIRECT);
-        $this->template->assign('ROUTE_PROCESSOR', Routes::PROCESSOR);
-
         // Assign query
         $this->template->assign('BASE_QUERY', Loader::getQuery());
     }

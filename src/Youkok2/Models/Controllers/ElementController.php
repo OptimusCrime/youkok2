@@ -14,6 +14,7 @@ use Youkok2\Models\Element;
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Routes;
 use Youkok2\Utilities\Database;
+use Youkok2\Utilities\TemplateHelper;
 
 class ElementController extends BaseController {
     
@@ -568,17 +569,17 @@ class ElementController extends BaseController {
             }
 
             // Find the correct prefix
-            $path = Routes::DOWNLOAD;
+            $url_fragments = array_reverse($temp_url);
+            $path = TemplateHelper::url_for('download', $url_fragments);
             if ($this->model->isLink()) {
-                $path = Routes::REDIRECT;
+                $path = TemplateHelper::url_for('redirect', $url_fragments);
             }
             else if ($this->model->isDirectory()) {
-                $path = Routes::ARCHIVE;
+                $path = TemplateHelper::url_for('archive', $url_fragments);
             }
-            $temp_url[] = substr($path, 1);
 
             // Generate the final url
-            $this->fullUrl = implode('/', array_reverse($temp_url))  . ($this->model->isDirectory() ? '/' : '');
+            $this->fullUrl = $path;
         }
 
         // Return the final url here

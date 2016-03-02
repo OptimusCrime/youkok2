@@ -2,7 +2,7 @@
             <div class="row">
                 <div class="col-xs-12 col-md-8">
                     <h1>Søk</h1>
-                    <form class="" id="search-form2" name="search-form" role="form" action="sok" method="get">
+                    <form class="[[+TemplateHelper::url_for('search')]]" id="search-form2" name="search-form" role="form" action="sok" method="get">
                         <div class="form-group div-relative" id="prefetch2">
                             <input type="text" placeholder="Søk etter fag" class="form-control typeahead" value="[[+$SEARCH_QUERY]]" id="s2" name="s" />
                             <button class="btn" type="button" id="nav-search2">

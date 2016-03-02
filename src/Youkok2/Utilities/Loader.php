@@ -66,6 +66,18 @@ class Loader {
         Youkok2::runProcessor($action, ['output' => true, 'encode' => true]);
     }
     
+    public static function cleanPath($path) {
+        $path_clean = [];
+        $path_split = explode('/', $path);
+        foreach ($path_split as $v) {
+            if (strlen($v) > 0) {
+                $path_clean[] = $v;
+            }
+        }
+        
+        return $path_clean;
+    }
+    
     /*
      * Returns view
      */
@@ -73,41 +85,62 @@ class Loader {
     private function getView() {
         // Loop the path-array and find what view to load
         $found = false;
-        $view = '\Youkok2\Views\\';
+        $view_path = '\Youkok2\Views\\';
         $method = null;
         $routes = Routes::getRoutes();
         
-        // Loop the routes
-        foreach ($routes as $k => $v) {
-            foreach ($v as $iv) {
-                if ($iv['path'] == $this->basePath) {
-                    // Holds validity for this route
-                    $valid = true;
-                    
-                    // Check for subpath
-                    if (isset($iv['subpath'])) {
-                        if ($iv['subpath'] === true and $this->pathLength == 1) {
-                            $valid = false;
-                        }
-                        else if ($iv['subpath'] === false and $this->pathLength > 1) {
-                            $valid = false;
+        // Clean the current URL
+        $current_url_clean = self::cleanPath($this->fullPath);
+        
+        // Loop all the routes
+        foreach ($routes as $view => $list) {
+            // Break if we found a valid view
+            if ($found) {
+                break;
+            }
+            
+            // Loop the list of routes for this view
+            foreach ($list as $v) {
+                // Clean this route to remove any errors
+                $route_clean = self::cleanPath($v['path']);
+                
+                // Handle edge case where we browse the frontpage
+                if (count($current_url_clean) == 0 and count($route_clean) == 0) {
+                    $found = true;
+                }
+                
+                // No edge case, search for view by maching sub queries
+                $valid = true;
+                for ($i = 0; $i < count($current_url_clean); $i++) {
+                    // Make sure the sub query is found in both the queries
+                    if (isset($route_clean[$i])) {
+                        // If the sub queries does not match, only a + makes it valid
+                        if ($current_url_clean[$i] != $route_clean[$i]) {
+                            if ($route_clean[$i] != '+') {
+                                $valid = false;
+                                break;
+                            }
+                            else {
+                                break;
+                            }
                         }
                     }
-                    
-                    // Check if valid
-                    if ($valid) {
-                        // We found matching url-pattern, store name
-                        $view .= $k;
-                        
-                        // Check if this path has own method
-                        if (isset($iv['method'])) {
-                            $method = $iv['method'];
-                        }
-                        
-                        // Update found and exit loop
-                        $found = true;
+                    else {
+                        $valid = false;
                         break;
                     }
+                }
+                
+                // Check if we found the curret path
+                if ($valid) {
+                    $found = true;
+                    $view_path .= $view;
+                    
+                    if (isset($v['method'])) {
+                        $method = $v['method'];
+                    }
+                    
+                    break;
                 }
             }
         }
@@ -142,17 +175,17 @@ class Loader {
             }
             
             // If we got this far, we never found a match
-            $view .= 'NotFound';
+            $view_path .= 'NotFound';
         }
         
         // Check if override
         if ($this->override) {
             // We are overriding, simply set view and method, if set
-            $this->match = $view . ($method === null ? '' : '.' . $method);
+            $this->match = $view_path . ($method === null ? '' : '.' . $method);
         }
         else {
             // Run instance
-            $view_instance = new $view();
+            $view_instance = new $view_path();
             
             // Check if we should call method on view
             if ($method !== null) {

@@ -23,16 +23,18 @@ class Courses extends BaseView {
         parent::__construct();
         
         // Turn on caching
-        $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
+        //$this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
 
         // Set menu
         $this->template->assign('HEADER_MENU', 'ARCHIVE');
-
+        
+        // Load content
+            $this->loadCourses();
+        
         // Check if cached
         if (!$this->template->isCached('courses.tpl', Loader::queryGetClean())) {
 
-            // Load content
-            $this->loadCourses();
+            
         }
 
         // Display

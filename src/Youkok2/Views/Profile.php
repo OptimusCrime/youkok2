@@ -13,6 +13,7 @@ use Youkok2\Models\Me;
 use Youkok2\Utilities\Loader;
 use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\Redirect;
+use Youkok2\Utilities\TemplateHelper;
 use Youkok2\Utilities\Utilities;
 
 class Profile extends BaseView {
@@ -32,28 +33,21 @@ class Profile extends BaseView {
         if (!Me::isLoggedIn()) {
             Redirect::send('');
         }
-        else {
-            // Match subquery
-            if (Loader::queryGet(1) == 'innstillinger') {
-                // Display settings
-                $this->profileSettings();
-            }
-            else if (Loader::queryGet(1) == 'historikk') {
-                // Display history
-                $this->profileHistory();
-            }
-            else {
-                // 404, not found
-                $this->display404();
-            }
-        }
     }
     
     /*
      * Display profile settings
      */
     
-    private function profileSettings() {
+    public function profileRedirect() {
+        Redirect::send(TemplateHelper::url_for('profile_settings'));
+    }
+    
+    /*
+     * Display profile settings
+     */
+    
+    public function profileSettings() {
         // Set view
         $this->addSiteData('view', 'profile');
         
@@ -86,7 +80,7 @@ class Profile extends BaseView {
      * Display profile history
      */
 
-    private function profileHistory() {
+    public function profileHistory() {
         // Set title
         $this->template->assign('SITE_TITLE', 'Mine historikk');
         

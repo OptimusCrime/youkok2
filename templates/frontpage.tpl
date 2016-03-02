@@ -12,7 +12,7 @@
                         <div class="col-xs-12 col-sm-9" id="frontpage-info">
                             <p>Vi har for tiden <b>[[+$HOME_STATS_USERS]]</b> registrerte brukere, <b>[[+$HOME_STATS_FILES]]</b> filer og totalt <b>[[+$HOME_STATS_DOWNLOADS]]</b> nedlastninger i vårt system.</p>
                             <p><em>Nettsiden er helt åpen og krever ikke at du registrerer deg for å kunne bruke den.</em></p>
-                            <p>Som anonym bruker får du mulighet til å laste opp filer og poste nyttige linker, men disse må godkjennes manuelt av en administrator. Alle bidrag er velkomne, så lenge de ikke strider mot våre <a href="retningslinjer">retningslinjer</a>.</p>
+                            <p>Som anonym bruker får du mulighet til å laste opp filer og poste nyttige linker, men disse må godkjennes manuelt av en administrator. Alle bidrag er velkomne, så lenge de ikke strider mot våre <a href="[[+TemplateHelper::url_for('flat_terms')]]">retningslinjer</a>.</p>
                             <p>Om du velger å registrere deg får mulighet til å laste opp filer, poste linker og opprette mapper uten at dette må forhåndsgodkjennes. Du får også muligheten til å lagre favoritter og får en oversikt over dine siste nedlastninger på forsiden.</p>
                             <p>- Youkok2</p>
                         </div>
@@ -20,15 +20,15 @@
                             <div id="frontpage-links">
                                 <div class="row">
                                     <div class="col-xs-6 col-sm-12">
-                                        <span class="elm-md-bigger"><a class="login-opener" data-toggle="dropdown" href="logg-inn">Logg inn</a><br /></span>
-                                        <span class="elm-md-smaller"><a href="logg-inn">Logg inn</a><br /></span>
-                                        <a href="registrer">Registrer</a><br />
-                                        <a href="glemt-passord">Glemt passord</a><br />
+                                        <span class="elm-md-bigger"><a class="login-opener" data-toggle="dropdown" href="[[+TemplateHelper::url_for('auth_login')]]">Logg inn</a><br /></span>
+                                        <span class="elm-md-smaller"><a href="[[+TemplateHelper::url_for('auth_login')]]">Logg inn</a><br /></span>
+                                        <a href="[[+TemplateHelper::url_for('auth_register')]]">Registrer</a><br />
+                                        <a href="[[+TemplateHelper::url_for('auth_forgotten_password')]]">Glemt passord</a><br />
                                     </div>
                                     <div class="col-xs-6 col-sm-12" id="frontpage-links-second">
-                                        <a href="om">Om</a><br />
-                                        <a href="retningslinjer">Retningslinjer</a><br />
-                                        <a href="hjelp">Hjelp</a><br />
+                                        <a href="[[+TemplateHelper::url_for('flat_about')]]">Om</a><br />
+                                        <a href="[[+TemplateHelper::url_for('flat_terms')]]">Retningslinjer</a><br />
+                                        <a href="[[+TemplateHelper::url_for('flat_help')]]">Hjelp</a><br />
                                         <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a>
                                     </div>
                                 </div>
@@ -56,7 +56,7 @@
 
                         <li class="list-group-item">
                             <em>
-                                <a href="logg-inn">Logg inn</a> eller <a href="registrer">registrer deg</a>.
+                                <a href="[[+TemplateHelper::url_for('auth_login')]]">Logg inn</a> eller <a href="[[+TemplateHelper::url_for('auth_register')]]">registrer deg</a>.
                             </em>
                         </li>[[+/if]]
 
@@ -85,7 +85,7 @@
 
                         <li class="list-group-item">
                             <em>
-                                <a href="logg-inn">Logg inn</a> eller <a href="registrer">registrer deg</a>.
+                                <a href="[[+TemplateHelper::url_for('auth_login')]]">Logg inn</a> eller <a href="[[+TemplateHelper::url_for('auth_register')]]">registrer deg</a>.
                             </em>
                         </li>[[+/if]]
 
