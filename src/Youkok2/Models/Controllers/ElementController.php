@@ -65,11 +65,11 @@ class ElementController extends BaseController {
     public static $single = 1;
     
     public static $timeIntervals = [
-        'WHERE a.is_visible = 1', // All
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.is_visible = 1', // Day
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.is_visible = 1', // Week
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.is_visible = 1', // Month
-        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.is_visible = 1', // Year
+        'WHERE a.pending = 0 AND a.deleted = 0', // All
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.pending = 0 AND a.deleted = 0', // Day
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 WEEK) AND a.pending = 0 AND a.deleted = 0', // Week
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.pending = 0 AND a.deleted = 0', // Month
+        'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.pending = 0 AND a.deleted = 0', // Year
     ];
     
     /*
@@ -137,7 +137,8 @@ class ElementController extends BaseController {
                 }
                 
                 $get_reverse_url .= "AND url_friendly = :url_friendly" . PHP_EOL;
-                $get_reverse_url .= "AND is_visible = 1";
+                $get_reverse_url .= "AND pending = 0" . PHP_EOL;
+                $get_reverse_url .= "AND deleted = 0";
                 
                 $get_reverse_url_query = Database::$db->prepare($get_reverse_url);
                 $get_reverse_url_query->execute($reverse_arr);
@@ -182,7 +183,7 @@ class ElementController extends BaseController {
      */
 
     public function wasFound() {
-        if ($this->model->getId() != null and is_numeric($this->model->getId()) and $this->model->isVisible()) {
+        if ($this->model->getId() != null and is_numeric($this->model->getId())) {
             return true;
         }
 
@@ -203,8 +204,9 @@ class ElementController extends BaseController {
             $get_children_ids  = "SELECT id" . PHP_EOL;
             $get_children_ids .= "FROM archive" . PHP_EOL;
             $get_children_ids .= "WHERE parent = :parent" . PHP_EOL;
-            $get_children_ids .= "AND is_visible = 1" . PHP_EOL;
-            $get_children_ids .= "ORDER BY is_directory DESC, name ASC";
+            $get_children_ids .= "AND pending = 0" . PHP_EOL;
+            $get_children_ids .= "AND deleted = 0" . PHP_EOL;
+            $get_children_ids .= "ORDER BY directory DESC, name ASC";
             
             $get_children_ids_query = Database::$db->prepare($get_children_ids);
             $get_children_ids_query->execute(array(':parent' => $this->model->getId()));

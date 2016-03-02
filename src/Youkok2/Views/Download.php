@@ -32,7 +32,7 @@ class Download extends BaseView {
         $element = Element::get(Loader::queryGetClean());
 
         // Check if was found or invalid url
-        if ($element->wasFound() and $element->isVisible()) {
+        if ($element->wasFound() and !$element->isPending() and !$element->isDeleted()) {
             $file_location = $element->getPhysicalLocation();
 
             // Check if zip download or not
@@ -115,6 +115,7 @@ class Download extends BaseView {
         // Check if we should display 404 or not
         if ($should_display_404) {
             $this->display404();
+            die();
         }
     }
     

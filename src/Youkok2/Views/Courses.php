@@ -23,18 +23,15 @@ class Courses extends BaseView {
         parent::__construct();
         
         // Turn on caching
-        //$this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
+        $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
 
         // Set menu
         $this->template->assign('HEADER_MENU', 'ARCHIVE');
         
-        // Load content
-            $this->loadCourses();
-        
         // Check if cached
         if (!$this->template->isCached('courses.tpl', Loader::queryGetClean())) {
-
-            
+            // Load content
+            $this->loadCourses();
         }
 
         // Display
@@ -52,10 +49,11 @@ class Courses extends BaseView {
         $collection = null;
 
         // Load all the courses
-        $get_all_courses  = "SELECT id, name, url_friendly, parent, empty, url, is_directory" . PHP_EOL;
+        $get_all_courses  = "SELECT id, name, url_friendly, parent, empty, url, directory" . PHP_EOL;
         $get_all_courses .= "FROM archive" . PHP_EOL;
         $get_all_courses .= "WHERE parent IS NULL" . PHP_EOL;
-        $get_all_courses .= "AND is_visible = 1" . PHP_EOL;
+        $get_all_courses .= "AND pending = 0" . PHP_EOL;
+        $get_all_courses .= "AND deleted = 0" . PHP_EOL;
         $get_all_courses .= "ORDER BY name ASC";
         
         $get_all_courses_query = Database::$db->query($get_all_courses);

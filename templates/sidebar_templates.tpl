@@ -1,3 +1,4 @@
+[[+literal]]
 <script type="text/template" class="template-sidebar-commits">
     <ul class="list-group">
     <% _.each(rc.commits,function(commit) { %>
@@ -40,3 +41,4 @@
         <% }); %>
     </ul>
 </script>
+[[+/literal]]

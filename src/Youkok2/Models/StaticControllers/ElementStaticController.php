@@ -57,8 +57,9 @@ class ElementStaticController {
         // Loading newest files from the system
         $get_newest  = "SELECT id" . PHP_EOL;
         $get_newest .= "FROM archive" . PHP_EOL;
-        $get_newest .= "WHERE is_directory = 0" . PHP_EOL;
-        $get_newest .= "AND is_visible = 1" . PHP_EOL;
+        $get_newest .= "WHERE directory = 0" . PHP_EOL;
+        $get_newest .= "AND pending = 0" . PHP_EOL;
+        $get_newest .= "AND deleted = 0" . PHP_EOL;
         $get_newest .= "ORDER BY added DESC, name DESC" . PHP_EOL;
         $get_newest .= "LIMIT " . $limit;
         
@@ -84,6 +85,8 @@ class ElementStaticController {
         $get_last_visited  = "SELECT id" . PHP_EOL;
         $get_last_visited .= "FROM archive" . PHP_EOL;
         $get_last_visited .= "WHERE last_visited IS NOT NULL" . PHP_EOL;
+        $get_last_visited .= "AND pending = 0" . PHP_EOL;
+        $get_last_visited .= "AND deleted = 0" . PHP_EOL;
         $get_last_visited .= "ORDER BY last_visited DESC" . PHP_EOL;
         $get_last_visited .= "LIMIT " . $limit;
         

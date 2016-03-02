@@ -46,7 +46,8 @@ class MeDownloadsStaticController {
             $get_last_downloads .= "FROM download AS d" . PHP_EOL;
             $get_last_downloads .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
             $get_last_downloads .= "WHERE d.user = :user" . PHP_EOL;
-            $get_last_downloads .= "AND a.is_visible = 1" . PHP_EOL;
+            $get_last_downloads .= "AND a.pending = 0" . PHP_EOL;
+            $get_last_downloads .= "AND a.deleted = 0" . PHP_EOL;
             $get_last_downloads .= "AND d.id = (" . PHP_EOL;
             $get_last_downloads .= "    SELECT dd.id" . PHP_EOL;
             $get_last_downloads .= "    FROM download dd" . PHP_EOL;

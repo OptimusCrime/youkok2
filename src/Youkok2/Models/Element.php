@@ -33,8 +33,8 @@ class Element extends BaseModel {
     private $missingImage;
     private $size;
     private $directory;
-    private $accepted;
-    private $visible;
+    private $pending;
+    private $deleted;
     private $exam;
     private $url;
     private $added;
@@ -118,7 +118,7 @@ class Element extends BaseModel {
                 'default' => null,
                 'db' => true,
             ],
-            'is_directory' => [
+            'directory' => [
                 'method' => 'directory',
                 'type' => 'integer',
                 'null' => false,
@@ -126,7 +126,7 @@ class Element extends BaseModel {
                 'db' => true,
                 'is' => true,
             ],
-            'is_accepted' => [
+            'pending' => [
                 'method' => 'accepted',
                 'type' => 'integer',
                 'null' => false,
@@ -134,11 +134,11 @@ class Element extends BaseModel {
                 'db' => true,
                 'is' => true
             ],
-            'is_visible' => [
+            'deleted' => [
                 'method' => 'visible',
                 'type' => 'integer',
                 'null' => false,
-                'default' => 1,
+                'default' => 0,
                 'db' => true,
                 'is' => true
             ],
@@ -267,11 +267,11 @@ class Element extends BaseModel {
     public function isDirectory() {
         return (bool) $this->directory;
     }
-    public function isAccepted() {
-        return (bool) $this->accepted;
+    public function isPending() {
+        return (bool) $this->pending;
     }
-    public function isVisible() {
-        return (bool) $this->visible;
+    public function isDeleted() {
+        return (bool) $this->deleted;
     }
     public function getExam($pretty = false) {
         return $pretty ? Utilities::prettifySQLDate($this->exam, false) : $this->exam;
@@ -326,11 +326,11 @@ class Element extends BaseModel {
     public function setDirectory($directory) {
         $this->directory = (bool) $directory;
     }
-    public function setAccepted($accepted) {
-        $this->accepted = (bool) $accepted;
+    public function setPending($accepted) {
+        $this->pending = (bool) $accepted;
     }
-    public function setVisible($visible) {
-        $this->visible = (bool) $visible;
+    public function setDeleted($visible) {
+        $this->deleted = (bool) $visible;
     }
     public function setExam($exam) {
         $this->exam = $exam;

@@ -32,7 +32,7 @@ class Redirect extends BaseView {
                 $element = Element::get($id);
                 
                 // Check if everything is good
-                if ($element->wasFound() and $element->isLink()) {
+                if ($element->wasFound() and !$element->isPending() and !$element->isDeleted() and $element->isLink()) {
                     // All good, check if we should count or ignore redirect
                     if (!isset($_GET['donotlogthisdownload'])) {
                         // Log download
@@ -56,5 +56,6 @@ class Redirect extends BaseView {
 
         // If we got this far, something is fucked up!
         $this->display404();
+        die();
     }
 }

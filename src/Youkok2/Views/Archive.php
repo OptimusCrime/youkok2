@@ -53,6 +53,7 @@ class Archive extends BaseView {
         }
         else {
             $this->display404();
+            die();
         }
     }
     

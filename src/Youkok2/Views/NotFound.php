@@ -27,6 +27,8 @@ class NotFound extends BaseView {
         
         // Turn on caching
         $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
+        
+        echo 'in here';
 
         // Display template
         $this->template->assign('SITE_TITLE', 'Siden ble ikke funnet');

@@ -71,7 +71,9 @@ class Search extends BaseView {
                 $search_by_code = "SELECT id" . PHP_EOL;
                 $search_by_code .= "FROM archive" . PHP_EOL;
                 $search_by_code .= "WHERE name LIKE :query" . PHP_EOL;
-                $search_by_code .= "AND parent IS NULL";
+                $search_by_code .= "AND parent IS NULL" . PHP_EOL;
+                $search_by_code .= "AND pending = 0" . PHP_EOL;
+                $search_by_code .= "AND deleted = 0";
 
                 $search_by_code_query = Database::$db->prepare($search_by_code);
                 $search_by_code_query->execute(array(':query' => '%' . $v . '%\|\|%'));
@@ -86,7 +88,9 @@ class Search extends BaseView {
                 $search_by_name = "SELECT id" . PHP_EOL;
                 $search_by_name .= "FROM archive" . PHP_EOL;
                 $search_by_name .= "WHERE name LIKE :query" . PHP_EOL;
-                $search_by_name .= "AND parent IS NULL";
+                $search_by_name .= "AND parent IS NULL" . PHP_EOL;
+                $search_by_name .= "AND pending = 0" . PHP_EOL;
+                $search_by_name .= "AND deleted = 0";
 
                 $search_by_name_query = Database::$db->prepare($search_by_name);
                 $search_by_name_query->execute(array(':query' => '%\|\|%' . $v . '%'));

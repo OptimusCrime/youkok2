@@ -51,6 +51,10 @@ class Database {
      */
     
     public static function getQueryCount() {
+        if (self::$db === null) {
+            return null;
+        }
+        
         return self::$db->getQueryCount();
     }
     
@@ -58,6 +62,10 @@ class Database {
      * Get the backtrace
      */
     public static function getQueryBacktrace() {
+        if (self::$db === null) {
+            return null;
+        }
+        
         return BacktraceManager::cleanSqlLog(self::$db->getQueryLog());
     }
     
