@@ -71,13 +71,9 @@ class Archive extends BaseView {
         $this->template->assign('ARCHIVE_ELEMENT_PARENTS', array_reverse($element->getParents()));
         
         // Set root element
-        if ($element->hasParent()) {
+        $element_root = $element;
+        if (!$element->isCourse()) {
             $element_root = $element->getRootParent();
-            $element_pretty_name = $element_root->getName();
-        }
-        else {
-            $element_root = $element;
-            $element_pretty_name = $element->getCourseCode() . ' - ' . $element->getCourseName();
         }
         $this->template->assign('ARCHIVE_ELEMENT_ROOT', $element_root);
         
@@ -85,7 +81,7 @@ class Archive extends BaseView {
         $this->updateLastVisited($element_root);
         
         // Set the site description
-        $site_description = $element_pretty_name . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
+        $site_description = $element_root->getCourseCode() . ' - ' . $element_root->getCourseName() . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
         $this->template->assign('SITE_DESCRPTION', $site_description);
         
         // Check if archive is empty
