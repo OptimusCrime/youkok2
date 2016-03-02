@@ -27,27 +27,23 @@ class Youkok2300 extends AbstractMigration
      */
     public function up()
     {
-        // Swap pending
-        $this->query('UPDATE `archive` SET `pending` = 2 WHERE `pending` = 0');
-        $this->query('UPDATE `archive` SET `pending` = 0 WHERE `pending` = 1');
-        $this->query('UPDATE `archive` SET `pending` = 1 WHERE `pending` = 2');
+        $this->dropTable('flag');
+        $this->dropTable('report');
+        $this->dropTable('vote');
         
-        // Swap deleted
-        $this->query('UPDATE `archive` SET `deleted` = 2 WHERE `deleted` = 0');
-        $this->query('UPDATE `archive` SET `deleted` = 0 WHERE `deleted` = 1');
-        $this->query('UPDATE `archive` SET `deleted` = 1 WHERE `deleted` = 2');
+        $table = $this->table('archive');
+        $table->renameColumn('is_directory', 'directory');
+        $table->renameColumn('is_accepted', 'pending');
+        $table->renameColumn('is_visible', 'deleted');
     }
     
     public function down()
     {
-        // Swap pending
-        $this->query('UPDATE `archive` SET `pending` = 2 WHERE `pending` = 1');
-        $this->query('UPDATE `archive` SET `pending` = 1 WHERE `pending` = 0');
-        $this->query('UPDATE `archive` SET `pending` = 0 WHERE `pending` = 2');
+        // Hmmmm
         
-        // Swap deleted
-        $this->query('UPDATE `archive` SET `deleted` = 2 WHERE `deleted` = 1');
-        $this->query('UPDATE `archive` SET `deleted` = 1 WHERE `deleted` = 0');
-        $this->query('UPDATE `archive` SET `deleted` = 0 WHERE `deleted` = 2');
+        $table = $this->table('archive');
+        $table->renameColumn('directory', 'is_directory');
+        $table->renameColumn('pending', 'is_accepted');
+        $table->renameColumn('deleted', 'is_visible');
     }
 }
