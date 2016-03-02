@@ -68,7 +68,7 @@ abstract class AdminBaseView extends BaseView {
             $this->template->assign('ADMIN_HEADING', $this->adminHeading);
             
             // Apply admin related stuff to site data
-            $this->addSiteData('view', 'admin-' . $this->adminIdentifier);
+            $this->addSiteData('view', $this->adminIdentifier);
             $this->addSiteData('admin_view', true);
             
             // Create sidemenu

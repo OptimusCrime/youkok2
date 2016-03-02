@@ -92,7 +92,7 @@ var Youkok = (function (module) {
     
     var initSubViews = function () {
         // Archive
-        if (Youkok.getData('view') == 'admin-home') {
+        if (Youkok.getData('view') == 'admin_home') {
             Youkok.admin.home.init();
         }
     };
