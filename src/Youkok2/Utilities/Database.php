@@ -26,19 +26,34 @@ class Database {
     
     public static function connect() {
         try {
-            self::$db = new PDO2\PDO2(DATABASE_DNS . ';dbname=' . DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, [
-                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8']);
-            self::$db->setAttribute(\PDO::ATTR_ERRMODE, DATABASE_ERROR_MODE);
-            
-            // Check if we should profile
-            if (defined('PROFILING') and PROFILING) {
-                self::$db->query('SET profiling_history_size = 1000');
-                self::$db->query('SET profiling = 1');
+            // Handle adapters
+            if (DATABASE_ADAPTER == 'mysql') {
+                // Mysql
+                self::$db = new PDO2\PDO2(DATABASE_DNS . ';dbname=' . DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, [
+                    \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8']);
+            }
+            else if (DATABASE_ADAPTER == 'sqlite') {
+                // Sqlite
+                self::$db = new PDO2\PDO2('sqlite:memory:');
+            }
+            else {
+                die('Not configured for this adapter');
             }
             
-            // Turn off query caching if we are in dev mode
-            if (defined('DEV') and DEV) {
-                self::$db->query('SET SESSION query_cache_type = 0');
+            self::$db->setAttribute(\PDO::ATTR_ERRMODE, DATABASE_ERROR_MODE);
+            
+            // Handle profiling for adapters that are not sqlite
+            if (DATABASE_ADAPTER != 'sqlite') {
+                // Check if we should profile
+                if (defined('PROFILING') and PROFILING) {
+                    self::$db->query('SET profiling_history_size = 1000');
+                    self::$db->query('SET profiling = 1');
+                }
+                
+                // Turn off query caching if we are in dev mode
+                if (defined('DEV') and DEV) {
+                    self::$db->query('SET SESSION query_cache_type = 0');
+                }
             }
         }
         catch (\Exception $e) {

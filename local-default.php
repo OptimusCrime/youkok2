@@ -40,6 +40,9 @@ if (!defined('TEST_PATH')) {
 }
 
 // Database
+if (!defined('DATABASE_ADAPTER')) {
+    define('DATABASE_ADAPTER', 'mysql');
+}
 if (!defined('DATABASE_DNS')) {
     define('DATABASE_DNS', 'mysql:host=localhost');
 }

@@ -9,7 +9,7 @@
 
 namespace Youkok2;
 
-use \Youkok2\Utilities\Database as Database;
+use Youkok2\Utilities\Database;
 
 require_once dirname(dirname(__FILE__)) . '/TestSettings.php';
 require_once BASE_PATH . '/local.php';

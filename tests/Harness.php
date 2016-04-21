@@ -7,9 +7,9 @@
  *
  */
 
-use \Youkok2\Youkok2 as Youkok2;
-use \Youkok2\Models\User as User;
-use \Youkok2\Utilities\Database as Database;
+use Youkok2\Youkok2;
+use Youkok2\Models\User;
+use Youkok2\Utilities\Database;
 
 require_once dirname(__FILE__) . '/TestSettings.php';
 require_once BASE_PATH . '/local.php';
@@ -28,7 +28,6 @@ class Harness {
         
         // Database
         $this->databaseConnect();
-        $this->clearDatabase();
         
         // Migrations
         $this->migrateDatabase();
@@ -88,46 +87,6 @@ class Harness {
     }
     
     /*
-     * Clear the entire database
-     */
-    
-    private function clearDatabase() {
-        // Output
-        echo "\033[32m╔═══════════════════════════════════════════════════════════════════╗\033[0m\n";
-        echo "\033[32m║                                                                   ║\033[0m\n";
-        echo "\033[32m║                        Clearing test database                     ║\033[0m\n";
-        echo "\033[32m║                                                                   ║\033[0m\n";
-        echo "\033[32m╚═══════════════════════════════════════════════════════════════════╝\033[0m\n";
-        echo "\n\n";
-        
-        // Drop foreign keys on drop table (for eazy sake)
-        Database::$db->query('SET foreign_key_checks = 0');
-        
-        // Loop till all tables are dropped
-        while (true) {
-            $get_all_tables = "SHOW TABLES
-            FROM youkok2_tests";
-            
-            $get_all_tables_query = Database::$db->query($get_all_tables);
-            $tables = $get_all_tables_query->fetchAll();
-            
-            // Check if database is empty now
-            if (count($tables) == 0) {
-                break;
-            }
-            
-            // Database is not empty, clear one more
-            foreach ($tables as $k => $v) {
-                $drop_table = 'DROP TABLE ' . $v[0];
-                $drop_table_query = Database::$db->exec($drop_table);
-            }
-        }
-        
-        // Use foreign key constraints again
-        Database::$db->query('SET foreign_key_checks = 1');
-    }
-    
-    /*
      * Run migrations on test database
      */
     
@@ -140,13 +99,17 @@ class Harness {
         echo "\033[32m╚═══════════════════════════════════════════════════════════════════╝\033[0m\n";
         echo "\n\n";
         
-        // Running command
-        exec('php vendor/bin/phinx migrate -e test', $output);
+        // Run the migrations
+        $configuration = BASE_PATH . '/phinx.yml';
         
-        // Outputting to console
-        foreach ($output as $v) {
-            echo $v . "\n";
-        }
+        $app = new Phinx\Console\PhinxApplication();
+        $migrate_command = $app->find('migrate');
+        $input = new Symfony\Component\Console\Input\ArrayInput([
+            'command' => 'migrate',
+            '--environment' => 'test',
+            '--configuration' => $configuration
+        ]);
+        $returncode = $migrate_command->run($input, $output);
     }
     
     /*

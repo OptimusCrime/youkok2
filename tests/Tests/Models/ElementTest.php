@@ -7,7 +7,7 @@
  *
  */
 
-use \Youkok2\Models\Element as Element;
+use \Youkok2\Models\Element;
 
 class ElementTest extends PHPUnit_Framework_TestCase {
 
