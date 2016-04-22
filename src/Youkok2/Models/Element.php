@@ -330,8 +330,8 @@ class Element extends BaseModel {
     public function setPending($accepted) {
         $this->pending = (bool) $accepted;
     }
-    public function setDeleted($visible) {
-        $this->deleted = (bool) $visible;
+    public function setDeleted($deleted) {
+        $this->deleted = (bool) $deleted;
     }
     public function setExam($exam) {
         $this->exam = $exam;

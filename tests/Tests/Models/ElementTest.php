@@ -36,7 +36,7 @@ class ElementTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $element->getMissingImage());
         $this->assertEquals(0, $element->isDirectory());
         $this->assertEquals(0, $element->isAccepted());
-        $this->assertEquals(1, $element->isVisible());
+        $this->assertEquals(0, $element->isDeleted());
     }
 
     /*

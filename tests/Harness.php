@@ -75,7 +75,10 @@ class Harness {
 
         // Recreate directories
         @mkdir(CACHE_PATH);
-        @mkdir(CACHE_PATH . '/elements/');
+        @mkdir(CACHE_PATH . '/youkok/');
+        
+        // Prettification
+        echo "All done" . PHP_EOL . PHP_EOL;
     }
     
     /*

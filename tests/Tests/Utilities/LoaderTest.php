@@ -20,10 +20,12 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
         // Try some paths
         $loader1 = new Loader('');
         $loader2 = new Loader('/');
+        $loader3 = new Loader('//');
         
         // Test them
         $this->assertEquals('\Youkok2\Views\Frontpage', $loader1->getMatch());
         $this->assertEquals('\Youkok2\Views\Frontpage', $loader2->getMatch());
+        $this->assertEquals('\Youkok2\Views\Frontpage', $loader3->getMatch());
     }
     
     /*
@@ -32,15 +34,14 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
     
     public function testLoaderNotFound() {
         // Try some paths
-        $loader1 = new Loader('//');
-        $loader2 = new Loader('f');
-        $loader3 = new Loader('f/');
-        $loader4 = new Loader('/f');
-        $loader5 = new Loader('//f');
-        $loader6 = new Loader('..');
-        $loader7 = new Loader('../');
-        $loader8 = new Loader('/..');
-        $loader9 = new Loader('/../');
+        $loader1 = new Loader('f');
+        $loader2 = new Loader('f/');
+        $loader3 = new Loader('/f');
+        $loader4 = new Loader('//f');
+        $loader5 = new Loader('..');
+        $loader6 = new Loader('../');
+        $loader7 = new Loader('/..');
+        $loader8 = new Loader('/../');
         
         // Test them
         $this->assertEquals('\Youkok2\Views\NotFound', $loader1->getMatch());
@@ -51,7 +52,6 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals('\Youkok2\Views\NotFound', $loader6->getMatch());
         $this->assertEquals('\Youkok2\Views\NotFound', $loader7->getMatch());
         $this->assertEquals('\Youkok2\Views\NotFound', $loader8->getMatch());
-        $this->assertEquals('\Youkok2\Views\NotFound', $loader9->getMatch());
     }
     
     /*
