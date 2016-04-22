@@ -1,4 +1,10 @@
-Youkok2 - 2.2.0-pl  (21. februar 2015)
+Youkok2 - x.x.0-pl  (xx. xxxx 2016)
+===================================
+
+- [Enhanced] Unit tester
+- [Fixed] Mindre feil som følger av ny struktur av databasen. 
+
+Youkok2 - 2.2.0-pl  (21. februar 2016)
 ======================================
 
 - [Info] Bugfixes og ymse
