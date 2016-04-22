@@ -18,22 +18,25 @@ class BaseModel {
     protected function setDefaults() {
         // Loop all the defaults
         foreach ($this->getSchema()['fields'] as $k => $v) {
-            // Find what method to check
-            $method_name = 'set' . ucfirst($k);
-            
-            if (isset($v['method'])) {
-                $method_name = 'set' . ucfirst($v['method']);
-            }
-            
-            // Check if property exists
-            if (method_exists($this, $method_name)) {
-                // Check if default value is defined
-                if (isset($v['default'])) {
-                    call_user_func_array([
-                        $this, $method_name
-                    ], [
-                        $v['default']
-                    ]);
+            // Only run for fields in the database
+            if (!isset($v['db']) or (isset($v['db']) and $v['db'])) {
+                // Find what method to check
+                $method_name = 'set' . ucfirst($k);
+                
+                if (isset($v['method'])) {
+                    $method_name = 'set' . ucfirst($v['method']);
+                }
+                
+                // Check if property exists
+                if (method_exists($this, $method_name)) {
+                    // Check if default value is defined
+                    if (isset($v['default'])) {
+                        call_user_func_array([
+                            $this, $method_name
+                        ], [
+                            $v['default']
+                        ]);
+                    }
                 }
             }
         }

@@ -99,17 +99,13 @@ class Harness {
         echo "\033[32m╚═══════════════════════════════════════════════════════════════════╝\033[0m\n";
         echo "\n\n";
         
-        // Run the migrations
-        $configuration = BASE_PATH . '/phinx.yml';
+        // Running command
+        exec('php vendor/bin/phinx migrate -e test', $output);
         
-        $app = new Phinx\Console\PhinxApplication();
-        $migrate_command = $app->find('migrate');
-        $input = new Symfony\Component\Console\Input\ArrayInput([
-            'command' => 'migrate',
-            '--environment' => 'test',
-            '--configuration' => $configuration
-        ]);
-        $returncode = $migrate_command->run($input, $output);
+        // Outputting to console
+        foreach ($output as $v) {
+            echo $v . "\n";
+        }
     }
     
     /*

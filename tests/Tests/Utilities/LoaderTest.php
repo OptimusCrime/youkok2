@@ -60,11 +60,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
     
     public function testLoaderArchive() {
         // Try some paths
-        $loader1 = new Loader(Routes::ARCHIVE);
-        $loader2 = new Loader(Routes::ARCHIVE . '/');
-        $loader3 = new Loader(Routes::ARCHIVE . '//');
-        $loader4 = new Loader(Routes::ARCHIVE . '/sub');
-        $loader5 = new Loader(Routes::ARCHIVE . '/sub/sub');
+        $loader1 = new Loader('emner');
+        $loader2 = new Loader('emner/');
+        $loader3 = new Loader('emner//');
+        $loader4 = new Loader('emner/sub');
+        $loader5 = new Loader('emner/sub/sub');
         
         // Test them
         $this->assertEquals('\Youkok2\Views\Courses', $loader1->getMatch());
@@ -81,11 +81,11 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
     
     public function testLoaderStaticRoutes() {
         // Try some paths
-        $loader1 = new Loader(Routes::DOWNLOAD);
-        $loader2 = new Loader(Routes::DOWNLOAD . '/');
+        $loader1 = new Loader('last-ned');
+        $loader2 = new Loader('last-ned/');
         
-        $loader3 = new Loader(Routes::REDIRECT);
-        $loader4 = new Loader(Routes::REDIRECT . '/');
+        $loader3 = new Loader('redirect');
+        $loader4 = new Loader('redirect/');
         
         // Test them
         $this->assertEquals('\Youkok2\Views\Download', $loader1->getMatch());

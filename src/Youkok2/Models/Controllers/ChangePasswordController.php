@@ -31,7 +31,7 @@ class ChangePasswordController extends BaseController {
         $validate_hash .= "FROM changepassword c" . PHP_EOL;
         $validate_hash .= "LEFT JOIN user AS u ON c.user = u.id" . PHP_EOL;
         $validate_hash .= "WHERE c.hash = :hash" . PHP_EOL;
-        $validate_hash .= "AND c.timeout > NOW()";
+        $validate_hash .= "AND c.timeout > CURRENT_TIMESTAMP";
         
         $validate_hash_query = Database::$db->prepare($validate_hash);
         $validate_hash_query->execute(array(':hash' => $hash));

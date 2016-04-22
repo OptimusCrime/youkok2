@@ -34,7 +34,7 @@ class Database {
             }
             else if (DATABASE_ADAPTER == 'sqlite') {
                 // Sqlite
-                self::$db = new PDO2\PDO2('sqlite:memory:');
+                self::$db = new PDO2\PDO2('sqlite:tests/files/files/db.sqlite3');
             }
             else {
                 die('Not configured for this adapter');
