@@ -7,7 +7,7 @@
  *
  */
 
-use \Youkok2\Models\ChangePassword as ChangePassword;
+use Youkok2\Models\ChangePassword;
 
 class ChangePasswordTest extends PHPUnit_Framework_TestCase {
     /*

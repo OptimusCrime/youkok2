@@ -127,7 +127,7 @@ class Element extends BaseModel {
                 'is' => true,
             ],
             'pending' => [
-                'method' => 'accepted',
+                'method' => 'pending',
                 'type' => 'integer',
                 'null' => false,
                 'default' => 0,
@@ -135,7 +135,7 @@ class Element extends BaseModel {
                 'is' => true
             ],
             'deleted' => [
-                'method' => 'visible',
+                'method' => 'deleted',
                 'type' => 'integer',
                 'null' => false,
                 'default' => 0,
@@ -158,6 +158,7 @@ class Element extends BaseModel {
             'added' => [
                 'type' => 'datetime',
                 'null' => false,
+                'default' => 'CURRENT_TIMESTAMP',
                 'db' => true,
                 'arr' => true,
                 'ignore_update' => true,
@@ -329,8 +330,8 @@ class Element extends BaseModel {
     public function setPending($accepted) {
         $this->pending = (bool) $accepted;
     }
-    public function setDeleted($visible) {
-        $this->deleted = (bool) $visible;
+    public function setDeleted($deleted) {
+        $this->deleted = (bool) $deleted;
     }
     public function setExam($exam) {
         $this->exam = $exam;

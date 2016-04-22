@@ -205,9 +205,9 @@ abstract class BaseController {
                 }
 
                 // Get bindings and the actual value
-                if (isset($v['default']) and $v['default'] === 'NOW()') {
+                if (isset($v['default']) and $v['default'] === 'CURRENT_TIMESTAMP') {
                     // Handle edge case for NOW() inserts
-                    $bindings_arr[] = 'NOW()';
+                    $bindings_arr[] = 'CURRENT_TIMESTAMP';
                 }
                 else {
                     // Get value

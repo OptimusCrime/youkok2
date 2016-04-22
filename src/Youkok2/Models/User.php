@@ -79,7 +79,7 @@ class User extends BaseModel {
                 'method' => 'lastSeen',
                 'type' => 'datetime',
                 'null' => false,
-                'default' => 'NOW()',
+                'default' => 'CURRENT_TIMESTAMP',
                 'db' => true,
                 'arr' => true,
             ],

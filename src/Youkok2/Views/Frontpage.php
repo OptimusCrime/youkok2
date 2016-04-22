@@ -62,7 +62,7 @@ class Frontpage extends BaseView {
         $get_file_number  = "SELECT COUNT(id) AS 'num_files'" . PHP_EOL;
         $get_file_number .= "FROM archive" . PHP_EOL;
         $get_file_number .= "WHERE directory = 0" . PHP_EOL;
-        $get_file_number .= "AND pending = 0";
+        $get_file_number .= "AND pending = 0" . PHP_EOL;
         $get_file_number .= "AND deleted = 0";
         
         $get_file_number_query = Database::$db->query($get_file_number);

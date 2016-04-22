@@ -14,5 +14,5 @@ define('FILE_PATH', TEST_PATH . '/files');
 define('CACHE_PATH', FILE_PATH . '/cache');
  
 // Database
-define('DATABASE_DNS', 'mysql:host=localhost');
-define('DATABASE_NAME', 'youkok2_test');
+define('DATABASE_ADAPTER', 'sqlite');
+define('DATABASE_DNS', 'sqlite::memory:');
