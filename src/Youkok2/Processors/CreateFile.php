@@ -193,6 +193,9 @@ class CreateFile extends BaseProcessor {
             if (Me::isLoggedIn() and $parent->isEmpty()) {
                 $parent->setEmpty(false);
                 $parent->update();
+                
+                // Clear cache on parent
+                $parent->deleteCache();
             }
             
             // Add message
