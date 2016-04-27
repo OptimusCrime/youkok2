@@ -1,8 +1,15 @@
-Youkok2 - x.x.0-pl  (xx. xxxx 2016)
-===================================
+Youkok2 - 2.3.0-pl  (27. april 2016)
+====================================
 
-- [Enhanced] Unit tester
-- [Fixed] Mindre feil som følger av ny struktur av databasen. 
+- [Info] Rewrites, Unit tests, bugfixes
+- [Enhanced] Skrevet om hvordan URLer blir parset.
+- [Enhanced] Skrevet om hvordan Unit tester blir kjørt.
+- [Fixed] Mindre feil som følger av ny struktur av databasen.
+- [Fixed] Småfeil som kunne resultere i en notice error.
+- [Fixed] Opplastning av filer sletter cache om foreldre er tom.
+- [Fixed] Beskrive av en mappe i arkivet.
+- [Fixed] Filer som ikke er godkjent eller som er skjulte vil være skjulte over alt i systemet nå.
+- [New] Implementert system for reverse URL oppslag, for å minimere sjansene for feil URLer i systemet.
 
 Youkok2 - 2.2.0-pl  (21. februar 2016)
 ======================================
