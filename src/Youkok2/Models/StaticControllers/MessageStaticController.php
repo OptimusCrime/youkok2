@@ -42,12 +42,18 @@ class MessageStaticController {
                 $collection[] = new Message($row);
             }
             else {
-                // Change pattern into regex expression
-                $regex_pattern = '/^' . str_replace(array_keys($regex), array_values($regex), $row['pattern']) . '/';
-                
-                // Check if the pattern matches
-                if (preg_match($regex_pattern, $pattern === true)) {
+                // Check if we can just match directly
+                if ($row['pattern'] === $pattern) {
                     $collection[] = new Message($row);
+                }
+                else {
+                    // Change pattern into regex expression
+                    $regex_pattern = '/^' . str_replace(array_keys($regex), array_values($regex), $row['pattern']) . '/';
+                    
+                    // Check if the pattern matches
+                    if (preg_match($regex_pattern, $pattern)) {
+                        $collection[] = new Message($row);
+                    }
                 }
             }
         }
