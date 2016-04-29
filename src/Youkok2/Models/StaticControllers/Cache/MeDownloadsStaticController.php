@@ -48,12 +48,6 @@ class MeDownloadsStaticController {
             $get_last_downloads .= "WHERE d.user = :user" . PHP_EOL;
             $get_last_downloads .= "AND a.pending = 0" . PHP_EOL;
             $get_last_downloads .= "AND a.deleted = 0" . PHP_EOL;
-            $get_last_downloads .= "AND d.id = (" . PHP_EOL;
-            $get_last_downloads .= "    SELECT dd.id" . PHP_EOL;
-            $get_last_downloads .= "    FROM download dd" . PHP_EOL;
-            $get_last_downloads .= "    WHERE d.file = dd.file" . PHP_EOL;
-            $get_last_downloads .= "    ORDER BY dd.downloaded_time" . PHP_EOL;
-            $get_last_downloads .= "    DESC LIMIT 1)" . PHP_EOL;
             $get_last_downloads .= "ORDER BY d.downloaded_time DESC" . PHP_EOL;
             $get_last_downloads .= "LIMIT 15";
             
