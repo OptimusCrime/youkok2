@@ -70,9 +70,16 @@ class TemplateHelper {
             $path = '/' . $path;
         }
         
-        // Check if we should edfix with /
+        // Check if we should endfix with /
         if (isset($route['endfix']) and $route['endfix']) {
+            // We should add an endfix here
             $path .= '/';
+        }
+        else if (isset($route['endfix']) and !$route['endfix']) {
+            // We should make sure to remove any endfix (if present)
+            if (substr($path, strlen($path) - 1) == '/') {
+                $path = substr($path, 0, strlen($path) - 1);
+            }
         }
         
         // Replace two or more occurences of /

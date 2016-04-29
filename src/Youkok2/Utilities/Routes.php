@@ -37,7 +37,7 @@ class Routes {
         ],
 
         'Download' => [
-            ['path' => '/last-ned/+', 'identifier' => 'download', 'construct' => '+/'],
+            ['path' => '/last-ned/+', 'identifier' => 'download', 'construct' => '+/', 'endfix' => false],
         ],
 
         'Flat' => [
@@ -69,7 +69,7 @@ class Routes {
         ],
 
         'Redirect' => [
-            ['path' => '/redirect/+', 'identifier' => 'redirect', 'construct' => '+/'],
+            ['path' => '/redirect/+', 'identifier' => 'redirect', 'construct' => '+/', 'endfix' => false],
         ],
         
         /*
