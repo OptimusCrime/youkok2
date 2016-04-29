@@ -32,7 +32,7 @@ var Youkok = (function (module) {
         
         // Init typeahead here
         $('#prefetch .typeahead, #prefetch2 .typeahead').typeahead({
-            hint: true,
+            hint: false,
             highlight: true
         }, {
             name: 'courses',
@@ -41,15 +41,6 @@ var Youkok = (function (module) {
         }).on('typeahead:selected', function($e, datum) {
             window.location.href = datum.url;
         });
-    };
-
-    /*
-     * Handles enter press in search field
-     */
-    var enter = function (e) {
-        if (e.keyCode == 13) {
-            $(this).closest('form').submit();
-        }
     };
     
     /*
@@ -64,10 +55,7 @@ var Youkok = (function (module) {
             // Init search modules
             initBloodhound();
             initTypeahead();
-
-            // Add listeners
-            $('#s, #s2').on('keyup', enter);
-        },
+        }
     };
 
     /*
