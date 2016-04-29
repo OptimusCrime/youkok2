@@ -58,7 +58,7 @@ class Favorite extends BaseModel {
             'favorited_time' => [
                 'method' => 'favoritedTime',
                 'type' => 'integer',
-                'default' => 'NOW()',
+                'default' => 'CURRENT_TIMESTAMP',
                 'null' => false,
                 'db' => true,
                 'arr' => true,
