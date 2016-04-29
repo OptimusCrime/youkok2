@@ -55,7 +55,7 @@ class Download extends BaseModel {
                 'type' => 'integer',
                 'method' => 'downloadedTime',
                 'null' => false,
-                'default' => 'NOW()',
+                'default' => 'CURRENT_TIMESTAMP',
                 'db' => true,
                 'arr' => true,
             ],

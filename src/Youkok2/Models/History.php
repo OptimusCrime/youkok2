@@ -64,7 +64,7 @@ class History extends BaseModel {
             ],
             'added' => [
                 'type' => 'integer',
-                'default' => 'NOW()',
+                'default' => 'CURRENT_TIMESTAMP',
                 'null' => false,
                 'db' => true,
                 'arr' => true,

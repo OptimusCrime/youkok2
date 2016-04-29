@@ -27,8 +27,8 @@ class MessageStaticController {
         $get_messages .= "WHERE (" . PHP_EOL;
         $get_messages .= "    pattern = :pattern" . PHP_EOL;
         $get_messages .= "    OR pattern = '*')" . PHP_EOL;
-        $get_messages .= "AND time_start <= NOW()" . PHP_EOL;
-        $get_messages .= "AND time_end >= NOW()" . PHP_EOL;
+        $get_messages .= "AND time_start <= CURRENT_TIMESTAMP" . PHP_EOL;
+        $get_messages .= "AND time_end >= CURRENT_TIMESTAMP" . PHP_EOL;
         $get_messages .= "ORDER BY id DESC" . PHP_EOL;
         
         $get_messages_query = Database::$db->prepare($get_messages);
