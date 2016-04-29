@@ -98,7 +98,7 @@ class CreateFile extends BaseProcessor {
                 $row_duplicate = $get_duplicate_query->fetch(\PDO::FETCH_ASSOC);
                 if (isset($row_duplicate['id'])) {
                     // Generate new url friendly
-                    $url_friendly = Utilities::urlSafe($url_friendly_base . '-' . $num);
+                    $url_friendly = Utilities::urlSafe($url_friendly_base . '-' . $num . '.' . $file_type);
                     
                     // Increase num
                     $num++;
