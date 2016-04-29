@@ -1,3 +1,9 @@
+Youkok2 - 2.3.1-pl  (29. april 2016)
+====================================
+
+- [Info] Bigfix
+- [Fixed] Nye nedlastninger manglet timestamp.
+
 Youkok2 - 2.3.0-pl  (27. april 2016)
 ====================================
 
