@@ -63,8 +63,8 @@ class HomeBoxes extends BaseProcessor {
         // Load files
         $get_admin_files  = "SELECT COUNT(id) AS 'num_files'" . PHP_EOL;
         $get_admin_files .= "FROM archive" . PHP_EOL;
-        $get_admin_files .= "WHERE is_directory = 0" . PHP_EOL;
-        $get_admin_files .= "AND is_visible = 1";
+        $get_admin_files .= "WHERE directory = 0" . PHP_EOL;
+        $get_admin_files .= "AND pending = 0";
         
         $get_admin_files_query = Database::$db->query($get_admin_files);
         $get_admin_files_result = $get_admin_files_query->fetch(\PDO::FETCH_ASSOC);
@@ -73,7 +73,7 @@ class HomeBoxes extends BaseProcessor {
         $get_admin_courses  = "SELECT COUNT(id) AS 'num_courses'" . PHP_EOL;
         $get_admin_courses .= "FROM archive" . PHP_EOL;
         $get_admin_courses .= "WHERE parent is NULL" . PHP_EOL;
-        $get_admin_courses .= "AND is_visible = 1";
+        $get_admin_courses .= "AND pending = 0";
         
         $get_admin_courses_query = Database::$db->query($get_admin_courses);
         $get_admin_courses_result = $get_admin_courses_query->fetch(\PDO::FETCH_ASSOC);
