@@ -19,22 +19,37 @@ class MessageStaticController {
      */
     
     public static function getMessages($pattern) {
+        // Regex expressions
+        $regex = [
+            '*' => '(.*)',
+            '/' => '\/',
+        ];
+        
+        // For storing the final collection of messages
         $collection = [];
         
         // Get current messages
         $get_messages  = "SELECT *" . PHP_EOL;
         $get_messages .= "FROM message" . PHP_EOL;
-        $get_messages .= "WHERE (" . PHP_EOL;
-        $get_messages .= "    pattern = :pattern" . PHP_EOL;
-        $get_messages .= "    OR pattern = '*')" . PHP_EOL;
-        $get_messages .= "AND time_start <= CURRENT_TIMESTAMP" . PHP_EOL;
+        $get_messages .= "WHERE time_start <= CURRENT_TIMESTAMP" . PHP_EOL;
         $get_messages .= "AND time_end >= CURRENT_TIMESTAMP" . PHP_EOL;
         $get_messages .= "ORDER BY id DESC" . PHP_EOL;
         
-        $get_messages_query = Database::$db->prepare($get_messages);
-        $get_messages_query->execute(array(':pattern' => $pattern));
+        $get_messages_query = Database::$db->query($get_messages);
         while ($row = $get_messages_query->fetch(\PDO::FETCH_ASSOC)) {
-            $collection[] = new Message($row);
+            // If the pattern is simply * it is universal
+            if ($row['pattern'] == '*') {
+                $collection[] = new Message($row);
+            }
+            else {
+                // Change pattern into regex expression
+                $regex_pattern = '/^' . str_replace(array_keys($regex), array_values($regex), $row['pattern']) . '/';
+                
+                // Check if the pattern matches
+                if (preg_match($regex_pattern, $pattern === true)) {
+                    $collection[] = new Message($row);
+                }
+            }
         }
         
         // Return collection
