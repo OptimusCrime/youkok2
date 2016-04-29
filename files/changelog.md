@@ -1,3 +1,10 @@
+Youkok2 - 2.4.1-pl  (29. april 2016)
+====================================
+
+- [Info] Bigfixes
+- [Fixed] Messages knakk...igjen.
+- [Fixed] Man kan nå bruke piltastene til å velge fag i søkeboksen.
+
 Youkok2 - 2.4.0-pl  (29. april 2016)
 ====================================
 
