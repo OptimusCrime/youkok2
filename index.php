@@ -62,20 +62,22 @@ spl_autoload_register(function ($class) {
 \PHP_Timer::start();
 
 /*
- * Set debug options
+ * Set various things
  */
 
 error_reporting(ERROR_MODE);
 ini_set('display_errors', ERROR_DISPLAY);
-
-/*
- * Set the timezone
- */
-
 date_default_timezone_set(TIMEZONE);
 
 /*
- * Check if we should initiate the Loader
+ * Create new instance of Youkok2
+ */
+
+$youkok2 = new Youkok2\Youkok2();
+$wrapper = new Youkok2\Wrapper\Wrapper($youkok2);
+
+/*
+ * Check if we should run the wrapper
  */
 
 $call_loader = false;
@@ -92,5 +94,5 @@ else {
 }
 
 if ($call_loader) {
-    $loader = new \Youkok2\Utilities\Loader();
+    $wrapper->run();
 }

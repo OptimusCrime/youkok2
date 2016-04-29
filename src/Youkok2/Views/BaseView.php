@@ -223,7 +223,7 @@ class BaseView extends Youkok2 {
         $this->template->assign('TIMER', \PHP_Timer::secondsToTimeString($time));
         
         // Call Smarty
-        $this->template->display($template, $sid);
+        $this->template->fetch($template, $sid);
 
         // Close database and process cache
         $this->close();

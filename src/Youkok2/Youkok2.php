@@ -2,7 +2,7 @@
 /*
  * File: Youkok2.php
  * Holds: The definite base class for the entire system
- * Created: 01.11.14
+ * Created: 01.11.2014
  * Project: Youkok2
  * 
  */
@@ -12,6 +12,12 @@ namespace Youkok2;
 use Youkok2\Utilities\Routes;
 
 class Youkok2 {
+    
+    protected $wrapper;
+    
+    public function setWrapper($w) {
+        $wrapper = $w;
+    }
     
     /*
      * Run a processor with a given action
