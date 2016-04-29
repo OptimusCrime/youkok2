@@ -39,7 +39,7 @@
             </div>[[+/if]]
 
             <div class="row">
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-xs-12 col-sm-6 frontpage-box">
                     <div class="list-header">
                         <h2>Mine favoritter</h2>
                     </div>
@@ -62,7 +62,7 @@
 
                     </ul>
                 </div>
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-xs-12 col-sm-6 frontpage-box">
                     <div class="list-header">
                         <h2>Mine siste nedlastninger</h2>
                     </div>
@@ -93,7 +93,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-xs-12 col-sm-6 frontpage-box">
                     <div class="list-header">
                         <h2>Nyeste elementer</h2>
                     </div>
@@ -112,7 +112,7 @@
                     [[+/foreach]]
  [[+/if]]</ul>
                 </div>
-                <div class="col-xs-12 col-sm-6 frontpage-module" data-id="1" data-variable="module1_delta">
+                <div class="col-xs-12 col-sm-6 frontpage-box frontpage-module" data-id="1" data-variable="module1_delta">
                     <div class="list-header">
                         <h2 class="can-i-be-inline">Mest populære</h2>
                         <div class="btn-group">
@@ -149,7 +149,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12 col-sm-6 frontpage-module" data-id="2" data-variable="module2_delta">
+                <div class="col-xs-12 col-sm-6 frontpage-box frontpage-module" data-id="2" data-variable="module2_delta">
                     <div class="list-header">
                         <h2 class="can-i-be-inline">Mest populære fag</h2>
                         <div class="btn-group">
@@ -178,7 +178,7 @@
                     [[+/foreach]]
 [[+/if]]</ul>
                 </div>
-                <div class="col-xs-12 col-sm-6">
+                <div class="col-xs-12 col-sm-6 frontpage-box">
                     <div class="list-header">
                         <h2>Siste besøkte fag</h2>
                     </div>

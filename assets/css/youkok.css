@@ -326,6 +326,13 @@ a:visited {
         padding-top: 15px;
     }
 }
+.frontpage-box h2 {
+    margin-bottom: 0px;
+    vertical-align: bottom;
+}
+.frontpage-box .list-header {
+    padding-bottom: 10px;
+}
 
 /*
  * Course
