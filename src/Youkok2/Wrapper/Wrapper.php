@@ -59,6 +59,14 @@ class Wrapper {
         }
     }
     
+    public function debug() {
+        var_dump($this->headers);
+        
+        echo '<pre>';
+        echo $this->body;
+        echo '</pre>';
+    }
+    
     private function setResponseCode($code) {
         http_response_code($code);
     }

@@ -14,9 +14,39 @@ use Youkok2\Utilities\Routes;
 class Youkok2 {
     
     protected $wrapper;
+    private $path;
+    private $view;
     
     public function setWrapper($w) {
-        $wrapper = $w;
+        $this->wrapper = $w;
+    }
+    
+    public function load($target) {
+        // Check if we are parsing a query
+        if (get_class($target) === 'Youkok2\Utilities\QueryParser') {
+            $this->path = $target->getPath();
+        }
+        else {
+            // This should be a hard coded URL then
+            $this->path = $target;
+        }
+        
+        // Get the correct view class
+        $class = Utilities\Loader::getClass($this->path);
+        
+        // Initiate the view
+        $this->view = new $class['view'];
+        $this->view->setWrapper($this->wrapper);
+        
+        // Check if we should run a specific method or just call the regular handler
+        if ($class['method'] === null) {
+            $this->view->run();
+        }
+        else {
+            $this->view->$class['method']();
+        }
+        
+        // Derp
     }
     
     /*

@@ -15,20 +15,18 @@ class NotFound extends BaseView {
      * Constructor
      */
 
-    public function __construct() {
+    public function run() {
         // Calling Base' constructor
-        parent::__construct();
+        parent::run();
         
         // Set 404 header
-        header('HTTP/1.0 404 Not Found');
+        $this->wrapper->setStatus(404);
         
         // Null the menu
         $this->template->assign('HEADER_MENU', null);
         
         // Turn on caching
         $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
-        
-        echo 'in here';
 
         // Display template
         $this->template->assign('SITE_TITLE', 'Siden ble ikke funnet');

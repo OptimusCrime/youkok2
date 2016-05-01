@@ -22,7 +22,7 @@ use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\Routes;
 use Youkok2\Utilities\TemplateHelper;
 
-class BaseView extends Youkok2 {
+class BaseView {
 
     /*
      * Internal variables
@@ -30,20 +30,20 @@ class BaseView extends Youkok2 {
 
     public $template;
     private $siteData;
+    protected $wrapper;
     
-    /*
-     * Constructor
-     */
-
-    public function __construct($kill = false) {
+    public function setWrapper($wrapper) {
+        $this->wrapper = $wrapper;
+    }
+    
+    public function run() {
+        // Set some headers
+        $this->wrapper->setHeader('Content-Type', 'text/html; charset=utf-8');
+        $this->wrapper->setHeader('X-Powered-By', 'PHP/3.3.1');
+        
         // Init template and assign the default tags
         $this->initTemplateEngine();
-
-        // If we should kill the script, then we do so here
-        if ($kill) {
-            return;
-        }
-
+        
         // Init the site itself
         $this->initSite();
 
@@ -82,7 +82,7 @@ class BaseView extends Youkok2 {
         $this->template->assign('HEADER_MENU', 'HOME');
 
         // Assign query
-        $this->template->assign('BASE_QUERY', Loader::getQuery());
+        //$this->template->assign('BASE_QUERY', Loader::getQuery());
     }
 
     /*
@@ -210,7 +210,7 @@ class BaseView extends Youkok2 {
         $this->template->assign('JS_MODULES', JavaScriptLoader::get());
         
         // Load message
-        $this->template->assign('SITE_MESSAGES', MessageManager::get(Loader::getQuery()));
+        //$this->template->assign('SITE_MESSAGES', MessageManager::get(Loader::getQuery()));
         
         // Load cache
         $this->addSiteData('cache_time', CacheManager::loadTypeaheadCache());
@@ -222,8 +222,8 @@ class BaseView extends Youkok2 {
         $time = \PHP_Timer::stop();
         $this->template->assign('TIMER', \PHP_Timer::secondsToTimeString($time));
         
-        // Call Smarty
-        $this->template->fetch($template, $sid);
+        // Fetch the smarty content
+        $this->wrapper->setBody($this->template->fetch($template, $sid));
 
         // Close database and process cache
         $this->close();

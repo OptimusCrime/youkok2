@@ -12,13 +12,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 /*
- * Set header
- */
-
-header('Content-Type: text/html; charset=utf-8');
-header('X-Powered-By: PHP/3.3.1');
-
-/*
  * Include the settings and the autoloader from Composer
  */
 
@@ -94,5 +87,9 @@ else {
 }
 
 if ($call_loader) {
+    $youkok2->load(new Youkok2\Utilities\QueryParser());
     $wrapper->run();
+}
+else {
+    $wrapper->debug();
 }
