@@ -17,9 +17,8 @@ class Youkok2 {
     
     private $body;
     private $headers;
-    
-    private $path;
-    private $view;
+    private $sessions; // TODO
+    private $cookies; // TODO
     
     /*
      * The constructor for the application
@@ -41,26 +40,27 @@ class Youkok2 {
     public function load($target) {
         // Check if we are parsing a query
         if (get_class($target) === 'Youkok2\Utilities\QueryParser') {
-            $this->path = $target->getPath();
+            $path = $target->getPath();
         }
         else {
             // This should be a hard coded URL then
-            $this->path = $target;
+            $path = $target;
         }
         
         // Get the correct view class
-        $class = Utilities\Loader::getClass($this->path);
+        $class = Utilities\Loader::getClass($path);
         
         // Initiate the view
-        $this->view = new $class['view'];
-        $this->view->setApplication($this);
+        $view = new $class['view'];
+        $view->setApplication($this);
+        $view->setPath($path);
         
         // Check if we should run a specific method or just call the regular handler
         if ($class['method'] === null) {
-            $this->view->run();
+            $view->run();
         }
         else {
-            $this->view->$class['method']();
+            $view->$class['method']();
         }
         
         // Derp

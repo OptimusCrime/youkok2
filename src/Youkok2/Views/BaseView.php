@@ -32,9 +32,14 @@ class BaseView {
     private $siteData;
     
     protected $application;
+    protected $path;
     
     public function setApplication($application) {
         $this->application = $application;
+    }
+    
+    public function setPath($path) {
+        $this->path = $path;
     }
     
     public function run() {
@@ -83,7 +88,7 @@ class BaseView {
         $this->template->assign('HEADER_MENU', 'HOME');
 
         // Assign query
-        //$this->template->assign('BASE_QUERY', Loader::getQuery());
+        $this->template->assign('BASE_QUERY', $this->path);
     }
 
     /*
@@ -211,7 +216,7 @@ class BaseView {
         $this->template->assign('JS_MODULES', JavaScriptLoader::get());
         
         // Load message
-        //$this->template->assign('SITE_MESSAGES', MessageManager::get(Loader::getQuery()));
+        $this->template->assign('SITE_MESSAGES', MessageManager::get($this->path));
         
         // Load cache
         $this->addSiteData('cache_time', CacheManager::loadTypeaheadCache());
