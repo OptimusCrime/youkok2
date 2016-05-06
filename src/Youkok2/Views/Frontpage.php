@@ -18,19 +18,19 @@ use Youkok2\Utilities\Database;
 class Frontpage extends BaseView {
 
     /*
-     * Constructor
+     * Run the view
      */
 
-    public function __construct() {
-        parent::__construct();
+    public function run() {
+        parent::run();
         
         // Set view
         $this->addSiteData('view', 'frontpage');
         
         // Load default boxes
         $this->template->assign('HOME_NEWEST', Element::getNewest());
-        $this->template->assign('HOME_MOST_POPULAR_ELEMENTS', self::runProcessor('/module/get', ['module' => 1])['data']);
-        $this->template->assign('HOME_MOST_POPULAR_COURSES', self::runProcessor('/module/get', ['module' => 2])['data']);
+        $this->template->assign('HOME_MOST_POPULAR_ELEMENTS', $this->application->runProcessor('/module/get', ['module' => 1])['data']);
+        $this->template->assign('HOME_MOST_POPULAR_COURSES', $this->application->runProcessor('/module/get', ['module' => 2])['data']);
         $this->template->assign('HOME_LAST_VISITED', Element::getLastVisitedElements());
         
         // Check if this user is logged in

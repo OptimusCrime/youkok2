@@ -32,15 +32,12 @@ class BaseView {
     private $siteData;
     
     protected $application;
+    protected $settings;
     protected $path;
     
-    public function setApplication($application) {
-        $this->application = $application;
-    }
-    
-    public function setPath($path) {
-        $this->path = $path;
-    }
+    /*
+     * Run the view
+     */
     
     public function run() {
         // Set some headers
@@ -254,5 +251,21 @@ class BaseView {
 
         // Close connection
         Database::close();
+    }
+    
+    /*
+     * Various setters for the view from the application
+     */
+    
+    public function setApplication($application) {
+        $this->application = $application;
+    }
+    
+    public function setSettings($settings) {
+        $this->settings = $settings;
+    }
+    
+    public function setPath($path) {
+        $this->path = $path;
     }
 }

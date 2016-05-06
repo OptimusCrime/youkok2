@@ -12,11 +12,10 @@ namespace Youkok2\Views;
 class NotFound extends BaseView {
 
     /*
-     * Constructor
+     * Run the view
      */
 
     public function run() {
-        // Calling Base' constructor
         parent::run();
         
         // Set 404 header

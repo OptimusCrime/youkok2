@@ -37,7 +37,7 @@ class Youkok2 {
      * Loads a view
      */
     
-    public function load($target) {
+    public function load($target, $settings = []) {
         // Check if we are parsing a query
         if (get_class($target) === 'Youkok2\Utilities\QueryParser') {
             $path = $target->getPath();
@@ -53,6 +53,7 @@ class Youkok2 {
         // Initiate the view
         $view = new $class['view'];
         $view->setApplication($this);
+        $view->setSettings($settings);
         $view->setPath($path);
         
         // Check if we should run a specific method or just call the regular handler
@@ -70,7 +71,7 @@ class Youkok2 {
      * Run a processor with a given action TODO
      */
     
-    public static function runProcessor($action, $settings = []) {
+    public function runProcessor($action, $settings = []) {
         // Check if we should return as json
         if (php_sapi_name() != 'cli' and !isset($_GET['format']) and (isset($settings['output']) and $settings['output'])) {
             header('Content-Type: application/json');
