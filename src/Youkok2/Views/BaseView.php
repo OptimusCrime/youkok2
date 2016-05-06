@@ -30,16 +30,17 @@ class BaseView {
 
     public $template;
     private $siteData;
-    protected $wrapper;
     
-    public function setWrapper($wrapper) {
-        $this->wrapper = $wrapper;
+    protected $application;
+    
+    public function setApplication($application) {
+        $this->application = $application;
     }
     
     public function run() {
         // Set some headers
-        $this->wrapper->setHeader('Content-Type', 'text/html; charset=utf-8');
-        $this->wrapper->setHeader('X-Powered-By', 'PHP/3.3.1');
+        $this->application->setHeader('Content-Type', 'text/html; charset=utf-8');
+        $this->application->setHeader('X-Powered-By', 'PHP/3.3.1');
         
         // Init template and assign the default tags
         $this->initTemplateEngine();
@@ -223,7 +224,7 @@ class BaseView {
         $this->template->assign('TIMER', \PHP_Timer::secondsToTimeString($time));
         
         // Fetch the smarty content
-        $this->wrapper->setBody($this->template->fetch($template, $sid));
+        $this->application->setBody($this->template->fetch($template, $sid));
 
         // Close database and process cache
         $this->close();

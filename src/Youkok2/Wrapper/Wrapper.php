@@ -12,17 +12,8 @@ namespace Youkok2\Wrapper;
 class Wrapper {
     
     private $container;
-    private $body;
-    private $headers;
     
     public function __construct($c) {
-        // Set initial things
-        $this->body = '';
-        $this->headers = [];
-        
-        // Set default response
-        $this->setStatus(200);
-        
         // Set reference to wrapper in the container
         $c->setWrapper($this);
         
@@ -30,21 +21,9 @@ class Wrapper {
         $this->container = $c;
     }
     
-    public function setHeader($key, $value) {
-        $this->headers[$key] = $value;
-    }
-    
-    public function setStatus($code) {
-        $this->headers['status'] = $code;
-    }
-    
-    public function setBody($content) {
-        $this->body = $content;
-    }
-    
     public function run() {
         // Loop and set all the headers
-        foreach ($this->headers as $key => $value) {
+        foreach ($this->container->getHeaders() as $key => $value) {
             if ($key == 'status') {
                 $this->setResponseCode($value);
             }
@@ -54,16 +33,16 @@ class Wrapper {
         }
         
         // Output the body
-        if ($this->body !== null and strlen($this->body) > 0) {
-            echo $this->body;
+        if ($this->container->getBody() !== null and strlen($this->container->getBody()) > 0) {
+            echo $this->container->getBody();
         }
     }
     
     public function debug() {
-        var_dump($this->headers);
+        var_dump($this->container->getHeaders());
         
         echo '<pre>';
-        echo $this->body;
+        echo $this->container->getBody();
         echo '</pre>';
     }
     

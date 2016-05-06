@@ -14,12 +14,29 @@ use Youkok2\Utilities\Routes;
 class Youkok2 {
     
     protected $wrapper;
+    
+    private $body;
+    private $headers;
+    
     private $path;
     private $view;
     
-    public function setWrapper($w) {
-        $this->wrapper = $w;
+    /*
+     * The constructor for the application
+     */
+    
+    public function __construct() {
+        // Set initial things
+        $this->body = '';
+        $this->headers = [];
+        
+        // Set default response
+        $this->setStatus(200);
     }
+    
+    /*
+     * Loads a view
+     */
     
     public function load($target) {
         // Check if we are parsing a query
@@ -36,7 +53,7 @@ class Youkok2 {
         
         // Initiate the view
         $this->view = new $class['view'];
-        $this->view->setWrapper($this->wrapper);
+        $this->view->setApplication($this);
         
         // Check if we should run a specific method or just call the regular handler
         if ($class['method'] === null) {
@@ -50,7 +67,7 @@ class Youkok2 {
     }
     
     /*
-     * Run a processor with a given action
+     * Run a processor with a given action TODO
      */
     
     public static function runProcessor($action, $settings = []) {
@@ -101,5 +118,52 @@ class Youkok2 {
 
         // Return the content
         return $processor->getData();
+    }
+    
+    /*
+     * Various setters
+     */
+    
+    public function setWrapper($w) {
+        $this->wrapper = $w;
+    }
+    
+    public function setHeader($key, $value) {
+        $this->headers[$key] = $value;
+    }
+    
+    public function setStatus($code) {
+        $this->headers['status'] = $code;
+    }
+    
+    public function setBody($content) {
+        $this->body = $content;
+    }
+    
+    /*
+     * Various getters
+     */
+    
+    public function getWrapper() {
+        return $this->wrapper = $w;
+    }
+    
+    public function getHeader($key) {
+        if (isset($this->headers[$key])) {
+            return $this->headers[$key];
+        }
+        return null;
+    }
+    
+    public function getHeaders() {
+        return $this->headers;
+    }
+    
+    public function getStatus() {
+        return $this->headers['status'];
+    }
+    
+    public function getBody() {
+        return $this->body;
     }
 }

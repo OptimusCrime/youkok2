@@ -20,7 +20,7 @@ class NotFound extends BaseView {
         parent::run();
         
         // Set 404 header
-        $this->wrapper->setStatus(404);
+        $this->application->setStatus(404);
         
         // Null the menu
         $this->template->assign('HEADER_MENU', null);
