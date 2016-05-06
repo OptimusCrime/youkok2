@@ -87,7 +87,10 @@ else {
 }
 
 if ($call_loader) {
+    // Load a view uding the QueryParser to parse the URL
     $youkok2->load(new Youkok2\Utilities\QueryParser());
+    
+    // Run the wrapper
     $wrapper->run();
 }
 else {

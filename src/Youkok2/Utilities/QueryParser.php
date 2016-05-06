@@ -12,7 +12,6 @@ namespace Youkok2\Utilities;
 class QueryParser {
 
     private static $query;
-    private $override;
     private $basePath;
     private $fullPath;
     private $pathLength;

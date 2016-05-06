@@ -10,36 +10,43 @@
 namespace Youkok2\Views;
 
 class Error extends BaseView {
-
+    
     /*
-     * Constructor
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
+    /*
+     * Run the view
      */
 
-    public function __construct($reason) {
-        // Calling Base' constructor
-        parent::__construct(true);
-
+    public function run() {
+        parent::run();
+        
         // Check error reason
-        if ($reason == 'db') {
+        if ($this->getSetting('reason') === 'db') {
             // Set error code
-            http_response_code(503);
+            $this->application->setStatus(503);
 
             // No database connection
             $this->template->assign('SITE_TITLE', 'Noe gikk galt');
-            $this->template->display('error_db.tpl');
+            $this->application->setBody($this->template->fetch('error_db.tpl'));
         }
-        elseif ($reason == 'unavailable') {
+        elseif ($this->getSetting('reason') === 'unavailable') {
             // Set error code
-            http_response_code(503);
+            $this->application->setStatus(503);
 
             // Application is offline
             $this->template->assign('SITE_TITLE', 'Youkok2 er ikke tilgjengelig');
-            $this->template->display('error_unavailable.tpl');
+            $this->application->setBody($this->template->fetch('error_unavailable.tpl'));
         }
         else {
             // Some other error
             $this->template->assign('SITE_TITLE', 'Noe gikk galt');
-            $this->template->display('error_generic.tpl');
+            $this->application->setBody($this->template->fetch('error_generic.tpl'));
         }
     }
 }

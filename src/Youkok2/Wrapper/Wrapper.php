@@ -39,6 +39,7 @@ class Wrapper {
     }
     
     public function debug() {
+        echo 'Debug';
         var_dump($this->container->getHeaders());
         
         echo '<pre>';

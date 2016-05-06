@@ -10,13 +10,26 @@
 namespace Youkok2\Views;
 
 class NotFound extends BaseView {
-
+    
+    /*
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
     /*
      * Run the view
      */
 
     public function run() {
         parent::run();
+        
+        // Make sure to kill the view if something broke
+        if ($this->getSetting('kill') === true) {
+            return;
+        }
         
         // Set 404 header
         $this->application->setStatus(404);

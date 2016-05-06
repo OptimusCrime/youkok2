@@ -38,21 +38,30 @@ class Youkok2 {
      */
     
     public function load($target, $settings = []) {
-        // Check if we are parsing a query
-        if (get_class($target) === 'Youkok2\Utilities\QueryParser') {
-            $path = $target->getPath();
+        // Set the default path
+        $path = null;
+        
+        // Check if we are parsing a query or a class
+        if (get_class($target) === 'Youkok2\Utilities\ClassParser') {
+            // We're using the class parser, simply fetch the class from it
+            $class = $target->getClass();
         }
         else {
-            // This should be a hard coded URL then
-            $path = $target;
+            // Check if we are parsing a query
+            if (get_class($target) === 'Youkok2\Utilities\QueryParser') {
+                $path = $target->getPath();
+            }
+            else {
+                // This should be a hard coded URL then
+                $path = $target;
+            }
+            
+            // Get the correct view class
+            $class = Utilities\Loader::getClass($path);
         }
         
-        // Get the correct view class
-        $class = Utilities\Loader::getClass($path);
-        
         // Initiate the view
-        $view = new $class['view'];
-        $view->setApplication($this);
+        $view = new $class['view']($this);
         $view->setSettings($settings);
         $view->setPath($path);
         
@@ -63,8 +72,6 @@ class Youkok2 {
         else {
             $view->$class['method']();
         }
-        
-        // Derp
     }
     
     /*
@@ -72,6 +79,7 @@ class Youkok2 {
      */
     
     public function runProcessor($action, $settings = []) {
+        /*
         // Check if we should return as json
         if (php_sapi_name() != 'cli' and !isset($_GET['format']) and (isset($settings['output']) and $settings['output'])) {
             header('Content-Type: application/json');
@@ -119,6 +127,7 @@ class Youkok2 {
 
         // Return the content
         return $processor->getData();
+        */
     }
     
     /*

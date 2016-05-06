@@ -16,13 +16,26 @@ use Youkok2\Models\Cache\MeDownloads;
 use Youkok2\Utilities\Database;
 
 class Frontpage extends BaseView {
-
+    
+    /*
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
     /*
      * Run the view
      */
 
     public function run() {
         parent::run();
+        
+        // Make sure to kill the view if something broke
+        if ($this->getSetting('kill') === true) {
+            return;
+        }
         
         // Set view
         $this->addSiteData('view', 'frontpage');

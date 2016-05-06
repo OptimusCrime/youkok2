@@ -14,6 +14,7 @@ use Youkok2\Models\Me;
 use Youkok2\Models\Message;
 use Youkok2\Utilities\BacktraceManager;
 use Youkok2\Utilities\CacheManager;
+use Youkok2\Utilities\ClassParser;
 use Youkok2\Utilities\CsrfManager;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\JavaScriptLoader;
@@ -35,26 +36,34 @@ class BaseView {
     protected $settings;
     protected $path;
     
+    public function __construct($app) {
+        // Set reference to the application
+        $this->application = $app;
+        
+        // Set some headers
+        $this->application->setHeader('Content-Type', 'text/html; charset=utf-8');
+        $this->application->setHeader('X-Powered-By', 'PHP/3.3.1');
+    }
+    
     /*
      * Run the view
      */
     
     public function run() {
-        // Set some headers
-        $this->application->setHeader('Content-Type', 'text/html; charset=utf-8');
-        $this->application->setHeader('X-Powered-By', 'PHP/3.3.1');
-        
         // Init template and assign the default tags
         $this->initTemplateEngine();
         
-        // Init the site itself
-        $this->initSite();
+        // Only init stuff if we are not killing this view
+        if ($this->getSetting('kill') !== true) {
+            // Init the site itself
+            $this->initSite();
 
-        // Init the user object
-        $this->initUser();
-
-        // Set environment settings
-        $this->setEnvSettings();
+            // Init the user object
+            $this->initUser();
+            
+            // Set environment settings
+            $this->setEnvSettings();
+        }
     }
     
     /*
@@ -97,21 +106,41 @@ class BaseView {
         if (defined('AVAILABLE') and !AVAILABLE) {
             // We're offline, check if we should be allowed still
             if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
-                // Not whitelisted, kill
-                new Error('unavailable');
-                die();
+                // Return error page
+                $this->application->load(new ClassParser('Error'), [
+                    'kill' => true,
+                    'reason' => 'unavailable'
+                ]);
+                
+                // Kill this views
+                $this->settings['kill'] = true;
+                
+                // Return to avoid doing anything more
+                return;
             }
         }
 
         // Trying to connect to the database
-        try {
-            Database::connect();
-        }
-        catch (\Exception $e) {
-            $this->db = null;
+        if (Database::$db === null) {
+            try {
+                Database::connect();
+            }
+            catch (\Exception $e) {
+                // Set db to null
+                $this->db = null;
 
-            new Error('db');
-            die();
+                // Return error page
+                $this->application->load(new ClassParser('Error'), [
+                    'kill' => true,
+                    'reason' => 'db'
+                ]);
+                
+                // Kill this views
+                $this->settings['kill'] = true;
+                
+                // Return to avoid doing anything more
+                return;
+            }
         }
         
         // Set some site data
@@ -123,6 +152,11 @@ class BaseView {
      */
 
     private function initUser() {
+        // Check if we should skip this
+        if ($this->getSetting('kill') === true) {
+            return;
+        }
+        
         // Init the user
         Me::init();
 
@@ -257,15 +291,18 @@ class BaseView {
      * Various setters for the view from the application
      */
     
-    public function setApplication($application) {
-        $this->application = $application;
-    }
-    
     public function setSettings($settings) {
         $this->settings = $settings;
     }
     
     public function setPath($path) {
         $this->path = $path;
+    }
+    
+    protected function getSetting($key) {
+        if (isset($this->settings[$key])) {
+            return $this->settings[$key];
+        }
+        return null;
     }
 }
