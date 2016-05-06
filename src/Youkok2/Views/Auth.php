@@ -13,20 +13,18 @@ use Youkok2\Models\Me;
 use Youkok2\Models\User;
 use Youkok2\Models\ChangePassword;
 use Youkok2\Utilities\Database;
-use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\TemplateHelper;
 use Youkok2\Utilities\Utilities;
 
 class Auth extends BaseView {
-
+    
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
 
         // Reset menu
         $this->template->assign('HEADER_MENU', null);
@@ -39,7 +37,7 @@ class Auth extends BaseView {
     public function displayLogIn() {
         // Check if logged in
         if (Me::isLoggedIn()) {
-            Redirect::send('');
+            $this->application->send('');
         }
         else {
             // Check if submitted
@@ -73,7 +71,7 @@ class Auth extends BaseView {
     public function displayLogOut() {
         // Check if the user is logged in
         if (!Me::isLoggedIn()) {
-            Redirect::send('');
+            $this->application->send('');
         }
         
         // Log the user out
@@ -87,7 +85,7 @@ class Auth extends BaseView {
     public function displayRegister() {
         // Check if the user is logged in
         if (Me::isLoggedIn()) {
-            Redirect::send('');
+            $this->application->send('');
         }
         
         // Set view
@@ -166,7 +164,7 @@ class Auth extends BaseView {
                 MessageManager::addMessage('Her gikk visst noe galt...', 'danger');
                
                 // Redirect
-                Redirect::send('registrer');
+                $this->application->send(TemplateHelper::url_for('auth_register'));
             }
             else {
                 // Add message
@@ -175,7 +173,7 @@ class Auth extends BaseView {
                 // Log in (only session)
                 Me::setLogin($hash, $_POST['register-form-email']);
 
-                Redirect::send('');
+                $this->application->send('');
             }
         }
     }
@@ -186,7 +184,7 @@ class Auth extends BaseView {
 
     public function displayForgottenPassword() {
         if (Me::isLoggedIn()) {
-            Redirect::send('');
+            $this->application->send('');
         }
         
         // The menu
@@ -244,7 +242,7 @@ class Auth extends BaseView {
             }
 
             // Redirect back to form
-            Redirect::send('glemt-passord');
+            $this->application->send(TemplateHelper::url_for('auth_forgotten_password'));
         }
         else {
             $this->displayAndCleanup('forgotten_password.tpl');
@@ -258,8 +256,7 @@ class Auth extends BaseView {
     public function displayForgottenPasswordNew() {
         // Check if user can display this view
         if (Me::isLoggedIn() or !isset($_GET['hash'])) {
-            Redirect::send('');
-            exit();
+            $this->application->send('');
         }
         
         // Set view
@@ -302,14 +299,14 @@ class Auth extends BaseView {
                     // Log in (only session)
                     Me::setLogin($hash, $user->getEmail());
 
-                    Redirect::send('');
+                    $this->application->send('');
                 }
                 else {
                     // Add error message
                     MessageManager::addMessage('De to passordene er ikke like.', 'danger');
 
                     // Redirect
-                    Redirect::send('nytt-passord?hash=' . $_GET['hash']);
+                    $this->application->send(TemplateHelper::url_for('auth_new_password') . '?hash=' . $_GET['hash']);
                 }
             }
         }
@@ -318,7 +315,7 @@ class Auth extends BaseView {
             MessageManager::addMessage('Denne linken er ikke lenger gyldig.', 'danger');
 
             // Redirect
-            Redirect::send('');
+            $this->application->send('');
         }
     }
 }

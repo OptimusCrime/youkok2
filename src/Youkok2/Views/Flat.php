@@ -10,14 +10,13 @@
 namespace Youkok2\Views;
 
 class Flat extends BaseView {
-
+    
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*

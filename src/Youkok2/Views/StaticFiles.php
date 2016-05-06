@@ -12,14 +12,13 @@ namespace Youkok2\Views;
 use Youkok2\Utilities\Loader;
 
 class StaticFiles extends BaseView {
-
+    
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -34,7 +33,7 @@ class StaticFiles extends BaseView {
         $this->template->assign('CHANGELOG_CONTENT', $content);
         
         // Set headers (to fix unicode fuckup)
-        header('Content-Type: text/plain; charset=utf-8');
+        $this->application->setHeader('Content-Type', 'text/plain; charset=utf-8');
         
         // Render
         $this->displayAndCleanup('changelog.tpl');
@@ -49,10 +48,10 @@ class StaticFiles extends BaseView {
 
         // Send the correct content type
         if ($file == 'favicon.png') {
-            header('Content-Type: image/png');
+            $this->application->setHeader('Content-Type', 'image/png');
         }
         else {
-            header('Content-Type: image/x-icon');
+            $this->application->setHeader('Content-Type', 'image/x-icon');
         }
         
         // Send the right headers

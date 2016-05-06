@@ -24,7 +24,6 @@ class Error extends BaseView {
      */
 
     public function run() {
-        parent::run();
         
         // Check error reason
         if ($this->getSetting('reason') === 'db') {

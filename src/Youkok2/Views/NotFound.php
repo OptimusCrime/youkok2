@@ -24,7 +24,6 @@ class NotFound extends BaseView {
      */
 
     public function run() {
-        parent::run();
         
         // Make sure to kill the view if something broke
         if ($this->getSetting('kill') === true) {

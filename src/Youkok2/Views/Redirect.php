@@ -16,18 +16,26 @@ use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Loader;
 
 class Redirect extends BaseView {
-
+    
     /*
-     * Constructor
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
+    /*
+     * Run the view
      */
 
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
+    public function run() {
+        // Parse query
+        $query = explode('/', $this->path);
         
         // Check query
-        if (Loader::queryGetSize() > 0) {
-            $id = Loader::queryGet(Loader::queryGetSize() - 1);
+        if (count($query) > 0) {
+            $id = $query[count($query) - 1];
             if (is_numeric($id)) {
                 $element = Element::get($id);
                 
@@ -46,16 +54,12 @@ class Redirect extends BaseView {
                     }
                     
                     // Redirect
-                    header('Location: ' . $element->getUrl());
-                    
-                    // Kill
-                    exit();
+                    $this->application->send($element->getUrl(), true);
                 }
             }
         }
 
         // If we got this far, something is fucked up!
         $this->display404();
-        die();
     }
 }

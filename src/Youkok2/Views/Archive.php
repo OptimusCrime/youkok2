@@ -15,13 +15,20 @@ use Youkok2\Utilities\Routes;
 use Youkok2\Utilities\Loader;
 
 class Archive extends BaseView {
-
+    
     /*
-     * Constructor
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
+    /*
+     * Run the view
      */
 
-    public function __construct() {
-        parent::__construct();
+    public function run() {
         
         // Set information to site data
         $this->addSiteData('view', 'archive');
@@ -30,12 +37,15 @@ class Archive extends BaseView {
         
         // Load the archive
         $this->checkValidArchive();
+        
+        // Check if we should keep this view
+        if ($this->getSetting('kill') !== true) {
+            // Set stuff
+            $this->template->assign('HEADER_MENU', 'ARCHIVE');
 
-        // Set stuff
-        $this->template->assign('HEADER_MENU', 'ARCHIVE');
-
-        // Display
-        $this->displayAndCleanup('archive.tpl', Loader::queryGetClean());
+            // Display
+            $this->displayAndCleanup('archive.tpl', $this->path);
+        }
     }
     
     /*
@@ -44,7 +54,7 @@ class Archive extends BaseView {
     
     private function checkValidArchive() {
         // Try to create new element
-        $element = Element::get(Loader::queryGetClean());
+        $element = Element::get($this->path);
 
         // Check if element was found and is directory
         if ($element->wasFound() and $element->isDirectory()) {
@@ -53,7 +63,6 @@ class Archive extends BaseView {
         }
         else {
             $this->display404();
-            die();
         }
     }
     

@@ -12,26 +12,24 @@ namespace Youkok2\Views;
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Loader;
 use Youkok2\Utilities\MessageManager;
-use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\TemplateHelper;
 use Youkok2\Utilities\Utilities;
 
 class Profile extends BaseView {
-
+    
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
         
         // Set menu
         $this->template->assign('HEADER_MENU', '');
 
         // Make sure user us logged in
         if (!Me::isLoggedIn()) {
-            Redirect::send('');
+            $this->application->send('');
         }
     }
     
@@ -40,7 +38,7 @@ class Profile extends BaseView {
      */
     
     public function profileRedirect() {
-        Redirect::send(TemplateHelper::url_for('profile_settings'));
+        $this->application->send(TemplateHelper::url_for('profile_settings'));
     }
     
     /*
@@ -71,7 +69,7 @@ class Profile extends BaseView {
                 $this->profileUpdateInfo();
             }
             else {
-                Redirect::send('');
+                $this->application->send('');
             }
         }
     }
@@ -128,14 +126,14 @@ class Profile extends BaseView {
                 Me::setLogin($hash, Me::getEmail(), $set_login_cookie);
 
                 // Do the redirect
-                Redirect::send('profil/innstillinger');
+                $this->application->send(TemplateHelper::url_for('profile_settings'));
             }
             else {
                 // Add message
                 MessageManager::addMessage('Passordet du oppga som ditt gamle passord er ikke korrekt eller de nye passordene matchet ikke. Prøv igjen.', 'danger');
 
                 // Redirect
-                Redirect::send('profil/innstillinger');
+                $this->application->send(TemplateHelper::url_for('profile_settings'));
             }
         }
     }
@@ -196,14 +194,14 @@ class Profile extends BaseView {
             MessageManager::addMessage('Dine endringer er lagret.', 'success');
 
             // Redirect
-            Redirect::send('profil/innstillinger');
+            $this->application->send(TemplateHelper::url_for('profile_settings'));
         }
         else {
             // Add messag
             MessageManager::addMessage('Her gikk visst noe galt...', 'danger');
 
             // Redirect
-            Redirect::send('profil/innstillinger');
+            $this->application->send(TemplateHelper::url_for('profile_settings'));
         }
     }
 }

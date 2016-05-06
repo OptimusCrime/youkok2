@@ -14,15 +14,20 @@ use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Routes;
 
 class Search extends BaseView {
-
+    
     /*
-     * Constructor
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
+    /*
+     * Run the view
      */
 
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
-
+    public function run() {
         // Set menu
         $this->template->assign('HEADER_MENU', '');
 

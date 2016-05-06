@@ -43,13 +43,7 @@ class BaseView {
         // Set some headers
         $this->application->setHeader('Content-Type', 'text/html; charset=utf-8');
         $this->application->setHeader('X-Powered-By', 'PHP/3.3.1');
-    }
-    
-    /*
-     * Run the view
-     */
-    
-    public function run() {
+        
         // Init template and assign the default tags
         $this->initTemplateEngine();
         
@@ -271,9 +265,12 @@ class BaseView {
      */
     
     protected function display404() {
-        // New instance
-        new NotFound();
-    }
+        // Load the NotFound class
+        $this->application->load(new ClassParser('NotFound'), []);
+        
+        // Kill this views
+        $this->settings['kill'] = true;
+}
     
     /*
      * Close the database connection and process queued cache

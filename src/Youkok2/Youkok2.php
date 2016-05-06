@@ -130,6 +130,10 @@ class Youkok2 {
         */
     }
     
+    public function send($target, $external = false) {
+        $this->headers['location'] = (!$external ? URL_RELATIVE : '') . $target;
+    }
+    
     /*
      * Various setters
      */
