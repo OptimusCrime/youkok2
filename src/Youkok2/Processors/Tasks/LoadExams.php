@@ -66,7 +66,7 @@ Class LoadExams extends BaseProcessor {
         // Get all exames
         $get_all_courses  = "SELECT id" . PHP_EOL;
         $get_all_courses .= "FROM archive" . PHP_EOL;
-        $get_all_courses .= "WHERE is_directory = 1" . PHP_EOL;
+        $get_all_courses .= "WHERE directory = 1" . PHP_EOL;
         $get_all_courses .= "AND parent IS NULL";
         
         $get_all_courses_query = Database::$db->query($get_all_courses);
