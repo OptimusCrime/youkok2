@@ -101,7 +101,7 @@ class BaseView {
             // We're offline, check if we should be allowed still
             if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
                 // Return error page
-                $this->application->load(new ClassParser('Error'), [
+                $this->application->load(new ClassParser('Views\Error'), [
                     'kill' => true,
                     'reason' => 'unavailable'
                 ]);
@@ -124,7 +124,7 @@ class BaseView {
                 $this->db = null;
 
                 // Return error page
-                $this->application->load(new ClassParser('Error'), [
+                $this->application->load(new ClassParser('Views\Error'), [
                     'kill' => true,
                     'reason' => 'db'
                 ]);
@@ -266,7 +266,7 @@ class BaseView {
     
     protected function display404() {
         // Load the NotFound class
-        $this->application->load(new ClassParser('NotFound'), []);
+        $this->application->load(new ClassParser('Views\NotFound'), []);
         
         // Kill this views
         $this->settings['kill'] = true;
@@ -282,6 +282,14 @@ class BaseView {
 
         // Close connection
         Database::close();
+    }
+    
+    /*
+     * Static method used to check if a view is a processor or not
+     */
+    
+    public static function isProcessor() {
+        return false;
     }
     
     /*

@@ -78,7 +78,7 @@ class Youkok2 {
      * Run a processor with a given action TODO
      */
     
-    public function runProcessor($action, $settings = []) {
+    public function runProcessor($path, $settings = []) {
         /*
         // Check if we should return as json
         if (php_sapi_name() != 'cli' and !isset($_GET['format']) and (isset($settings['output']) and $settings['output'])) {

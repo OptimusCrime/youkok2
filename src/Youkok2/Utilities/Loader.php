@@ -13,52 +13,14 @@ use Youkok2\Youkok2;
 
 class Loader {
     
+    /*
+     * Returns a class using the provided URL path
+     */
+    
     public static function getClass($path) {
-        // TODO
-        // Check if we should load a view or a processor
-        /*if ($this->basePath == Routes::PROCESSOR) {
-            // Get processor
-            $this->getProcessor();
-        }
-        else {
-            $this->getView();
-        }*/
-        
-        return self::getView($path);
-    }
-    
-    /*
-     * Returns processor
-     */
-    
-    public function getProcessor() {
-        // Trim the fullPath
-        $action = substr(str_replace(Routes::PROCESSOR, '', $this->fullPath), 1);
-
-        // Run processor
-        Youkok2::runProcessor($action, ['output' => true, 'encode' => true]);
-    }
-    
-    public static function cleanPath($path) {
-        $path_clean = [];
-        $path_split = explode('/', $path);
-        foreach ($path_split as $v) {
-            if (strlen($v) > 0) {
-                $path_clean[] = $v;
-            }
-        }
-        
-        return $path_clean;
-    }
-    
-    /*
-     * Returns view
-     */
-    
-    public static function getView($path) {
         // Loop the path-array and find what view to load
         $found = false;
-        $view_path = '\Youkok2\Views\\';
+        $view_path = '\Youkok2\\';
         $method = null;
         $routes = Routes::getRoutes();
         
@@ -151,79 +113,26 @@ class Loader {
             $view_path .= 'NotFound';
         }
         
+        // Return the view and method
         return [
             'view' => $view_path,
             'method' => $method
         ];
+    }
+    
+    /*
+     * Cleans a path
+     */
+    
+    private static function cleanPath($path) {
+        $path_clean = [];
+        $path_split = explode('/', $path);
+        foreach ($path_split as $v) {
+            if (strlen($v) > 0) {
+                $path_clean[] = $v;
+            }
+        }
         
-        // TODO CLEANUP
-        /*
-        // Check if override
-        if ($this->override) {
-            // We are overriding, simply set view and method, if set
-            $this->match = $view_path . ($method === null ? '' : '.' . $method);
-        }
-        else {
-            // Run instance
-            $view_instance = new $view_path();
-            
-            // Check if we should call method on view
-            if ($method !== null) {
-                $view_instance->$method();
-            }
-        }*/
-    }
-
-    /*
-     * Methods for analyzing, reading and returning the query
-     */
-
-    private static function queryAnalyze() {
-        // Init array
-        self::$query = [];
-
-        // Split query
-        $q = explode('/', Loader::getQuery());
-
-        // Read fragments
-        if (count($q) > 0) {
-            foreach ($q as $v) {
-                if (strlen($v) > 0) {
-                    self::$query[] = $v;
-                }
-            }
-        }
-    }
-
-    /*
-     * Get the length of the query
-     */
-
-    public static function queryGetSize() {
-        return count(self::$query);
-    }
-
-    /*
-     * Get a fragment from the query
-     */
-
-    public static function queryGet($i, $prefix = '', $endfix = '') {
-        if (count(self::$query) >= $i) {
-            return $prefix . self::$query[$i] . $endfix;
-        }
-        return null;
-    }
-
-    /*
-     * Get the entire query
-     */
-
-    public static function queryGetClean($prefix = '', $endfix = '') {
-        if (count(self::$query) > 0) {
-            return $prefix . implode('/', self::$query) . $endfix;
-        }
-        else {
-            return null;
-        }
+        return $path_clean;
     }
 }
