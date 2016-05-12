@@ -58,6 +58,12 @@ class Harness {
         echo "\033[32m║                                                                   ║\033[0m\n";
         echo "\033[32m╚═══════════════════════════════════════════════════════════════════╝\033[0m\n";
         echo "\n\n";
+        
+        // Make sure to first create the file directories
+        @mkdir(FILE_PATH . '/cache');
+        
+        // Make sure to unlink the database file
+        @unlink(FILE_PATH . '/db.sqlite3');
 
         // Delete cache directory
         $dir = CACHE_PATH;
