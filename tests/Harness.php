@@ -64,6 +64,9 @@ class Harness {
         
         // Make sure to unlink the database file
         @unlink(FILE_PATH . '/db.sqlite3');
+        
+        // Create file for the database
+        file_put_contents(FILE_PATH . '/db.sqlite3', '');
 
         // Delete cache directory
         $dir = CACHE_PATH;
