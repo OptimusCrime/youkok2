@@ -19,7 +19,7 @@ class ClassParser {
      */
     
     public function __construct($path, $method = 'run') {
-        $this->classPath = '\Youkok2\Views\\' . $path;
+        $this->classPath = '\Youkok2\\' . $path;
         $this->method = $method;
     }
     

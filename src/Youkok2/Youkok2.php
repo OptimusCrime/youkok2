@@ -17,6 +17,7 @@ class Youkok2 {
     
     private $body;
     private $headers;
+    private $streams;
     private $sessions; // TODO
     private $cookies; // TODO
     
@@ -28,6 +29,7 @@ class Youkok2 {
         // Set initial things
         $this->body = '';
         $this->headers = [];
+        $this->streams = [];
         
         // Set default response
         $this->setStatus(200);
@@ -53,7 +55,7 @@ class Youkok2 {
             }
             else {
                 // This should be a hard coded URL then
-                $path = $target;
+                echo $path ;
             }
             
             // Get the correct view class
@@ -146,6 +148,10 @@ class Youkok2 {
         $this->headers[$key] = $value;
     }
     
+    public function addStream($stream) {
+        $this->streams[] = $stream;
+    }
+    
     public function setStatus($code) {
         $this->headers['status'] = $code;
     }
@@ -167,6 +173,10 @@ class Youkok2 {
             return $this->headers[$key];
         }
         return null;
+    }
+    
+    public function getStreams() {
+        return $this->streams;
     }
     
     public function getHeaders() {

@@ -32,6 +32,14 @@ class Wrapper {
             }
         }
         
+        // Check if we have a stream to output
+        if (count($this->container->getStreams()) > 0) {
+            foreach ($this->container->getStreams() as $v) {
+                // Simply echo the content of the stream
+                echo $v;
+            }
+        }
+        
         // Output the body
         if ($this->container->getBody() !== null and strlen($this->container->getBody()) > 0) {
             echo $this->container->getBody();

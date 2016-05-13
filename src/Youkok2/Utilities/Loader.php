@@ -110,7 +110,7 @@ class Loader {
             }
             
             // If we got this far, we never found a match
-            $view_path .= 'NotFound';
+            $view_path .= 'Views\NotFound';
         }
         
         // Return the view and method

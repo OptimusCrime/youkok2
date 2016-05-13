@@ -39,12 +39,24 @@ class StaticFiles extends BaseView {
         $this->displayAndCleanup('changelog.tpl');
     }
     public function returnFavicon() {
-        // Get the right file
-        $file = Loader::queryGet(0);
+        // Find the file name
+        $path_split = explode('/', $this->path);
+        $filename = '';
+        foreach ($path_split as $v) {
+            if (strlen($v) > 0) {
+                $filename = $v;
+                break;
+            }
+        }
         
-        // Open the file
-        $name = BASE_PATH . '/files/' . $file;
-        $fp = fopen($name, 'rb');
+        // Get the file
+        $file = BASE_PATH . '/files/' . $filename;
+        
+        // Send the right headers
+        $this->application->setHeader('Content-Length', filesize($file));
+        
+        // Read content of file
+        $this->application->addStream(file_get_contents($file));
 
         // Send the correct content type
         if ($file == 'favicon.png') {
@@ -53,12 +65,5 @@ class StaticFiles extends BaseView {
         else {
             $this->application->setHeader('Content-Type', 'image/x-icon');
         }
-        
-        // Send the right headers
-        header('Content-Length: ' . filesize($name));
-
-        // Dump the picture and stop the script
-        fpassthru($fp);
-        exit;
     }
 }

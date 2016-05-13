@@ -41,7 +41,14 @@ class TemplateHelper {
         $path = '';
         if ($params !== null) {
             // We have params, which means we have to construct a URL
-            $url_clean = Loader::cleanPath($route['path']);
+            $url_dirty = explode('/', $route['path']);
+            $url_clean = [];
+            foreach ($url_dirty as $v) {
+                if (strlen($v) > 0) {
+                    $url_clean[] = $v;
+                }
+            }
+            
             $url_constructed = [];
             foreach ($url_clean as $v) {
                 // Check if we have a wildecard or not present
