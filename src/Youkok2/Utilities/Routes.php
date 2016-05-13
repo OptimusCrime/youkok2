@@ -12,6 +12,12 @@ namespace Youkok2\Utilities;
 class Routes {
     
     /*
+     * Used to identify processors
+     */
+    
+    const PROCESSOR = '/processor';
+    
+    /*
      * Array with routes
      */
     
@@ -101,28 +107,28 @@ class Routes {
          */
 
         'Processors\Favorites' => [
-            ['path' => '/favorite'],
+            ['path' => Routes::PROCESSOR . '/favorite'],
         ],
         'Processors\Module' => [
-            ['path' => '/module/get', 'method' => 'get'],
-            ['path' => '/module/update', 'method' => 'update'],
+            ['path' => Routes::PROCESSOR . '/module/get', 'method' => 'get'],
+            ['path' => Routes::PROCESSOR . '/module/update', 'method' => 'update'],
         ],
         'Processors\Register' => [
-            ['path' => '/register/email', 'method' => 'checkEmail'],
+            ['path' => Routes::PROCESSOR . '/register/email', 'method' => 'checkEmail'],
         ],
         'Processors\StaticReturner' => [
-            ['path' => '/search/courses.json'],
+            ['path' => Routes::PROCESSOR . '/search/courses.json'],
         ],
         'Processors\LoadHistory' => [
-            ['path' => '/history/get'],
+            ['path' => Routes::PROCESSOR . '/history/get'],
         ],
         'Processors\LinkTitle' => [
-            ['path' => '/link/title'],
+            ['path' => Routes::PROCESSOR . '/link/title'],
         ],
         'Processors\Graybox' => [
-            ['path' => 'graybox/commits', 'method' => 'getCommits'],
-            ['path' => 'graybox/newest', 'method' => 'getNewest'],
-            ['path' => 'graybox/popular', 'method' => 'getPopular'],
+            ['path' => Routes::PROCESSOR . 'graybox/commits', 'method' => 'getCommits'],
+            ['path' => Routes::PROCESSOR . 'graybox/newest', 'method' => 'getNewest'],
+            ['path' => Routes::PROCESSOR . 'graybox/popular', 'method' => 'getPopular'],
         ],
 
         /*
@@ -130,13 +136,13 @@ class Routes {
          */
 
         'Processors\CreateFile' => [
-            ['path' => '/file/create'],
+            ['path' => Routes::PROCESSOR . '/file/create'],
         ],
         'Processors\CreateLink' => [
-            ['path' => '/link/create'],
+            ['path' => Routes::PROCESSOR . '/link/create'],
         ],
         'Processors\CreateFolder' => [
-            ['path' => '/folder/create'],
+            ['path' => Routes::PROCESSOR . '/folder/create'],
         ],
         
         /*
@@ -144,10 +150,10 @@ class Routes {
          */
         
         'Processors\Admin\HomeBoxes' => [
-            ['path' => '/admin/homeboxes'],
+            ['path' => Routes::PROCESSOR . '/admin/homeboxes'],
         ],
         'Processors\Admin\HomeGraph' => [
-            ['path' => '/admin/homegraph'],
+            ['path' => Routes::PROCESSOR . '/admin/homegraph'],
         ],
 
         /*
@@ -155,25 +161,25 @@ class Routes {
          */
 
         'Processors\Tasks\Upgrade' => [
-            ['path' => '/tasks/upgrade'],
+            ['path' => Routes::PROCESSOR . '/tasks/upgrade'],
         ],
         'Processors\Tasks\ClearCache' => [
-            ['path' => '/tasks/clearcache'],
+            ['path' => Routes::PROCESSOR . '/tasks/clearcache'],
         ],
         'Processors\Tasks\LoadCourses' => [
-            ['path' => '/tasks/courses'],
+            ['path' => Routes::PROCESSOR . '/tasks/courses'],
         ],
         'Processors\Tasks\LoadCoursesJson' => [
-            ['path' => '/tasks/coursesjson'],
+            ['path' => Routes::PROCESSOR . '/tasks/coursesjson'],
         ],
         'Processors\Tasks\LoadExams' => [
-            ['path' => '/tasks/exams'],
+            ['path' => Routes::PROCESSOR . '/tasks/exams'],
         ],
         'Processors\Tasks\FindDuplicates' => [
-            ['path' => '/tasks/duplicates'],
+            ['path' => Routes::PROCESSOR . '/tasks/duplicates'],
         ],
         'Processors\Tasks\GetCacheData' => [
-            ['path' => '/tasks/cachedata'],
+            ['path' => Routes::PROCESSOR . '/tasks/cachedata'],
         ],
         
         /*
@@ -181,10 +187,10 @@ class Routes {
          */
         
         'Processors\Tasks\Sync\SyncEmpty' => [
-            ['path' => '/tasks/sync/syncempty'],
+            ['path' => Routes::PROCESSOR . '/tasks/sync/syncempty'],
         ],
         'Processors\Tasks\Sync\SyncKarma' => [
-            ['path' => '/tasks/sync/synckarma'],
+            ['path' => Routes::PROCESSOR . '/tasks/sync/synckarma'],
         ],
     ];
     

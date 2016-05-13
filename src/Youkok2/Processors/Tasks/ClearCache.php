@@ -22,20 +22,20 @@ Class ClearCache extends BaseProcessor {
     }
 
     /*
-     * Construct
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
-
         
     /*
      * Run method
      */
 
-    protected function run() {
+    public function run() {
+        parent::run();
+        
         /*
          * Typeahead
          */
@@ -93,6 +93,9 @@ Class ClearCache extends BaseProcessor {
         // Set data
         $this->setData('code', 200);
         $this->setData('msg', 'Cache cleared');
+        
+        // Handle output
+        $this->handleOutput();
     }
     
     private function rmNonemptyDir($dir) {

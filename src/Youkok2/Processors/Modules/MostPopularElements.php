@@ -20,8 +20,8 @@ class MostPopularElements extends ModuleProcessor {
      * Constructor
      */
     
-    public function __construct($method, $settings) {
-        parent::__construct($method, $settings);
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -29,6 +29,8 @@ class MostPopularElements extends ModuleProcessor {
      */
     
     public function get() {
+        parent::run();
+        
         $collection = [];
         
         // Get the correct delta
@@ -78,6 +80,8 @@ class MostPopularElements extends ModuleProcessor {
      */
     
     public function update() {
+        parent::run();
+        
         // Get the correct delta
         $delta_numeric = $this->getSetting('module1_delta');
         

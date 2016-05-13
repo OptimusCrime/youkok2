@@ -32,12 +32,11 @@ class Favorites extends BaseProcessor {
     }
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
 
     /*
@@ -45,6 +44,8 @@ class Favorites extends BaseProcessor {
      */
 
     public function run() {
+        parent::run();
+        
         if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['type']) and 
             ($_POST['type'] == 'add' or $_POST['type'] == 'remove')) {
             
@@ -79,5 +80,8 @@ class Favorites extends BaseProcessor {
             $this->setData('code', 500);
             $this->setData('msg', 'Mangler enter id eller type');
         }
+        
+        // Handle output
+        $this->handleOutput();
     }
 }

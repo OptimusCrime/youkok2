@@ -69,12 +69,11 @@ class Graybox extends BaseProcessor {
     }
 
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
 
     /*
@@ -82,6 +81,8 @@ class Graybox extends BaseProcessor {
      */
 
     public function getCommits() {
+        parent::run();
+        
         // Array for storing random commits
         $commits = [];
 
@@ -95,6 +96,9 @@ class Graybox extends BaseProcessor {
 
         // Set OK
         $this->setOk();
+        
+        // Handle output
+        $this->handleOutput();
     }
     
     /*
@@ -102,6 +106,8 @@ class Graybox extends BaseProcessor {
      */
     
     public function getNewest() {
+        parent::run();
+        
         // Get the collection
         $raw_collection = Element::getNewest(5);
         
@@ -116,6 +122,9 @@ class Graybox extends BaseProcessor {
         
         // Set OK
         $this->setOk();
+        
+        // Handle output
+        $this->handleOutput();
     }
 
     /*
@@ -123,6 +132,8 @@ class Graybox extends BaseProcessor {
      */
 
     public function getPopular() {
+        parent::run();
+        
         $data = Youkok2::runProcessor('/module/get',[
             'output' => false,
             'encode' => true,
@@ -136,5 +147,8 @@ class Graybox extends BaseProcessor {
 
         // Set OK
         $this->setOk();
+        
+        // Handle output
+        $this->handleOutput();
     }
 }

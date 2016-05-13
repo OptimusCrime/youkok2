@@ -9,6 +9,7 @@
 
 namespace Youkok2;
 
+use Youkok2\Utilities\Loader;
 use Youkok2\Utilities\Routes;
 
 class Youkok2 {
@@ -44,26 +45,33 @@ class Youkok2 {
         $path = null;
         
         // Check if we are parsing a query or a class
-        if (get_class($target) === 'Youkok2\Utilities\ClassParser') {
+        if (gettype($target) === 'object' and get_class($target) === 'Youkok2\Utilities\ClassParser') {
             // We're using the class parser, simply fetch the class from it
             $class = $target->getClass();
         }
         else {
             // Check if we are parsing a query
-            if (get_class($target) === 'Youkok2\Utilities\QueryParser') {
+            if (gettype($target) === 'object' and get_class($target) === 'Youkok2\Utilities\QueryParser') {
                 $path = $target->getPath();
             }
             else {
                 // This should be a hard coded URL then
-                echo $path ;
+                $path = $target;
             }
             
             // Get the correct view class
-            $class = Utilities\Loader::getClass($path);
+            $class = Loader::getClass($path);
         }
         
         // Initiate the view
         $view = new $class['view']($this);
+        
+        // Special case handling for processors that are called with URL
+        if ($view::isProcessor() and count($settings) === 0) {
+            $settings['application'] = true;
+            $settings['close_db'] = true;
+        }
+        
         $view->setSettings($settings);
         $view->setPath($path);
         
@@ -74,62 +82,22 @@ class Youkok2 {
         else {
             $view->$class['method']();
         }
+        
+        return $view;
     }
     
     /*
-     * Run a processor with a given action TODO
+     * Run a processor with a given action
      */
     
-    public function runProcessor($path, $settings = []) {
-        /*
-        // Check if we should return as json
-        if (php_sapi_name() != 'cli' and !isset($_GET['format']) and (isset($settings['output']) and $settings['output'])) {
-            header('Content-Type: application/json');
+    public function runProcessor($target, $settings = []) {
+        // If the processor is a string, be sure to prefix with the processor URL
+        if (gettype($target) === 'string') {
+            $target = Routes::PROCESSOR . $target;
         }
         
-        // Check override
-        if (isset($_GET['format'])) {
-            if ($_GET['format'] == 'json') {
-                header('Content-Type: application/json');
-            }
-        }
-        
-        // Loop the path-array and find what view to load
-        $found = false;
-        $processor = 'Youkok2\\Processors\\';
-        $method = 'run';
-        $processors = Routes::getProcessors();
-        
-        // Loop the routes
-        foreach ($processors as $k => $v) {
-            foreach ($v as $iv) {
-                if ($iv['path'] == $action or substr($iv['path'], 1) == $action) {
-                    // We found matching url-pattern, store name
-                    $processor .= $k;
-                    
-                    // Check if we should call a given method
-                    if (isset($iv['method'])) {
-                        $method = $iv['method'];
-                    }
-                    
-                    // Set to found and break out of the 
-                    $found = true;
-                    break;
-                }
-            }
-        }
-        
-        // Check if found
-        if (!$found) {
-            $processor .= 'NotFound';
-        }
-        
-        // New instance of processor, let the magic happen
-        $processor = new $processor($method, $settings);
-
-        // Return the content
-        return $processor->getData();
-        */
+        // Redirect request
+        return $this->load($target, $settings);
     }
     
     public function send($target, $external = false) {

@@ -46,15 +46,6 @@ class Wrapper {
         }
     }
     
-    public function debug() {
-        echo 'Debug';
-        var_dump($this->container->getHeaders());
-        
-        echo '<pre>';
-        echo $this->container->getBody();
-        echo '</pre>';
-    }
-    
     private function setResponseCode($code) {
         http_response_code($code);
     }

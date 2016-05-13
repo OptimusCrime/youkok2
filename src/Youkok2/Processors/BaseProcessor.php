@@ -8,12 +8,12 @@
 
 namespace Youkok2\Processors;
 
-use Youkok2\Youkok2;
 use Youkok2\Models\Me;
 use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;
+use Youkok2\Views\Processors;
 
-abstract class BaseProcessor extends Youkok2 {
+abstract class BaseProcessor extends Processors {
     
     /*
      * Variable for storing data
@@ -21,27 +21,26 @@ abstract class BaseProcessor extends Youkok2 {
     
     private $method;
     private $data;
-    private $settings;
     
+        
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
+    
+    public function __construct($app) {
+        parent::__construct($app);
+        
         // Set data to empty array
         $this->data = [];
-
-        // Store method and settings
-        $this->method = $method;
-        $this->settings = $settings;
-
+    }
+    
+    public function run() {
+        parent::run();
+        
         // Check if user needs database access
         if ($this->requireDatabase()) {
             // Try to connect to database
-            if (!$this->makeDatabaseConnection()) {
-                // Handle output
-                $this->handleOutput();
-            }
+            $this->makeDatabaseConnection();
         }
         
         // Check if we could try to log the user in
@@ -54,23 +53,6 @@ abstract class BaseProcessor extends Youkok2 {
             // User does not have access to this view
             $this->setData('code', 500);
             $this->setData('msg', 'No access');
-
-            // Handle output
-            $this->handleOutput();
-
-        }
-        else {
-            // Run the method
-            call_user_func_array([$this, $method], []);
-
-            // Handle output
-            $this->handleOutput();
-        }
-
-        // Check if we should close the database
-        if (isset($this->settings['close_db']) and $this->settings['close_db']) {
-            // Close connection
-            $this->closeConnection();
         }
     }
 
@@ -156,7 +138,7 @@ abstract class BaseProcessor extends Youkok2 {
         $return_data = $this->data;
 
         // Check if we should encode
-        if (isset($this->settings['encode']) and $this->settings['encode']) {
+        if ($this->getSetting('encode') === null or $this->getSetting('encode')) {
             $return_data = $this->encodeData($return_data);
         }
 
@@ -172,28 +154,32 @@ abstract class BaseProcessor extends Youkok2 {
         // About to output, make sure cachemanager is storing everything
         CacheManager::store();
         
-        // Check if we should output data at all
-        if (!isset($_GET['format']) or (isset($_GET['format']) and $_GET['format'] != 'html')) {
-            if (isset($this->settings['output']) and $this->settings['output']) {
-                $output_data = $this->data;
-
-                // Check if we should encode
-                if (isset($this->settings['encode']) and $this->settings['encode']) {
-                    $output_data = $this->encodeData($output_data);
-                }
-
-                // Handle CLI and JSON
-                if (php_sapi_name() == 'cli') {
-                    // CLI output using CLImate
-                    $climate = new \League\CLImate\CLImate;
-                    $climate->json($output_data);
-                }
-                else {
-                    // Simply echo as JSON content
-                    echo json_encode($output_data);
-                }
+        // Check if we should close the database
+        if ($this->getSetting('close_db') and $this->getSetting('close_db')) {
+            // Close connection
+            $this->closeConnection();
+        }
+        
+        $output_data = $this->data;
+        if ($this->getSetting('encode') === null or $this->getSetting('encode')) {
+            $output_data = $this->encodeData($output_data);
+        }
+        
+        // Check if we can access the application
+        if ($this->getSetting('application')) {
+            
+            $this->application->setBody(json_encode($output_data));
+        }
+        else {
+            // Not an application, check if we are calling from CLI
+            if (php_sapi_name() == 'cli') {
+                // CLI output using CLImate
+                $climate = new \League\CLImate\CLImate;
+                $climate->json($output_data);
             }
         }
+        
+        return $output_data;
     }
     
     /*
@@ -244,46 +230,5 @@ abstract class BaseProcessor extends Youkok2 {
         if (Database::$db !== null) {
             Database::close();
         }
-    }
-    
-    /*
-     * Get settings
-     */
-    
-    protected function getSetting($key = null) {
-        // Check if we should return all settings
-        if ($key == null) {
-            return $this->settings;
-        }
-        
-        // Traverse all the settings from post -> get -> cli
-        if (isset($_POST[$key])) {
-            return $_POST[$key];
-        }
-        if (isset($_GET[$key])) {
-            return $_GET[$key];
-        }
-        if (isset($this->settings[$key])) {
-            return $this->settings[$key];
-        }
-        
-        // No settings
-        return [];
-    }
-    
-    /*
-     * Set settings
-     */
-    
-    protected function setSetting($key, $value) {
-        $this->settings[$key] = $value;
-    }
-    
-    /*
-     * Get method
-     */
-    
-    protected function getMethod() {
-        return $this->method;
     }
 }

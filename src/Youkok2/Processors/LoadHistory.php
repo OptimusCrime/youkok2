@@ -45,20 +45,21 @@ class LoadHistory extends BaseProcessor {
     }
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
      * Load data
      */
     
-    protected function run() {
-         // For returning content
+    public function run() {
+        parent::run();
+        
+        // For returning content
         $collection = [];
         
         // Check if supplied correct data
@@ -104,5 +105,8 @@ class LoadHistory extends BaseProcessor {
             // Id not provided, return error
             $this->setError();
         }
+        
+        // Handle output
+        $this->handleOutput();
     }
 }

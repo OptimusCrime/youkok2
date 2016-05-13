@@ -12,29 +12,24 @@ namespace Youkok2\Processors;
 use Youkok2\Utilities\Loader;
 
 class StaticReturner extends BaseProcessor {
-
+    
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Override settings
-        $settings['output'] = false;
-
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
-     * Return data based on request
+     * Load data
      */
     
-    protected function run() {
-        // Get thequery
-        $request = Loader::getQuery();
-
+    public function run() {
+        parent::run();
+        
         // Figure out what is called
-        if ($request == 'processor/search/courses.json') {
+        if ($this->path == '/processor/search/courses.json') {
             $file = CACHE_PATH . '/courses.json';
             if (file_exists($file)) {
                 $content = file_get_contents($file);
@@ -43,8 +38,9 @@ class StaticReturner extends BaseProcessor {
                 $content = [];
             }
         }
-
-        // Return data (this is dirty as fuck)
-        echo $content;
+        
+        if ($this->getSetting('application')) {
+            $this->application->setBody($content);
+        }
     }
 }

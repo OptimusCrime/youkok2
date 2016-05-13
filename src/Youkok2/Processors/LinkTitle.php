@@ -10,21 +10,22 @@
 namespace Youkok2\Processors;
 
 class LinkTitle extends BaseProcessor {
-
+    
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
-
+    
     /*
-     * Try to fetch title
+     * Load data
      */
-
-    protected function run() {
+    
+    public function run() {
+        parent::run();
+        
         if (isset($_POST['url'])) {
             // Trim away
             $_POST['url'] = rtrim(trim($_POST['url']));
@@ -70,5 +71,8 @@ class LinkTitle extends BaseProcessor {
             // Return error
             $this->setError();
         }
+        
+        // Handle the output
+        $this->handleOutput();
     }
 }

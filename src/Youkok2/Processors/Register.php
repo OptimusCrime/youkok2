@@ -24,12 +24,11 @@ class Register extends BaseProcessor {
     }
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
 
     /*
@@ -37,6 +36,8 @@ class Register extends BaseProcessor {
      */
 
     public function checkEmail() {
+        parent::run();
+        
         // Check if valid request
         if (isset($_POST['email'])) {
             if (isset($_POST['ignore'])) {
@@ -89,5 +90,8 @@ class Register extends BaseProcessor {
         else {
             $this->setData('code', 500);
         }
+        
+        // Handle output
+        $this->handleOutput();
     }
 }

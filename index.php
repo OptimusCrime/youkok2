@@ -93,6 +93,3 @@ if ($call_loader) {
     // Run the wrapper
     $wrapper->run();
 }
-else {
-    $wrapper->debug();
-}

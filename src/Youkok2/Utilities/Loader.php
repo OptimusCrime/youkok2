@@ -22,10 +22,16 @@ class Loader {
         $found = false;
         $view_path = '\Youkok2\\';
         $method = null;
+        $processor = false;
         $routes = Routes::getRoutes();
         
         // Clean the current URL
         $current_url_clean = self::cleanPath($path);
+        
+        // Check if the requested URL is for a processor
+        if (count($current_url_clean) > 0 and ('/' . $current_url_clean[0]) == Routes::PROCESSOR) {
+            $processor = true;
+        }
         
         // Loop all the routes
         foreach ($routes as $view => $list) {
@@ -110,7 +116,12 @@ class Loader {
             }
             
             // If we got this far, we never found a match
-            $view_path .= 'Views\NotFound';
+            if (!$processor) {
+                $view_path .= 'Views\NotFound';
+            }
+            else {
+                $view_path .= 'Processors\NotFound';
+            }
         }
         
         // Return the view and method

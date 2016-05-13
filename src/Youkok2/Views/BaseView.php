@@ -44,6 +44,14 @@ class BaseView {
         $this->application->setHeader('Content-Type', 'text/html; charset=utf-8');
         $this->application->setHeader('X-Powered-By', 'PHP/3.3.1');
         
+        // Chech if this is a processors
+        $class = explode('\\', get_class($this));
+        foreach ($class as $v) {
+            if ($v === 'Processors') {
+                return;
+            }
+        }
+        
         // Init template and assign the default tags
         $this->initTemplateEngine();
         
@@ -309,5 +317,9 @@ class BaseView {
             return $this->settings[$key];
         }
         return null;
+    }
+    
+    public function getSettings() {
+        return $this->settings;
     }
 }
