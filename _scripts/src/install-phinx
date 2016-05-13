@@ -14,4 +14,4 @@ environments:
         charset: utf8
     test:
         adapter: sqlite
-        name: ./tests/files/files/db.sqlite3
+        name: ./tests/files/db.sqlite3
