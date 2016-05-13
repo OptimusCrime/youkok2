@@ -1,0 +1,21 @@
+language: php
+php:
+  - '5.6'
+  - '7.0'
+  - hhvm
+  - nightly
+
+install:
+  # Install dependencies
+  - composer install
+
+before_script:
+  # Deploy phinx file
+  - cp _scripts/src/install-phinx phinx.yml
+  
+  # Deploy mpty local.php file
+  - cp _scripts/src/install-local-empty local.php
+
+script:
+  # Run the tests
+  php vendor/bin/phpunit -c tests
