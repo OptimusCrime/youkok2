@@ -54,29 +54,11 @@ abstract class AdminBaseView extends BaseView {
     ];
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        parent::__construct();
-        
-        if (Me::isAdmin()) {
-            // Set menu
-            $this->template->assign('HEADER_MENU', null);
-            
-            // Set some admin things
-            $this->template->assign('ADMIN_HEADING', $this->adminHeading);
-            
-            // Apply admin related stuff to site data
-            $this->addSiteData('view', $this->adminIdentifier);
-            $this->addSiteData('admin_view', true);
-            
-            // Create sidemenu
-            $this->createSidemenu();
-        }
-        else {
-            Redirect::send('');
-        }
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*

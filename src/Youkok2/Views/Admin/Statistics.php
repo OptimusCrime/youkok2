@@ -25,11 +25,11 @@ class Statistics extends AdminBaseView {
     protected $adminBreadcrumbs = ['Statistikk'];
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*

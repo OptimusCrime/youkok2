@@ -25,11 +25,11 @@ class Scripts extends AdminBaseView {
     protected $adminBreadcrumbs = ['Scripts'];
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*

@@ -25,11 +25,11 @@ class Contribution extends AdminBaseView {
     protected $adminBreadcrumbs = ['Nye bidrag'];
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*

@@ -34,12 +34,11 @@ class FindDuplicates extends BaseProcessor {
     }
 
     /*
-     * Construct
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -65,7 +64,7 @@ class FindDuplicates extends BaseProcessor {
         // Get all courses
         $get_all_courses  = "SELECT id, name" . PHP_EOL;
         $get_all_courses .= "FROM archive" . PHP_EOL;
-        $get_all_courses .= "WHERE is_directory = 1" . PHP_EOL;
+        $get_all_courses .= "WHERE directory = 1" . PHP_EOL;
         $get_all_courses .= "AND parent IS NULL";
         
         $get_all_courses_query = Database::$db->query($get_all_courses);
@@ -89,11 +88,6 @@ class FindDuplicates extends BaseProcessor {
             }
         }
         
-        // Check if we should just dump everything for HTML view
-        if (isset($_GET['format']) and $_GET['format'] == 'html') {
-            print_r($duplicates);
-        }
-        
         // Output
         $this->setData('duplicates_code', $duplicates);
     }
@@ -106,7 +100,7 @@ class FindDuplicates extends BaseProcessor {
         // Get all courses
         $get_all_courses  = "SELECT id, name" . PHP_EOL;
         $get_all_courses .= "FROM archive" . PHP_EOL;
-        $get_all_courses .= "WHERE is_directory = 1" . PHP_EOL;
+        $get_all_courses .= "WHERE directory = 1" . PHP_EOL;
         $get_all_courses .= "AND parent IS NULL";
         
         $get_all_courses_query = Database::$db->query($get_all_courses);
@@ -128,11 +122,6 @@ class FindDuplicates extends BaseProcessor {
             if ($v > 1) {
                 $duplicates[] = $k;
             }
-        }
-        
-        // Check if we should just dump everything for HTML view
-        if (isset($_GET['format']) and $_GET['format'] == 'html') {
-            print_r($duplicates);
         }
         
         // Output
