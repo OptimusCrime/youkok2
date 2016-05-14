@@ -81,29 +81,54 @@ class Module extends BaseProcessor {
      * Returns the correct module
      */
     
-    private function getModule() {
+    private function getModule($settings) {
+        // Make sure to check that we have the module in our settings
+        if (!isset($settings['module'])) {
+            return null;
+        }
+
         // Get the correct module
         foreach (self::$modules as $k => $v) {
-            if ($v == $this->getSetting('module')) {
+            if ($v == $settings['module']) {
                 $this->module = $k;
                 break;
             }
         }
+    }
+
+     /*
+     * Set the correct settings
+     */
+
+    private function getModuleSettings() {
+        // Make sure we tell the model processor not to output anything
+        $settings = $this->getSettings();
+        $settings['application'] = false;
+        $settings['close_db'] = false;
+        if (isset($_POST['module'])) {
+            $settings['module'] = $_POST['module'];
+        }
+        if (isset($_POST['module1_delta'])) {
+            $settings['module1_delta'] = $_POST['module1_delta'];
+        }
+        if (isset($_POST['module2_delta'])) {
+            $settings['module2_delta'] = $_POST['module2_delta'];
+        }
+
+        // Return the settings
+        return $settings;
     }
     
     /*
      * Fetch module data
      */
     
-    public function get() {
-        parent::run();
-        
+    public function get() {        
+        // Get the settings
+        $settings = $this->getModuleSettings();
+
         // Set the correct module
-        $this->getModule();
-        
-        // Make sure we tell the model processor not to output anything
-        $settings = $this->getSettings();
-        $settings['application'] = false;
+        $this->getModule($settings);
         
         // Check if the current module exists
         if ($this->module != null) {
@@ -127,12 +152,11 @@ class Module extends BaseProcessor {
      */
     
     public function update() {
+        // Get the settings
+        $settings = $this->getModuleSettings();
+
         // Set the correct module
-        $this->getModule();
-        
-        // Make sure we tell the model processor not to output anything
-        $settings = $this->getSettings();
-        $settings['application'] = false;
+        $this->getModule($settings);
         
         // Check if the current module exists
         if ($this->module != null) {

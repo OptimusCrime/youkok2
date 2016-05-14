@@ -182,7 +182,6 @@ abstract class BaseProcessor extends Processors {
         
         // Check if we can access the application
         if ($this->getSetting('application')) {
-            
             $this->application->setBody(json_encode($output_data));
         }
         else {
