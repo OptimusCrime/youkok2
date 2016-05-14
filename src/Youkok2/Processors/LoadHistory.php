@@ -57,8 +57,6 @@ class LoadHistory extends BaseProcessor {
      */
     
     public function run() {
-        parent::run();
-        
         // For returning content
         $collection = [];
         
@@ -105,8 +103,5 @@ class LoadHistory extends BaseProcessor {
             // Id not provided, return error
             $this->setError();
         }
-        
-        // Handle output
-        $this->handleOutput();
     }
 }

@@ -71,12 +71,21 @@ class Youkok2 {
             $settings['application'] = true;
             $settings['close_db'] = true;
         }
-        
+
+        // Store what method to call
+        if ($view::isProcessor()) {
+            $view->setMethod($class['method']);
+        }        
+            
+        // Set settings and path
         $view->setSettings($settings);
         $view->setPath($path);
         
         // Check if we should run a specific method or just call the regular handler
-        if ($class['method'] === null) {
+        if ($view::isProcessor()) {
+            $view->execute();
+        }
+        else if ($class['method'] === null) {
             $view->run();
         }
         else {

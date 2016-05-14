@@ -43,9 +43,7 @@ class Favorites extends BaseProcessor {
      * Set or remove favorite for a element
      */
 
-    public function run() {
-        parent::run();
-        
+    public function run() {       
         if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['type']) and 
             ($_POST['type'] == 'add' or $_POST['type'] == 'remove')) {
             
@@ -80,8 +78,5 @@ class Favorites extends BaseProcessor {
             $this->setData('code', 500);
             $this->setData('msg', 'Mangler enter id eller type');
         }
-        
-        // Handle output
-        $this->handleOutput();
     }
 }

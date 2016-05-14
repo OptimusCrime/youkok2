@@ -24,8 +24,6 @@ class LinkTitle extends BaseProcessor {
      */
     
     public function run() {
-        parent::run();
-        
         if (isset($_POST['url'])) {
             // Trim away
             $_POST['url'] = rtrim(trim($_POST['url']));
@@ -71,8 +69,5 @@ class LinkTitle extends BaseProcessor {
             // Return error
             $this->setError();
         }
-        
-        // Handle the output
-        $this->handleOutput();
     }
 }

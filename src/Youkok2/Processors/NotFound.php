@@ -24,13 +24,8 @@ class NotFound extends BaseProcessor {
      */
     
     public function run() {
-        parent::run();
-        
         // Set data
         $this->setData('msg', 'Processor not found');
         $this->setData('code', 500);
-        
-        // Handle output
-        $this->handleOutput();
     }
 }

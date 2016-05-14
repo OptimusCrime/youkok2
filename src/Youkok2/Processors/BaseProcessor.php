@@ -33,10 +33,19 @@ abstract class BaseProcessor extends Processors {
         // Set data to empty array
         $this->data = [];
     }
+
+    public function setMethod($method) {
+        if ($method === null) {
+            $this->method = 'run';
+        }
+        else {
+            $this->method = $method;
+        }
+    }
     
-    public function run() {
+    public function execute() {  
         parent::run();
-        
+
         // Check if user needs database access
         if ($this->requireDatabase()) {
             // Try to connect to database
@@ -54,6 +63,12 @@ abstract class BaseProcessor extends Processors {
             $this->setData('code', 500);
             $this->setData('msg', 'No access');
         }
+
+        // Run the class method
+        $this->{$this->method}();
+
+        // Handle output
+        $this->handleOutput();
     }
 
     /*

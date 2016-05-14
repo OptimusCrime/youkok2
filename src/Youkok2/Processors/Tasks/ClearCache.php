@@ -34,8 +34,7 @@ Class ClearCache extends BaseProcessor {
      */
 
     public function run() {
-        parent::run();
-        
+
         /*
          * Typeahead
          */
@@ -93,9 +92,6 @@ Class ClearCache extends BaseProcessor {
         // Set data
         $this->setData('code', 200);
         $this->setData('msg', 'Cache cleared');
-        
-        // Handle output
-        $this->handleOutput();
     }
     
     private function rmNonemptyDir($dir) {

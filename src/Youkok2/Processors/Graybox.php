@@ -80,9 +80,7 @@ class Graybox extends BaseProcessor {
      * Get different commits
      */
 
-    public function getCommits() {
-        parent::run();
-        
+    public function getCommits() {        
         // Array for storing random commits
         $commits = [];
 
@@ -96,9 +94,6 @@ class Graybox extends BaseProcessor {
 
         // Set OK
         $this->setOk();
-        
-        // Handle output
-        $this->handleOutput();
     }
     
     /*
@@ -106,8 +101,6 @@ class Graybox extends BaseProcessor {
      */
     
     public function getNewest() {
-        parent::run();
-        
         // Get the collection
         $raw_collection = Element::getNewest(5);
         
@@ -122,9 +115,6 @@ class Graybox extends BaseProcessor {
         
         // Set OK
         $this->setOk();
-        
-        // Handle output
-        $this->handleOutput();
     }
 
     /*
@@ -132,23 +122,18 @@ class Graybox extends BaseProcessor {
      */
 
     public function getPopular() {
-        parent::run();
-        
-        $data = Youkok2::runProcessor('/module/get',[
+        $data = $this->application->runProcessor('/module/get', [
             'output' => false,
             'encode' => true,
             'close_db' => false,
             'module' => 1,
             'limit' => 5,
-            'module1_delta' => 3]);
+            'module1_delta' => 3])->getData();
 
         // Set to data
         $this->setData('data', $data['data']);
 
         // Set OK
         $this->setOk();
-        
-        // Handle output
-        $this->handleOutput();
     }
 }

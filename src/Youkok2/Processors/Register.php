@@ -36,8 +36,6 @@ class Register extends BaseProcessor {
      */
 
     public function checkEmail() {
-        parent::run();
-        
         // Check if valid request
         if (isset($_POST['email'])) {
             if (isset($_POST['ignore'])) {
@@ -90,8 +88,5 @@ class Register extends BaseProcessor {
         else {
             $this->setData('code', 500);
         }
-        
-        // Handle output
-        $this->handleOutput();
     }
 }

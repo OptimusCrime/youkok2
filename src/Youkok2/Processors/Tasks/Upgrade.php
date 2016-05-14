@@ -43,12 +43,8 @@ class Upgrade extends BaseProcessor {
      */
     
     public function run() {
-        parent::run();
-        
         $this->buildJS();
         $this->buildCSS();
-        
-        $this->handleOutput();
     }
     
     /*

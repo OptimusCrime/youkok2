@@ -26,8 +26,6 @@ class StaticReturner extends BaseProcessor {
      */
     
     public function run() {
-        parent::run();
-        
         // Figure out what is called
         if ($this->path == '/processor/search/courses.json') {
             $file = CACHE_PATH . '/courses.json';

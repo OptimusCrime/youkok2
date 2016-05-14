@@ -126,9 +126,9 @@ class Routes {
             ['path' => Routes::PROCESSOR . '/link/title'],
         ],
         'Processors\Graybox' => [
-            ['path' => Routes::PROCESSOR . 'graybox/commits', 'method' => 'getCommits'],
-            ['path' => Routes::PROCESSOR . 'graybox/newest', 'method' => 'getNewest'],
-            ['path' => Routes::PROCESSOR . 'graybox/popular', 'method' => 'getPopular'],
+            ['path' => Routes::PROCESSOR . '/graybox/commits', 'method' => 'getCommits'],
+            ['path' => Routes::PROCESSOR . '/graybox/newest', 'method' => 'getNewest'],
+            ['path' => Routes::PROCESSOR . '/graybox/popular', 'method' => 'getPopular'],
         ],
 
         /*
