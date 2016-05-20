@@ -6,17 +6,17 @@
          stopOnFailure="false"
          syntaxCheck="true"
          verbose="true"
-         bootstrap="Harness.php"
+         bootstrap="tests/Harness.php"
          strict="true">
     <testsuites>
         <testsuite name="Setup">
-            <file>Setup/Setup.php</file>
+            <file>tests/Setup/Setup.php</file>
         </testsuite>
         <testsuite name="money">
-            <directory>Tests/</directory>
+            <directory>tests/Tests/</directory>
         </testsuite>
         <testsuite name="Teardown">
-            <file>Setup/Teardown.php</file>
+            <file>tests/Setup/Teardown.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
