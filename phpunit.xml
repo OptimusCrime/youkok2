@@ -7,16 +7,25 @@
          syntaxCheck="true"
          verbose="true"
          bootstrap="tests/Harness.php"
-         strict="true">
+         strict="true"
+>
+    
     <testsuites>
         <testsuite name="Setup">
-            <file>tests/Setup/Setup.php</file>
+            <file>./tests/Setup/Setup.php</file>
         </testsuite>
         <testsuite name="money">
-            <directory>tests/Tests/</directory>
+            <directory>./tests/Tests/</directory>
         </testsuite>
         <testsuite name="Teardown">
-            <file>tests/Setup/Teardown.php</file>
+            <file>./tests/Setup/Teardown.php</file>
         </testsuite>
     </testsuites>
+
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory>./src/</directory>
+        </whitelist>
+    </filter>
 </phpunit>
