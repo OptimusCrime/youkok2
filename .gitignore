@@ -10,6 +10,7 @@ composer.lock
 composer.phar
 phinx.yml
 npm-debug.log
+clover.xml
 
 # And these
 .DS_Store
