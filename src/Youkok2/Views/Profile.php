@@ -114,7 +114,7 @@ class Profile extends BaseView {
                 Me::update();
 
                 // Add message
-                MessageManager::addMessage('Passordet er endret.', 'success');
+                MessageManager::addMessage($this->application, 'Passordet er endret.', 'success');
 
                 // Check if we should set more than just session
                 $set_login_cookie = false;
@@ -130,7 +130,7 @@ class Profile extends BaseView {
             }
             else {
                 // Add message
-                MessageManager::addMessage('Passordet du oppga som ditt gamle passord er ikke korrekt eller de nye passordene matchet ikke. Prøv igjen.', 'danger');
+                MessageManager::addMessage($this->application, 'Passordet du oppga som ditt gamle passord er ikke korrekt eller de nye passordene matchet ikke. Prøv igjen.', 'danger');
 
                 // Redirect
                 $this->application->send(TemplateHelper::url_for('profile_settings'));
@@ -191,7 +191,7 @@ class Profile extends BaseView {
             Me::update();
 
             // Add messag
-            MessageManager::addMessage('Dine endringer er lagret.', 'success');
+            MessageManager::addMessage($this->application, 'Dine endringer er lagret.', 'success');
 
             // Redirect
             $this->application->send(TemplateHelper::url_for('profile_settings'));

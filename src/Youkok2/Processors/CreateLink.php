@@ -130,7 +130,7 @@ class CreateLink extends BaseProcessor {
                     }
                     
                     // Add message
-                    MessageManager::addFileMessage($name);
+                    MessageManager::addFileMessage($this->application, $name);
                     
                     // Check if logged in
                     if (Me::isLoggedIn()) {

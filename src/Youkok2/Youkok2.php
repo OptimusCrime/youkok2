@@ -19,8 +19,8 @@ class Youkok2 {
     private $body;
     private $headers;
     private $streams;
-    private $sessions; // TODO
-    private $cookies; // TODO
+    private $sessions;
+    private $cookies;
     
     /*
      * The constructor for the application
@@ -31,9 +31,20 @@ class Youkok2 {
         $this->body = '';
         $this->headers = [];
         $this->streams = [];
-        
+        $this->sessions = [];
+        $this->cookies = [];
+
         // Set default response
         $this->setStatus(200);
+    }
+
+    /**
+     * Load information from cookies and sessions into the wrapper
+     */
+
+    public function setInformation() {
+        $this->sessions = $_SESSION;
+        $this->cookies = $_COOKIE;
     }
     
     /*
@@ -136,13 +147,33 @@ class Youkok2 {
     public function setBody($content) {
         $this->body = $content;
     }
+
+    public function setSession($key, $value) {
+        $this->sessions[$key] = $value;
+    }
+
+    public function setCookie($key, $value) {
+        $this->cookies[$key] = $value;
+    }
+
+    public function clearSession($key) {
+        if (isset($this->sessions[$key])) {
+            unset($this->sessions[$key]);
+        }
+    }
+
+    public function clearCookie($key) {
+        if (isset($this->cookies[$key])) {
+            unset($this->cookies[$key]);
+        }
+    }
     
     /*
      * Various getters
      */
     
     public function getWrapper() {
-        return $this->wrapper = $w;
+        return $this->wrapper;
     }
     
     public function getHeader($key) {
@@ -166,5 +197,27 @@ class Youkok2 {
     
     public function getBody() {
         return $this->body;
+    }
+
+    public function getSession($key) {
+        if (isset($this->sessions[$key])) {
+            return $this->sessions[$key];
+        }
+        return null;
+    }
+
+    public function getCookie($key) {
+        if (isset($this->cookies[$key])) {
+            return $this->cookies[$key];
+        }
+        return null;
+    }
+
+    public function getSessions() {
+        return $this->sessions;
+    }
+
+    public function getCookies() {
+        return $this->cookies;
     }
 }

@@ -38,7 +38,7 @@ class MostPopularElements extends ModuleProcessor {
             $delta_numeric = $this->getSetting('module1_delta');
         }
         else {
-            $delta_numeric = Me::getModuleSettings('module1_delta');
+            $delta_numeric = Me::getModuleSettings($this->application, 'module1_delta');
         }
         
         // Get the correct limit
@@ -91,7 +91,7 @@ class MostPopularElements extends ModuleProcessor {
         }
         
         // Set the new delta
-        Me::setModuleSettings('module1_delta', $delta_numeric);
+        Me::setModuleSettings($this->application, 'module1_delta', $delta_numeric);
         
         // Check if we should update user preferences
         if (Me::isLoggedIn()) {

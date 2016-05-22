@@ -75,7 +75,7 @@ class Auth extends BaseView {
         }
         
         // Log the user out
-        Me::logOut();
+        Me::logOut($this->application);
     }
 
     /*
@@ -161,14 +161,14 @@ class Auth extends BaseView {
             // Check if there was any errors during the signup
             if ($err) {
                 // Add message
-                MessageManager::addMessage('Her gikk visst noe galt...', 'danger');
+                MessageManager::addMessage($this->application, 'Her gikk visst noe galt...', 'danger');
                
                 // Redirect
                 $this->application->send(TemplateHelper::url_for('auth_register'));
             }
             else {
                 // Add message
-                MessageManager::addMessage('Velkommen til Youkok2!', 'success');
+                MessageManager::addMessage($this->application, 'Velkommen til Youkok2!', 'success');
 
                 // Log in (only session)
                 Me::setLogin($hash, $_POST['register-form-email']);
@@ -235,10 +235,10 @@ class Auth extends BaseView {
                 $mail->send();
 
                 // Add message
-                MessageManager::addMessage('Det er blitt sendt en e-post til deg. Denne inneholder en link for å velge nytt passord. Denne linken er gyldig i 24 timer.', 'success');
+                MessageManager::addMessage($this->application, 'Det er blitt sendt en e-post til deg. Denne inneholder en link for å velge nytt passord. Denne linken er gyldig i 24 timer.', 'success');
             }
             else {
-                MessageManager::addMessage('E-posten du oppga ble ikke funnet i systemet. Prøv igjen.', 'danger');
+                MessageManager::addMessage($this->application, 'E-posten du oppga ble ikke funnet i systemet. Prøv igjen.', 'danger');
             }
 
             // Redirect back to form
@@ -294,7 +294,7 @@ class Auth extends BaseView {
                     $change_password->delete();
 
                     // Add message
-                    MessageManager::addMessage('Passordet er endret!', 'success');
+                    MessageManager::addMessage($this->application, 'Passordet er endret!', 'success');
 
                     // Log in (only session)
                     Me::setLogin($hash, $user->getEmail());
@@ -303,7 +303,7 @@ class Auth extends BaseView {
                 }
                 else {
                     // Add error message
-                    MessageManager::addMessage('De to passordene er ikke like.', 'danger');
+                    MessageManager::addMessage($this->application, 'De to passordene er ikke like.', 'danger');
 
                     // Redirect
                     $this->application->send(TemplateHelper::url_for('auth_new_password') . '?hash=' . $_GET['hash']);
@@ -312,7 +312,7 @@ class Auth extends BaseView {
         }
         else {
             // Add error message
-            MessageManager::addMessage('Denne linken er ikke lenger gyldig.', 'danger');
+            MessageManager::addMessage($this->application, 'Denne linken er ikke lenger gyldig.', 'danger');
 
             // Redirect
             $this->application->send('');

@@ -54,7 +54,7 @@ abstract class BaseProcessor extends Processors {
         
         // Check if we could try to log the user in
         if ($this->canBeLoggedIn()) {
-            Me::init();
+            Me::init($this->application);
         }
 
         // Check if user has access

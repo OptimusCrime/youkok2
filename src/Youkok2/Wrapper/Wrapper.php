@@ -22,13 +22,54 @@ class Wrapper {
     }
     
     public function run() {
-        // Loop and set all the headers
-        foreach ($this->container->getHeaders() as $key => $value) {
-            if ($key == 'status') {
-                $this->setResponseCode($value);
+        // Set all the headers
+        $headers = $this->container->getHeaders();
+        if (count($headers) > 0) {
+            foreach ($headers as $key => $value) {
+                if ($key == 'status') {
+                    $this->setResponseCode($value);
+                }
+                else {
+                    header($key . ':' . $value);
+                }
             }
-            else {
-                header($key . ':' . $value);
+        }
+
+        // Set all sessions
+        $sessions = $this->container->getSessions();
+        if (count($sessions) > 0) {
+            foreach ($sessions as $key => $value) {
+                $_SESSION[$key] = $value;
+            }
+        }
+
+        // Make sure to delete all sessions that are no longer valid
+        foreach ($_SESSION as $key => $value) {
+            // Check if this key is in the container session pool
+            if ($this->container->getSession($key) === null) {
+                // Clear this session variable
+                unset($_SESSION[$key]);
+            }
+        }
+
+        // Set all cookies
+        $cookies = $this->container->getCookies();
+        if (count($cookies) > 0) {
+            foreach ($cookies as $key => $value) {
+                // Add to array
+                $_COOKIE[$key] = $value;
+
+                // Set the cookie
+                setcookie($key, $value, (time() + (60 * 60 * 24 * 30)), '/');
+            }
+        }
+
+        // Make sure to clear all cookies that are no longer valid
+        foreach ($_COOKIE as $key => $value) {
+            // Check if this key is in the container cookie pool
+            if ($this->container->getCookie($key) === null) {
+                // Clear this cookie
+                setcookie($key, null, time() - (60 * 60 * 24), '/');
             }
         }
         

@@ -160,7 +160,7 @@ class BaseView {
         }
         
         // Init the user
-        Me::init();
+        Me::init($this->application);
 
         // Add to site data
         $this->addSiteData('online', Me::isLoggedIn());
@@ -173,12 +173,12 @@ class BaseView {
         $this->template->assign('USER_IS_ADMIN', Me::isAdmin());
         $this->template->assign('USER_IS_BANNED', Me::isBanned());
         $this->template->assign('USER_CAN_CONTRIBUTE', Me::canContribute());
-        $this->template->assign('USER_MOST_POPULAR_ELEMENT', Me::getModuleSettings('module1_delta'));
-        $this->template->assign('USER_MOST_POPULAR_COURSES', Me::getModuleSettings('module2_delta'));
+        $this->template->assign('USER_MOST_POPULAR_ELEMENT', Me::getModuleSettings($this->application, 'module1_delta'));
+        $this->template->assign('USER_MOST_POPULAR_COURSES', Me::getModuleSettings($this->application, 'module2_delta'));
         
         // Check if we should validate login
         if (isset($_POST['login-email'])) {
-            Me::logIn();
+            Me::logIn($this->application);
         }
     }
 
@@ -249,7 +249,7 @@ class BaseView {
         $this->template->assign('JS_MODULES', JavaScriptLoader::get());
         
         // Load message
-        $this->template->assign('SITE_MESSAGES', MessageManager::get($this->path));
+        $this->template->assign('SITE_MESSAGES', MessageManager::get($this->application, $this->path));
         
         // Load cache
         $this->addSiteData('cache_time', CacheManager::loadTypeaheadCache());

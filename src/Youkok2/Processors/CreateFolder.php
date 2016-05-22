@@ -148,7 +148,7 @@ class CreateFolder extends BaseProcessor {
             }
             
             // Add message
-            MessageManager::addFileMessage($_POST['name']);
+            MessageManager::addFileMessage($this->application, $_POST['name']);
             
             // Add history element
             $history = new History();

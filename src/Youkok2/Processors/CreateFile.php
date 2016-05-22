@@ -198,7 +198,7 @@ class CreateFile extends BaseProcessor {
             }
             
             // Add message
-            MessageManager::addFileMessage($file_name . '.' . $file_type);
+            MessageManager::addFileMessage($this->application, $file_name . '.' . $file_type);
             
             // Check if logged in
             if (Me::isLoggedIn()) {

@@ -32,7 +32,7 @@ class Me {
      * Init the user
      */
 
-    public static function init() {
+    public static function init($app) {
         // Only run if not already inited
         if (self::$inited === null or !self::$inited) {
             // Set initial
@@ -40,15 +40,15 @@ class Me {
             self::$favorites = null;
 
             // Check if we have anything stored
-            if (isset($_SESSION['youkok2']) or isset($_COOKIE['youkok2'])) {
-                if (isset($_COOKIE['youkok2'])) {
-                    $hash = $_COOKIE['youkok2'];
+            if ($app->getSession('youkok2') !== null or $app->getCookie('youkok2') !== null) {
+                if ($app->getCookie('youkok2') !== null) {
+                    $hash = $app->getCookie('youkok2');
 
                     // Set session as well
-                    $_SESSION['youkok2'] = $_COOKIE['youkok2'];
+                    $app->setSession('youkok2', $hash);
                 }
                 else {
-                    $hash = $_SESSION['youkok2'];
+                    $hash = $app->getSession('youkok2');
                 }
 
                 // Try to split
@@ -72,8 +72,8 @@ class Me {
                     }
                     else {
                         // Unset all
-                        unset($_SESSION['youkok2']);
-                        setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+                        $app->clearSession('youkok2');
+                        $app->clearCookie('youkok2');
                     }
                 }
             }
@@ -92,7 +92,7 @@ class Me {
      * Getters (override for storing information in the User object)
      */
     
-    public static function getModuleSettings($key = null) {
+    public static function getModuleSettings($app, $key = null) {
         // Check what to return
         $settings_data = null;
         if (self::$user !== null) {
@@ -101,8 +101,9 @@ class Me {
         }
         else {
             // Check if cookie is set
-            if (isset($_COOKIE['module_settings']) and strlen($_COOKIE['module_settings']) > 0) {
-                $settings_data = $_COOKIE['module_settings'];
+
+            if ($app->getCookie('module_settings') !== null and strlen($app->getCookie('module_settings') !== null) > 0) {
+                $settings_data = $app->getCookie('module_settings') !== null;
             }
         }
         
@@ -151,9 +152,9 @@ class Me {
         // Set
         self::$user->setNick($nick);
     }
-    public static function setModuleSettings($key, $value) {
+    public static function setModuleSettings($app, $key, $value) {
         // Get the current settings
-        $settings = self::getModuleSettings();
+        $settings = self::getModuleSettings($app);
         
         // Make sure we have a array
         if ($settings == null) {
@@ -163,14 +164,13 @@ class Me {
         // Apply the new settings
         $settings[$key] = $value;
         
-        
         // Check if we should set cookie for later too
         if (self::$user === null) {
             // Set cookie
-            setcookie('module_settings', json_encode($settings), (time() + (60*60*24*30)), '/');
+            $app->setCookie('module_settings', json_encode($settings));
         }
         else {
-            self::$user->setModuleSettings(json_encode($settings));
+            self::$user->setModuleSettings($app, json_encode($settings));
         }
     }
     public static function increaseKarma($karma) {
@@ -201,15 +201,15 @@ class Me {
      * Login
      */
 
-    public static function logIn() {
+    public static function logIn($app) {
         // Check if logged in
         if (!self::$user !== null) {
             // Okey
             if (isset($_POST['login-email']) and isset($_POST['login-pw']) and isset($_POST['_token'])) {
                 // Check CSRF token
                 if (!CsrfManager::validateSignature($_POST['_token'])) {
-                    header('HTTP/1.0 400 Bad Request');
-                    exit;
+                    $app->setStatus(400);
+                    return;
                 }
                 
                 // Try to fetch email
@@ -238,7 +238,7 @@ class Me {
                         self::setLogin($row['password'], $_POST['login-email'], $remember_me);
 
                         // Add message
-                        MessageManager::addMessage('Du er nå logget inn.', 'success');
+                        MessageManager::addMessage($app, 'Du er nå logget inn.', 'success');
 
                         // Check if we should redirect the user back to the previous page
                         if (strstr($_SERVER['HTTP_REFERER'], URL) !== false) {
@@ -262,7 +262,7 @@ class Me {
                     }
                     else {
                         // Message
-                        MessageManager::addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+                        MessageManager::addMessage($app, 'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
                         
                         // Set session
                         $_SESSION['login_correct_email'] = $row['email'];
@@ -273,7 +273,7 @@ class Me {
                 }
                 else {
                     // Message
-                    MessageManager::addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+                    MessageManager::addMessage($app, 'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
 
                     // Redirect
                     Redirect::send('logg-inn');
@@ -313,17 +313,17 @@ class Me {
      * Logout
      */
 
-    public static function logOut() {
+    public static function logOut($app) {
         // Check if logged in
         if (self::$user !== null and $_GET['_token']) {
             // Unset session
-            unset($_SESSION['youkok2']);
+            $app->clearSession('youkok2');
             
             // Unset token
-            setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+            $app->clearCookie('youkok2');
 
             // Set message
-            MessageManager::addMessage('Du har nå logget ut.', 'success');
+            MessageManager::addMessage($app, 'Du har nå logget ut.', 'success');
         }
         else {
             // Simply redirect home
