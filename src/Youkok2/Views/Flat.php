@@ -9,7 +9,8 @@
 
 namespace Youkok2\Views;
 
-class Flat extends BaseView {
+class Flat extends BaseView
+{
     
     /*
      * Always run the constructor

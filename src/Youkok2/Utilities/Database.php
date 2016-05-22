@@ -11,7 +11,8 @@ namespace Youkok2\Utilities;
 
 use Youkok2\Utilities\BacktraceManager;
 
-class Database {
+class Database
+{
     
     /*
      * Static variable that holds the database connection

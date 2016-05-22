@@ -9,7 +9,8 @@
 
 namespace Youkok2\Views;
 
-class NotFound extends BaseView {
+class NotFound extends BaseView
+{
     
     /*
      * Always run the constructor

@@ -15,7 +15,8 @@ use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
 use Youkok2\Collections\ElementCollection;
 
-class FindDuplicates extends BaseProcessor {
+class FindDuplicates extends BaseProcessor
+{
 
     /*
      * Override

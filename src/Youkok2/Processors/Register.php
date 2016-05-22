@@ -13,7 +13,8 @@ use Youkok2\Models\Me;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Loader;
 
-class Register extends BaseProcessor {
+class Register extends BaseProcessor
+{
     
     /*
      * Override

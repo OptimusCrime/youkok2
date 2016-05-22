@@ -14,7 +14,8 @@ use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\Utilities;
 
-class Statistics extends AdminBaseView {
+class Statistics extends AdminBaseView
+{
     
     /*
      * For the menu and such

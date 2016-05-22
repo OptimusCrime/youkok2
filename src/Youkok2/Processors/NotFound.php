@@ -9,7 +9,8 @@
 
 namespace Youkok2\Processors;
 
-class NotFound extends BaseProcessor {
+class NotFound extends BaseProcessor
+{
     
     /*
      * Always run the constructor

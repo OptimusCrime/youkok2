@@ -15,7 +15,8 @@ use Youkok2\Models\Me;
 use Youkok2\Models\Cache\MeDownloads;
 use Youkok2\Utilities\Database;
 
-class Frontpage extends BaseView {
+class Frontpage extends BaseView
+{
     
     /*
      * Always run the constructor

@@ -15,7 +15,8 @@ use Youkok2\Models\Controllers\ElementController;
 use Youkok2\Utilities\ClassParser;
 use Youkok2\Utilities\Database;
 
-class Module extends BaseProcessor {
+class Module extends BaseProcessor
+{
     
     /*
      * List of modules

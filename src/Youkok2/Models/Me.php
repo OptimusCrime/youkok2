@@ -16,7 +16,8 @@ use Youkok2\Utilities\Utilities;
 use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\Redirect;
 
-class Me {
+class Me 
+{
     
     /*
      * Variables for the user

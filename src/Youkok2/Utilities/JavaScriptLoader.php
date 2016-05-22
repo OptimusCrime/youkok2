@@ -9,7 +9,8 @@
 
 namespace Youkok2\Utilities;
 
-class JavaScriptLoader {
+class JavaScriptLoader
+{
 
     /*
      * Method for redirecting

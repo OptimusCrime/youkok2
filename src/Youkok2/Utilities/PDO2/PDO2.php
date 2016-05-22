@@ -11,7 +11,8 @@ namespace Youkok2\Utilities\PDO2;
 
 require_once dirname(__FILE__) . '/PDOStatement2.php';
 
-class PDO2 extends \PDO {
+class PDO2 extends \PDO
+{
     
     /*
      * Variables

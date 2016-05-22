@@ -15,7 +15,8 @@ use Youkok2\Models\Controllers\Cache\MeDownloadsController;
 use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Loader;
 
-class Download extends BaseView {
+class Download extends BaseView
+{
     
     /*
      * Always run the constructor

@@ -9,7 +9,8 @@
  
 namespace Youkok2\Utilities;
 
-class ClassParser {
+class ClassParser
+{
 
     private $classPath;
     private $method;

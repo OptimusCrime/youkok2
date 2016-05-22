@@ -14,7 +14,8 @@ use Youkok2\Models\Me;
 use Youkok2\Utilities\Routes;
 use Youkok2\Utilities\Loader;
 
-class Archive extends BaseView {
+class Archive extends BaseView
+{
     
     /*
      * Always run the constructor

@@ -13,7 +13,8 @@ use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;
 use Youkok2\Views\Processors;
 
-abstract class BaseProcessor extends Processors {
+abstract class BaseProcessor extends Processors
+{
     
     /*
      * Variable for storing data

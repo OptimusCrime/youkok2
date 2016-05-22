@@ -14,7 +14,8 @@ use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\Utilities;
 
-class Scripts extends AdminBaseView {
+class Scripts extends AdminBaseView
+{
     
     /*
      * For the menu and such

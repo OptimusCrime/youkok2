@@ -13,9 +13,9 @@ use Youkok2\Models\Element;
 use Youkok2\Models\Me;
 use Youkok2\Models\Controllers\Cache\MeDownloadsController;
 use Youkok2\Utilities\CacheManager;
-use Youkok2\Utilities\Loader;
 
-class Redirect extends BaseView {
+class Redirect extends BaseView
+{
     
     /*
      * Always run the constructor

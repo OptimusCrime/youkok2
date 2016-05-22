@@ -9,7 +9,8 @@
 
 namespace Youkok2\Processors;
 
-class LinkTitle extends BaseProcessor {
+class LinkTitle extends BaseProcessor
+{
     
     /*
      * Always run the constructor

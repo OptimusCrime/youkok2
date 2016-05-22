@@ -12,7 +12,8 @@ namespace Youkok2\Processors\Tasks;
 use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\LineCounter;
 
-class Upgrade extends BaseProcessor {
+class Upgrade extends BaseProcessor
+{
 
     /*
      * Override

@@ -17,7 +17,8 @@ use Youkok2\Utilities\Database;
 use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\Utilities;
 
-class CreateFolder extends BaseProcessor {
+class CreateFolder extends BaseProcessor
+{
     
     /*
      * Override

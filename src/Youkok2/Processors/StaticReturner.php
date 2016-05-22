@@ -11,7 +11,8 @@ namespace Youkok2\Processors;
 
 use Youkok2\Utilities\Loader;
 
-class StaticReturner extends BaseProcessor {
+class StaticReturner extends BaseProcessor
+{
     
     /*
      * Always run the constructor

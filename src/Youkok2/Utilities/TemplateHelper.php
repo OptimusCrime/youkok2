@@ -9,9 +9,8 @@
 
 namespace Youkok2\Utilities;
 
-use Youkok2\Utilities\Loader;
-
-class TemplateHelper {
+class TemplateHelper
+{
 
     /*
      * Method for reverse lookup for URL creation

@@ -15,7 +15,8 @@ use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\TemplateHelper;
 use Youkok2\Utilities\Utilities;
 
-class Profile extends BaseView {
+class Profile extends BaseView
+{
     
     /*
      * Always run the constructor

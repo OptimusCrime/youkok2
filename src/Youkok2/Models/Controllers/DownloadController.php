@@ -9,7 +9,8 @@
 
 namespace Youkok2\Models\Controllers;
 
-class DownloadController extends BaseController {
+class DownloadController extends BaseController 
+{
 
     /*
      * Constructor

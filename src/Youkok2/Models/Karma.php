@@ -12,7 +12,8 @@ namespace Youkok2\Models;
 use Youkok2\Models\Controllers\KarmaController;
 use Youkok2\Utilities\Utilities;
 
-class Karma extends BaseModel {
+class Karma extends BaseModel 
+{
 
     /*
      * Variables

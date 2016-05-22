@@ -11,7 +11,8 @@ namespace Youkok2\Models;
 
 use Youkok2\Models\Controllers\FavoriteController;
 
-class Favorite extends BaseModel {
+class Favorite extends BaseModel
+{
 
     /*
      * Variables

@@ -10,7 +10,8 @@ namespace Youkok2\Processors\Modules;
 
 use Youkok2\Processors\BaseProcessor;
 
-abstract class ModuleProcessor extends BaseProcessor {
+abstract class ModuleProcessor extends BaseProcessor
+{
     
     /*
      * Always run the constructor

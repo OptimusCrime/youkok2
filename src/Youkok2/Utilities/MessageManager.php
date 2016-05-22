@@ -11,7 +11,8 @@ namespace Youkok2\Utilities;
 
 use Youkok2\Models\Message;
 
-class MessageManager {
+class MessageManager
+{
     
     /*
      * Adds a message to the queue

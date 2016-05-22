@@ -12,7 +12,8 @@ namespace Youkok2\Models\Cache;
 use Youkok2\Models\BaseModel;
 use Youkok2\Models\Controllers\Cache\MeDownloadsController;
 
-class MeDownloads extends BaseModel {
+class MeDownloads extends BaseModel
+{
 
     /*
      * Variables

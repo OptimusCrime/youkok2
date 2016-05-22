@@ -13,7 +13,8 @@ use Youkok2\Models\Element;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Loader;
 
-class Courses extends BaseView {
+class Courses extends BaseView
+{
     
     /*
      * Always run the constructor

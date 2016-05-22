@@ -13,7 +13,8 @@ use Youkok2\Models\Element;
 use Youkok2\Models\History;
 use Youkok2\Utilities\Database;
 
-class LoadHistory extends BaseProcessor {
+class LoadHistory extends BaseProcessor
+{
     
     /*
      * Override

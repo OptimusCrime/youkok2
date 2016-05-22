@@ -9,7 +9,8 @@
 
 namespace Youkok2\Utilities;
 
-class Routes {
+class Routes
+{
     
     /*
      * Used to identify processors

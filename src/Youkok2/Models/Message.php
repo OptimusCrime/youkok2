@@ -12,7 +12,8 @@ namespace Youkok2\Models;
 use Youkok2\Models\Controllers\MessageController;
 use Youkok2\Models\StaticControllers\MessageStaticController;
 
-class Message extends BaseModel {
+class Message extends BaseModel 
+{
 
     /*
      * Variables

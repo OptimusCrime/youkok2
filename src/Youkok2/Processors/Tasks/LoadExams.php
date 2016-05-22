@@ -14,7 +14,8 @@ use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
 
-Class LoadExams extends BaseProcessor {
+Class LoadExams extends BaseProcessor
+{
     
     /*
      * Override

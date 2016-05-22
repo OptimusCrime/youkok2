@@ -12,7 +12,8 @@ namespace Youkok2\models\StaticControllers;
 use Youkok2\Models\Message;
 use Youkok2\Utilities\Database;
 
-class MessageStaticController {
+class MessageStaticController 
+{
     
     /*
      * Get all messages that matches a pattern

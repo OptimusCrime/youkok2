@@ -9,7 +9,8 @@
 
 namespace Youkok2\Views;
 
-class Error extends BaseView {
+class Error extends BaseView
+{
     
     /*
      * Always run the constructor

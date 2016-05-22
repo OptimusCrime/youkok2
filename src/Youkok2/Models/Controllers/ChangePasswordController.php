@@ -12,7 +12,8 @@ namespace Youkok2\Models\Controllers;
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Database;
 
-class ChangePasswordController extends BaseController {
+class ChangePasswordController extends BaseController 
+{
     
     /*
      * Constructor

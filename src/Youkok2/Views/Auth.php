@@ -17,7 +17,8 @@ use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\TemplateHelper;
 use Youkok2\Utilities\Utilities;
 
-class Auth extends BaseView {
+class Auth extends BaseView
+{
     
     /*
      * Always run the constructor

@@ -13,7 +13,8 @@ use Youkok2\Models\Favorite;
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Database;
 
-class Favorites extends BaseProcessor {
+class Favorites extends BaseProcessor
+{
     
     /*
      * Override

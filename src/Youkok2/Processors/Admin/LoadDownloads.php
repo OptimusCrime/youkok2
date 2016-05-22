@@ -14,7 +14,8 @@ use Youkok2\Models\Me;
 use Youkok2\Collections\ElementCollection;
 use Youkok2\Utilities\Database;
 
-class LoadDownloads extends BaseProcessor {
+class LoadDownloads extends BaseProcessor
+{
 
     /*
      * Constructor

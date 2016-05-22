@@ -14,7 +14,8 @@ use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\CacheManager;
 
-class GetCacheData extends BaseProcessor {
+class GetCacheData extends BaseProcessor
+{
 
     /*
      * Override

@@ -15,7 +15,8 @@ use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
 
-class SyncEmpty extends BaseProcessor {
+class SyncEmpty extends BaseProcessor
+{
 
     /*
      * Override

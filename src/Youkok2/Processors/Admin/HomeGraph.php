@@ -14,7 +14,8 @@ use Youkok2\Models\Me;
 use Youkok2\Collections\ElementCollection;
 use Youkok2\Utilities\Database;
 
-class HomeGraph extends BaseProcessor {
+class HomeGraph extends BaseProcessor
+{
 
     /*
      * Override

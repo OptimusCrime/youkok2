@@ -9,7 +9,8 @@
 
 namespace Youkok2\Utilities\PDO2;
 
-class PDOStatement2 extends \PDOStatement {
+class PDOStatement2 extends \PDOStatement
+{
 
     //
     // Some variables

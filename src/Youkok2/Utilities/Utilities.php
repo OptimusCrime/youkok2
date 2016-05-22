@@ -9,7 +9,8 @@
 
 namespace Youkok2\Utilities;
 
-class Utilities {
+class Utilities
+{
     
     /*
      * Prettify SQL dates

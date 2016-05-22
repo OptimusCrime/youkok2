@@ -9,9 +9,8 @@
  
 namespace Youkok2\Utilities;
 
-use Youkok2\Youkok2;
-
-class Loader {
+class Loader
+{
     
     /*
      * Returns a class using the provided URL path

@@ -17,7 +17,8 @@ use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
 
-class SyncKarma extends BaseProcessor {
+class SyncKarma extends BaseProcessor
+{
 
     /*
      * Override

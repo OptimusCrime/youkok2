@@ -11,7 +11,8 @@ namespace Youkok2\Processors\Tasks;
 
 use Youkok2\Processors\BaseProcessor;
 
-Class ClearCache extends BaseProcessor {
+Class ClearCache extends BaseProcessor
+{
     
     /*
      * Override

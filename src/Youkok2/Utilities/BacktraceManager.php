@@ -11,7 +11,8 @@ namespace Youkok2\Utilities;
 
 use Youkok2\Utilities\Database;
 
-class BacktraceManager {
+class BacktraceManager
+{
     
     /*
      * Various variables

@@ -12,7 +12,8 @@ namespace Youkok2;
 use Youkok2\Utilities\Loader;
 use Youkok2\Utilities\Routes;
 
-class Youkok2 {
+class Youkok2
+{
     
     protected $wrapper;
     

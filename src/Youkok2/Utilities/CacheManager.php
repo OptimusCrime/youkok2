@@ -9,7 +9,8 @@
 
 namespace Youkok2\Utilities;
 
-Class CacheManager {
+Class CacheManager
+{
 
     /*
      * Internal variables

@@ -12,7 +12,8 @@ namespace Youkok2\Models\Controllers;
 use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;
 
-abstract class BaseController {
+abstract class BaseController 
+{
 
     /*
      * Variables

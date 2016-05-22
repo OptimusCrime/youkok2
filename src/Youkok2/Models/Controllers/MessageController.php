@@ -9,7 +9,8 @@
 
 namespace Youkok2\Models\Controllers;
 
-class MessageController extends BaseController {
+class MessageController extends BaseController 
+{
 
     /*
      * Constructor

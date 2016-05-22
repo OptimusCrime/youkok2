@@ -13,7 +13,8 @@ use Youkok2\Models\Element;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Routes;
 
-class Search extends BaseView {
+class Search extends BaseView
+{
     
     /*
      * Always run the constructor

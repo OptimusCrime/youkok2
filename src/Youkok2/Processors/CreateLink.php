@@ -17,7 +17,8 @@ use Youkok2\Utilities\Database;
 use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\Utilities;
 
-class CreateLink extends BaseProcessor {
+class CreateLink extends BaseProcessor
+{
     
     /*
      * Override

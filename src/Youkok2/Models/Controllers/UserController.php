@@ -9,7 +9,8 @@
 
 namespace Youkok2\Models\Controllers;
 
-class UserController extends BaseController {
+class UserController extends BaseController 
+{
     
     /*
      * Constructor

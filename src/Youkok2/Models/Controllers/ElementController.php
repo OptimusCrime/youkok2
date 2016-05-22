@@ -16,7 +16,8 @@ use Youkok2\Utilities\Routes;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\TemplateHelper;
 
-class ElementController extends BaseController {
+class ElementController extends BaseController 
+{
     
     /*
      * Variables

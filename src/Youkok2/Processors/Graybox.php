@@ -12,7 +12,8 @@ namespace Youkok2\Processors;
 use Youkok2\Youkok2;
 use Youkok2\Models\Element;
 
-class Graybox extends BaseProcessor {
+class Graybox extends BaseProcessor
+{
 
     /*
      * Internal variables

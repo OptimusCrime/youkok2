@@ -16,7 +16,8 @@ use Youkok2\Models\Controllers\CourseDownloadsController;
 use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;
 
-class MostPopularCourses extends ModuleProcessor {
+class MostPopularCourses extends ModuleProcessor
+{
     
     /*
      * Constructor

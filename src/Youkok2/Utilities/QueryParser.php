@@ -9,7 +9,8 @@
  
 namespace Youkok2\Utilities;
 
-class QueryParser {
+class QueryParser
+{
 
     private static $query;
     private $basePath;

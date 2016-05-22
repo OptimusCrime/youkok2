@@ -13,7 +13,8 @@ use Youkok2\Models\Controllers\ElementController;
 use Youkok2\Models\StaticControllers\ElementStaticController;
 use Youkok2\Utilities\Utilities;
 
-class Element extends BaseModel {
+class Element extends BaseModel 
+{
 
     /*
      * Variables

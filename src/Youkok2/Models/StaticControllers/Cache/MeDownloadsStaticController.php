@@ -17,7 +17,8 @@ use Youkok2\Models\Controllers\Cache\MeDownloadsController;
 use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;
 
-class MeDownloadsStaticController {
+class MeDownloadsStaticController 
+{
 
     /*
      * Variables

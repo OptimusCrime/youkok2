@@ -11,7 +11,8 @@ namespace Youkok2\Views;
 
 use Youkok2\Utilities\Loader;
 
-class StaticFiles extends BaseView {
+class StaticFiles extends BaseView
+{
     
     /*
      * Always run the constructor

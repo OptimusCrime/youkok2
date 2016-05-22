@@ -15,7 +15,8 @@ use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\Routes;
 use Youkok2\Utilities\TemplateHelper;
 
-abstract class AdminBaseView extends BaseView {
+abstract class AdminBaseView extends BaseView
+{
     
     /*
      * Admin side menu

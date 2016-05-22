@@ -9,7 +9,8 @@
 
 namespace Youkok2\Wrapper;
 
-class Wrapper {
+class Wrapper
+{
     
     private $container;
     

@@ -14,7 +14,8 @@ use Youkok2\Models\Me;
 use Youkok2\Models\Controllers\ElementController;
 use Youkok2\Utilities\Database;
 
-class MostPopularElements extends ModuleProcessor {
+class MostPopularElements extends ModuleProcessor
+{
     
     /*
      * Constructor

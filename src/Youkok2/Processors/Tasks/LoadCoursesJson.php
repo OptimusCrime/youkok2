@@ -13,7 +13,8 @@ use Youkok2\Models\Element;
 use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\Database;
 
-class LoadCoursesJson extends BaseProcessor {
+class LoadCoursesJson extends BaseProcessor
+{
 
     /*
      * Override
