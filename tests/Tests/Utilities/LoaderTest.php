@@ -109,4 +109,16 @@ class LoaderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('\Youkok2\Views\Flat', $loader1['view']);
         $this->assertEquals('displayAbout', $loader1['method']);
     }
+
+    /**
+     * Test loading of processors
+     */
+
+    public function testLoaderProcessor() {
+        // Try some paths
+        $loader1 = Loader::getClass('processor/tasks/clearcache');
+
+        // Test them
+        $this->assertEquals('\Youkok2\Processors\Tasks\ClearCache', $loader1['view']);
+    }
 }
