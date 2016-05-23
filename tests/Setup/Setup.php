@@ -7,7 +7,7 @@
  * 
  */
 
-namespace \Youkok2\Tests\Setup;
+namespace Youkok2\Tests\Setup;
 
 use Youkok2\Utilities\Database;
 

@@ -7,7 +7,7 @@
  * 
  */
 
-namespace \Youkok2\Tests\Utilities;
+namespace Youkok2\Tests\Utilities;
 
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Utilities\CacheManager as CacheManager;

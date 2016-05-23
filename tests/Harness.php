@@ -7,7 +7,7 @@
  *
  */
 
-namespace \Youkok2\Tests\Harness;
+namespace Youkok2\Tests\Harness;
 
 use Youkok2\Youkok2;
 use Youkok2\Models\User;

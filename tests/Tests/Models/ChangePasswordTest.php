@@ -7,7 +7,7 @@
  *
  */
 
-namespace \Youkok2\Tests\Models;
+namespace Youkok2\Tests\Models;
 
 use Youkok2\Models\ChangePassword;
 
