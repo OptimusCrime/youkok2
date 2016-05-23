@@ -11,7 +11,7 @@ namespace Youkok2\Models;
 
 use Youkok2\Models\Controllers\HistoryController;
 
-class History extends BaseModel 
+class History extends BaseModel
 {
 
     /*
@@ -151,4 +151,4 @@ class History extends BaseModel
     public function setVisible($visible) {
         $this->visible = $visible;
     }
-} 
+}

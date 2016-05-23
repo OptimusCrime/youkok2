@@ -9,7 +9,7 @@
 
 namespace Youkok2\Models\Controllers;
 
-class HistoryController extends BaseController 
+class HistoryController extends BaseController
 {
     
     /*

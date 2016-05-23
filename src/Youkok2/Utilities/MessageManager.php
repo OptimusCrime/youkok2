@@ -42,7 +42,7 @@ class MessageManager
             foreach ($messages as $message) {
                 // Check if we should store for later or do our insertion now
                 if (!$message['prioritise'] and !$added) {
-                    $message_array[] = array('text' => $msg, 'type' => $type, 'prioritise' => $prioritise);
+                    $message_array[] = ['text' => $msg, 'type' => $type, 'prioritise' => $prioritise];
                     
                     // Set added to true
                     $added = true;
@@ -59,7 +59,7 @@ class MessageManager
         // Check if we should just append the message
         if ($append) {
             // Append the message at the end of the message array
-            $messages[] = array('text' => $msg, 'type' => $type, 'prioritise' => $prioritise);
+            $messages[] = ['text' => $msg, 'type' => $type, 'prioritise' => $prioritise];
         }
 
         // Update the session
@@ -108,7 +108,7 @@ class MessageManager
                 if (count($file_messages) == 1) {
                     $message_text .= $v;
                 }
-                else if (count($file_messages) == 2 and $k == 1) {
+                elseif (count($file_messages) == 2 and $k == 1) {
                     $message_text .= ' og ' . $v;
                 }
                 else {
@@ -164,4 +164,4 @@ class MessageManager
         // Return the final array
         return $messages;
     }
-} 
+}

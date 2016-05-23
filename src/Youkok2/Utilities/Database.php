@@ -33,7 +33,7 @@ class Database
                 self::$db = new PDO2\PDO2(DATABASE_DNS . ';dbname=' . DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, [
                     \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8']);
             }
-            else if (DATABASE_ADAPTER == 'sqlite') {
+            elseif (DATABASE_ADAPTER == 'sqlite') {
                 // Sqlite
                 self::$db = new PDO2\PDO2('sqlite:tests/files/db.sqlite3');
             }

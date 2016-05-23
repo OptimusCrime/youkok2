@@ -11,7 +11,7 @@ namespace Youkok2\models;
 
 use Youkok2\Models\Controllers\DownloadController;
 
-class Download extends BaseModel 
+class Download extends BaseModel
 {
 
     /*
@@ -153,4 +153,4 @@ class Download extends BaseModel
     public function setUser($user) {
         $this->user = $user;
     }
-} 
+}

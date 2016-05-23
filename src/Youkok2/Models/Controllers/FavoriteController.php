@@ -9,7 +9,7 @@
 
 namespace Youkok2\Models\Controllers;
 
-class FavoriteController extends BaseController 
+class FavoriteController extends BaseController
 {
 
     /*

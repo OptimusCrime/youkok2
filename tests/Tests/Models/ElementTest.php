@@ -7,9 +7,12 @@
  *
  */
 
+namespace \Youkok2\Tests\Models;
+
 use \Youkok2\Models\Element;
 
-class ElementTest extends PHPUnit_Framework_TestCase {
+class ElementTest extends PHPUnit_Framework_TestCase
+{
 
     /*
      * Test element default values

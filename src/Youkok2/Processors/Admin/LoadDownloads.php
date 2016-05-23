@@ -69,7 +69,7 @@ class LoadDownloads extends BaseProcessor
         $get_last_downloads_query = Database::$db->query($get_last_downloads);
         while ($row = $get_last_downloads_query->fetch(\PDO::FETCH_ASSOC)) {
             // Get
-            $element = ElementCollection::get($row['id'], array('root'));
+            $element = ElementCollection::get($row['id'], ['root']);
 
             // Check if valid Element
             if ($element !== null) {
@@ -111,4 +111,4 @@ class LoadDownloads extends BaseProcessor
         // Set data
         $this->setData('data', $output);
     }
-} 
+}

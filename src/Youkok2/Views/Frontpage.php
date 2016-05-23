@@ -30,7 +30,7 @@ class Frontpage extends BaseView
      * Run the view
      */
 
-    public function run() {        
+    public function run() {
         // Make sure to kill the view if something broke
         if ($this->getSetting('kill') === true) {
             return;

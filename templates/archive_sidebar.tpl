@@ -37,7 +37,7 @@
                                             <div class="bar" style="width: 0%;"></div>
                                         </div>
                                     </div>
-                                    <p><a href="[[+TemplateHelper::url_for('flat_terms')]]" target="_blank">Se liste over godkjente filtyper</a>.</p>
+                                    <p><a href="[[+TemplateHelper::urlFor('flat_terms')]]" target="_blank">Se liste over godkjente filtyper</a>.</p>
                                     <button id="archive-create-file-form-submit" type="submit" class="btn btn-default">Last opp</button> eller <a href="#">avbryt</a>.
                                 </form>
                             </div>
@@ -56,7 +56,7 @@
                             </div>[[+if !$USER_IS_LOGGED_IN]]
 
                             <div id="archive-warning">
-                                <p>Du er ikke logget inn og eventuelle bidrag vil ikke ha noen tilknyttning til deg. Disse innsendingene må manuelt godkjennes av en administrator før de vises på siden. Om du <a href="[[+TemplateHelper::url_for('flat_terms')]]">registrerer deg</a> vil filene være øyeblikkelig synlig. Du får også mulighet til å opprette mapper.</p>
+                                <p>Du er ikke logget inn og eventuelle bidrag vil ikke ha noen tilknyttning til deg. Disse innsendingene må manuelt godkjennes av en administrator før de vises på siden. Om du <a href="[[+TemplateHelper::urlFor('flat_terms')]]">registrerer deg</a> vil filene være øyeblikkelig synlig. Du får også mulighet til å opprette mapper.</p>
                             </div>[[+/if]][[+else]][[+if $USER_IS_BANNED]]
 
                             <p>Du er bannet fra systemet og kan dermed ikke bidra på Youkok2 lenger.</p>[[+else]]
@@ -77,7 +77,7 @@
                         <h3>Hjelp</h3>
                         <div class="sidebar-element-inner">
                             <p>Kokeboka skal være lett å bruke. Du laster ned filer ved å klikke på dem. Ønsker du å utforske en mappe trykker du enkelt på mappa.</p>
-                            <p><a href="[[+TemplateHelper::url_for('flat_help')]]">Se utvidet hjelp for mer informasjon</a>.</p>
+                            <p><a href="[[+TemplateHelper::urlFor('flat_help')]]">Se utvidet hjelp for mer informasjon</a>.</p>
                         </div>
                     </div>
                     <div id="archive-history" class="sidebar-element sidebar-element-autoscroll">

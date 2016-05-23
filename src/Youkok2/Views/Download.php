@@ -65,7 +65,6 @@ class Download extends BaseView
 
                     // Check if we should return fake http response to facebook crawler
                     if (strpos($_SERVER['HTTP_USER_AGENT'], 'facebook') !== false) {
-
                         // Facebook crawler
                         $this->template->assign('DOWNLOAD_FILE', $element->getName());
                         $this->template->assign('DOWNLOAD_SIZE', $element->getSize(true));

@@ -13,7 +13,7 @@ use Youkok2\Youkok2;
 use Youkok2\Models\Element;
 use Youkok2\Utilities\Database;
 
-class ElementStaticController 
+class ElementStaticController
 {
 
     /*

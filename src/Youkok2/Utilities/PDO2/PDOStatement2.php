@@ -17,7 +17,7 @@ class PDOStatement2 extends \PDOStatement
     //
     
     protected $connection;
-    protected $bound_params = array();
+    protected $bound_params = [];
     private $log;
 
     //
@@ -35,11 +35,11 @@ class PDOStatement2 extends \PDOStatement
     
     public function execute($arr = null) {
         if ($arr == null) {
-            $this->log[] = array('execute' => [], 'backtrace' => debug_backtrace());
+            $this->log[] = ['execute' => [], 'backtrace' => debug_backtrace()];
             parent::execute();
         }
         else {
-            $this->log[] = array('execute' => $arr, 'backtrace' => debug_backtrace());
+            $this->log[] = ['execute' => $arr, 'backtrace' => debug_backtrace()];
             parent::execute($arr);
         }
     }

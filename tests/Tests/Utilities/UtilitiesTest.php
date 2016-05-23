@@ -7,9 +7,12 @@
  * 
  */
 
+namespace \Youkok2\Tests\Utilities;
+
 use \Youkok2\Utilities\Utilities as Utilities;
 
-class UtilitiesTest extends PHPUnit_Framework_TestCase {
+class UtilitiesTest extends PHPUnit_Framework_TestCase
+{
     
     /*
      * Test prettifySQLDate
@@ -60,7 +63,8 @@ class UtilitiesTest extends PHPUnit_Framework_TestCase {
         $password2 = Utilities::hashPassword('foo', 'barasdasdkjhasdjkhasdlkjhasd', false);
         
         // Test them
-        $this->assertEquals($password1, '$2y$12$barkebabsdjkhasdeKy3gq3G2zIikAdXB4n.v5E1cv68wsqu6071f11238e773ac6bb269ae0a0d4f4bhsleeasdasdkjhayolo');
+        $this->assertEquals($password1, '$2y$12$barkebabsdjkhasdeKy3gq3G2zIikAdXB4n.v5E1cv68wsqu6071f11238e' .
+            '773ac6bb269ae0a0d4f4bhsleeasdasdkjhayolo');
         $this->assertEquals($password2, '$2y$12$barasdasdkjhasdjkhasdeKy3gq3G2zIikAdXB4n.v5E1cv68wsqu');
     }
     

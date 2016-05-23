@@ -101,7 +101,7 @@ class Auth extends BaseView
         }
         else {
             // Check all fields
-            $fields = array('register-form-email', 'register-form-nick', 'register-form-password1', 'register-form-password2');
+            $fields = ['register-form-email', 'register-form-nick', 'register-form-password1', 'register-form-password2'];
             $err = false;
             foreach ($fields as $v) {
                 if (!isset($_POST[$v]) or ($v != 'register-form-nick' and strlen($_POST[$v]) < 7)) {
@@ -165,7 +165,7 @@ class Auth extends BaseView
                 MessageManager::addMessage($this->application, 'Her gikk visst noe galt...', 'danger');
                
                 // Redirect
-                $this->application->send(TemplateHelper::url_for('auth_register'));
+                $this->application->send(TemplateHelper::urlFor('auth_register'));
             }
             else {
                 // Add message
@@ -199,7 +199,7 @@ class Auth extends BaseView
             $get_login_user .= "WHERE email = :email";
 
             $get_login_user_query = Database::$db->prepare($get_login_user);
-            $get_login_user_query->execute(array(':email' => $_POST['forgotten-email']));
+            $get_login_user_query->execute([':email' => $_POST['forgotten-email']]);
             $row = $get_login_user_query->fetch(\PDO::FETCH_ASSOC);
 
             // Check result
@@ -228,10 +228,10 @@ class Auth extends BaseView
 
                 $mail->Subject = utf8_decode('Glemt passord på Youkok2');
                 $message = utf8_decode(file_get_contents(BASE_PATH . '/files//mail/forgotten.txt'));
-                $message_keys = array(
+                $message_keys = [
                     '{{SITE_URL}}' => URL_FULL,
-                    '{{PATH}}' => TemplateHelper::url_for('auth_new_password'),
-                    '{{HASH}}' => $hash);
+                    '{{PATH}}' => TemplateHelper::urlFor('auth_new_password'),
+                    '{{HASH}}' => $hash];
                 $mail->Body = str_replace(array_keys($message_keys), $message_keys, $message);
                 $mail->send();
 
@@ -243,7 +243,7 @@ class Auth extends BaseView
             }
 
             // Redirect back to form
-            $this->application->send(TemplateHelper::url_for('auth_forgotten_password'));
+            $this->application->send(TemplateHelper::urlFor('auth_forgotten_password'));
         }
         else {
             $this->displayAndCleanup('forgotten_password.tpl');
@@ -307,7 +307,7 @@ class Auth extends BaseView
                     MessageManager::addMessage($this->application, 'De to passordene er ikke like.', 'danger');
 
                     // Redirect
-                    $this->application->send(TemplateHelper::url_for('auth_new_password') . '?hash=' . $_GET['hash']);
+                    $this->application->send(TemplateHelper::urlFor('auth_new_password') . '?hash=' . $_GET['hash']);
                 }
             }
         }

@@ -17,13 +17,14 @@ class Utilities
      */
     
     public static function prettifySQLDate($d, $include_time = true) {
-        $norwegian_months = array('jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 
-                                 'okt', 'nov', 'des');
+        $norwegian_months = ['jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep',
+                                 'okt', 'nov', 'des'];
         
         $split1 = explode(' ', $d);
         $split2 = explode('-', $split1[0]);
-        
-        return (int) $split2[2] . '. ' . $norwegian_months[$split2[1] - 1] . ' ' . $split2[0] . ($include_time ? (' @ ' . $split1[1]) : '');
+
+        return (int) $split2[2] . '. ' . $norwegian_months[$split2[1] - 1] . ' ' . $split2[0] .
+            ($include_time ? (' @ ' . $split1[1]) : '');
     }
 
     /*
@@ -32,8 +33,8 @@ class Utilities
 
     public static function urlSafe($s) {
         // Replace first here to keep "norwegian" names in a way
-        $s = str_replace(array('Æ', 'Ø', 'Å'), array('ae', 'o', 'aa'), $s);
-        $s = str_replace(array('æ', 'ø', 'å'), array('ae', 'o', 'aa'), $s);
+        $s = str_replace(['Æ', 'Ø', 'Å'], ['ae', 'o', 'aa'], $s);
+        $s = str_replace(['æ', 'ø', 'å'], ['ae', 'o', 'aa'], $s);
         
         // Replace multiple spaces to dashes
         $s = preg_replace('!\s+!', '-', $s);
@@ -68,9 +69,9 @@ class Utilities
 
     public static function passwordFuckup($s) {
         // Split the hash
-        $splits = array(substr($s, 0, 10),
+        $splits = [substr($s, 0, 10),
             substr($s, 10, 10),
-            substr($s, 20));
+            substr($s, 20)];
 
         // Rejoin and full with stuff
         return $splits[0] . 'kebab' . $splits[2] . '6071f11238e773ac6bb269ae0a0d4f4bhslee' . $splits[1] . 'yolo';
@@ -82,9 +83,9 @@ class Utilities
 
     public static function reverseFuckup($s) {
         // Split the hash
-        $splits = array(substr($s, 0, 10),
+        $splits = [substr($s, 0, 10),
             substr($s, 15, 40),
-            substr($s, 92, 10));
+            substr($s, 92, 10)];
 
         // Return the correct
         return $splits[0] . $splits[2] . $splits[1];
@@ -105,7 +106,7 @@ class Utilities
     public static function prettifyFilesize($bytes) {
         if ($bytes > 0) {
             $unit = intval(log($bytes, 1024));
-            $units = array('B', 'kB', 'MB', 'GB');
+            $units = ['B', 'kB', 'MB', 'GB'];
 
             if (array_key_exists($unit, $units) === true) {
                 return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);

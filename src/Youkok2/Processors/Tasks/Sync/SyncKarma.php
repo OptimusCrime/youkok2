@@ -110,4 +110,4 @@ class SyncKarma extends BaseProcessor
         
         $this->setData('data', ['updated' => $update_num]);
     }
-} 
+}

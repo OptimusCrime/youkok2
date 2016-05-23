@@ -129,4 +129,4 @@ class Upgrade extends BaseProcessor
         // Add message
         $this->setData('css', 'Successfully build CSS files');
     }
-} 
+}

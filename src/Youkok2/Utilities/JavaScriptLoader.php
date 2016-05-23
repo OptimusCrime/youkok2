@@ -50,4 +50,4 @@ class JavaScriptLoader
         // Return list of files
         return $files;
     }
-} 
+}

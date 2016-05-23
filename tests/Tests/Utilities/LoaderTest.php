@@ -7,9 +7,12 @@
  * 
  */
 
+namespace \Youkok2\Tests\Utilities;
+
 use \Youkok2\Utilities\Loader as Loader;
 
-class LoaderTest extends PHPUnit_Framework_TestCase {
+class LoaderTest extends PHPUnit_Framework_TestCase
+{
     
     /*
      * Test Loader for frontpage
@@ -92,7 +95,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
         
         $this->assertEquals('\Youkok2\Views\Redirect', $loader3['view']);
         $this->assertEquals('\Youkok2\Views\Redirect', $loader4['view']);
-   }
+    }
    
    /*
      * Test Loader views with methods
@@ -105,5 +108,5 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
         // Test them
         $this->assertEquals('\Youkok2\Views\Flat', $loader1['view']);
         $this->assertEquals('displayAbout', $loader1['method']);
-   }
+    }
 }

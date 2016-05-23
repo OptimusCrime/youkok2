@@ -7,10 +7,13 @@
  * 
  */
 
+namespace \Youkok2\Tests\Utilities;
+
 use \Youkok2\Models\Element as Element;
 use \Youkok2\Utilities\CacheManager as CacheManager;
 
-class CacheManagerTest extends PHPUnit_Framework_TestCase {
+class CacheManagerTest extends PHPUnit_Framework_TestCase
+{
     
     /*
      * Test isCached on non existing cache elements

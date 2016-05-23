@@ -49,7 +49,7 @@ class BacktraceManager
                     // Normal query (no binds)
                     $temp_query = $v['query'];
                 }
-                else if (isset($v['exec'])) {
+                elseif (isset($v['exec'])) {
                     // Normal exec (no binds)
                     $temp_query = $v['exec'];
                 }
@@ -60,7 +60,7 @@ class BacktraceManager
                         $has_prepare = true;
                         $prepare_val = $v['prepare'];
                     }
-                    else if (isset($v['execute'])) {
+                    elseif (isset($v['execute'])) {
                         // Query is executed with binds, check if binds are found
                         if ($has_prepare) {
                             // Binds are found, replace keys with bind values
@@ -116,7 +116,8 @@ class BacktraceManager
                     }
                 }
                 
-                $line = '<p style="cursor: help;" title="' . $tooltip . '">' . $trace['file'] . ' @ line ' . $trace['line'];
+                $line = '<p style="cursor: help;" title="' . $tooltip . '">';
+                $line .= $trace['file'] . ' @ line ' . $trace['line'];
             }
             
             // Return the final line
@@ -136,4 +137,4 @@ class BacktraceManager
         
         return ' [' . round((self::$profilingInformation[$idx - 2]['Duration'] * 1000), 4) . ' ms]';
     }
-} 
+}

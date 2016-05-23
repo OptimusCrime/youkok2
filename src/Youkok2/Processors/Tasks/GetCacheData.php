@@ -118,4 +118,4 @@ class GetCacheData extends BaseProcessor
             $this->setData('msg', 'No id');
         }
     }
-} 
+}

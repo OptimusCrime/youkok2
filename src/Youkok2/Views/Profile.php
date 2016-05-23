@@ -66,7 +66,7 @@ class Profile extends BaseView
             if ($_POST['source'] == 'password') {
                 $this->profileUpdatePassword();
             }
-            else if ($_POST['source'] == 'info') {
+            elseif ($_POST['source'] == 'info') {
                 $this->profileUpdateInfo();
             }
             else {
@@ -101,7 +101,6 @@ class Profile extends BaseView
             and isset($_POST['forgotten-password-new-form-password1'])
             and isset($_POST['forgotten-password-new-form-password2'])
             and ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2'])) {
-
             // Validate old password
             if (password_verify($_POST['forgotten-password-new-form-oldpassword'], Utilities::reverseFuckup(Me::getPassword()))) {
                 // New hash
@@ -151,7 +150,7 @@ class Profile extends BaseView
                 $_POST['email'] = $_POST['register-form-email'];
                 $_POST['ignore'] = 1;
                 
-                $email_processor = self::runProcessor('/register/email',[
+                $email_processor = self::runProcessor('/register/email', [
                     'output' => false,
                     'close_db' => false]);
             }
@@ -161,9 +160,6 @@ class Profile extends BaseView
                 and $_POST['register-form-email'] != Me::getEmail()
                 and strlen($_POST['register-form-email']) > 0
                 and filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL)) {
-                
-                
-                
                 // Set data
                 Me::setEmail($_POST['register-form-email']);
 

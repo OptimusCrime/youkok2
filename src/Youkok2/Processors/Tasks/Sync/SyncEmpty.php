@@ -69,7 +69,7 @@ class SyncEmpty extends BaseProcessor
             $check_empty .= "LIMIT 1";
             
             $check_empty_query = Database::$db->prepare($check_empty);
-            $check_empty_query->execute(array(':parent' => $row['id']));
+            $check_empty_query->execute([':parent' => $row['id']]);
             $check = $check_empty_query->fetch(\PDO::FETCH_ASSOC);
             
             $update = false;
@@ -77,7 +77,7 @@ class SyncEmpty extends BaseProcessor
                 $update = true;
                 $empty = false;
             }
-            else if (!isset($check['id']) and $row['empty'] == 0) {
+            elseif (!isset($check['id']) and $row['empty'] == 0) {
                 $update = true;
                 $empty = true;
             }
@@ -88,7 +88,7 @@ class SyncEmpty extends BaseProcessor
                 $update_empty .= "WHERE id = :id";
                 
                 $update_empty_query = Database::$db->prepare($update_empty);
-                $update_empty_query->execute(array(':empty' => $empty, ':id' => $row['id']));
+                $update_empty_query->execute([':empty' => $empty, ':id' => $row['id']]);
                 
                 $update_num++;
             }
@@ -101,4 +101,4 @@ class SyncEmpty extends BaseProcessor
             $this->application->runProcessor('tasks/clearcache', []);
         }
     }
-} 
+}

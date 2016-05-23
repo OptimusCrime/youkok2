@@ -60,7 +60,7 @@ class HomeGraph extends BaseProcessor
             if ($i == 30) {
                 $response['delta'] = date('j. M Y', $date_offset);
             }
-            else if ($i == 0) {
+            elseif ($i == 0) {
                 $response['delta'] .= ' &mdash; ' . date('j. M Y', $date_offset);
             }
             
@@ -68,7 +68,6 @@ class HomeGraph extends BaseProcessor
                 'date' => date('Y-m-d', $date_offset),
                 'downloads' => 0
             ];
-            
         }
         
         // The query
@@ -95,4 +94,4 @@ class HomeGraph extends BaseProcessor
         // Set ok
         $this->setOK();
     }
-} 
+}

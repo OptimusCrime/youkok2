@@ -125,4 +125,4 @@ class Favorite extends BaseModel
     public function setFavoritedTime($time) {
         $this->favoritedTime = $time;
     }
-} 
+}

@@ -4,7 +4,7 @@
                     <h1>Nytt passord</h1>
                     <p>Dersom du har glemt ditt passord kan du endre til nytt passord i dette skjemaet</p>
                     <hr />
-                    <form action="[[+TemplateHelper::url_for('auth_new_password')]]" method="post" id="forgotten-password-new-form" name="forgotten-password-new-form">
+                    <form action="[[+TemplateHelper::urlFor('auth_new_password')]]" method="post" id="forgotten-password-new-form" name="forgotten-password-new-form">
                         <div class="form-group">
                             <label for="forgotten-password-new-form-password1">Passord <span style="color: red;">*</span></label>
                             <input type="password" class="form-control" id="forgotten-password-new-form-password1" name="forgotten-password-new-form-password1" placeholder="Ditt passord her" />

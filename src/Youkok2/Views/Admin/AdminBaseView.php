@@ -82,7 +82,7 @@ abstract class AdminBaseView extends BaseView
             }
             
             // Get the URL
-            $menu_item['url'] = TemplateHelper::url_for($menu_item['identifier']);
+            $menu_item['url'] = TemplateHelper::urlFor($menu_item['identifier']);
             
             // Get the correct class
             $class = null;

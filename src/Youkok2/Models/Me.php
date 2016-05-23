@@ -16,7 +16,7 @@ use Youkok2\Utilities\Utilities;
 use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\Redirect;
 
-class Me 
+class Me
 {
     
     /*
@@ -62,12 +62,12 @@ class Me
                     $get_current_user .= "AND password = :password";
                     
                     $get_current_user_query = Database::$db->prepare($get_current_user);
-                    $get_current_user_query->execute(array(':email' => $hash_split[0], 
-                                                           ':password' => $hash_split[1]));
+                    $get_current_user_query->execute([':email' => $hash_split[0],
+                                                           ':password' => $hash_split[1]]);
                     $row = $get_current_user_query->fetch(\PDO::FETCH_ASSOC);
 
                     // Check if anything want returned
-                    if (isset($row['id'])) {                        
+                    if (isset($row['id'])) {
                         // Create a new instace of the user object
                         self::$user = new User($row);
                     }
@@ -219,7 +219,7 @@ class Me
                 $get_login_user .= "WHERE email = :email";
 
                 $get_login_user_query = Database::$db->prepare($get_login_user);
-                $get_login_user_query->execute(array(':email' => $_POST['login-email']));
+                $get_login_user_query->execute([':email' => $_POST['login-email']]);
                 $row = $get_login_user_query->fetch(\PDO::FETCH_ASSOC);
 
                 // Check result
@@ -360,7 +360,7 @@ class Me
         // Check if already loaded
         if (self::$favorites === null) {
             // Set favorites to array
-            self::$favorites = array();
+            self::$favorites = [];
 
             // Run query
             $get_favorites  = "SELECT f.file" . PHP_EOL;
@@ -372,7 +372,7 @@ class Me
             $get_favorites .= "ORDER BY f.id ASC";
 
             $get_favorites_query = Database::$db->prepare($get_favorites);
-            $get_favorites_query->execute(array(':user' => self::$user->getId()));
+            $get_favorites_query->execute([':user' => self::$user->getId()]);
             while ($row = $get_favorites_query->fetch(\PDO::FETCH_ASSOC)) {
                 self::$favorites[] = Element::get($row['file']);
             }
@@ -414,7 +414,7 @@ class Me
         $get_user_karma_elements .= "ORDER BY added DESC";
 
         $get_user_karma_elements_query = Database::$db->prepare($get_user_karma_elements);
-        $get_user_karma_elements_query->execute(array(':user' => self::$user->getId()));
+        $get_user_karma_elements_query->execute([':user' => self::$user->getId()]);
         while ($row = $get_user_karma_elements_query->fetch(\PDO::FETCH_ASSOC)) {
             $collection[] = new Karma($row);
         }

@@ -12,7 +12,7 @@ namespace Youkok2\Models;
 use Youkok2\Models\Controllers\ChangePasswordController;
 use Youkok2\Models\StaticControllers\MessageStaticController;
 
-class ChangePassword extends BaseModel 
+class ChangePassword extends BaseModel
 {
 
     /*
@@ -110,4 +110,4 @@ class ChangePassword extends BaseModel
     public function setTimeout($timeout) {
         $this->timeout = $timeout;
     }
-} 
+}

@@ -53,9 +53,9 @@ class LoadCoursesJson extends BaseProcessor
             $element = Element::get($row['id']);
 
             // Append to array
-            $courses[] = array(
+            $courses[] = [
                 'course' => $element->getCourseCode() . ' - ' . $element->getCourseName(),
-                'url' => $element->getFullUrl());
+                'url' => $element->getFullUrl()];
 
             unset($element);
         }
@@ -66,4 +66,4 @@ class LoadCoursesJson extends BaseProcessor
         // Store timestamp in typehead.json
         file_put_contents(CACHE_PATH . '/typeahead.json', json_encode(['timestamp' => time()]));
     }
-} 
+}

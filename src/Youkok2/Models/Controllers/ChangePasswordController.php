@@ -12,7 +12,7 @@ namespace Youkok2\Models\Controllers;
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Database;
 
-class ChangePasswordController extends BaseController 
+class ChangePasswordController extends BaseController
 {
     
     /*
@@ -35,7 +35,7 @@ class ChangePasswordController extends BaseController
         $validate_hash .= "AND c.timeout > CURRENT_TIMESTAMP";
         
         $validate_hash_query = Database::$db->prepare($validate_hash);
-        $validate_hash_query->execute(array(':hash' => $hash));
+        $validate_hash_query->execute([':hash' => $hash]);
         $row = $validate_hash_query->fetch(\PDO::FETCH_ASSOC);
         
         if (isset($row['id'])) {

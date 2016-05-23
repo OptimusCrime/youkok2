@@ -7,9 +7,12 @@
  *
  */
 
+namespace \Youkok2\Tests\Models;
+
 use Youkok2\Models\ChangePassword;
 
-class ChangePasswordTest extends PHPUnit_Framework_TestCase {
+class ChangePasswordTest extends PHPUnit_Framework_TestCase
+{
     /*
      * Test object save
      */

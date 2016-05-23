@@ -80,7 +80,7 @@ class LoadCourses extends BaseProcessor
             $check_current_course .= "LIMIT 1";
             
             $check_current_course_query = Database::$db->prepare($check_current_course);
-            $check_current_course_query->execute(array(':name' => $search_name));
+            $check_current_course_query->execute([':name' => $search_name]);
             $row = $check_current_course_query->fetch(\PDO::FETCH_ASSOC);
 
             // Check if exists
@@ -107,4 +107,4 @@ class LoadCourses extends BaseProcessor
         // Set message
         $this->setData('msg', ['Fetched' => $fetched, 'New' => $new, 'Added' => $added]);
     }
-} 
+}

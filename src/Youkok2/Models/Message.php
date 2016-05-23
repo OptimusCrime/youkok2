@@ -12,7 +12,7 @@ namespace Youkok2\Models;
 use Youkok2\Models\Controllers\MessageController;
 use Youkok2\Models\StaticControllers\MessageStaticController;
 
-class Message extends BaseModel 
+class Message extends BaseModel
 {
 
     /*
@@ -163,8 +163,8 @@ class Message extends BaseModel
         // Check if method exists
         if (method_exists('Youkok2\Models\StaticControllers\MessageStaticController', $name)) {
             // Call method and return response
-            return call_user_func_array(array('Youkok2\Models\StaticControllers\MessageStaticController', 
-                $name), $arguments);
+            return call_user_func_array(['Youkok2\Models\StaticControllers\MessageStaticController',
+                $name], $arguments);
         }
     }
-} 
+}

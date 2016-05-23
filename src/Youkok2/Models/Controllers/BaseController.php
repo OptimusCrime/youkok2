@@ -12,7 +12,7 @@ namespace Youkok2\Models\Controllers;
 use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;
 
-abstract class BaseController 
+abstract class BaseController
 {
 
     /*
@@ -224,7 +224,8 @@ abstract class BaseController
         }
 
         // Build query string
-        $query_string  = "INSERT INTO `" . $this->schema['meta']['table'] . "` (" . implode(', ', $attributes_arr) . ")" . PHP_EOL;
+        $query_string  = "INSERT INTO `" . $this->schema['meta']['table'];
+        $query_string .= "` (" . implode(', ', $attributes_arr) . ")" . PHP_EOL;
         $query_string .= "VALUES (" . implode(', ', $bindings_arr) . ")";
         
         $result = Database::$db->prepare($query_string);

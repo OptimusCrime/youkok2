@@ -3,7 +3,7 @@
                 <div id="archive-top" class="col-xs-12 col-md-8">
                     <ol class="breadcrumb" id="archive-breadcrumbs">
                         <li><a href="[[+$SITE_URL]]">Hjem</a></li>
-                        <li><a href="[[+TemplateHelper::url_for('courses')]]">Emner</a></li>[[+foreach $ARCHIVE_ELEMENT_PARENTS as $element]]
+                        <li><a href="[[+TemplateHelper::urlFor('courses')]]">Emner</a></li>[[+foreach $ARCHIVE_ELEMENT_PARENTS as $element]]
 
                         <li>[[+if $element->getId() == $ARCHIVE_ELEMENT->getId()]][[+if !$ARCHIVE_ELEMENT->hasParent()]][[+$ARCHIVE_ELEMENT->getCourseCode()]][[+else]][[+$element->getName()]][[+/if]][[+else]]<a href="[[+$element->getFullUrl()]]">[[+if !$element->hasParent()]][[+$element->getCourseCode()]][[+else]][[+$element->getName()]][[+/if]]</a>[[+/if]]</li>[[+/foreach]]
 

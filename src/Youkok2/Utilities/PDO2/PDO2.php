@@ -35,7 +35,7 @@ class PDO2 extends \PDO
             $this->queryLog = [];
             
             // Set logging to this query log
-            $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array('Youkok2\\Utilities\\PDO2\\PDOStatement2', array($this, &$this->queryLog)));
+            $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, ['Youkok2\\Utilities\\PDO2\\PDOStatement2', [$this, &$this->queryLog]]);
         }
     }
     
@@ -50,7 +50,7 @@ class PDO2 extends \PDO
             $this->queryCount++;
             
             // Add to log
-            $this->queryLog[] = array('query' => $query, 'backtrace' => debug_backtrace());
+            $this->queryLog[] = ['query' => $query, 'backtrace' => debug_backtrace()];
         }
         
         // Call parent method
@@ -68,7 +68,7 @@ class PDO2 extends \PDO
             $this->queryCount++;
             
             // Add to log
-            $this->queryLog[] = array('exec' => $statement, 'backtrace' => debug_backtrace());
+            $this->queryLog[] = ['exec' => $statement, 'backtrace' => debug_backtrace()];
         }
         
         // Call parent method
@@ -86,7 +86,7 @@ class PDO2 extends \PDO
             $this->queryCount++;
             
             // Add to log
-            $this->queryLog[] = array('prepare' => $statement, 'backtrace' => debug_backtrace());
+            $this->queryLog[] = ['prepare' => $statement, 'backtrace' => debug_backtrace()];
         }
         
         // Call parent method

@@ -44,10 +44,9 @@ class Favorites extends BaseProcessor
      * Set or remove favorite for a element
      */
 
-    public function run() {       
-        if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['type']) and 
+    public function run() {
+        if (isset($_POST['id']) and is_numeric($_POST['id']) and isset($_POST['type']) and
             ($_POST['type'] == 'add' or $_POST['type'] == 'remove')) {
-            
             // Check action
             if ($_POST['type'] == 'remove') {
                 // Remove favorite
@@ -55,7 +54,7 @@ class Favorites extends BaseProcessor
                 $remove_favorite .= "WHERE file = :file AND user = :user";
                 
                 $remove_favorite_query = Database::$db->prepare($remove_favorite);
-                $remove_favorite_query->execute(array(':file' => $_POST['id'], ':user' => Me::getId()));
+                $remove_favorite_query->execute([':file' => $_POST['id'], ':user' => Me::getId()]);
                 
                 // Set message
                 $this->setData('msg', [['type' => 'success', 'text' => 'Favoritten er fjernet.']]);
@@ -66,7 +65,7 @@ class Favorites extends BaseProcessor
                 $insert_favorite .= "VALUES (:file, :user)";
                 
                 $insert_favorite_query = Database::$db->prepare($insert_favorite);
-                $insert_favorite_query->execute(array(':file' => $_POST['id'], ':user' => Me::getId()));
+                $insert_favorite_query->execute([':file' => $_POST['id'], ':user' => Me::getId()]);
                 
                 // Set message
                 $this->setData('msg', [['type' => 'success', 'text' => 'Lagt til som favoritt.']]);

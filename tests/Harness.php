@@ -7,6 +7,8 @@
  *
  */
 
+namespace \Youkok2\Tests\Harness;
+
 use Youkok2\Youkok2;
 use Youkok2\Models\User;
 use Youkok2\Utilities\Database;
@@ -16,7 +18,8 @@ require_once BASE_PATH . '/local.php';
 require_once BASE_PATH . '/local-default.php';
 require_once BASE_PATH . '/index.php';
 
-class Harness {
+class Harness
+{
     
     /*
      * Constructor

@@ -14,7 +14,7 @@ use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
 
-Class LoadExams extends BaseProcessor
+class LoadExams extends BaseProcessor
 {
     
     /*
@@ -106,8 +106,14 @@ Class LoadExams extends BaseProcessor
                                 $time_split = explode(':', $exam_data['appearanceTime']);
                                 
                                 // Parse to timestamp
-                                $exam_temp = mktime((int) $time_split[0], (int) $time_split[1], 0, (int) $date_split[1], 
-                                                    (int) $date_split[2], (int) $date_split[0]);
+                                $exam_temp = mktime(
+                                    (int) $time_split[0],
+                                    (int) $time_split[1],
+                                    0,
+                                    (int) $date_split[1],
+                                    (int) $date_split[2],
+                                    (int) $date_split[0]
+                                );
                                 
                                 // Check if is in the future
                                 if ($exam_temp > time()) {
@@ -163,4 +169,4 @@ Class LoadExams extends BaseProcessor
         $this->setData('msg', [
             'Updated' => $updated]);
     }
-} 
+}

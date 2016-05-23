@@ -128,4 +128,4 @@ class FindDuplicates extends BaseProcessor
         // Output
         $this->setData('duplicates_name', $duplicates);
     }
-} 
+}

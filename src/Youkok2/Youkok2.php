@@ -14,7 +14,7 @@ use Youkok2\Utilities\Routes;
 
 class Youkok2
 {
-    
+
     protected $wrapper;
     
     private $body;
@@ -22,6 +22,9 @@ class Youkok2
     private $streams;
     private $sessions;
     private $cookies;
+    private $post; // TODO
+    private $get; // TODO
+    private $files; // TODO
     
     /*
      * The constructor for the application
@@ -87,7 +90,7 @@ class Youkok2
         // Store what method to call
         if ($view::isProcessor()) {
             $view->setMethod($class['method']);
-        }        
+        }
             
         // Set settings and path
         $view->setSettings($settings);
@@ -97,7 +100,7 @@ class Youkok2
         if ($view::isProcessor()) {
             $view->execute();
         }
-        else if ($class['method'] === null) {
+        elseif ($class['method'] === null) {
             $view->run();
         }
         else {

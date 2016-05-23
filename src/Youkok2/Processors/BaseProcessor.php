@@ -44,7 +44,7 @@ abstract class BaseProcessor extends Processors
         }
     }
     
-    public function execute() {  
+    public function execute() {
         parent::run();
 
         // Check if user needs database access

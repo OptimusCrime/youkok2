@@ -92,7 +92,8 @@ class QueryParser
 
     public static function getQuery() {
         // Check if we are running built in server or apache/nginx
-        if (isset($_SERVER['SERVER_SOFTWARE']) and strpos($_SERVER['SERVER_SOFTWARE'], 'Development Server') !== false) {
+        if (isset($_SERVER['SERVER_SOFTWARE']) and
+            strpos($_SERVER['SERVER_SOFTWARE'], 'Development Server') !== false) {
             $request_url = $_SERVER['REQUEST_URI'];
 
             // Check if request uri has additional information (? params)

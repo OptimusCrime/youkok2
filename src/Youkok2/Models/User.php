@@ -11,7 +11,7 @@ namespace Youkok2\Models;
 
 use Youkok2\Models\Controllers\UserController;
 
-class User extends BaseModel 
+class User extends BaseModel
 {
     
     /*

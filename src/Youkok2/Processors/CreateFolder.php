@@ -64,7 +64,7 @@ class CreateFolder extends BaseProcessor
             }
         }
         
-        // Check if we are good to go            
+        // Check if we are good to go
         if ($request_ok) {
             // Check duplicates for url friendly
             $num = 2;
@@ -79,8 +79,8 @@ class CreateFolder extends BaseProcessor
                 $get_duplicate .= "AND url_friendly = :url_friendly";
                 
                 $get_duplicate_query = Database::$db->prepare($get_duplicate);
-                $get_duplicate_query->execute(array(':id' => $parent->getId(),
-                    ':url_friendly' => $url_friendly));
+                $get_duplicate_query->execute([':id' => $parent->getId(),
+                    ':url_friendly' => $url_friendly]);
                 $row_duplicate = $get_duplicate_query->fetch(\PDO::FETCH_ASSOC);
                 
                 // Check if any url patterns collide
@@ -105,13 +105,13 @@ class CreateFolder extends BaseProcessor
             // Loop 'till no collides
             while (true) {
                 $get_duplicate2  = "SELECT id" . PHP_EOL;
-                $get_duplicate2 .= "FROM archive" . PHP_EOL; 
+                $get_duplicate2 .= "FROM archive" . PHP_EOL;
                 $get_duplicate2 .= "WHERE parent = :id" . PHP_EOL;
                 $get_duplicate2 .= "AND name = :name";
                 
                 $get_duplicate2_query = Database::$db->prepare($get_duplicate2);
-                $get_duplicate2_query->execute(array(':id' => $parent->getId(),
-                    ':name' => $name));
+                $get_duplicate2_query->execute([':id' => $parent->getId(),
+                    ':name' => $name]);
                 $row_duplicate2 = $get_duplicate2_query->fetch(\PDO::FETCH_ASSOC);
                 
                 // Check if any url patterns collide

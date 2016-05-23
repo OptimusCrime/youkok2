@@ -92,4 +92,4 @@ class HomeBoxes extends BaseProcessor
         // Set ok
         $this->setOK();
     }
-} 
+}

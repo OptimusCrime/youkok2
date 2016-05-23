@@ -88,10 +88,10 @@ class Loader
         // If not found, display 404 view
         if (!$found) {
             // Array with regex expressions
-            $regexes = array(
-                '/' => '\/', 
+            $regexes = [
+                '/' => '\/',
                 '*' => '(.*)'
-            );
+            ];
             
             // Check if should be redirected
             $redirects = Routes::getRedirects();
@@ -106,7 +106,7 @@ class Loader
                     $redirect_url = URL_FULL . substr(str_replace('*', $matches[1][0], $v), 1);
                     
                     // Send redirect
-                    header('HTTP/1.1 301 Moved Permanently'); 
+                    header('HTTP/1.1 301 Moved Permanently');
                     header('Location: ' . $redirect_url);
                     
                     // Kill

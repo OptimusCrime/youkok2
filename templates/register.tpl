@@ -5,7 +5,7 @@
                     <p>Registrering på Youkok2 er gratis og åpen for alle. Bare fyll ut feltene under, så har du din egen konto</p>
                     <p>Legg riktignok merke til at det krever en e-post som ikke finnes i systemet vårt fra før.</p>
                     <hr />
-                    <form action="[[+TemplateHelper::url_for('auth_register')]]" method="post" id="register-form" name="register-form">
+                    <form action="[[+TemplateHelper::urlFor('auth_register')]]" method="post" id="register-form" name="register-form">
                         <div class="form-group">
                             <label for="register-form-email">E-post <span>*</span></label>
                             <input type="email" class="form-control" id="register-form-email" name="register-form-email" placeholder="Skriv din e-post her" />

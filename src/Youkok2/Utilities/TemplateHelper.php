@@ -16,7 +16,7 @@ class TemplateHelper
      * Method for reverse lookup for URL creation
      */
 
-    public static function url_for($identifier, $params = null) {
+    public static function urlFor($identifier, $params = null) {
         // Get the routes
         $routes = Routes::getRoutes();
         
@@ -81,7 +81,7 @@ class TemplateHelper
             // We should add an endfix here
             $path .= '/';
         }
-        else if (isset($route['endfix']) and !$route['endfix']) {
+        elseif (isset($route['endfix']) and !$route['endfix']) {
             // We should make sure to remove any endfix (if present)
             if (substr($path, strlen($path) - 1) == '/') {
                 $path = substr($path, 0, strlen($path) - 1);
@@ -94,4 +94,4 @@ class TemplateHelper
         // Return the final path
         return $path;
     }
-} 
+}

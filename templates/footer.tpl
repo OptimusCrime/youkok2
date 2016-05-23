@@ -5,12 +5,12 @@
     <div class="row">
         <div class="col-xs-12" id="footer">
             <p>
-                <span><a href="[[+TemplateHelper::url_for('changelog')]]">Youkok2 v[[+$VERSION]]</a></span>
+                <span><a href="[[+TemplateHelper::urlFor('changelog')]]">Youkok2 v[[+$VERSION]]</a></span>
                 [[+nocache]][[+if $DEV]]<span><a href="https://github.com/OptimusCrime/youkok2/commit/[[+$GIT_HASH]]" target="_blank">[[+$GIT_HASH_SHORT]]</a></span>[[+/if]][[+/nocache]]
 
-                <span><a href="[[+TemplateHelper::url_for('flat_about')]]">Om Youkok2</a></span>
-                <span><a href="[[+TemplateHelper::url_for('flat_terms')]]">Retningslinjer</a></span>
-                <span><a href="[[+TemplateHelper::url_for('flat_help')]]">Hjelp</a></span>
+                <span><a href="[[+TemplateHelper::urlFor('flat_about')]]">Om Youkok2</a></span>
+                <span><a href="[[+TemplateHelper::urlFor('flat_terms')]]">Retningslinjer</a></span>
+                <span><a href="[[+TemplateHelper::urlFor('flat_help')]]">Hjelp</a></span>
                 <span><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>
                 <span>[[+nocache]][[+$TIMER]][[+/nocache]]</span>
                 <span><a href="https://github.com/OptimusCrime/youkok2" target="_blank">GitHub</a></span>

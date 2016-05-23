@@ -81,7 +81,7 @@ class Graybox extends BaseProcessor
      * Get different commits
      */
 
-    public function getCommits() {        
+    public function getCommits() {
         // Array for storing random commits
         $commits = [];
 

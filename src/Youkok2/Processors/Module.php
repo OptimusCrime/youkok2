@@ -58,7 +58,7 @@ class Module extends BaseProcessor
 
         // Loop the data array and run method on each element
         if (isset($data['data']) and count($data['data']) > 0) {
-            foreach($data['data'] as $v) {
+            foreach ($data['data'] as $v) {
                 $new_data[] = $v->toArray();
             }
         }
@@ -124,7 +124,7 @@ class Module extends BaseProcessor
      * Fetch module data
      */
     
-    public function get() {        
+    public function get() {
         // Get the settings
         $settings = $this->getModuleSettings();
 
@@ -133,8 +133,10 @@ class Module extends BaseProcessor
         
         // Check if the current module exists
         if ($this->module != null) {
-            $module_instance = $this->application->runProcessor(new ClassParser('Processors\Modules\MostPopularElements', 'get'), 
-                $settings);
+            $module_instance = $this->application->runProcessor(
+                new ClassParser('Processors\Modules\MostPopularElements', 'get'),
+                $settings
+            );
             
             // Set the data
             $this->setData('data', $module_instance->getData()['data']);
@@ -162,8 +164,10 @@ class Module extends BaseProcessor
         // Check if the current module exists
         if ($this->module != null) {
             // Create a new instance of the module
-            $module_instance = $this->application->runProcessor(new ClassParser('Processors\Modules\MostPopularElements', 'update'), 
-                $settings);
+            $module_instance = $this->application->runProcessor(
+                new ClassParser('Processors\Modules\MostPopularElements', 'update'),
+                $settings
+            );
             
             // Set the data
             $this->setData('data', $module_instance->getData()['data']);

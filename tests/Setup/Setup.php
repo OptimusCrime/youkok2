@@ -7,7 +7,7 @@
  * 
  */
 
-namespace Youkok2;
+namespace \Youkok2\Tests\Setup;
 
 use Youkok2\Utilities\Database;
 
@@ -16,7 +16,8 @@ require_once BASE_PATH . '/local.php';
 require_once BASE_PATH . '/local-default.php';
 require_once BASE_PATH . '/index.php';
 
-class Setup {
+class Setup
+{
     
     /*
      * Constructor

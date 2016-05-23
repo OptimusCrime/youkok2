@@ -30,7 +30,7 @@ class LinkTitle extends BaseProcessor
             $_POST['url'] = rtrim(trim($_POST['url']));
         
             // Check for valid url
-             if (filter_var($_POST['url'], FILTER_VALIDATE_URL)) {
+            if (filter_var($_POST['url'], FILTER_VALIDATE_URL)) {
                 // Valid url, fetch content of page
                 try {
                     $site_content = @file_get_contents($_POST['url']);

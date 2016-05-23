@@ -33,7 +33,7 @@ class LoadHistory extends BaseProcessor
 
         // Loop the data array and run method on each element
         if (count($data['data']) > 0) {
-            foreach($data['data'] as $v) {
+            foreach ($data['data'] as $v) {
                 $new_data[] = $v->toArray();
             }
         }
@@ -77,7 +77,7 @@ class LoadHistory extends BaseProcessor
                 $history_get .= "ORDER BY h.added DESC" . PHP_EOL;
                 
                 $history_get_query = Database::$db->prepare($history_get);
-                $history_get_query->execute(array(':id' => $_POST['id']));
+                $history_get_query->execute([':id' => $_POST['id']]);
                 while ($row = $history_get_query->fetch(\PDO::FETCH_ASSOC)) {
                     // Init new History object
                     $history = new History($row);

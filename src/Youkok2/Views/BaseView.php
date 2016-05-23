@@ -279,7 +279,7 @@ class BaseView
         
         // Kill this views
         $this->settings['kill'] = true;
-}
+    }
     
     /*
      * Close the database connection and process queued cache
