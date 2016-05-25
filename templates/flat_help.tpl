@@ -4,12 +4,12 @@
                     <h1>Hjelp</h1>
                     <p>Velkommen til vår hjelpeseksjon. Dersom du savner svar på ditt spørsmål kan du tipse oss om manglende forklaring ved å sende oss en <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">e-post</a>.</p>
                     <h3>Hvordan registrerer jeg meg?</h3>
-                    <p>Du registerer deg ved å gå til <a href="[[+TemplateHelper::url_for('auth_register')]]">denne siden</a>. Det krever en e-post som ikke finnes i systemet fra før, samt evnen til å skrive samme passord to ganger.</p>
+                    <p>Du registerer deg ved å gå til <a href="[[+TemplateHelper::urlFor('auth_register')]]">denne siden</a>. Det krever en e-post som ikke finnes i systemet fra før, samt evnen til å skrive samme passord to ganger.</p>
                     <h3>Må jeg være NTNU-student for å registrere meg?</h3>
                     <p>Nei. Alle kan registrere seg. Alle kan også bidra med filer til systemet. Men pass på at du følger våre
-                    <a href="[[+TemplateHelper::url_for('flat_terms')]]">retningslinjer</a> når du gjør dette.</p>
+                    <a href="[[+TemplateHelper::urlFor('flat_terms')]]">retningslinjer</a> når du gjør dette.</p>
                     <h3>Jeg har glemt passordet mitt, now what?</h3>
-                    <p>Gå på <a href="[[+TemplateHelper::url_for('auth_forgotten_password')]]">denne siden</a> og skriv in e-posten du registrerte deg med. Du vil motta en link for å resette passordet ditt. Legg merke til at denne e-posten kan havne i spam-folderen din. Dersom du ikke mottar e-posten eller har glemt e-posten du registrerte deg med kan du sende oss en <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">e-post</a>.</p>
+                    <p>Gå på <a href="[[+TemplateHelper::urlFor('auth_forgotten_password')]]">denne siden</a> og skriv in e-posten du registrerte deg med. Du vil motta en link for å resette passordet ditt. Legg merke til at denne e-posten kan havne i spam-folderen din. Dersom du ikke mottar e-posten eller har glemt e-posten du registrerte deg med kan du sende oss en <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">e-post</a>.</p>
                     <h3>Hvordan kan jeg bidra?</h3>
                     <p>Finn faget du ønsker å poste ditt bidrag i og se i sidemenyen til høyre. Her har du kontroller for å poste linker og å laste opp filer.</p>
                     <h3>Hva betyr tallet som står på enkelte filer og mapper?</h3>

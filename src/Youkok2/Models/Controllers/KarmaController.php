@@ -9,7 +9,8 @@
 
 namespace Youkok2\Models\Controllers;
 
-class KarmaController extends BaseController {
+class KarmaController extends BaseController
+{
     
     /*
      * Constructor

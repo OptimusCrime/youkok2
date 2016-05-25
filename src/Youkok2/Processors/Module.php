@@ -12,17 +12,19 @@ namespace Youkok2\Processors;
 use Youkok2\Models\Element;
 use Youkok2\Models\Me;
 use Youkok2\Models\Controllers\ElementController;
+use Youkok2\Utilities\ClassParser;
 use Youkok2\Utilities\Database;
 
-class Module extends BaseProcessor {
+class Module extends BaseProcessor
+{
     
     /*
      * List of modules
      */
     
     private static $modules = [
-        '\Youkok2\Processors\Modules\MostPopularElements' => 1,
-        '\Youkok2\Processors\Modules\MostPopularCourses' => 2,
+        'Processors\Modules\MostPopularElements' => 1,
+        'Processors\Modules\MostPopularCourses' => 2,
     ];
     
     /*
@@ -56,7 +58,7 @@ class Module extends BaseProcessor {
 
         // Loop the data array and run method on each element
         if (isset($data['data']) and count($data['data']) > 0) {
-            foreach($data['data'] as $v) {
+            foreach ($data['data'] as $v) {
                 $new_data[] = $v->toArray();
             }
         }
@@ -67,47 +69,74 @@ class Module extends BaseProcessor {
         // Return the updated array
         return $data;
     }
-
+    
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
      * Returns the correct module
      */
     
-    private function getModule() {
+    private function getModule($settings) {
+        // Make sure to check that we have the module in our settings
+        if (!isset($settings['module'])) {
+            return null;
+        }
+
         // Get the correct module
         foreach (self::$modules as $k => $v) {
-            if ($v == $this->getSetting('module')) {
+            if ($v == $settings['module']) {
                 $this->module = $k;
                 break;
             }
         }
     }
-    
-    
+
+     /*
+     * Set the correct settings
+     */
+
+    private function getModuleSettings() {
+        // Make sure we tell the model processor not to output anything
+        $settings = $this->getSettings();
+        $settings['application'] = false;
+        $settings['close_db'] = false;
+        if (isset($_POST['module'])) {
+            $settings['module'] = $_POST['module'];
+        }
+        if (isset($_POST['module1_delta'])) {
+            $settings['module1_delta'] = $_POST['module1_delta'];
+        }
+        if (isset($_POST['module2_delta'])) {
+            $settings['module2_delta'] = $_POST['module2_delta'];
+        }
+
+        // Return the settings
+        return $settings;
+    }
     
     /*
      * Fetch module data
      */
     
     public function get() {
+        // Get the settings
+        $settings = $this->getModuleSettings();
+
         // Set the correct module
-        $this->getModule();
-        
-        // Make sure we tell the model processor not to output anything
-        $settings = $this->getSetting();
-        $settings['output'] = false;
+        $this->getModule($settings);
         
         // Check if the current module exists
         if ($this->module != null) {
-            // Create a new instance of the module
-            $module_instance = new $this->module($this->getMethod(), $settings);
+            $module_instance = $this->application->runProcessor(
+                new ClassParser($this->module, 'get'),
+                $settings
+            );
             
             // Set the data
             $this->setData('data', $module_instance->getData()['data']);
@@ -126,17 +155,19 @@ class Module extends BaseProcessor {
      */
     
     public function update() {
+        // Get the settings
+        $settings = $this->getModuleSettings();
+
         // Set the correct module
-        $this->getModule();
-        
-        // Make sure we tell the model processor not to output anything
-        $settings = $this->getSetting();
-        $settings['output'] = false;
+        $this->getModule($settings);
         
         // Check if the current module exists
         if ($this->module != null) {
             // Create a new instance of the module
-            $module_instance = new $this->module($this->getMethod(), $settings);
+            $module_instance = $this->application->runProcessor(
+                new ClassParser($this->module, 'update'),
+                $settings
+            );
             
             // Set the data
             $this->setData('data', $module_instance->getData()['data']);

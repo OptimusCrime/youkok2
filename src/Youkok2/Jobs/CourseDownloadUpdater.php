@@ -15,8 +15,9 @@ use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;
 use Youkok2\Youkok2;
 
-class CourseDownloadUpdater extends Youkok2 {
-    
+class CourseDownloadUpdater extends Youkok2
+{
+
     /*
      * Runs the actual job
      */

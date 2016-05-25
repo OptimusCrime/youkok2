@@ -10,6 +10,7 @@
     <!-- inherit rules from: -->
     <rule ref="PSR2">
         <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine" />
+        <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace" />
     </rule>
     <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie" />
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
@@ -17,4 +18,5 @@
     <!-- Paths to check -->
     <file>src</file>
     <file>tests</file>
+    <exclude-pattern>tests/files</exclude-pattern>
 </ruleset>

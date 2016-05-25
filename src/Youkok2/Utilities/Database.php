@@ -11,7 +11,8 @@ namespace Youkok2\Utilities;
 
 use Youkok2\Utilities\BacktraceManager;
 
-class Database {
+class Database
+{
     
     /*
      * Static variable that holds the database connection
@@ -32,7 +33,7 @@ class Database {
                 self::$db = new PDO2\PDO2(DATABASE_DNS . ';dbname=' . DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, [
                     \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8']);
             }
-            else if (DATABASE_ADAPTER == 'sqlite') {
+            elseif (DATABASE_ADAPTER == 'sqlite') {
                 // Sqlite
                 self::$db = new PDO2\PDO2('sqlite:tests/files/db.sqlite3');
             }
@@ -97,8 +98,12 @@ class Database {
      */
     
     public static function getProfilingDuration() {
+        // Don't run this for tests
+        if (DATABASE_ADAPTER == 'sqlite') {
+            return 0;
+        }
+
         $sum = 0;
-        
         $get_profiles_query = self::$db->query('SHOW profiles');
         while ($row = $get_profiles_query->fetch(\PDO::FETCH_ASSOC)) {
             $sum += $row['Duration'];
@@ -112,6 +117,11 @@ class Database {
      */
     
     public static function getProfilingData() {
+        // Don't run this for tests
+        if (DATABASE_ADAPTER == 'sqlite') {
+            return 0;
+        }
+        
         $data = [];
         
         $get_profiles_query = self::$db->query('SHOW profiles');

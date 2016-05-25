@@ -13,7 +13,8 @@ use Youkok2\Models\Element;
 use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\Database;
 
-class LoadCoursesJson extends BaseProcessor {
+class LoadCoursesJson extends BaseProcessor
+{
 
     /*
      * Override
@@ -24,12 +25,11 @@ class LoadCoursesJson extends BaseProcessor {
     }
 
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -53,9 +53,11 @@ class LoadCoursesJson extends BaseProcessor {
             $element = Element::get($row['id']);
 
             // Append to array
-            $courses[] = array(
+            $courses[] = [
                 'course' => $element->getCourseCode() . ' - ' . $element->getCourseName(),
-                'url' => $element->getFullUrl());
+                'url' => $element->getFullUrl()];
+
+            unset($element);
         }
         
         // Put content to file
@@ -64,4 +66,4 @@ class LoadCoursesJson extends BaseProcessor {
         // Store timestamp in typehead.json
         file_put_contents(CACHE_PATH . '/typeahead.json', json_encode(['timestamp' => time()]));
     }
-} 
+}

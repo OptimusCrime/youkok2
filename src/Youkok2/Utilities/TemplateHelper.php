@@ -9,15 +9,14 @@
 
 namespace Youkok2\Utilities;
 
-use Youkok2\Utilities\Loader;
-
-class TemplateHelper {
+class TemplateHelper
+{
 
     /*
      * Method for reverse lookup for URL creation
      */
 
-    public static function url_for($identifier, $params = null) {
+    public static function urlFor($identifier, $params = null) {
         // Get the routes
         $routes = Routes::getRoutes();
         
@@ -41,7 +40,14 @@ class TemplateHelper {
         $path = '';
         if ($params !== null) {
             // We have params, which means we have to construct a URL
-            $url_clean = Loader::cleanPath($route['path']);
+            $url_dirty = explode('/', $route['path']);
+            $url_clean = [];
+            foreach ($url_dirty as $v) {
+                if (strlen($v) > 0) {
+                    $url_clean[] = $v;
+                }
+            }
+            
             $url_constructed = [];
             foreach ($url_clean as $v) {
                 // Check if we have a wildecard or not present
@@ -75,7 +81,7 @@ class TemplateHelper {
             // We should add an endfix here
             $path .= '/';
         }
-        else if (isset($route['endfix']) and !$route['endfix']) {
+        elseif (isset($route['endfix']) and !$route['endfix']) {
             // We should make sure to remove any endfix (if present)
             if (substr($path, strlen($path) - 1) == '/') {
                 $path = substr($path, 0, strlen($path) - 1);
@@ -88,4 +94,4 @@ class TemplateHelper {
         // Return the final path
         return $path;
     }
-} 
+}

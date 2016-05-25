@@ -17,7 +17,8 @@ use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
 
-class SyncKarma extends BaseProcessor {
+class SyncKarma extends BaseProcessor
+{
 
     /*
      * Override
@@ -36,12 +37,11 @@ class SyncKarma extends BaseProcessor {
     }
 
     /*
-     * Construct
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
 
     /*
@@ -110,4 +110,4 @@ class SyncKarma extends BaseProcessor {
         
         $this->setData('data', ['updated' => $update_num]);
     }
-} 
+}

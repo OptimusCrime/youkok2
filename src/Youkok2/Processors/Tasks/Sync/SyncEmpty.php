@@ -15,7 +15,8 @@ use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
 
-class SyncEmpty extends BaseProcessor {
+class SyncEmpty extends BaseProcessor
+{
 
     /*
      * Override
@@ -32,14 +33,13 @@ class SyncEmpty extends BaseProcessor {
     protected function requireDatabase() {
         return true;
     }
-
+    
     /*
-     * Construct
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -53,7 +53,7 @@ class SyncEmpty extends BaseProcessor {
         
         $get_all_directories  = "SELECT id, empty" . PHP_EOL;
         $get_all_directories .= "FROM archive" . PHP_EOL;
-        $get_all_directories .= "WHERE is_directory = 1";
+        $get_all_directories .= "WHERE directory = 1";
         
         $get_all_directories_query = Database::$db->prepare($get_all_directories);
         $get_all_directories_query->execute();
@@ -64,11 +64,12 @@ class SyncEmpty extends BaseProcessor {
             $check_empty  = "SELECT id" . PHP_EOL;
             $check_empty .= "FROM archive" . PHP_EOL;
             $check_empty .= "WHERE parent = :parent" . PHP_EOL;
-            $check_empty .= "AND is_visible = 1" . PHP_EOL;
+            $check_empty .= "AND deleted = 0" . PHP_EOL;
+            $check_empty .= "AND pending = 0" . PHP_EOL;
             $check_empty .= "LIMIT 1";
             
             $check_empty_query = Database::$db->prepare($check_empty);
-            $check_empty_query->execute(array(':parent' => $row['id']));
+            $check_empty_query->execute([':parent' => $row['id']]);
             $check = $check_empty_query->fetch(\PDO::FETCH_ASSOC);
             
             $update = false;
@@ -76,7 +77,7 @@ class SyncEmpty extends BaseProcessor {
                 $update = true;
                 $empty = false;
             }
-            else if (!isset($check['id']) and $row['empty'] == 0) {
+            elseif (!isset($check['id']) and $row['empty'] == 0) {
                 $update = true;
                 $empty = true;
             }
@@ -87,7 +88,7 @@ class SyncEmpty extends BaseProcessor {
                 $update_empty .= "WHERE id = :id";
                 
                 $update_empty_query = Database::$db->prepare($update_empty);
-                $update_empty_query->execute(array(':empty' => $empty, ':id' => $row['id']));
+                $update_empty_query->execute([':empty' => $empty, ':id' => $row['id']]);
                 
                 $update_num++;
             }
@@ -97,7 +98,7 @@ class SyncEmpty extends BaseProcessor {
         
         // Check if we should clear cache
         if ($update_num > 0) {
-            $this->runProcessor('tasks/clearcache');
+            $this->application->runProcessor('tasks/clearcache', []);
         }
     }
-} 
+}

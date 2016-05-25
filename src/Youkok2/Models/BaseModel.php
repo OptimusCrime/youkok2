@@ -9,8 +9,9 @@
 
 namespace Youkok2\Models;
 
-class BaseModel {
-    
+class BaseModel
+{
+
     /*
      * Set default values for the model
      */

@@ -7,10 +7,12 @@
  * 
  */
 
-use \Youkok2\Utilities\Loader as Loader;
-use \Youkok2\Utilities\Routes as Routes;
+namespace Youkok2\Tests\Utilities;
 
-class LoaderTest extends PHPUnit_Framework_TestCase {
+use Youkok2\Utilities\Loader;
+
+class LoaderTest extends \PHPUnit_Framework_TestCase
+{
     
     /*
      * Test Loader for frontpage
@@ -18,14 +20,14 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
     
     public function testLoaderFrontpage() {
         // Try some paths
-        $loader1 = new Loader('');
-        $loader2 = new Loader('/');
-        $loader3 = new Loader('//');
+        $loader1 = Loader::getClass('');
+        $loader2 = Loader::getClass('/');
+        $loader3 = Loader::getClass('//');
         
         // Test them
-        $this->assertEquals('\Youkok2\Views\Frontpage', $loader1->getMatch());
-        $this->assertEquals('\Youkok2\Views\Frontpage', $loader2->getMatch());
-        $this->assertEquals('\Youkok2\Views\Frontpage', $loader3->getMatch());
+        $this->assertEquals('\Youkok2\Views\Frontpage', $loader1['view']);
+        $this->assertEquals('\Youkok2\Views\Frontpage', $loader2['view']);
+        $this->assertEquals('\Youkok2\Views\Frontpage', $loader3['view']);
     }
     
     /*
@@ -34,24 +36,24 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
     
     public function testLoaderNotFound() {
         // Try some paths
-        $loader1 = new Loader('f');
-        $loader2 = new Loader('f/');
-        $loader3 = new Loader('/f');
-        $loader4 = new Loader('//f');
-        $loader5 = new Loader('..');
-        $loader6 = new Loader('../');
-        $loader7 = new Loader('/..');
-        $loader8 = new Loader('/../');
+        $loader1 = Loader::getClass('f');
+        $loader2 = Loader::getClass('f/');
+        $loader3 = Loader::getClass('/f');
+        $loader4 = Loader::getClass('//f');
+        $loader5 = Loader::getClass('..');
+        $loader6 = Loader::getClass('../');
+        $loader7 = Loader::getClass('/..');
+        $loader8 = Loader::getClass('/../');
         
         // Test them
-        $this->assertEquals('\Youkok2\Views\NotFound', $loader1->getMatch());
-        $this->assertEquals('\Youkok2\Views\NotFound', $loader2->getMatch());
-        $this->assertEquals('\Youkok2\Views\NotFound', $loader3->getMatch());
-        $this->assertEquals('\Youkok2\Views\NotFound', $loader4->getMatch());
-        $this->assertEquals('\Youkok2\Views\NotFound', $loader5->getMatch());
-        $this->assertEquals('\Youkok2\Views\NotFound', $loader6->getMatch());
-        $this->assertEquals('\Youkok2\Views\NotFound', $loader7->getMatch());
-        $this->assertEquals('\Youkok2\Views\NotFound', $loader8->getMatch());
+        $this->assertEquals('\Youkok2\Views\NotFound', $loader1['view']);
+        $this->assertEquals('\Youkok2\Views\NotFound', $loader2['view']);
+        $this->assertEquals('\Youkok2\Views\NotFound', $loader3['view']);
+        $this->assertEquals('\Youkok2\Views\NotFound', $loader4['view']);
+        $this->assertEquals('\Youkok2\Views\NotFound', $loader5['view']);
+        $this->assertEquals('\Youkok2\Views\NotFound', $loader6['view']);
+        $this->assertEquals('\Youkok2\Views\NotFound', $loader7['view']);
+        $this->assertEquals('\Youkok2\Views\NotFound', $loader8['view']);
     }
     
     /*
@@ -60,19 +62,19 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
     
     public function testLoaderArchive() {
         // Try some paths
-        $loader1 = new Loader('emner');
-        $loader2 = new Loader('emner/');
-        $loader3 = new Loader('emner//');
-        $loader4 = new Loader('emner/sub');
-        $loader5 = new Loader('emner/sub/sub');
+        $loader1 = Loader::getClass('emner');
+        $loader2 = Loader::getClass('emner/');
+        $loader3 = Loader::getClass('emner//');
+        $loader4 = Loader::getClass('emner/sub');
+        $loader5 = Loader::getClass('emner/sub/sub');
         
         // Test them
-        $this->assertEquals('\Youkok2\Views\Courses', $loader1->getMatch());
-        $this->assertEquals('\Youkok2\Views\Courses', $loader2->getMatch());
-        $this->assertEquals('\Youkok2\Views\Courses', $loader3->getMatch());
+        $this->assertEquals('\Youkok2\Views\Courses', $loader1['view']);
+        $this->assertEquals('\Youkok2\Views\Courses', $loader2['view']);
+        $this->assertEquals('\Youkok2\Views\Courses', $loader3['view']);
         
-        $this->assertEquals('\Youkok2\Views\Archive', $loader4->getMatch());
-        $this->assertEquals('\Youkok2\Views\Archive', $loader5->getMatch());
+        $this->assertEquals('\Youkok2\Views\Archive', $loader4['view']);
+        $this->assertEquals('\Youkok2\Views\Archive', $loader5['view']);
     }
     
     /*
@@ -81,19 +83,19 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
     
     public function testLoaderStaticRoutes() {
         // Try some paths
-        $loader1 = new Loader('last-ned');
-        $loader2 = new Loader('last-ned/');
+        $loader1 = Loader::getClass('last-ned');
+        $loader2 = Loader::getClass('last-ned/');
         
-        $loader3 = new Loader('redirect');
-        $loader4 = new Loader('redirect/');
+        $loader3 = Loader::getClass('redirect');
+        $loader4 = Loader::getClass('redirect/');
         
         // Test them
-        $this->assertEquals('\Youkok2\Views\Download', $loader1->getMatch());
-        $this->assertEquals('\Youkok2\Views\Download', $loader2->getMatch());
+        $this->assertEquals('\Youkok2\Views\Download', $loader1['view']);
+        $this->assertEquals('\Youkok2\Views\Download', $loader2['view']);
         
-        $this->assertEquals('\Youkok2\Views\Redirect', $loader3->getMatch());
-        $this->assertEquals('\Youkok2\Views\Redirect', $loader4->getMatch());
-   }
+        $this->assertEquals('\Youkok2\Views\Redirect', $loader3['view']);
+        $this->assertEquals('\Youkok2\Views\Redirect', $loader4['view']);
+    }
    
    /*
      * Test Loader views with methods
@@ -101,9 +103,22 @@ class LoaderTest extends PHPUnit_Framework_TestCase {
     
     public function testLoaderViewsMethods() {
         // Try some paths
-        $loader1 = new Loader('om');
+        $loader1 = Loader::getClass('om');
         
         // Test them
-        $this->assertEquals('\Youkok2\Views\Flat.displayAbout', $loader1->getMatch());
-   }
+        $this->assertEquals('\Youkok2\Views\Flat', $loader1['view']);
+        $this->assertEquals('displayAbout', $loader1['method']);
+    }
+
+    /**
+     * Test loading of processors
+     */
+
+    public function testLoaderProcessor() {
+        // Try some paths
+        $loader1 = Loader::getClass('processor/tasks/clearcache');
+
+        // Test them
+        $this->assertEquals('\Youkok2\Processors\Tasks\ClearCache', $loader1['view']);
+    }
 }

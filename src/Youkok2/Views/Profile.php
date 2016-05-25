@@ -12,26 +12,25 @@ namespace Youkok2\Views;
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Loader;
 use Youkok2\Utilities\MessageManager;
-use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\TemplateHelper;
 use Youkok2\Utilities\Utilities;
 
-class Profile extends BaseView {
-
+class Profile extends BaseView
+{
+    
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
         
         // Set menu
         $this->template->assign('HEADER_MENU', '');
 
         // Make sure user us logged in
         if (!Me::isLoggedIn()) {
-            Redirect::send('');
+            $this->application->send('', false, 403);
         }
     }
     
@@ -40,7 +39,7 @@ class Profile extends BaseView {
      */
     
     public function profileRedirect() {
-        Redirect::send(TemplateHelper::url_for('profile_settings'));
+        $this->application->send(TemplateHelper::url_for('profile_settings'));
     }
     
     /*
@@ -67,11 +66,11 @@ class Profile extends BaseView {
             if ($_POST['source'] == 'password') {
                 $this->profileUpdatePassword();
             }
-            else if ($_POST['source'] == 'info') {
+            elseif ($_POST['source'] == 'info') {
                 $this->profileUpdateInfo();
             }
             else {
-                Redirect::send('');
+                $this->application->send('');
             }
         }
     }
@@ -101,10 +100,13 @@ class Profile extends BaseView {
         if (isset($_POST['forgotten-password-new-form-oldpassword'])
             and isset($_POST['forgotten-password-new-form-password1'])
             and isset($_POST['forgotten-password-new-form-password2'])
-            and ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2'])) {
-
+            and ($_POST['forgotten-password-new-form-password1'] ==
+                $_POST['forgotten-password-new-form-password2'])) {
             // Validate old password
-            if (password_verify($_POST['forgotten-password-new-form-oldpassword'], Utilities::reverseFuckup(Me::getPassword()))) {
+            if (password_verify(
+                $_POST['forgotten-password-new-form-oldpassword'],
+                Utilities::reverseFuckup(Me::getPassword())
+            )) {
                 // New hash
                 $hash_salt = Utilities::generateSalt();
                 $hash = Utilities::hashPassword($_POST['forgotten-password-new-form-password1'], $hash_salt);
@@ -116,7 +118,7 @@ class Profile extends BaseView {
                 Me::update();
 
                 // Add message
-                MessageManager::addMessage('Passordet er endret.', 'success');
+                MessageManager::addMessage($this->application, 'Passordet er endret.', 'success');
 
                 // Check if we should set more than just session
                 $set_login_cookie = false;
@@ -128,14 +130,16 @@ class Profile extends BaseView {
                 Me::setLogin($hash, Me::getEmail(), $set_login_cookie);
 
                 // Do the redirect
-                Redirect::send('profil/innstillinger');
+                $this->application->send(TemplateHelper::url_for('profile_settings'));
             }
             else {
                 // Add message
-                MessageManager::addMessage('Passordet du oppga som ditt gamle passord er ikke korrekt eller de nye passordene matchet ikke. Prøv igjen.', 'danger');
+                $message  = 'Passordet du oppga som ditt gamle passord er ikke korrekt eller de ';
+                $message .= 'nye passordene matchet ikke. Prøv igjen.';
+                MessageManager::addMessage($this->application, $message, 'danger');
 
                 // Redirect
-                Redirect::send('profil/innstillinger');
+                $this->application->send(TemplateHelper::url_for('profile_settings'));
             }
         }
     }
@@ -152,7 +156,7 @@ class Profile extends BaseView {
                 $_POST['email'] = $_POST['register-form-email'];
                 $_POST['ignore'] = 1;
                 
-                $email_processor = self::runProcessor('/register/email',[
+                $email_processor = self::runProcessor('/register/email', [
                     'output' => false,
                     'close_db' => false]);
             }
@@ -162,9 +166,6 @@ class Profile extends BaseView {
                 and $_POST['register-form-email'] != Me::getEmail()
                 and strlen($_POST['register-form-email']) > 0
                 and filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL)) {
-                
-                
-                
                 // Set data
                 Me::setEmail($_POST['register-form-email']);
 
@@ -185,7 +186,8 @@ class Profile extends BaseView {
             }
 
             // Check if we should update nick
-            if (($_POST['register-form-nick'] == '' and Me::getNick() != '<em>Anonym</em>') or ($_POST['register-form-nick'] != Me::getNickReal())) {
+            if (($_POST['register-form-nick'] == '' and Me::getNick() != '<em>Anonym</em>') or
+                ($_POST['register-form-nick'] != Me::getNickReal())) {
                 Me::setNick($_POST['register-form-nick']);
             }
 
@@ -193,17 +195,17 @@ class Profile extends BaseView {
             Me::update();
 
             // Add messag
-            MessageManager::addMessage('Dine endringer er lagret.', 'success');
+            MessageManager::addMessage($this->application, 'Dine endringer er lagret.', 'success');
 
             // Redirect
-            Redirect::send('profil/innstillinger');
+            $this->application->send(TemplateHelper::url_for('profile_settings'));
         }
         else {
             // Add messag
             MessageManager::addMessage('Her gikk visst noe galt...', 'danger');
 
             // Redirect
-            Redirect::send('profil/innstillinger');
+            $this->application->send(TemplateHelper::url_for('profile_settings'));
         }
     }
 }

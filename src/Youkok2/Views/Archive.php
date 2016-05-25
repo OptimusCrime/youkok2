@@ -14,14 +14,22 @@ use Youkok2\Models\Me;
 use Youkok2\Utilities\Routes;
 use Youkok2\Utilities\Loader;
 
-class Archive extends BaseView {
-
+class Archive extends BaseView
+{
+    
     /*
-     * Constructor
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
+    /*
+     * Run the view
      */
 
-    public function __construct() {
-        parent::__construct();
+    public function run() {
         
         // Set information to site data
         $this->addSiteData('view', 'archive');
@@ -30,12 +38,15 @@ class Archive extends BaseView {
         
         // Load the archive
         $this->checkValidArchive();
+        
+        // Check if we should keep this view
+        if ($this->getSetting('kill') !== true) {
+            // Set stuff
+            $this->template->assign('HEADER_MENU', 'ARCHIVE');
 
-        // Set stuff
-        $this->template->assign('HEADER_MENU', 'ARCHIVE');
-
-        // Display
-        $this->displayAndCleanup('archive.tpl', Loader::queryGetClean());
+            // Display
+            $this->displayAndCleanup('archive.tpl', $this->path);
+        }
     }
     
     /*
@@ -44,7 +55,7 @@ class Archive extends BaseView {
     
     private function checkValidArchive() {
         // Try to create new element
-        $element = Element::get(Loader::queryGetClean());
+        $element = Element::get($this->path);
 
         // Check if element was found and is directory
         if ($element->wasFound() and $element->isDirectory()) {
@@ -53,7 +64,6 @@ class Archive extends BaseView {
         }
         else {
             $this->display404();
-            die();
         }
     }
     
@@ -81,8 +91,12 @@ class Archive extends BaseView {
         // Update last visited
         $this->updateLastVisited($element_root);
         
+        // Construct the site direction
+        $site_description  = $element_root->getCourseCode() . ' - ' . $element_root->getCourseName() . ': Øvinger, ';
+        $site_description .= 'løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste ';
+        $site_description .= 'kokeboka på nettet.';
+
         // Set the site description
-        $site_description = $element_root->getCourseCode() . ' - ' . $element_root->getCourseName() . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
         $this->template->assign('SITE_DESCRPTION', $site_description);
         
         // Check if archive is empty

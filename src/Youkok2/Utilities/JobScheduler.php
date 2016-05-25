@@ -12,7 +12,8 @@ namespace Youkok2\Utilities;
 use Youkok2\Utilities\Database;
 use Youkok2\Youkok2;
 
-class JobScheduler extends Youkok2 {
+class JobScheduler extends Youkok2
+{
     
     /*
      * Variables

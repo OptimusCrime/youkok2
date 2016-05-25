@@ -7,9 +7,12 @@
  *
  */
 
+namespace Youkok2\Tests\Models;
+
 use Youkok2\Models\ChangePassword;
 
-class ChangePasswordTest extends PHPUnit_Framework_TestCase {
+class ChangePasswordTest extends \PHPUnit_Framework_TestCase
+{
     /*
      * Test object save
      */
@@ -48,5 +51,27 @@ class ChangePasswordTest extends PHPUnit_Framework_TestCase {
         
         // Check that we got a object returned
         $this->assertNotNull($change_password_fetched);
+    }
+
+    /*
+     * Test create by array
+     */
+    public function testChangePasswordCreateByArray() {
+        // Create a new array with the data
+        $arr = [
+            'id' => 1,
+            'user' => 1,
+            'hash' => 'foobar',
+            'timeout' => 1000
+        ];
+
+        // Create new changepassword
+        $change_password = new ChangePassword($arr);
+
+        // Check if the array was correctly created
+        $this->assertEquals($change_password->getId(), 1);
+        $this->assertEquals($change_password->getUser(), 1);
+        $this->assertEquals($change_password->getHash(), 'foobar');
+        $this->assertEquals($change_password->getTimeout(), 1000);
     }
 }

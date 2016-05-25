@@ -9,66 +9,73 @@
 
 namespace Youkok2\Utilities;
 
-class Routes {
+class Routes
+{
+    
+    /*
+     * Used to identify processors
+     */
+    
+    const PROCESSOR = '/processor';
     
     /*
      * Array with routes
      */
-     
-    const PROCESSOR = '/processor';
     
     private static $routes = [
-        'Frontpage' => [
+        'Views\Frontpage' => [
             ['path' => '/', 'identifier' => 'frontpage'],
         ],
         
-        'Courses' => [
+        'Views\Courses' => [
             ['path' => '/emner', 'identifier' => 'courses'],
         ],
         
-        'Archive' => [
+        'Views\Archive' => [
             ['path' => '/emner/+', 'identifier' => 'archive', 'construct' => '+/', 'endfix' => true],
         ],
 
-        'Profile' => [
+        'Views\Profile' => [
             ['path' => '/profil', 'identifier' => 'profile_home', 'method' => 'profileRedirect'],
             ['path' => '/profil/innstillinger', 'identifier' => 'profile_settings', 'method' => 'profileSettings'],
             ['path' => '/profil/historikk', 'identifier' => 'profile_history', 'method' => 'profileHistory'],
         ],
 
-        'Download' => [
+        'Views\Download' => [
             ['path' => '/last-ned/+', 'identifier' => 'download', 'construct' => '+/', 'endfix' => false],
         ],
 
-        'Flat' => [
+        'Views\Flat' => [
             ['path' => '/om', 'method' => 'displayAbout', 'identifier' => 'flat_about'],
             ['path' => '/retningslinjer', 'method' => 'displayTerms', 'identifier' => 'flat_terms'],
             ['path' => '/hjelp', 'method' => 'displayHelp', 'identifier' => 'flat_help'],
         ],
         
-        'StaticFiles' => [
+        'Views\StaticFiles' => [
             ['path' => '/changelog.txt', 'method' => 'returnChangelog', 'identifier' => 'changelog'],
             ['path' => '/favicon.ico', 'method' => 'returnFavicon'],
             ['path' => '/favicon.png', 'method' => 'returnFavicon'],
         ],
         
-        'NotFound' => [
+        'Views\NotFound' => [
             ['path' => '/404'],
         ],
 
-        'Auth' => [
+        'Views\Auth' => [
             ['path' => '/logg-inn', 'method' => 'displayLogIn', 'identifier' => 'auth_login'],
             ['path' => '/logg-ut', 'method' => 'displayLogOut', 'identifier' => 'auth_logout'],
             ['path' => '/registrer', 'method' => 'displayRegister', 'identifier' => 'auth_register'],
-            ['path' => '/glemt-passord', 'method' => 'displayForgottenPassword', 'identifier' => 'auth_forgotten_password'],
-            ['path' => '/nytt-passord', 'method' => 'displayForgottenPasswordNew', 'identifier' => 'auth_new_password'],
+            ['path' => '/glemt-passord', 'method' => 'displayForgottenPassword',
+                'identifier' => 'auth_forgotten_password'],
+            ['path' => '/nytt-passord', 'method' => 'displayForgottenPasswordNew',
+                'identifier' => 'auth_new_password'],
         ],
 
-        'Search' => [
+        'Views\Search' => [
             ['path' => '/sok', 'identifier' => 'search'],
         ],
 
-        'Redirect' => [
+        'Views\Redirect' => [
             ['path' => '/redirect/+', 'identifier' => 'redirect', 'construct' => '+/', 'endfix' => false],
         ],
         
@@ -76,124 +83,117 @@ class Routes {
          * Admin views
          */
         
-        'Admin\\Home' => [
-            ['path' => '/admin', 'method' => 'displayAdminHome', 'identifier' => 'admin_home'],
+        'Views\Admin\Home' => [
+            ['path' => '/admin', 'identifier' => 'admin_home'],
         ],
-        'Admin\\Contribution' => [
-            ['path' => '/admin/bidrag', 'method' => 'displayAdminContributions', 'identifier' => 'admin_contribution'],
+        'Views\Admin\Contribution' => [
+            ['path' => '/admin/bidrag', 'identifier' => 'admin_contribution'],
         ],
-        'Admin\\Files' => [
-            ['path' => '/admin/filer', 'method' => 'displayAdminFiles', 'identifier' => 'admin_files'],
+        'Views\Admin\Files' => [
+            ['path' => '/admin/filer', 'identifier' => 'admin_files'],
         ],
-        'Admin\\Statistics' => [
-            ['path' => '/admin/statistikk', 'method' => 'displayAdminStatistics', 'identifier' => 'admin_statistics'],
+        'Views\Admin\Statistics' => [
+            ['path' => '/admin/statistikk', 'identifier' => 'admin_statistics'],
         ],
-        'Admin\\Diagnostics' => [
-            ['path' => '/admin/diagnostikk', 'method' => 'displayAdminDiagnostics', 'identifier' => 'admin_diagnostics'],
+        'Views\Admin\Diagnostics' => [
+            ['path' => '/admin/diagnostikk', 'identifier' => 'admin_diagnostics'],
         ],
-        'Admin\\Logs' => [
-            ['path' => '/admin/logger', 'method' => 'displayAdminLogs', 'identifier' => 'admin_logs'],
+        'Views\Admin\Logs' => [
+            ['path' => '/admin/logger', 'identifier' => 'admin_logs'],
         ],
-        'Admin\\Scripts' => [
-            ['path' => '/admin/scripts', 'method' => 'displayAdminScripts', 'identifier' => 'admin_scripts'],
+        'Views\Admin\Scripts' => [
+            ['path' => '/admin/scripts', 'identifier' => 'admin_scripts'],
         ],
-    ];
-    
-    /*
-     * Array with processors
-     */
-    
-    private static $processors = [
-
+        
         /*
-         * Normal processors
+         * Processors
          */
 
-        'Favorites' => [
-            ['path' => '/favorite'],
+        'Processors\Favorites' => [
+            ['path' => Routes::PROCESSOR . '/favorite'],
         ],
-        'Module' => [
-            ['path' => '/module/get', 'method' => 'get'],
-            ['path' => '/module/update', 'method' => 'update'],
+        'Processors\Module' => [
+            ['path' => Routes::PROCESSOR . '/module/get', 'method' => 'get'],
+            ['path' => Routes::PROCESSOR . '/module/update', 'method' => 'update'],
         ],
-        'Register' => [
-            ['path' => '/register/email', 'method' => 'checkEmail'],
+        'Processors\Register' => [
+            ['path' => Routes::PROCESSOR . '/register/email', 'method' => 'checkEmail'],
         ],
-        'StaticReturner' => [
-            ['path' => '/search/courses.json'],
+        'Processors\StaticReturner' => [
+            ['path' => Routes::PROCESSOR . '/search/courses.json'],
         ],
-        'LoadHistory' => [
-            ['path' => '/history/get'],
+        'Processors\LoadHistory' => [
+            ['path' => Routes::PROCESSOR . '/history/get'],
         ],
-        'LinkTitle' => [
-            ['path' => '/link/title'],
+        'Processors\LinkTitle' => [
+            ['path' => Routes::PROCESSOR . '/link/title'],
         ],
-        'Graybox' => [
-            ['path' => 'graybox/commits', 'method' => 'getCommits'],
-            ['path' => 'graybox/newest', 'method' => 'getNewest'],
-            ['path' => 'graybox/popular', 'method' => 'getPopular'],
+        'Processors\Graybox' => [
+            ['path' => Routes::PROCESSOR . '/graybox/commits', 'method' => 'getCommits'],
+            ['path' => Routes::PROCESSOR . '/graybox/newest', 'method' => 'getNewest'],
+            ['path' => Routes::PROCESSOR . '/graybox/popular', 'method' => 'getPopular'],
         ],
 
         /*
          * Creates
          */
 
-        'CreateFile' => [
-            ['path' => '/file/create'],
+        'Processors\CreateFile' => [
+            ['path' => Routes::PROCESSOR . '/file/create'],
         ],
-        'CreateLink' => [
-            ['path' => '/link/create'],
+        'Processors\CreateLink' => [
+            ['path' => Routes::PROCESSOR . '/link/create'],
         ],
-        'CreateFolder' => [
-            ['path' => '/folder/create'],
+        'Processors\CreateFolder' => [
+            ['path' => Routes::PROCESSOR . '/folder/create'],
         ],
         
         /*
          * Admin
          */
         
-        'Admin\\HomeBoxes' => [
-            ['path' => '/admin/homeboxes'],
+        'Processors\Admin\HomeBoxes' => [
+            ['path' => Routes::PROCESSOR . '/admin/homeboxes'],
         ],
-        'Admin\\HomeGraph' => [
-            ['path' => '/admin/homegraph'],
+        'Processors\Admin\HomeGraph' => [
+            ['path' => Routes::PROCESSOR . '/admin/homegraph'],
         ],
 
         /*
          * Tasks
          */
 
-        'Tasks\\Upgrade' => [
-            ['path' => '/tasks/upgrade'],
+        'Processors\Tasks\Upgrade' => [
+            ['path' => Routes::PROCESSOR . '/tasks/upgrade'],
         ],
-        'Tasks\\ClearCache' => [
-            ['path' => '/tasks/clearcache'],
+        'Processors\Tasks\ClearCache' => [
+            ['path' => Routes::PROCESSOR . '/tasks/clearcache'],
         ],
-        'Tasks\\LoadCourses' => [
-            ['path' => '/tasks/courses'],
+        'Processors\Tasks\LoadCourses' => [
+            ['path' => Routes::PROCESSOR . '/tasks/courses'],
         ],
-        'Tasks\\LoadCoursesJson' => [
-            ['path' => '/tasks/coursesjson'],
+        'Processors\Tasks\LoadCoursesJson' => [
+            ['path' => Routes::PROCESSOR . '/tasks/coursesjson'],
         ],
-        'Tasks\\LoadExams' => [
-            ['path' => '/tasks/exams'],
+        'Processors\Tasks\LoadExams' => [
+            ['path' => Routes::PROCESSOR . '/tasks/exams'],
         ],
-        'Tasks\\FindDuplicates' => [
-            ['path' => '/tasks/duplicates'],
+        'Processors\Tasks\FindDuplicates' => [
+            ['path' => Routes::PROCESSOR . '/tasks/duplicates'],
         ],
-        'Tasks\\GetCacheData' => [
-            ['path' => '/tasks/cachedata'],
+        'Processors\Tasks\GetCacheData' => [
+            ['path' => Routes::PROCESSOR . '/tasks/cachedata'],
         ],
         
         /*
          * Syncs
          */
         
-        'Tasks\\Sync\\SyncEmpty' => [
-            ['path' => '/tasks/sync/syncempty'],
+        'Processors\Tasks\Sync\SyncEmpty' => [
+            ['path' => Routes::PROCESSOR . '/tasks/sync/syncempty'],
         ],
-        'Tasks\\Sync\\SyncKarma' => [
-            ['path' => '/tasks/sync/synckarma'],
+        'Processors\Tasks\Sync\SyncKarma' => [
+            ['path' => Routes::PROCESSOR . '/tasks/sync/synckarma'],
         ],
     ];
     
@@ -212,9 +212,6 @@ class Routes {
     
     public static function getRoutes() {
         return self::$routes;
-    }
-    public static function getProcessors() {
-        return self::$processors;
     }
     public static function getRedirects() {
         return self::$redirects;

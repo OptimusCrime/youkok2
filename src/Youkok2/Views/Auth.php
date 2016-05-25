@@ -13,20 +13,19 @@ use Youkok2\Models\Me;
 use Youkok2\Models\User;
 use Youkok2\Models\ChangePassword;
 use Youkok2\Utilities\Database;
-use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\TemplateHelper;
 use Youkok2\Utilities\Utilities;
 
-class Auth extends BaseView {
-
+class Auth extends BaseView
+{
+    
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
 
         // Reset menu
         $this->template->assign('HEADER_MENU', null);
@@ -39,7 +38,7 @@ class Auth extends BaseView {
     public function displayLogIn() {
         // Check if logged in
         if (Me::isLoggedIn()) {
-            Redirect::send('');
+            $this->application->send('');
         }
         else {
             // Check if submitted
@@ -51,7 +50,7 @@ class Auth extends BaseView {
                 }
 
                 // Call method
-                Me::login();
+                Me::login($this->application);
             }
             else {
                 $this->template->assign('SITE_TITLE', 'Logg inn');
@@ -73,11 +72,11 @@ class Auth extends BaseView {
     public function displayLogOut() {
         // Check if the user is logged in
         if (!Me::isLoggedIn()) {
-            Redirect::send('');
+            $this->application->send('');
         }
         
         // Log the user out
-        Me::logOut();
+        Me::logOut($this->application);
     }
 
     /*
@@ -87,7 +86,7 @@ class Auth extends BaseView {
     public function displayRegister() {
         // Check if the user is logged in
         if (Me::isLoggedIn()) {
-            Redirect::send('');
+            $this->application->send('');
         }
         
         // Set view
@@ -102,7 +101,13 @@ class Auth extends BaseView {
         }
         else {
             // Check all fields
-            $fields = array('register-form-email', 'register-form-nick', 'register-form-password1', 'register-form-password2');
+            $fields = [
+                'register-form-email',
+                'register-form-nick',
+                'register-form-password1',
+                'register-form-password2'
+            ];
+
             $err = false;
             foreach ($fields as $v) {
                 if (!isset($_POST[$v]) or ($v != 'register-form-nick' and strlen($_POST[$v]) < 7)) {
@@ -120,7 +125,8 @@ class Auth extends BaseView {
                 $email_check = $this->runProcessor('register/email', false, true);
                 
                 // Check if valid email
-                if (isset($email_check['code']) and $email_check['code'] == 200 and filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) == true) {
+                if (isset($email_check['code']) and $email_check['code'] == 200 and
+                    filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) == true) {
                     // Check passwords
                     if ($_POST['register-form-password1'] == $_POST['register-form-password2']) {
                         // Match, create new password
@@ -163,19 +169,19 @@ class Auth extends BaseView {
             // Check if there was any errors during the signup
             if ($err) {
                 // Add message
-                MessageManager::addMessage('Her gikk visst noe galt...', 'danger');
+                MessageManager::addMessage($this->application, 'Her gikk visst noe galt...', 'danger');
                
                 // Redirect
-                Redirect::send('registrer');
+                $this->application->send(TemplateHelper::urlFor('auth_register'));
             }
             else {
                 // Add message
-                MessageManager::addMessage('Velkommen til Youkok2!', 'success');
+                MessageManager::addMessage($this->application, 'Velkommen til Youkok2!', 'success');
 
                 // Log in (only session)
                 Me::setLogin($hash, $_POST['register-form-email']);
 
-                Redirect::send('');
+                $this->application->send('');
             }
         }
     }
@@ -186,7 +192,7 @@ class Auth extends BaseView {
 
     public function displayForgottenPassword() {
         if (Me::isLoggedIn()) {
-            Redirect::send('');
+            $this->application->send('');
         }
         
         // The menu
@@ -200,13 +206,17 @@ class Auth extends BaseView {
             $get_login_user .= "WHERE email = :email";
 
             $get_login_user_query = Database::$db->prepare($get_login_user);
-            $get_login_user_query->execute(array(':email' => $_POST['forgotten-email']));
+            $get_login_user_query->execute([':email' => $_POST['forgotten-email']]);
             $row = $get_login_user_query->fetch(\PDO::FETCH_ASSOC);
 
             // Check result
             if (isset($row['id'])) {
                 // Create hash
-                $hash = Utilities::hashPassword(md5(rand(0, 100000) . md5(time()) . $row['id']), sha1(rand(0, 1000)), false);
+                $hash = Utilities::hashPassword(
+                    md5(rand(0, 100000) . md5(time()) . $row['id']),
+                    sha1(rand(0, 1000)),
+                    false
+                );
 
                 // Set data
                 $change_password = new ChangePassword();
@@ -229,22 +239,29 @@ class Auth extends BaseView {
 
                 $mail->Subject = utf8_decode('Glemt passord på Youkok2');
                 $message = utf8_decode(file_get_contents(BASE_PATH . '/files//mail/forgotten.txt'));
-                $message_keys = array(
+                $message_keys = [
                     '{{SITE_URL}}' => URL_FULL,
-                    '{{PATH}}' => TemplateHelper::url_for('auth_new_password'),
-                    '{{HASH}}' => $hash);
+                    '{{PATH}}' => TemplateHelper::urlFor('auth_new_password'),
+                    '{{HASH}}' => $hash
+                ];
                 $mail->Body = str_replace(array_keys($message_keys), $message_keys, $message);
                 $mail->send();
 
                 // Add message
-                MessageManager::addMessage('Det er blitt sendt en e-post til deg. Denne inneholder en link for å velge nytt passord. Denne linken er gyldig i 24 timer.', 'success');
+                $message  = 'Det er blitt sendt en e-post til deg. Denne inneholder en link for ';
+                $message .= 'å velge nytt passord. Denne linken er gyldig i 24 timer.';
+                MessageManager::addMessage($this->application, $message, 'success');
             }
             else {
-                MessageManager::addMessage('E-posten du oppga ble ikke funnet i systemet. Prøv igjen.', 'danger');
+                MessageManager::addMessage(
+                    $this->application,
+                    'E-posten du oppga ble ikke funnet i systemet. Prøv igjen.',
+                    'danger'
+                );
             }
 
             // Redirect back to form
-            Redirect::send('glemt-passord');
+            $this->application->send(TemplateHelper::urlFor('auth_forgotten_password'));
         }
         else {
             $this->displayAndCleanup('forgotten_password.tpl');
@@ -258,8 +275,7 @@ class Auth extends BaseView {
     public function displayForgottenPasswordNew() {
         // Check if user can display this view
         if (Me::isLoggedIn() or !isset($_GET['hash'])) {
-            Redirect::send('');
-            exit();
+            $this->application->send('');
         }
         
         // Set view
@@ -281,7 +297,8 @@ class Auth extends BaseView {
             }
             else {
                 // Check if the two passwords are identical
-                if ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2']) {
+                if ($_POST['forgotten-password-new-form-password1'] ==
+                    $_POST['forgotten-password-new-form-password2']) {
                     // Get the correct user object
                     $user = new User($change_password->getUser());
                     
@@ -297,28 +314,28 @@ class Auth extends BaseView {
                     $change_password->delete();
 
                     // Add message
-                    MessageManager::addMessage('Passordet er endret!', 'success');
+                    MessageManager::addMessage($this->application, 'Passordet er endret!', 'success');
 
                     // Log in (only session)
                     Me::setLogin($hash, $user->getEmail());
 
-                    Redirect::send('');
+                    $this->application->send('');
                 }
                 else {
                     // Add error message
-                    MessageManager::addMessage('De to passordene er ikke like.', 'danger');
+                    MessageManager::addMessage($this->application, 'De to passordene er ikke like.', 'danger');
 
                     // Redirect
-                    Redirect::send('nytt-passord?hash=' . $_GET['hash']);
+                    $this->application->send(TemplateHelper::urlFor('auth_new_password') . '?hash=' . $_GET['hash']);
                 }
             }
         }
         else {
             // Add error message
-            MessageManager::addMessage('Denne linken er ikke lenger gyldig.', 'danger');
+            MessageManager::addMessage($this->application, 'Denne linken er ikke lenger gyldig.', 'danger');
 
             // Redirect
-            Redirect::send('');
+            $this->application->send('');
         }
     }
 }

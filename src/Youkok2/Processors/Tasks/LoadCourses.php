@@ -14,7 +14,8 @@ use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
 
-class LoadCourses extends BaseProcessor {
+class LoadCourses extends BaseProcessor
+{
 
     /*
      * Override
@@ -33,12 +34,11 @@ class LoadCourses extends BaseProcessor {
     }
 
     /*
-     * Construct
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -80,7 +80,7 @@ class LoadCourses extends BaseProcessor {
             $check_current_course .= "LIMIT 1";
             
             $check_current_course_query = Database::$db->prepare($check_current_course);
-            $check_current_course_query->execute(array(':name' => $search_name));
+            $check_current_course_query->execute([':name' => $search_name]);
             $row = $check_current_course_query->fetch(\PDO::FETCH_ASSOC);
 
             // Check if exists
@@ -107,4 +107,4 @@ class LoadCourses extends BaseProcessor {
         // Set message
         $this->setData('msg', ['Fetched' => $fetched, 'New' => $new, 'Added' => $added]);
     }
-} 
+}

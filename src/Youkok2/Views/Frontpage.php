@@ -15,22 +15,59 @@ use Youkok2\Models\Me;
 use Youkok2\Models\Cache\MeDownloads;
 use Youkok2\Utilities\Database;
 
-class Frontpage extends BaseView {
-
+class Frontpage extends BaseView
+{
+    
     /*
-     * Constructor
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
+    /*
+     * Run the view
      */
 
-    public function __construct() {
-        parent::__construct();
+    public function run() {
+        // Make sure to kill the view if something broke
+        if ($this->getSetting('kill') === true) {
+            return;
+        }
         
         // Set view
         $this->addSiteData('view', 'frontpage');
         
         // Load default boxes
         $this->template->assign('HOME_NEWEST', Element::getNewest());
-        $this->template->assign('HOME_MOST_POPULAR_ELEMENTS', self::runProcessor('/module/get', ['module' => 1])['data']);
-        $this->template->assign('HOME_MOST_POPULAR_COURSES', self::runProcessor('/module/get', ['module' => 2])['data']);
+
+        // Fetch the most popular elements from processor
+        $this->template->assign(
+            'HOME_MOST_POPULAR_ELEMENTS',
+            $this->application->runProcessor(
+                '/module/get',
+                [
+                    'module' => 1,
+                    'encode' => false,
+                    'output' => false
+                ]
+            )->getData()['data']
+        );
+
+        // Fetch the most popular courses from processor
+        $this->template->assign(
+            'HOME_MOST_POPULAR_COURSES',
+            $this->application->runProcessor(
+                '/module/get',
+                [
+                    'module' => 2,
+                    'encode' => false,
+                    'output' => false
+                ]
+            )->getData()['data']
+        );
+
         $this->template->assign('HOME_LAST_VISITED', Element::getLastVisitedElements());
         
         // Check if this user is logged in

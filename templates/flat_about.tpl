@@ -13,7 +13,7 @@
                     <h3>Youkok2 og muligheten for alle til å bidra</h3>
                     <p>Tanken vår med Youkok2 var å gjøre det mulig for alle å bidra med hva man skulle ønske. Om dette skulle være opplastninger direkte til siden, eller linker til nyttige sider og/eller quizer. Med et slikt system kan Youkok2 holde seg oppdatert og relevant i fremtiden også.</p>
                     <p>Man trenger ikke en gang en bruker på Youkok2 for å kunne laste opp filer eller poste linker, men disse må godkjennes av en administrator før de vises på siden. Om man registrerer seg blir disse synlige med en gang. Man får også mulighet til å opprette mapper under hvert enkelt fag.</p>
-                    <p>Dette var en begresning vi så på som nødvendig da vi ikke ønsker å bryte med opphavsrett eller å publisere filer av dårlig kvalitet. Mer informasjon om dette kan du finne under <a href="[[+TemplateHelper::url_for('flat_terms')]]">retningslinjer</a>.</p>
+                    <p>Dette var en begresning vi så på som nødvendig da vi ikke ønsker å bryte med opphavsrett eller å publisere filer av dårlig kvalitet. Mer informasjon om dette kan du finne under <a href="[[+TemplateHelper::urlFor('flat_terms')]]">retningslinjer</a>.</p>
                     <h3>Teknisk om nettsiden</h3>
                     <p>Backend er skrevet i sin helthet i PHP. Av rammeverk, snippets og annet har vi følgende:</p>
                     <ul>

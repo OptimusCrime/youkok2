@@ -9,7 +9,8 @@
 
 namespace Youkok2\Utilities;
 
-Class CacheManager {
+class CacheManager
+{
 
     /*
      * Internal variables
@@ -19,7 +20,7 @@ Class CacheManager {
     private static $currentChecking = null;
     private static $currentContent = null;
     private static $count = 0;
-    private static $bactrace = array();
+    private static $bactrace = [];
     private static $profilingDuration = 0;
     
     /*
@@ -47,9 +48,9 @@ Class CacheManager {
             
             // Debug
             if (DEV) {
-                self::$bactrace[] = array('id' => $id, 
+                self::$bactrace[] = ['id' => $id,
                     'type' => $type,
-                    'backtrace' => debug_backtrace());
+                    'backtrace' => debug_backtrace()];
             }
 
             // Check if content is valid (and safe!)
@@ -219,7 +220,8 @@ Class CacheManager {
 
     private static function getFileName($id, $type) {
         $hash = self::getHash($id, $type);
-        return CACHE_PATH . '/youkok/' . $type . '/' . substr($hash, 0, 1) . '/' . substr($hash, 1, 1) . '/' . $hash . '_c.php';
+        return CACHE_PATH . '/youkok/' . $type . '/' . substr($hash, 0, 1) . '/' .
+            substr($hash, 1, 1) . '/' . $hash . '_c.php';
     }
 
     /*

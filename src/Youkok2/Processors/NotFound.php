@@ -9,25 +9,24 @@
 
 namespace Youkok2\Processors;
 
-class NotFound extends BaseProcessor {
-
+class NotFound extends BaseProcessor
+{
+    
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
-
+    
     /*
-     * Just to have a function to call or else the abstract class is angry
+     * Load data
      */
-
-    protected function run() {
+    
+    public function run() {
         // Set data
         $this->setData('msg', 'Processor not found');
         $this->setData('code', 500);
-
     }
 }

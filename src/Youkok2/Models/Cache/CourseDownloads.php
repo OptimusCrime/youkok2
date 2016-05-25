@@ -12,7 +12,8 @@ namespace Youkok2\Models\Cache;
 use Youkok2\Models\BaseModel;
 use Youkok2\Models\Controllers\Cache\CourseDownloadsController;
 
-class CourseDownloads extends BaseModel {
+class CourseDownloads extends BaseModel
+{
 
     /*
      * Variables
@@ -97,4 +98,4 @@ class CourseDownloads extends BaseModel {
     public function setData($data) {
         $this->data = $data;
     }
-} 
+}

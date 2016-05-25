@@ -10,8 +10,9 @@ namespace Youkok2\Jobs;
 
 use Youkok2\Youkok2;
 
-abstract class BaseJob extends Youkok2 {
-    
+abstract class BaseJob extends Youkok2
+{
+
     /*
      * Job will be overridden here
      */

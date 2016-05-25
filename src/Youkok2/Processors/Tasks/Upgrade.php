@@ -12,7 +12,8 @@ namespace Youkok2\Processors\Tasks;
 use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\LineCounter;
 
-class Upgrade extends BaseProcessor {
+class Upgrade extends BaseProcessor
+{
 
     /*
      * Override
@@ -31,12 +32,11 @@ class Upgrade extends BaseProcessor {
     }
 
     /*
-     * Construct
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -129,4 +129,4 @@ class Upgrade extends BaseProcessor {
         // Add message
         $this->setData('css', 'Successfully build CSS files');
     }
-} 
+}

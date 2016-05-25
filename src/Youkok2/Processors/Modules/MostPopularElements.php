@@ -14,14 +14,15 @@ use Youkok2\Models\Me;
 use Youkok2\Models\Controllers\ElementController;
 use Youkok2\Utilities\Database;
 
-class MostPopularElements extends ModuleProcessor {
+class MostPopularElements extends ModuleProcessor
+{
     
     /*
      * Constructor
      */
     
-    public function __construct($method, $settings) {
-        parent::__construct($method, $settings);
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -29,6 +30,8 @@ class MostPopularElements extends ModuleProcessor {
      */
     
     public function get() {
+        parent::run();
+        
         $collection = [];
         
         // Get the correct delta
@@ -36,12 +39,13 @@ class MostPopularElements extends ModuleProcessor {
             $delta_numeric = $this->getSetting('module1_delta');
         }
         else {
-            $delta_numeric = Me::getModuleSettings('module1_delta');
+            $delta_numeric = Me::getModuleSettings($this->application, 'module1_delta');
         }
         
         // Get the correct limit
         $limit = 15;
-        if ($this->getSetting('limit') !== null and !is_array($this->getSetting('limit')) and is_numeric($this->getSetting('limit'))) {
+        if ($this->getSetting('limit') !== null and !is_array($this->getSetting('limit')) and
+            is_numeric($this->getSetting('limit'))) {
             $limit = $this->getSetting('limit');
         }
         
@@ -78,6 +82,8 @@ class MostPopularElements extends ModuleProcessor {
      */
     
     public function update() {
+        parent::run();
+        
         // Get the correct delta
         $delta_numeric = $this->getSetting('module1_delta');
         
@@ -87,7 +93,7 @@ class MostPopularElements extends ModuleProcessor {
         }
         
         // Set the new delta
-        Me::setModuleSettings('module1_delta', $delta_numeric);
+        Me::setModuleSettings($this->application, 'module1_delta', $delta_numeric);
         
         // Check if we should update user preferences
         if (Me::isLoggedIn()) {

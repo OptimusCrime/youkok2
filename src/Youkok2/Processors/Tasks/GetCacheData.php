@@ -14,7 +14,8 @@ use Youkok2\Processors\BaseProcessor;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\CacheManager;
 
-class GetCacheData extends BaseProcessor {
+class GetCacheData extends BaseProcessor
+{
 
     /*
      * Override
@@ -33,12 +34,11 @@ class GetCacheData extends BaseProcessor {
     }
 
     /*
-     * Construct
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -118,4 +118,4 @@ class GetCacheData extends BaseProcessor {
             $this->setData('msg', 'No id');
         }
     }
-} 
+}

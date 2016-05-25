@@ -10,14 +10,15 @@ namespace Youkok2\Processors\Modules;
 
 use Youkok2\Processors\BaseProcessor;
 
-abstract class ModuleProcessor extends BaseProcessor {
+abstract class ModuleProcessor extends BaseProcessor
+{
     
     /*
-     * Constructor
+     * Always run the constructor
      */
     
-    public function __construct($method, $settings) {
-        parent::__construct($method, $settings);
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -25,6 +26,7 @@ abstract class ModuleProcessor extends BaseProcessor {
      */
     
     public function get() {
+        parent::run();
     }
     
     /*
@@ -32,5 +34,6 @@ abstract class ModuleProcessor extends BaseProcessor {
      */
     
     public function update() {
+        parent::run();
     }
 }

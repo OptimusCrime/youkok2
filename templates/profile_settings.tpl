@@ -37,7 +37,7 @@
         </div>
         <div class="tab-pane" id="informasjon">
             <div class="col-xs-12 col-md-6">
-                <form action="[[+TemplateHelper::url_for('profile_settings')]]" method="post" id="profile-edit-info-form">
+                <form action="[[+TemplateHelper::urlFor('profile_settings')]]" method="post" id="profile-edit-info-form">
                     <input type="hidden" value="info" name="source" />
                     <div class="form-group">
                         <label for="register-form-email">E-post <span style="color: red;">*</span></label>
@@ -57,7 +57,7 @@
         </div>
         <div class="tab-pane" id="passord">
             <div class="col-xs-12 col-md-6">
-                <form action="[[+TemplateHelper::url_for('profile_settings')]]" method="post" id="forgotten-password-new-form" name="forgotten-password-new-form">
+                <form action="[[+TemplateHelper::urlFor('profile_settings')]]" method="post" id="forgotten-password-new-form" name="forgotten-password-new-form">
                     <input type="hidden" value="password" name="source" />
                     <div class="form-group">
                         <label for="forgotten-password-new-form-oldpassword">Gammelt passord <span style="color: red;">*</span></label>

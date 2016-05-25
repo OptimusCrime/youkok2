@@ -15,21 +15,27 @@ use Youkok2\Models\Controllers\Cache\MeDownloadsController;
 use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Loader;
 
-class Download extends BaseView {
-
+class Download extends BaseView
+{
+    
     /*
-     * Constructor
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
+    /*
+     * Run the view
      */
 
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
-        
+    public function run() {
         // Displaying 404 or not
         $should_display_404 = false;
         
         // Create new object
-        $element = Element::get(Loader::queryGetClean());
+        $element = Element::get($this->path);
 
         // Check if was found or invalid url
         if ($element->wasFound() and !$element->isPending() and !$element->isDeleted()) {
@@ -39,7 +45,8 @@ class Download extends BaseView {
             if (!$element->isDirectory()) {
                 if (file_exists($file_location)) {
                     // Check if wget
-                    if (!isset($_SERVER['HTTP_USER_AGENT']) or strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'wget') !== false) {
+                    if (!isset($_SERVER['HTTP_USER_AGENT']) or
+                        strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'wget') !== false) {
                         // Wget attempt, serve false file
                         $this->loadFileDownload(BASE_PATH . '/files/wget_file.txt', $element->getName());
                         exit;
@@ -59,7 +66,6 @@ class Download extends BaseView {
 
                     // Check if we should return fake http response to facebook crawler
                     if (strpos($_SERVER['HTTP_USER_AGENT'], 'facebook') !== false) {
-
                         // Facebook crawler
                         $this->template->assign('DOWNLOAD_FILE', $element->getName());
                         $this->template->assign('DOWNLOAD_SIZE', $element->getSize(true));
@@ -115,7 +121,6 @@ class Download extends BaseView {
         // Check if we should display 404 or not
         if ($should_display_404) {
             $this->display404();
-            die();
         }
     }
     
@@ -129,22 +134,15 @@ class Download extends BaseView {
         $file_info = finfo_file($finfo, $file);
         
         // Set header options;
-        header('Content-Type: ' . $file_info);
-        header('Content-Disposition: inline; filename="' . $name . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($file));
-        
-        // Clean ob and flush
-        ob_clean();
-        flush();
+        $this->application->setHeader('Content-Type', $file_info);
+        $this->application->setHeader('Content-Disposition', 'inline; filename="' . $name . '"');
+        $this->application->setHeader('Expires', '0');
+        $this->application->setHeader('Cache-Control', 'must-revalidate');
+        $this->application->setHeader('Pragma', 'public');
+        $this->application->setHeader('Content-Length', filesize($file));
         
         // Read content of file
-        readfile($file);
-        
-        // Exit the program
-        exit;
+        $this->application->addStream(file_get_contents($file));
     }
 
     /*
@@ -157,23 +155,16 @@ class Download extends BaseView {
         $file_info = finfo_file($finfo, $file);
         
         // Set header options
-        header('Content-Description: File Transfer');
-        header('Content-Type: ' . $file_info);
-        header('Content-Disposition: attachment; filename="' . $name . '"');
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($file));
-        
-        // Clean ob and flush
-        ob_clean();
-        flush();
+        $this->application->setHeader('Content-Description', 'File Transfer');
+        $this->application->setHeader('Content-Type', $file_info);
+        $this->application->setHeader('Content-Disposition', 'attachment; filename="' . $name . '"');
+        $this->application->setHeader('Content-Transfer-Encoding', 'binary');
+        $this->application->setHeader('Expires', '0');
+        $this->application->setHeader('Cache-Control', 'must-revalidate');
+        $this->application->setHeader('Pragm', 'public');
+        $this->application->setHeader('Content-Length', filesize($file));
         
         // Read content of file
-        readfile($file);
-        
-        // Exit the program
-        exit;
+        $this->application->addStream(file_get_contents($file));
     }
 }

@@ -1,4 +1,6 @@
-<phpunit colors="true"
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.7/phpunit.xsd"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
@@ -6,22 +8,16 @@
          stopOnFailure="false"
          syntaxCheck="true"
          verbose="true"
-         bootstrap="tests/Harness.php"
+         bootstrap="tests/bootstrap.php"
          strict="true"
+         colors="true"
 >
-    
+
     <testsuites>
-        <testsuite name="Setup">
-            <file>./tests/Setup/Setup.php</file>
-        </testsuite>
-        <testsuite name="money">
-            <directory>./tests/Tests/</directory>
-        </testsuite>
-        <testsuite name="Teardown">
-            <file>./tests/Setup/Teardown.php</file>
+        <testsuite name="Youkok2 Test Suite">
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
-
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">

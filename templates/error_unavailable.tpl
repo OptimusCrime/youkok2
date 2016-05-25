@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base href="[[+$SITE_URL_FULL]]" />
+    <base href="[[+$SITE_URL]]" />
     <title>Youkok2.com :: Den beste kokeboka på nettet</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 </head>

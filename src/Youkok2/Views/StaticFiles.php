@@ -11,15 +11,15 @@ namespace Youkok2\Views;
 
 use Youkok2\Utilities\Loader;
 
-class StaticFiles extends BaseView {
-
+class StaticFiles extends BaseView
+{
+    
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -34,32 +34,37 @@ class StaticFiles extends BaseView {
         $this->template->assign('CHANGELOG_CONTENT', $content);
         
         // Set headers (to fix unicode fuckup)
-        header('Content-Type: text/plain; charset=utf-8');
+        $this->application->setHeader('Content-Type', 'text/plain; charset=utf-8');
         
         // Render
         $this->displayAndCleanup('changelog.tpl');
     }
     public function returnFavicon() {
-        // Get the right file
-        $file = Loader::queryGet(0);
+        // Find the file name
+        $path_split = explode('/', $this->path);
+        $filename = '';
+        foreach ($path_split as $v) {
+            if (strlen($v) > 0) {
+                $filename = $v;
+                break;
+            }
+        }
         
-        // Open the file
-        $name = BASE_PATH . '/files/' . $file;
-        $fp = fopen($name, 'rb');
+        // Get the file
+        $file = BASE_PATH . '/files/' . $filename;
+        
+        // Send the right headers
+        $this->application->setHeader('Content-Length', filesize($file));
+        
+        // Read content of file
+        $this->application->addStream(file_get_contents($file));
 
         // Send the correct content type
         if ($file == 'favicon.png') {
-            header('Content-Type: image/png');
+            $this->application->setHeader('Content-Type', 'image/png');
         }
         else {
-            header('Content-Type: image/x-icon');
+            $this->application->setHeader('Content-Type', 'image/x-icon');
         }
-        
-        // Send the right headers
-        header('Content-Length: ' . filesize($name));
-
-        // Dump the picture and stop the script
-        fpassthru($fp);
-        exit;
     }
 }

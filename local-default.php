@@ -119,3 +119,7 @@ define('URL_FULL', URL . URL_RELATIVE);
 if (!defined('CLEAR_CACHE_IGNORE_PARTITIONS')) {
     define('CLEAR_CACHE_IGNORE_PARTITIONS', 'md,cd');
 }
+
+if (!defined('IPINFODB')) {
+    define('IPINFODB', '');
+}

@@ -14,7 +14,8 @@ use Youkok2\Models\Me;
 use Youkok2\Collections\ElementCollection;
 use Youkok2\Utilities\Database;
 
-class HomeGraph extends BaseProcessor {
+class HomeGraph extends BaseProcessor
+{
 
     /*
      * Override
@@ -31,14 +32,13 @@ class HomeGraph extends BaseProcessor {
     protected function checkPermissions() {
         return $this->requireAdmin();
     }
-    
+
     /*
-     * Constructor
+     * Always run the constructor
      */
 
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -59,7 +59,7 @@ class HomeGraph extends BaseProcessor {
             if ($i == 30) {
                 $response['delta'] = date('j. M Y', $date_offset);
             }
-            else if ($i == 0) {
+            elseif ($i == 0) {
                 $response['delta'] .= ' &mdash; ' . date('j. M Y', $date_offset);
             }
             
@@ -67,13 +67,12 @@ class HomeGraph extends BaseProcessor {
                 'date' => date('Y-m-d', $date_offset),
                 'downloads' => 0
             ];
-            
         }
         
         // The query
         $get_all_downloads  = "SELECT COUNT(id) AS 'downloads', downloaded_time" . PHP_EOL;
         $get_all_downloads .= "FROM download" . PHP_EOL;
-        $get_all_downloads .= "WHERE downloaded_time >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 MONTH)" . PHP_EOL;
+        $get_all_downloads .= "WHERE downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 30))" . PHP_EOL;
         $get_all_downloads .= "GROUP BY TO_DAYS(downloaded_time)" . PHP_EOL;
         $get_all_downloads .= "ORDER BY downloaded_time ASC" . PHP_EOL;
         
@@ -94,4 +93,4 @@ class HomeGraph extends BaseProcessor {
         // Set ok
         $this->setOK();
     }
-} 
+}

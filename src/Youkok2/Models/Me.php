@@ -14,9 +14,10 @@ use Youkok2\Utilities\CsrfManager;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
 use Youkok2\Utilities\MessageManager;
-use Youkok2\Utilities\Redirect;
+use Youkok2\Utilities\TemplateHelper;
 
-class Me {
+class Me
+{
     
     /*
      * Variables for the user
@@ -32,7 +33,7 @@ class Me {
      * Init the user
      */
 
-    public static function init() {
+    public static function init($app) {
         // Only run if not already inited
         if (self::$inited === null or !self::$inited) {
             // Set initial
@@ -40,40 +41,41 @@ class Me {
             self::$favorites = null;
 
             // Check if we have anything stored
-            if (isset($_SESSION['youkok2']) or isset($_COOKIE['youkok2'])) {
-                if (isset($_COOKIE['youkok2'])) {
-                    $hash = $_COOKIE['youkok2'];
+            if ($app->getSession('youkok2') !== null or $app->getCookie('youkok2') !== null) {
+                if ($app->getCookie('youkok2') !== null) {
+                    $hash = $app->getCookie('youkok2');
 
                     // Set session as well
-                    $_SESSION['youkok2'] = $_COOKIE['youkok2'];
+                    $app->setSession('youkok2', $hash);
                 }
                 else {
-                    $hash = $_SESSION['youkok2'];
+                    $hash = $app->getSession('youkok2');
                 }
 
                 // Try to split
                 $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
                 if (count($hash_split) == 2) {
                     // Fetch from database to see if online
-                    $get_current_user  = "SELECT id, email, password, nick, module_settings, last_seen, karma, karma_pending, banned" . PHP_EOL;
+                    $get_current_user  = "SELECT id, email, password, nick, module_settings, last_seen, " . PHP_EOL;
+                    $get_current_user .= "karma, karma_pending, banned" . PHP_EOL;
                     $get_current_user .= "FROM user " . PHP_EOL;
                     $get_current_user .= "WHERE email = :email" . PHP_EOL;
                     $get_current_user .= "AND password = :password";
                     
                     $get_current_user_query = Database::$db->prepare($get_current_user);
-                    $get_current_user_query->execute(array(':email' => $hash_split[0], 
-                                                           ':password' => $hash_split[1]));
+                    $get_current_user_query->execute([':email' => $hash_split[0],
+                                                           ':password' => $hash_split[1]]);
                     $row = $get_current_user_query->fetch(\PDO::FETCH_ASSOC);
 
                     // Check if anything want returned
-                    if (isset($row['id'])) {                        
+                    if (isset($row['id'])) {
                         // Create a new instace of the user object
                         self::$user = new User($row);
                     }
                     else {
                         // Unset all
-                        unset($_SESSION['youkok2']);
-                        setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+                        $app->clearSession('youkok2');
+                        $app->clearCookie('youkok2');
                     }
                 }
             }
@@ -92,7 +94,7 @@ class Me {
      * Getters (override for storing information in the User object)
      */
     
-    public static function getModuleSettings($key = null) {
+    public static function getModuleSettings($app, $key = null) {
         // Check what to return
         $settings_data = null;
         if (self::$user !== null) {
@@ -101,8 +103,10 @@ class Me {
         }
         else {
             // Check if cookie is set
-            if (isset($_COOKIE['module_settings']) and strlen($_COOKIE['module_settings']) > 0) {
-                $settings_data = $_COOKIE['module_settings'];
+
+            if ($app->getCookie('module_settings') !== null and
+                strlen($app->getCookie('module_settings') !== null) > 0) {
+                $settings_data = $app->getCookie('module_settings') !== null;
             }
         }
         
@@ -151,9 +155,9 @@ class Me {
         // Set
         self::$user->setNick($nick);
     }
-    public static function setModuleSettings($key, $value) {
+    public static function setModuleSettings($app, $key, $value) {
         // Get the current settings
-        $settings = self::getModuleSettings();
+        $settings = self::getModuleSettings($app);
         
         // Make sure we have a array
         if ($settings == null) {
@@ -163,11 +167,10 @@ class Me {
         // Apply the new settings
         $settings[$key] = $value;
         
-        
         // Check if we should set cookie for later too
         if (self::$user === null) {
             // Set cookie
-            setcookie('module_settings', json_encode($settings), (time() + (60*60*24*30)), '/');
+            $app->setCookie('module_settings', json_encode($settings));
         }
         else {
             self::$user->setModuleSettings(json_encode($settings));
@@ -201,15 +204,15 @@ class Me {
      * Login
      */
 
-    public static function logIn() {
+    public static function logIn($app) {
         // Check if logged in
         if (!self::$user !== null) {
             // Okey
             if (isset($_POST['login-email']) and isset($_POST['login-pw']) and isset($_POST['_token'])) {
                 // Check CSRF token
                 if (!CsrfManager::validateSignature($_POST['_token'])) {
-                    header('HTTP/1.0 400 Bad Request');
-                    exit;
+                    $app->setStatus(400);
+                    return;
                 }
                 
                 // Try to fetch email
@@ -218,7 +221,7 @@ class Me {
                 $get_login_user .= "WHERE email = :email";
 
                 $get_login_user_query = Database::$db->prepare($get_login_user);
-                $get_login_user_query->execute(array(':email' => $_POST['login-email']));
+                $get_login_user_query->execute([':email' => $_POST['login-email']]);
                 $row = $get_login_user_query->fetch(\PDO::FETCH_ASSOC);
 
                 // Check result
@@ -238,7 +241,7 @@ class Me {
                         self::setLogin($row['password'], $_POST['login-email'], $remember_me);
 
                         // Add message
-                        MessageManager::addMessage('Du er nå logget inn.', 'success');
+                        MessageManager::addMessage($app, 'Du er nå logget inn.', 'success');
 
                         // Check if we should redirect the user back to the previous page
                         if (strstr($_SERVER['HTTP_REFERER'], URL) !== false) {
@@ -248,44 +251,50 @@ class Me {
                             // Check if anything left
                             if (strlen($clean_referer) > 0 and $clean_referer != 'logg-inn') {
                                 // Refirect to whatever we have left
-                                Redirect::send($clean_referer);
+                                $app->send($clean_referer);
                             }
                             else {
                                 // Send to frontpage
-                                Redirect::send('');
+                                $app->send('');
                             }
                         }
                         else {
                             // Does not have referer
-                            Redirect::send('');
+                            $app->send('');
                         }
                     }
                     else {
                         // Message
-                        MessageManager::addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+                        MessageManager::addMessage(
+                            $app,
+                            'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.',
+                            'danger'
+                        );
                         
                         // Set session
                         $_SESSION['login_correct_email'] = $row['email'];
                         
                         // Redirect
-                        Redirect::send('logg-inn');
+                        $app->send(TemplateHelper::urlFor('logg-inn'));
                     }
                 }
                 else {
                     // Message
-                    MessageManager::addMessage('Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+                    MessageManager::addMessage(
+                        $app,
+                        'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.',
+                        'danger'
+                    );
 
                     // Redirect
-                    Redirect::send('logg-inn');
+                    $app->send(TemplateHelper::urlFor('logg-inn'));
                 }
             }
             else {
                 // Not submitted or anything, just redirect
-                Redirect::send('');
+                $app->send('');
             }
         }
-        
-        exit();
     }
     
     /*
@@ -313,21 +322,21 @@ class Me {
      * Logout
      */
 
-    public static function logOut() {
+    public static function logOut($app) {
         // Check if logged in
         if (self::$user !== null and $_GET['_token']) {
             // Unset session
-            unset($_SESSION['youkok2']);
+            $app->clearSession('youkok2');
             
             // Unset token
-            setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+            $app->clearCookie('youkok2');
 
             // Set message
-            MessageManager::addMessage('Du har nå logget ut.', 'success');
+            MessageManager::addMessage($app, 'Du har nå logget ut.', 'success');
         }
         else {
             // Simply redirect home
-            Redirect::send('');
+            $app->send('');
         }
 
         // Check if we should redirect the user back to the previous page
@@ -338,16 +347,16 @@ class Me {
             // Check if anything left
             if (strlen($clean_referer) > 0) {
                 // Refirect to whatever we have left
-                Redirect::send($clean_referer);
+                $app->send($clean_referer);
             }
             else {
                 // Send to frontpage
-                Redirect::send('');
+                $app->send('');
             }
         }
         else {
             // Does not have referer
-            Redirect::send('');
+            $app->send('');
         }
     }
 
@@ -359,7 +368,7 @@ class Me {
         // Check if already loaded
         if (self::$favorites === null) {
             // Set favorites to array
-            self::$favorites = array();
+            self::$favorites = [];
 
             // Run query
             $get_favorites  = "SELECT f.file" . PHP_EOL;
@@ -371,7 +380,7 @@ class Me {
             $get_favorites .= "ORDER BY f.id ASC";
 
             $get_favorites_query = Database::$db->prepare($get_favorites);
-            $get_favorites_query->execute(array(':user' => self::$user->getId()));
+            $get_favorites_query->execute([':user' => self::$user->getId()]);
             while ($row = $get_favorites_query->fetch(\PDO::FETCH_ASSOC)) {
                 self::$favorites[] = Element::get($row['file']);
             }
@@ -413,7 +422,7 @@ class Me {
         $get_user_karma_elements .= "ORDER BY added DESC";
 
         $get_user_karma_elements_query = Database::$db->prepare($get_user_karma_elements);
-        $get_user_karma_elements_query->execute(array(':user' => self::$user->getId()));
+        $get_user_karma_elements_query->execute([':user' => self::$user->getId()]);
         while ($row = $get_user_karma_elements_query->fetch(\PDO::FETCH_ASSOC)) {
             $collection[] = new Karma($row);
         }

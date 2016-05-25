@@ -11,10 +11,10 @@ namespace Youkok2\Views\Admin;
 
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Database;
-use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\Utilities;
 
-class Home extends AdminBaseView {
+class Home extends AdminBaseView
+{
     
     /*
      * For the menu and such
@@ -25,18 +25,20 @@ class Home extends AdminBaseView {
     protected $adminBreadcrumbs = ['Forside'];
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
      * Displaying various admin stuff
     */
-    
-    public function displayAdminHome() {
+
+    public function run() {
+        parent::run();
+
         // Get downloads pr. day
         $download_pr_day = '';
         $get_download_pr_day  = "SELECT downloaded_time AS 'date', COUNT(id) AS 'num'" . PHP_EOL;
@@ -47,7 +49,8 @@ class Home extends AdminBaseView {
         
         $get_download_pr_day_query = Database::$db->query($get_download_pr_day);
         while ($row = $get_download_pr_day_query->fetch(\PDO::FETCH_ASSOC)) {
-            $download_pr_day .= '<li><strong>' . Utilities::prettifySQLDate($row['date'], false) . '</strong>: ' . number_format($row['num']) . '</li>';
+            $download_pr_day .= '<li><strong>' . Utilities::prettifySQLDate($row['date'], false) . '</strong>: ';
+            $download_pr_day .= number_format($row['num']) . '</li>';
         }
         $this->template->assign('ADMIN_DOWNLOADS_PR_DAY', $download_pr_day);
         

@@ -11,11 +11,11 @@ namespace Youkok2\Views\Admin;
 
 use Youkok2\Views\BaseView;
 use Youkok2\Models\Me;
-use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\Routes;
 use Youkok2\Utilities\TemplateHelper;
 
-abstract class AdminBaseView extends BaseView {
+abstract class AdminBaseView extends BaseView
+{
     
     /*
      * Admin side menu
@@ -54,28 +54,30 @@ abstract class AdminBaseView extends BaseView {
     ];
     
     /*
-     * Constructor
+     * Always run the constructor
      */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
 
-    public function __construct() {
-        parent::__construct();
-        
+    public function run() {
         if (Me::isAdmin()) {
             // Set menu
             $this->template->assign('HEADER_MENU', null);
-            
+
             // Set some admin things
             $this->template->assign('ADMIN_HEADING', $this->adminHeading);
-            
+
             // Apply admin related stuff to site data
             $this->addSiteData('view', $this->adminIdentifier);
             $this->addSiteData('admin_view', true);
-            
+
             // Create sidemenu
             $this->createSidemenu();
         }
         else {
-            Redirect::send('');
+            $this->application->send('');
         }
     }
     
@@ -99,7 +101,7 @@ abstract class AdminBaseView extends BaseView {
             }
             
             // Get the URL
-            $menu_item['url'] = TemplateHelper::url_for($menu_item['identifier']);
+            $menu_item['url'] = TemplateHelper::urlFor($menu_item['identifier']);
             
             // Get the correct class
             $class = null;
@@ -114,7 +116,7 @@ abstract class AdminBaseView extends BaseView {
             }
             
             if ($class !== null) {
-                $menu_item['extra'] = call_user_func('Youkok2\Views\\' . $class . '::adminMenuContent');
+                $menu_item['extra'] = call_user_func('Youkok2\\' . $class . '::adminMenuContent');
             }
             
             // Append the menu item

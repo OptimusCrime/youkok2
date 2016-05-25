@@ -11,10 +11,10 @@ namespace Youkok2\Views\Admin;
 
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Database;
-use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\Utilities;
 
-class Contribution extends AdminBaseView {
+class Contribution extends AdminBaseView
+{
     
     /*
      * For the menu and such
@@ -25,11 +25,11 @@ class Contribution extends AdminBaseView {
     protected $adminBreadcrumbs = ['Nye bidrag'];
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -43,8 +43,10 @@ class Contribution extends AdminBaseView {
     /*
      * Display
      */
-    
-    public function displayAdminContributions() {
+
+    public function run() {
+        parent::run();
+
         // Display
         $this->displayAndCleanup('admin/empty.tpl');
     }

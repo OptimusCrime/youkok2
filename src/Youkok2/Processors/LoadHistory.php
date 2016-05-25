@@ -13,7 +13,8 @@ use Youkok2\Models\Element;
 use Youkok2\Models\History;
 use Youkok2\Utilities\Database;
 
-class LoadHistory extends BaseProcessor {
+class LoadHistory extends BaseProcessor
+{
     
     /*
      * Override
@@ -32,7 +33,7 @@ class LoadHistory extends BaseProcessor {
 
         // Loop the data array and run method on each element
         if (count($data['data']) > 0) {
-            foreach($data['data'] as $v) {
+            foreach ($data['data'] as $v) {
                 $new_data[] = $v->toArray();
             }
         }
@@ -45,20 +46,19 @@ class LoadHistory extends BaseProcessor {
     }
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
      * Load data
      */
     
-    protected function run() {
-         // For returning content
+    public function run() {
+        // For returning content
         $collection = [];
         
         // Check if supplied correct data
@@ -77,13 +77,14 @@ class LoadHistory extends BaseProcessor {
                 $history_get .= "ORDER BY h.added DESC" . PHP_EOL;
                 
                 $history_get_query = Database::$db->prepare($history_get);
-                $history_get_query->execute(array(':id' => $_POST['id']));
+                $history_get_query->execute([':id' => $_POST['id']]);
                 while ($row = $history_get_query->fetch(\PDO::FETCH_ASSOC)) {
                     // Init new History object
                     $history = new History($row);
                     
                     // Update the history text
-                    $history->setHistoryText(str_replace('%u', (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']), $row['history_text']));
+                    $history->setHistoryText(str_replace('%u', (($row['nick'] == null or
+                        strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']), $row['history_text']));
                     
                     // Add to collection
                     $collection[] = $history;

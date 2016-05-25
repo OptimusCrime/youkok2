@@ -13,16 +13,22 @@ use Youkok2\Models\Element;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Routes;
 
-class Search extends BaseView {
-
+class Search extends BaseView
+{
+    
     /*
-     * Constructor
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
+    /*
+     * Run the view
      */
 
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
-
+    public function run() {
         // Set menu
         $this->template->assign('HEADER_MENU', '');
 
@@ -41,7 +47,7 @@ class Search extends BaseView {
      * Method for searching for courses
      */
 
-    private function search () {
+    private function search() {
         // Variable to keep track of the results
         $collection = [];
 
@@ -52,7 +58,7 @@ class Search extends BaseView {
         // Clean the input
         $input = explode(' ', $_GET['s']);
         if (count($input) > 0) {
-            $input_clean = array();
+            $input_clean = [];
             foreach ($input as $v) {
                 if (strlen(str_replace('*', '', $v)) > 0) {
                     $input_clean[] = str_replace('*', '%', $v);
@@ -62,9 +68,8 @@ class Search extends BaseView {
 
         // Check if anything was clean as fuck
         if (count($input_clean) > 0) {
-
-            $course_code = array();
-            $course_name = array();
+            $course_code = [];
+            $course_name = [];
 
             // Search by course code
             foreach ($input_clean as $v) {
@@ -76,7 +81,7 @@ class Search extends BaseView {
                 $search_by_code .= "AND deleted = 0";
 
                 $search_by_code_query = Database::$db->prepare($search_by_code);
-                $search_by_code_query->execute(array(':query' => '%' . $v . '%\|\|%'));
+                $search_by_code_query->execute([':query' => '%' . $v . '%\|\|%']);
                 while ($row = $search_by_code_query->fetch(\PDO::FETCH_ASSOC)) {
                     if (!in_array($row['id'], $course_code)) {
                         $course_code[] = $row['id'];
@@ -93,7 +98,7 @@ class Search extends BaseView {
                 $search_by_name .= "AND deleted = 0";
 
                 $search_by_name_query = Database::$db->prepare($search_by_name);
-                $search_by_name_query->execute(array(':query' => '%\|\|%' . $v . '%'));
+                $search_by_name_query->execute([':query' => '%\|\|%' . $v . '%']);
                 while ($row = $search_by_name_query->fetch(\PDO::FETCH_ASSOC)) {
                     if (!in_array($row['id'], $course_name)) {
                         $course_name[] = $row['id'];
@@ -102,7 +107,7 @@ class Search extends BaseView {
             }
 
             // Check if anything was matched twice
-            $search_results = array();
+            $search_results = [];
             if (count($course_code) > 0) {
                 foreach ($course_code as $v) {
                     if (!array_key_exists($v, $search_results)) {
@@ -148,7 +153,11 @@ class Search extends BaseView {
                             foreach ($input_clean as $iv) {
                                 $iv_clean = str_replace('%', '.', $iv);
                                 if (preg_match('/^' . $iv_clean . '/i', $match_names[$i])) {
-                                    $match_names[$i] = preg_replace('/^' . str_replace('%', '(.*)', $iv) . '/i', '<strong>${0}</strong>', $match_names[$i]);
+                                    $match_names[$i] = preg_replace(
+                                        '/^' . str_replace('%', '(.*)', $iv) . '/i',
+                                        '<strong>${0}</strong>',
+                                        $match_names[$i]
+                                    );
                                     break;
                                 }
                             }

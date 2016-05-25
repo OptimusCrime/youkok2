@@ -14,6 +14,7 @@ use Youkok2\Models\Me;
 use Youkok2\Models\Message;
 use Youkok2\Utilities\BacktraceManager;
 use Youkok2\Utilities\CacheManager;
+use Youkok2\Utilities\ClassParser;
 use Youkok2\Utilities\CsrfManager;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\JavaScriptLoader;
@@ -22,7 +23,8 @@ use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\Routes;
 use Youkok2\Utilities\TemplateHelper;
 
-class BaseView extends Youkok2 {
+class BaseView
+{
 
     /*
      * Internal variables
@@ -31,27 +33,40 @@ class BaseView extends Youkok2 {
     public $template;
     private $siteData;
     
-    /*
-     * Constructor
-     */
+    protected $application;
+    protected $settings;
+    protected $path;
+    
+    public function __construct($app) {
+        // Set reference to the application
+        $this->application = $app;
 
-    public function __construct($kill = false) {
+        // Chech if this is a processors
+        $class = explode('\\', get_class($this));
+        foreach ($class as $v) {
+            if ($v === 'Processors') {
+                return;
+            }
+        }
+        
+        // Set some headers
+        $this->application->setHeader('Content-Type', 'text/html; charset=utf-8');
+        $this->application->setHeader('X-Powered-By', 'PHP/3.3.1');
+        
         // Init template and assign the default tags
         $this->initTemplateEngine();
+        
+        // Only init stuff if we are not killing this view
+        if ($this->getSetting('kill') !== true) {
+            // Init the site itself
+            $this->initSite();
 
-        // If we should kill the script, then we do so here
-        if ($kill) {
-            return;
+            // Init the user object
+            $this->initUser();
+            
+            // Set environment settings
+            $this->setEnvSettings();
         }
-
-        // Init the site itself
-        $this->initSite();
-
-        // Init the user object
-        $this->initUser();
-
-        // Set environment settings
-        $this->setEnvSettings();
     }
     
     /*
@@ -82,7 +97,7 @@ class BaseView extends Youkok2 {
         $this->template->assign('HEADER_MENU', 'HOME');
 
         // Assign query
-        $this->template->assign('BASE_QUERY', Loader::getQuery());
+        $this->template->assign('BASE_QUERY', $this->path);
     }
 
     /*
@@ -93,22 +108,47 @@ class BaseView extends Youkok2 {
         // Check if we're offline
         if (defined('AVAILABLE') and !AVAILABLE) {
             // We're offline, check if we should be allowed still
-            if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
-                // Not whitelisted, kill
-                new Error('unavailable');
-                die();
+            if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and
+                    AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
+                // Return error page
+                $this->application->load(new ClassParser('Views\Error'), [
+                    'kill' => true,
+                    'reason' => 'unavailable'
+                ]);
+                
+                // Kill this views
+                $this->settings['kill'] = true;
+                
+                // Return to avoid doing anything more
+                return;
             }
         }
 
         // Trying to connect to the database
-        try {
-            Database::connect();
-        }
-        catch (\Exception $e) {
-            $this->db = null;
+        if (Database::$db === null) {
+            try {
+                Database::connect();
+            }
+            catch (\Exception $e) {
+                // Set db to null
+                $this->db = null;
 
-            new Error('db');
-            die();
+                // Tell the app to overwrite our current view
+                $this->addSetting('overwrite', true);
+
+                // Define what to run next
+                $this->addSetting('overwrite_target', new ClassParser('Views\Error'));
+                $this->addSetting('overwrite_settings', [
+                    'kill' => true,
+                    'reason' => 'db'
+                ]);
+                
+                // Kill this views
+                $this->addSetting('kill', true);
+                
+                // Return to avoid doing anything more
+                return;
+            }
         }
         
         // Set some site data
@@ -120,8 +160,13 @@ class BaseView extends Youkok2 {
      */
 
     private function initUser() {
+        // Check if we should skip this
+        if ($this->getSetting('kill') === true) {
+            return;
+        }
+        
         // Init the user
-        Me::init();
+        Me::init($this->application);
 
         // Add to site data
         $this->addSiteData('online', Me::isLoggedIn());
@@ -134,12 +179,18 @@ class BaseView extends Youkok2 {
         $this->template->assign('USER_IS_ADMIN', Me::isAdmin());
         $this->template->assign('USER_IS_BANNED', Me::isBanned());
         $this->template->assign('USER_CAN_CONTRIBUTE', Me::canContribute());
-        $this->template->assign('USER_MOST_POPULAR_ELEMENT', Me::getModuleSettings('module1_delta'));
-        $this->template->assign('USER_MOST_POPULAR_COURSES', Me::getModuleSettings('module2_delta'));
+        $this->template->assign(
+            'USER_MOST_POPULAR_ELEMENT',
+            Me::getModuleSettings($this->application, 'module1_delta')
+        );
+        $this->template->assign(
+            'USER_MOST_POPULAR_COURSES',
+            Me::getModuleSettings($this->application, 'module2_delta')
+        );
         
         // Check if we should validate login
         if (isset($_POST['login-email'])) {
-            Me::logIn();
+            Me::logIn($this->application);
         }
     }
 
@@ -210,7 +261,7 @@ class BaseView extends Youkok2 {
         $this->template->assign('JS_MODULES', JavaScriptLoader::get());
         
         // Load message
-        $this->template->assign('SITE_MESSAGES', MessageManager::get(Loader::getQuery()));
+        $this->template->assign('SITE_MESSAGES', MessageManager::get($this->application, $this->path));
         
         // Load cache
         $this->addSiteData('cache_time', CacheManager::loadTypeaheadCache());
@@ -222,8 +273,8 @@ class BaseView extends Youkok2 {
         $time = \PHP_Timer::stop();
         $this->template->assign('TIMER', \PHP_Timer::secondsToTimeString($time));
         
-        // Call Smarty
-        $this->template->display($template, $sid);
+        // Fetch the smarty content
+        $this->application->setBody($this->template->fetch($template, $sid));
 
         // Close database and process cache
         $this->close();
@@ -234,8 +285,15 @@ class BaseView extends Youkok2 {
      */
     
     protected function display404() {
-        // New instance
-        new NotFound();
+
+        // Tell the app to overwrite our current view
+        $this->addSetting('overwrite', true);
+
+        // Define what to run next
+        $this->addSetting('overwrite_target', new ClassParser('Views\NotFound'));
+
+        // Kill this views
+        $this->addSetting('kill', true);
     }
     
     /*
@@ -248,5 +306,40 @@ class BaseView extends Youkok2 {
 
         // Close connection
         Database::close();
+    }
+    
+    /*
+     * Static method used to check if a view is a processor or not
+     */
+    
+    public static function isProcessor() {
+        return false;
+    }
+    
+    /*
+     * Various setters for the view from the application
+     */
+    
+    public function setSettings($settings) {
+        $this->settings = $settings;
+    }
+
+    public function addSetting($key, $value) {
+        $this->settings[$key] = $value;
+    }
+    
+    public function getSetting($key) {
+        if (isset($this->settings[$key])) {
+            return $this->settings[$key];
+        }
+        return null;
+    }
+    
+    public function getSettings() {
+        return $this->settings;
+    }
+
+    public function setPath($path) {
+        $this->path = $path;
     }
 }

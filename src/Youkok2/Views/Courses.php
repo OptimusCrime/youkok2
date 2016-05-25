@@ -13,14 +13,22 @@ use Youkok2\Models\Element;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Loader;
 
-class Courses extends BaseView {
-
+class Courses extends BaseView
+{
+    
     /*
-     * Constructor
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
+    /*
+     * Run the view
      */
 
-    public function __construct() {
-        parent::__construct();
+    public function run() {
         
         // Turn on caching
         $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
@@ -29,13 +37,13 @@ class Courses extends BaseView {
         $this->template->assign('HEADER_MENU', 'ARCHIVE');
         
         // Check if cached
-        if (!$this->template->isCached('courses.tpl', Loader::queryGetClean())) {
+        if (!$this->template->isCached('courses.tpl', $this->path)) {
             // Load content
             $this->loadCourses();
         }
 
         // Display
-        $this->displayAndCleanup('courses.tpl', Loader::queryGetClean());
+        $this->displayAndCleanup('courses.tpl', $this->path);
     }
     
     /*

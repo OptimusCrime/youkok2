@@ -1,7 +1,7 @@
                     <div id="archive-empty" class="well">
                         <p>Huffa!</p>[[+if $USER_IS_LOGGED_IN == true]][[+if $USER_CAN_CONTRIBUTE == true]]
 
-                        <p>Det er visst ingen filer her. Du kan bidra ved å laste opp filer i panelet til høyre. Pass på at du leser våre <a href="[[+TemplateHelper::url_for('flat_terms')]]">retningslinjer</a> før du eventuelt gjør dette.</p>[[+else]]
+                        <p>Det er visst ingen filer her. Du kan bidra ved å laste opp filer i panelet til høyre. Pass på at du leser våre <a href="[[+TemplateHelper::urlFor('flat_terms')]]">retningslinjer</a> før du eventuelt gjør dette.</p>[[+else]]
 
                         <p>Det er visst ingen filer her. Dessverre ser det også ut som om du er bannet i systemet vårt, så det betyr at du dessverre ikke kan gjøre noe med dette heller.</p>[[+/if]][[+else]]
 

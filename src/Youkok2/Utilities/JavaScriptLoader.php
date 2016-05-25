@@ -9,7 +9,8 @@
 
 namespace Youkok2\Utilities;
 
-class JavaScriptLoader {
+class JavaScriptLoader
+{
 
     /*
      * Method for redirecting
@@ -36,8 +37,12 @@ class JavaScriptLoader {
                         $files = self::findFiles($files, $path . $file . '/');
                     }
                     else {
-                        // Just a simple file, add to array
-                        $files[] = '<script type="text/javascript" src="' . substr($path, 1) . $file . '?v=' . VERSION . '"></script>';
+                        // Build the string
+                        $script  = '<script type="text/javascript" src="' . substr($path, 1) . $file;
+                        $script .= '?v=' . VERSION . '"></script>';
+
+                        // Add the string to files
+                        $files[] = $script;
                     }
                 }
             }
@@ -49,4 +54,4 @@ class JavaScriptLoader {
         // Return list of files
         return $files;
     }
-} 
+}

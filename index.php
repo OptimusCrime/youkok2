@@ -12,13 +12,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 /*
- * Set header
- */
-
-header('Content-Type: text/html; charset=utf-8');
-header('X-Powered-By: PHP/3.3.1');
-
-/*
  * Include the settings and the autoloader from Composer
  */
 
@@ -62,20 +55,22 @@ spl_autoload_register(function ($class) {
 \PHP_Timer::start();
 
 /*
- * Set debug options
+ * Set various things
  */
 
 error_reporting(ERROR_MODE);
 ini_set('display_errors', ERROR_DISPLAY);
-
-/*
- * Set the timezone
- */
-
 date_default_timezone_set(TIMEZONE);
 
 /*
- * Check if we should initiate the Loader
+ * Create new instance of Youkok2
+ */
+
+$youkok2 = new Youkok2\Youkok2();
+$wrapper = new Youkok2\Wrapper\Wrapper($youkok2);
+
+/*
+ * Check if we should run the wrapper
  */
 
 $call_loader = false;
@@ -92,5 +87,10 @@ else {
 }
 
 if ($call_loader) {
-    $loader = new \Youkok2\Utilities\Loader();
+    // Load a view uding the QueryParser to parse the URL
+    $youkok2->setInformation();
+    $youkok2->load(new Youkok2\Utilities\QueryParser());
+    
+    // Run the wrapper
+    $wrapper->run();
 }

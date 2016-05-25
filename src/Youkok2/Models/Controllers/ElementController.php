@@ -16,7 +16,8 @@ use Youkok2\Utilities\Routes;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\TemplateHelper;
 
-class ElementController extends BaseController {
+class ElementController extends BaseController
+{
     
     /*
      * Variables
@@ -65,11 +66,20 @@ class ElementController extends BaseController {
     public static $single = 1;
     
     public static $timeIntervals = [
-        'WHERE a.pending = 0 AND a.deleted = 0', // All
-        'WHERE d.downloaded_time >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND a.pending = 0 AND a.deleted = 0', // Day
-        'WHERE d.downloaded_time >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 WEEK) AND a.pending = 0 AND a.deleted = 0', // Week
-        'WHERE d.downloaded_time >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 MONTH) AND a.pending = 0 AND a.deleted = 0', // Month
-        'WHERE d.downloaded_time >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 YEAR) AND a.pending = 0 AND a.deleted = 0', // Year
+        // All
+        'WHERE a.pending = 0 AND a.deleted = 0',
+
+        // Day
+        'WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24)) AND a.pending = 0 AND a.deleted = 0',
+
+        // Week
+        'WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 7)) AND a.pending = 0 AND a.deleted = 0',
+
+        // Month
+        "WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 30)) AND a.pending = 0 AND a.deleted = 0",
+
+        // Year
+        'WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 365)) AND a.pending = 0 AND a.deleted = 0',
     ];
     
     /*
@@ -84,7 +94,7 @@ class ElementController extends BaseController {
 
         // Other stuff
         $this->flagCount = null;
-        $this->downloadCount = array(0 => null, 1 => null, 2 => null, 3 => null);
+        $this->downloadCount = [0 => null, 1 => null, 2 => null, 3 => null];
         
         // Owner
         $this->ownerId = null;
@@ -105,7 +115,7 @@ class ElementController extends BaseController {
         $url_pieces_temp = explode('/', $url);
 
         // Clean the pieces
-        $url_pieces = array();
+        $url_pieces = [];
         foreach ($url_pieces_temp as $k => $v) {
             if ($k > 0 and strlen($v) > 0) {
                 $url_pieces[] = $v;
@@ -128,12 +138,12 @@ class ElementController extends BaseController {
                 
                 if ($temp_parent === null) {
                     $get_reverse_url .= "WHERE parent IS NULL" . PHP_EOL;
-                    $reverse_arr = array(':url_friendly' => $url_piece_single);
+                    $reverse_arr = [':url_friendly' => $url_piece_single];
                 }
                 else {
                     $get_reverse_url .= "WHERE parent = :parent" . PHP_EOL;
-                    $reverse_arr = array(':parent' => $temp_parent, 
-                        ':url_friendly' => $url_piece_single);
+                    $reverse_arr = [':parent' => $temp_parent,
+                        ':url_friendly' => $url_piece_single];
                 }
                 
                 $get_reverse_url .= "AND url_friendly = :url_friendly" . PHP_EOL;
@@ -209,7 +219,7 @@ class ElementController extends BaseController {
             $get_children_ids .= "ORDER BY directory DESC, name ASC";
             
             $get_children_ids_query = Database::$db->prepare($get_children_ids);
-            $get_children_ids_query->execute(array(':parent' => $this->model->getId()));
+            $get_children_ids_query->execute([':parent' => $this->model->getId()]);
             while ($row = $get_children_ids_query->fetch(\PDO::FETCH_ASSOC)) {
                 // Get element and add to collection
                 $this->children[] = Element::get($row['id']);
@@ -244,7 +254,7 @@ class ElementController extends BaseController {
             $get_download_count .= "AND d.file = :file";
             
             $get_download_count_query = Database::$db->prepare($get_download_count);
-            $get_download_count_query->execute(array(':file' => $this->model->getId()));
+            $get_download_count_query->execute([':file' => $this->model->getId()]);
             $row = $get_download_count_query->fetch(\PDO::FETCH_ASSOC);
 
             // Set value
@@ -288,7 +298,7 @@ class ElementController extends BaseController {
         $get_all_flags .= "AND active = 1";
         
         $get_all_flags_query = $this->controller->db->prepare($get_all_flags);
-        $get_all_flags_query->execute(array(':file' => $this->id));
+        $get_all_flags_query->execute([':file' => $this->id]);
         while ($row = $get_all_flags_query->fetch(PDO::FETCH_ASSOC)) {
             // Create new flag
             $flag = new Flag($this->controller);
@@ -321,7 +331,7 @@ class ElementController extends BaseController {
     public function getFlags() {
         if ($this->flags === null) {
             // Flags are not loaded, load them first
-            $this->flags = array();
+            $this->flags = [];
             $this->loadFlags();
         }
         
@@ -354,7 +364,7 @@ class ElementController extends BaseController {
             $get_owner .= "LIMIT 1";
             
             $get_owner_query = $this->controller->db->prepare($get_owner);
-            $get_owner_query->execute(array(':file' => $this->id));
+            $get_owner_query->execute([':file' => $this->id]);
             $row = $get_owner_query->fetch(PDO::FETCH_ASSOC);
             
             if (isset($row['id'])) {
@@ -384,7 +394,7 @@ class ElementController extends BaseController {
         }
         
         // Some variables
-        $output = array();
+        $output = [];
         $previous_num = 0;
         
         // The query
@@ -395,7 +405,7 @@ class ElementController extends BaseController {
         $get_all_downloads .= "ORDER BY downloaded_time ASC";
         
         $get_all_downloads_query = $this->controller->db->prepare($get_all_downloads);
-        $get_all_downloads_query->execute(array(':file' => $this->id));
+        $get_all_downloads_query->execute([':file' => $this->id]);
         while ($row = $get_all_downloads_query->fetch(PDO::FETCH_ASSOC)) {
             // Define how to count downloads
             if ($type == Item::$accumulated) {
@@ -412,8 +422,9 @@ class ElementController extends BaseController {
             $time_split = explode(':', $ts_split[1]);
             
             // The string for Higcharts
-            $output[] = array('Date.UTC(' . $date_split[0] . ', ' . $date_split[1] . ', ' . $date_split[2] . ', ' . $time_split[0] . ', ' . $time_split[1] . ', ' . $time_split[2] . ')',
-                              $num_count);
+            $output[] = ['Date.UTC(' . $date_split[0] . ', ' . $date_split[1] . ', ' . $date_split[2] . ', ' .
+                $time_split[0] . ', ' . $time_split[1] . ', ' . $time_split[2] . ')',
+                              $num_count];
         }
         
         // Return the series here
@@ -511,7 +522,6 @@ class ElementController extends BaseController {
                 else {
                     break;
                 }
-
             }
         }
 
@@ -520,7 +530,6 @@ class ElementController extends BaseController {
     }
     public function getRootParent() {
         if ($this->rootParent === null) {
-
             $temp_element = $this->model;
 
             while (true) {
@@ -572,12 +581,12 @@ class ElementController extends BaseController {
 
             // Find the correct prefix
             $url_fragments = array_reverse($temp_url);
-            $path = TemplateHelper::url_for('download', $url_fragments);
+            $path = TemplateHelper::urlFor('download', $url_fragments);
             if ($this->model->isLink()) {
-                $path = TemplateHelper::url_for('redirect', $url_fragments);
+                $path = TemplateHelper::urlFor('redirect', $url_fragments);
             }
-            else if ($this->model->isDirectory()) {
-                $path = TemplateHelper::url_for('archive', $url_fragments);
+            elseif ($this->model->isDirectory()) {
+                $path = TemplateHelper::urlFor('archive', $url_fragments);
             }
 
             // Generate the final url
@@ -600,7 +609,7 @@ class ElementController extends BaseController {
             $get_alias_elements .= "WHERE alias = :alias";
             
             $get_alias_elements_query = Database::$db->prepare($get_alias_elements);
-            $get_alias_elements_query->execute(array(':alias' => $this->model->getId()));
+            $get_alias_elements_query->execute([':alias' => $this->model->getId()]);
             while ($row = $get_alias_elements_query->fetch(\PDO::FETCH_ASSOC)) {
                 // Make sure alias owner is a valid and visible element
                 $element = Element::get($row['id']);

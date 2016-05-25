@@ -9,26 +9,36 @@
 
 namespace Youkok2\Views;
 
-class NotFound extends BaseView {
-
+class NotFound extends BaseView
+{
+    
     /*
-     * Constructor
+     * Always run the constructor
+     */
+    
+    public function __construct($app) {
+        parent::__construct($app);
+    }
+    
+    /*
+     * Run the view
      */
 
-    public function __construct() {
-        // Calling Base' constructor
-        parent::__construct();
+    public function run() {
+        
+        // Make sure to kill the view if something broke
+        if ($this->getSetting('kill') === true) {
+            return;
+        }
         
         // Set 404 header
-        header('HTTP/1.0 404 Not Found');
+        $this->application->setStatus(404);
         
         // Null the menu
         $this->template->assign('HEADER_MENU', null);
         
         // Turn on caching
         $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
-        
-        echo 'in here';
 
         // Display template
         $this->template->assign('SITE_TITLE', 'Siden ble ikke funnet');

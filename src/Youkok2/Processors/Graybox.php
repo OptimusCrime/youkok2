@@ -12,7 +12,8 @@ namespace Youkok2\Processors;
 use Youkok2\Youkok2;
 use Youkok2\Models\Element;
 
-class Graybox extends BaseProcessor {
+class Graybox extends BaseProcessor
+{
 
     /*
      * Internal variables
@@ -43,20 +44,21 @@ class Graybox extends BaseProcessor {
         'Moved some files around etc', 'Added bootstrap and a lot of other stuff to the project... WIP so much',
         'Began working on a lot of stuff', 'Added some stuff and made more dyamic', 'Did some changes...',
         'Refractor is the shit, I fix stuff and...well', 'Wtf am I doing', 'Fuckings tab indents', 'Strupid',
-        'Refract00o0oring to get everything to work again, zzzz', 'Asaaand removed composer rofl', 'Fixed old leftovershit',
-        'Messed up the order of the params, fuckem', 'MOST IMPORTANT CHANGES EVER FRRIKING HELL',
-        'Soooo much refractoring my eyes are dropping', 'Refractor the loader class to reflect some bad design choices',
-        'Began working on a nice as F caching system', 'Added epic search functionality', 'Removed a hell of a lot images',
+        'Refract00o0oring to get everything to work again, zzzz', 'Asaaand removed composer rofl',
+        'Fixed old leftovershit', 'Messed up the order of the params, fuckem', 'Added epic search functionality',
+        'MOST IMPORTANT CHANGES EVER FRRIKING HELL', 'Well fuck', 'Made registration possible again, woopwoop',
+        'Soooo much refractoring my eyes are dropping', 'I suck even more', 'For fuck sake', 'Damnit again, haha',
+        'Refractor the loader class to reflect some bad design choices', 'Fixing stuff, broke the frontpage',
+        'Began working on a nice as F caching system', 'Well that was stupoid', 'JDFhdsjfklshlfsdjkflg',
+        'Removed a hell of a lot images', 'Trying to make stuff more OOP, broke some stuff ect',
         'Fixed typo 500ing the entire site', 'I messed up some stuff', 'Fixed admin interfjes', 'DFuck', 'What a mess',
         'Now actually clearing youkok2 cache, duurrr', 'Fixed archive markup a bit, still fucked up tho',
         'Fixed header yet again, looks cool', 'Began reimplemented archive, which is a pain in the aaaaass',
-        'Trying to make stuff more OOP, broke some stuff ect', 'Made registration possible again, woopwoop', 'Well fuck',
-        'For fuck sake', 'Damnit again, haha', 'JDFhdsjfklshlfsdjkflg', 'I suck even more', 'Well that was stupoid',
-        'Removed typehead example (what stupid messed up stuff)', 'Fixing stuff, broke the frontpage',
-        'Fixed a bug or someting', 'I am going to kill someone soon', 'NEW FUCKINGS BUILDDDDDDDDDDDDDDDDDDD', 'FUCK THIS',
+        'Removed typehead example (what stupid messed up stuff)', 'Ran new build for no apparent reason',
+        'Fixed a bug or someting', 'I am going to kill someone soon', 'NEW FUCKINGS BUILDDDDDDDDDDDDDDDDDDD',
         'Stupid stupid stupid stupid', 'Trying to fix fuckup in the update script', 'Fixed fuckup in the buildscript',
-        'hrherhehrh', 'Shit shit shit shit', 'Removed fucked up stuff in shell script', 'Fixed eifnsdflhsdfkhdsalkhasdlksadh',
-        'NOOO MOAR TABS, CAN I HAS ZHE SPACE INDENTS', 'Ran new build for no apparent reason',
+        'hrherhehrh', 'Shit shit shit shit', 'Removed fucked up stuff in shell script', 'FUCK THIS',
+        'NOOO MOAR TABS, CAN I HAS ZHE SPACE INDENTS', 'Fixed eifnsdflhsdfkhdsalkhasdlksadh',
         'Fuckings mac creating invisible files all over the place',
     ];
 
@@ -69,12 +71,11 @@ class Graybox extends BaseProcessor {
     }
 
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
 
     /*
@@ -123,13 +124,13 @@ class Graybox extends BaseProcessor {
      */
 
     public function getPopular() {
-        $data = Youkok2::runProcessor('/module/get',[
+        $data = $this->application->runProcessor('/module/get', [
             'output' => false,
             'encode' => true,
             'close_db' => false,
             'module' => 1,
             'limit' => 5,
-            'module1_delta' => 3]);
+            'module1_delta' => 3])->getData();
 
         // Set to data
         $this->setData('data', $data['data']);

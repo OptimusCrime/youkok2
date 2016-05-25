@@ -11,10 +11,10 @@ namespace Youkok2\Views\Admin;
 
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Database;
-use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\Utilities;
 
-class Scripts extends AdminBaseView {
+class Scripts extends AdminBaseView
+{
     
     /*
      * For the menu and such
@@ -25,18 +25,20 @@ class Scripts extends AdminBaseView {
     protected $adminBreadcrumbs = ['Scripts'];
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct() {
-        parent::__construct();
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
      * Display
      */
-    
-    public function displayAdminScripts() {
+
+    public function run() {
+        parent::run();
+
         // Display
         $this->displayAndCleanup('admin/empty.tpl');
     }

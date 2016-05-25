@@ -17,7 +17,8 @@ use Youkok2\Models\Controllers\Cache\MeDownloadsController;
 use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;
 
-class MeDownloadsStaticController {
+class MeDownloadsStaticController
+{
 
     /*
      * Variables
@@ -52,7 +53,7 @@ class MeDownloadsStaticController {
             $get_last_downloads .= "LIMIT 15";
             
             $get_last_downloads_query = Database::$db->prepare($get_last_downloads);
-            $get_last_downloads_query->execute(array(':user' => Me::getId()));
+            $get_last_downloads_query->execute([':user' => Me::getId()]);
             while ($row = $get_last_downloads_query->fetch(\PDO::FETCH_ASSOC)) {
                 $elements[] = $row['file'];
             }

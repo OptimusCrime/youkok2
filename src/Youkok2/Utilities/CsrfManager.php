@@ -11,7 +11,8 @@ namespace Youkok2\Utilities;
 
 use Kunststube\CSRFP\SignatureGenerator;
 
-class CsrfManager {
+class CsrfManager
+{
     
     /*
      * Holds the instance

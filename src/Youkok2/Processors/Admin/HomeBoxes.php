@@ -14,7 +14,8 @@ use Youkok2\Models\Me;
 use Youkok2\Collections\ElementCollection;
 use Youkok2\Utilities\Database;
 
-class HomeBoxes extends BaseProcessor {
+class HomeBoxes extends BaseProcessor
+{
 
     /*
      * Override
@@ -33,12 +34,11 @@ class HomeBoxes extends BaseProcessor {
     }
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -92,4 +92,4 @@ class HomeBoxes extends BaseProcessor {
         // Set ok
         $this->setOK();
     }
-} 
+}

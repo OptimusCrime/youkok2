@@ -12,7 +12,8 @@ namespace Youkok2\models\StaticControllers;
 use Youkok2\Models\Message;
 use Youkok2\Utilities\Database;
 
-class MessageStaticController {
+class MessageStaticController
+{
     
     /*
      * Get all messages that matches a pattern
@@ -48,7 +49,13 @@ class MessageStaticController {
                 }
                 else {
                     // Change pattern into regex expression
-                    $regex_pattern = '/^' . str_replace(array_keys($regex), array_values($regex), $row['pattern']) . '/';
+                    $regex_pattern = '/^';
+                    $regex_pattern .= str_replace(
+                        array_keys($regex),
+                        array_values($regex),
+                        $row['pattern']
+                    );
+                    $regex_pattern .= '/';
                     
                     // Check if the pattern matches
                     if (preg_match($regex_pattern, $pattern)) {

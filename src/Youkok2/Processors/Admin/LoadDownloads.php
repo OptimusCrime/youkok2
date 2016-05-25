@@ -14,47 +14,38 @@ use Youkok2\Models\Me;
 use Youkok2\Collections\ElementCollection;
 use Youkok2\Utilities\Database;
 
-class LoadDownloads extends BaseProcessor {
+class LoadDownloads extends BaseProcessor
+{
 
     /*
-     * Constructor
+     * Override
      */
 
-    public function __construct($outputData = false, $returnData = false) {
-        // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
-        // Check database
-        if ($this->makeDatabaseConnection()) {
-            // Init user
-            Me::init();
-            
-            // Check if online
-            if (!Me::isLoggedIn() or (Me::isLoggedIn() and Me::isAdmin())) {
-                $this->process();
-            }
-            else {
-                $this->setError();
-            }
-        }
-        else {
-            $this->setError();
-        }
-        
-        // Handle output
-        if ($this->outputData) {
-            $this->outputData();
-        }
-        if ($this->returnData) {
-            return $this->returnData();
-        }
+    protected function checkPermissions() {
+        return $this->requireAdmin();
+    }
+
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
+    }
+
+    /*
+     * Always run the constructor
+     */
+
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
      * Process the request
      */
     
-    private function process() {
+    public function run() {
         $this->setData('code', 200);
         
         $output = [];
@@ -63,12 +54,13 @@ class LoadDownloads extends BaseProcessor {
         $get_last_downloads  = "SELECT a.id, d.ip, d.downloaded_time, d.agent, d.user" . PHP_EOL;
         $get_last_downloads .= "FROM archive AS a" . PHP_EOL;
         $get_last_downloads .= "LEFT JOIN download AS d ON a.id = d.file" . PHP_EOL;
-        $get_last_downloads .= "WHERE d.downloaded_time >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND a.is_visible = 1";
+        $get_last_downloads .= "WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24))" . PHP_EOL;
+        $get_last_downloads .= "AND a.is_visible = 1";
         
         $get_last_downloads_query = Database::$db->query($get_last_downloads);
         while ($row = $get_last_downloads_query->fetch(\PDO::FETCH_ASSOC)) {
             // Get
-            $element = ElementCollection::get($row['id'], array('root'));
+            $element = ElementCollection::get($row['id'], ['root']);
 
             // Check if valid Element
             if ($element !== null) {
@@ -82,9 +74,12 @@ class LoadDownloads extends BaseProcessor {
                     'download_agent' => $row['agent'],
                     'download_user' => $row['user'],
                 ];
+
+                // Build url
+                $url = 'http://api.ipinfodb.com/v3/ip-city/?key=' . IPINFODB . '&ip=' . $row['ip'] . '&format=json';
                 
                 // Get location
-                $ch = curl_init('http://api.ipinfodb.com/v3/ip-city/?key=d7f600a26086d65ee1417f9b62cc4533b226ca8a157b3e9b249ab3a02ea9cf8f&ip=' . $row['ip'] . '&format=json');
+                $ch = curl_init($url);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 $data = curl_exec($ch);
                 curl_close($ch);
@@ -110,4 +105,4 @@ class LoadDownloads extends BaseProcessor {
         // Set data
         $this->setData('data', $output);
     }
-} 
+}

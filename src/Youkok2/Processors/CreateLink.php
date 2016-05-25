@@ -17,7 +17,8 @@ use Youkok2\Utilities\Database;
 use Youkok2\Utilities\MessageManager;
 use Youkok2\Utilities\Utilities;
 
-class CreateLink extends BaseProcessor {
+class CreateLink extends BaseProcessor
+{
     
     /*
      * Override
@@ -36,12 +37,11 @@ class CreateLink extends BaseProcessor {
     }
     
     /*
-     * Constructor
+     * Always run the constructor
      */
-
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
@@ -65,7 +65,7 @@ class CreateLink extends BaseProcessor {
             }
         }
         
-        // Check if we are good to go            
+        // Check if we are good to go
         if ($request_ok) {
             // For checking if we can post
             $can_post = true;
@@ -96,8 +96,8 @@ class CreateLink extends BaseProcessor {
                 $get_duplicate .= "AND url = :url";
                 
                 $get_duplicate_query = Database::$db->prepare($get_duplicate);
-                $get_duplicate_query->execute(array(':id' => $parent->getId(),
-                    ':url' => $_POST['url']));
+                $get_duplicate_query->execute([':id' => $parent->getId(),
+                    ':url' => $_POST['url']]);
                 $row_duplicate = $get_duplicate_query->fetch(\PDO::FETCH_ASSOC);
                 
                 // Check if any url patterns collide
@@ -131,7 +131,7 @@ class CreateLink extends BaseProcessor {
                     }
                     
                     // Add message
-                    MessageManager::addFileMessage($name);
+                    MessageManager::addFileMessage($this->application, $name);
                     
                     // Check if logged in
                     if (Me::isLoggedIn()) {
