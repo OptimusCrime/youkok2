@@ -305,7 +305,9 @@ class BaseView
         CacheManager::store();
 
         // Close connection
-        Database::close();
+        if ($this->getSetting('close_db') !== false) {
+            Database::close();
+        }
     }
     
     /*

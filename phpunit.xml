@@ -14,7 +14,7 @@
 >
 
     <testsuites>
-        <testsuite name="Youkok2 Test Suite">
+        <testsuite name="Youkok2">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>

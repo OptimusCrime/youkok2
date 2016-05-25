@@ -22,13 +22,14 @@ class ViewFrontpageTest extends \Youkok2\Tests\YoukokTestCase
         // Create the wrapper
         $frontpage_wrapper = new Youkok2();
         $frontpage_wrapper->load('', [
-            'kill' => true
+            'kill' => true,
+            'close_db' => false
         ]);
         $this->assertEquals(200, $frontpage_wrapper->getStatus());
     }
 
     public function testViewFrontpageLoggedIn() {
-        // Create hash ad email
+        // Create hash and email
         $email = 'foo@bar.com';
         $hash = Utilities::hashPassword('foo', Utilities::generateSalt());
 
@@ -46,7 +47,9 @@ class ViewFrontpageTest extends \Youkok2\Tests\YoukokTestCase
         $frontpage_wrapper->setSession('youkok2', $login_token);
 
         // Load the frontpage
-        $frontpage_wrapper->load('');
+        $frontpage_wrapper->load('', [
+            'close_db' => false
+        ]);
         $this->assertEquals(200, $frontpage_wrapper->getStatus());
     }
 }
