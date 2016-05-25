@@ -46,10 +46,11 @@ class Frontpage extends BaseView
         $this->template->assign(
             'HOME_MOST_POPULAR_ELEMENTS',
             $this->application->runProcessor(
-                '/module/get', [
+                '/module/get',
+                [
                     'module' => 1,
                     'encode' => false,
-                    'output' => false,
+                    'output' => false
                 ]
             )->getData()['data']
         );
@@ -58,10 +59,11 @@ class Frontpage extends BaseView
         $this->template->assign(
             'HOME_MOST_POPULAR_COURSES',
             $this->application->runProcessor(
-                '/module/get', [
+                '/module/get',
+                [
                     'module' => 2,
                     'encode' => false,
-                    'output' => false,
+                    'output' => false
                 ]
             )->getData()['data']
         );
