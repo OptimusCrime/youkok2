@@ -12,7 +12,7 @@ namespace Youkok2\Tests\Views;
 use Youkok2\Youkok2;
 use Youkok2\Utilities\ClassParser;
 
-class ViewNotFoundTest extends \PHPUnit_Framework_TestCase
+class ViewNotFoundTest extends \Youkok2\Tests\YoukokTestCase
 {
     public function testViewNotFound() {
         // Test the view with calling it with a ClassParser

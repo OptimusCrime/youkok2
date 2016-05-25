@@ -12,7 +12,7 @@ namespace Youkok2\Tests\Utilities;
 use Youkok2\Models\Element;
 use Youkok2\Utilities\CacheManager;
 
-class CacheManagerTest extends \PHPUnit_Framework_TestCase
+class CacheManagerTest extends \Youkok2\Tests\YoukokTestCase
 {
     
     /*

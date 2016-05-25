@@ -25,26 +25,48 @@ require_once BASE_PATH . '/vendor/autoload.php';
 
 spl_autoload_register(function ($class) {
     // project-specific namespace prefix
-    $prefix = '';
+    $prefix = 'Youkok2\\';
     
-    // does the class use the namespace prefix?
-    $len = strlen($prefix);
-    if (strncmp($prefix, $class, $len) !== 0) {
-        // no, move to the next registered autoloader
-        return;
-    }
+    // List of the directories we should autoload from
+    $directories = [
+        [
+            'path' => BASE_PATH . '/src/',
+            'strip' => false
+        ], [
+            'path' => BASE_PATH . '/tests/',
+            'strip' => true
+        ]
+    ];
 
-    // get the relative class name
-    $relative_class = substr($class, $len);
+    // Loop the directories and see if we find the file we are trying to load in one of them
+    foreach ($directories as $v) {
+        $relative_class = $class;
 
-    // replace the namespace prefix with the base directory, replace namespace
-    // separators with directory separators in the relative class name, append
-    // with .php
-    $file = BASE_PATH . '/src/' . str_replace('\\', '/', $relative_class) . '.php';
-    
-    // if the file exists, require it
-    if (file_exists($file)) {
-        require $file;
+        // Check if we should strip the prefix
+        if ($v['strip']) {
+            // Does the class use the namespace prefix?
+            $len = strlen($prefix);
+            if (strncmp($prefix, $class, $len) !== 0) {
+                // no, move to the next registered autoloader
+                return;
+            }
+
+            // Get the relative class name
+            $relative_class = substr($class, $len);
+        }
+
+        // Concatinate the path and the class name + namespace
+        $file = $v['path'] . str_replace('\\', '/', $relative_class) . '.php';
+        echo $file . PHP_EOL;
+
+        // Check if the file exists
+        if (file_exists($file)) {
+            // Require the file
+            require $file;
+
+            // Quit the function
+            return;
+        }
     }
 });
 

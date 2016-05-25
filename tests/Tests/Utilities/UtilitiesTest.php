@@ -11,7 +11,7 @@ namespace Youkok2\Tests\Utilities;
 
 use Youkok2\Utilities\Utilities;
 
-class UtilitiesTest extends \PHPUnit_Framework_TestCase
+class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
 {
     
     /*

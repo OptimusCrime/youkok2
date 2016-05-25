@@ -12,7 +12,7 @@ namespace Youkok2\Tests\Views;
 use Youkok2\Youkok2;
 use Youkok2\Utilities\ClassParser;
 
-class ViewsErrorTest extends \PHPUnit_Framework_TestCase
+class ViewsErrorTest extends \Youkok2\Tests\YoukokTestCase
 {
     public function testViews() {
         // Frontpage
