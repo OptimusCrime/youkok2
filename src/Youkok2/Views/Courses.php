@@ -68,7 +68,7 @@ class Courses extends BaseView
         while ($row = $get_all_courses_query->fetch(\PDO::FETCH_ASSOC)) {
             // Get element
             $element = new Element($row);
-
+            echo 'fuck';
             // Find the current letter
             $letter = substr($element->getCourseCode(), 0, 1);
 

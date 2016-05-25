@@ -113,7 +113,8 @@ class BaseView
                 // Return error page
                 $this->application->load(new ClassParser('Views\Error'), [
                     'kill' => true,
-                    'reason' => 'unavailable'
+                    'reason' => 'unavailable',
+                    'close_db' => $this->getSetting('close_db')
                 ]);
                 
                 // Kill this views
@@ -140,7 +141,8 @@ class BaseView
                 $this->addSetting('overwrite_target', new ClassParser('Views\Error'));
                 $this->addSetting('overwrite_settings', [
                     'kill' => true,
-                    'reason' => 'db'
+                    'reason' => 'db',
+                    'close_db' => $this->getSetting('close_db')
                 ]);
                 
                 // Kill this views
@@ -291,6 +293,11 @@ class BaseView
 
         // Define what to run next
         $this->addSetting('overwrite_target', new ClassParser('Views\NotFound'));
+        if ($this->getSetting('close_db') === false) {
+            $this->addSetting('overwrite_settings', [
+                'close_db' => false
+            ]);
+        }
 
         // Kill this views
         $this->addSetting('kill', true);

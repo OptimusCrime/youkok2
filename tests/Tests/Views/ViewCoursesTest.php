@@ -24,6 +24,7 @@ class ViewCoursesTest extends \Youkok2\Tests\YoukokTestCase
         $element1->setParent(null);
         $element1->setDirectory(true);
         $element1->setPending(false);
+        $element1->setDeleted(false);
         $element1->save();
 
         $element2 = new Element();
@@ -32,6 +33,7 @@ class ViewCoursesTest extends \Youkok2\Tests\YoukokTestCase
         $element2->setParent(null);
         $element2->setDirectory(true);
         $element2->setPending(false);
+        $element2->setDeleted(false);
         $element2->save();
 
         // Create view for courses
