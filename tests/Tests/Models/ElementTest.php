@@ -101,5 +101,8 @@ class ElementTest extends \PHPUnit_Framework_TestCase
 
         // Check that the relationship is true
         $this->assertEquals($element1->getId(), $element2->getParent());
+
+        // Check if the parent is the same object
+        $this->assertEquals($element1->getId(), $element2->getParent(true)->getId());
     }
 }
