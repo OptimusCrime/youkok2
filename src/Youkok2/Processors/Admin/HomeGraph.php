@@ -32,14 +32,13 @@ class HomeGraph extends BaseProcessor
     protected function checkPermissions() {
         return $this->requireAdmin();
     }
-    
+
     /*
-     * Constructor
+     * Always run the constructor
      */
 
-    public function __construct($method, $settings) {
-        // Calling Base' constructor
-        parent::__construct($method, $settings);
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*

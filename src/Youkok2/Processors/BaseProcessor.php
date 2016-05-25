@@ -95,7 +95,7 @@ abstract class BaseProcessor extends Processors
         }
 
         // Init user is not already inited
-        Me::init();
+        Me::init($this->application);
 
         // Check if the user is admin
         return Me::isAdmin();
@@ -109,7 +109,7 @@ abstract class BaseProcessor extends Processors
         }
 
         // Init user is not already inited
-        Me::init();
+        Me::init($this->application);
 
         // Check if the user is admin
         return Me::isLoggedIn();

@@ -18,44 +18,34 @@ class LoadDownloads extends BaseProcessor
 {
 
     /*
-     * Constructor
+     * Override
      */
 
-    public function __construct($outputData = false, $returnData = false) {
-        // Calling Base' constructor
-        parent::__construct($outputData, $returnData);
-        
-        // Check database
-        if ($this->makeDatabaseConnection()) {
-            // Init user
-            Me::init();
-            
-            // Check if online
-            if (!Me::isLoggedIn() or (Me::isLoggedIn() and Me::isAdmin())) {
-                $this->process();
-            }
-            else {
-                $this->setError();
-            }
-        }
-        else {
-            $this->setError();
-        }
-        
-        // Handle output
-        if ($this->outputData) {
-            $this->outputData();
-        }
-        if ($this->returnData) {
-            return $this->returnData();
-        }
+    protected function checkPermissions() {
+        return $this->requireAdmin();
+    }
+
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
+    }
+
+    /*
+     * Always run the constructor
+     */
+
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*
      * Process the request
      */
     
-    private function process() {
+    public function run() {
         $this->setData('code', 200);
         
         $output = [];
