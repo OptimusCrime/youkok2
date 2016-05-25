@@ -23,19 +23,6 @@ class Wrapper
     }
     
     public function run() {
-        // Set all the headers
-        $headers = $this->container->getHeaders();
-        if (count($headers) > 0) {
-            foreach ($headers as $key => $value) {
-                if ($key == 'status') {
-                    $this->setResponseCode($value);
-                }
-                else {
-                    header($key . ':' . $value);
-                }
-            }
-        }
-
         // Set all sessions
         $sessions = $this->container->getSessions();
         if (count($sessions) > 0) {
@@ -71,6 +58,19 @@ class Wrapper
             if ($this->container->getCookie($key) === null) {
                 // Clear this cookie
                 setcookie($key, null, time() - (60 * 60 * 24), '/');
+            }
+        }
+
+        // Set all the headers
+        $headers = $this->container->getHeaders();
+        if (count($headers) > 0) {
+            foreach ($headers as $key => $value) {
+                if ($key == 'status') {
+                    $this->setResponseCode($value);
+                }
+                else {
+                    header($key . ':' . $value);
+                }
             }
         }
         

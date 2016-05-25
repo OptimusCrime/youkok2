@@ -30,7 +30,7 @@ class MessageManager
         $messages = $app->getSession('youkok2_message');
         
         // Handle priorities
-        if (count($_SESSION['youkok2_message']) > 0 and $prioritise) {
+        if (count($messages) > 0 and $prioritise) {
             // Don't append
             $append = false;
             

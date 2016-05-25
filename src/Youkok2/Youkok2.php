@@ -95,7 +95,7 @@ class Youkok2
         // Set settings and path
         $view->setSettings($settings);
         $view->setPath($path);
-        
+
         // Check if we should run a specific method or just call the regular handler
         if ($view::isProcessor()) {
             $view->execute();

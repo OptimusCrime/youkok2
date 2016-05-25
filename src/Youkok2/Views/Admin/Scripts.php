@@ -11,7 +11,6 @@ namespace Youkok2\Views\Admin;
 
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Database;
-use Youkok2\Utilities\Redirect;
 use Youkok2\Utilities\Utilities;
 
 class Scripts extends AdminBaseView

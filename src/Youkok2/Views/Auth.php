@@ -50,7 +50,7 @@ class Auth extends BaseView
                 }
 
                 // Call method
-                Me::login();
+                Me::login($this->application);
             }
             else {
                 $this->template->assign('SITE_TITLE', 'Logg inn');

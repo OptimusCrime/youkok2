@@ -14,7 +14,7 @@ use Youkok2\Utilities\CsrfManager;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
 use Youkok2\Utilities\MessageManager;
-use Youkok2\Utilities\Redirect;
+use Youkok2\Utilities\TemplateHelper;
 
 class Me
 {
@@ -251,16 +251,16 @@ class Me
                             // Check if anything left
                             if (strlen($clean_referer) > 0 and $clean_referer != 'logg-inn') {
                                 // Refirect to whatever we have left
-                                Redirect::send($clean_referer);
+                                $app->send($clean_referer);
                             }
                             else {
                                 // Send to frontpage
-                                Redirect::send('');
+                                $app->send('');
                             }
                         }
                         else {
                             // Does not have referer
-                            Redirect::send('');
+                            $app->send('');
                         }
                     }
                     else {
@@ -275,7 +275,7 @@ class Me
                         $_SESSION['login_correct_email'] = $row['email'];
                         
                         // Redirect
-                        Redirect::send('logg-inn');
+                        $app->send(TemplateHelper::urlFor('logg-inn'));
                     }
                 }
                 else {
@@ -287,16 +287,14 @@ class Me
                     );
 
                     // Redirect
-                    Redirect::send('logg-inn');
+                    $app->send(TemplateHelper::urlFor('logg-inn'));
                 }
             }
             else {
                 // Not submitted or anything, just redirect
-                Redirect::send('');
+                $app->send('');
             }
         }
-        
-        exit();
     }
     
     /*
@@ -338,7 +336,7 @@ class Me
         }
         else {
             // Simply redirect home
-            Redirect::send('');
+            $app->send('');
         }
 
         // Check if we should redirect the user back to the previous page
@@ -349,16 +347,16 @@ class Me
             // Check if anything left
             if (strlen($clean_referer) > 0) {
                 // Refirect to whatever we have left
-                Redirect::send($clean_referer);
+                $app->send($clean_referer);
             }
             else {
                 // Send to frontpage
-                Redirect::send('');
+                $app->send('');
             }
         }
         else {
             // Does not have referer
-            Redirect::send('');
+            $app->send('');
         }
     }
 
