@@ -18,13 +18,13 @@ use Youkok2\Utilities\Database;
 
 class MostPopularCourses extends ModuleProcessor
 {
-    
+
     /*
      * Constructor
      */
-    
-    public function __construct($method, $settings) {
-        parent::__construct($method, $settings);
+
+    public function __construct($app) {
+        parent::__construct($app);
     }
     
     /*

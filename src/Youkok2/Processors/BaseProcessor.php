@@ -187,7 +187,7 @@ abstract class BaseProcessor extends Processors
         }
         else {
             // Not an application, check if we are calling from CLI
-            if (php_sapi_name() == 'cli') {
+            if (php_sapi_name() == 'cli' && $this->getSetting('output') !== false) {
                 // CLI output using CLImate
                 $climate = new \League\CLImate\CLImate;
                 $climate->json($output_data);

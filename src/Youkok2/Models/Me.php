@@ -173,7 +173,7 @@ class Me
             $app->setCookie('module_settings', json_encode($settings));
         }
         else {
-            self::$user->setModuleSettings($app, json_encode($settings));
+            self::$user->setModuleSettings(json_encode($settings));
         }
     }
     public static function increaseKarma($karma) {

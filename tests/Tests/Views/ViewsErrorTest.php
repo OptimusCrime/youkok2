@@ -20,7 +20,7 @@ class ViewsErrorTest extends \PHPUnit_Framework_TestCase
         $frontpage_view = $frontpage_wrapper->load('');
         $this->assertEquals('Youkok2\Views\Frontpage', get_class($frontpage_view));
         $this->assertEquals(200, $frontpage_wrapper->getStatus());
-        
+
         // Archive (note that this will return 404 because we don't have the actual courses yet)
         $archive_wrapper = new Youkok2();
         $archive_view = $archive_wrapper->load('emner/foobar');
@@ -62,5 +62,17 @@ class ViewsErrorTest extends \PHPUnit_Framework_TestCase
         $profile_view = $profile_wrapper->load('profil/innstillinger');
         $this->assertEquals('Youkok2\Views\Profile', get_class($profile_view));
         $this->assertEquals(403, $profile_wrapper->getStatus());
+
+        // Search
+        $search_wrapper = new Youkok2();
+        $search_view = $search_wrapper->load('sok');
+        $this->assertEquals('Youkok2\Views\Search', get_class($search_view));
+        $this->assertEquals(200, $search_wrapper->getStatus());
+
+        // StaticFiles
+        $staticfiles_wrapper = new Youkok2();
+        $staticfiles_view = $search_wrapper->load('changelog.txt');
+        $this->assertEquals('Youkok2\Views\StaticFiles', get_class($staticfiles_view));
+        $this->assertEquals(200, $staticfiles_wrapper->getStatus());
     }
 }
