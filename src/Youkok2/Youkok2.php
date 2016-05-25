@@ -105,7 +105,7 @@ class Youkok2
         if ($view::isProcessor()) {
             $view->execute();
         }
-        elseif ($class['method'] === null) {
+        elseif (!is_string($class['method'])) {
             $view->run();
         }
         else {
