@@ -65,8 +65,10 @@ class Routes
             ['path' => '/logg-inn', 'method' => 'displayLogIn', 'identifier' => 'auth_login'],
             ['path' => '/logg-ut', 'method' => 'displayLogOut', 'identifier' => 'auth_logout'],
             ['path' => '/registrer', 'method' => 'displayRegister', 'identifier' => 'auth_register'],
-            ['path' => '/glemt-passord', 'method' => 'displayForgottenPassword', 'identifier' => 'auth_forgotten_password'],
-            ['path' => '/nytt-passord', 'method' => 'displayForgottenPasswordNew', 'identifier' => 'auth_new_password'],
+            ['path' => '/glemt-passord', 'method' => 'displayForgottenPassword',
+                'identifier' => 'auth_forgotten_password'],
+            ['path' => '/nytt-passord', 'method' => 'displayForgottenPasswordNew',
+                'identifier' => 'auth_new_password'],
         ],
 
         'Views\Search' => [
@@ -85,16 +87,19 @@ class Routes
             ['path' => '/admin', 'method' => 'displayAdminHome', 'identifier' => 'admin_home'],
         ],
         'Views\Admin\Contribution' => [
-            ['path' => '/admin/bidrag', 'method' => 'displayAdminContributions', 'identifier' => 'admin_contribution'],
+            ['path' => '/admin/bidrag', 'method' => 'displayAdminContributions',
+                'identifier' => 'admin_contribution'],
         ],
         'Views\Admin\Files' => [
             ['path' => '/admin/filer', 'method' => 'displayAdminFiles', 'identifier' => 'admin_files'],
         ],
         'Views\Admin\Statistics' => [
-            ['path' => '/admin/statistikk', 'method' => 'displayAdminStatistics', 'identifier' => 'admin_statistics'],
+            ['path' => '/admin/statistikk', 'method' => 'displayAdminStatistics',
+                'identifier' => 'admin_statistics'],
         ],
         'Views\Admin\Diagnostics' => [
-            ['path' => '/admin/diagnostikk', 'method' => 'displayAdminDiagnostics', 'identifier' => 'admin_diagnostics'],
+            ['path' => '/admin/diagnostikk', 'method' => 'displayAdminDiagnostics',
+                'identifier' => 'admin_diagnostics'],
         ],
         'Views\Admin\Logs' => [
             ['path' => '/admin/logger', 'method' => 'displayAdminLogs', 'identifier' => 'admin_logs'],

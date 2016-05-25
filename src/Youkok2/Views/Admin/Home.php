@@ -48,7 +48,8 @@ class Home extends AdminBaseView
         
         $get_download_pr_day_query = Database::$db->query($get_download_pr_day);
         while ($row = $get_download_pr_day_query->fetch(\PDO::FETCH_ASSOC)) {
-            $download_pr_day .= '<li><strong>' . Utilities::prettifySQLDate($row['date'], false) . '</strong>: ' . number_format($row['num']) . '</li>';
+            $download_pr_day .= '<li><strong>' . Utilities::prettifySQLDate($row['date'], false) . '</strong>: ';
+            $download_pr_day .= number_format($row['num']) . '</li>';
         }
         $this->template->assign('ADMIN_DOWNLOADS_PR_DAY', $download_pr_day);
         

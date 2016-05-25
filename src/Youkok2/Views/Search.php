@@ -153,7 +153,11 @@ class Search extends BaseView
                             foreach ($input_clean as $iv) {
                                 $iv_clean = str_replace('%', '.', $iv);
                                 if (preg_match('/^' . $iv_clean . '/i', $match_names[$i])) {
-                                    $match_names[$i] = preg_replace('/^' . str_replace('%', '(.*)', $iv) . '/i', '<strong>${0}</strong>', $match_names[$i]);
+                                    $match_names[$i] = preg_replace(
+                                        '/^' . str_replace('%', '(.*)', $iv) . '/i',
+                                        '<strong>${0}</strong>',
+                                        $match_names[$i]
+                                    );
                                     break;
                                 }
                             }

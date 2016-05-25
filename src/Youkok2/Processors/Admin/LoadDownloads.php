@@ -64,7 +64,8 @@ class LoadDownloads extends BaseProcessor
         $get_last_downloads  = "SELECT a.id, d.ip, d.downloaded_time, d.agent, d.user" . PHP_EOL;
         $get_last_downloads .= "FROM archive AS a" . PHP_EOL;
         $get_last_downloads .= "LEFT JOIN download AS d ON a.id = d.file" . PHP_EOL;
-        $get_last_downloads .= "WHERE d.downloaded_time >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AND a.is_visible = 1";
+        $get_last_downloads .= "WHERE d.downloaded_time >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY)" . PHP_EOL;
+        $get_last_downloads .= "AND a.is_visible = 1";
         
         $get_last_downloads_query = Database::$db->query($get_last_downloads);
         while ($row = $get_last_downloads_query->fetch(\PDO::FETCH_ASSOC)) {
@@ -83,9 +84,12 @@ class LoadDownloads extends BaseProcessor
                     'download_agent' => $row['agent'],
                     'download_user' => $row['user'],
                 ];
+
+                // Build url
+                $url = 'http://api.ipinfodb.com/v3/ip-city/?key=' . IPINFODB . '&ip=' . $row['ip'] . '&format=json';
                 
                 // Get location
-                $ch = curl_init('http://api.ipinfodb.com/v3/ip-city/?key=d7f600a26086d65ee1417f9b62cc4533b226ca8a157b3e9b249ab3a02ea9cf8f&ip=' . $row['ip'] . '&format=json');
+                $ch = curl_init($url);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 $data = curl_exec($ch);
                 curl_close($ch);

@@ -41,8 +41,19 @@ class Frontpage extends BaseView
         
         // Load default boxes
         $this->template->assign('HOME_NEWEST', Element::getNewest());
-        $this->template->assign('HOME_MOST_POPULAR_ELEMENTS', $this->application->runProcessor('/module/get', ['module' => 1, 'encode' => false])->getData()['data']);
-        $this->template->assign('HOME_MOST_POPULAR_COURSES', $this->application->runProcessor('/module/get', ['module' => 2, 'encode' => false])->getData()['data']);
+
+        // Fetch the most popular elements from processor
+        $this->template->assign(
+            'HOME_MOST_POPULAR_ELEMENTS',
+            $this->application->runProcessor('/module/get', ['module' => 1, 'encode' => false])->getData()['data']
+        );
+
+        // Fetch the most popular courses from processor
+        $this->template->assign(
+            'HOME_MOST_POPULAR_COURSES',
+            $this->application->runProcessor('/module/get', ['module' => 2, 'encode' => false])->getData()['data']
+        );
+
         $this->template->assign('HOME_LAST_VISITED', Element::getLastVisitedElements());
         
         // Check if this user is logged in

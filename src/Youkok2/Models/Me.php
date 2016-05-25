@@ -56,7 +56,8 @@ class Me
                 $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
                 if (count($hash_split) == 2) {
                     // Fetch from database to see if online
-                    $get_current_user  = "SELECT id, email, password, nick, module_settings, last_seen, karma, karma_pending, banned" . PHP_EOL;
+                    $get_current_user  = "SELECT id, email, password, nick, module_settings, last_seen, " . PHP_EOL;
+                    $get_current_user .= "karma, karma_pending, banned" . PHP_EOL;
                     $get_current_user .= "FROM user " . PHP_EOL;
                     $get_current_user .= "WHERE email = :email" . PHP_EOL;
                     $get_current_user .= "AND password = :password";
@@ -103,7 +104,8 @@ class Me
         else {
             // Check if cookie is set
 
-            if ($app->getCookie('module_settings') !== null and strlen($app->getCookie('module_settings') !== null) > 0) {
+            if ($app->getCookie('module_settings') !== null and
+                strlen($app->getCookie('module_settings') !== null) > 0) {
                 $settings_data = $app->getCookie('module_settings') !== null;
             }
         }
@@ -263,7 +265,11 @@ class Me
                     }
                     else {
                         // Message
-                        MessageManager::addMessage($app, 'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+                        MessageManager::addMessage(
+                            $app,
+                            'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.',
+                            'danger'
+                        );
                         
                         // Set session
                         $_SESSION['login_correct_email'] = $row['email'];
@@ -274,7 +280,11 @@ class Me
                 }
                 else {
                     // Message
-                    MessageManager::addMessage($app, 'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.', 'danger');
+                    MessageManager::addMessage(
+                        $app,
+                        'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.',
+                        'danger'
+                    );
 
                     // Redirect
                     Redirect::send('logg-inn');

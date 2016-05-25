@@ -45,7 +45,8 @@ class Download extends BaseView
             if (!$element->isDirectory()) {
                 if (file_exists($file_location)) {
                     // Check if wget
-                    if (!isset($_SERVER['HTTP_USER_AGENT']) or strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'wget') !== false) {
+                    if (!isset($_SERVER['HTTP_USER_AGENT']) or
+                        strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'wget') !== false) {
                         // Wget attempt, serve false file
                         $this->loadFileDownload(BASE_PATH . '/files/wget_file.txt', $element->getName());
                         exit;

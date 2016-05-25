@@ -9,8 +9,6 @@
 
 namespace Youkok2\Utilities\PDO2;
 
-require_once dirname(__FILE__) . '/PDOStatement2.php';
-
 class PDO2 extends \PDO
 {
     
@@ -35,7 +33,9 @@ class PDO2 extends \PDO
             $this->queryLog = [];
             
             // Set logging to this query log
-            $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, ['Youkok2\\Utilities\\PDO2\\PDOStatement2', [$this, &$this->queryLog]]);
+            $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, ['Youkok2\\Utilities\\PDO2\\PDOStatement2', [
+                $this,
+                &$this->queryLog]]);
         }
     }
     

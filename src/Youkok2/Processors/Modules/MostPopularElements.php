@@ -44,7 +44,8 @@ class MostPopularElements extends ModuleProcessor
         
         // Get the correct limit
         $limit = 15;
-        if ($this->getSetting('limit') !== null and !is_array($this->getSetting('limit')) and is_numeric($this->getSetting('limit'))) {
+        if ($this->getSetting('limit') !== null and !is_array($this->getSetting('limit')) and
+            is_numeric($this->getSetting('limit'))) {
             $limit = $this->getSetting('limit');
         }
         

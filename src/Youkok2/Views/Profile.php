@@ -100,9 +100,13 @@ class Profile extends BaseView
         if (isset($_POST['forgotten-password-new-form-oldpassword'])
             and isset($_POST['forgotten-password-new-form-password1'])
             and isset($_POST['forgotten-password-new-form-password2'])
-            and ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2'])) {
+            and ($_POST['forgotten-password-new-form-password1'] ==
+                $_POST['forgotten-password-new-form-password2'])) {
             // Validate old password
-            if (password_verify($_POST['forgotten-password-new-form-oldpassword'], Utilities::reverseFuckup(Me::getPassword()))) {
+            if (password_verify(
+                $_POST['forgotten-password-new-form-oldpassword'],
+                Utilities::reverseFuckup(Me::getPassword())
+            )) {
                 // New hash
                 $hash_salt = Utilities::generateSalt();
                 $hash = Utilities::hashPassword($_POST['forgotten-password-new-form-password1'], $hash_salt);
@@ -130,7 +134,9 @@ class Profile extends BaseView
             }
             else {
                 // Add message
-                MessageManager::addMessage($this->application, 'Passordet du oppga som ditt gamle passord er ikke korrekt eller de nye passordene matchet ikke. Prøv igjen.', 'danger');
+                $message  = 'Passordet du oppga som ditt gamle passord er ikke korrekt eller de ';
+                $message .= 'nye passordene matchet ikke. Prøv igjen.';
+                MessageManager::addMessage($this->application, $message, 'danger');
 
                 // Redirect
                 $this->application->send(TemplateHelper::url_for('profile_settings'));
@@ -180,7 +186,8 @@ class Profile extends BaseView
             }
 
             // Check if we should update nick
-            if (($_POST['register-form-nick'] == '' and Me::getNick() != '<em>Anonym</em>') or ($_POST['register-form-nick'] != Me::getNickReal())) {
+            if (($_POST['register-form-nick'] == '' and Me::getNick() != '<em>Anonym</em>') or
+                ($_POST['register-form-nick'] != Me::getNickReal())) {
                 Me::setNick($_POST['register-form-nick']);
             }
 

@@ -91,8 +91,12 @@ class Archive extends BaseView
         // Update last visited
         $this->updateLastVisited($element_root);
         
+        // Construct the site direction
+        $site_description  = $element_root->getCourseCode() . ' - ' . $element_root->getCourseName() . ': Øvinger, ';
+        $site_description .= 'løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste ';
+        $site_description .= 'kokeboka på nettet.';
+
         // Set the site description
-        $site_description = $element_root->getCourseCode() . ' - ' . $element_root->getCourseName() . ': Øvinger, løsningsforslag, gamle eksamensoppgaver og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
         $this->template->assign('SITE_DESCRPTION', $site_description);
         
         // Check if archive is empty

@@ -101,7 +101,13 @@ class Auth extends BaseView
         }
         else {
             // Check all fields
-            $fields = ['register-form-email', 'register-form-nick', 'register-form-password1', 'register-form-password2'];
+            $fields = [
+                'register-form-email',
+                'register-form-nick',
+                'register-form-password1',
+                'register-form-password2'
+            ];
+
             $err = false;
             foreach ($fields as $v) {
                 if (!isset($_POST[$v]) or ($v != 'register-form-nick' and strlen($_POST[$v]) < 7)) {
@@ -119,7 +125,8 @@ class Auth extends BaseView
                 $email_check = $this->runProcessor('register/email', false, true);
                 
                 // Check if valid email
-                if (isset($email_check['code']) and $email_check['code'] == 200 and filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) == true) {
+                if (isset($email_check['code']) and $email_check['code'] == 200 and
+                    filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) == true) {
                     // Check passwords
                     if ($_POST['register-form-password1'] == $_POST['register-form-password2']) {
                         // Match, create new password
@@ -205,7 +212,11 @@ class Auth extends BaseView
             // Check result
             if (isset($row['id'])) {
                 // Create hash
-                $hash = Utilities::hashPassword(md5(rand(0, 100000) . md5(time()) . $row['id']), sha1(rand(0, 1000)), false);
+                $hash = Utilities::hashPassword(
+                    md5(rand(0, 100000) . md5(time()) . $row['id']),
+                    sha1(rand(0, 1000)),
+                    false
+                );
 
                 // Set data
                 $change_password = new ChangePassword();
@@ -231,15 +242,22 @@ class Auth extends BaseView
                 $message_keys = [
                     '{{SITE_URL}}' => URL_FULL,
                     '{{PATH}}' => TemplateHelper::urlFor('auth_new_password'),
-                    '{{HASH}}' => $hash];
+                    '{{HASH}}' => $hash
+                ];
                 $mail->Body = str_replace(array_keys($message_keys), $message_keys, $message);
                 $mail->send();
 
                 // Add message
-                MessageManager::addMessage($this->application, 'Det er blitt sendt en e-post til deg. Denne inneholder en link for å velge nytt passord. Denne linken er gyldig i 24 timer.', 'success');
+                $message  = 'Det er blitt sendt en e-post til deg. Denne inneholder en link for ';
+                $message .= 'å velge nytt passord. Denne linken er gyldig i 24 timer.';
+                MessageManager::addMessage($this->application, $message, 'success');
             }
             else {
-                MessageManager::addMessage($this->application, 'E-posten du oppga ble ikke funnet i systemet. Prøv igjen.', 'danger');
+                MessageManager::addMessage(
+                    $this->application,
+                    'E-posten du oppga ble ikke funnet i systemet. Prøv igjen.',
+                    'danger'
+                );
             }
 
             // Redirect back to form
@@ -279,7 +297,8 @@ class Auth extends BaseView
             }
             else {
                 // Check if the two passwords are identical
-                if ($_POST['forgotten-password-new-form-password1'] == $_POST['forgotten-password-new-form-password2']) {
+                if ($_POST['forgotten-password-new-form-password1'] ==
+                    $_POST['forgotten-password-new-form-password2']) {
                     // Get the correct user object
                     $user = new User($change_password->getUser());
                     

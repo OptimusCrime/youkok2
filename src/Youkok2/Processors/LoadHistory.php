@@ -83,7 +83,8 @@ class LoadHistory extends BaseProcessor
                     $history = new History($row);
                     
                     // Update the history text
-                    $history->setHistoryText(str_replace('%u', (($row['nick'] == null or strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']), $row['history_text']));
+                    $history->setHistoryText(str_replace('%u', (($row['nick'] == null or
+                        strlen($row['nick']) == 0) ? '<em>Anonym</em>' : $row['nick']), $row['history_text']));
                     
                     // Add to collection
                     $collection[] = $history;

@@ -108,7 +108,8 @@ class BaseView
         // Check if we're offline
         if (defined('AVAILABLE') and !AVAILABLE) {
             // We're offline, check if we should be allowed still
-            if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
+            if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and
+                    AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
                 // Return error page
                 $this->application->load(new ClassParser('Views\Error'), [
                     'kill' => true,
@@ -174,8 +175,14 @@ class BaseView
         $this->template->assign('USER_IS_ADMIN', Me::isAdmin());
         $this->template->assign('USER_IS_BANNED', Me::isBanned());
         $this->template->assign('USER_CAN_CONTRIBUTE', Me::canContribute());
-        $this->template->assign('USER_MOST_POPULAR_ELEMENT', Me::getModuleSettings($this->application, 'module1_delta'));
-        $this->template->assign('USER_MOST_POPULAR_COURSES', Me::getModuleSettings($this->application, 'module2_delta'));
+        $this->template->assign(
+            'USER_MOST_POPULAR_ELEMENT',
+            Me::getModuleSettings($this->application, 'module1_delta')
+        );
+        $this->template->assign(
+            'USER_MOST_POPULAR_COURSES',
+            Me::getModuleSettings($this->application, 'module2_delta')
+        );
         
         // Check if we should validate login
         if (isset($_POST['login-email'])) {

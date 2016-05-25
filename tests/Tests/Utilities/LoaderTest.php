@@ -9,9 +9,9 @@
 
 namespace Youkok2\Tests\Utilities;
 
-use \Youkok2\Utilities\Loader as Loader;
+use Youkok2\Utilities\Loader;
 
-class LoaderTest extends PHPUnit_Framework_TestCase
+class LoaderTest extends \PHPUnit_Framework_TestCase
 {
     
     /*

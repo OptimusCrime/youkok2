@@ -100,7 +100,8 @@ class LoadExams extends BaseProcessor
                         // Loop content
                         foreach ($json_result['course']['assessment'] as $exam_data) {
                             // Check if current node is written exam
-                            if (isset($exam_data['code']) and isset($exam_data['date']) and isset($exam_data['appearanceTime'])) {
+                            if (isset($exam_data['code']) and isset($exam_data['date']) and
+                                isset($exam_data['appearanceTime'])) {
                                 // Split data
                                 $date_split = explode('-', $exam_data['date']);
                                 $time_split = explode(':', $exam_data['appearanceTime']);
@@ -133,7 +134,8 @@ class LoadExams extends BaseProcessor
                             
                             // Check if we should output buffer
                             if ($this->getSetting('output')) {
-                                echo '<p style="color: green;">Updated ' . $element->getCourseCode() . ', exam = ' . $element->getExam() . '</p>';
+                                echo '<p style="color: green;">Updated ' . $element->getCourseCode();
+                                echo ', exam = ' . $element->getExam() . '</p>';
                             }
                             
                             // Increase counter
@@ -141,19 +143,22 @@ class LoadExams extends BaseProcessor
                         }
                         else {
                             if ($this->getSetting('output')) {
-                                echo '<p style="color: red;">Could not find exam data for ' . $element->getCourseCode() . '</p>';
+                                echo '<p style="color: red;">Could not find exam data for ';
+                                echo $element->getCourseCode() . '</p>';
                             }
                         }
                     }
                     else {
                         if ($this->getSetting('output')) {
-                            echo '<p style="color: red;">Could not find exam data for ' . $element->getCourseCode() . '</p>';
+                            echo '<p style="color: red;">Could not find exam data for ';
+                            echo $element->getCourseCode() . '</p>';
                         }
                     }
                 }
                 else {
                     if ($this->getSetting('output')) {
-                        echo '<p style="color: red;">Got http code ' . $httpcode . ' for '  . $element->getCourseCode() . '</p>';
+                        echo '<p style="color: red;">Got http code ' . $httpcode . ' for ';
+                        echo $element->getCourseCode() . '</p>';
                     }
                 }
             }
