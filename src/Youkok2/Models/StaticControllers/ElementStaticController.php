@@ -53,7 +53,7 @@ class ElementStaticController
     
     public static function getNewest($limit = 15) {
         // For storing the collection
-        $collection = '';
+        $collection = [];
         
         // Loading newest files from the system
         $get_newest  = "SELECT id" . PHP_EOL;
@@ -80,7 +80,7 @@ class ElementStaticController
     
     public static function getLastVisitedElements($limit = 15) {
         // For storing the collection
-        $collection = '';
+        $collection = [];
         
         // Loading last visited elements from the system
         $get_last_visited  = "SELECT id" . PHP_EOL;

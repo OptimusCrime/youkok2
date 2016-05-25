@@ -54,7 +54,7 @@ class LoadDownloads extends BaseProcessor
         $get_last_downloads  = "SELECT a.id, d.ip, d.downloaded_time, d.agent, d.user" . PHP_EOL;
         $get_last_downloads .= "FROM archive AS a" . PHP_EOL;
         $get_last_downloads .= "LEFT JOIN download AS d ON a.id = d.file" . PHP_EOL;
-        $get_last_downloads .= "WHERE d.downloaded_time >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY)" . PHP_EOL;
+        $get_last_downloads .= "WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24))" . PHP_EOL;
         $get_last_downloads .= "AND a.is_visible = 1";
         
         $get_last_downloads_query = Database::$db->query($get_last_downloads);

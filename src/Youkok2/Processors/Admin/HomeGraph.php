@@ -72,7 +72,7 @@ class HomeGraph extends BaseProcessor
         // The query
         $get_all_downloads  = "SELECT COUNT(id) AS 'downloads', downloaded_time" . PHP_EOL;
         $get_all_downloads .= "FROM download" . PHP_EOL;
-        $get_all_downloads .= "WHERE downloaded_time >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 MONTH)" . PHP_EOL;
+        $get_all_downloads .= "WHERE downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 30))" . PHP_EOL;
         $get_all_downloads .= "GROUP BY TO_DAYS(downloaded_time)" . PHP_EOL;
         $get_all_downloads .= "ORDER BY downloaded_time ASC" . PHP_EOL;
         

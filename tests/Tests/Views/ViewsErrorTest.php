@@ -16,11 +16,11 @@ class ViewsErrorTest extends \PHPUnit_Framework_TestCase
 {
     public function testViews() {
         // Frontpage
-        /*$frontpage_wrapper = new Youkok2();
+        $frontpage_wrapper = new Youkok2();
         $frontpage_view = $frontpage_wrapper->load('');
         $this->assertEquals('Youkok2\Views\Frontpage', get_class($frontpage_view));
         $this->assertEquals(200, $frontpage_wrapper->getStatus());
-        */
+        
         // Archive (note that this will return 404 because we don't have the actual courses yet)
         $archive_wrapper = new Youkok2();
         $archive_view = $archive_wrapper->load('emner/foobar');
