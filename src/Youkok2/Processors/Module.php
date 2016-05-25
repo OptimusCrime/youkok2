@@ -23,8 +23,8 @@ class Module extends BaseProcessor
      */
     
     private static $modules = [
-        '\Youkok2\Processors\Modules\MostPopularElements' => 1,
-        '\Youkok2\Processors\Modules\MostPopularCourses' => 2,
+        'Processors\Modules\MostPopularElements' => 1,
+        'Processors\Modules\MostPopularCourses' => 2,
     ];
     
     /*
@@ -134,7 +134,7 @@ class Module extends BaseProcessor
         // Check if the current module exists
         if ($this->module != null) {
             $module_instance = $this->application->runProcessor(
-                new ClassParser('Processors\Modules\MostPopularElements', 'get'),
+                new ClassParser($this->module, 'get'),
                 $settings
             );
             
@@ -165,7 +165,7 @@ class Module extends BaseProcessor
         if ($this->module != null) {
             // Create a new instance of the module
             $module_instance = $this->application->runProcessor(
-                new ClassParser('Processors\Modules\MostPopularElements', 'update'),
+                new ClassParser($this->module, 'update'),
                 $settings
             );
             
