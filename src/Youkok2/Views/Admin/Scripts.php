@@ -35,8 +35,10 @@ class Scripts extends AdminBaseView
     /*
      * Display
      */
-    
-    public function displayAdminScripts() {
+
+    public function run() {
+        parent::run();
+
         // Display
         $this->displayAndCleanup('admin/empty.tpl');
     }

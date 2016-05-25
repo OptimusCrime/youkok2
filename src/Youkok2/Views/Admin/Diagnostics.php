@@ -35,8 +35,10 @@ class Diagnostics extends AdminBaseView
     /*
      * Display
      */
-    
-    public function displayAdminDiagnostics() {
+
+    public function run() {
+        parent::run();
+
         // Display
         $this->displayAndCleanup('admin/empty.tpl');
     }

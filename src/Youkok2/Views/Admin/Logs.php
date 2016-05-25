@@ -35,8 +35,10 @@ class Logs extends AdminBaseView
     /*
      * Display
      */
-    
-    public function displayAdminLogs() {
+
+    public function run() {
+        parent::run();
+
         // Display
         $this->displayAndCleanup('admin/empty.tpl');
     }

@@ -43,8 +43,10 @@ class Contribution extends AdminBaseView
     /*
      * Display
      */
-    
-    public function displayAdminContributions() {
+
+    public function run() {
+        parent::run();
+
         // Display
         $this->displayAndCleanup('admin/empty.tpl');
     }

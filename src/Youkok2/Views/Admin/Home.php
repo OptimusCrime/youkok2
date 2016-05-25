@@ -35,8 +35,10 @@ class Home extends AdminBaseView
     /*
      * Displaying various admin stuff
     */
-    
-    public function displayAdminHome() {
+
+    public function run() {
+        parent::run();
+
         // Get downloads pr. day
         $download_pr_day = '';
         $get_download_pr_day  = "SELECT downloaded_time AS 'date', COUNT(id) AS 'num'" . PHP_EOL;

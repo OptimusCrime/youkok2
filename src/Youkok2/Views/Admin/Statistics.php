@@ -35,8 +35,10 @@ class Statistics extends AdminBaseView
     /*
      * Display
      */
-    
-    public function displayAdminStatistics() {
+
+    public function run() {
+        parent::run();
+
         // Display
         $this->displayAndCleanup('admin/empty.tpl');
     }

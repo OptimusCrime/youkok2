@@ -84,28 +84,25 @@ class Routes
          */
         
         'Views\Admin\Home' => [
-            ['path' => '/admin', 'method' => 'displayAdminHome', 'identifier' => 'admin_home'],
+            ['path' => '/admin', 'identifier' => 'admin_home'],
         ],
         'Views\Admin\Contribution' => [
-            ['path' => '/admin/bidrag', 'method' => 'displayAdminContributions',
-                'identifier' => 'admin_contribution'],
+            ['path' => '/admin/bidrag', 'identifier' => 'admin_contribution'],
         ],
         'Views\Admin\Files' => [
-            ['path' => '/admin/filer', 'method' => 'displayAdminFiles', 'identifier' => 'admin_files'],
+            ['path' => '/admin/filer', 'identifier' => 'admin_files'],
         ],
         'Views\Admin\Statistics' => [
-            ['path' => '/admin/statistikk', 'method' => 'displayAdminStatistics',
-                'identifier' => 'admin_statistics'],
+            ['path' => '/admin/statistikk', 'identifier' => 'admin_statistics'],
         ],
         'Views\Admin\Diagnostics' => [
-            ['path' => '/admin/diagnostikk', 'method' => 'displayAdminDiagnostics',
-                'identifier' => 'admin_diagnostics'],
+            ['path' => '/admin/diagnostikk', 'identifier' => 'admin_diagnostics'],
         ],
         'Views\Admin\Logs' => [
-            ['path' => '/admin/logger', 'method' => 'displayAdminLogs', 'identifier' => 'admin_logs'],
+            ['path' => '/admin/logger', 'identifier' => 'admin_logs'],
         ],
         'Views\Admin\Scripts' => [
-            ['path' => '/admin/scripts', 'method' => 'displayAdminScripts', 'identifier' => 'admin_scripts'],
+            ['path' => '/admin/scripts', 'identifier' => 'admin_scripts'],
         ],
         
         /*

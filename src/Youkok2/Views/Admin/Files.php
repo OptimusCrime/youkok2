@@ -35,8 +35,10 @@ class Files extends AdminBaseView
     /*
      * Display
      */
-    
-    public function displayAdminFiles() {
+
+    public function run() {
+        parent::run();
+
         // Display
         $this->displayAndCleanup('admin/empty.tpl');
     }

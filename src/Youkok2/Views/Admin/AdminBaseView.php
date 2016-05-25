@@ -60,6 +60,26 @@ abstract class AdminBaseView extends BaseView
     public function __construct($app) {
         parent::__construct($app);
     }
+
+    public function run() {
+        if (Me::isAdmin()) {
+            // Set menu
+            $this->template->assign('HEADER_MENU', null);
+
+            // Set some admin things
+            $this->template->assign('ADMIN_HEADING', $this->adminHeading);
+
+            // Apply admin related stuff to site data
+            $this->addSiteData('view', $this->adminIdentifier);
+            $this->addSiteData('admin_view', true);
+
+            // Create sidemenu
+            $this->createSidemenu();
+        }
+        else {
+            $this->application->send('');
+        }
+    }
     
     /*
      * Method that creates the side menu
@@ -96,7 +116,7 @@ abstract class AdminBaseView extends BaseView
             }
             
             if ($class !== null) {
-                $menu_item['extra'] = call_user_func('Youkok2\Views\\' . $class . '::adminMenuContent');
+                $menu_item['extra'] = call_user_func('Youkok2\\' . $class . '::adminMenuContent');
             }
             
             // Append the menu item
