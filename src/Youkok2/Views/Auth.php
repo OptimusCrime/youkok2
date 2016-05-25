@@ -179,7 +179,7 @@ class Auth extends BaseView
                 MessageManager::addMessage($this->application, 'Velkommen til Youkok2!', 'success');
 
                 // Log in (only session)
-                Me::setLogin($hash, $_POST['register-form-email']);
+                Me::setLogin($this->application, $hash, $_POST['register-form-email']);
 
                 $this->application->send('');
             }
@@ -317,7 +317,7 @@ class Auth extends BaseView
                     MessageManager::addMessage($this->application, 'Passordet er endret!', 'success');
 
                     // Log in (only session)
-                    Me::setLogin($hash, $user->getEmail());
+                    Me::setLogin($this->application, $hash, $user->getEmail());
 
                     $this->application->send('');
                 }

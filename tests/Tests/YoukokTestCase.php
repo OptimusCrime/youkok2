@@ -9,9 +9,20 @@
 
 namespace Youkok2\Tests;
 
+use Youkok2\Utilities\Database;
+
 class YoukokTestCase extends \PHPUnit_Framework_TestCase
 {
-    public static function setUpBeforeClass() {
-        
+    protected static $doTeardown = false;
+
+    public static function tearDownAfterClass() {
+        if (self::$doTeardown) {
+            // Construct query
+            $query  = "DELETE FROM `archive`;DELETE FROM `changepassword`;DELETE FROM `download`;";
+            $query .= "DELETE FROM `favorite`;DELETE FROM `karma`;DELETE FROM `message`;DELETE FROM `user`";
+
+            // Execute query
+            Database::$db->exec($query);
+        }
     }
 }

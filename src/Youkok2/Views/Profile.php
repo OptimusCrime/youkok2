@@ -127,7 +127,7 @@ class Profile extends BaseView
                 }
 
                 // Set the login
-                Me::setLogin($hash, Me::getEmail(), $set_login_cookie);
+                Me::setLogin($this->application, $hash, Me::getEmail(), $set_login_cookie);
 
                 // Do the redirect
                 $this->application->send(TemplateHelper::url_for('profile_settings'));
@@ -182,7 +182,7 @@ class Profile extends BaseView
                 $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $_SESSION['youkok2']);
 
                 // Set the login
-                Me::setLogin($hash_split[1], $_POST['register-form-email'], $set_login_cookie);
+                Me::setLogin($this->application, $hash_split[1], $_POST['register-form-email'], $set_login_cookie);
             }
 
             // Check if we should update nick

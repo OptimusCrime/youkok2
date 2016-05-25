@@ -57,7 +57,6 @@ spl_autoload_register(function ($class) {
 
         // Concatinate the path and the class name + namespace
         $file = $v['path'] . str_replace('\\', '/', $relative_class) . '.php';
-        echo $file . PHP_EOL;
 
         // Check if the file exists
         if (file_exists($file)) {

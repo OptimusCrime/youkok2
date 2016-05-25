@@ -301,21 +301,27 @@ class Me
      * Set the login information
      */
     
-    public static function setLogin($hash, $email, $cookie = false) {
+    public static function setLogin($app, $hash, $email, $cookie = false) {
         // Remove old login (just in case)
-        unset($_SESSION['youkok2']);
+        $app->clearSession('youkok2');
         
         // Unset the cookie
-        setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+        $app->clearCookie('youkok2');
         
-        // Set new login
-        $strg = $email . 'asdkashdsajheeeeehehdffhaaaewwaddaaawww' . $hash;
+        // Generate the new login token
+        $strg = self::generateLoginString($hash, $email);
+
+        // Set the new login details
         if ($cookie) {
-            setcookie('youkok2', $strg, time() + (60 * 60 * 24 * 31), '/');
+            $app->setCookie('youkok2', $strg);
         }
         else {
-            $_SESSION['youkok2'] = $strg;
+            $app->setSession('youkok2', $strg);
         }
+    }
+
+    public static function generateLoginString($hash, $email) {
+        return $email . 'asdkashdsajheeeeehehdffhaaaewwaddaaawww' . $hash;
     }
 
     /*
