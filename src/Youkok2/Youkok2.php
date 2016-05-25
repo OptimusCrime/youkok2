@@ -58,6 +58,11 @@ class Youkok2
     public function load($target, $settings = []) {
         // Set the default path
         $path = null;
+
+        // Translate null to empty array for settings
+        if ($settings === null) {
+            $settings = [];
+        }
         
         // Check if we are parsing a query or a class
         if (gettype($target) === 'object' and get_class($target) === 'Youkok2\Utilities\ClassParser') {
@@ -106,8 +111,15 @@ class Youkok2
         else {
             $view->$class['method']();
         }
-        
-        return $view;
+
+        // Check if we should overwrite our view before returning it
+        if ($view->getSetting('overwrite') === null || $view->getSetting('overwrite') === false) {
+            // Do not overwrite, simply return our view
+            return $view;
+        }
+
+        // Overwrite the view, return the newly requested view instead
+        return $this->load($view->getSetting('overwrite_target'), $view->getSetting('overwrite_settings'));
     }
     
     /*
@@ -124,8 +136,13 @@ class Youkok2
         return $this->load($target, $settings);
     }
     
-    public function send($target, $external = false) {
+    public function send($target, $external = false, $code = null) {
         $this->headers['location'] = (!$external ? URL_RELATIVE : '') . $target;
+
+        // Check if we should set status code too
+        if ($code !== null) {
+            $this->setStatus($code);
+        }
     }
     
     /*

@@ -98,8 +98,12 @@ class Database
      */
     
     public static function getProfilingDuration() {
+        // Don't run this for tests
+        if (DATABASE_ADAPTER == 'sqlite') {
+            return 0;
+        }
+
         $sum = 0;
-        
         $get_profiles_query = self::$db->query('SHOW profiles');
         while ($row = $get_profiles_query->fetch(\PDO::FETCH_ASSOC)) {
             $sum += $row['Duration'];
@@ -113,6 +117,11 @@ class Database
      */
     
     public static function getProfilingData() {
+        // Don't run this for tests
+        if (DATABASE_ADAPTER == 'sqlite') {
+            return 0;
+        }
+        
         $data = [];
         
         $get_profiles_query = self::$db->query('SHOW profiles');

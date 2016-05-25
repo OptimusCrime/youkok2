@@ -44,6 +44,9 @@ class Error extends BaseView
             $this->application->setBody($this->template->fetch('error_unavailable.tpl'));
         }
         else {
+            // Set error code
+            $this->application->setStatus(500);
+
             // Some other error
             $this->template->assign('SITE_TITLE', 'Noe gikk galt');
             $this->application->setBody($this->template->fetch('error_generic.tpl'));

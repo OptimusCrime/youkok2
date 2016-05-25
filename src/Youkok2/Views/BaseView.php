@@ -133,14 +133,18 @@ class BaseView
                 // Set db to null
                 $this->db = null;
 
-                // Return error page
-                $this->application->load(new ClassParser('Views\Error'), [
+                // Tell the app to overwrite our current view
+                $this->addSetting('overwrite', true);
+
+                // Define what to run next
+                $this->addSetting('overwrite_target', new ClassParser('Views\Error'));
+                $this->addSetting('overwrite_settings', [
                     'kill' => true,
                     'reason' => 'db'
                 ]);
                 
                 // Kill this views
-                $this->settings['kill'] = true;
+                $this->addSetting('kill', true);
                 
                 // Return to avoid doing anything more
                 return;
@@ -281,11 +285,15 @@ class BaseView
      */
     
     protected function display404() {
-        // Load the NotFound class
-        $this->application->load(new ClassParser('Views\NotFound'), []);
-        
+
+        // Tell the app to overwrite our current view
+        $this->addSetting('overwrite', true);
+
+        // Define what to run next
+        $this->addSetting('overwrite_target', new ClassParser('Views\NotFound'));
+
         // Kill this views
-        $this->settings['kill'] = true;
+        $this->addSetting('kill', true);
     }
     
     /*
@@ -315,12 +323,12 @@ class BaseView
     public function setSettings($settings) {
         $this->settings = $settings;
     }
-    
-    public function setPath($path) {
-        $this->path = $path;
+
+    public function addSetting($key, $value) {
+        $this->settings[$key] = $value;
     }
     
-    protected function getSetting($key) {
+    public function getSetting($key) {
         if (isset($this->settings[$key])) {
             return $this->settings[$key];
         }
@@ -329,5 +337,9 @@ class BaseView
     
     public function getSettings() {
         return $this->settings;
+    }
+
+    public function setPath($path) {
+        $this->path = $path;
     }
 }

@@ -30,7 +30,7 @@ class Profile extends BaseView
 
         // Make sure user us logged in
         if (!Me::isLoggedIn()) {
-            $this->application->send('');
+            $this->application->send('', false, 403);
         }
     }
     
