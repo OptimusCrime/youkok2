@@ -105,11 +105,11 @@ class Youkok2
         if ($view::isProcessor()) {
             $view->execute();
         }
-        elseif (!is_string($class['method'])) {
+        elseif ($class['method'] === null) {
             $view->run();
         }
         else {
-            $view->$class['method']();
+            $view->{$class['method']}();
         }
 
         // Check if we should overwrite our view before returning it
