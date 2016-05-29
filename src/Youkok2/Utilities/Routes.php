@@ -202,8 +202,8 @@ class Routes
      */
     
     private static $redirects = [
-        '/kokeboka/emner*' => '/emner*',
-        '/kokeboka*' => '/emner*',
+        'kokeboka/emner*' => 'emner*',
+        'kokeboka*' => 'emner*',
     ];
     
     /*

@@ -123,4 +123,24 @@ class LoaderTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertEquals('\Youkok2\Processors\Tasks\ClearCache', $loader1['view']);
         $this->assertEquals('\Youkok2\Processors\NotFound', $loader2['view']);
     }
+
+    /**
+     * Test redirect method
+     */
+
+    public function testLoaderRedirect() {
+        // Try some paths
+        $loader1 = Loader::getClass('kokeboka/foo');
+        $loader2 = Loader::getClass('kokeboka/emner/foo');
+
+        // Test the first path
+        $this->assertNull($loader1['view']);
+        $this->assertNull($loader1['method']);
+        $this->assertStringEndsWith('/emner/foo', $loader1['redirect']);
+
+        // Test the first path
+        $this->assertNull($loader2['view']);
+        $this->assertNull($loader2['method']);
+        $this->assertStringEndsWith('/emner/foo', $loader2['redirect']);
+    }
 }
