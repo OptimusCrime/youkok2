@@ -28,6 +28,7 @@ class YoukokTestCase extends \PHPUnit_Framework_TestCase
     }
 
     public static function setUpBeforeClass() {
+        // Clear cache
         $dir = CACHE_PATH;
         $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
@@ -44,5 +45,10 @@ class YoukokTestCase extends \PHPUnit_Framework_TestCase
         // Recreate directories
         @mkdir(CACHE_PATH);
         @mkdir(CACHE_PATH . '/youkok/');
+
+        // Check if we need to reconnect to the database
+        if (Database::$db === null) {
+            Database::connect();
+        }
     }
 }
