@@ -37,7 +37,7 @@ class ViewFrontpageTest extends \Youkok2\Tests\YoukokTestCase
         $user = new User();
         $user->setEmail($email);
         $user->setPassword($hash);
-        $user->save();
+        $user_save = $user->save();
 
         // Create the wrapper
         $frontpage_wrapper = new Youkok2();
@@ -50,6 +50,10 @@ class ViewFrontpageTest extends \Youkok2\Tests\YoukokTestCase
         $frontpage_wrapper->load('', [
             'close_db' => false
         ]);
+
+        // Assert things
+        $this->assertEquals(true, $user_save);
+        $this->assertNull($user->getLastError());
         $this->assertEquals(200, $frontpage_wrapper->getStatus());
     }
 }

@@ -22,6 +22,7 @@ abstract class BaseController
     protected $model;
     private $class;
     private $cacheKey;
+    private $errors;
 
     // Construct
     public function __construct($class, $model) {
@@ -33,6 +34,9 @@ abstract class BaseController
 
         // Get schema
         $this->schema = $model->getSchema();
+
+        // Set errors to be empty
+        $this->errors = [];
 
         // Get cachekey
         $this->cacheKey = get_class_vars(get_class($this->class))['cacheKey'];
@@ -224,15 +228,25 @@ abstract class BaseController
         }
 
         // Build query string
-        $query_string  = "INSERT INTO `" . $this->schema['meta']['table'];
-        $query_string .= "` (" . implode(', ', $attributes_arr) . ")" . PHP_EOL;
-        $query_string .= "VALUES (" . implode(', ', $bindings_arr) . ")";
-        
-        $result = Database::$db->prepare($query_string);
-        $result->execute($values_arr);
-        
-        // Set the ID
-        call_user_func_array([$this->model, 'setId'], [Database::$db->lastInsertId()]);
+        try {
+            $query_string  = "INSERT INTO `" . $this->schema['meta']['table'];
+            $query_string .= "` (" . implode(', ', $attributes_arr) . ")" . PHP_EOL;
+            $query_string .= "VALUES (" . implode(', ', $bindings_arr) . ")";
+
+            $result = Database::$db->prepare($query_string);
+            $result->execute($values_arr);
+
+            // Set the ID
+            call_user_func_array([$this->model, 'setId'], [Database::$db->lastInsertId()]);
+            
+            return true;
+        }
+        catch (\PDOException $e) {
+            $this->errors[] = $e->getMessage();
+
+            return false;
+        }
+
     }
     
     /*
@@ -304,5 +318,16 @@ abstract class BaseController
         
         $result = Database::$db->prepare($query_string);
         $result->execute($values_arr);
+    }
+
+    public function getLastError() {
+        if (count($this->errors) == 0) {
+            return null;
+        }
+        return $this->errors[count($this->errors) - 1];
+    }
+
+    public function getErrors() {
+        return $this->errors;
     }
 }

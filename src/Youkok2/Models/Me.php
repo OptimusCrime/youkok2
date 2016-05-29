@@ -22,7 +22,8 @@ class Me
     /*
      * Variables for the user
      */
-    
+
+    private static $oldApp = null;
     private static $user;
 
     // Other variables
@@ -35,10 +36,13 @@ class Me
 
     public static function init($app) {
         // Only run if not already inited
-        if (self::$inited === null or !self::$inited) {
+        if (self::$inited === null or !self::$inited or $app !== self::$oldApp) {
             // Set initial
             self::$inited = true;
             self::$favorites = null;
+
+            // We got a new app, overwrite the old one
+            self::$oldApp = $app;
 
             // Check if we have anything stored
             if ($app->getSession('youkok2') !== null or $app->getCookie('youkok2') !== null) {
