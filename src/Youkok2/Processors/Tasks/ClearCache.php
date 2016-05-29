@@ -19,7 +19,8 @@ class ClearCache extends BaseProcessor
      */
 
     protected function checkPermissions() {
-        return $this->requireCli() or $this->requireAdmin();
+        var_dump($this->requireForce());
+        return $this->requireCli() or $this->requireForce() or $this->requireAdmin();
     }
 
     /*

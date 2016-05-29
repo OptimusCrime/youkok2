@@ -9,6 +9,7 @@
 
 namespace Youkok2\Tests;
 
+use Youkok2\Youkok2;
 use Youkok2\Utilities\Database;
 
 class YoukokTestCase extends \PHPUnit_Framework_TestCase
@@ -24,5 +25,24 @@ class YoukokTestCase extends \PHPUnit_Framework_TestCase
             // Execute query
             Database::$db->exec($query);
         }
+    }
+
+    public static function setUpBeforeClass() {
+        $dir = CACHE_PATH;
+        $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ($files as $file) {
+            if ($file->isDir()) {
+                rmdir($file->getRealPath());
+            }
+            else {
+                unlink($file->getRealPath());
+            }
+        }
+        rmdir($dir);
+
+        // Recreate directories
+        @mkdir(CACHE_PATH);
+        @mkdir(CACHE_PATH . '/youkok/');
     }
 }

@@ -221,6 +221,16 @@ abstract class BaseController
                     // Set to bindings arr
                     $bindings_arr[] = $binding;
 
+                    // Check if we should cast the value
+                    if ($v['type'] === 'integer' and is_bool($value)) {
+                        if ($value) {
+                            $value = 1;
+                        }
+                        else {
+                            $value = 0;
+                        }
+                    }
+
                     // Set to values
                     $values_arr[$binding] = $value;
                 }
@@ -238,12 +248,14 @@ abstract class BaseController
 
             // Set the ID
             call_user_func_array([$this->model, 'setId'], [Database::$db->lastInsertId()]);
-            
+
+            // Return true for this call
             return true;
         }
         catch (\PDOException $e) {
             $this->errors[] = $e->getMessage();
 
+            // Return false for this call
             return false;
         }
 

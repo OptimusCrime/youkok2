@@ -114,6 +114,9 @@ abstract class BaseProcessor extends Processors
         // Check if the user is admin
         return $this->me->isLoggedIn();
     }
+    protected function requireForce() {
+        return $this->getSetting('force');
+    }
 
     /*
      * Checks if the user needs connection with the database
