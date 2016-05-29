@@ -111,15 +111,19 @@ class BaseView
             // We're offline, check if we should be allowed still
             if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and
                     AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
-                // Return error page
-                $this->application->load(new ClassParser('Views\Error'), [
+                // Tell the app to overwrite our current view
+                $this->addSetting('overwrite', true);
+
+                // Define what to run next
+                $this->addSetting('overwrite_target', new ClassParser('Views\Error'));
+                $this->addSetting('overwrite_settings', [
                     'kill' => true,
                     'reason' => 'unavailable',
                     'close_db' => $this->getSetting('close_db')
                 ]);
-                
+
                 // Kill this views
-                $this->settings['kill'] = true;
+                $this->addSetting('kill', true);
                 
                 // Return to avoid doing anything more
                 return;

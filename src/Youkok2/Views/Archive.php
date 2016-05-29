@@ -83,7 +83,7 @@ class Archive extends BaseView
         
         // Set root element
         $element_root = $element;
-        if (!$element->isCourse()) {
+        if (!$element->hasParent()) {
             $element_root = $element->getRootParent();
         }
         $this->template->assign('ARCHIVE_ELEMENT_ROOT', $element_root);
@@ -119,7 +119,7 @@ class Archive extends BaseView
         
         // Attempt to fetch the aliases for this element
         $alias_for = [];
-        if ($element->isCourse()) {
+        if ($element->hasParent()) {
             $alias_ids = $element->getAliasFor();
             
             // If any aliases were found, loop the list and create the objects
@@ -139,22 +139,5 @@ class Archive extends BaseView
         if ($obj != null and $obj->wasFound()) {
             $obj->updateLastVisited();
         }
-    }
-    
-    private function loadBredcrumbsTitle($element) {
-        $ret = '';
-        $arr = $element->getBreadcrumbs();
-        foreach ($arr as $k => $v) {
-            if ($k > 0) {
-                if ($k == 1) {
-                    $ret .= $v->getName() . ' :: ';
-                }
-                else {
-                    $ret .= $v->getName() . ' / ';
-                }
-            }
-        }
-        
-        return substr($ret, 0, strlen($ret) - 3);
     }
 }

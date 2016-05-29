@@ -26,6 +26,7 @@ class ViewArchiveTest extends \Youkok2\Tests\YoukokTestCase
         $element1->setDirectory(true);
         $element1->setPending(false);
         $element1->setDeleted(false);
+        $element1->setExam(time() + 10000);
         $element1->save();
 
         // Folder
@@ -33,22 +34,24 @@ class ViewArchiveTest extends \Youkok2\Tests\YoukokTestCase
         $element2->setName('Folder');
         $element2->setUrlFriendly('folder');
         $element2->setParent($element1->getId());
-        $element2->setEmpty(false);
+        $element2->setEmpty(true);
         $element2->setDirectory(true);
         $element2->setPending(false);
         $element2->setDeleted(false);
         $element2->save();
 
-        // Link in folder
+        // Course alias
         $element3 = new Element();
-        $element3->setName('Google');
-        $element3->setParent($element2->getId());
+        $element3->setName('AAA1001||Test old');
+        $element3->setUrlFriendly('aaa1001');
+        $element3->setParent(null);
         $element3->setEmpty(false);
-        $element3->setDirectory(false);
+        $element3->setDirectory(true);
         $element3->setPending(false);
         $element3->setDeleted(false);
-        $element3->setUrl('http://www.google.com');
+        $element3->setAlias($element1->getId());
         $element3->save();
+
 
         // Test view for course
         $archive_wrapper = new Youkok2();
