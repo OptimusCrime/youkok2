@@ -117,8 +117,10 @@ class LoaderTest extends \Youkok2\Tests\YoukokTestCase
     public function testLoaderProcessor() {
         // Try some paths
         $loader1 = Loader::getClass('processor/tasks/clearcache');
+        $loader2 = Loader::getClass('processor/foobar');
 
         // Test them
         $this->assertEquals('\Youkok2\Processors\Tasks\ClearCache', $loader1['view']);
+        $this->assertEquals('\Youkok2\Processors\NotFound', $loader2['view']);
     }
 }
