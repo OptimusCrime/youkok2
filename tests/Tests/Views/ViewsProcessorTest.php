@@ -10,7 +10,6 @@
 namespace Youkok2\Tests\Views;
 
 use Youkok2\Youkok2;
-use Youkok2\Utilities\ClassParser;
 
 class ViewsProcessorTest extends \Youkok2\Tests\YoukokTestCase
 {
