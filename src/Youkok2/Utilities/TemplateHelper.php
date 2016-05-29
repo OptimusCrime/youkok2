@@ -71,11 +71,6 @@ class TemplateHelper
             $path = substr($route['path'], 1);
         }
         
-        // Check if we should prefix with /
-        if (isset($route['prefix']) and $route['prefix']) {
-            $path = '/' . $path;
-        }
-        
         // Check if we should endfix with /
         if (isset($route['endfix']) and $route['endfix']) {
             // We should add an endfix here
