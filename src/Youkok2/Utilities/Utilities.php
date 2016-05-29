@@ -108,9 +108,7 @@ class Utilities
             $unit = intval(log($bytes, 1024));
             $units = ['B', 'kB', 'MB', 'GB'];
 
-            if (array_key_exists($unit, $units) === true) {
-                return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);
-            }
+            return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);
         }
         
         // Return pretty filesize
