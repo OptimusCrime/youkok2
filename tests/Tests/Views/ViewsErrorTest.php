@@ -77,8 +77,7 @@ class ViewsErrorTest extends \Youkok2\Tests\YoukokTestCase
             'close_db' => false
         ]);
         $this->assertEquals('Youkok2\Views\Profile', get_class($profile_view));
-        $this->assertEquals(200, $profile_wrapper->getStatus());
-        // TODO, this is wrong, should be 403. Things are mesed up because Me is static. Temp fix
+        $this->assertEquals(403, $profile_wrapper->getStatus());
 
         // Search
         $search_wrapper = new Youkok2();

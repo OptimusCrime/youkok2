@@ -44,12 +44,12 @@ class Redirect extends BaseView
                     // All good, check if we should count or ignore redirect
                     if (!isset($_GET['donotlogthisdownload'])) {
                         // Log download
-                        $element->addDownload();
+                        $element->addDownload($this->me);
                         
                         // Check if the current user is logged in
-                        if (Me::isLoggedIn()) {
+                        if ($this->me->isLoggedIn()) {
                             // Clear the cache for the MeDownloads element
-                            CacheManager::deleteCache(Me::getId(), MeDownloadsController::$cacheKey);
+                            CacheManager::deleteCache($this->me->getId(), MeDownloadsController::$cacheKey);
                         }
                     }
                     

@@ -37,7 +37,7 @@ class Auth extends BaseView
     
     public function displayLogIn() {
         // Check if logged in
-        if (Me::isLoggedIn()) {
+        if ($this->me->isLoggedIn()) {
             $this->application->send('');
         }
         else {
@@ -50,7 +50,7 @@ class Auth extends BaseView
                 }
 
                 // Call method
-                Me::login($this->application);
+                $this->me->login();
             }
             else {
                 $this->template->assign('SITE_TITLE', 'Logg inn');
@@ -71,12 +71,12 @@ class Auth extends BaseView
     
     public function displayLogOut() {
         // Check if the user is logged in
-        if (!Me::isLoggedIn()) {
+        if (!$this->me->isLoggedIn()) {
             $this->application->send('');
         }
         
         // Log the user out
-        Me::logOut($this->application);
+        $this->me->logOut();
     }
 
     /*
@@ -85,7 +85,7 @@ class Auth extends BaseView
 
     public function displayRegister() {
         // Check if the user is logged in
-        if (Me::isLoggedIn()) {
+        if ($this->me->isLoggedIn()) {
             $this->application->send('');
         }
         
@@ -133,15 +133,15 @@ class Auth extends BaseView
                         $hash = Utilities::hashPassword($_POST['register-form-password1'], Utilities::generateSalt());
                         
                         // New instace of me
-                        Me::create();
+                        $this->me->create();
                         
                         // Insert to database
-                        Me::setEmail($_POST['register-form-email']);
-                        Me::setPassword($hash);
-                        Me::setNick($_POST['register-form-nick']);
+                        $this->me->setEmail($_POST['register-form-email']);
+                        $this->me->setPassword($hash);
+                        $this->me->setNick($_POST['register-form-nick']);
 
                         // Save
-                        Me::save();
+                        $this->me->save();
 
                         // Send e-mail here
                         $mail = new \PHPMailer;
@@ -179,7 +179,7 @@ class Auth extends BaseView
                 MessageManager::addMessage($this->application, 'Velkommen til Youkok2!', 'success');
 
                 // Log in (only session)
-                Me::setLogin($this->application, $hash, $_POST['register-form-email']);
+                $this->me->setLogin($hash, $_POST['register-form-email']);
 
                 $this->application->send('');
             }
@@ -191,7 +191,7 @@ class Auth extends BaseView
      */
 
     public function displayForgottenPassword() {
-        if (Me::isLoggedIn()) {
+        if ($this->me->isLoggedIn()) {
             $this->application->send('');
         }
         
@@ -274,7 +274,7 @@ class Auth extends BaseView
 
     public function displayForgottenPasswordNew() {
         // Check if user can display this view
-        if (Me::isLoggedIn() or !isset($_GET['hash'])) {
+        if ($this->me->isLoggedIn() or !isset($_GET['hash'])) {
             $this->application->send('');
         }
         
@@ -317,7 +317,7 @@ class Auth extends BaseView
                     MessageManager::addMessage($this->application, 'Passordet er endret!', 'success');
 
                     // Log in (only session)
-                    Me::setLogin($this->application, $hash, $user->getEmail());
+                    $this->me->setLogin($hash, $user->getEmail());
 
                     $this->application->send('');
                 }

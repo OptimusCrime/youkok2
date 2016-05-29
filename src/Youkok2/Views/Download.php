@@ -55,12 +55,12 @@ class Download extends BaseView
                     // Check if we should log download
                     if (!isset($_GET['donotlogthisdownload'])) {
                         // Log download
-                        $element->addDownload();
+                        $element->addDownload($this->me);
                         
                         // Check if the current user is logged in
-                        if (Me::isLoggedIn()) {
+                        if ($this->me->isLoggedIn()) {
                             // Clear the cache for the MeDownloads element
-                            CacheManager::deleteCache(Me::getId(), MeDownloadsController::$cacheKey);
+                            CacheManager::deleteCache($this->me->getId(), MeDownloadsController::$cacheKey);
                         }
                     }
 

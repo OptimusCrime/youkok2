@@ -269,7 +269,7 @@ class ElementController extends BaseController
         $this->downloadCount[$delta] = $value;
     }
 
-    public function addDownload() {
+    public function addDownload($me) {
         // New instance for download
         $download = new Download();
 
@@ -279,8 +279,8 @@ class ElementController extends BaseController
         $download->setAgent($_SERVER['HTTP_USER_AGENT']);
 
         // Check if user is logged in
-        if (Me::isLoggedIn()) {
-            $download->setUser(Me::getId());
+        if ($me != null && $me->isLoggedIn()) {
+            $download->setUser($me->getId());
         }
 
         // Save the object

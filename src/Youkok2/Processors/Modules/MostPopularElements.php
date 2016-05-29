@@ -39,7 +39,7 @@ class MostPopularElements extends ModuleProcessor
             $delta_numeric = $this->getSetting('module1_delta');
         }
         else {
-            $delta_numeric = Me::getModuleSettings($this->application, 'module1_delta');
+            $delta_numeric = $this->me->getModuleSettings('module1_delta');
         }
         
         // Get the correct limit
@@ -93,12 +93,12 @@ class MostPopularElements extends ModuleProcessor
         }
         
         // Set the new delta
-        Me::setModuleSettings($this->application, 'module1_delta', $delta_numeric);
+        $this->me->setModuleSettings('module1_delta', $delta_numeric);
         
         // Check if we should update user preferences
-        if (Me::isLoggedIn()) {
+        if ($this->me->isLoggedIn()) {
             // Update user
-            Me::update();
+            $this->me->update();
         }
         
         // Run the get method

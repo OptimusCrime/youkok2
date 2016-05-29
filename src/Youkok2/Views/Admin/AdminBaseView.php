@@ -62,7 +62,7 @@ abstract class AdminBaseView extends BaseView
     }
 
     public function run() {
-        if (Me::isAdmin()) {
+        if ($this->me->isAdmin()) {
             // Set menu
             $this->template->assign('HEADER_MENU', null);
 

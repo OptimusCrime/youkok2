@@ -134,7 +134,7 @@ class CreateFolder extends BaseProcessor
             $element->setUrlFriendly($url_friendly);
             $element->setParent($parent->getId());
             $element->setDirectory(true);
-            $element->setOwner(Me::getId());
+            $element->setOwner($this->me->getId());
             
             // Save element
             $element->save();
@@ -153,21 +153,21 @@ class CreateFolder extends BaseProcessor
             
             // Add history element
             $history = new History();
-            $history->setUser(Me::getId());
+            $history->setUser($this->me->getId());
             $history->setFile($element->getId());
             $history->setHistoryText('%u opprettet ' . $element->getName());
             $history->save();
             
             // Add karma
             $karma = new Karma();
-            $karma->setUser(Me::getId());
+            $karma->setUser($this->me->getId());
             $karma->setFile($element->getId());
             $karma->setValue(2);
             $karma->save();
             
             // Add karma to user
-            Me::increaseKarmaPending(2);
-            Me::update();
+            $this->me->increaseKarmaPending(2);
+            $this->me->update();
             
             // Send successful code
             $this->setData('code', 200);

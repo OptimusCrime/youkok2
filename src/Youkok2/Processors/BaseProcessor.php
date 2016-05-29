@@ -55,7 +55,7 @@ abstract class BaseProcessor extends Processors
         
         // Check if we could try to log the user in
         if ($this->canBeLoggedIn()) {
-            Me::init($this->application);
+            $this->me = new Me($this->application);
         }
 
         // Check if user has access
@@ -95,10 +95,10 @@ abstract class BaseProcessor extends Processors
         }
 
         // Init user is not already inited
-        Me::init($this->application);
+        $this->me = new Me($this->application);
 
         // Check if the user is admin
-        return Me::isAdmin();
+        return $this->me->isAdmin();
     }
     protected function requireLoggedIn() {
         // Check if database is initiated
@@ -109,10 +109,10 @@ abstract class BaseProcessor extends Processors
         }
 
         // Init user is not already inited
-        Me::init($this->application);
+        $this->me = new Me($this->application);
 
         // Check if the user is admin
-        return Me::isLoggedIn();
+        return $this->me->isLoggedIn();
     }
 
     /*

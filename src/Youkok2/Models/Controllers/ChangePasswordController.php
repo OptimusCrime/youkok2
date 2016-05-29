@@ -14,7 +14,6 @@ use Youkok2\Utilities\Database;
 
 class ChangePasswordController extends BaseController
 {
-    
     /*
      * Constructor
      */
@@ -43,9 +42,6 @@ class ChangePasswordController extends BaseController
             $this->model->setUser($row['user']);
             $this->model->setHash($hash);
             $this->model->setTimeout($row['timeout']);
-
-            // Set user email
-            Me::setEmail($row['email']);
         }
     }
 }

@@ -110,19 +110,19 @@ class CreateLink extends BaseProcessor
                     $element->setUrl($_POST['url']);
                     
                     // Check if we should auto hide the element
-                    if (!Me::isLoggedIn()) {
+                    if (!$this->me->isLoggedIn()) {
                         $element->setVisible(false);
                     }
                     else {
                         // User is logged in, set owner
-                        $element->setOwner(Me::getId());
+                        $element->setOwner($this->me->getId());
                     }
                     
                     // Save element
                     $element->save();
                     
                     // Check if parent was sat to empty and if we should update that
-                    if (Me::isLoggedIn() and $parent->isEmpty()) {
+                    if ($this->me->isLoggedIn() and $parent->isEmpty()) {
                         $parent->setEmpty(false);
                         $parent->update();
                         
@@ -134,23 +134,23 @@ class CreateLink extends BaseProcessor
                     MessageManager::addFileMessage($this->application, $name);
                     
                     // Check if logged in
-                    if (Me::isLoggedIn()) {
+                    if ($this->me->isLoggedIn()) {
                         // Add history element
                         $history = new History();
-                        $history->setUser(Me::getId());
+                        $history->setUser($this->me->getId());
                         $history->setFile($element->getId());
                         $history->setHistoryText('%u postet ' . $element->getName());
                         $history->save();
                         
                         // Add karma
                         $karma = new Karma();
-                        $karma->setUser(Me::getId());
+                        $karma->setUser($this->me->getId());
                         $karma->setFile($element->getId());
                         $karma->save();
                         
                         // Add karma to user
-                        Me::increaseKarmaPending(5);
-                        Me::update();
+                        $this->me->increaseKarmaPending(5);
+                        $this->me->update();
                     }
                     
                     // Send successful code

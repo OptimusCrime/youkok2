@@ -33,7 +33,7 @@ class Archive extends BaseView
         
         // Set information to site data
         $this->addSiteData('view', 'archive');
-        $this->addSiteData('can_contribute', Me::canContribute());
+        $this->addSiteData('can_contribute', $this->me->canContribute());
         $this->addSiteData('file_types', explode(',', ACCEPTED_FILEENDINGS));
         
         // Load the archive
