@@ -41,7 +41,7 @@ class Database
                 die('Not configured for this adapter');
             }
             
-            self::$db->setAttribute(\PDO::ATTR_ERRMODE, DATABASE_ERROR_MODE);
+            self::$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             
             // Handle profiling for adapters that are not sqlite
             if (DATABASE_ADAPTER != 'sqlite') {

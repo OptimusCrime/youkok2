@@ -29,7 +29,7 @@ class Profile extends BaseView
         $this->template->assign('HEADER_MENU', '');
 
         // Make sure user us logged in
-        if (!Me::isLoggedIn()) {
+        if (!$this->me->isLoggedIn()) {
             $this->application->send('', false, 403);
         }
     }
@@ -56,7 +56,7 @@ class Profile extends BaseView
             $this->template->assign('SITE_TITLE', 'Mine innstillinger');
 
             // For info
-            $this->template->assign('USER_EMAIL', Me::getEmail());
+            $this->template->assign('USER_EMAIL', $this->me->getEmail());
 
             // Display
             $this->displayAndCleanup('profile_settings.tpl');
@@ -84,7 +84,7 @@ class Profile extends BaseView
         $this->template->assign('SITE_TITLE', 'Mine historikk');
         
         // Get the elements for this history table
-        $history = Me::getKarmaElements();
+        $history = $this->me->getKarmaElements();
         $this->template->assign('PROFILE_USER_HISTORY', $history);
         
         // Display
@@ -105,17 +105,17 @@ class Profile extends BaseView
             // Validate old password
             if (password_verify(
                 $_POST['forgotten-password-new-form-oldpassword'],
-                Utilities::reverseFuckup(Me::getPassword())
+                Utilities::reverseFuckup($this->me->getPassword())
             )) {
                 // New hash
                 $hash_salt = Utilities::generateSalt();
                 $hash = Utilities::hashPassword($_POST['forgotten-password-new-form-password1'], $hash_salt);
 
                 // Set data
-                Me::setPassword($hash);
+                $this->me->setPassword($hash);
 
                 // Update
-                Me::update();
+                $this->me->update();
 
                 // Add message
                 MessageManager::addMessage($this->application, 'Passordet er endret.', 'success');
@@ -127,7 +127,7 @@ class Profile extends BaseView
                 }
 
                 // Set the login
-                Me::setLogin($hash, Me::getEmail(), $set_login_cookie);
+                $this->me->setLogin($hash, $this->me->getEmail(), $set_login_cookie);
 
                 // Do the redirect
                 $this->application->send(TemplateHelper::url_for('profile_settings'));
@@ -152,25 +152,25 @@ class Profile extends BaseView
         if (isset($_POST['register-form-email']) and isset($_POST['register-form-nick'])) {
             // Make sure there is no other users with this email
             $email_processor = null;
-            if ($_POST['register-form-email'] != Me::getEmail()) {
+            if ($_POST['register-form-email'] != $this->me->getEmail()) {
                 $_POST['email'] = $_POST['register-form-email'];
                 $_POST['ignore'] = 1;
                 
-                $email_processor = self::runProcessor('/register/email', [
+                $email_processor = $this->application->runProcessor('/register/email', [
                     'output' => false,
                     'close_db' => false]);
             }
             
             // Check if we should update e-mail
             if (($email_processor != null and $email_processor['code'] == 200)
-                and $_POST['register-form-email'] != Me::getEmail()
+                and $_POST['register-form-email'] != $this->me->getEmail()
                 and strlen($_POST['register-form-email']) > 0
                 and filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL)) {
                 // Set data
-                Me::setEmail($_POST['register-form-email']);
+                $this->me->setEmail($_POST['register-form-email']);
 
                 // Update
-                Me::update();
+                $this->me->update();
 
                 // Update cookie/session
                 $set_login_cookie = false;
@@ -182,17 +182,17 @@ class Profile extends BaseView
                 $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $_SESSION['youkok2']);
 
                 // Set the login
-                Me::setLogin($hash_split[1], $_POST['register-form-email'], $set_login_cookie);
+                $this->me->setLogin($hash_split[1], $_POST['register-form-email'], $set_login_cookie);
             }
 
             // Check if we should update nick
-            if (($_POST['register-form-nick'] == '' and Me::getNick() != '<em>Anonym</em>') or
-                ($_POST['register-form-nick'] != Me::getNickReal())) {
-                Me::setNick($_POST['register-form-nick']);
+            if (($_POST['register-form-nick'] == '' and $this->me->getNick() != '<em>Anonym</em>') or
+                ($_POST['register-form-nick'] != $this->me->getNickReal())) {
+                $this->me->setNick($_POST['register-form-nick']);
             }
 
             // Save here
-            Me::update();
+            $this->me->update();
 
             // Add messag
             MessageManager::addMessage($this->application, 'Dine endringer er lagret.', 'success');

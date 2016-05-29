@@ -98,19 +98,20 @@ class Loader
             
             // Loop all redirects
             foreach ($redirects as $k => $v) {
-                // Build regex patthern
+                // Build regex pattern
                 $regex = '/^' . str_replace(array_keys($regexes), $regexes, $k) . '/i';
+
                 
                 // Test regex
                 if (preg_match_all($regex, $path, $matches)) {
-                    $redirect_url = URL_FULL . substr(str_replace('*', $matches[1][0], $v), 1);
+                    $redirect_url = URL_FULL . str_replace('*', $matches[1][0], $v);
                     
-                    // Send redirect
-                    header('HTTP/1.1 301 Moved Permanently');
-                    header('Location: ' . $redirect_url);
-                    
-                    // Kill
-                    exit();
+                    // Return redirect request instead
+                    return [
+                        'view' => null,
+                        'method' => null,
+                        'redirect' => $redirect_url
+                    ];
                 }
             }
             

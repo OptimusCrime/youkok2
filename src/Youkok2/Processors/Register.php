@@ -11,7 +11,6 @@ namespace Youkok2\Processors;
 
 use Youkok2\Models\Me;
 use Youkok2\Utilities\Database;
-use Youkok2\Utilities\Loader;
 
 class Register extends BaseProcessor
 {
@@ -41,10 +40,10 @@ class Register extends BaseProcessor
         if (isset($_POST['email'])) {
             if (isset($_POST['ignore'])) {
                 // Log the user in
-                Me::init();
+                $this->me = new Me($this->application);
                 
                 // Make sure we actually logged in
-                if (Me::isLoggedIn()) {
+                if ($this->me->isLoggedIn()) {
                     $check_email  = "SELECT COUNT(id) as num" . PHP_EOL;
                     $check_email .= "FROM user" . PHP_EOL;
                     $check_email .= "WHERE email = :email" . PHP_EOL;
@@ -52,7 +51,7 @@ class Register extends BaseProcessor
 
                     $check_email_query = Database::$db->prepare($check_email);
                     $check_email_query->execute([':email' => $_POST['email'],
-                        ':email_old' => Me::getEmail()]);
+                        ':email_old' => $this->me->getEmail()]);
                     $row = $check_email_query->fetch(\PDO::FETCH_ASSOC);
                     
                     // Check if flag was returned

@@ -54,7 +54,7 @@ class Favorites extends BaseProcessor
                 $remove_favorite .= "WHERE file = :file AND user = :user";
                 
                 $remove_favorite_query = Database::$db->prepare($remove_favorite);
-                $remove_favorite_query->execute([':file' => $_POST['id'], ':user' => Me::getId()]);
+                $remove_favorite_query->execute([':file' => $_POST['id'], ':user' => $this->me->getId()]);
                 
                 // Set message
                 $this->setData('msg', [['type' => 'success', 'text' => 'Favoritten er fjernet.']]);
@@ -65,7 +65,7 @@ class Favorites extends BaseProcessor
                 $insert_favorite .= "VALUES (:file, :user)";
                 
                 $insert_favorite_query = Database::$db->prepare($insert_favorite);
-                $insert_favorite_query->execute([':file' => $_POST['id'], ':user' => Me::getId()]);
+                $insert_favorite_query->execute([':file' => $_POST['id'], ':user' => $this->me->getId()]);
                 
                 // Set message
                 $this->setData('msg', [['type' => 'success', 'text' => 'Lagt til som favoritt.']]);

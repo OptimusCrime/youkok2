@@ -22,61 +22,57 @@ class Me
     /*
      * Variables for the user
      */
-    
-    private static $user;
 
-    // Other variables
-    private static $favorites;
-    private static $inited;
+    private $app;
+    private $user;
+    private $favorites;
 
     /*
      * Init the user
      */
 
-    public static function init($app) {
-        // Only run if not already inited
-        if (self::$inited === null or !self::$inited) {
-            // Set initial
-            self::$inited = true;
-            self::$favorites = null;
+    public function __construct($app) {
+        // Set user and favorites to null
+        $this->user = null;
+        $this->favorites = null;
 
-            // Check if we have anything stored
-            if ($app->getSession('youkok2') !== null or $app->getCookie('youkok2') !== null) {
-                if ($app->getCookie('youkok2') !== null) {
-                    $hash = $app->getCookie('youkok2');
+        // Store app in this object
+        $this->app = $app;
 
-                    // Set session as well
-                    $app->setSession('youkok2', $hash);
-                }
-                else {
-                    $hash = $app->getSession('youkok2');
-                }
+        // Check if we have anything stored
+        if ($this->app->getSession('youkok2') !== null or $this->app->getCookie('youkok2') !== null) {
+            if ($this->app->getCookie('youkok2') !== null) {
+                $hash = $this->app->getCookie('youkok2');
 
-                // Try to split
-                $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
-                if (count($hash_split) == 2) {
-                    // Fetch from database to see if online
-                    $get_current_user  = "SELECT id, email, password, nick, module_settings, last_seen, " . PHP_EOL;
-                    $get_current_user .= "karma, karma_pending, banned" . PHP_EOL;
-                    $get_current_user .= "FROM user " . PHP_EOL;
-                    $get_current_user .= "WHERE email = :email" . PHP_EOL;
-                    $get_current_user .= "AND password = :password";
-                    
-                    $get_current_user_query = Database::$db->prepare($get_current_user);
-                    $get_current_user_query->execute([':email' => $hash_split[0],
-                                                           ':password' => $hash_split[1]]);
-                    $row = $get_current_user_query->fetch(\PDO::FETCH_ASSOC);
+                // Set session as well
+                $this->app->setSession('youkok2', $hash);
+            } else {
+                $hash = $this->app->getSession('youkok2');
+            }
 
-                    // Check if anything want returned
-                    if (isset($row['id'])) {
-                        // Create a new instace of the user object
-                        self::$user = new User($row);
-                    }
-                    else {
-                        // Unset all
-                        $app->clearSession('youkok2');
-                        $app->clearCookie('youkok2');
-                    }
+            // Try to split
+            $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
+            if (count($hash_split) == 2) {
+                // Fetch from database to see if online
+                $get_current_user = "SELECT id, email, password, nick, module_settings, last_seen, " . PHP_EOL;
+                $get_current_user .= "karma, karma_pending, banned" . PHP_EOL;
+                $get_current_user .= "FROM user " . PHP_EOL;
+                $get_current_user .= "WHERE email = :email" . PHP_EOL;
+                $get_current_user .= "AND password = :password";
+
+                $get_current_user_query = Database::$db->prepare($get_current_user);
+                $get_current_user_query->execute([':email' => $hash_split[0],
+                    ':password' => $hash_split[1]]);
+                $row = $get_current_user_query->fetch(\PDO::FETCH_ASSOC);
+
+                // Check if anything want returned
+                if (isset($row['id'])) {
+                    // Create a new instace of the user object
+                    $this->user = new User($row);
+                } else {
+                    // Unset all
+                    $this->app->clearSession('youkok2');
+                    $this->app->clearCookie('youkok2');
                 }
             }
         }
@@ -86,27 +82,27 @@ class Me
      * Create new instance of the User object (used for registration)
      */
     
-    public static function create() {
-        self::$user = new User();
+    public function create() {
+        $this->user = new User();
     }
     
     /*
      * Getters (override for storing information in the User object)
      */
     
-    public static function getModuleSettings($app, $key = null) {
+    public function getModuleSettings($key = null) {
         // Check what to return
         $settings_data = null;
-        if (self::$user !== null) {
+        if ($this->user !== null) {
             // Return the actual delta
-            $settings_data = self::$user->getModuleSettings();
+            $settings_data = $this->user->getModuleSettings();
         }
         else {
             // Check if cookie is set
 
-            if ($app->getCookie('module_settings') !== null and
-                strlen($app->getCookie('module_settings') !== null) > 0) {
-                $settings_data = $app->getCookie('module_settings') !== null;
+            if ($this->app->getCookie('module_settings') !== null and
+                strlen($this->app->getCookie('module_settings') !== null) > 0) {
+                $settings_data = $this->app->getCookie('module_settings') !== null;
             }
         }
         
@@ -147,17 +143,17 @@ class Me
      * Setters (override for storing information in the User object)
      */
 
-    public static function setNick($nick) {
+    public function setNick($nick) {
         if ($nick == '') {
             $nick = null;
         }
 
         // Set
-        self::$user->setNick($nick);
+        $this->user->setNick($nick);
     }
-    public static function setModuleSettings($app, $key, $value) {
+    public function setModuleSettings($key, $value) {
         // Get the current settings
-        $settings = self::getModuleSettings($app);
+        $settings = $this->getModuleSettings();
         
         // Make sure we have a array
         if ($settings == null) {
@@ -168,50 +164,50 @@ class Me
         $settings[$key] = $value;
         
         // Check if we should set cookie for later too
-        if (self::$user === null) {
+        if ($this->user === null) {
             // Set cookie
-            $app->setCookie('module_settings', json_encode($settings));
+            $this->app->setCookie('module_settings', json_encode($settings));
         }
         else {
-            self::$user->setModuleSettings(json_encode($settings));
+            $this->user->setModuleSettings(json_encode($settings));
         }
     }
-    public static function increaseKarma($karma) {
-        self::$user->setKarma(self::$user->getKarma() + $karma);
+    public function increaseKarma($karma) {
+        $this->user->setKarma($this->user->getKarma() + $karma);
     }
-    public static function increaseKarmaPending($pending) {
-        self::$user->setKarmaPending(self::$user->getKarmaPending() + $pending);
+    public function increaseKarmaPending($pending) {
+        $this->user->setKarmaPending($this->user->getKarmaPending() + $pending);
     }
     
     /*
      * Conditional stuff
      */
     
-    public static function isLoggedIn() {
-        return self::$user !== null;
+    public function isLoggedIn() {
+        return $this->user !== null;
     }
-    public static function isAdmin() {
-        return (self::$user !== null and (self::$user->getId() == 10000 or self::$user->getId() == 1));
+    public function isAdmin() {
+        return ($this->user !== null and ($this->user->getId() == 10000 or $this->user->getId() == 1));
     }
-    public static function hasKarma() {
-        return self::$user !== null and self::$user->getKarma() > 0;
+    public function hasKarma() {
+        return $this->user !== null and $this->user->getKarma() > 0;
     }
-    public static function canContribute() {
-        return (self::hasKarma() and !self::isBanned());
+    public function canContribute() {
+        return ($this->hasKarma() and !$this->isBanned());
     }
     
     /*
      * Login
      */
 
-    public static function logIn($app) {
+    public function logIn() {
         // Check if logged in
-        if (!self::$user !== null) {
+        if ($this->user === null) {
             // Okey
             if (isset($_POST['login-email']) and isset($_POST['login-pw']) and isset($_POST['_token'])) {
                 // Check CSRF token
                 if (!CsrfManager::validateSignature($_POST['_token'])) {
-                    $app->setStatus(400);
+                    $this->app->setStatus(400);
                     return;
                 }
                 
@@ -238,10 +234,10 @@ class Me
                         }
 
                         // Set login
-                        self::setLogin($row['password'], $_POST['login-email'], $remember_me);
+                        $this->setLogin($row['password'], $_POST['login-email'], $remember_me);
 
                         // Add message
-                        MessageManager::addMessage($app, 'Du er nå logget inn.', 'success');
+                        MessageManager::addMessage($this->app, 'Du er nå logget inn.', 'success');
 
                         // Check if we should redirect the user back to the previous page
                         if (strstr($_SERVER['HTTP_REFERER'], URL) !== false) {
@@ -251,48 +247,48 @@ class Me
                             // Check if anything left
                             if (strlen($clean_referer) > 0 and $clean_referer != 'logg-inn') {
                                 // Refirect to whatever we have left
-                                $app->send($clean_referer);
+                                $this->app->send($clean_referer);
                             }
                             else {
                                 // Send to frontpage
-                                $app->send('');
+                                $this->app->send('');
                             }
                         }
                         else {
                             // Does not have referer
-                            $app->send('');
+                            $this->app->send('');
                         }
                     }
                     else {
                         // Message
                         MessageManager::addMessage(
-                            $app,
+                            $this->app,
                             'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.',
                             'danger'
                         );
                         
                         // Set session
-                        $_SESSION['login_correct_email'] = $row['email'];
+                        $this->app->setSession(login_correct_email, $row['email']);
                         
                         // Redirect
-                        $app->send(TemplateHelper::urlFor('logg-inn'));
+                        $this->app->send(TemplateHelper::urlFor('logg-inn'));
                     }
                 }
                 else {
                     // Message
                     MessageManager::addMessage(
-                        $app,
+                        $this->app,
                         'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.',
                         'danger'
                     );
 
                     // Redirect
-                    $app->send(TemplateHelper::urlFor('logg-inn'));
+                    $this->app->send(TemplateHelper::urlFor('logg-inn'));
                 }
             }
             else {
                 // Not submitted or anything, just redirect
-                $app->send('');
+                $this->app->send('');
             }
         }
     }
@@ -301,42 +297,48 @@ class Me
      * Set the login information
      */
     
-    public static function setLogin($hash, $email, $cookie = false) {
+    public function setLogin($hash, $email, $cookie = false) {
         // Remove old login (just in case)
-        unset($_SESSION['youkok2']);
+        $this->app->clearSession('youkok2');
         
         // Unset the cookie
-        setcookie('youkok2', null, time() - (60 * 60 * 24), '/');
+        $this->app->clearCookie('youkok2');
         
-        // Set new login
-        $strg = $email . 'asdkashdsajheeeeehehdffhaaaewwaddaaawww' . $hash;
+        // Generate the new login token
+        $strg = Me::generateLoginString($hash, $email);
+
+        // Set the new login details
         if ($cookie) {
-            setcookie('youkok2', $strg, time() + (60 * 60 * 24 * 31), '/');
+            $this->app->setCookie('youkok2', $strg);
         }
         else {
-            $_SESSION['youkok2'] = $strg;
+            $this->app->setSession('youkok2', $strg);
         }
+    }
+
+    public static function generateLoginString($hash, $email) {
+        return $email . 'asdkashdsajheeeeehehdffhaaaewwaddaaawww' . $hash;
     }
 
     /*
      * Logout
      */
 
-    public static function logOut($app) {
+    public function logOut() {
         // Check if logged in
-        if (self::$user !== null and $_GET['_token']) {
+        if ($this->user !== null and $_GET['_token']) {
             // Unset session
-            $app->clearSession('youkok2');
+            $this->app->clearSession('youkok2');
             
             // Unset token
-            $app->clearCookie('youkok2');
+            $this->app->clearCookie('youkok2');
 
             // Set message
-            MessageManager::addMessage($app, 'Du har nå logget ut.', 'success');
+            MessageManager::addMessage($this->app, 'Du har nå logget ut.', 'success');
         }
         else {
             // Simply redirect home
-            $app->send('');
+            $this->app->send('');
         }
 
         // Check if we should redirect the user back to the previous page
@@ -347,16 +349,16 @@ class Me
             // Check if anything left
             if (strlen($clean_referer) > 0) {
                 // Refirect to whatever we have left
-                $app->send($clean_referer);
+                $this->app->send($clean_referer);
             }
             else {
                 // Send to frontpage
-                $app->send('');
+                $this->app->send('');
             }
         }
         else {
             // Does not have referer
-            $app->send('');
+            $this->app->send('');
         }
     }
 
@@ -364,11 +366,11 @@ class Me
      * Favorites
      */
 
-    public static function getFavorites() {
+    public function getFavorites() {
         // Check if already loaded
-        if (self::$favorites === null) {
+        if ($this->favorites === null) {
             // Set favorites to array
-            self::$favorites = [];
+            $this->favorites = [];
 
             // Run query
             $get_favorites  = "SELECT f.file" . PHP_EOL;
@@ -380,27 +382,27 @@ class Me
             $get_favorites .= "ORDER BY f.id ASC";
 
             $get_favorites_query = Database::$db->prepare($get_favorites);
-            $get_favorites_query->execute([':user' => self::$user->getId()]);
+            $get_favorites_query->execute([':user' => $this->user->getId()]);
             while ($row = $get_favorites_query->fetch(\PDO::FETCH_ASSOC)) {
-                self::$favorites[] = Element::get($row['file']);
+                $this->favorites[] = Element::get($row['file']);
             }
         }
 
         // Return entire list of elements
-        return self::$favorites;
+        return $this->favorites;
     }
     
     /*
      * Check if one Element is favorite
      */
     
-    public static function isFavorite($id) {
+    public function isFavorite($id) {
         // Check if we should load
-        if (self::$favorites === null) {
-            self::getFavorites();
+        if ($this->favorites === null) {
+            $this->getFavorites();
         }
         
-        if (in_array($id, self::$favorites)) {
+        if (in_array($id, $this->favorites)) {
             return true;
         }
         
@@ -412,7 +414,7 @@ class Me
      * Get user karma elements
      */
 
-    public static function getKarmaElements() {
+    public function getKarmaElements() {
         $collection = [];
 
         // Run query
@@ -422,7 +424,7 @@ class Me
         $get_user_karma_elements .= "ORDER BY added DESC";
 
         $get_user_karma_elements_query = Database::$db->prepare($get_user_karma_elements);
-        $get_user_karma_elements_query->execute([':user' => self::$user->getId()]);
+        $get_user_karma_elements_query->execute([':user' => $this->user->getId()]);
         while ($row = $get_user_karma_elements_query->fetch(\PDO::FETCH_ASSOC)) {
             $collection[] = new Karma($row);
         }
@@ -435,14 +437,14 @@ class Me
      * Override save and update because the __callStatic method does not work for these calls
      */
     
-    public static function update() {
-        if (self::$user !== null) {
-            self::$user->update();
+    public function update() {
+        if ($this->user !== null) {
+            $this->user->update();
         }
     }
-    public static function save() {
-        if (self::$user !== null) {
-            self::$user->save();
+    public function save() {
+        if ($this->user !== null) {
+            $this->user->save();
         }
     }
     
@@ -450,11 +452,11 @@ class Me
      * Static functions overload
      */
     
-    public static function __callStatic($name, $arguments) {
+    public function __call($name, $arguments) {
         // Check if method exists
-        if (self::$user != null and method_exists(self::$user, $name)) {
+        if ($this->user != null and method_exists($this->user, $name)) {
             // Call method and return response
-            return call_user_func_array([self::$user,
+            return call_user_func_array([$this->user,
                 $name], $arguments);
         }
     }

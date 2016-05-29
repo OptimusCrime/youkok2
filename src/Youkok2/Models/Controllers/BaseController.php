@@ -22,6 +22,7 @@ abstract class BaseController
     protected $model;
     private $class;
     private $cacheKey;
+    private $errors;
 
     // Construct
     public function __construct($class, $model) {
@@ -33,6 +34,9 @@ abstract class BaseController
 
         // Get schema
         $this->schema = $model->getSchema();
+
+        // Set errors to be empty
+        $this->errors = [];
 
         // Get cachekey
         $this->cacheKey = get_class_vars(get_class($this->class))['cacheKey'];
@@ -217,6 +221,16 @@ abstract class BaseController
                     // Set to bindings arr
                     $bindings_arr[] = $binding;
 
+                    // Check if we should cast the value
+                    if ($v['type'] === 'integer' and is_bool($value)) {
+                        if ($value) {
+                            $value = 1;
+                        }
+                        else {
+                            $value = 0;
+                        }
+                    }
+
                     // Set to values
                     $values_arr[$binding] = $value;
                 }
@@ -224,15 +238,27 @@ abstract class BaseController
         }
 
         // Build query string
-        $query_string  = "INSERT INTO `" . $this->schema['meta']['table'];
-        $query_string .= "` (" . implode(', ', $attributes_arr) . ")" . PHP_EOL;
-        $query_string .= "VALUES (" . implode(', ', $bindings_arr) . ")";
-        
-        $result = Database::$db->prepare($query_string);
-        $result->execute($values_arr);
-        
-        // Set the ID
-        call_user_func_array([$this->model, 'setId'], [Database::$db->lastInsertId()]);
+        try {
+            $query_string  = "INSERT INTO `" . $this->schema['meta']['table'];
+            $query_string .= "` (" . implode(', ', $attributes_arr) . ")" . PHP_EOL;
+            $query_string .= "VALUES (" . implode(', ', $bindings_arr) . ")";
+
+            $result = Database::$db->prepare($query_string);
+            $result->execute($values_arr);
+
+            // Set the ID
+            call_user_func_array([$this->model, 'setId'], [Database::$db->lastInsertId()]);
+
+            // Return true for this call
+            return true;
+        }
+        catch (\PDOException $e) {
+            $this->errors[] = $e->getMessage();
+
+            // Return false for this call
+            return false;
+        }
+
     }
     
     /*
@@ -304,5 +330,16 @@ abstract class BaseController
         
         $result = Database::$db->prepare($query_string);
         $result->execute($values_arr);
+    }
+
+    public function getLastError() {
+        if (count($this->errors) == 0) {
+            return null;
+        }
+        return $this->errors[count($this->errors) - 1];
+    }
+
+    public function getErrors() {
+        return $this->errors;
     }
 }

@@ -163,12 +163,12 @@ class CreateFile extends BaseProcessor
             $element->setSize($_FILES['files']['size'][0]);
             
             // Check if we should auto hide the element
-            if (!Me::isLoggedIn()) {
+            if (!$this->me->isLoggedIn()) {
                 $element->setVisible(false);
             }
             else {
                 // User is logged in, set owner
-                $element->setOwner(Me::getId());
+                $element->setOwner($this->me->getId());
             }
             
             // Save element
@@ -190,7 +190,7 @@ class CreateFile extends BaseProcessor
             move_uploaded_file($_FILES['files']['tmp_name'][0], $parent_dir . '/' . $checksum);
             
             // Check if parent was sat to empty and if we should update that
-            if (Me::isLoggedIn() and $parent->isEmpty()) {
+            if ($this->me->isLoggedIn() and $parent->isEmpty()) {
                 $parent->setEmpty(false);
                 $parent->update();
                 
@@ -202,23 +202,23 @@ class CreateFile extends BaseProcessor
             MessageManager::addFileMessage($this->application, $file_name . '.' . $file_type);
             
             // Check if logged in
-            if (Me::isLoggedIn()) {
+            if ($this->me->isLoggedIn()) {
                 // Add history element
                 $history = new History();
-                $history->setUser(Me::getId());
+                $history->setUser($this->me->getId());
                 $history->setFile($element->getId());
                 $history->setHistoryText('%u lastet opp ' . $element->getName());
                 $history->save();
                 
                 // Add karma
                 $karma = new Karma();
-                $karma->setUser(Me::getId());
+                $karma->setUser($this->me->getId());
                 $karma->setFile($element->getId());
                 $karma->save();
                 
                 // Add karma to user
-                Me::increaseKarmaPending(5);
-                Me::update();
+                $this->me->increaseKarmaPending(5);
+                $this->me->update();
             }
             
             // Send successful code

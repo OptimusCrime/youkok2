@@ -36,6 +36,7 @@ class BaseView
     protected $application;
     protected $settings;
     protected $path;
+    protected $me;
     
     public function __construct($app) {
         // Set reference to the application
@@ -110,14 +111,19 @@ class BaseView
             // We're offline, check if we should be allowed still
             if (!defined('AVAILABLE_WHITELIST') or (defined('AVAILABLE_WHITELIST') and
                     AVAILABLE_WHITELIST != $_SERVER['REMOTE_ADDR'])) {
-                // Return error page
-                $this->application->load(new ClassParser('Views\Error'), [
+                // Tell the app to overwrite our current view
+                $this->addSetting('overwrite', true);
+
+                // Define what to run next
+                $this->addSetting('overwrite_target', new ClassParser('Views\Error'));
+                $this->addSetting('overwrite_settings', [
                     'kill' => true,
-                    'reason' => 'unavailable'
+                    'reason' => 'unavailable',
+                    'close_db' => $this->getSetting('close_db')
                 ]);
-                
+
                 // Kill this views
-                $this->settings['kill'] = true;
+                $this->addSetting('kill', true);
                 
                 // Return to avoid doing anything more
                 return;
@@ -140,7 +146,8 @@ class BaseView
                 $this->addSetting('overwrite_target', new ClassParser('Views\Error'));
                 $this->addSetting('overwrite_settings', [
                     'kill' => true,
-                    'reason' => 'db'
+                    'reason' => 'db',
+                    'close_db' => $this->getSetting('close_db')
                 ]);
                 
                 // Kill this views
@@ -164,33 +171,32 @@ class BaseView
         if ($this->getSetting('kill') === true) {
             return;
         }
-        
-        // Init the user
-        Me::init($this->application);
+
+        $this->me = new Me($this->application);
 
         // Add to site data
-        $this->addSiteData('online', Me::isLoggedIn());
+        $this->addSiteData('online', $this->me->isLoggedIn());
         
         // Set user information to the template
-        $this->template->assign('USER_IS_LOGGED_IN', Me::isLoggedIn());
-        $this->template->assign('USER_NICK', Me::getNick(false));
-        $this->template->assign('USER_KARMA', Me::getKarma());
-        $this->template->assign('USER_KARMA_PENDING', Me::getKarmaPending());
-        $this->template->assign('USER_IS_ADMIN', Me::isAdmin());
-        $this->template->assign('USER_IS_BANNED', Me::isBanned());
-        $this->template->assign('USER_CAN_CONTRIBUTE', Me::canContribute());
+        $this->template->assign('USER_IS_LOGGED_IN', $this->me->isLoggedIn());
+        $this->template->assign('USER_NICK', $this->me->getNick(false));
+        $this->template->assign('USER_KARMA', $this->me->getKarma());
+        $this->template->assign('USER_KARMA_PENDING', $this->me->getKarmaPending());
+        $this->template->assign('USER_IS_ADMIN', $this->me->isAdmin());
+        $this->template->assign('USER_IS_BANNED', $this->me->isBanned());
+        $this->template->assign('USER_CAN_CONTRIBUTE', $this->me->canContribute());
         $this->template->assign(
             'USER_MOST_POPULAR_ELEMENT',
-            Me::getModuleSettings($this->application, 'module1_delta')
+            $this->me->getModuleSettings('module1_delta')
         );
         $this->template->assign(
             'USER_MOST_POPULAR_COURSES',
-            Me::getModuleSettings($this->application, 'module2_delta')
+            $this->me->getModuleSettings('module2_delta')
         );
         
         // Check if we should validate login
         if (isset($_POST['login-email'])) {
-            Me::logIn($this->application);
+            $this->me->logIn();
         }
     }
 
@@ -201,7 +207,7 @@ class BaseView
     private function setEnvSettings() {
         // Google Analytics
         if (USE_GA) {
-            if (Me::isAdmin()) {
+            if ($this->me->isAdmin()) {
                 $this->template->assign('SITE_USE_GA', false);
             }
             else {
@@ -291,6 +297,11 @@ class BaseView
 
         // Define what to run next
         $this->addSetting('overwrite_target', new ClassParser('Views\NotFound'));
+        if ($this->getSetting('close_db') === false) {
+            $this->addSetting('overwrite_settings', [
+                'close_db' => false
+            ]);
+        }
 
         // Kill this views
         $this->addSetting('kill', true);
@@ -305,7 +316,9 @@ class BaseView
         CacheManager::store();
 
         // Close connection
-        Database::close();
+        if ($this->getSetting('close_db') !== false) {
+            Database::close();
+        }
     }
     
     /*

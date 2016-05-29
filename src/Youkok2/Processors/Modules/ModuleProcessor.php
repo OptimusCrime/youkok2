@@ -12,7 +12,23 @@ use Youkok2\Processors\BaseProcessor;
 
 abstract class ModuleProcessor extends BaseProcessor
 {
-    
+
+    /*
+     * Override
+     */
+
+    protected function checkPermissions() {
+        return $this->requireLoggedIn();
+    }
+
+    /*
+     * Override
+     */
+
+    protected function requireDatabase() {
+        return true;
+    }
+
     /*
      * Always run the constructor
      */

@@ -71,9 +71,9 @@ class Frontpage extends BaseView
         $this->template->assign('HOME_LAST_VISITED', Element::getLastVisitedElements());
         
         // Check if this user is logged in
-        if (Me::isLoggedIn()) {
-            $this->template->assign('HOME_USER_FAVORITES', Me::getFavorites());
-            $this->template->assign('HOME_USER_LATEST', MeDownloads::get());
+        if ($this->me->isLoggedIn()) {
+            $this->template->assign('HOME_USER_FAVORITES', $this->me->getFavorites());
+            $this->template->assign('HOME_USER_LATEST', MeDownloads::get($this->me));
         }
         else {
             $this->loadInfobox();

@@ -82,6 +82,15 @@ class Youkok2
             // Get the correct view class
             $class = Loader::getClass($path);
         }
+
+        // If view is null we should instead redirect this request
+        if ($class['view'] === null) {
+            // Send forward
+            $this->send($class['redirect'], true, 301);
+
+            // Return null
+            return null;
+        }
         
         // Initiate the view
         $view = new $class['view']($this);

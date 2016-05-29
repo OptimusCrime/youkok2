@@ -24,12 +24,12 @@ class MeDownloadsStaticController
      * Variables
      */
 
-    public static function get() {
+    public static function get($me) {
         // Check if we have a cached version
         $cache = [];
-        if (CacheManager::isCached(Me::getId(), MeDownloadsController::$cacheKey)) {
+        if (CacheManager::isCached($me->getId(), MeDownloadsController::$cacheKey)) {
             // We have cache, simply fetch it
-            $cache_data = CacheManager::getCache(Me::getId(), MeDownloadsController::$cacheKey);
+            $cache_data = CacheManager::getCache($me->getId(), MeDownloadsController::$cacheKey);
             
             if ($cache_data !== null and is_array($cache_data) and isset($cache_data['data'])) {
                 $cache_data_decoded = json_decode($cache_data['data'], true);
@@ -53,14 +53,14 @@ class MeDownloadsStaticController
             $get_last_downloads .= "LIMIT 15";
             
             $get_last_downloads_query = Database::$db->prepare($get_last_downloads);
-            $get_last_downloads_query->execute([':user' => Me::getId()]);
+            $get_last_downloads_query->execute([':user' => $me->getId()]);
             while ($row = $get_last_downloads_query->fetch(\PDO::FETCH_ASSOC)) {
                 $elements[] = $row['file'];
             }
             
             // Cache the results
             $me_downloads = new MeDownloads();
-            $me_downloads->setId(Me::getId());
+            $me_downloads->setId($me->getId());
             $me_downloads->setData(json_encode($elements));
             $me_downloads->cache(true);
             

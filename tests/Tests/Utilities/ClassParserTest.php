@@ -11,7 +11,7 @@ namespace Youkok2\Tests\Utilities;
 
 use Youkok2\Utilities\ClassParser;
 
-class ClassParserTest extends \PHPUnit_Framework_TestCase
+class ClassParserTest extends \Youkok2\Tests\YoukokTestCase
 {
     public function testClassParser() {
         $classParser1 = new ClassParser('foo');

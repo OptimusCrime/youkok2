@@ -11,7 +11,7 @@ namespace Youkok2\Tests\Utilities;
 
 use Youkok2\Utilities\Utilities;
 
-class UtilitiesTest extends \PHPUnit_Framework_TestCase
+class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
 {
     
     /*
@@ -107,11 +107,15 @@ class UtilitiesTest extends \PHPUnit_Framework_TestCase
         $size2 = Utilities::prettifyFilesize(99999);
         $size3 = Utilities::prettifyFilesize(10000000);
         $size4 = Utilities::prettifyFilesize(999999999);
-        
+        $size5 = Utilities::prettifyFilesize(0);
+        $size6 = Utilities::prettifyFilesize(-10);
+
         // Test them
         $this->assertEquals($size1, '10 B');
         $this->assertEquals($size2, '97 kB');
         $this->assertEquals($size3, '9 MB');
         $this->assertEquals($size4, '953 MB');
+        $this->assertEquals($size5, '0');
+        $this->assertEquals($size6, '-10');
     }
 }

@@ -36,7 +36,7 @@ class MostPopularCourses extends ModuleProcessor
             $delta_numeric = $this->getSetting('module2_delta');
         }
         else {
-            $delta_numeric = Me::getModuleSettings($this->application, 'module2_delta');
+            $delta_numeric = $this->me->getModuleSettings('module2_delta');
         }
         
         // Make sure we have a delta
@@ -80,12 +80,12 @@ class MostPopularCourses extends ModuleProcessor
         }
         
         // Set the new delta
-        Me::setModuleSettings($this->application, 'module2_delta', $delta_numeric);
+        $this->me->setModuleSettings('module2_delta', $delta_numeric);
         
         // Check if we should update user preferences
-        if (Me::isLoggedIn()) {
+        if ($this->me->isLoggedIn()) {
             // Update user
-            Me::update();
+            $this->me->update();
         }
         
         // Run the get method
