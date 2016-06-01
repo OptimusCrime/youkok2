@@ -119,7 +119,7 @@ class Archive extends BaseView
         
         // Attempt to fetch the aliases for this element
         $alias_for = [];
-        if ($element->hasParent()) {
+        if (!$element->hasParent()) {
             $alias_ids = $element->getAliasFor();
             
             // If any aliases were found, loop the list and create the objects
