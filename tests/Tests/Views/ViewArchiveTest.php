@@ -26,7 +26,7 @@ class ViewArchiveTest extends \Youkok2\Tests\YoukokTestCase
         $element1->setDirectory(true);
         $element1->setPending(false);
         $element1->setDeleted(false);
-        $element1->setExam(time() + 10000);
+        $element1->setExam(date('Y/m/d H:i:s', time() + 10000));
         $element1->save();
 
         // Folder
