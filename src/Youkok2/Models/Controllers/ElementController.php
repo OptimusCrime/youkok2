@@ -614,7 +614,7 @@ class ElementController extends BaseController
                 // Make sure alias owner is a valid and visible element
                 $element = Element::get($row['id']);
                 
-                if ($element->wasFound() and $element->isVisible()) {
+                if ($element->wasFound() and !$element->isPending()) {
                     $aliases[] = $row['id'];
                 }
             }
