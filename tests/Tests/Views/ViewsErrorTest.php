@@ -45,5 +45,4 @@ class ViewErrorTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertEquals('Youkok2\Views\Error', get_class($error_view));
         $this->assertEquals(503, $error_wrapper->getStatus());
     }
-
 }

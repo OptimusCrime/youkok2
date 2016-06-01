@@ -60,7 +60,7 @@ class StaticFiles extends BaseView
         $this->application->addStream(file_get_contents($file));
 
         // Send the correct content type
-        if ($file == 'favicon.png') {
+        if ($filename == 'favicon.png') {
             $this->application->setHeader('Content-Type', 'image/png');
         }
         else {

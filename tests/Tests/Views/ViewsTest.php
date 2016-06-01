@@ -70,13 +70,5 @@ class ViewsTest extends \Youkok2\Tests\YoukokTestCase
         ]);
         $this->assertEquals('Youkok2\Views\Search', get_class($search_view));
         $this->assertEquals(200, $search_wrapper->getStatus());
-
-        // StaticFiles
-        $staticfiles_wrapper = new Youkok2();
-        $staticfiles_view = $search_wrapper->load('changelog.txt', [
-            'close_db' => false
-        ]);
-        $this->assertEquals('Youkok2\Views\StaticFiles', get_class($staticfiles_view));
-        $this->assertEquals(200, $staticfiles_wrapper->getStatus());
     }
 }
