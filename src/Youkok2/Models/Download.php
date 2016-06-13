@@ -7,7 +7,7 @@
  * 
  */
 
-namespace Youkok2\models;
+namespace Youkok2\Models;
 
 use Youkok2\Models\Controllers\DownloadController;
 
