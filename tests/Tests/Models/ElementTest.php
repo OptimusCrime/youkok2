@@ -105,4 +105,94 @@ class ElementTest extends \Youkok2\Tests\YoukokTestCase
         // Check if the parent is the same object
         $this->assertEquals($element1->getId(), $element2->getParent(true)->getId());
     }
+
+    /*
+     * Test getters and setters
+     */
+
+    public function testElementGettersSetters() {
+        $element_parent = new Element();
+        $element_parent->save();
+
+        $element = new Element();
+        $element->setId(1);
+        $element->setName('foobar');
+        $element->setUrlFriendly('foo-bar');
+        $element->setOwner(10);
+        $element->setParent($element_parent->getId());
+        $element->setEmpty(true);
+        $element->setChecksum('foo');
+        $element->setMissingImage(true);
+        $element->setSize(100);
+        $element->setDirectory(true);
+        $element->setPending(true);
+        $element->setDeleted(true);
+        $element->setExam('2000-01-01 12:12:12');
+        $element->setUrl('http://www.google.com');
+        $element->setAlias('fuubar');
+        $element->setLastVisited('1999-01-01 12:12:12');
+
+        // Validate each attribute
+        $this->assertEquals(1, $element->getId());
+        $this->assertEquals('foobar', $element->getName());
+        $this->assertEquals('foo-bar', $element->getUrlFriendly());
+        $this->assertEquals(10, $element->getOwner());
+        $this->assertEquals($element_parent->getId(), $element->getParent());
+        $this->assertEquals($element_parent->getId(), $element->getParent(true)->getId());
+        $this->assertTrue($element->isEmpty());
+        $this->assertEquals('foo', $element->getChecksum());
+        $this->assertTrue($element->getMissingImage());
+        $this->assertEquals(100, $element->getSize());
+        $this->assertEquals('100 B', $element->getSize(true));
+        $this->assertTrue($element->isDirectory());
+        $this->assertTrue($element->isPending());
+        $this->assertTrue($element->isDeleted());
+        $this->assertEquals('2000-01-01 12:12:12', $element->getExam());
+        $this->assertEquals('1. jan 2000', $element->getExam(true));
+        $this->assertEquals('http://www.google.com', $element->getUrl());
+        $this->assertEquals('fuubar', $element->getAlias());
+        $this->assertEquals('1999-01-01 12:12:12', $element->getLastVisited());
+    }
+
+    /*
+     * Test create by array
+     */
+
+    public function testElementCreateByArray() {
+        $element = new Element([
+            'id' => 999
+        ]);
+        $this->assertEquals(999, $element->getId());
+    }
+
+    /*
+     * Test create by URL
+     */
+
+    public function testElementCreateByString() {
+        // Create new element
+        $element_new = new Element();
+        $element_new->setUrlFriendly('foo-bar-bat');
+        $element_new->setPending(false);
+        $element_new->setEmpty(false);
+        $element_new->save();
+
+        // Try to fetch element with given URL
+        $element = new Element('foo-bar-bat');
+
+        // Match elements
+        $this->assertEquals($element_new->getId(), $element->getId());
+    }
+
+    /*
+     * Test static methods
+     */
+
+    public function testElementStaticMethods() {
+        $element = new Element();
+        $element->save();
+
+        $this->assertNotNull(Element::get($element->getId()));
+        $this->assertNull(Element::foobar());
+    }
 }

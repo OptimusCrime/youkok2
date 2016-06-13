@@ -117,7 +117,7 @@ class ElementController extends BaseController
         // Clean the pieces
         $url_pieces = [];
         foreach ($url_pieces_temp as $k => $v) {
-            if ($k > 0 and strlen($v) > 0) {
+            if ($v != 'last-ned' and $v != 'redirect' and strlen($v) > 0) {
                 $url_pieces[] = $v;
             }
         }
