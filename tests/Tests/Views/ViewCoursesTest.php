@@ -14,7 +14,9 @@ use Youkok2\Models\Element;
 
 class ViewCoursesTest extends \Youkok2\Tests\YoukokTestCase
 {
-    protected static $doTeardown = true;
+    public static function tearDownAfterClass() {
+        parent::doTearDownAfterClass();
+    }
 
     public function testViewCourses() {
         // Add two courses

@@ -13,6 +13,10 @@ use Youkok2\Models\ChangePassword;
 
 class ChangePasswordTest extends \Youkok2\Tests\YoukokTestCase
 {
+    public static function tearDownAfterClass() {
+        parent::doTearDownAfterClass();
+    }
+
     public function testChangePasswordtSave() {
         // Create new changepassword
         $change_password = new ChangePassword();

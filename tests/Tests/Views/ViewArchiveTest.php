@@ -14,7 +14,9 @@ use Youkok2\Models\Element;
 
 class ViewArchiveTest extends \Youkok2\Tests\YoukokTestCase
 {
-    protected static $doTeardown = true;
+    public static function tearDownAfterClass() {
+        parent::doTearDownAfterClass();
+    }
 
     public function testViewArchive() {
         // Course

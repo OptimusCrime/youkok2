@@ -13,6 +13,10 @@ use Youkok2\Models\Message;
 
 class MessageTest extends \Youkok2\Tests\YoukokTestCase
 {
+    public static function tearDownAfterClass() {
+        parent::doTearDownAfterClass();
+    }
+
     public function testMessageDefault() {
         // Create message
         $message = new Message();
@@ -70,17 +74,21 @@ class MessageTest extends \Youkok2\Tests\YoukokTestCase
         $message2 = new Message();
         $message2->setTimeStart('2000-01-01 12:12:12');
         $message2->setTimeEnd('2001-01-01 12:12:12');
+        $message2->setPattern('foo');
+        $message2->setMessage('bar');
         $message2->save();
 
         // Fetch the saved instance
         $message_fetched = new Message($message2->getId());
         $this->assertEquals($message2->getId(), $message_fetched->getId());
+        $this->assertEquals('foo', $message_fetched->getPattern());
+        $this->assertEquals('bar', $message_fetched->getMessage());
     }
 
     public function testDownloadStaticMethods() {
         $message = new Message();
         $message->setTimeStart('2000-01-01 12:12:12');
-        $message->setTimeEnd('2045-01-01 12:12:12');
+        $message->setTimeEnd('2035-01-01 12:12:12');
         $message->save();
 
         $this->assertNotNull(Message::getMessages('*'));

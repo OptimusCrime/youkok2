@@ -16,7 +16,9 @@ use Youkok2\Utilities\Utilities;
 
 class ViewFrontpageTest extends \Youkok2\Tests\YoukokTestCase
 {
-    protected static $doTeardown = true;
+    public static function tearDownAfterClass() {
+        parent::doTearDownAfterClass();
+    }
 
     public function testViewFrontpageKill() {
         // Create the wrapper

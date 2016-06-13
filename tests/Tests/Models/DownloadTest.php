@@ -13,6 +13,10 @@ use Youkok2\Models\Download;
 
 class DownloadTest extends \Youkok2\Tests\YoukokTestCase
 {
+    public static function tearDownAfterClass() {
+        parent::doTearDownAfterClass();
+    }
+
     public function testDownloadDefault() {
         // Create download
         $download = new Download();

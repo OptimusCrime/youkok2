@@ -13,6 +13,10 @@ use Youkok2\Models\Element;
 
 class ElementTest extends \Youkok2\Tests\YoukokTestCase
 {
+    public static function tearDownAfterClass() {
+        parent::doTearDownAfterClass();
+    }
+
     public function testElementDefault() {
         // Create new element
         $element = Element::get();
