@@ -13,16 +13,10 @@ use Youkok2\Models\Download;
 
 class DownloadTest extends \Youkok2\Tests\YoukokTestCase
 {
-
-    /*
-     * Test element default values
-     */
-
     public function testDownloadDefault() {
         // Create download
         $download = new Download();
 
-        // Stuff that should be null
         $this->assertNull($download->getId());
         $this->assertNull($download->getFile());
         $this->assertEquals('CURRENT_TIMESTAMP', $download->getDownloadedTime());
@@ -30,10 +24,6 @@ class DownloadTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertNull($download->getAgent());
         $this->assertNull($download->getUser());
     }
-
-    /*
-     * Test element save
-     */
 
     public function testDownloadSave() {
         // Create new download
@@ -66,10 +56,6 @@ class DownloadTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertEquals('Opera', $download->getAgent());
         $this->assertEquals(100, $download->getUser());
     }
-
-    /*
-     * Test create by array
-     */
 
     public function testDownloadCreateBy() {
         // By array

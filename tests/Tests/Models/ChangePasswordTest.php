@@ -13,10 +13,6 @@ use Youkok2\Models\ChangePassword;
 
 class ChangePasswordTest extends \Youkok2\Tests\YoukokTestCase
 {
-    /*
-     * Test object save
-     */
-
     public function testChangePasswordtSave() {
         // Create new changepassword
         $change_password = new ChangePassword();
@@ -33,9 +29,6 @@ class ChangePasswordTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertTrue(is_numeric($change_password->getId()));
     }
 
-    /*
-     * Test create by hash
-     */
     public function testChangePasswordCreateByHash() {
         // Create new changepassword
         $change_password = new ChangePassword();
@@ -53,9 +46,6 @@ class ChangePasswordTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertNotNull($change_password_fetched);
     }
 
-    /*
-     * Test create by array
-     */
     public function testChangePasswordCreateByArray() {
         // Create a new array with the data
         $arr = [

@@ -13,11 +13,6 @@ use Youkok2\Models\Element;
 
 class ElementTest extends \Youkok2\Tests\YoukokTestCase
 {
-
-    /*
-     * Test element default values
-     */
-
     public function testElementDefault() {
         // Create new element
         $element = Element::get();
@@ -42,10 +37,6 @@ class ElementTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertEquals(0, $element->isDeleted());
     }
 
-    /*
-     * Test element save
-     */
-
     public function testElementSave() {
         // Create new element
         $element = Element::get();
@@ -60,10 +51,6 @@ class ElementTest extends \Youkok2\Tests\YoukokTestCase
         // Check that element was saved
         $this->assertTrue(is_numeric($element->getId()));
     }
-
-    /*
-     * Test getter functionality
-     */
 
     public function testElementGet() {
         // Create element
@@ -80,10 +67,6 @@ class ElementTest extends \Youkok2\Tests\YoukokTestCase
         $element_collection2 = Element::get(-1);
         $this->assertFalse($element_collection2->wasFound());
     }
-
-    /*
-     * Test element relationship
-     */
 
     public function testElementRelationship() {
         // Create element1
@@ -105,10 +88,6 @@ class ElementTest extends \Youkok2\Tests\YoukokTestCase
         // Check if the parent is the same object
         $this->assertEquals($element1->getId(), $element2->getParent(true)->getId());
     }
-
-    /*
-     * Test getters and setters
-     */
 
     public function testElementGettersSetters() {
         $element_parent = new Element();
@@ -156,20 +135,12 @@ class ElementTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertEquals('1999-01-01 12:12:12', $element->getLastVisited());
     }
 
-    /*
-     * Test create by array
-     */
-
     public function testElementCreateByArray() {
         $element = new Element([
             'id' => 999
         ]);
         $this->assertEquals(999, $element->getId());
     }
-
-    /*
-     * Test create by URL
-     */
 
     public function testElementCreateByString() {
         // Create new element
@@ -185,10 +156,6 @@ class ElementTest extends \Youkok2\Tests\YoukokTestCase
         // Match elements
         $this->assertEquals($element_new->getId(), $element->getId());
     }
-
-    /*
-     * Test static methods
-     */
 
     public function testElementStaticMethods() {
         $element = new Element();
