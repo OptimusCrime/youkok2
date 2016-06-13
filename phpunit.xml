@@ -16,6 +16,7 @@
     <testsuites>
         <testsuite name="Youkok2">
             <directory>./tests/</directory>
+            <exclude>./tests/Tests/Views/</exclude>
         </testsuite>
     </testsuites>
 
