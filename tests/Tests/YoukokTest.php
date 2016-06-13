@@ -34,6 +34,7 @@ class YoukokTest extends \Youkok2\Tests\YoukokTestCase
         // Assert the getters
         $this->assertEquals('foobar', $youkok->getWrapper());
         $this->assertEquals('bar', $youkok->getHeader('foo'));
+        $this->assertEquals('bar', $youkok->getHeaders()['foo']);
         $this->assertNull($youkok->getHeader('bar'));
         $this->assertEquals(1, count($youkok->getStreams()));
         $this->assertEquals('foobar', $youkok->getStreams()[0]);
@@ -104,5 +105,57 @@ class YoukokTest extends \Youkok2\Tests\YoukokTestCase
         $youkok_processor = new Youkok2();
         $youkok_processor->load('processor/foobar');
         $this->assertNotNull($youkok_processor);
+    }
+
+    public function testYoukokSend() {
+        // Internal send
+        $youkok1 = new Youkok2();
+        $youkok1->send('foobar');
+        $this->assertEquals('/foobar', $youkok1->getHeader('location'));
+
+        // External send
+        $youkok2 = new Youkok2();
+        $youkok2->send('http://www.google.com', true);
+        $this->assertEquals('http://www.google.com', $youkok2->getHeader('location'));
+
+        // Internal send with code
+        $youkok3 = new Youkok2();
+        $youkok3->send('foobar', false, 301);
+        $this->assertEquals('/foobar', $youkok3->getHeader('location'));
+        $this->assertEquals(301, $youkok3->getStatus());
+    }
+
+    public function testYoukokRedirect() {
+        $youkok = new Youkok2();
+        $youkok->load('kokeboka/foobar');
+
+        // Make sure our loading turns into a redirect
+        $this->assertEquals('http://localhost/emner/foobar', $youkok->getHeader('location'));
+        $this->assertEquals(301, $youkok->getStatus());
+    }
+
+    public function testYoukokLoadOverwrite() {
+        $youkok = new Youkok2();
+        $youkok_overwrite_view = $youkok->load('/', [
+            'overwrite' => true,
+            'overwrite_target' => 'sok',
+            'overwrite_settings' => []
+        ]);
+
+        // Make sure overwriting the view worked
+        $this->assertEquals(200, $youkok->getStatus());
+        $this->assertEquals('Youkok2\Views\Search', get_class($youkok_overwrite_view));
+    }
+
+    public function testYoukokLoadMethod() {
+        // Load without method
+        $youkok1 = new Youkok2();
+        $youkok1->load('/');
+        $this->assertEquals(200, $youkok1->getStatus());
+
+        // Load with method
+        $youkok2 = new Youkok2();
+        $youkok2->load('changelog.txt');
+        $this->assertEquals(200, $youkok2->getStatus());
     }
 }
