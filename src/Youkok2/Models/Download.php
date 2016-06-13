@@ -76,7 +76,7 @@ class Download extends BaseModel
             'user' => [
                 'type' => 'integer',
                 'null' => true,
-                'default' => 'null',
+                'default' => null,
                 'db' => true,
                 'arr' => true,
             ],
