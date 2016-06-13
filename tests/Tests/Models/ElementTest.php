@@ -122,6 +122,7 @@ class ElementTest extends \Youkok2\Tests\YoukokTestCase
         $element->setParent($element_parent->getId());
         $element->setEmpty(true);
         $element->setChecksum('foo');
+        $element->setMimeType('foo/bar');
         $element->setMissingImage(true);
         $element->setSize(100);
         $element->setDirectory(true);
@@ -141,6 +142,7 @@ class ElementTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertEquals($element_parent->getId(), $element->getParent(true)->getId());
         $this->assertTrue($element->isEmpty());
         $this->assertEquals('foo', $element->getChecksum());
+        $this->assertEquals('foo/bar', $element->getMimeType());
         $this->assertTrue($element->getMissingImage());
         $this->assertEquals(100, $element->getSize());
         $this->assertEquals('100 B', $element->getSize(true));
