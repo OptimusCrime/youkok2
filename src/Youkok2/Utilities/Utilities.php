@@ -96,7 +96,7 @@ class Utilities
      */
 
     public static function generateSalt() {
-        return md5(rand(0, 10000000000)) . "-" . md5(time()) . "DHGDKJDHGkebabSJHingridvoldKEfggfgf";
+        return md5(rand(0, 10000000000)) . "-" . md5(time()) . "dl7fTxPQkzSfMiCqY704aetj9Se2jfYURBAySs8y";
     }
     
     /*

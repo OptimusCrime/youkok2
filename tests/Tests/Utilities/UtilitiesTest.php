@@ -13,11 +13,6 @@ use Youkok2\Utilities\Utilities;
 
 class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
 {
-    
-    /*
-     * Test prettifySQLDate
-     */
-    
     public function testPrettifySQLDate() {
         // Generate some dates
         $date1 = Utilities::prettifySQLDate('2014-11-11 12:00:00', false);
@@ -36,10 +31,6 @@ class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertEquals($date6_with_time, '1. jan 2000 @ 23:59:00');
     }
     
-    /*
-     * Make sure urlSafe is correct
-     */
-    
     public function testUrlSafe() {
         // Generate some filenames
         $special_chars = Utilities::urlSafe('`foo!"#¤%&/()=?bar');
@@ -53,10 +44,6 @@ class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertEquals($url_with_spaces, 'foo-bar-foo');
     }
     
-    /*
-     * Test password hashing
-     */
-    
     public function testHashPassword() {
         // Generate some hashes
         $password1 = Utilities::hashPassword('foo', 'barasdasdkjhasdjkhasdlkjhasd');
@@ -67,10 +54,6 @@ class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
             '773ac6bb269ae0a0d4f4bhsleeasdasdkjhayolo');
         $this->assertEquals($password2, '$2y$12$barasdasdkjhasdjkhasdeKy3gq3G2zIikAdXB4n.v5E1cv68wsqu');
     }
-    
-    /*
-     * Test password fuckup
-     */
     
     public function testPasswordFuckup() {
         // Generate some hashes
@@ -83,10 +66,6 @@ class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertEquals($password1, $password_fuckup);
     }
     
-    /*
-     * Test reverse password fuckup
-     */
-    
     public function testReversePasswordFuckup() {
         // Generate some hashes
         $password1 = Utilities::hashPassword('foo', 'barasdasdkjhasdjkhasdlkjhasd');
@@ -97,10 +76,6 @@ class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
         // Test them
         $this->assertEquals($password2, $reverse_fuckup);
     }
-    
-    /*
-     * Test pretty filesizes
-     */
     
     public function testPrettifyFilesize() {
         $size1 = Utilities::prettifyFilesize(10);
@@ -117,5 +92,14 @@ class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertEquals($size4, '953 MB');
         $this->assertEquals($size5, '0');
         $this->assertEquals($size6, '-10');
+    }
+
+    public function testRandomString() {
+        $random = Utilities::generateSalt();
+        $random_split = explode('-', $random);
+
+        // Validate correct length
+        $this->assertEquals(32, strlen($random_split[0]));
+        $this->assertEquals(72, strlen($random_split[1]));
     }
 }
