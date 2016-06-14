@@ -206,45 +206,55 @@ class Me
         // Check if logged in
         if ($this->user === null) {
             // Okey
-            if (isset($_POST['login-email']) and isset($_POST['login-pw']) and isset($_POST['_token'])) {
+            if ($this->app->getPost('login-email') !== null and $this->app->getPost('login-pw') !== null and
+                $this->app->getPost('_token') !== null) {
                 // Check CSRF token
-                if (!CsrfManager::validateSignature($_POST['_token'])) {
+                try {
+                    CsrfManager::validateSignature($this->app->getPost('_token'));
+                }
+                catch (\Exception $e) {
                     $this->app->setStatus(400);
                     return;
                 }
                 
                 // Try to fetch email
-                $get_login_user  = "SELECT id, email, password" . PHP_EOL;
+                $get_login_user  = "SELECT id, email, password, nick, module_settings, last_seen, " . PHP_EOL;
+                $get_login_user .= "karma, karma_pending, banned" . PHP_EOL;
                 $get_login_user .= "FROM user" . PHP_EOL;
                 $get_login_user .= "WHERE email = :email";
 
                 $get_login_user_query = Database::$db->prepare($get_login_user);
-                $get_login_user_query->execute([':email' => $_POST['login-email']]);
+                $get_login_user_query->execute([':email' => $this->app->getPost('login-email')]);
                 $row = $get_login_user_query->fetch(\PDO::FETCH_ASSOC);
 
                 // Check result
                 if (isset($row['id'])) {
                     $hash = Utilities::reverseFuckup($row['password']);
                     // Try to match with password from the database
-                    if (password_verify($_POST['login-pw'], $hash)) {
+                    if (password_verify($this->app->getPost('login-pw'), $hash)) {
                         // Check remember me
-                        if (isset($_POST['login-remember']) and $_POST['login-remember'] == 'remember') {
+
+                        if ($this->app->getPost('login-remember') == 'remember') {
                             $remember_me = true;
                         }
                         else {
-                            $remember_me = true;
+                            $remember_me = false;
                         }
 
                         // Set login
-                        $this->setLogin($row['password'], $_POST['login-email'], $remember_me);
+                        $this->setLogin($row['password'], $this->app->getPost('login-email'), $remember_me);
+
+                        // Set user
+                        $this->user = new User($row);
 
                         // Add message
                         MessageManager::addMessage($this->app, 'Du er nå logget inn.', 'success');
 
                         // Check if we should redirect the user back to the previous page
-                        if (strstr($_SERVER['HTTP_REFERER'], URL) !== false) {
+                        if ($this->app->getServer('HTTP_REFERER') !== null and
+                            strpos($this->app->getServer('HTTP_REFERER'), URL) !== false) {
                             // Has referer, remove base
-                            $clean_referer = str_replace(URL_FULL, '', $_SERVER['HTTP_REFERER']);
+                            $clean_referer = str_replace(URL_FULL, '', $this->app->getServer('HTTP_REFERER'));
 
                             // Check if anything left
                             if (strlen($clean_referer) > 0 and $clean_referer != 'logg-inn') {
@@ -270,10 +280,10 @@ class Me
                         );
                         
                         // Set session
-                        $this->app->setSession(login_correct_email, $row['email']);
+                        $this->app->setSession('login_correct_email', $row['email']);
                         
                         // Redirect
-                        $this->app->send(TemplateHelper::urlFor('logg-inn'));
+                        $this->app->send(TemplateHelper::urlFor('auth_login'));
                     }
                 }
                 else {
@@ -285,7 +295,7 @@ class Me
                     );
 
                     // Redirect
-                    $this->app->send(TemplateHelper::urlFor('logg-inn'));
+                    $this->app->send(TemplateHelper::urlFor('auth_login'));
                 }
             }
             else {
@@ -328,7 +338,7 @@ class Me
 
     public function logOut() {
         // Check if logged in
-        if ($this->user !== null and $_GET['_token']) {
+        if ($this->user !== null and $this->app->getPost('_token')) {
             // Unset session
             $this->app->clearSession('youkok2');
             
@@ -344,9 +354,10 @@ class Me
         }
 
         // Check if we should redirect the user back to the previous page
-        if (strstr($_SERVER['HTTP_REFERER'], URL) !== false) {
+        if ($this->app->getServer('HTTP_REFERER') !== null and
+            strstr($this->app->getServer('HTTP_REFERER'), URL) !== false) {
             // Has referer, remove base
-            $clean_referer = str_replace(URL_FULL, '', $_SERVER['HTTP_REFERER']);
+            $clean_referer = str_replace(URL_FULL, '', $this->app->getServer('HTTP_REFERER'));
             
             // Check if anything left
             if (strlen($clean_referer) > 0) {

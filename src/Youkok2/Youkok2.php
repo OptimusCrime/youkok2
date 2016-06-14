@@ -22,8 +22,9 @@ class Youkok2
     private $streams;
     private $sessions;
     private $cookies;
-    private $post; // TODO
-    private $get; // TODO
+    private $post;
+    private $get;
+    private $server;
     private $files; // TODO
     
     /*
@@ -37,6 +38,9 @@ class Youkok2
         $this->streams = [];
         $this->sessions = [];
         $this->cookies = [];
+        $this->post = [];
+        $this->get = [];
+        $this->server = [];
 
         // Set default response
         $this->setStatus(200);
@@ -49,6 +53,9 @@ class Youkok2
     public function setInformation() {
         $this->sessions = $_SESSION;
         $this->cookies = $_COOKIE;
+        $this->post = $_POST;
+        $this->get = $_GET;
+        $this->server = $_SERVER;
     }
     
     /*
@@ -197,6 +204,18 @@ class Youkok2
             unset($this->cookies[$key]);
         }
     }
+
+    public function setPost($key, $value) {
+        $this->post[$key] = $value;
+    }
+
+    public function setGet($key, $value) {
+        $this->get[$key] = $value;
+    }
+
+    public function setServer($key, $value) {
+        $this->server[$key] = $value;
+    }
     
     /*
      * Various getters
@@ -249,5 +268,26 @@ class Youkok2
 
     public function getCookies() {
         return $this->cookies;
+    }
+
+    public function getPost($key) {
+        if (isset($this->post[$key])) {
+            return $this->post[$key];
+        }
+        return null;
+    }
+
+    public function getGet($key) {
+        if (isset($this->get[$key])) {
+            return $this->get[$key];
+        }
+        return null;
+    }
+
+    public function getServer($key) {
+        if (isset($this->server[$key])) {
+            return $this->server[$key];
+        }
+        return null;
     }
 }
