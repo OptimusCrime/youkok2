@@ -44,7 +44,7 @@ class UserTest extends \Youkok2\Tests\YoukokTestCase
         // Save user
         $user->save();
 
-        // Check that message was saved
+        // Check that user was saved
         $this->assertTrue(is_numeric($user->getId()));
     }
 
