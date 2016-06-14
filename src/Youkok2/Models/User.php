@@ -100,9 +100,9 @@ class User extends BaseModel
                 'arr' => true,
             ],
             'banned' => [
-                'type' => 'integer',
+                'type' => 'boolean',
                 'null' => false,
-                'default' => 0,
+                'default' => false,
                 'db' => true,
                 'arr' => true,
                 'is' => true
