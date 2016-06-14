@@ -63,16 +63,16 @@ class Karma extends BaseModel
                 'db' => true,
             ],
             'pending' => [
-                'type' => 'integer',
+                'type' => 'boolean',
                 'null' => false,
-                'default' => 1,
+                'default' => true,
                 'db' => true,
                 'is' => true
             ],
             'state' => [
-                'type' => 'integer',
+                'type' => 'boolean',
                 'null' => false,
-                'default' => 1,
+                'default' => true,
                 'db' => true,
             ],
             'added' => [
