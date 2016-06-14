@@ -71,10 +71,9 @@ class History extends BaseModel
                 'arr' => true,
             ],
             'visible' => [
-                'method' => 'visible',
-                'type' => 'integer',
+                'type' => 'boolean',
                 'null' => false,
-                'default' => 1,
+                'default' => true,
                 'db' => true,
                 'is' => true
             ],
