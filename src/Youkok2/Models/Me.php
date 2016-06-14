@@ -69,11 +69,13 @@ class Me
                 if (isset($row['id'])) {
                     // Create a new instace of the user object
                     $this->user = new User($row);
-                } else {
-                    // Unset all
-                    $this->app->clearSession('youkok2');
-                    $this->app->clearCookie('youkok2');
                 }
+            }
+
+            if ($this->user === null) {
+                // Unset all
+                $this->app->clearSession('youkok2');
+                $this->app->clearCookie('youkok2');
             }
         }
     }
