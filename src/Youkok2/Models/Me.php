@@ -104,7 +104,7 @@ class Me
 
             if ($this->app->getCookie('module_settings') !== null and
                 strlen($this->app->getCookie('module_settings') !== null) > 0) {
-                $settings_data = $this->app->getCookie('module_settings') !== null;
+                $settings_data = $this->app->getCookie('module_settings');
             }
         }
         
@@ -135,9 +135,9 @@ class Me
         elseif ($key == 'module1_delta' or $key == 'module2_delta') {
             return 3;
         }
-        else {
-            return null;
-        }
+
+        // If we got this far, we should just return null
+        return null;
         
     }
 
@@ -338,7 +338,7 @@ class Me
 
     public function logOut() {
         // Check if logged in
-        if ($this->user !== null and $this->app->getPost('_token')) {
+        if ($this->user !== null and $this->app->getGet('_token')) {
             // Unset session
             $this->app->clearSession('youkok2');
             
@@ -385,6 +385,11 @@ class Me
             // Set favorites to array
             $this->favorites = [];
 
+            // Check if we are logged in
+            if ($this->user === null) {
+                return $this->favorites;
+            }
+
             // Run query
             $get_favorites  = "SELECT f.file" . PHP_EOL;
             $get_favorites .= "FROM favorite AS f" . PHP_EOL;
@@ -414,9 +419,11 @@ class Me
         if ($this->favorites === null) {
             $this->getFavorites();
         }
-        
-        if (in_array($id, $this->favorites)) {
-            return true;
+
+        foreach ($this->favorites as $v) {
+            if ($v->getId() == $id) {
+                return true;
+            }
         }
         
         // If we came all this was, it is not a favorite

@@ -10,7 +10,10 @@
 namespace Youkok2\Tests\Models;
 
 use Youkok2\Youkok2;
+use Youkok2\Models\Element;
+use Youkok2\Models\Favorite;
 use Youkok2\Models\Me;
+use Youkok2\Models\Karma;
 use Youkok2\Models\User;
 use Youkok2\Utilities\CsrfManager;
 use Youkok2\Utilities\Utilities;
@@ -99,11 +102,63 @@ class MeTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testMeGetModuleSettings() {
+        // Get empty module settings
+        $app1 = new Youkok2();
+        $me1 = new Me($app1);
+        $this->assertNull($me1->getModuleSettings());
 
+        // Get the default module settings for module1/modul2 delta
+        $app2 = new Youkok2();
+        $me2 = new Me($app2);
+        $this->assertEquals($me2->getModuleSettings('module1_delta'), 3);
+
+        // Get empty/none-existing key
+        $app3 = new Youkok2();
+        $me3 = new Me($app3);
+        $this->assertNull($me3->getModuleSettings('foobar'));
+
+        // Get from cookie
+        $app4 = new Youkok2();
+        $app4->setCookie('module_settings', json_encode(['foo' => 'bar']));
+        $me4 = new Me($app4);
+        $module_settings_from_cookie_all = $me4->getModuleSettings();
+        $this->assertEquals($me4->getModuleSettings('foo'), 'bar');
+        $this->assertEquals(gettype($module_settings_from_cookie_all), 'array');
+        $this->assertTrue(isset($module_settings_from_cookie_all['foo']));
+        $this->assertEquals($module_settings_from_cookie_all['foo'], 'bar');
+
+        // Get from user
+        $app5 = new Youkok2();
+        $hash = Utilities::hashPassword('foobar', Utilities::generateSalt());
+        $user = new User();
+        $user->setEmail('foo@bar.com');
+        $user->setPassword($hash);
+        $user->setModuleSettings(json_encode(['foo' => 'bar']));
+        $user->save();
+        $app5->setSession('youkok2', Me::generateLoginString($hash, 'foo@bar.com'));
+        $me5 = new Me($app5);
+        $this->assertEquals($me5->getModuleSettings('foo'), 'bar');
     }
 
     public function testMeSetModuleSettings() {
+        // Set simple module setting to not logged in
+        $app1 = new Youkok2();
+        $me1 = new Me($app1);
+        $me1->setModuleSettings('foo', 'bar');
+        $this->assertEquals($me1->getModuleSettings('foo'), 'bar');
+        $cookie_content = json_decode($app1->getCookie('module_settings'), true);
+        $this->assertEquals($cookie_content['foo'], 'bar');
 
+        // Set module setting to logged in user
+        $app2 = new Youkok2();
+        $app2->setSession('youkok2', self::createUser('foo@bar.com', 'bar'));
+
+        // Create new Me instance
+        $me2 = new Me($app2);
+        $me2->setModuleSettings('foo', 'bat');
+        $this->assertEquals($me2->getModuleSettings('foo'), 'bat');
+        $cookie_content = $app2->getCookie('module_settings');
+        $this->assertNull($cookie_content);
     }
 
     public function testMeSetNick() {
@@ -151,7 +206,38 @@ class MeTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testMeAccesses() {
+        // Test lot logged in or anything
+        $app1 = new Youkok2();
+        $me1 = new Me($app1);
+        $this->assertFalse($me1->isLoggedIn());
+        $this->assertFalse($me1->isAdmin());
+        $this->assertFalse($me1->hasKarma());
+        $this->assertFalse($me1->canContribute());
 
+        // Test logged in
+        $app2 = new Youkok2();
+        $app2->setSession('youkok2', self::createUser('foo2@bar.com', 'bar'));
+        $me2 = new Me($app2);
+        $this->assertTrue($me2->isLoggedIn());
+        $this->assertFalse($me2->isAdmin());
+        $this->assertTrue($me2->hasKarma());
+        $this->assertTrue($me2->canContribute());
+
+        // Change to admin
+        $me2->setId(10000);
+        $this->assertTrue($me2->isAdmin());
+
+        // Decrease karma
+        $me2->setKarma(0);
+        $this->assertFalse($me2->hasKarma());
+        $this->assertFalse($me2->canContribute());
+
+        // Test logged in but banned
+        $app3 = new Youkok2();
+        $app3->setSession('youkok2', self::createUser('foo3@bar.com', 'bar'));
+        $me3 = new Me($app3);
+        $me3->setBanned(true);
+        $this->assertFalse($me3->canContribute());
     }
 
     public function testMeLogin() {
@@ -261,12 +347,26 @@ class MeTest extends \Youkok2\Tests\YoukokTestCase
 
         // Assert correct referer handling
         $this->assertEquals('/', $app9->getHeader('location'));
-
-
     }
 
     public function testMeSetLogin() {
+        // Session
+        $app1 = new Youkok2();
+        $app1->setCookie('youkok2', 'foobar');
+        $app1->setSession('youkok2', 'foobar');
+        $me1 = new Me($app1);
+        $me1->setLogin('hash1', 'email1');
+        $this->assertNull($app1->getCookie('youkok2'));
+        $this->assertEquals($app1->getSession('youkok2'), Me::generateLoginString('hash1', 'email1'));
 
+        // Cookie
+        $app2 = new Youkok2();
+        $app2->setCookie('youkok2', 'foobar');
+        $app2->setSession('youkok2', 'foobar');
+        $me2 = new Me($app1);
+        $me2->setLogin('hash2', 'email2', true);
+        $this->assertNull($app1->getSession('youkok2'));
+        $this->assertEquals($app1->getCookie('youkok2'), Me::generateLoginString('hash2', 'email2'));
     }
 
     public function testMeGenerateLoginString() {
@@ -274,26 +374,142 @@ class MeTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testMeLogout() {
+        // Check that we are redirected if we attempt to log out while not logged in
+        $app1 = new Youkok2();
+        $me1 = new Me($app1);
+        $me1->logOut();
+        $this->assertEquals('/', $app1->getHeader('location'));
 
+        // Test successful logout without referer
+        $app2 = new Youkok2();
+        $app2->setGet('_token', 'foobar');
+        $app2->setSession('youkok2', self::createUser('foo@bar.com', 'bar'));
+        $me2 = new Me($app2);
+        $me2->logOut();
+        $this->assertNull($app2->getSession('youkok2'));
+        $this->assertEquals('/', $app2->getHeader('location'));
+
+        // Test successful logout with referer
+        $app3 = new Youkok2();
+        $app3->setGet('_token', 'foobar');
+        $app3->setSession('youkok2', self::createUser('foo2@bar.com', 'bar'));
+        $app3->setServer('HTTP_REFERER', URL_FULL . 'foobar');
+        $me3 = new Me($app3);
+        $me3->logOut();
+        $this->assertEquals('/foobar', $app3->getHeader('location'));
+
+        // Test login with referer (empty)
+        $app4 = new Youkok2();
+        $app4->setGet('_token', 'foobar');
+        $app4->setSession('youkok2', self::createUser('foo3@bar.com', 'bar'));
+        $app4->setServer('HTTP_REFERER', URL_FULL);
+        $me4 = new Me($app4);
+        $me4->logOut();
+        $this->assertEquals('/', $app4->getHeader('location'));
     }
 
-    public function testMeGetFavorites() {
+    public function testMeFavorites() {
+        // Create hash and email
+        $app = new Youkok2();
+        $hash = Utilities::hashPassword('foo', Utilities::generateSalt());
 
-    }
+        // Create user object
+        $user = new User();
+        $user->setEmail('foo@bar.com');
+        $user->setPassword($hash);
+        $user->save();
 
-    public function testMeIsFavorite() {
+        // Create the login session
+        $token = Me::generateLoginString($hash, 'foo@bar.com');
+        $app->setSession('youkok2', $token);
 
+        // Create element
+        $element = new Element();
+        $element->setUrlFriendly('foo-bar-bat');
+        $element->setPending(false);
+        $element->setEmpty(false);
+        $element->save();
+
+        // Create favorite
+        $favorite = new Favorite();
+        $favorite->setFile($element->getId());
+        $favorite->setUser($user->getId());
+        $favorite->save();
+
+        // Create me
+        $me = new Me($app);
+
+        // Get all favorites
+        $favorites = $me->getFavorites();
+
+        // Make sure we got the favorite we added
+        $this->assertEquals($element->getId(), $favorites[0]->getId());
+
+        // Check if is indeed a favorite
+        $this->assertFalse($me->isFavorite(99999999));
+        $this->assertTrue($me->isFavorite($element->getId()));
+
+        // Fetch by is favorite first
+        $app2 = new Youkok2();
+        $me2 = new Me($app2);
+        $this->assertFalse($me2->isFavorite(999999));
     }
 
     public function testMeGetKarmaElements() {
+        // Create hash and email
+        $app = new Youkok2();
+        $hash = Utilities::hashPassword('foo', Utilities::generateSalt());
 
+        // Create user object
+        $user = new User();
+        $user->setEmail('foo@bar.com');
+        $user->setPassword($hash);
+        $user->save();
+
+        // Create the login session
+        $token = Me::generateLoginString($hash, 'foo@bar.com');
+        $app->setSession('youkok2', $token);
+
+        // Create karma object
+        $karma = new Karma();
+        $karma->setUser($user->getId());
+        $karma->setFile(3);
+        $karma->setValue(10);
+        $karma->save();
+
+        // Create me
+        $me = new Me($app);
+
+        // Get karma elements
+        $karma_objects = $me->getKarmaElements();
+
+        // Make sure we returned the correct karma element
+        $this->assertEquals($karma_objects[0]->getId(), $karma->getId());
+        $this->assertEquals($karma_objects[0]->getUser(), $user->getId());
     }
 
     public function testMeUpdateSave() {
+        // Update
+        $app1 = new Youkok2();
+        $app1->setSession('youkok2', self::createUser('foo1@bar.com', 'bar'));
+        $me1 = new Me($app1);
+        $me1->setNick('foobar');
+        $me1->update();
 
-    }
+        // Get user from id
+        $user1 = new User($me1->getId());
+        $this->assertEquals($user1->getNick(), 'foobar');
 
-    public function testMeStaticMethods() {
+        // Save
+        $app2 = new Youkok2();
+        $me2 = new Me($app2);
+        $me2->create();
+        $me2->setNick('foobat');
+        $me2->setPassword('foobar');
+        $me2->setEmail('foo@bar.com');
+        $me2->save();
 
+        $user2 = new User($me2->getId());
+        $this->assertEquals($user2->getNick(), 'foobat');
     }
 }

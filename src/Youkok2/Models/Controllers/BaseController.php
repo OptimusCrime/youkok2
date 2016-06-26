@@ -306,8 +306,7 @@ abstract class BaseController
         // Build query string
         $query_string  = "UPDATE `" . $this->schema['meta']['table'] . "`" . PHP_EOL;
         $query_string .= "SET " . implode(', ', $update_arr) . PHP_EOL;
-        $query_string .= "WHERE `id` = :id" . PHP_EOL;
-        $query_string .= "LIMIT 1";
+        $query_string .= "WHERE `id` = :id";
         
         $result = Database::$db->prepare($query_string);
         $result->execute($values_arr);
