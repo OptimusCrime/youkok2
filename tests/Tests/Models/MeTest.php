@@ -138,6 +138,18 @@ class MeTest extends \Youkok2\Tests\YoukokTestCase
         $app5->setSession('youkok2', Me::generateLoginString($hash, 'foo@bar.com'));
         $me5 = new Me($app5);
         $this->assertEquals($me5->getModuleSettings('foo'), 'bar');
+
+        // Get broken 1
+        $app6 = new Youkok2();
+        $app6->setCookie('module_settings', null);
+        $me6 = new Me($app6);
+        $this->assertNull($me6->getModuleSettings());
+
+        // Get broken 2
+        $app7 = new Youkok2();
+        $app7->setCookie('module_settings', 10);
+        $me7 = new Me($app7);
+        $this->assertNull($me7->getModuleSettings());
     }
 
     public function testMeSetModuleSettings() {

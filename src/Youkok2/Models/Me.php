@@ -101,9 +101,8 @@ class Me
         }
         else {
             // Check if cookie is set
-
             if ($this->app->getCookie('module_settings') !== null and
-                strlen($this->app->getCookie('module_settings') !== null) > 0) {
+                strlen($this->app->getCookie('module_settings')) > 0) {
                 $settings_data = $this->app->getCookie('module_settings');
             }
         }
