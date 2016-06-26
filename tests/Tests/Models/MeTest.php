@@ -141,15 +141,16 @@ class MeTest extends \Youkok2\Tests\YoukokTestCase
 
         // Get broken 1
         $app6 = new Youkok2();
-        $app6->setCookie('module_settings', null);
+        $app6->setSession('youkok2', self::createUser('foo6@bar.com', 'bar'));
         $me6 = new Me($app6);
-        $this->assertNull($me6->getModuleSettings());
+        $me6->setModuleSettings(null);
+        $this->assertNull($me6->getModuleSettings('foobar'));
 
         // Get broken 2
         $app7 = new Youkok2();
         $app7->setCookie('module_settings', 10);
         $me7 = new Me($app7);
-        $this->assertNull($me7->getModuleSettings());
+        $this->assertNull($me7->getModuleSettings('foobar'));
     }
 
     public function testMeSetModuleSettings() {
