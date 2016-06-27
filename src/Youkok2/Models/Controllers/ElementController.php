@@ -66,20 +66,38 @@ class ElementController extends BaseController
     public static $single = 1;
     
     public static $timeIntervals = [
-        // All
-        'WHERE a.pending = 0 AND a.deleted = 0',
+        'mysql' => [
+            // All
+            'WHERE a.pending = 0 AND a.deleted = 0',
 
-        // Day
-        'WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24)) AND a.pending = 0 AND a.deleted = 0',
+            // Day
+            'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.pending = 0 AND a.deleted = 0',
 
-        // Week
-        'WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 7)) AND a.pending = 0 AND a.deleted = 0',
+            // Week
+            'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 7 DAY) AND a.pending = 0 AND a.deleted = 0',
 
-        // Month
-        "WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 30)) AND a.pending = 0 AND a.deleted = 0",
+            // Month
+            'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.pending = 0 AND a.deleted = 0',
 
-        // Year
-        'WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 365)) AND a.pending = 0 AND a.deleted = 0',
+            // Year
+            'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.pending = 0 AND a.deleted = 0',
+        ],
+        'sqlite' => [
+            // All
+            'WHERE a.pending = 0 AND a.deleted = 0',
+
+            // Day
+            'WHERE d.downloaded_time >= datetime("now", "-1 day") AND a.pending = 0 AND a.deleted = 0',
+
+            // Week
+            'WHERE d.downloaded_time >= datetime("now", "-7 days")  AND a.pending = 0 AND a.deleted = 0',
+
+            // Month
+            'WHERE d.downloaded_time >= datetime("now", "-1 month")  AND a.pending = 0 AND a.deleted = 0',
+
+            // Year
+            'WHERE d.downloaded_time >= datetime("now", "-1 year")  AND a.pending = 0 AND a.deleted = 0',
+        ]
     ];
     
     /*
@@ -237,7 +255,7 @@ class ElementController extends BaseController
     public function getDownloadCount($delta) {
         // Get the delta index
         $index = 0;
-        foreach (self::$timeIntervals as $k => $v) {
+        foreach (self::$timeIntervals[DATABASE_ADAPTER] as $k => $v) {
             if ($k == $delta) {
                 $index = $k;
                 break;
@@ -250,7 +268,7 @@ class ElementController extends BaseController
             $get_download_count  = "SELECT COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
             $get_download_count .= "FROM download d" . PHP_EOL;
             $get_download_count .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
-            $get_download_count .= self::$timeIntervals[$index] . PHP_EOL;
+            $get_download_count .= self::$timeIntervals[DATABASE_ADAPTER][$index] . PHP_EOL;
             $get_download_count .= "AND d.file = :file";
             
             $get_download_count_query = Database::$db->prepare($get_download_count);

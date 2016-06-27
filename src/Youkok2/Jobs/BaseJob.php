@@ -8,22 +8,18 @@
 
 namespace Youkok2\Jobs;
 
-use Youkok2\Youkok2;
-
-abstract class BaseJob extends Youkok2
+interface BaseJob
 {
 
     /*
      * Job will be overridden here
      */
     
-    public function run() {
-    }
+    public function run();
     
     /*
      * Ran once the job is done
      */
     
-    public function done() {
-    }
+    public function done();
 }

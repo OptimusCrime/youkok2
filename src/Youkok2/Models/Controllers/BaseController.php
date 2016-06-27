@@ -211,8 +211,17 @@ abstract class BaseController
 
                 // Get bindings and the actual value
                 if (isset($v['default']) and $v['default'] === 'CURRENT_TIMESTAMP') {
-                    // Handle edge case for CURRENT_TIMESTAMP inserts
-                    $bindings_arr[] = 'CURRENT_TIMESTAMP';
+                    // Check if we have a value set
+                    $value = call_user_func_array([$this->model, $method], []);
+                    if ($value === null or strlen($value) == 0) {
+                        // Handle edge case for CURRENT_TIMESTAMP inserts
+                        $bindings_arr[] = 'CURRENT_TIMESTAMP';
+                    }
+                    else {
+                        // Although default value is current timestamp, we have a defined value
+                        $bindings_arr[] = $binding;
+                        $values_arr[$binding] = $value;
+                    }
                 }
                 else {
                     // Get value

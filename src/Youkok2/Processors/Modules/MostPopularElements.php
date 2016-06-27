@@ -58,7 +58,7 @@ class MostPopularElements extends ModuleProcessor
         $get_most_popular  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
         $get_most_popular .= "FROM download d" . PHP_EOL;
         $get_most_popular .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
-        $get_most_popular .= ElementController::$timeIntervals[$delta_numeric] . PHP_EOL;
+        $get_most_popular .= ElementController::$timeIntervals[DATABASE_ADAPTER][$delta_numeric] . PHP_EOL;
         $get_most_popular .= "GROUP BY d.file" . PHP_EOL;
         $get_most_popular .= "HAVING COUNT(d.id) > 0" . PHP_EOL;
         $get_most_popular .= "ORDER BY downloaded_times DESC, a.added DESC" . PHP_EOL;

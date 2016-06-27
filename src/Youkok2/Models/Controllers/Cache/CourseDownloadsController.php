@@ -10,6 +10,7 @@
 namespace Youkok2\Models\Controllers\Cache;
 
 use Youkok2\Models\Controllers\BaseController;
+use Youkok2\Utilities\CacheManager;
 
 class CourseDownloadsController extends BaseController
 {
@@ -19,20 +20,38 @@ class CourseDownloadsController extends BaseController
      */
     
     public static $timeIntervals = [
-        // All
-        '',
+        'mysql' => [
+            // All
+            'WHERE a.pending = 0 AND a.deleted = 0',
 
-        // Day
-        'WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24)) AND a.pending = 0 AND a.deleted = 0',
+            // Day
+            'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND a.pending = 0 AND a.deleted = 0',
 
-        // Week
-        'WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 7)) AND a.pending = 0 AND a.deleted = 0',
+            // Week
+            'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 7 DAY) AND a.pending = 0 AND a.deleted = 0',
 
-        // Month
-        'WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 30)) AND a.pending = 0 AND a.deleted = 0',
+            // Month
+            'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH) AND a.pending = 0 AND a.deleted = 0',
 
-        // Year
-        'WHERE d.downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 365)) AND a.pending = 0 AND a.deleted = 0',
+            // Year
+            'WHERE d.downloaded_time >= DATE_SUB(NOW(), INTERVAL 1 YEAR) AND a.pending = 0 AND a.deleted = 0',
+        ],
+        'sqlite' => [
+            // All
+            'WHERE a.pending = 0 AND a.deleted = 0',
+
+            // Day
+            'WHERE d.downloaded_time >= datetime("now", "-1 day") AND a.pending = 0 AND a.deleted = 0',
+
+            // Week
+            'WHERE d.downloaded_time >= datetime("now", "-7 days")  AND a.pending = 0 AND a.deleted = 0',
+
+            // Month
+            'WHERE d.downloaded_time >= datetime("now", "-1 month")  AND a.pending = 0 AND a.deleted = 0',
+
+            // Year
+            'WHERE d.downloaded_time >= datetime("now", "-1 year")  AND a.pending = 0 AND a.deleted = 0',
+        ]
     ];
     
     /*

@@ -15,7 +15,7 @@ use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;
 use Youkok2\Youkok2;
 
-class CourseDownloadUpdater extends Youkok2
+class CourseDownloadUpdater extends Youkok2 implements BaseJob
 {
 
     /*
@@ -48,7 +48,8 @@ class CourseDownloadUpdater extends Youkok2
         $get_downloads_in_period  = "SELECT d.file as 'id', COUNT(d.id) as 'downloaded_times'" . PHP_EOL;
         $get_downloads_in_period .= "FROM download d" . PHP_EOL;
         $get_downloads_in_period .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
-        $get_downloads_in_period .= CourseDownloadsController::$timeIntervals[$interval_index] . PHP_EOL;
+        $get_downloads_in_period .= CourseDownloadsController::$timeIntervals[DATABASE_ADAPTER][$interval_index] .
+            PHP_EOL;
         $get_downloads_in_period .= "GROUP BY d.file" . PHP_EOL;
         $get_downloads_in_period .= "HAVING COUNT(d.id) > 0" . PHP_EOL;
         $get_downloads_in_period .= "ORDER BY downloaded_times DESC, a.added DESC" . PHP_EOL;
