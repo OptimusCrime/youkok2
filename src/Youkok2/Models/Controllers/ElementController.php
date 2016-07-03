@@ -510,7 +510,7 @@ class ElementController extends BaseController
      */
 
     public function hasParent() {
-        return $this->model->getParent() != null and $this->model->getParent() != 1;
+        return $this->model->getParent() != null;
     }
     public function isLink() {
         return ($this->model->getUrl() != null);
@@ -555,7 +555,7 @@ class ElementController extends BaseController
                     $temp_element = $temp_element->getParent(true);
                 }
                 else {
-                    $this->rootParent = &$temp_element;
+                    $this->rootParent = $temp_element;
                     break;
                 }
             }
