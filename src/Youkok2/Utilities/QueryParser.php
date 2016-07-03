@@ -12,7 +12,7 @@ namespace Youkok2\Utilities;
 class QueryParser
 {
 
-    private static $query;
+    private $youkok;
     private $basePath;
     private $fullPath;
     private $pathLength;
@@ -21,13 +21,16 @@ class QueryParser
      * Constructor
      */
     
-    public function __construct() {
-        // Cleaup
-        $this->getBasePath();
+    public function __construct($youkok) {
+        // Store reference to youkok
+        $this->youkok = $youkok;
+
+        // Get the path
+        $this->getRequestQuery();
     }
     
-    private function getBasePath() {
-        $request_path = self::getQuery();
+    private function getRequestQuery() {
+        $request_path = $this->getRequest();
         
         if (isset($request_path)) {
             // We have a path, find the base-path to include the correct script
@@ -90,11 +93,11 @@ class QueryParser
      *  * Get request path
      */
 
-    public static function getQuery() {
+    public function getRequest() {
         // Check if we are running built in server or apache/nginx
-        if (isset($_SERVER['SERVER_SOFTWARE']) and
-            strpos($_SERVER['SERVER_SOFTWARE'], 'Development Server') !== false) {
-            $request_url = $_SERVER['REQUEST_URI'];
+        if ($this->youkok->getServer('SERVER_SOFTWARE') !== null and
+            strpos($this->youkok->getServer('SERVER_SOFTWARE'), 'Development Server') !== false) {
+            $request_url = $this->youkok->getServer('REQUEST_URI');
 
             // Check if request uri has additional information (? params)
             if (strpos($request_url, '?') !== false) {
@@ -106,7 +109,7 @@ class QueryParser
         }
         else {
             // Apache/nginx/etc
-            return (isset($_GET['q']) ? $_GET['q'] : '/');
+            return (($this->youkok->getGet('q') !== null) ? $this->youkok->getGet('q') : '/');
         }
     }
     

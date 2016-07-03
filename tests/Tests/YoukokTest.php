@@ -88,6 +88,22 @@ class YoukokTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertNull($youkok->getCookie('foo'));
     }
 
+    public function testYoukokPost() {
+        // Create new Youkok2
+        $youkok = new Youkok2();
+        $youkok->setPost('foo', 'bar');
+        $this->assertEquals('bar', $youkok->getPost('foo'));
+        $this->assertNull($youkok->getPost('bat'));
+    }
+
+    public function testYoukokGet() {
+        // Create new Youkok2
+        $youkok = new Youkok2();
+        $youkok->setGet('foo', 'bar');
+        $this->assertEquals('bar', $youkok->getGet('foo'));
+        $this->assertNull($youkok->getGet('bat'));
+    }
+
     public function testYoukokLoading() {
         // Make sure loading works and does not crash if supplied null as settings in load
         $youkok_empty_settings = new Youkok2();
