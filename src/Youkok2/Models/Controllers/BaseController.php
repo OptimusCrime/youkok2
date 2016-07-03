@@ -68,47 +68,50 @@ abstract class BaseController
             }
         }
         else {
-            // Not cached, find out what to fetch
-            $query_arr = [];
-            foreach ($this->schema['fields'] as $k => $v) {
-                if (isset($v['db']) and $v['db']) {
-                    $query_arr[] = '`' . $this->schema['meta']['table'] . '`.`'  . $k . '`';
-                }
-            }
-
-            // Build query string
-            $query_string  = "SELECT " . implode(', ', $query_arr) . PHP_EOL;
-            $query_string .= "FROM `" . $this->schema['meta']['table'] . '`' . PHP_EOL;
-            $query_string .= "WHERE `id` = :id" . PHP_EOL;
-
-            // Get db record
-            $result = Database::$db->prepare($query_string);
-            $result->execute([
-                ':id' => $id
-            ]);
-            $row = $result->fetch(\PDO::FETCH_ASSOC);
-
-            // Check if anything was returned
-            if (isset($row['id'])) {
-                // Loop the fields in the schema
+            if (!isset($this->schema['meta']['queryable']) or (isset($this->schema['meta']['queryable']) and
+                    $this->schema['meta']['queryable'])) {
+                // Not cached, find out what to fetch
+                $query_arr = [];
                 foreach ($this->schema['fields'] as $k => $v) {
-                    // Check if this field is a database field
-                    if (isset($v['db']) and isset($row[$k])) {
-                        // Find out what method to call
-                        $method = 'set' . ucfirst($k);
-                        if (isset($v['method'])) {
-                            $method = 'set' . ucfirst($v['method']);
-                        }
-
-                        // Set the data
-                        call_user_func_array([$this->model, $method], [$row[$k]]);
+                    if (isset($v['db']) and $v['db']) {
+                        $query_arr[] = '`' . $this->schema['meta']['table'] . '`.`' . $k . '`';
                     }
                 }
 
-                // Check if we should cache the element
-                if ($this->schema['meta']['cacheable']) {
-                    // Add to cache queue
-                    $this->cache();
+                // Build query string
+                $query_string = "SELECT " . implode(', ', $query_arr) . PHP_EOL;
+                $query_string .= "FROM `" . $this->schema['meta']['table'] . '`' . PHP_EOL;
+                $query_string .= "WHERE `id` = :id" . PHP_EOL;
+
+                // Get db record
+                $result = Database::$db->prepare($query_string);
+                $result->execute([
+                    ':id' => $id
+                ]);
+                $row = $result->fetch(\PDO::FETCH_ASSOC);
+
+                // Check if anything was returned
+                if (isset($row['id'])) {
+                    // Loop the fields in the schema
+                    foreach ($this->schema['fields'] as $k => $v) {
+                        // Check if this field is a database field
+                        if (isset($v['db']) and isset($row[$k])) {
+                            // Find out what method to call
+                            $method = 'set' . ucfirst($k);
+                            if (isset($v['method'])) {
+                                $method = 'set' . ucfirst($v['method']);
+                            }
+
+                            // Set the data
+                            call_user_func_array([$this->model, $method], [$row[$k]]);
+                        }
+                    }
+
+                    // Check if we should cache the element
+                    if ($this->schema['meta']['cacheable']) {
+                        // Add to cache queue
+                        $this->cache();
+                    }
                 }
             }
         }

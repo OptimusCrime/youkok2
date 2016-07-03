@@ -98,6 +98,6 @@ class CourseDownloadUpdater extends Youkok2 implements BaseJob
         $course_downloads->setData(json_encode($result_array));
         
         // Cache the element
-        $course_downloads->cache();
+        $course_downloads->save();
     }
 }

@@ -11,6 +11,8 @@ namespace Youkok2\Models;
 
 class BaseModel
 {
+    protected $controller;
+    protected $schema;
 
     /*
      * Set default values for the model

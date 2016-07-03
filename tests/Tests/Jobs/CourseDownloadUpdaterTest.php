@@ -13,6 +13,7 @@ use Youkok2\Models\Download;
 use Youkok2\Models\Element;
 use Youkok2\Models\Cache\CourseDownloads;
 use Youkok2\Jobs\CourseDownloadUpdater;
+use Youkok2\Utilities\CacheManager;
 
 class CourseDownloadUpdaterTest extends \Youkok2\Tests\YoukokTestCase
 {

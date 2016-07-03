@@ -8,6 +8,9 @@
 
 namespace Youkok2\Jobs;
 
+/**
+ * @codeCoverageIgnore
+ */
 interface BaseJob
 {
 

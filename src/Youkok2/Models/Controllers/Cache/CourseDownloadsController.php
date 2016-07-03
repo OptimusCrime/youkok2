@@ -9,10 +9,7 @@
 
 namespace Youkok2\Models\Controllers\Cache;
 
-use Youkok2\Models\Controllers\BaseController;
-use Youkok2\Utilities\CacheManager;
-
-class CourseDownloadsController extends BaseController
+class CourseDownloadsController extends CacheModelController
 {
     
     /*
@@ -59,7 +56,7 @@ class CourseDownloadsController extends BaseController
      */
     
     public static $cacheKey = 'cd';
-    
+
     /*
      * Constructor
      */
