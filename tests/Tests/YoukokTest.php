@@ -112,7 +112,8 @@ class YoukokTest extends \Youkok2\Tests\YoukokTestCase
 
         // Make sure loading using QueryParser always work
         $youkok_query_parser = new Youkok2();
-        $youkok_query_parser->load(new QueryParser(), [
+        $youkok_query_parser->setGet('q', '');
+        $youkok_query_parser->load(new QueryParser($youkok_query_parser), [
             'close_db' => false
         ]);
         $this->assertNotNull($youkok_query_parser);

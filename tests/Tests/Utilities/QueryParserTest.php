@@ -12,7 +12,7 @@ namespace Youkok2\Tests\Utilities;
 use Youkok2\Youkok2;
 use Youkok2\Utilities\QueryParser;
 
-class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
+class QueryParserTest extends \Youkok2\Tests\YoukokTestCase
 {
     public function testQueryParser() {
         $youkok = new Youkok2();
