@@ -151,6 +151,12 @@ class MeTest extends \Youkok2\Tests\YoukokTestCase
         $app7->setCookie('module_settings', 10);
         $me7 = new Me($app7);
         $this->assertNull($me7->getModuleSettings('foobar'));
+
+        // Get broken 3
+        $app8 = new Youkok2();
+        $app8->setCookie('module_settings', json_encode(['foo' => 'bar']));
+        $me8 = new Me($app8);
+        $this->assertNull($me8->getModuleSettings('bat'));
     }
 
     public function testMeSetModuleSettings() {
