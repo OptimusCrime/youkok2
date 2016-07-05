@@ -17,6 +17,10 @@ class Utilities
      */
     
     public static function prettifySQLDate($d, $include_time = true) {
+        if ($d == 'CURRENT_TIMESTAMP') {
+            $d = date('Y-m-d  G:i:s');
+        }
+
         $norwegian_months = ['jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep',
                                  'okt', 'nov', 'des'];
         

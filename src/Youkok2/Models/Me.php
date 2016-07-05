@@ -87,7 +87,11 @@ class Me
     public function create() {
         $this->user = new User();
     }
-    
+
+    public function getUser() {
+        return $this->user;
+    }
+
     /*
      * Getters (override for storing information in the User object)
      */

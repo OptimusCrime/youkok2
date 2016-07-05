@@ -143,7 +143,7 @@ class MeTest extends \Youkok2\Tests\YoukokTestCase
         $app6 = new Youkok2();
         $app6->setSession('youkok2', self::createUser('foo6@bar.com', 'bar'));
         $me6 = new Me($app6);
-        $me6->setModuleSettings(null);
+        $me6->getUser()->setModuleSettings(null);
         $this->assertNull($me6->getModuleSettings('foobar'));
 
         // Get broken 2

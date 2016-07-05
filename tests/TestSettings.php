@@ -7,6 +7,11 @@
  *
  */
 
+// Domain and port
+define('PORT', '');
+define('DOMAIN', 'localhost');
+define('URL_RELATIVE', '/');
+
 // Directories
 define('TEST_PATH', dirname(__FILE__));
 define('BASE_PATH', dirname(TEST_PATH));
