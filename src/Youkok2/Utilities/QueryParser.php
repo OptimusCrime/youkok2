@@ -13,9 +13,7 @@ class QueryParser
 {
 
     private $youkok;
-    private $basePath;
-    private $fullPath;
-    private $pathLength;
+    private $path;
     
     /*
      * Constructor
@@ -31,61 +29,39 @@ class QueryParser
     
     private function getRequestQuery() {
         $request_path = $this->getRequest();
-        
-        if (isset($request_path)) {
-            // We have a path, find the base-path to include the correct script
-            if ($request_path == '' or $request_path == '/') {
-                // Store the paths first
-                $this->basePath = '/';
-                $this->fullPath = '/';
-                
-                // Set path length to 1
-                $this->pathLength = 1;
+
+        // We have a path, find the base-path to include the correct script
+        if ($request_path == null or $request_path == '' or $request_path == '/') {
+            // Store the paths first
+            $this->path = '/';
+        }
+        elseif (strpos($request_path, '/') !== false) {
+            // We have multiple slashed, use the first which has a length one as base for path-lookup
+            $path_split = explode('/', $request_path);
+
+            // Clean the path
+            $path_clean = [];
+            foreach ($path_split as $path_split_seq) {
+                $path_split_seq_clean = str_replace(['/', ' '], '', $path_split_seq);
+                if (strlen($path_split_seq_clean) > 0) {
+                    $path_clean[] = $path_split_seq_clean;
+                }
             }
-            elseif (strpos($request_path, '/') !== false) {
-                // We have multiple slashed, use the first which has a length one as base for path-lookup
-                $path_split = explode('/', $request_path);
-                
-                // Clean the path
-                $path_clean = [];
-                foreach ($path_split as $path_split_seq) {
-                    if (strlen($path_split_seq) > 0) {
-                        $path_clean[] = $path_split_seq;
-                    }
-                }
-                
-                // Check if anything was found after cleaning
-                if (count($path_clean) > 0) {
-                    $this->basePath = '/' . $path_clean[0];
-                    $this->pathLength = count($path_clean);
-                }
-                else {
-                    // Simply set the entire url as params, something is fucked
-                    $this->basePath = '/' . $request_path;
-                    
-                    // Get number of slashes in string
-                    $this->pathLength = substr_count($request_path, '/');
-                }
-                
-                // Set full path to everything either way
-                $this->fullPath = '/' . $request_path;
+
+            // Check if anything was found after cleaning
+            if (count($path_clean) > 1) {
+                $this->path = '/' . implode('/', $path_clean);
+            }
+            elseif (count($path_clean) == 1) {
+                $this->path = '/' . $path_clean[0];
             }
             else {
-                // Store the paths first
-                $this->basePath = '/' . $request_path;
-                $this->fullPath = '/' . $request_path;
-                
-                // Set path length to 1
-                $this->pathLength = 1;
+                $this->path = '/';
             }
         }
         else {
-            // Store full path
-            $this->basePath = '/';
-            $this->fullPath = '/';
-            
-            // Set path length to 1
-            $this->pathLength = 1;
+            // Store the paths first
+            $this->path = '/' . $request_path;
         }
     }
 
@@ -93,7 +69,7 @@ class QueryParser
      *  * Get request path
      */
 
-    public function getRequest() {
+    private function getRequest() {
         // Check if we are running built in server or apache/nginx
         if ($this->youkok->getServer('SERVER_SOFTWARE') !== null and
             strpos($this->youkok->getServer('SERVER_SOFTWARE'), 'Development Server') !== false) {
@@ -114,6 +90,6 @@ class QueryParser
     }
     
     public function getPath() {
-        return $this->fullPath;
+        return $this->path;
     }
 }
