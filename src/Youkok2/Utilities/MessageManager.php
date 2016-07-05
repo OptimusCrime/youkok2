@@ -139,7 +139,7 @@ class MessageManager
         }
 
         // Get the current file messages
-        $regular_messages = $app->getSession('youkok2_files');
+        $regular_messages = $app->getSession('youkok2_message');
         if (!is_array($regular_messages)) {
             $regular_messages = [];
         }

@@ -26,8 +26,9 @@ class CsrfManager
 
     public static function init() {
         // New instance
-        self::$signer = new SignatureGenerator(CSRF_KEY);
-        //self::$signer->setValidityWindow(time() + 3600);
+        if (self::$signer === null) {
+            self::$signer = new SignatureGenerator(CSRF_KEY);
+        }
     }
     
     /*
@@ -35,10 +36,7 @@ class CsrfManager
      */
     
     public static function getSignature() {
-        // Checks if we have to init first
-        if (self::$signer === null) {
-            self::init();
-        }
+        self::init();
         
         // Return signature
         return self::$signer->getSignature();
@@ -49,10 +47,7 @@ class CsrfManager
      */
     
     public static function validateSignature($token) {
-        // Checks if we have to init first
-        if (self::$signer === null) {
-            self::init();
-        }
+        self::init();
         
         // Return signature
         return self::$signer->validateSignature($token);
