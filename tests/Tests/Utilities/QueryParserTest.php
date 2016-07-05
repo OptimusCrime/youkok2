@@ -19,6 +19,6 @@ class QueryParserTest extends \Youkok2\Tests\YoukokTestCase
         $youkok->setGet('q', '/');
 
         $query = new QueryParser($youkok);
-        $this->assertEquals('/', $query);
+        $this->assertEquals('/', $query->getPath());
     }
 }
