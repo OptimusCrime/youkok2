@@ -9,7 +9,7 @@
 
 namespace Youkok2\Models;
 
-use Youkok2\Models\Controllers\FavoriteController;
+use Youkok2\Models\Controllers\BaseController;
 
 class Favorite extends BaseModel
 {
@@ -72,7 +72,7 @@ class Favorite extends BaseModel
      */
 
     public function __construct($data = null) {
-        $this->controller = new FavoriteController($this);
+        $this->controller = new BaseController(null, $this);
 
         /*
          * Set some default values

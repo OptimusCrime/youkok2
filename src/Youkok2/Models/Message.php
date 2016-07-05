@@ -9,7 +9,7 @@
 
 namespace Youkok2\Models;
 
-use Youkok2\Models\Controllers\MessageController;
+use Youkok2\Models\Controllers\BaseController;
 use Youkok2\Models\StaticControllers\MessageStaticController;
 
 class Message extends BaseModel
@@ -89,7 +89,7 @@ class Message extends BaseModel
      */
 
     public function __construct($data = null) {
-        $this->controller = new MessageController($this);
+        $this->controller = new BaseController(null, $this);
 
         /*
          * Set some default values

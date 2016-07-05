@@ -9,7 +9,7 @@
 
 namespace Youkok2\Models;
 
-use Youkok2\Models\Controllers\UserController;
+use Youkok2\Models\Controllers\BaseController;
 
 class User extends BaseModel
 {
@@ -115,7 +115,7 @@ class User extends BaseModel
      */
 
     public function __construct($data = null) {
-        $this->controller = new UserController($this);
+        $this->controller = new BaseController(null, $this);
 
         /*
          * Set some default values

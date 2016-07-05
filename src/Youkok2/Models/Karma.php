@@ -9,7 +9,7 @@
 
 namespace Youkok2\Models;
 
-use Youkok2\Models\Controllers\KarmaController;
+use Youkok2\Models\Controllers\BaseController;
 use Youkok2\Utilities\Utilities;
 
 class Karma extends BaseModel
@@ -91,7 +91,7 @@ class Karma extends BaseModel
      */
     
     public function __construct($data = null) {
-        $this->controller = new KarmaController($this);
+        $this->controller = new BaseController(null, $this);
         
         /*
          * Set some default values

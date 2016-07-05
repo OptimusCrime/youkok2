@@ -9,7 +9,7 @@
 
 namespace Youkok2\Models;
 
-use Youkok2\Models\Controllers\HistoryController;
+use Youkok2\Models\Controllers\BaseController;
 
 class History extends BaseModel
 {
@@ -85,7 +85,7 @@ class History extends BaseModel
      */
     
     public function __construct($data = null) {
-        $this->controller = new HistoryController($this);
+        $this->controller = new BaseController(null, $this);
         
         /*
          * Set some default values

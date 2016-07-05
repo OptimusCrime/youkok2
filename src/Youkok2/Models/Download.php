@@ -9,7 +9,7 @@
 
 namespace Youkok2\Models;
 
-use Youkok2\Models\Controllers\DownloadController;
+use Youkok2\Models\Controllers\BaseController;
 
 class Download extends BaseModel
 {
@@ -88,7 +88,7 @@ class Download extends BaseModel
      */
 
     public function __construct($data = null) {
-        $this->controller = new DownloadController($this);
+        $this->controller = new BaseController(null, $this);
 
         /*
          * Set some default values

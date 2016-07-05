@@ -12,7 +12,7 @@ namespace Youkok2\Models\Controllers;
 use Youkok2\Utilities\CacheManager;
 use Youkok2\Utilities\Database;
 
-abstract class BaseController
+class BaseController
 {
 
     /*
@@ -26,8 +26,15 @@ abstract class BaseController
 
     // Construct
     public function __construct($class, $model) {
-        // Set reference to class
-        $this->class = $class;
+        // Check if class it provided (meaning we have a dedicated controller)
+        if ($class !== null) {
+            // Set reference to class
+            $this->class = $class;
+
+            // Get cachekey
+            $this->cacheKey = get_class_vars(get_class($this->class))['cacheKey'];
+        }
+
 
         // Set reference to model
         $this->model = $model;
@@ -37,9 +44,6 @@ abstract class BaseController
 
         // Set errors to be empty
         $this->errors = [];
-
-        // Get cachekey
-        $this->cacheKey = get_class_vars(get_class($this->class))['cacheKey'];
     }
 
     /*
@@ -48,7 +52,8 @@ abstract class BaseController
 
     public function createById($id) {
         // Check if already cached
-        if ($this->schema['meta']['cacheable'] and CacheManager::isCached($id, $this->cacheKey)) {
+        if ($this->cacheKey !== null and $this->schema['meta']['cacheable'] and
+            CacheManager::isCached($id, $this->cacheKey)) {
             // Get cache data
             $cache_data = CacheManager::getCache($id, $this->cacheKey);
 
@@ -108,7 +113,7 @@ abstract class BaseController
                     }
 
                     // Check if we should cache the element
-                    if ($this->schema['meta']['cacheable']) {
+                    if ($this->cacheKey !== null and $this->schema['meta']['cacheable']) {
                         // Add to cache queue
                         $this->cache();
                     }

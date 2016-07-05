@@ -9,7 +9,6 @@
 
 namespace Youkok2\Models;
 
-use Youkok2\Models\User;
 use Youkok2\Utilities\CsrfManager;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
