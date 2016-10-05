@@ -1,7 +1,7 @@
 # Youkok2
 
 [![Build Status](https://travis-ci.org/OptimusCrime/youkok2.svg?branch=master)](https://travis-ci.org/OptimusCrime/youkok2)
-[![Coverage Status](https://coveralls.io/repos/github/OptimusCrime/youkok2/badge.svg)](https://coveralls.io/github/OptimusCrime/youkok2)
+[![Coverage Status](https://coveralls.io/repos/github/OptimusCrime/youkok2/badge.svg?branch=master)](https://coveralls.io/github/OptimusCrime/youkok2)
 
 
 Youkok2 is a website for NTNU students that need a helping hand. The site has a huge collection of various course resources, old exams, and much more. Youkok2 is written in PHP and is mostly a "just for fun" project by a sole developer. Feel free to contribute.
