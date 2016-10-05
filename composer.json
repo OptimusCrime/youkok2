@@ -13,14 +13,17 @@
     "require-dev": {
         "squizlabs/php_codesniffer": "^2.5",
         "phpunit/phpunit": "^5.2.9",
-        "satooshi/php-coveralls": "^1.0.1"
+        "satooshi/php-coveralls": "^1.0.1",
+        "phpmd/phpmd": "^2.4.3"
     },
     "scripts": {
         "test": [
             "@phpunit",
-            "@phpcs"
+            "@phpcs",
+            "@phpmd"
         ],
         "phpunit": "php vendor/bin/phpunit",
-        "phpcs": "php vendor/bin/phpcs"
+        "phpcs": "php vendor/bin/phpcs",
+        "phpmd": "php vendor/bin/phpmd"
     }
 }
