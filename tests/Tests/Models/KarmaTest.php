@@ -66,7 +66,6 @@ class KarmaTest extends \Youkok2\Tests\YoukokTestCase
 
         $this->assertEquals($element->getId(), $karma_fetched->getFile());
         $this->assertEquals($element->getId(), $karma_fetched->getFile(true)->getId());
-
     }
 
     public function testKarmaCreateBy() {

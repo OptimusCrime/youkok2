@@ -12,6 +12,5 @@ class ViewsProcessorTest extends \Youkok2\Tests\YoukokTestCase
             'application' => true
         ]);
         $this->assertEquals('application/json', $processor_wrapper->getHeader('Content-Type'));
-
     }
 }

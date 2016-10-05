@@ -88,6 +88,5 @@ class CacheManagerTest extends \Youkok2\Tests\YoukokTestCase
         $element_cache = Element::get($element->getId());
         
         $this->assertEquals($element->getName(), $element_cache->getName());
-        
     }
 }

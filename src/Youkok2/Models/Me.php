@@ -97,7 +97,6 @@ class Me
         }
         
         return null;
-        
     }
 
     public function setNick($nick) {
