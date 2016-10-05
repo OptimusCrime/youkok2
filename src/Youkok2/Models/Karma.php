@@ -1,37 +1,19 @@
 <?php
-/*
- * File: Karma.php
- * Holds: Holds a Karma
- * Created: 24.02.2015
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Models;
 
-use Youkok2\Models\Controllers\KarmaController;
+use Youkok2\Models\Controllers\BaseController;
 use Youkok2\Utilities\Utilities;
 
 class Karma extends BaseModel
 {
 
-    /*
-     * Variables
-     */
-
     protected $controller;
-
-    // Fields in the database
     private $id;
     private $user;
     private $file;
     private $value;
     private $pending;
     private $added;
-    
-    /*
-     * Schema
-     */
 
     protected $schema = [
         'meta' => [
@@ -39,7 +21,6 @@ class Karma extends BaseModel
             'cacheable' => false,
         ],
         'fields' => [
-            // Database fields
             'id' => [
                 'type' => 'integer',
                 'null' => false,
@@ -63,16 +44,16 @@ class Karma extends BaseModel
                 'db' => true,
             ],
             'pending' => [
-                'type' => 'integer',
+                'type' => 'boolean',
                 'null' => false,
-                'default' => 1,
+                'default' => true,
                 'db' => true,
                 'is' => true
             ],
             'state' => [
-                'type' => 'integer',
+                'type' => 'boolean',
                 'null' => false,
-                'default' => 1,
+                'default' => true,
                 'db' => true,
             ],
             'added' => [
@@ -86,22 +67,10 @@ class Karma extends BaseModel
         ]
     ];
     
-    /*
-     * Constructor
-     */
-    
     public function __construct($data = null) {
-        $this->controller = new KarmaController($this);
-        
-        /*
-         * Set some default values
-         */
+        $this->controller = new BaseController(null, $this);
 
         $this->setDefaults();
-        
-        /*
-         * Various create methods are called here
-         */
 
         if (is_numeric($data)) {
             $this->controller->createById($data);
@@ -110,10 +79,6 @@ class Karma extends BaseModel
             $this->controller->createByArray($data);
         }
     }
-    
-    /*
-     * Getters
-     */
 
     public function getId() {
         return $this->id;
@@ -136,10 +101,6 @@ class Karma extends BaseModel
     public function getAdded($pretty = false) {
         return $pretty ? Utilities::prettifySQLDate($this->added) : $this->added;
     }
-    
-    /*
-     * Setters
-     */
 
     public function setId($id) {
         $this->id = $id;

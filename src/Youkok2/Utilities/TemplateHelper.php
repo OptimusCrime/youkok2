@@ -1,26 +1,12 @@
 <?php
-/*
- * File: TemplateHelper.php
- * Holds: Methods used by smarty
- * Created: 28.11.2014
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Utilities;
 
 class TemplateHelper
 {
-
-    /*
-     * Method for reverse lookup for URL creation
-     */
-
+    
     public static function urlFor($identifier, $params = null) {
-        // Get the routes
         $routes = Routes::getRoutes();
         
-        // Find the correct route
         $route = null;
         foreach ($routes as $collection) {
             foreach ($collection as $v) {
@@ -31,12 +17,10 @@ class TemplateHelper
             }
         }
         
-        // Make sure a results was found
         if ($route === null) {
             return '';
         }
         
-        // We have a valid result, check if any params was provided
         $path = '';
         if ($params !== null) {
             // We have params, which means we have to construct a URL
@@ -52,28 +36,23 @@ class TemplateHelper
             foreach ($url_clean as $v) {
                 // Check if we have a wildecard or not present
                 if ($v != '+') {
-                    // No wildcard
                     $url_constructed[] = $v;
                 }
                 else {
-                    // Yes wildcard!
                     foreach ($params as $param) {
                         $url_constructed[] = preg_replace('/\+/', $param, $route['construct']);
                     }
                 }
             }
             
-            // Implode the final path
             $path = implode('/', $url_constructed);
         }
         else {
-            // Simplu return the path string
             $path = substr($route['path'], 1);
         }
         
         // Check if we should endfix with /
         if (isset($route['endfix']) and $route['endfix']) {
-            // We should add an endfix here
             $path .= '/';
         }
         elseif (isset($route['endfix']) and !$route['endfix']) {
@@ -86,7 +65,6 @@ class TemplateHelper
         // Replace two or more occurences of /
         $path = preg_replace('~/{2,}~', '/', $path);
         
-        // Return the final path
         return $path;
     }
 }

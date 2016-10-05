@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Register.php
- * Holds: Handlers for registering for a user
- * Created: 23.12.2014
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Processors;
 
 use Youkok2\Models\Me;
@@ -14,35 +6,20 @@ use Youkok2\Utilities\Database;
 
 class Register extends BaseProcessor
 {
-    
-    /*
-     * Override
-     */
 
     protected function requireDatabase() {
         return true;
     }
     
-    /*
-     * Always run the constructor
-     */
-    
     public function __construct($app) {
         parent::__construct($app);
     }
 
-    /*
-     * Method for checking if email is already in the system
-     */
-
     public function checkEmail() {
-        // Check if valid request
         if (isset($_POST['email'])) {
             if (isset($_POST['ignore'])) {
-                // Log the user in
                 $this->me = new Me($this->application);
                 
-                // Make sure we actually logged in
                 if ($this->me->isLoggedIn()) {
                     $check_email  = "SELECT COUNT(id) as num" . PHP_EOL;
                     $check_email .= "FROM user" . PHP_EOL;
@@ -54,7 +31,6 @@ class Register extends BaseProcessor
                         ':email_old' => $this->me->getEmail()]);
                     $row = $check_email_query->fetch(\PDO::FETCH_ASSOC);
                     
-                    // Check if flag was returned
                     if ($row['num'] > 0) {
                         $this->setData('code', 500);
                     }
@@ -63,7 +39,6 @@ class Register extends BaseProcessor
                     }
                 }
                 else {
-                    // Could not log in, can't check the email correctly
                     $this->setData('code', 500);
                 }
             }
@@ -76,7 +51,6 @@ class Register extends BaseProcessor
                 $check_email_query->execute([':email' => $_POST['email']]);
                 $row = $check_email_query->fetch(\PDO::FETCH_ASSOC);
 
-                // Check if flag was returned
                 if ($row['num'] > 0) {
                     $this->setData('code', 500);
                 }

@@ -1,44 +1,24 @@
 <?php
-/*
- * File: History.php
- * Holds: Holds a History
- * Created: 24.02.2015
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Models;
 
-use Youkok2\Models\Controllers\HistoryController;
+use Youkok2\Models\Controllers\BaseController;
 
 class History extends BaseModel
 {
 
-    /*
-     * Variables
-     */
-
     protected $controller;
-
-    // Fields in the database
     private $id;
     private $user;
     private $file;
     private $historyText;
     private $added;
     private $visible;
-    
-    /*
-     * Schema
-     */
-
     protected $schema = [
         'meta' => [
             'table' => 'history',
             'cacheable' => false,
         ],
         'fields' => [
-            // Database fields
             'id' => [
                 'type' => 'integer',
                 'null' => false,
@@ -71,32 +51,19 @@ class History extends BaseModel
                 'arr' => true,
             ],
             'visible' => [
-                'method' => 'visible',
-                'type' => 'integer',
+                'type' => 'boolean',
                 'null' => false,
-                'default' => 1,
+                'default' => true,
                 'db' => true,
                 'is' => true
             ],
         ]
     ];
     
-    /*
-     * Constructor
-     */
-    
     public function __construct($data = null) {
-        $this->controller = new HistoryController($this);
+        $this->controller = new BaseController(null, $this);
         
-        /*
-         * Set some default values
-         */
-
         $this->setDefaults();
-        
-        /*
-         * Various create methods are called here
-         */
         
         if (is_numeric($data)) {
             $this->controller->createById($data);
@@ -105,10 +72,6 @@ class History extends BaseModel
             $this->controller->createByArray($data);
         }
     }
-    
-    /*
-     * Getters
-     */
 
     public function getId() {
         return $this->id;
@@ -128,10 +91,6 @@ class History extends BaseModel
     public function isVisible() {
         return (bool) $this->visible;
     }
-    
-    /*
-     * Setters
-     */
 
     public function setId($id) {
         $this->id = $id;

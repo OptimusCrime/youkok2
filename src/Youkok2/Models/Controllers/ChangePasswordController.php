@@ -1,12 +1,4 @@
 <?php
-/*
- * File: ChangePasswordController.php
- * Holds: Controller for the model ChangePassword
- * Created: 30.12.2014
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Models\Controllers;
 
 use Youkok2\Models\Me;
@@ -14,17 +6,10 @@ use Youkok2\Utilities\Database;
 
 class ChangePasswordController extends BaseController
 {
-    /*
-     * Constructor
-     */
 
     public function __construct($model) {
         parent::__construct($this, $model);
     }
-
-    /*
-     * Create by hash
-     */
 
     public function createByHash($hash) {
         $validate_hash  = "SELECT c.id, c.user, c.timeout, u.email" . PHP_EOL;

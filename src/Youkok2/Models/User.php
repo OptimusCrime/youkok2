@@ -1,26 +1,13 @@
 <?php
-/*
- * File: User.php
- * Holds: Class for a user
- * Created: 06.11.2014
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Models;
 
-use Youkok2\Models\Controllers\UserController;
+use Youkok2\Models\Controllers\BaseController;
 
 class User extends BaseModel
 {
     
-    /*
-     * Variables
-     */
-    
     public $controller;
     
-    // Fields in the database
     private $id;
     private $email;
     private $password;
@@ -31,17 +18,12 @@ class User extends BaseModel
     private $karmaPending;
     private $banned;
     
-    /*
-     * Schema
-     */
-
     protected $schema = [
         'meta' => [
             'table' => 'user',
             'cacheable' => false,
         ],
         'fields' => [
-            // Database fields
             'id' => [
                 'type' => 'integer',
                 'null' => false,
@@ -100,32 +82,20 @@ class User extends BaseModel
                 'arr' => true,
             ],
             'banned' => [
-                'type' => 'integer',
+                'type' => 'boolean',
                 'null' => false,
-                'default' => 0,
+                'default' => false,
                 'db' => true,
                 'arr' => true,
                 'is' => true
             ],
         ]
     ];
-    
-    /*
-     * Constructor
-     */
 
     public function __construct($data = null) {
-        $this->controller = new UserController($this);
-
-        /*
-         * Set some default values
-         */
+        $this->controller = new BaseController(null, $this);
 
         $this->setDefaults();
-
-        /*
-         * Various create methods are called here
-         */
 
         if (is_numeric($data)) {
             $this->controller->createById($data);
@@ -134,10 +104,6 @@ class User extends BaseModel
             $this->controller->createByArray($data);
         }
     }
-    
-    /*
-     * Getters
-     */
     
     public function getId() {
         return $this->id;
@@ -175,10 +141,6 @@ class User extends BaseModel
     public function isBanned() {
         return $this->banned;
     }
-    
-    /*
-     * Setters
-     */
     
     public function setId($id) {
         $this->id = $id;

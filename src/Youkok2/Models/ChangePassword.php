@@ -1,12 +1,4 @@
 <?php
-/*
- * File: ChangePassword.php
- * Holds: Holds element for changing a password
- * Created: 30.12.2014
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Models;
 
 use Youkok2\Models\Controllers\ChangePasswordController;
@@ -15,21 +7,12 @@ use Youkok2\Models\StaticControllers\MessageStaticController;
 class ChangePassword extends BaseModel
 {
 
-    /*
-     * Variables
-     */
-
     protected $controller;
 
-    // Fields in the database
     private $id;
     private $user;
     private $hash;
     private $timeout;
-
-    /*
-     * Schema
-     */
 
     protected $schema = [
         'meta' => [
@@ -37,7 +20,6 @@ class ChangePassword extends BaseModel
             'cacheable' => false,
         ],
         'fields' => [
-            // Database fields
             'id' => [
                 'type' => 'integer',
                 'null' => false,
@@ -62,10 +44,6 @@ class ChangePassword extends BaseModel
         ]
     ];
 
-    /*
-     * Constructor
-     */
-
     public function __construct($data = null) {
         $this->controller = new ChangePasswordController($this);
         
@@ -76,10 +54,6 @@ class ChangePassword extends BaseModel
             $this->controller->createByArray($data);
         }
     }
-
-    /*
-     * Getters
-     */
 
     public function getId() {
         return $this->id;
@@ -93,10 +67,6 @@ class ChangePassword extends BaseModel
     public function getTimeout() {
         return $this->timeout;
     }
-
-    /*
-     * Setters
-     */
 
     public function setId($id) {
         $this->id = $id;

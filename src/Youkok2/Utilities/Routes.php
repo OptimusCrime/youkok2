@@ -1,26 +1,10 @@
 <?php
-/*
- * File: Routes.php
- * Holds: Holds all the routes the Loader matches urls against
- * Created: 02.11.2014
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Utilities;
 
 class Routes
 {
     
-    /*
-     * Used to identify processors
-     */
-    
     const PROCESSOR = '/processor';
-    
-    /*
-     * Array with routes
-     */
     
     private static $routes = [
         'Views\Frontpage' => [
@@ -197,18 +181,10 @@ class Routes
         ],
     ];
     
-    /*
-     * Array with redirects
-     */
-    
     private static $redirects = [
         'kokeboka/emner*' => 'emner*',
         'kokeboka*' => 'emner*',
     ];
-    
-    /*
-     * Return the internal variables
-     */
     
     public static function getRoutes() {
         return self::$routes;

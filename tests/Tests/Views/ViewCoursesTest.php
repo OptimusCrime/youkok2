@@ -1,12 +1,4 @@
 <?php
-/*
- * File: ViewCoursesTest.php
- * Holds: Tests the Frontpage view
- * Created: 25.05.2016
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Tests\Views;
 
 use Youkok2\Youkok2;
@@ -14,10 +6,11 @@ use Youkok2\Models\Element;
 
 class ViewCoursesTest extends \Youkok2\Tests\YoukokTestCase
 {
-    protected static $doTeardown = true;
+    public static function tearDownAfterClass() {
+        parent::doTearDownAfterClass();
+    }
 
     public function testViewCourses() {
-        // Add two courses
         $element1 = new Element();
         $element1->setName('Foo');
         $element1->setUrlFriendly('foo');
@@ -38,20 +31,17 @@ class ViewCoursesTest extends \Youkok2\Tests\YoukokTestCase
         $element2->setDeleted(false);
         $element2_save = $element2->save();
 
-        // Create view for courses
         $courses_wrapper = new Youkok2();
         $courses_wrapper->load('emner', [
             'close_db' => false
         ]);
 
-        // Assert stuff
         $this->assertTrue($element1_save);
         $this->assertNull($element1->getLastError());
 
         $this->assertTrue($element2_save);
         $this->assertNull($element2->getLastError());
 
-        // Assert that the view was loaded correctly
         $this->assertEquals(200, $courses_wrapper->getStatus());
     }
 }

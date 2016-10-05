@@ -1,61 +1,36 @@
 <?php
-/*
- * File: Flat.php
- * Holds: Class for displaying flat files
- * Created: 02.10.2013
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Views;
 
 class Flat extends BaseView
 {
     
-    /*
-     * Always run the constructor
-     */
-    
     public function __construct($app) {
         parent::__construct($app);
     }
     
-    /*
-     * Different view functions
-     */
-    
     public function displayAbout() {
-        // Turn on caching
         $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
         
-        // Assign header and title
         $this->template->assign('HEADER_MENU', 'ABOUT');
         $this->template->assign('SITE_TITLE', 'Om Youkok2');
         
-        // Display
         $this->displayAndCleanup('flat_about.tpl');
     }
     public function displayTerms() {
-        // Assign header and title
         $this->template->assign('HEADER_MENU', null);
         $this->template->assign('SITE_TITLE', 'Retningslinjer for Youkok2');
         
-        // Fix list for filendings
         $file_endings = explode(',', ACCEPTED_FILEENDINGS);
         $this->template->assign('ACCEPTED_FILEENDINGS', $file_endings);
         
-        // Display the page
         $this->displayAndCleanup('flat_retningslinjer.tpl');
     }
     public function displayHelp() {
-        // Turn on caching
         $this->template->setCaching(\Smarty::CACHING_LIFETIME_CURRENT);
         
-        // Assign header and title
         $this->template->assign('HEADER_MENU', 'HELP');
         $this->template->assign('SITE_TITLE', 'Hjelp');
         
-        // Display the page
         $this->displayAndCleanup('flat_help.tpl');
     }
 }

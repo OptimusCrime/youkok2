@@ -1,12 +1,4 @@
 <?php
-/*
- * File: local-default.php / local.php
- * Holds: Holds the settings
- * Created: 02.10.2013
- * Project: Youkok2
- * 
- */
-
 // Define if the site is available or not
 if (!defined('AVAILABLE')) {
     define('AVAILABLE', true);

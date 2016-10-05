@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Element.php
- * Holds: Holds a Element
- * Created: 11.11.2014
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Models;
 
 use Youkok2\Models\Controllers\ElementController;
@@ -16,13 +8,8 @@ use Youkok2\Utilities\Utilities;
 class Element extends BaseModel
 {
 
-    /*
-     * Variables
-     */
-
     protected $controller;
-
-    // Fields in the database
+    
     private $id;
     private $name;
     private $urlFriendly;
@@ -42,17 +29,12 @@ class Element extends BaseModel
     private $alias;
     private $lastVisited;
     
-    /*
-     * Schema
-     */
-    
     protected $schema = [
         'meta' => [
             'table' => 'archive',
             'cacheable' => true,
         ],
         'fields' => [
-            // Database fields
             'id' => [
                 'type' => 'integer',
                 'null' => false,
@@ -180,8 +162,6 @@ class Element extends BaseModel
                 'arr' => true,
                 'cache' => false,
             ],
-
-            // Additional cache fields
             'full_url' => [
                 'type' => 'string',
                 'null' => true,
@@ -199,22 +179,10 @@ class Element extends BaseModel
         ]
     ];
     
-    /*
-     * Constructor
-     */
-    
     public function __construct($data = null) {
         $this->controller = new ElementController($this);
         
-        /*
-         * Set some default values
-         */
-        
         $this->setDefaults();
-
-        /*
-         * Various create methods are called here
-         */
 
         if (is_numeric($data)) {
             $this->controller->createById($data);
@@ -226,10 +194,6 @@ class Element extends BaseModel
             $this->controller->createByUrl($data);
         }
     }
-    
-    /*
-     * Getters
-     */
 
     public function getId() {
         return $this->id;
@@ -291,10 +255,6 @@ class Element extends BaseModel
         return $this->lastVisited;
     }
 
-    /*
-     * Setters
-     */
-
     public function setId($id) {
         $this->id = $id;
     }
@@ -350,14 +310,8 @@ class Element extends BaseModel
         $this->lastVisited = $time;
     }
     
-    /*
-     * Static functions overload
-     */
-    
     public static function __callStatic($name, $arguments) {
-        // Check if method exists
         if (method_exists('Youkok2\Models\StaticControllers\ElementStaticController', $name)) {
-            // Call method and return response
             return call_user_func_array(['Youkok2\Models\StaticControllers\ElementStaticController',
                 $name], $arguments);
         }

@@ -1,25 +1,11 @@
 <?php
-/*
- * File: UtilitiesTest.php
- * Holds: Testes the Utilities class
- * Created: 25.05.2015
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Tests\Utilities;
 
 use Youkok2\Utilities\Utilities;
 
 class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
 {
-    
-    /*
-     * Test prettifySQLDate
-     */
-    
     public function testPrettifySQLDate() {
-        // Generate some dates
         $date1 = Utilities::prettifySQLDate('2014-11-11 12:00:00', false);
         $date2 = Utilities::prettifySQLDate('1999-12-30 21:00:00', false);
         $date3 = Utilities::prettifySQLDate('2000-01-01 00:00:00', false);
@@ -27,7 +13,6 @@ class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
         $date5_with_time = Utilities::prettifySQLDate('2000-01-01 01:01:00');
         $date6_with_time = Utilities::prettifySQLDate('2000-01-01 23:59:00');
         
-        // Test them
         $this->assertEquals($date1, '11. nov 2014');
         $this->assertEquals($date2, '30. des 1999');
         $this->assertEquals($date3, '1. jan 2000');
@@ -36,71 +21,43 @@ class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
         $this->assertEquals($date6_with_time, '1. jan 2000 @ 23:59:00');
     }
     
-    /*
-     * Make sure urlSafe is correct
-     */
-    
     public function testUrlSafe() {
-        // Generate some filenames
         $special_chars = Utilities::urlSafe('`foo!"#¤%&/()=?bar');
         $quotes = Utilities::urlSafe('foo\'bar"bar');
         $with_spaces = Utilities::urlSafe('foo bar  foo');
         $url_with_spaces = Utilities::urlSafe('foo bar  foo');
         
-        // Test them
         $this->assertEquals($special_chars, 'foobar');
         $this->assertEquals($quotes, 'foobarbar');
         $this->assertEquals($url_with_spaces, 'foo-bar-foo');
     }
     
-    /*
-     * Test password hashing
-     */
-    
     public function testHashPassword() {
-        // Generate some hashes
         $password1 = Utilities::hashPassword('foo', 'barasdasdkjhasdjkhasdlkjhasd');
         $password2 = Utilities::hashPassword('foo', 'barasdasdkjhasdjkhasdlkjhasd', false);
         
-        // Test them
         $this->assertEquals($password1, '$2y$12$barkebabsdjkhasdeKy3gq3G2zIikAdXB4n.v5E1cv68wsqu6071f11238e' .
             '773ac6bb269ae0a0d4f4bhsleeasdasdkjhayolo');
         $this->assertEquals($password2, '$2y$12$barasdasdkjhasdjkhasdeKy3gq3G2zIikAdXB4n.v5E1cv68wsqu');
     }
     
-    /*
-     * Test password fuckup
-     */
-    
     public function testPasswordFuckup() {
-        // Generate some hashes
         $password1 = Utilities::hashPassword('foo', 'barasdasdkjhasdjkhasdlkjhasd');
         $password2 = Utilities::hashPassword('foo', 'barasdasdkjhasdjkhasdlkjhasd', false);
         
         $password_fuckup = Utilities::passwordFuckup($password2);
         
-        // Test them
         $this->assertEquals($password1, $password_fuckup);
     }
     
-    /*
-     * Test reverse password fuckup
-     */
-    
     public function testReversePasswordFuckup() {
-        // Generate some hashes
         $password1 = Utilities::hashPassword('foo', 'barasdasdkjhasdjkhasdlkjhasd');
         $password2 = Utilities::hashPassword('foo', 'barasdasdkjhasdjkhasdlkjhasd', false);
         
         $reverse_fuckup = Utilities::reverseFuckup($password1);
         
-        // Test them
         $this->assertEquals($password2, $reverse_fuckup);
     }
-    
-    /*
-     * Test pretty filesizes
-     */
     
     public function testPrettifyFilesize() {
         $size1 = Utilities::prettifyFilesize(10);
@@ -110,12 +67,19 @@ class UtilitiesTest extends \Youkok2\Tests\YoukokTestCase
         $size5 = Utilities::prettifyFilesize(0);
         $size6 = Utilities::prettifyFilesize(-10);
 
-        // Test them
         $this->assertEquals($size1, '10 B');
         $this->assertEquals($size2, '97 kB');
         $this->assertEquals($size3, '9 MB');
         $this->assertEquals($size4, '953 MB');
         $this->assertEquals($size5, '0');
         $this->assertEquals($size6, '-10');
+    }
+
+    public function testRandomString() {
+        $random = Utilities::generateSalt();
+        $random_split = explode('-', $random);
+        
+        $this->assertEquals(32, strlen($random_split[0]));
+        $this->assertEquals(72, strlen($random_split[1]));
     }
 }

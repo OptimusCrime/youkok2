@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Profile.php
- * Holds: Views for the profile
- * Created: 02.10.2013
- * Project: Youkok2
- * 
-*/
-
 namespace Youkok2\Views;
 
 use Youkok2\Models\Me;
@@ -18,51 +10,30 @@ use Youkok2\Utilities\Utilities;
 class Profile extends BaseView
 {
     
-    /*
-     * Always run the constructor
-     */
-    
     public function __construct($app) {
         parent::__construct($app);
         
-        // Set menu
         $this->template->assign('HEADER_MENU', '');
 
-        // Make sure user us logged in
         if (!$this->me->isLoggedIn()) {
             $this->application->send('', false, 403);
         }
     }
     
-    /*
-     * Display profile settings
-     */
-    
     public function profileRedirect() {
         $this->application->send(TemplateHelper::url_for('profile_settings'));
     }
     
-    /*
-     * Display profile settings
-     */
-    
     public function profileSettings() {
-        // Set view
         $this->addSiteData('view', 'profile');
         
-        // Check what we should display
         if (!isset($_POST['source'])) {
-            // Set title
             $this->template->assign('SITE_TITLE', 'Mine innstillinger');
-
-            // For info
             $this->template->assign('USER_EMAIL', $this->me->getEmail());
 
-            // Display
             $this->displayAndCleanup('profile_settings.tpl');
         }
         else {
-            // Not submitted, display views
             if ($_POST['source'] == 'password') {
                 $this->profileUpdatePassword();
             }
@@ -75,78 +46,52 @@ class Profile extends BaseView
         }
     }
 
-    /*
-     * Display profile history
-     */
-
     public function profileHistory() {
-        // Set title
         $this->template->assign('SITE_TITLE', 'Mine historikk');
         
-        // Get the elements for this history table
         $history = $this->me->getKarmaElements();
         $this->template->assign('PROFILE_USER_HISTORY', $history);
         
-        // Display
         $this->displayAndCleanup('profile_history.tpl');
     }
-    
-    /*
-     * Update password
-     */
 
     private function profileUpdatePassword() {
-        // Check if everything is ok
         if (isset($_POST['forgotten-password-new-form-oldpassword'])
             and isset($_POST['forgotten-password-new-form-password1'])
             and isset($_POST['forgotten-password-new-form-password2'])
             and ($_POST['forgotten-password-new-form-password1'] ==
                 $_POST['forgotten-password-new-form-password2'])) {
-            // Validate old password
             if (password_verify(
                 $_POST['forgotten-password-new-form-oldpassword'],
                 Utilities::reverseFuckup($this->me->getPassword())
             )) {
-                // New hash
                 $hash_salt = Utilities::generateSalt();
                 $hash = Utilities::hashPassword($_POST['forgotten-password-new-form-password1'], $hash_salt);
 
-                // Set data
                 $this->me->setPassword($hash);
 
-                // Update
                 $this->me->update();
 
-                // Add message
                 MessageManager::addMessage($this->application, 'Passordet er endret.', 'success');
 
-                // Check if we should set more than just session
                 $set_login_cookie = false;
                 if (isset($_COOKIE['youkok2'])) {
                     $set_login_cookie = true;
                 }
 
-                // Set the login
                 $this->me->setLogin($hash, $this->me->getEmail(), $set_login_cookie);
 
-                // Do the redirect
                 $this->application->send(TemplateHelper::url_for('profile_settings'));
             }
             else {
-                // Add message
                 $message  = 'Passordet du oppga som ditt gamle passord er ikke korrekt eller de ';
                 $message .= 'nye passordene matchet ikke. Prøv igjen.';
                 MessageManager::addMessage($this->application, $message, 'danger');
 
-                // Redirect
                 $this->application->send(TemplateHelper::url_for('profile_settings'));
             }
         }
     }
-
-    /*
-     * Update profile info
-     */
 
     private function profileUpdateInfo() {
         if (isset($_POST['register-form-email']) and isset($_POST['register-form-nick'])) {
@@ -166,45 +111,33 @@ class Profile extends BaseView
                 and $_POST['register-form-email'] != $this->me->getEmail()
                 and strlen($_POST['register-form-email']) > 0
                 and filter_var($_POST['register-form-email'], FILTER_VALIDATE_EMAIL)) {
-                // Set data
                 $this->me->setEmail($_POST['register-form-email']);
-
-                // Update
                 $this->me->update();
 
-                // Update cookie/session
                 $set_login_cookie = false;
                 if (isset($_COOKIE['youkok2'])) {
                     $set_login_cookie = true;
                 }
 
-                // Try to split
                 $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $_SESSION['youkok2']);
 
-                // Set the login
                 $this->me->setLogin($hash_split[1], $_POST['register-form-email'], $set_login_cookie);
             }
 
-            // Check if we should update nick
             if (($_POST['register-form-nick'] == '' and $this->me->getNick() != '<em>Anonym</em>') or
                 ($_POST['register-form-nick'] != $this->me->getNickReal())) {
                 $this->me->setNick($_POST['register-form-nick']);
             }
 
-            // Save here
             $this->me->update();
 
-            // Add messag
             MessageManager::addMessage($this->application, 'Dine endringer er lagret.', 'success');
 
-            // Redirect
             $this->application->send(TemplateHelper::url_for('profile_settings'));
         }
         else {
-            // Add messag
             MessageManager::addMessage('Her gikk visst noe galt...', 'danger');
 
-            // Redirect
             $this->application->send(TemplateHelper::url_for('profile_settings'));
         }
     }

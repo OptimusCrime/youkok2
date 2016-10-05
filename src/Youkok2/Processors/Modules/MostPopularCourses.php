@@ -1,12 +1,4 @@
 <?php
-/*
- * File: MostPopularCourses.php
- * Holds: Change module settings
- * Created: 11.01.2015
- * Project: Youkok2
- * 
-*/
-
 namespace Youkok2\Processors\Modules;
 
 use Youkok2\Models\Element;
@@ -19,17 +11,9 @@ use Youkok2\Utilities\Database;
 class MostPopularCourses extends ModuleProcessor
 {
 
-    /*
-     * Constructor
-     */
-
     public function __construct($app) {
         parent::__construct($app);
     }
-    
-    /*
-     * Get the module
-     */
     
     public function get() {
         if ($this->getSetting('module2_delta') !== null and !is_array($this->getSetting('module2_delta'))) {
@@ -39,20 +23,16 @@ class MostPopularCourses extends ModuleProcessor
             $delta_numeric = $this->me->getModuleSettings('module2_delta');
         }
         
-        // Make sure we have a delta
         if ($delta_numeric == null or $delta_numeric < 0 or $delta_numeric > 4) {
             $delta_numeric = 3;
         }
         
-        // Get the cache from the cachemanager
         $course_downloads = CacheManager::getCache($delta_numeric, 'cd');
         
-        // Make sure the data is valid
         $collection = [];
         if (isset($course_downloads['data']) and strlen($course_downloads['data']) > 0) {
             $course_downloads_clean = json_decode($course_downloads['data'], true);
-            
-            // Make sure the data was valid json
+
             if (is_array($course_downloads_clean) and count($course_downloads_clean) > 0) {
                 foreach ($course_downloads_clean as $v) {
                     $element = Element::get($v['id']);
@@ -62,33 +42,22 @@ class MostPopularCourses extends ModuleProcessor
             }
         }
         
-        // Set the data
         $this->setData('data', $collection);
     }
     
-    /*
-     * Update the module
-     */
-    
     public function update() {
-        // Get the correct delta
         $delta_numeric = $this->getSetting('module2_delta');
         
-        // Quality check here
         if ($delta_numeric < 0 or $delta_numeric > 4) {
             $delta_numeric = 3;
         }
         
-        // Set the new delta
         $this->me->setModuleSettings('module2_delta', $delta_numeric);
         
-        // Check if we should update user preferences
         if ($this->me->isLoggedIn()) {
-            // Update user
             $this->me->update();
         }
         
-        // Run the get method
         $this->get();
     }
 }

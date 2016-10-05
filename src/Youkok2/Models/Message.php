@@ -1,27 +1,14 @@
 <?php
-/*
- * File: Message.php
- * Holds: Holds element for a message
- * Created: 10.05.2015
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Models;
 
-use Youkok2\Models\Controllers\MessageController;
+use Youkok2\Models\Controllers\BaseController;
 use Youkok2\Models\StaticControllers\MessageStaticController;
 
 class Message extends BaseModel
 {
 
-    /*
-     * Variables
-     */
-
     protected $controller;
 
-    // Fields in the database
     private $id;
     private $timeStart;
     private $timeEnd;
@@ -29,17 +16,12 @@ class Message extends BaseModel
     private $type;
     private $pattern;
 
-    /*
-     * Schema
-     */
-
     protected $schema = [
         'meta' => [
             'table' => 'message',
             'cacheable' => false,
         ],
         'fields' => [
-            // Database fields
             'id' => [
                 'type' => 'integer',
                 'null' => false,
@@ -84,22 +66,10 @@ class Message extends BaseModel
         ]
     ];
 
-    /*
-     * Constructor
-     */
-
     public function __construct($data = null) {
-        $this->controller = new MessageController($this);
-
-        /*
-         * Set some default values
-         */
-
+        $this->controller = new BaseController(null, $this);
+        
         $this->setDefaults();
-
-        /*
-         * Various create methods are called here
-         */
 
         if (is_numeric($data)) {
             $this->controller->createById($data);
@@ -108,10 +78,6 @@ class Message extends BaseModel
             $this->controller->createByArray($data);
         }
     }
-
-    /*
-     * Getters
-     */
 
     public function getId() {
         return $this->id;
@@ -132,10 +98,6 @@ class Message extends BaseModel
         return $this->pattern;
     }
 
-    /*
-     * Setters
-     */
-
     public function setId($id) {
         $this->id = $id;
     }
@@ -155,14 +117,8 @@ class Message extends BaseModel
         $this->pattern = $pattern;
     }
     
-    /*
-     * Static functions overload
-     */
-    
     public static function __callStatic($name, $arguments) {
-        // Check if method exists
         if (method_exists('Youkok2\Models\StaticControllers\MessageStaticController', $name)) {
-            // Call method and return response
             return call_user_func_array(['Youkok2\Models\StaticControllers\MessageStaticController',
                 $name], $arguments);
         }

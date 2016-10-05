@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Database.php
- * Holds: Holds the database-connection in a static class
- * Created: 02.11.14
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Utilities;
 
 use Youkok2\Utilities\BacktraceManager;
@@ -14,27 +6,16 @@ use Youkok2\Utilities\BacktraceManager;
 class Database
 {
     
-    /*
-     * Static variable that holds the database connection
-     */
-    
     public static $db;
     private $log;
     
-    /*
-     * Connect to database
-     */
-    
     public static function connect() {
         try {
-            // Handle adapters
             if (DATABASE_ADAPTER == 'mysql') {
-                // Mysql
                 self::$db = new PDO2\PDO2(DATABASE_DNS . ';dbname=' . DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, [
                     \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8']);
             }
             elseif (DATABASE_ADAPTER == 'sqlite') {
-                // Sqlite
                 self::$db = new PDO2\PDO2('sqlite:tests/files/db.sqlite3');
             }
             else {
@@ -45,13 +26,11 @@ class Database
             
             // Handle profiling for adapters that are not sqlite
             if (DATABASE_ADAPTER != 'sqlite') {
-                // Check if we should profile
                 if (defined('PROFILING') and PROFILING) {
                     self::$db->query('SET profiling_history_size = 1000');
                     self::$db->query('SET profiling = 1');
                 }
                 
-                // Turn off query caching if we are in dev mode
                 if (defined('DEV') and DEV) {
                     self::$db->query('SET SESSION query_cache_type = 0');
                 }
@@ -62,10 +41,6 @@ class Database
         }
     }
     
-    /*
-     * Get number of queries
-     */
-    
     public static function getQueryCount() {
         if (self::$db === null) {
             return null;
@@ -73,10 +48,7 @@ class Database
         
         return self::$db->getQueryCount();
     }
-    
-    /*
-     * Get the backtrace
-     */
+
     public static function getQueryBacktrace() {
         if (self::$db === null) {
             return null;
@@ -85,17 +57,9 @@ class Database
         return BacktraceManager::cleanSqlLog(self::$db->getQueryLog());
     }
     
-    /*
-     * Close connection
-     */
-    
     public static function close() {
         self::$db = null;
     }
-    
-    /*
-     * Get the total profilig duration
-     */
     
     public static function getProfilingDuration() {
         // Don't run this for tests
@@ -111,10 +75,6 @@ class Database
         
         return round(($sum * 1000), 4);
     }
-    
-    /*
-     * Get the profiling information
-     */
     
     public static function getProfilingData() {
         // Don't run this for tests

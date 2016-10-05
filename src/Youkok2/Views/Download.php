@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Download.php
- * Holds: Handling for downloading files
- * Created: 02.10.2013
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Views;
 
 use Youkok2\Models\Element;
@@ -18,30 +10,18 @@ use Youkok2\Utilities\Loader;
 class Download extends BaseView
 {
     
-    /*
-     * Always run the constructor
-     */
-    
     public function __construct($app) {
         parent::__construct($app);
     }
-    
-    /*
-     * Run the view
-     */
 
     public function run() {
-        // Displaying 404 or not
         $should_display_404 = false;
         
-        // Create new object
         $element = Element::get($this->path);
 
-        // Check if was found or invalid url
         if ($element->wasFound() and !$element->isPending() and !$element->isDeleted()) {
             $file_location = $element->getPhysicalLocation();
 
-            // Check if zip download or not
             if (!$element->isDirectory()) {
                 if (file_exists($file_location)) {
                     // Check if wget
@@ -52,14 +32,10 @@ class Download extends BaseView
                         exit;
                     }
 
-                    // Check if we should log download
                     if (!isset($_GET['donotlogthisdownload'])) {
-                        // Log download
                         $element->addDownload($this->me);
                         
-                        // Check if the current user is logged in
                         if ($this->me->isLoggedIn()) {
-                            // Clear the cache for the MeDownloads element
                             CacheManager::deleteCache($this->me->getId(), MeDownloadsController::$cacheKey);
                         }
                     }
@@ -71,7 +47,6 @@ class Download extends BaseView
                         $this->template->assign('DOWNLOAD_SIZE', $element->getSize(true));
                         $this->template->assign('DOWNLOAD_URL', $_SERVER['REQUEST_URI']);
 
-                        // Get item parent information
                         $download_parent = '';
                         $root_parent = $element->controller->getRootParent();
                         if ($root_parent != null) {
@@ -81,11 +56,9 @@ class Download extends BaseView
 
                         $this->template->assign('DOWNLOAD_PARENT', $download_parent);
 
-                        // Display fake http response for Facebook
                         $this->displayAndCleanup('download.tpl');
                     }
                     else {
-                        // Close database connection
                         $this->close();
 
                         // File exists, check if we should display or directly download
@@ -93,7 +66,6 @@ class Download extends BaseView
                         $display_instead = explode(',', DISPLAY_INSTEAD_OF_DOWNLOAD);
                         foreach ($display_instead as $v) {
                             if ($v == $element->getMimeType()) {
-                                // Display
                                 $display = true;
                                 break;
                             }
@@ -108,32 +80,23 @@ class Download extends BaseView
                     }
                 }
                 else {
-                    // File was not found, wtf
                     $should_display_404 = true;
                 }
             }
         }
         else {
-            // File is not visible
             $should_display_404 = true;
         }
 
-        // Check if we should display 404 or not
         if ($should_display_404) {
             $this->display404();
         }
     }
     
-    /*
-     * Loading an actual file for displaying
-     */
-    
     private function loadFileDisplay($file, $name) {
-        // Fetch mime type
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $file_info = finfo_file($finfo, $file);
         
-        // Set header options;
         $this->application->setHeader('Content-Type', $file_info);
         $this->application->setHeader('Content-Disposition', 'inline; filename="' . $name . '"');
         $this->application->setHeader('Expires', '0');
@@ -141,20 +104,13 @@ class Download extends BaseView
         $this->application->setHeader('Pragma', 'public');
         $this->application->setHeader('Content-Length', filesize($file));
         
-        // Read content of file
         $this->application->addStream(file_get_contents($file));
     }
-
-    /*
-     * Loading an actual file for downloading
-     */
     
     private function loadFileDownload($file, $name) {
-        // Fetch mime type
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $file_info = finfo_file($finfo, $file);
         
-        // Set header options
         $this->application->setHeader('Content-Description', 'File Transfer');
         $this->application->setHeader('Content-Type', $file_info);
         $this->application->setHeader('Content-Disposition', 'attachment; filename="' . $name . '"');
@@ -164,7 +120,6 @@ class Download extends BaseView
         $this->application->setHeader('Pragm', 'public');
         $this->application->setHeader('Content-Length', filesize($file));
         
-        // Read content of file
         $this->application->addStream(file_get_contents($file));
     }
 }

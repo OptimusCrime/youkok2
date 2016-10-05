@@ -1,12 +1,4 @@
 <?php
-/*
- * File: SyncEmpty.php
- * Holds: Syncs empty elements to their correct state
- * Created: 11.01.2015
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Processors\Tasks\Sync;
 
 use Youkok2\Models\Course;
@@ -18,36 +10,19 @@ use Youkok2\Utilities\Utilities;
 class SyncEmpty extends BaseProcessor
 {
 
-    /*
-     * Override
-     */
-
     protected function checkPermissions() {
         return $this->requireCli() or $this->requireAdmin();
     }
-    
-    /*
-     * Override
-     */
 
     protected function requireDatabase() {
         return true;
     }
     
-    /*
-     * Always run the constructor
-     */
-    
     public function __construct($app) {
         parent::__construct($app);
     }
     
-    /*
-     * Method ran by the processor
-     */
-    
     public function run() {
-        // Set code to 200
         $this->setData('code', 200);
         $update_num = 0;
         
@@ -58,9 +33,7 @@ class SyncEmpty extends BaseProcessor
         $get_all_directories_query = Database::$db->prepare($get_all_directories);
         $get_all_directories_query->execute();
         
-        // Append to array
         while ($row = $get_all_directories_query->fetch(\PDO::FETCH_ASSOC)) {
-            // Check if is actully empty
             $check_empty  = "SELECT id" . PHP_EOL;
             $check_empty .= "FROM archive" . PHP_EOL;
             $check_empty .= "WHERE parent = :parent" . PHP_EOL;
@@ -96,7 +69,6 @@ class SyncEmpty extends BaseProcessor
         
         $this->setData('updated', $update_num);
         
-        // Check if we should clear cache
         if ($update_num > 0) {
             $this->application->runProcessor('tasks/clearcache', []);
         }

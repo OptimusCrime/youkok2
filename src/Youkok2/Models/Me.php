@@ -1,15 +1,6 @@
 <?php
-/*
- * File: Me.php
- * Holds: Static class for the current user
- * Created: 06.11.2014
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Models;
 
-use Youkok2\Models\User;
 use Youkok2\Utilities\CsrfManager;
 use Youkok2\Utilities\Database;
 use Youkok2\Utilities\Utilities;
@@ -18,42 +9,28 @@ use Youkok2\Utilities\TemplateHelper;
 
 class Me
 {
-    
-    /*
-     * Variables for the user
-     */
 
     private $app;
     private $user;
     private $favorites;
 
-    /*
-     * Init the user
-     */
-
     public function __construct($app) {
-        // Set user and favorites to null
         $this->user = null;
         $this->favorites = null;
 
-        // Store app in this object
         $this->app = $app;
 
-        // Check if we have anything stored
         if ($this->app->getSession('youkok2') !== null or $this->app->getCookie('youkok2') !== null) {
             if ($this->app->getCookie('youkok2') !== null) {
                 $hash = $this->app->getCookie('youkok2');
 
-                // Set session as well
                 $this->app->setSession('youkok2', $hash);
             } else {
                 $hash = $this->app->getSession('youkok2');
             }
 
-            // Try to split
             $hash_split = explode('asdkashdsajheeeeehehdffhaaaewwaddaaawww', $hash);
             if (count($hash_split) == 2) {
-                // Fetch from database to see if online
                 $get_current_user = "SELECT id, email, password, nick, module_settings, last_seen, " . PHP_EOL;
                 $get_current_user .= "karma, karma_pending, banned" . PHP_EOL;
                 $get_current_user .= "FROM user " . PHP_EOL;
@@ -65,60 +42,46 @@ class Me
                     ':password' => $hash_split[1]]);
                 $row = $get_current_user_query->fetch(\PDO::FETCH_ASSOC);
 
-                // Check if anything want returned
                 if (isset($row['id'])) {
-                    // Create a new instace of the user object
                     $this->user = new User($row);
-                } else {
-                    // Unset all
-                    $this->app->clearSession('youkok2');
-                    $this->app->clearCookie('youkok2');
                 }
+            }
+
+            if ($this->user === null) {
+                $this->app->clearSession('youkok2');
+                $this->app->clearCookie('youkok2');
             }
         }
     }
-    
-    /*
-     * Create new instance of the User object (used for registration)
-     */
     
     public function create() {
         $this->user = new User();
     }
-    
-    /*
-     * Getters (override for storing information in the User object)
-     */
+
+    public function getUser() {
+        return $this->user;
+    }
     
     public function getModuleSettings($key = null) {
-        // Check what to return
         $settings_data = null;
         if ($this->user !== null) {
-            // Return the actual delta
             $settings_data = $this->user->getModuleSettings();
         }
         else {
-            // Check if cookie is set
-
             if ($this->app->getCookie('module_settings') !== null and
-                strlen($this->app->getCookie('module_settings') !== null) > 0) {
-                $settings_data = $this->app->getCookie('module_settings') !== null;
+                strlen($this->app->getCookie('module_settings')) > 0) {
+                $settings_data = $this->app->getCookie('module_settings');
             }
         }
-        
-        // Check if we returned anything
+
         if ($settings_data != null) {
             $settings_data_decoded = json_decode($settings_data, true);
             
-            // Make sure we have a array
             if (is_array($settings_data_decoded)) {
-                // Check if we should fetch all the settings
                 if ($key == null) {
-                    // Just return all the settings
                     return $settings_data_decoded;
                 }
                 else {
-                    // Try to fetch the one settings
                     if (isset($settings_data_decoded[$key])) {
                         return $settings_data_decoded[$key];
                     }
@@ -126,46 +89,33 @@ class Me
             }
         }
         
-        // Last resort, return default values
         if ($key == null) {
             return null;
         }
         elseif ($key == 'module1_delta' or $key == 'module2_delta') {
             return 3;
         }
-        else {
-            return null;
-        }
         
+        return null;
     }
-
-    /*
-     * Setters (override for storing information in the User object)
-     */
 
     public function setNick($nick) {
         if ($nick == '') {
             $nick = null;
         }
 
-        // Set
         $this->user->setNick($nick);
     }
     public function setModuleSettings($key, $value) {
-        // Get the current settings
         $settings = $this->getModuleSettings();
         
-        // Make sure we have a array
         if ($settings == null) {
             $settings = [];
         }
         
-        // Apply the new settings
         $settings[$key] = $value;
         
-        // Check if we should set cookie for later too
         if ($this->user === null) {
-            // Set cookie
             $this->app->setCookie('module_settings', json_encode($settings));
         }
         else {
@@ -179,10 +129,6 @@ class Me
         $this->user->setKarmaPending($this->user->getKarmaPending() + $pending);
     }
     
-    /*
-     * Conditional stuff
-     */
-    
     public function isLoggedIn() {
         return $this->user !== null;
     }
@@ -195,119 +141,94 @@ class Me
     public function canContribute() {
         return ($this->hasKarma() and !$this->isBanned());
     }
-    
-    /*
-     * Login
-     */
 
     public function logIn() {
-        // Check if logged in
         if ($this->user === null) {
-            // Okey
-            if (isset($_POST['login-email']) and isset($_POST['login-pw']) and isset($_POST['_token'])) {
-                // Check CSRF token
-                if (!CsrfManager::validateSignature($_POST['_token'])) {
+            if ($this->app->getPost('login-email') !== null and $this->app->getPost('login-pw') !== null and
+                $this->app->getPost('_token') !== null) {
+                try {
+                    CsrfManager::validateSignature($this->app->getPost('_token'));
+                }
+                catch (\Exception $e) {
                     $this->app->setStatus(400);
                     return;
                 }
                 
-                // Try to fetch email
-                $get_login_user  = "SELECT id, email, password" . PHP_EOL;
+                $get_login_user  = "SELECT id, email, password, nick, module_settings, last_seen, " . PHP_EOL;
+                $get_login_user .= "karma, karma_pending, banned" . PHP_EOL;
                 $get_login_user .= "FROM user" . PHP_EOL;
                 $get_login_user .= "WHERE email = :email";
 
                 $get_login_user_query = Database::$db->prepare($get_login_user);
-                $get_login_user_query->execute([':email' => $_POST['login-email']]);
+                $get_login_user_query->execute([':email' => $this->app->getPost('login-email')]);
                 $row = $get_login_user_query->fetch(\PDO::FETCH_ASSOC);
 
-                // Check result
                 if (isset($row['id'])) {
                     $hash = Utilities::reverseFuckup($row['password']);
-                    // Try to match with password from the database
-                    if (password_verify($_POST['login-pw'], $hash)) {
-                        // Check remember me
-                        if (isset($_POST['login-remember']) and $_POST['login-remember'] == 'remember') {
+                    if (password_verify($this->app->getPost('login-pw'), $hash)) {
+                        if ($this->app->getPost('login-remember') == 'remember') {
                             $remember_me = true;
                         }
                         else {
-                            $remember_me = true;
+                            $remember_me = false;
                         }
 
-                        // Set login
-                        $this->setLogin($row['password'], $_POST['login-email'], $remember_me);
+                        $this->setLogin($row['password'], $this->app->getPost('login-email'), $remember_me);
 
-                        // Add message
+                        $this->user = new User($row);
+
                         MessageManager::addMessage($this->app, 'Du er nå logget inn.', 'success');
 
-                        // Check if we should redirect the user back to the previous page
-                        if (strstr($_SERVER['HTTP_REFERER'], URL) !== false) {
-                            // Has referer, remove base
-                            $clean_referer = str_replace(URL_FULL, '', $_SERVER['HTTP_REFERER']);
+                        if ($this->app->getServer('HTTP_REFERER') !== null and
+                            strpos($this->app->getServer('HTTP_REFERER'), URL) !== false) {
+                            $clean_referer = str_replace(URL_FULL, '', $this->app->getServer('HTTP_REFERER'));
 
-                            // Check if anything left
                             if (strlen($clean_referer) > 0 and $clean_referer != 'logg-inn') {
-                                // Refirect to whatever we have left
                                 $this->app->send($clean_referer);
                             }
                             else {
-                                // Send to frontpage
                                 $this->app->send('');
                             }
                         }
                         else {
-                            // Does not have referer
                             $this->app->send('');
                         }
                     }
                     else {
-                        // Message
                         MessageManager::addMessage(
                             $this->app,
                             'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.',
                             'danger'
                         );
                         
-                        // Set session
-                        $this->app->setSession(login_correct_email, $row['email']);
+                        $this->app->setSession('login_correct_email', $row['email']);
                         
-                        // Redirect
-                        $this->app->send(TemplateHelper::urlFor('logg-inn'));
+                        $this->app->send(TemplateHelper::urlFor('auth_login'));
                     }
                 }
                 else {
-                    // Message
                     MessageManager::addMessage(
                         $this->app,
                         'Oiisann. Feil brukernavn og/eller passord. Prøv igjen.',
                         'danger'
                     );
-
-                    // Redirect
-                    $this->app->send(TemplateHelper::urlFor('logg-inn'));
+                    
+                    $this->app->send(TemplateHelper::urlFor('auth_login'));
                 }
             }
             else {
-                // Not submitted or anything, just redirect
                 $this->app->send('');
             }
         }
     }
     
-    /*
-     * Set the login information
-     */
-    
     public function setLogin($hash, $email, $cookie = false) {
-        // Remove old login (just in case)
         $this->app->clearSession('youkok2');
         
-        // Unset the cookie
         $this->app->clearCookie('youkok2');
         
-        // Generate the new login token
         $strg = Me::generateLoginString($hash, $email);
 
-        // Set the new login details
         if ($cookie) {
             $this->app->setCookie('youkok2', $strg);
         }
@@ -320,44 +241,30 @@ class Me
         return $email . 'asdkashdsajheeeeehehdffhaaaewwaddaaawww' . $hash;
     }
 
-    /*
-     * Logout
-     */
-
     public function logOut() {
-        // Check if logged in
-        if ($this->user !== null and $_GET['_token']) {
-            // Unset session
+        if ($this->user !== null and $this->app->getGet('_token')) {
             $this->app->clearSession('youkok2');
             
-            // Unset token
             $this->app->clearCookie('youkok2');
 
-            // Set message
             MessageManager::addMessage($this->app, 'Du har nå logget ut.', 'success');
         }
         else {
-            // Simply redirect home
             $this->app->send('');
         }
 
-        // Check if we should redirect the user back to the previous page
-        if (strstr($_SERVER['HTTP_REFERER'], URL) !== false) {
-            // Has referer, remove base
-            $clean_referer = str_replace(URL_FULL, '', $_SERVER['HTTP_REFERER']);
+        if ($this->app->getServer('HTTP_REFERER') !== null and
+            strstr($this->app->getServer('HTTP_REFERER'), URL) !== false) {
+            $clean_referer = str_replace(URL_FULL, '', $this->app->getServer('HTTP_REFERER'));
             
-            // Check if anything left
             if (strlen($clean_referer) > 0) {
-                // Refirect to whatever we have left
                 $this->app->send($clean_referer);
             }
             else {
-                // Send to frontpage
                 $this->app->send('');
             }
         }
         else {
-            // Does not have referer
             $this->app->send('');
         }
     }
@@ -367,12 +274,13 @@ class Me
      */
 
     public function getFavorites() {
-        // Check if already loaded
         if ($this->favorites === null) {
-            // Set favorites to array
             $this->favorites = [];
 
-            // Run query
+            if ($this->user === null) {
+                return $this->favorites;
+            }
+
             $get_favorites  = "SELECT f.file" . PHP_EOL;
             $get_favorites .= "FROM favorite AS f" . PHP_EOL;
             $get_favorites .= "LEFT JOIN archive AS a ON a.id = f.file" . PHP_EOL;
@@ -388,36 +296,26 @@ class Me
             }
         }
 
-        // Return entire list of elements
         return $this->favorites;
     }
     
-    /*
-     * Check if one Element is favorite
-     */
-    
     public function isFavorite($id) {
-        // Check if we should load
         if ($this->favorites === null) {
             $this->getFavorites();
         }
-        
-        if (in_array($id, $this->favorites)) {
-            return true;
+
+        foreach ($this->favorites as $v) {
+            if ($v->getId() == $id) {
+                return true;
+            }
         }
-        
-        // If we came all this was, it is not a favorite
+
         return false;
     }
-
-    /*
-     * Get user karma elements
-     */
 
     public function getKarmaElements() {
         $collection = [];
 
-        // Run query
         $get_user_karma_elements  = "SELECT id, user, file, value, pending, state, added" . PHP_EOL;
         $get_user_karma_elements .= "FROM karma" . PHP_EOL;
         $get_user_karma_elements .= "WHERE user = :user" . PHP_EOL;
@@ -429,13 +327,8 @@ class Me
             $collection[] = new Karma($row);
         }
 
-        // Return elements
         return $collection;
     }
-    
-    /*
-     * Override save and update because the __callStatic method does not work for these calls
-     */
     
     public function update() {
         if ($this->user !== null) {
@@ -448,14 +341,8 @@ class Me
         }
     }
     
-    /*
-     * Static functions overload
-     */
-    
     public function __call($name, $arguments) {
-        // Check if method exists
         if ($this->user != null and method_exists($this->user, $name)) {
-            // Call method and return response
             return call_user_func_array([$this->user,
                 $name], $arguments);
         }
