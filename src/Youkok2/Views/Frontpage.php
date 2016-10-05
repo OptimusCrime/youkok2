@@ -50,7 +50,8 @@ class Frontpage extends BaseView
                 [
                     'module' => 1,
                     'encode' => false,
-                    'output' => false
+                    'output' => false,
+                    'application' => false
                 ]
             )->getData()['data']
         );
@@ -63,7 +64,8 @@ class Frontpage extends BaseView
                 [
                     'module' => 2,
                     'encode' => false,
-                    'output' => false
+                    'output' => false,
+                    'application' => false
                 ]
             )->getData()['data']
         );

@@ -32,7 +32,7 @@ class Processors extends BaseView
 
     public function run() {
         // Check if we should return as json
-        if (($this->getSetting('application') or php_sapi_name() != 'cli') and !isset($_GET['format'])) {
+        if ($this->getSetting('application') and (php_sapi_name() != 'cli' or !isset($_GET['format']))) {
             $this->application->setHeader('Content-Type', 'application/json');
         }
     }
