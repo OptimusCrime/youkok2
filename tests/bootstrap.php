@@ -12,7 +12,6 @@ namespace Youkok2\Tests;
 use Youkok2\Utilities\Database;
 
 require_once dirname(__FILE__) . '/TestSettings.php';
-require_once BASE_PATH . '/local.php';
 require_once BASE_PATH . '/local-default.php';
 require_once BASE_PATH . '/index.php';
 
