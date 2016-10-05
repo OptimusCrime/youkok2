@@ -1,12 +1,4 @@
 <?php
-/*
- * File: HistoryTest.php
- * Holds: Tests the History model
- * Created: 14.06.2016
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Tests\Models;
 
 use Youkok2\Models\History;
@@ -18,10 +10,8 @@ class HistoryTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testHistoryDefault() {
-        // Create history
         $history = new History();
 
-        // Assert
         $this->assertNull($history->getId());
         $this->assertNull($history->getUser());
         $this->assertNull($history->getFile());
@@ -31,17 +21,13 @@ class HistoryTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testHistorySave() {
-        // Create new history
         $history = new History();
 
-        // Set some fields we need
         $history->setUser(1);
         $history->setFile(2);
 
-        // Save history
         $history->save();
 
-        // Check that history was saved
         $this->assertTrue(is_numeric($history->getId()));
     }
 
@@ -54,7 +40,6 @@ class HistoryTest extends \Youkok2\Tests\YoukokTestCase
         $history->setAdded('2011-11-11 12:12:12');
         $history->setVisible(false);
 
-        // Check that getters and setters down correctly
         $this->assertEquals(1, $history->getId());
         $this->assertEquals(2, $history->getUser());
         $this->assertEquals(3, $history->getFile());
@@ -64,20 +49,17 @@ class HistoryTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testHistoryCreateBy() {
-        // By array
         $history1 = new History([
             'id' => 999
         ]);
         $this->assertEquals(999, $history1->getId());
 
-        // By id
         $history2 = new History();
         $history2->setUser(1);
         $history2->setFile(2);
         $history2->setHistoryText('foobar');
         $history2->save();
 
-        // Fetch the saved instance
         $history_fetched = new History($history2->getId());
         $this->assertEquals($history2->getId(), $history_fetched->getId());
         $this->assertEquals(1, $history_fetched->getUser());

@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Auth.php
- * Holds: Various authentification related views
- * Created: 14.04.2014
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Views;
 
 use Youkok2\Models\Me;
@@ -20,36 +12,23 @@ use Youkok2\Utilities\Utilities;
 class Auth extends BaseView
 {
     
-    /*
-     * Always run the constructor
-     */
-    
     public function __construct($app) {
         parent::__construct($app);
 
-        // Reset menu
         $this->template->assign('HEADER_MENU', null);
     }
     
-    /*
-     * Log in
-     */
-    
     public function displayLogIn() {
-        // Check if logged in
         if ($this->me->isLoggedIn()) {
             $this->application->send('');
         }
         else {
-            // Check if submitted
             if (isset($_POST['login2-email']) or isset($_POST['login-email'])) {
-                // Change post vars
                 if (isset($_POST['login2-email'])) {
                     $_POST['login-email'] = $_POST['login2-email'];
                     $_POST['login-pw'] = $_POST['login2-pw'];
                 }
 
-                // Call method
                 $this->me->login();
             }
             else {
@@ -65,42 +44,27 @@ class Auth extends BaseView
         }
     }
     
-    /*
-     * Log out
-     */
-    
     public function displayLogOut() {
-        // Check if the user is logged in
         if (!$this->me->isLoggedIn()) {
             $this->application->send('');
         }
         
-        // Log the user out
         $this->me->logOut();
     }
 
-    /*
-     * Register
-     */
-
     public function displayRegister() {
-        // Check if the user is logged in
         if ($this->me->isLoggedIn()) {
             $this->application->send('');
         }
         
-        // Set view
         $this->addSiteData('view', 'register');
         
-        // Set menu
         $this->template->assign('SITE_TITLE', 'Registrer');
         
-        // Handle registration
         if (!isset($_POST['register-form-email'])) {
             $this->displayAndCleanup('register.tpl');
         }
         else {
-            // Check all fields
             $fields = [
                 'register-form-email',
                 'register-form-nick',
@@ -116,34 +80,24 @@ class Auth extends BaseView
                 }
             }
 
-            // Check if missing data
             if (!$err) {
-                // Set post variables
                 $_POST['email'] = $_POST['register-form-email'];
 
-                // Run processor
                 $email_check = $this->runProcessor('register/email', false, true);
                 
-                // Check if valid email
                 if (isset($email_check['code']) and $email_check['code'] == 200 and
                     filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) == true) {
-                    // Check passwords
                     if ($_POST['register-form-password1'] == $_POST['register-form-password2']) {
-                        // Match, create new password
                         $hash = Utilities::hashPassword($_POST['register-form-password1'], Utilities::generateSalt());
-                        
-                        // New instace of me
+
                         $this->me->create();
                         
-                        // Insert to database
                         $this->me->setEmail($_POST['register-form-email']);
                         $this->me->setPassword($hash);
                         $this->me->setNick($_POST['register-form-nick']);
 
-                        // Save
                         $this->me->save();
 
-                        // Send e-mail here
                         $mail = new \PHPMailer;
                         $mail->From = 'donotreply@' . DOMAIN;
                         $mail->FromName = 'Youkok2';
@@ -166,41 +120,28 @@ class Auth extends BaseView
                 }
             }
 
-            // Check if there was any errors during the signup
             if ($err) {
-                // Add message
                 MessageManager::addMessage($this->application, 'Her gikk visst noe galt...', 'danger');
                
-                // Redirect
                 $this->application->send(TemplateHelper::urlFor('auth_register'));
             }
             else {
-                // Add message
                 MessageManager::addMessage($this->application, 'Velkommen til Youkok2!', 'success');
 
-                // Log in (only session)
                 $this->me->setLogin($hash, $_POST['register-form-email']);
-
                 $this->application->send('');
             }
         }
     }
-
-    /*
-     * Forgotten password
-     */
 
     public function displayForgottenPassword() {
         if ($this->me->isLoggedIn()) {
             $this->application->send('');
         }
         
-        // The menu
         $this->template->assign('SITE_TITLE', 'Glemt passord');
         
-        // Handle forgotten password
         if (isset($_POST['forgotten-email'])) {
-            // Handle stuff here
             $get_login_user  = "SELECT id" . PHP_EOL;
             $get_login_user .= "FROM user" . PHP_EOL;
             $get_login_user .= "WHERE email = :email";
@@ -209,25 +150,20 @@ class Auth extends BaseView
             $get_login_user_query->execute([':email' => $_POST['forgotten-email']]);
             $row = $get_login_user_query->fetch(\PDO::FETCH_ASSOC);
 
-            // Check result
             if (isset($row['id'])) {
-                // Create hash
                 $hash = Utilities::hashPassword(
                     md5(rand(0, 100000) . md5(time()) . $row['id']),
                     sha1(rand(0, 1000)),
                     false
                 );
 
-                // Set data
                 $change_password = new ChangePassword();
                 $change_password->setUser($row['id']);
                 $change_password->setHash($hash);
                 $change_password->setTimeout(date('Y-m-d H:i:s', (time() + (60 * 60 * 24))));
 
-                // Save
                 $change_password->save();
 
-                // Send mail
                 $mail = new \PHPMailer;
                 $mail->From = 'donotreply@' . DOMAIN;
                 $mail->FromName = 'Youkok2';
@@ -247,7 +183,6 @@ class Auth extends BaseView
                 $mail->Body = str_replace(array_keys($message_keys), $message_keys, $message);
                 $mail->send();
 
-                // Add message
                 $message  = 'Det er blitt sendt en e-post til deg. Denne inneholder en link for ';
                 $message .= 'å velge nytt passord. Denne linken er gyldig i 24 timer.';
                 MessageManager::addMessage($this->application, $message, 'success');
@@ -260,7 +195,6 @@ class Auth extends BaseView
                 );
             }
 
-            // Redirect back to form
             $this->application->send(TemplateHelper::urlFor('auth_forgotten_password'));
         }
         else {
@@ -268,73 +202,51 @@ class Auth extends BaseView
         }
     }
 
-    /*
-     * Forgotten new password
-     */
-
     public function displayForgottenPasswordNew() {
-        // Check if user can display this view
         if ($this->me->isLoggedIn() or !isset($_GET['hash'])) {
             $this->application->send('');
         }
         
-        // Set view
         $this->addSiteData('view', 'forgotten-password');
         
-        // Set menu
         $this->template->assign('SITE_TITLE', 'Nytt passord');
         
-        // Check if changepassword was found
         $change_password = new ChangePassword();
         $change_password->createByHash($_GET['hash']);
         
-        // Check if valid or not
         if ($change_password->getId() != null) {
-            // Check if submitted
             if (!isset($_POST['forgotten-password-new-form-password1'])) {
-                // Display
                 $this->displayAndCleanup('forgotten_password_new.tpl');
             }
             else {
-                // Check if the two passwords are identical
                 if ($_POST['forgotten-password-new-form-password1'] ==
                     $_POST['forgotten-password-new-form-password2']) {
-                    // Get the correct user object
                     $user = new User($change_password->getUser());
                     
-                    // New hash
                     $hash_salt = Utilities::generateSalt();
                     $hash = Utilities::hashPassword($_POST['forgotten-password-new-form-password1'], $hash_salt);
 
-                    // Insert
                     $user->setPassword($hash);
                     $user->update();
 
-                    // Delete from changepassword
                     $change_password->delete();
 
-                    // Add message
                     MessageManager::addMessage($this->application, 'Passordet er endret!', 'success');
 
-                    // Log in (only session)
                     $this->me->setLogin($hash, $user->getEmail());
 
                     $this->application->send('');
                 }
                 else {
-                    // Add error message
                     MessageManager::addMessage($this->application, 'De to passordene er ikke like.', 'danger');
 
-                    // Redirect
                     $this->application->send(TemplateHelper::urlFor('auth_new_password') . '?hash=' . $_GET['hash']);
                 }
             }
         }
         else {
-            // Add error message
             MessageManager::addMessage($this->application, 'Denne linken er ikke lenger gyldig.', 'danger');
 
-            // Redirect
             $this->application->send('');
         }
     }

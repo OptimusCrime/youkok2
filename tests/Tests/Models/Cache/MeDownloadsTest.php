@@ -1,12 +1,4 @@
 <?php
-/*
- * File: MeDownloadsTest.php
- * Holds: Tests the MeDownloadsTest model
- * Created: 03.07.2016
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Tests\Models;
 
 use Youkok2\Models\Cache\MeDownloads;
@@ -18,7 +10,6 @@ class MeDownloadsTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testMeDownloadsDefault() {
-        // Create me download
         $me_download = new MeDownloads();
 
         $this->assertNull($me_download->getId());

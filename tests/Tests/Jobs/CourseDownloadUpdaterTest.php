@@ -1,12 +1,4 @@
 <?php
-/*
- * File: CourseDownloadUpdaterTest.php
- * Holds: Tests the CourseDownloadUpdater job
- * Created: 27.06.2016
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Tests\Views;
 
 use Youkok2\Models\Download;
@@ -71,7 +63,6 @@ class CourseDownloadUpdaterTest extends \Youkok2\Tests\YoukokTestCase
             }
         }
 
-        // Add invalid element
         $invalid_element = new Element();
         $invalid_element->setName('Element invalid');
         $invalid_element->setParent(99999999);
@@ -82,12 +73,10 @@ class CourseDownloadUpdaterTest extends \Youkok2\Tests\YoukokTestCase
         $invalid_download->setFile($invalid_element->getId());
         $invalid_download->save();
 
-        // Run the download updater
         $courseDownloadUpdater = new CourseDownloadUpdater();
         $courseDownloadUpdater->run();
         $courseDownloadUpdater->done();
-
-        // Test each individual download cache
+        
         $course_downloads_always = new CourseDownloads(0);
         $course_downloads_always_data = json_decode($course_downloads_always->getData(), true);
         $this->assertEquals(15, count($course_downloads_always_data));

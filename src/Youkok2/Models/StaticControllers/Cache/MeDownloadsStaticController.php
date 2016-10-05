@@ -1,12 +1,4 @@
 <?php
-/*
- * File: MeDownloadsStaticController.php
- * Holds: Holds methods for the static MeDownloads class
- * Created: 12.12.2015
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Models\StaticControllers\Cache;
 
 use Youkok2\Youkok2;
@@ -20,15 +12,9 @@ use Youkok2\Utilities\Database;
 class MeDownloadsStaticController
 {
 
-    /*
-     * Variables
-     */
-
     public static function get($me) {
-        // Check if we have a cached version
         $cache = [];
         if (CacheManager::isCached($me->getId(), MeDownloadsController::$cacheKey)) {
-            // We have cache, simply fetch it
             $cache_data = CacheManager::getCache($me->getId(), MeDownloadsController::$cacheKey);
             
             if ($cache_data !== null and is_array($cache_data) and isset($cache_data['data'])) {
@@ -39,10 +25,8 @@ class MeDownloadsStaticController
             }
         }
         else {
-            // We do not have any cache, fetch the entire set
             $elements = [];
         
-            // Load all favorites
             $get_last_downloads  = "SELECT d.file" . PHP_EOL;
             $get_last_downloads .= "FROM download AS d" . PHP_EOL;
             $get_last_downloads .= "LEFT JOIN archive AS a ON a.id = d.file" . PHP_EOL;
@@ -58,7 +42,6 @@ class MeDownloadsStaticController
                 $elements[] = $row['file'];
             }
             
-            // Cache the results
             $me_downloads = new MeDownloads();
             $me_downloads->setId($me->getId());
             $me_downloads->setData(json_encode($elements));
@@ -67,30 +50,21 @@ class MeDownloadsStaticController
             $cache = $elements;
         }
         
-        // Process the cache
         return self::processCache($cache);
     }
     
-    /*
-     * Process the cache elements
-     */
-    
     private static function processCache($cache) {
-        // Make sure we have valid cache with data in it
         if (count($cache) > 0) {
             $elements = [];
         
-            // Loop the data and create the objects
             foreach ($cache as $v) {
                 $element = Element::get($v);
                 $elements[] = $element;
             }
             
-            // Return the element collection
             return $elements;
         }
         
-        // No cache or no results
         return [];
     }
 }

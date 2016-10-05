@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Home.php
- * Holds: Admin home view
- * Created: 06.08.2014
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Views\Admin;
 
 use Youkok2\Models\Me;
@@ -16,30 +8,17 @@ use Youkok2\Utilities\Utilities;
 class Home extends AdminBaseView
 {
     
-    /*
-     * For the menu and such
-     */
-    
     protected $adminIdentifier = 'admin_home';
     protected $adminHeading = 'Forside';
     protected $adminBreadcrumbs = ['Forside'];
     
-    /*
-     * Always run the constructor
-     */
-    
     public function __construct($app) {
         parent::__construct($app);
     }
-    
-    /*
-     * Displaying various admin stuff
-    */
 
     public function run() {
         parent::run();
 
-        // Get downloads pr. day
         $download_pr_day = '';
         $get_download_pr_day  = "SELECT downloaded_time AS 'date', COUNT(id) AS 'num'" . PHP_EOL;
         $get_download_pr_day .= "FROM download" . PHP_EOL;
@@ -54,7 +33,6 @@ class Home extends AdminBaseView
         }
         $this->template->assign('ADMIN_DOWNLOADS_PR_DAY', $download_pr_day);
         
-        // Display
         $this->displayAndCleanup('admin/home.tpl');
     }
 }

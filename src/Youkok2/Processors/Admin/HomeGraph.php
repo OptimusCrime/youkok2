@@ -1,12 +1,4 @@
 <?php
-/*
- * File: HomeGraph.php
- * Holds: Loads the information for the home graph
- * Created: 16.12.2015
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Processors\Admin;
 
 use Youkok2\Processors\BaseProcessor;
@@ -17,45 +9,26 @@ use Youkok2\Utilities\Database;
 class HomeGraph extends BaseProcessor
 {
 
-    /*
-     * Override
-     */
-
     protected function requireDatabase() {
         return true;
     }
-    
-    /*
-     * Override
-     */
 
     protected function checkPermissions() {
         return $this->requireAdmin();
     }
 
-    /*
-     * Always run the constructor
-     */
-
     public function __construct($app) {
         parent::__construct($app);
     }
     
-    /*
-     * Method ran by the processor
-     */
-    
     public function run() {
-        // Some variables
         $response = [];
         $response['graph'] = [];
         $response['delta'] = '';
         
-        // Build empty graph plots
         for ($i = 30; $i >= 0; $i--) {
             $date_offset = strtotime('-' . $i . ' days');
             
-            // Create the delta
             if ($i == 30) {
                 $response['delta'] = date('j. M Y', $date_offset);
             }
@@ -69,7 +42,6 @@ class HomeGraph extends BaseProcessor
             ];
         }
         
-        // The query
         $get_all_downloads  = "SELECT COUNT(id) AS 'downloads', downloaded_time" . PHP_EOL;
         $get_all_downloads .= "FROM download" . PHP_EOL;
         $get_all_downloads .= "WHERE downloaded_time >= (CURRENT_TIMESTAMP - (60 * 60 * 24 * 30))" . PHP_EOL;
@@ -87,10 +59,8 @@ class HomeGraph extends BaseProcessor
             }
         }
         
-        // Set result
         $this->setData('data', $response);
         
-        // Set ok
         $this->setOK();
     }
 }

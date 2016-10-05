@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Download.php
- * Holds: Contains a download entry
- * Created: 10.05.2015
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Models;
 
 use Youkok2\Models\Controllers\BaseController;
@@ -14,13 +6,8 @@ use Youkok2\Models\Controllers\BaseController;
 class Download extends BaseModel
 {
 
-    /*
-     * Variables
-     */
-
     protected $controller;
 
-    // Fields in the database
     private $id;
     private $file;
     private $downloadedTime;
@@ -28,17 +15,12 @@ class Download extends BaseModel
     private $agent;
     private $user;
 
-    /*
-     * Schema
-     */
-
     protected $schema = [
         'meta' => [
             'table' => 'download',
             'cacheable' => false,
         ],
         'fields' => [
-            // Database fields
             'id' => [
                 'type' => 'integer',
                 'null' => false,
@@ -83,22 +65,10 @@ class Download extends BaseModel
         ]
     ];
 
-    /*
-     * Constructor
-     */
-
     public function __construct($data = null) {
         $this->controller = new BaseController(null, $this);
 
-        /*
-         * Set some default values
-         */
-
         $this->setDefaults();
-
-        /*
-         * Various create methods are called here
-         */
 
         if (is_numeric($data)) {
             $this->controller->createById($data);
@@ -107,10 +77,6 @@ class Download extends BaseModel
             $this->controller->createByArray($data);
         }
     }
-
-    /*
-     * Getters
-     */
 
     public function getId() {
         return $this->id;
@@ -130,10 +96,6 @@ class Download extends BaseModel
     public function getUser() {
         return $this->user;
     }
-
-    /*
-     * Setters
-     */
 
     public function setId($id) {
         $this->id = $id;

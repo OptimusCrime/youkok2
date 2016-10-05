@@ -1,12 +1,4 @@
 <?php
-/*
- * File: MessageTest.php
- * Holds: Tests the Message model
- * Created: 14.06.2016
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Tests\Models;
 
 use Youkok2\Models\Message;
@@ -18,10 +10,8 @@ class MessageTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testMessageDefault() {
-        // Create message
         $message = new Message();
 
-        // Assert
         $this->assertNull($message->getId());
         $this->assertNull($message->getTimeStart());
         $this->assertNull($message->getTimeEnd());
@@ -31,17 +21,13 @@ class MessageTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testMessageSave() {
-        // Create new message
         $message = new Message();
 
-        // Set some fields we need
         $message->setTimeStart('2000-01-01 12:12:12');
         $message->setTimeEnd('2001-01-01 12:12:12');
 
-        // Save message
         $message->save();
 
-        // Check that message was saved
         $this->assertTrue(is_numeric($message->getId()));
     }
 
@@ -54,7 +40,6 @@ class MessageTest extends \Youkok2\Tests\YoukokTestCase
         $message->setType('bar');
         $message->setPattern('/');
 
-        // Check that getters and setters down correctly
         $this->assertEquals(1, $message->getId());
         $this->assertEquals('2000-01-01 12:12:12', $message->getTimeStart());
         $this->assertEquals('2001-01-01 12:12:12', $message->getTimeEnd());
@@ -64,13 +49,11 @@ class MessageTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testDownloadCreateBy() {
-        // By array
         $message = new Message([
             'id' => 999
         ]);
         $this->assertEquals(999, $message->getId());
 
-        // By id
         $message2 = new Message();
         $message2->setTimeStart('2000-01-01 12:12:12');
         $message2->setTimeEnd('2001-01-01 12:12:12');
@@ -78,7 +61,6 @@ class MessageTest extends \Youkok2\Tests\YoukokTestCase
         $message2->setMessage('bar');
         $message2->save();
 
-        // Fetch the saved instance
         $message_fetched = new Message($message2->getId());
         $this->assertEquals($message2->getId(), $message_fetched->getId());
         $this->assertEquals('foo', $message_fetched->getPattern());

@@ -1,12 +1,4 @@
 <?php
-/*
- * File: GetCacheData.php
- * Holds: Returns the actual cache data for a file
- * Created: 15.05.2015
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Processors\Tasks;
 
 use Youkok2\Models\Element;
@@ -17,39 +9,22 @@ use Youkok2\Utilities\CacheManager;
 class GetCacheData extends BaseProcessor
 {
 
-    /*
-     * Override
-     */
-
     protected function checkPermissions() {
         return $this->requireCli() or $this->requireAdmin();
     }
-    
-    /*
-     * Override
-     */
 
     protected function requireDatabase() {
         return true;
     }
-
-    /*
-     * Always run the constructor
-     */
     
     public function __construct($app) {
         parent::__construct($app);
     }
     
-    /*
-     * Method ran by the processor
-     */
-    
     public function run() {
         if (isset($_GET['id']) and is_numeric($_GET['id'])) {
             $element = new Element();
             
-            // Add pre data
             $this->setData('pre', [
                 'id' => $element->getId(),
                 'name' => $element->getName(),
@@ -71,7 +46,6 @@ class GetCacheData extends BaseProcessor
                 'added' => $element->getAdded()
             ]);
             
-            // Create element
             $element->createById($_GET['id']);
             
             if ($element->wasFound()) {
@@ -87,10 +61,8 @@ class GetCacheData extends BaseProcessor
                 }
             }
             
-            // Add cache format
             $this->setData('cache_format', $element->cacheFormat());
             
-            // Add data
             $this->setData('data', [
                 'id' => $element->getId(),
                 'name' => $element->getName(),
@@ -113,7 +85,6 @@ class GetCacheData extends BaseProcessor
             ]);
         }
         else {
-            // Missing id
             $this->setData('code', 500);
             $this->setData('msg', 'No id');
         }

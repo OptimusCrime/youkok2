@@ -1,12 +1,4 @@
 <?php
-/*
- * File: CreateFile.php
- * Holds: Upload one or multiple files
- * Created: 22.02.2015
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Processors;
 
 use Youkok2\Models\Element;
@@ -19,69 +11,43 @@ use Youkok2\Utilities\Utilities;
 
 class CreateFile extends BaseProcessor
 {
-    
-    /*
-     * Override
-     */
 
     protected function canBeLoggedIn() {
         return true;
     }
-    
-    /*
-     * Override
-     */
 
     protected function requireDatabase() {
         return true;
     }
     
-    /*
-     * Always run the constructor
-     */
-    
     public function __construct($app) {
         parent::__construct($app);
     }
     
-    /*
-     * Process upload
-     */
-    
     public function run() {
         $request_ok = false;
         
-        // Check parent
         if (isset($_GET['parent']) and is_numeric($_GET['parent'])) {
             $parent = Element::get($_GET['parent']);
 
-            // Check if valid Element
             if ($parent !== null) {
-                // Check if any files was sent
                 if (isset($_FILES['files']) and count($_FILES['files']) > 0) {
-                    // Check file type
                     $file_type_split = explode('.', $_FILES['files']['name'][0]);
                     $file_type = $file_type_split[count($file_type_split) - 1];
                     
-                    // Get allowed filetypes
                     $allowed_filetypes = explode(',', ACCEPTED_FILEENDINGS);
                     
-                    // Check filetype
                     if (in_array($file_type, $allowed_filetypes)) {
-                        // Valid request
                         $request_ok = true;
                     }
                 }
             }
         }
         
-        // Check if we are good to go
         if ($request_ok) {
-            // Get file name
             unset($file_type_split[count($file_type_split) - 1]);
             $file_name = implode('.', $file_type_split);
             
-            // Check duplicates for url friendly
             $num = 2;
             $url_friendly_base = Utilities::urlSafe($file_name);
             $url_friendly = Utilities::urlSafe($file_name);
@@ -97,24 +63,19 @@ class CreateFile extends BaseProcessor
                     ':url_friendly' => $url_friendly]);
                 $row_duplicate = $get_duplicate_query->fetch(\PDO::FETCH_ASSOC);
                 if (isset($row_duplicate['id'])) {
-                    // Generate new url friendly
                     $url_friendly = Utilities::urlSafe($url_friendly_base . '-' . $num . '.' . $file_type);
                     
-                    // Increase num
                     $num++;
                 }
                 else {
-                    // Gogog
                     break;
                 }
             }
             
-            // Check duplicates for names
             $num = 2;
             $name_base = $file_name;
             $name = $file_name . '.' . $file_type;
             
-            // Loop 'till no collides
             while (true) {
                 $get_duplicate2  = "SELECT id" . PHP_EOL;
                 $get_duplicate2 .= "FROM archive" . PHP_EOL;
@@ -126,16 +87,12 @@ class CreateFile extends BaseProcessor
                     ':name' => $name]);
                 $row_duplicate2 = $get_duplicate2_query->fetch(\PDO::FETCH_ASSOC);
                 
-                // Check if any url patterns collide
                 if (isset($row_duplicate2['id'])) {
-                    // Generate new url friendly
                     $name = $name_base . ' (' . $num . ')' . '.' . $file_type;
                     
-                    // Increase num
                     $num++;
                 }
                 else {
-                    // Gogog
                     break;
                 }
             }
@@ -149,10 +106,8 @@ class CreateFile extends BaseProcessor
                 $has_missing_image = 1;
             }
             
-            // Get checksum
             $checksum = md5_file($_FILES['files']['tmp_name'][0]) . '.' . $file_type;
             
-            // Set information
             $element = new Element();
             $element->setName($name);
             $element->setUrlFriendly($url_friendly);
@@ -162,66 +117,52 @@ class CreateFile extends BaseProcessor
             $element->setMissingImage($has_missing_image);
             $element->setSize($_FILES['files']['size'][0]);
             
-            // Check if we should auto hide the element
             if (!$this->me->isLoggedIn()) {
                 $element->setVisible(false);
             }
             else {
-                // User is logged in, set owner
                 $element->setOwner($this->me->getId());
             }
             
-            // Save element
             $element->save();
             
-            // Get parent directory and create the sub directories if they are not already there
             $parent_dir = FILE_PATH . '/' . substr($checksum, 0, 1);
             if (!file_exists($parent_dir)) {
                 mkdir($parent_dir);
             }
-            
-            // Second parent dir
+           
             $parent_dir .= '/' . substr($checksum, 1, 1);
             if (!file_exists($parent_dir)) {
                 mkdir($parent_dir);
             }
             
-            // Move the file
             move_uploaded_file($_FILES['files']['tmp_name'][0], $parent_dir . '/' . $checksum);
             
-            // Check if parent was sat to empty and if we should update that
             if ($this->me->isLoggedIn() and $parent->isEmpty()) {
                 $parent->setEmpty(false);
                 $parent->update();
                 
-                // Clear cache on parent
                 $parent->deleteCache();
             }
             
-            // Add message
             MessageManager::addFileMessage($this->application, $file_name . '.' . $file_type);
             
-            // Check if logged in
             if ($this->me->isLoggedIn()) {
-                // Add history element
                 $history = new History();
                 $history->setUser($this->me->getId());
                 $history->setFile($element->getId());
                 $history->setHistoryText('%u lastet opp ' . $element->getName());
                 $history->save();
                 
-                // Add karma
                 $karma = new Karma();
                 $karma->setUser($this->me->getId());
                 $karma->setFile($element->getId());
                 $karma->save();
                 
-                // Add karma to user
                 $this->me->increaseKarmaPending(5);
                 $this->me->update();
             }
             
-            // Send successful code
             $this->setData('code', 200);
         }
         else {

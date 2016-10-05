@@ -1,12 +1,4 @@
 <?php
-/*
- * File: SyncKarma.php
- * Holds: Syncs karma from values on users with actual values in the karma table
- * Created: 19.09.2015
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Processors\Tasks\Sync;
 
 use Youkok2\Models\Course;
@@ -20,36 +12,19 @@ use Youkok2\Utilities\Utilities;
 class SyncKarma extends BaseProcessor
 {
 
-    /*
-     * Override
-     */
-
     protected function checkPermissions() {
         return $this->requireCli() or $this->requireAdmin();
     }
-    
-    /*
-     * Override
-     */
 
     protected function requireDatabase() {
         return true;
     }
-
-    /*
-     * Always run the constructor
-     */
     
     public function __construct($app) {
         parent::__construct($app);
     }
 
-    /*
-     * Syncs karma between users
-     */
-
     public function run() {
-        // Set code to 200
         $this->setData('code', 200);
         $update_num = 0;
         
@@ -61,7 +36,6 @@ class SyncKarma extends BaseProcessor
         
         while ($user_row = $get_all_users_query->fetch(\PDO::FETCH_ASSOC)) {
             $user = new User($user_row['id']);
-            // Get the actual amout of karma here
             $new_karma = 5;
             $new_karma_pending = 0;
             
@@ -72,7 +46,6 @@ class SyncKarma extends BaseProcessor
             $get_user_karma_query = Database::$db->prepare($get_user_karma);
             $get_user_karma_query->execute([':user' => $user->getId()]);
             
-            // Loop all karma entries
             while ($karma_row = $get_all_users_query->fetch(\PDO::FETCH_ASSOC)) {
                 $karma = new Karma($karma_row);
                 
@@ -88,14 +61,10 @@ class SyncKarma extends BaseProcessor
                     }
                 }
             }
-            
-            
-            
-            // Evaluate the new and old karma
+
             if ($user->getKarma() != $new_karma or $user->getKarmaPending() != $new_karma_pending) {
                 $update_num++;
                 
-                // Check what we should update
                 if ($user->getKarma() != $new_karma) {
                     $user->setKarma($new_karma);
                 }
@@ -103,7 +72,6 @@ class SyncKarma extends BaseProcessor
                     $user->setKarmaPending($new_karma_pending);
                 }
                 
-                // Update the user
                 $user->update();
             }
         }

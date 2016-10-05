@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Graybox.php
- * Holds: Fetch information for different grayboxes
- * Created: 14.07.2015
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Processors;
 
 use Youkok2\Youkok2;
@@ -14,10 +6,6 @@ use Youkok2\Models\Element;
 
 class Graybox extends BaseProcessor
 {
-
-    /*
-     * Internal variables
-     */
 
     private $commits = [
         'Forgot the emails, fuuuck', 'Added homescreen text and stuff', 'Added some stuff to header',
@@ -62,66 +50,38 @@ class Graybox extends BaseProcessor
         'Fuckings mac creating invisible files all over the place',
     ];
 
-    /*
-     * Override
-     */
-
     protected function requireDatabase() {
         return true;
     }
-
-    /*
-     * Always run the constructor
-     */
     
     public function __construct($app) {
         parent::__construct($app);
     }
 
-    /*
-     * Get different commits
-     */
-
     public function getCommits() {
-        // Array for storing random commits
         $commits = [];
 
-        // Get n random commits
         for ($i = 0; $i < 3; $i++) {
             $commits[] = $this->commits[rand(0, (count($this->commits) - 1))];
         }
 
-        // Set to data
         $this->setData('data', $commits);
 
-        // Set OK
         $this->setOk();
     }
     
-    /*
-     * Get the newest elements
-     */
-    
     public function getNewest() {
-        // Get the collection
         $raw_collection = Element::getNewest(5);
         
-        // Encode the raw collection
         $collection = [];
         foreach ($raw_collection as $v) {
             $collection[] = $v->toArray();
         }
         
-        // Set to data
         $this->setData('data', $collection);
         
-        // Set OK
         $this->setOk();
     }
-
-    /*
-     * Get most popular downloads
-     */
 
     public function getPopular() {
         $data = $this->application->runProcessor('/module/get', [
@@ -132,10 +92,8 @@ class Graybox extends BaseProcessor
             'limit' => 5,
             'module1_delta' => 3])->getData();
 
-        // Set to data
         $this->setData('data', $data['data']);
 
-        // Set OK
         $this->setOk();
     }
 }

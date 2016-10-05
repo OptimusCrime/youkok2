@@ -1,58 +1,36 @@
 <?php
-/*
- * File: Loader.php
- * Holds: The Loader class that runs a new instance of the view based on the url matching from Routes
- * Created: 02.11.2014
- * Project: Youkok2
- * 
- */
- 
 namespace Youkok2\Utilities;
 
 class Loader
 {
     
-    /*
-     * Returns a class using the provided URL path
-     */
-    
     public static function getClass($path) {
-        // Loop the path-array and find what view to load
         $found = false;
         $view_path = '\Youkok2\\';
         $method = null;
         $processor = false;
         $routes = Routes::getRoutes();
         
-        // Clean the current URL
         $current_url_clean = self::cleanPath($path);
         
-        // Check if the requested URL is for a processor
         if (count($current_url_clean) > 0 and ('/' . $current_url_clean[0]) == Routes::PROCESSOR) {
             $processor = true;
         }
         
-        // Loop all the routes
         foreach ($routes as $view => $list) {
-            // Break if we found a valid view
             if ($found) {
                 break;
             }
             
-            // Loop the list of routes for this view
             foreach ($list as $v) {
-                // Clean this route to remove any errors
                 $route_clean = self::cleanPath($v['path']);
                 
-                // Handle edge case where we browse the frontpage
                 if (count($current_url_clean) == 0 and count($route_clean) == 0) {
                     $found = true;
                 }
                 
-                // No edge case, search for view by maching sub queries
                 $valid = true;
                 for ($i = 0; $i < count($current_url_clean); $i++) {
-                    // Make sure the sub query is found in both the queries
                     if (isset($route_clean[$i])) {
                         // If the sub queries does not match, only a + makes it valid
                         if ($current_url_clean[$i] != $route_clean[$i]) {
@@ -71,7 +49,6 @@ class Loader
                     }
                 }
                 
-                // Check if we found the curret path
                 if ($valid) {
                     $found = true;
                     $view_path .= $view;
@@ -87,16 +64,13 @@ class Loader
         
         // If not found, display 404 view
         if (!$found) {
-            // Array with regex expressions
             $regexes = [
                 '/' => '\/',
                 '*' => '(.*)'
             ];
             
-            // Check if should be redirected
             $redirects = Routes::getRedirects();
             
-            // Loop all redirects
             foreach ($redirects as $k => $v) {
                 // Build regex pattern
                 $regex = '/^' . str_replace(array_keys($regexes), $regexes, $k) . '/i';
@@ -106,7 +80,6 @@ class Loader
                 if (preg_match_all($regex, $path, $matches)) {
                     $redirect_url = URL_FULL . str_replace('*', $matches[1][0], $v);
                     
-                    // Return redirect request instead
                     return [
                         'view' => null,
                         'method' => null,
@@ -115,7 +88,6 @@ class Loader
                 }
             }
             
-            // If we got this far, we never found a match
             if (!$processor) {
                 $view_path .= 'Views\NotFound';
             }
@@ -124,16 +96,11 @@ class Loader
             }
         }
         
-        // Return the view and method
         return [
             'view' => $view_path,
             'method' => $method
         ];
     }
-    
-    /*
-     * Cleans a path
-     */
     
     private static function cleanPath($path) {
         $path_clean = [];

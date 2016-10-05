@@ -1,12 +1,4 @@
 <?php
-/*
- * File: CourseDownloadsTest.php
- * Holds: Tests the CourseDownloadsTest model
- * Created: 03.07.2016
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Tests\Models;
 
 use Youkok2\Models\Cache\CourseDownloads;

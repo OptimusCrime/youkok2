@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Youkok2.php
- * Holds: The definite base class for the entire system
- * Created: 01.11.2014
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2;
 
 use Youkok2\Utilities\Loader;
@@ -27,12 +19,7 @@ class Youkok2
     private $server;
     private $files; // TODO
     
-    /*
-     * The constructor for the application
-     */
-    
     public function __construct() {
-        // Set initial things
         $this->body = '';
         $this->headers = [];
         $this->streams = [];
@@ -46,10 +33,6 @@ class Youkok2
         $this->setStatus(200);
     }
 
-    /**
-     * Load information from cookies and sessions into the wrapper
-     */
-
     public function setInformation() {
         $this->sessions = $_SESSION;
         $this->cookies = $_COOKIE;
@@ -58,20 +41,13 @@ class Youkok2
         $this->server = $_SERVER;
     }
     
-    /*
-     * Loads a view
-     */
-    
     public function load($target, $settings = []) {
-        // Set the default path
         $path = null;
 
-        // Translate null to empty array for settings
         if ($settings === null) {
             $settings = [];
         }
         
-        // Check if we are parsing a query or a class
         if (gettype($target) === 'object' and get_class($target) === 'Youkok2\Utilities\ClassParser') {
             // We're using the class parser, simply fetch the class from it
             $class = $target->getClass();
@@ -86,20 +62,15 @@ class Youkok2
                 $path = $target;
             }
             
-            // Get the correct view class
             $class = Loader::getClass($path);
         }
 
         // If view is null we should instead redirect this request
         if ($class['view'] === null) {
-            // Send forward
             $this->send($class['redirect'], true, 301);
-
-            // Return null
             return null;
         }
         
-        // Initiate the view
         $view = new $class['view']($this);
         
         // Special case handling for processors that are called with URL
@@ -108,16 +79,13 @@ class Youkok2
             $settings['close_db'] = true;
         }
 
-        // Store what method to call
         if ($view::isProcessor()) {
             $view->setMethod($class['method']);
         }
             
-        // Set settings and path
         $view->setSettings($settings);
         $view->setPath($path);
 
-        // Check if we should run a specific method or just call the regular handler
         if ($view::isProcessor()) {
             $view->execute();
         }
@@ -128,9 +96,8 @@ class Youkok2
             $view->{$class['method']}();
         }
 
-        // Check if we should overwrite our view before returning it
         if ($view->getSetting('overwrite') === null || $view->getSetting('overwrite') === false) {
-            // Do not overwrite, simply return our view
+            // Do not overwrite the current view, simply return the data
             return $view;
         }
 
@@ -138,32 +105,22 @@ class Youkok2
         return $this->load($view->getSetting('overwrite_target'), $view->getSetting('overwrite_settings'));
     }
     
-    /*
-     * Run a processor with a given action
-     */
-    
     public function runProcessor($target, $settings = []) {
-        // If the processor is a string, be sure to prefix with the processor URL
         if (gettype($target) === 'string') {
             $target = Routes::PROCESSOR . $target;
         }
         
-        // Redirect request
         return $this->load($target, $settings);
     }
     
     public function send($target, $external = false, $code = null) {
         $this->headers['location'] = (!$external ? URL_RELATIVE : '') . $target;
 
-        // Check if we should set status code too
+        // Check if we should set status code
         if ($code !== null) {
             $this->setStatus($code);
         }
     }
-    
-    /*
-     * Various setters
-     */
     
     public function setWrapper($w) {
         $this->wrapper = $w;
@@ -216,10 +173,6 @@ class Youkok2
     public function setServer($key, $value) {
         $this->server[$key] = $value;
     }
-    
-    /*
-     * Various getters
-     */
     
     public function getWrapper() {
         return $this->wrapper;

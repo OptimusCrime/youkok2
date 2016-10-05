@@ -1,12 +1,5 @@
 <?php
-/*
- * File: QueryParser.php
- * Holds: Parses the query from the web server engine
- * Created: 01.05.2016
- * Project: Youkok2
- * 
- */
- 
+
 namespace Youkok2\Utilities;
 
 class QueryParser
@@ -15,15 +8,9 @@ class QueryParser
     private $youkok;
     private $path;
     
-    /*
-     * Constructor
-     */
-    
     public function __construct($youkok) {
-        // Store reference to youkok
         $this->youkok = $youkok;
 
-        // Get the path
         $this->getRequestQuery();
     }
     
@@ -32,11 +19,9 @@ class QueryParser
 
         // We have a path, find the base-path to include the correct script
         if ($request_path == null or $request_path == '' or $request_path == '/') {
-            // Store the paths first
             $this->path = '/';
         }
         elseif (strpos($request_path, '/') !== false) {
-            // We have multiple slashed, use the first which has a length one as base for path-lookup
             $path_split = explode('/', $request_path);
 
             // Clean the path
@@ -48,7 +33,6 @@ class QueryParser
                 }
             }
 
-            // Check if anything was found after cleaning
             if (count($path_clean) > 1) {
                 $this->path = '/' . implode('/', $path_clean);
             }
@@ -60,14 +44,9 @@ class QueryParser
             }
         }
         else {
-            // Store the paths first
             $this->path = '/' . $request_path;
         }
     }
-
-    /*
-     *  * Get request path
-     */
 
     private function getRequest() {
         // Check if we are running built in server or apache/nginx

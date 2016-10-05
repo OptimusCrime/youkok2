@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Home.php
- * Holds: Admin home view
- * Created: 06.08.2014
- * Project: Youkok2
- * 
- */
-
 namespace Youkok2\Views\Admin;
 
 use Youkok2\Views\BaseView;
@@ -16,10 +8,6 @@ use Youkok2\Utilities\TemplateHelper;
 
 abstract class AdminBaseView extends BaseView
 {
-    
-    /*
-     * Admin side menu
-     */
     
     private $menu = [
         [
@@ -53,27 +41,18 @@ abstract class AdminBaseView extends BaseView
         ]
     ];
     
-    /*
-     * Always run the constructor
-     */
-    
     public function __construct($app) {
         parent::__construct($app);
     }
 
     public function run() {
         if ($this->me->isAdmin()) {
-            // Set menu
             $this->template->assign('HEADER_MENU', null);
-
-            // Set some admin things
             $this->template->assign('ADMIN_HEADING', $this->adminHeading);
 
-            // Apply admin related stuff to site data
             $this->addSiteData('view', $this->adminIdentifier);
             $this->addSiteData('admin_view', true);
 
-            // Create sidemenu
             $this->createSidemenu();
         }
         else {
@@ -81,18 +60,12 @@ abstract class AdminBaseView extends BaseView
         }
     }
     
-    /*
-     * Method that creates the side menu
-     */
-    
     private function createSidemenu() {
-        // Build the menu
         $output_menu = [];
         
         foreach ($this->menu as $v) {
             $menu_item = $v;
             
-            // Various things
             if ($v['identifier'] == $this->adminIdentifier) {
                 $menu_item['active'] = true;
             }
@@ -100,7 +73,6 @@ abstract class AdminBaseView extends BaseView
                 $menu_item['active'] = false;
             }
             
-            // Get the URL
             $menu_item['url'] = TemplateHelper::urlFor($menu_item['identifier']);
             
             // Get the correct class
@@ -119,17 +91,11 @@ abstract class AdminBaseView extends BaseView
                 $menu_item['extra'] = call_user_func('Youkok2\\' . $class . '::adminMenuContent');
             }
             
-            // Append the menu item
             $output_menu[] = $menu_item;
         }
         
-        // Assign to template
         $this->template->assign('ADMIN_SIDEBAR_MENU', $output_menu);
     }
-    
-    /*
-     * Method to add additional information to the admin menu
-     */
     
     public static function adminMenuContent() {
         return '';

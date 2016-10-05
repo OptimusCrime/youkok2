@@ -1,12 +1,4 @@
 <?php
-/*
- * File: ViewStaticFilesTest.php
- * Holds: Tests the StaticFiles view
- * Created: 02.06.2016
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Tests\Views;
 
 use Youkok2\Youkok2;
@@ -14,7 +6,6 @@ use Youkok2\Youkok2;
 class ViewStaticFilesTest extends \Youkok2\Tests\YoukokTestCase
 {
     public function testViewStaticFilesChangelog() {
-        // StaticFiles
         $staticfiles_wrapper = new Youkok2();
         $staticfiles_view = $staticfiles_wrapper->load('changelog.txt', [
             'close_db' => false
@@ -25,7 +16,6 @@ class ViewStaticFilesTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testViewStaticFilesFaviconIco() {
-        // StaticFiles
         $staticfiles_wrapper = new Youkok2();
         $staticfiles_view = $staticfiles_wrapper->load('favicon.ico', [
             'close_db' => false
@@ -38,7 +28,6 @@ class ViewStaticFilesTest extends \Youkok2\Tests\YoukokTestCase
     }
 
     public function testViewStaticFilesFaviconPng() {
-        // StaticFiles
         $staticfiles_wrapper = new Youkok2();
         $staticfiles_view = $staticfiles_wrapper->load('favicon.png', [
             'close_db' => false

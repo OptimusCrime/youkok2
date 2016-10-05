@@ -1,12 +1,4 @@
 <?php
-/*
- * File: Search.php
- * Holds: Handles searches by the user
- * Created: 06.08.2014
- * Project: Youkok2
- * 
-*/
-
 namespace Youkok2\Views;
 
 use Youkok2\Models\Element;
@@ -16,20 +8,11 @@ use Youkok2\Utilities\Routes;
 class Search extends BaseView
 {
     
-    /*
-     * Always run the constructor
-     */
-    
     public function __construct($app) {
         parent::__construct($app);
     }
-    
-    /*
-     * Run the view
-     */
 
     public function run() {
-        // Set menu
         $this->template->assign('HEADER_MENU', '');
 
         if (!isset($_GET['s']) or strlen($_GET['s']) == 0) {
@@ -39,23 +22,15 @@ class Search extends BaseView
             $this->search();
         }
         
-        // Display
         $this->displayAndCleanup('search.tpl');
     }
 
-    /*
-     * Method for searching for courses
-     */
-
     private function search() {
-        // Variable to keep track of the results
         $collection = [];
 
-        // Assign the search
         $this->template->assign('SEARCH_MODE', 'search');
         $this->template->assign('SEARCH_QUERY', $_GET['s']);
 
-        // Clean the input
         $input = explode(' ', $_GET['s']);
         if (count($input) > 0) {
             $input_clean = [];
@@ -66,12 +41,10 @@ class Search extends BaseView
             }
         }
 
-        // Check if anything was clean as fuck
         if (count($input_clean) > 0) {
             $course_code = [];
             $course_name = [];
 
-            // Search by course code
             foreach ($input_clean as $v) {
                 $search_by_code = "SELECT id" . PHP_EOL;
                 $search_by_code .= "FROM archive" . PHP_EOL;
@@ -127,24 +100,17 @@ class Search extends BaseView
                 }
             }
 
-            // Check if anything was found at all!
             if (count($search_results) > 0) {
-                // Sort resuslts
                 arsort($search_results);
 
-                // Get the final results
                 $ret = '';
                 $num = 0;
 
-                // Loop all the search results
                 foreach ($search_results as $k => $v) {
-                    // Create new element
                     $element = new Element();
                     $element->createById($k);
 
-                    // Check if element was found
                     if ($element->wasFound()) {
-                        // Increase number of hits
                         $num++;
 
                         // Highlight names
@@ -163,17 +129,14 @@ class Search extends BaseView
                             }
                         }
 
-                        // Set data
                         $element->setName($match_names[0] . '||' . $match_names[1]);
 
-                        // Store to collection
                         $collection[] = $element;
                     }
                 }
             }
         }
 
-        // Assign variables
         $this->template->assign('ELEMENTS', $collection);
     }
 }

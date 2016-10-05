@@ -1,12 +1,4 @@
 <?php
-/*
- * File: YoukokTestCase.php
- * Holds: Extends the PHPUnit testcase class to make things a bit easier
- * Created: 19.11.2014
- * Project: Youkok2
- *
- */
-
 namespace Youkok2\Tests;
 
 use Youkok2\Utilities\Database;
@@ -14,11 +6,9 @@ use Youkok2\Utilities\Database;
 class YoukokTestCase extends \PHPUnit_Framework_TestCase
 {
     public static function doTearDownAfterClass() {
-        // Construct query
         $query  = "DELETE FROM `archive`;DELETE FROM `changepassword`;DELETE FROM `download`;";
         $query .= "DELETE FROM `favorite`;DELETE FROM `karma`;DELETE FROM `message`;DELETE FROM `user`;";
 
-        // Execute query
         try {
             Database::$db->exec($query);
         }
@@ -33,7 +23,6 @@ class YoukokTestCase extends \PHPUnit_Framework_TestCase
     }
 
     public static function setUpBeforeClass() {
-        // Clear cache
         $dir = CACHE_PATH;
         $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
@@ -47,11 +36,9 @@ class YoukokTestCase extends \PHPUnit_Framework_TestCase
         }
         rmdir($dir);
 
-        // Recreate directories
         @mkdir(CACHE_PATH);
         @mkdir(CACHE_PATH . '/youkok/');
 
-        // Check if we need to reconnect to the database
         if (Database::$db === null) {
             Database::connect();
         }
