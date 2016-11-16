@@ -3,23 +3,5 @@
 vendor
 node_modules
 
-# Ignore this
-local.php
-cache.php
-composer.lock
-composer.phar
-phinx.yml
-npm-debug.log
-clover.xml
-
-# And these
-.DS_Store
-._*
-
-# And build things
-assets/js/youkok.min.js
-assets/js/youkok.min.temp.js
-assets/css/youkok.min.css
-
 # Ignore the .htaccess at this level
 /.htaccess

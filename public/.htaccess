@@ -1,0 +1,9 @@
+# For friendly URLs
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?q=$1 [L,QSA]
+
+# Limit access to sub directories
+<FilesMatch "(\.gitignore|composer\.json|composer\.lock|composer\.phar|LICENSE|local\.php|local-default\.php|phinx\.yml|README\.md)">
+   Require all denied
+</FilesMatch>

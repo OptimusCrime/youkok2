@@ -16,10 +16,10 @@ before_script:
   - cp _scripts/src/install-local-empty local.php
 
 script:
-  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then composer.phar phpunit --coverage-clover clover.xml ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" != '5.6' ]]; then composer.phar phpunit ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then composer.phar phpcs ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then composer.phar phpmd ; fi
+  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php composer.phar phpunit --coverage-clover clover.xml ; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != '5.6' ]]; then php composer.phar phpunit ; fi
+  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php composer.phar phpcs ; fi
+  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php composer.phar phpmd ; fi
 
 after_script:
-  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then composer.phar coveralls --coverage_clover=clover.xml -v ; fi
+  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php composer.phar coveralls --coverage_clover=clover.xml -v ; fi
