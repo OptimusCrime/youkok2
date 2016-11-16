@@ -1,7 +1,6 @@
-# Ignore dirs
 .idea
 vendor
 node_modules
 
-# Ignore the .htaccess at this level
-/.htaccess
+.htaccess
+composer.phar
