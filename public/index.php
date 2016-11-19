@@ -13,8 +13,8 @@ if (PHP_SAPI == 'cli-server') {
 
 require __DIR__ . '/../vendor/autoload.php';
 
-// TODO better handling of settings loading
-$settings = require __DIR__ . '/../settings/settings.php';
+// TODO better handling of config loading
+$settings = require __DIR__ . '/../config/settings.php';
 
 $app = new \Youkok\Youkok($settings);
 $app->run();

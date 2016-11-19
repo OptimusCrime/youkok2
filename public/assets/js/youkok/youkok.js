@@ -76,7 +76,7 @@ var Youkok = (function (module) {
             }
         });
 
-        // Underscorejs settings
+        // Underscorejs config
         _.templateSettings.variable = 'rc';
         
         // Apply moment.js

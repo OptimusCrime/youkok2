@@ -11,7 +11,7 @@ class View
 {
     public static function load(Container $container)
     {
-        $baseDir = $container->get('settings')['base_dir'];
+        $baseDir = $container->get('config')['base_dir'];
 
         $container['view'] = function ($c) use ($baseDir) {
             $view = new Smarty($baseDir . '/templates', [
