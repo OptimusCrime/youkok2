@@ -29,7 +29,12 @@ class Youkok
 
     private function routes()
     {
-        $this->app->get('/', '\Youkok\Views\Frontpage:view');
+        $this->app->get('/', '\Youkok\Views\Frontpage:view')->setName('home');
+        $this->app->get('/emner', '\Youkok\Views\Courses:view')->setName('courses');
+        $this->app->get('/sok', '\Youkok\Views\Search:view')->setName('search');
+        $this->app->get('/help', '\Youkok\Views\Flat:help')->setName('help');
+        $this->app->get('/om', '\Youkok\Views\Flat:about')->setName('about');
+        $this->app->get('/retningslinjer', '\Youkok\Views\Flat:terms')->setName('terms');
     }
 
     private function middlewares()

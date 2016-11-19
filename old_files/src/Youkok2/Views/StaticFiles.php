@@ -5,18 +5,18 @@ use Youkok2\Utilities\Loader;
 
 class StaticFiles extends BaseView
 {
-    
+
     public function __construct($app) {
         parent::__construct($app);
     }
 
     public function returnChangelog() {
-        $content = file_get_contents(BASE_PATH . '/files/changelog.md');
-        
+        $content = file_get_contents(BASE_PATH . '/files/CHANGELOG.md');
+
         $this->template->assign('CHANGELOG_CONTENT', $content);
-        
+
         $this->application->setHeader('Content-Type', 'text/plain; charset=utf-8');
-        
+
         $this->displayAndCleanup('changelog.tpl');
     }
     public function returnFavicon() {
@@ -28,13 +28,13 @@ class StaticFiles extends BaseView
                 break;
             }
         }
-        
+
         $file = BASE_PATH . '/files/' . $filename;
-        
+
         $this->application->setHeader('Content-Length', filesize($file));
-        
+
         $this->application->addStream(file_get_contents($file));
-        
+
         if ($filename == 'favicon.png') {
             $this->application->setHeader('Content-Type', 'image/png');
         }

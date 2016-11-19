@@ -6,14 +6,10 @@ namespace Youkok\Views;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
-class Frontpage extends BaseView
+class Flat extends BaseView
 {
     public function view(Request $request, Response $response, array $args): Response
     {
-        return $this->render($response, 'frontpage.tpl', [
-            'FRONTPAGE_INFO_USERS' => 100,
-            'FRONTPAGE_INFO_FILES' => 200,
-            'FRONTPAGE_INFO_DOWNLOADS' => 500
-        ]);
+        return $this->render($response, 'about.tpl', []);
     }
 }

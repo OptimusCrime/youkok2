@@ -1,42 +1,28 @@
 [[+include file="header.tpl"]]
             <div class="row" id="frontpage-hello">
                 <div class="col-xs-12">
-                    <h1>Hei og velkommen til Youkok2</h1>
+                    <h1>Velkommen til Youkok2</h1>
                     <h3>Den beste kokeboka på nettet!</h3>
                 </div>
-            </div>[[+if $USER_IS_LOGGED_IN == FALSE]]
-            
+            </div>
             <div class="row" id="frontpage-wellholder">
                 <div class="well">
                     <div class="row">
                         <div class="col-xs-12 col-sm-9" id="frontpage-info">
-                            <p>Vi har for tiden <b>[[+$HOME_STATS_USERS]]</b> registrerte brukere, <b>[[+$HOME_STATS_FILES]]</b> filer og totalt <b>[[+$HOME_STATS_DOWNLOADS]]</b> nedlastninger i vårt system.</p>
+                            <p>Vi har for tiden <b>[[+$FRONTPAGE_INFO_USERS]]</b> registrerte brukere, <b>[[+$FRONTPAGE_INFO_FILES]]</b> filer og totalt <b>[[+$FRONTPAGE_INFO_DOWNLOADS]]</b> nedlastninger i vårt system.</p>
                             <p><em>Nettsiden er helt åpen og krever ikke at du registrerer deg for å kunne bruke den.</em></p>
-                            <p>Som anonym bruker får du mulighet til å laste opp filer og poste nyttige linker, men disse må godkjennes manuelt av en administrator. Alle bidrag er velkomne, så lenge de ikke strider mot våre <a href="[[+TemplateHelper::urlFor('flat_terms')]]">retningslinjer</a>.</p>
+                            <p>Som anonym bruker får du mulighet til å laste opp filer og poste nyttige linker, men disse må godkjennes manuelt av en administrator. Alle bidrag er velkomne, så lenge de ikke strider mot våre <a href="[[+path_for name="terms"]]">retningslinjer</a>.</p>
                             <p>Om du velger å registrere deg får mulighet til å laste opp filer, poste linker og opprette mapper uten at dette må forhåndsgodkjennes. Du får også muligheten til å lagre favoritter og får en oversikt over dine siste nedlastninger på forsiden.</p>
                             <p>- Youkok2</p>
                         </div>
                         <div class="col-xs-12 col-sm-3">
                             <div id="frontpage-links">
-                                <div class="row">
-                                    <div class="col-xs-6 col-sm-12">
-                                        <span class="elm-md-bigger"><a class="login-opener" data-toggle="dropdown" href="[[+TemplateHelper::urlFor('auth_login')]]">Logg inn</a><br /></span>
-                                        <span class="elm-md-smaller"><a href="[[+TemplateHelper::urlFor('auth_login')]]">Logg inn</a><br /></span>
-                                        <a href="[[+TemplateHelper::urlFor('auth_register')]]">Registrer</a><br />
-                                        <a href="[[+TemplateHelper::urlFor('auth_forgotten_password')]]">Glemt passord</a><br />
-                                    </div>
-                                    <div class="col-xs-6 col-sm-12" id="frontpage-links-second">
-                                        <a href="[[+TemplateHelper::urlFor('flat_about')]]">Om</a><br />
-                                        <a href="[[+TemplateHelper::urlFor('flat_terms')]]">Retningslinjer</a><br />
-                                        <a href="[[+TemplateHelper::urlFor('flat_help')]]">Hjelp</a><br />
-                                        <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                      </div>
                 </div>
-            </div>[[+/if]]
+            </div>
 
             <div class="row">
                 <div class="col-xs-12 col-sm-6 frontpage-box">

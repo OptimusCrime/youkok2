@@ -20,6 +20,14 @@ class View
                 //'pluginsDir' => ['path/to/plugins', 'another/path/to/plugins']
             ]);
 
+            $view->getSmarty()->setLeftDelimiter('[[+');
+            $view->getSmarty()->setRightDelimiter(']]');
+
+            // TODO
+            $view->getSmarty()->setCaching(false);
+            $view->getSmarty()->setDebugging(true);
+            //$view->getSmarty()->setCompileCheck(false);
+
             // Add Slim specific plugins
             $smartyPlugins = new SmartyPlugins($c['router'], $c['request']->getUri());
             $view->registerPlugin('function', 'path_for', [$smartyPlugins, 'pathFor']);
