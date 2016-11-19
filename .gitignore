@@ -3,5 +3,6 @@ vendor
 node_modules
 
 .htaccess
+phinx.yml
 settings.php
 composer.phar
