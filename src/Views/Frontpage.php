@@ -3,17 +3,13 @@ declare(strict_types=1);
 
 namespace Youkok\Views;
 
-use \Slim\Container as Container;
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
 
-class Frontpage
+class Frontpage extends BaseView
 {
-    protected $ci;
-
-    public function __construct(Container $ci) {
-        $this->ci = $ci;
-    }
-
-    public function view($request, $response, array $args) {
-        echo 'dero';
+    public function view(Request $request, Response $response, array $args)
+    {
+        return $this->ci->get('view')->render($response, 'frontpage.tpl', []);
     }
 }

@@ -5,9 +5,10 @@ namespace Youkok;
 
 use \Slim\App as App;
 
+use Youkok\Loaders\Containers;
+
 class Youkok
 {
-
     private $app;
 
     public function __construct(array $settings)
@@ -29,18 +30,17 @@ class Youkok
     private function routes()
     {
         $this->app->get('/', '\Youkok\Views\Frontpage:view');
-        $this->app->get('/hello[/{name}]', function ($request, $response, $args) {
-            $response->write("Hello, " . $args['name']);
-            return $response;
-        })->setArgument('name', 'World!');
     }
 
     private function middlewares()
     {
-
+        // TODO
     }
 
-    private function dependencies() {
-
+    private function dependencies()
+    {
+        Containers::load($this->app->getContainer(), [
+            \Youkok\Containers\View::class
+        ]);
     }
 }
