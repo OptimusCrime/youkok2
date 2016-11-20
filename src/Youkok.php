@@ -45,7 +45,8 @@ class Youkok
     private function dependencies()
     {
         Containers::load($this->app->getContainer(), [
-            \Youkok\Containers\View::class
+            \Youkok\Containers\View::class,
+            \Youkok\Containers\Database::class,
         ]);
     }
 }
