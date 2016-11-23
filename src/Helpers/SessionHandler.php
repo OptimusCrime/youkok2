@@ -26,7 +26,7 @@ class SessionHandler
             return self::createSession();
         }
 
-        return json_decode($currentSession->data);
+        return json_decode($currentSession->data, true);
     }
 
     private function createSession() : array
