@@ -16,20 +16,19 @@ class Youkok1340 extends AbstractMigration
     {
     }
     */
-    
+
     /**
      * Migrate Up.
      */
     public function up()
     {
-        // Drop foreign keys on drop table (for eazy sake)
-        $this->query('SET foreign_key_checks = 0');
-        
-        // Drop table
-        $this->dropTable('course');
-        
-        // Use foreign key constraints again
-        $this->query('SET foreign_key_checks = 0');
+        try {
+            // Drop table
+            $this->dropTable('course');
+        } catch (Exception $e) {
+            //
+        }
+
     }
 
     /**

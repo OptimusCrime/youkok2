@@ -6,15 +6,25 @@ namespace Youkok\Views;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Slim\Container;
 
+use Youkok\Helpers\SessionHandler;
+
 class BaseView
 {
-    protected $ci;
+    protected $container;
+    protected $sessionData;
     protected $templateData;
 
-    public function __construct(Container $ci)
+    public function __construct(Container $container)
     {
-        $this->ci = $ci;
+        $this->container = $container;
 
+        $this->setDefaultTemplateData();
+
+        $this->sessionData = SessionHandler::loadCurrentSession();
+    }
+
+    private function setDefaultTemplateData()
+    {
         $this->templateData = [
             'SITE_TITLE' => 'Den beste kokeboka på nettet',
             'HEADER_MENU' => 'home',

@@ -8,6 +8,9 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 
 class Flat extends BaseView
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function view(Request $request, Response $response, array $args): Response
     {
         return $this->render($response, 'about.tpl', []);

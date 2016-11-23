@@ -42,7 +42,7 @@
 
                         <li class="list-group-item">
                             <em>
-                                <a href="[[+TemplateHelper::urlFor('auth_login')]]">Logg inn</a> eller <a href="[[+TemplateHelper::urlFor('auth_register')]]">registrer deg</a>.
+
                             </em>
                         </li>[[+/if]]
 
@@ -71,7 +71,7 @@
 
                         <li class="list-group-item">
                             <em>
-                                <a href="[[+TemplateHelper::urlFor('auth_login')]]">Logg inn</a> eller <a href="[[+TemplateHelper::urlFor('auth_register')]]">registrer deg</a>.
+
                             </em>
                         </li>[[+/if]]
 

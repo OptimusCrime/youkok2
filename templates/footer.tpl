@@ -5,12 +5,12 @@
     <div class="row">
         <div class="col-xs-12" id="footer">
             <p>
-                <span><a href="[[+TemplateHelper::urlFor('changelog')]]">Youkok2 v[[+$VERSION]]</a></span>
+                <span><a href="changelog.txt">Youkok2 v[[+$VERSION]]</a></span>
                 [[+nocache]][[+if $DEV]]<span><a href="https://github.com/OptimusCrime/youkok2/commit/[[+$GIT_HASH]]" target="_blank">[[+$GIT_HASH_SHORT]]</a></span>[[+/if]][[+/nocache]]
 
-                <span><a href="[[+TemplateHelper::urlFor('flat_about')]]">Om Youkok2</a></span>
-                <span><a href="[[+TemplateHelper::urlFor('flat_terms')]]">Retningslinjer</a></span>
-                <span><a href="[[+TemplateHelper::urlFor('flat_help')]]">Hjelp</a></span>
+                <span><a href="[[+path_for name="about"]]">Om Youkok2</a></span>
+                <span><a href="[[+path_for name="terms"]]">Retningslinjer</a></span>
+                <span><a href="[[+path_for name="help"]]">Hjelp</a></span>
                 <span><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>
                 <span>[[+nocache]][[+$TIMER]][[+/nocache]]</span>
                 <span><a href="https://github.com/OptimusCrime/youkok2" target="_blank">GitHub</a></span>
@@ -28,7 +28,7 @@
         </div>
     </div>
 </div>
-[[+include file="footer_scripts.tpl"]][[+if $SITE_USE_GA == true]]
+[[+if $SITE_USE_GA == true]]
 <script>
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

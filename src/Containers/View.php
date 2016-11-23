@@ -13,7 +13,7 @@ class View
     {
         $baseDir = $container->get('settings')['base_dir'];
 
-        $container['view'] = function ($c) use ($baseDir) {
+        $container['view'] = function ($container) use ($baseDir) {
             $view = new Smarty($baseDir . '/templates', [
                 'cacheDir' => $baseDir . '/smarty/cache',
                 'compileDir' =>  $baseDir . '/smarty/compile',
@@ -29,7 +29,7 @@ class View
             //$view->getSmarty()->setCompileCheck(false);
 
             // Add Slim specific plugins
-            $smartyPlugins = new SmartyPlugins($c['router'], $c['request']->getUri());
+            $smartyPlugins = new SmartyPlugins($container['router'], $container['request']->getUri());
             $view->registerPlugin('function', 'path_for', [$smartyPlugins, 'pathFor']);
             $view->registerPlugin('function', 'base_url', [$smartyPlugins, 'baseUrl']);
 

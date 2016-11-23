@@ -2,15 +2,11 @@
 <ruleset name="Youkok2 coding standard">
     <description>Youkok2 coding standard</description>
 
-    <!-- display progress -->
     <arg value="p"/>
-    <!-- use colors in output -->
     <arg name="colors"/>
 
-    <!-- inherit rules from: -->
     <rule ref="PSR2" />
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
-    <!-- Paths to check -->
     <file>src</file>
 </ruleset>

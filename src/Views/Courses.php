@@ -8,6 +8,9 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 
 class Courses extends BaseView
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function view(Request $request, Response $response, array $args): Response
     {
         return $this->render($response, 'courses.tpl', []);
