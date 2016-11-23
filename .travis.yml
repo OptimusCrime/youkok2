@@ -2,12 +2,10 @@ language: php
 php:
   - 7.0
   - 7.1
-  - hhvm
 
 matrix:
   allow_failures:
     - php: 7.1
-    - php: hvvm
 
 notifications:
   email: false
@@ -16,8 +14,8 @@ install:
   composer install --no-interaction
 
 script:
-  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then phpcs ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then phpmd ; fi
+  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then composer phpcs ; fi
+  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then composer phpmd ; fi
 #  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then php composer.phar phpunit --coverage-clover clover.xml ; fi
 #  - if [[ "$TRAVIS_PHP_VERSION" != '7.0' ]]; then php composer.phar phpunit ; fi
 
