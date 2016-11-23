@@ -1,6 +1,6 @@
 <?php
 return [
-    'config' => [
+    'settings' => [
         'displayErrorDetails' => false,
         'addContentLengthHeader' => false,
 
