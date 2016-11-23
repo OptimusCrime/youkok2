@@ -2,8 +2,13 @@ language: php
 php:
   - '5.6'
   - '7.0'
+  - 7.1
   - hhvm
-  - nightly
+
+matrix:
+  allow_failures:
+    - php: 7.1
+    - php: hvvm
 
 notifications:
   email: false
@@ -11,15 +16,11 @@ notifications:
 install:
   composer install --no-interaction
 
-before_script:
-  - cp _scripts/src/install-phinx phinx.yml
-  - cp _scripts/src/install-local-empty local.php
-
 script:
-  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php composer.phar phpunit --coverage-clover clover.xml ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" != '5.6' ]]; then php composer.phar phpunit ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php composer.phar phpcs ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php composer.phar phpmd ; fi
+  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then php composer.phar phpcs ; fi
+  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then php composer.phar phpmd ; fi
+#  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then php composer.phar phpunit --coverage-clover clover.xml ; fi
+#  - if [[ "$TRAVIS_PHP_VERSION" != '7.0' ]]; then php composer.phar phpunit ; fi
 
-after_script:
-  - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php composer.phar coveralls --coverage_clover=clover.xml -v ; fi
+#after_script:
+#  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then php composer.phar coveralls --coverage_clover=clover.xml -v ; fi
