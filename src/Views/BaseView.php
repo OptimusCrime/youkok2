@@ -36,7 +36,7 @@ class BaseView
 
     protected function render(Response $response, String $template, array $data): Response
     {
-        return $this->ci->get('view')->render($response, $template, array_merge(
+        return $this->container->get('view')->render($response, $template, array_merge(
             $this->templateData,
             $data
         ));
