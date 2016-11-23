@@ -13,6 +13,10 @@ class Search extends BaseView
      */
     public function view(Request $request, Response $response, array $args): Response
     {
-        return $this->render($response, 'search.tpl', []);
+        return $this->render($response, 'search.tpl', [
+            'SITE_TITLE' => 'Søk',
+            'HEADER_MENU' => 'search',
+            'VIEW_NAME' => 'search'
+        ]);
     }
 }

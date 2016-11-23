@@ -28,6 +28,7 @@ class BaseView
         $this->templateData = [
             'SITE_TITLE' => 'Den beste kokeboka på nettet',
             'HEADER_MENU' => 'home',
+            'VIEW_NAME' => 'frontpage',
             'SITE_DATA' => json_encode([]),
             'SEARCH_QUERY' => '',
             'SITE_MESSAGES' => []

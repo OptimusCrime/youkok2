@@ -13,6 +13,9 @@ class Courses extends BaseView
      */
     public function view(Request $request, Response $response, array $args): Response
     {
-        return $this->render($response, 'courses.tpl', []);
+        return $this->render($response, 'courses.tpl', [
+            'HEADER_MENU' => 'courses',
+            'VIEW_NAME' => 'courses'
+        ]);
     }
 }

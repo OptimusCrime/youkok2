@@ -29,7 +29,7 @@
         <div class="navbar-collapse collapse">
             <ul id="main-nav" class="nav navbar-nav">
                 <li[[+if $HEADER_MENU == 'home']] class="active"[[+/if]]><a href="[[+base_url]]">Hjem</a></li>
-                <li[[+if $HEADER_MENU == 'resources']] class="active"[[+/if]]><a href="[[+path_for name="courses"]]">Emner</a></li>
+                <li[[+if $HEADER_MENU == 'courses']] class="active"[[+/if]]><a href="[[+path_for name="courses"]]">Emner</a></li>
                 <li class="hidden[[+if $HEADER_MENU == 'search']] active[[+/if]]"><a href="[[+path_for name="search"]]">Søk</a></li>
                 <li[[+if $HEADER_MENU == 'about']] class="active"[[+/if]]><a href="[[+path_for name="about"]]">Om Youkok2</a></li>
                 <li[[+if $HEADER_MENU == 'help']] class="active"[[+/if]]><a href="[[+path_for name="help"]]">Hjelp</a></li>
