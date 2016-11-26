@@ -14,14 +14,14 @@
                         <h1>Emner</h1>
                     </div>
                 </div>
-                <div class="row">[[+foreach $COLLECTION as $SUB_COLLECTION]]
+                <div class="row">[[+foreach $COURSE_COLLECTION as $SUB_COLLECTION]]
 
                     <div class="col-xs-12 col-md-6 course-box">
                         <h3>[[+$SUB_COLLECTION.letter]]</h3>
                         <ul class="list-group">[[+foreach $SUB_COLLECTION.courses as $element]]
 
-                            <li class="[[+if $element->isEmpty()]]course-empty [[+/if]]list-group-item">
-                                <a href="[[+$element->getFullUrl()]]"><strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]</a>
+                            <li class="[[+if $element->empty]]course-empty [[+/if]]list-group-item">
+                                <a href="[[+$element->fullUrl]]"><strong>[[+$element->courseCode]]</strong> &mdash; [[+$element->courseName]]</a>
                             </li>[[+/foreach]]
 
                         </ul>

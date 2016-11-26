@@ -35,6 +35,11 @@ class BaseView
         ];
     }
 
+    protected function setTemplateData(string $key, $value)
+    {
+        $this->templateData[$key] = $value;
+    }
+
     protected function render(Response $response, String $template, array $data): Response
     {
         return $this->container->get('view')->render($response, $template, array_merge(
