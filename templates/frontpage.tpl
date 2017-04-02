@@ -84,7 +84,7 @@
                         <h2>Nyeste elementer</h2>
                     </div>
                     <ul class="list-group">
-                    [[+if count($HOME_NEWEST) == 0]]    <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>[[+else]][[+foreach $HOME_NEWEST as $element]]    <li class="list-group-item">
+                    [[+if count($FRONTPAGE_LATEST) == 0]]    <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>[[+else]][[+foreach $FRONTPAGE_LATEST as $element]]    <li class="list-group-item">
                             <a rel="nofollow" target="_blank" href="[[+$element->getFullUrl()]]">
                                 [[+$element->getName()]]
                             </a>[[+if $element->hasParent()]] @ [[+if $element->getParent(true)->hasParent()]]

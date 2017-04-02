@@ -13,7 +13,7 @@ class Database
     public static function load(Container $container)
     {
         $capsule = new Manager;
-        $capsule->addConnection($container['settings']['db']);
+        $capsule->addConnection($container->get('settings')['db']);
 
         // Make it possible to use $app->get('db') -> whatever
         $capsule->setAsGlobal();

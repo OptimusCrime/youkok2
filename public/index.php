@@ -14,9 +14,14 @@ if (PHP_SAPI == 'cli-server') {
 require __DIR__ . '/../vendor/autoload.php';
 
 use \Youkok\Youkok;
+use \Youkok\Helpers\SettingsParser;
 
 // TODO better handling of config loading
-$settings = require __DIR__ . '/../config/settings.php';
+$settingsParser = new SettingsParser();
+$settingsParser->parse([
+    __DIR__ . '/../config/default-settings.php',
+    __DIR__ . '/../config/settings.php'
+]);
 
-$app = new Youkok($settings);
+$app = new Youkok($settingsParser->getSettings());
 $app->run();

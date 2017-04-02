@@ -15,7 +15,7 @@ class Courses extends BaseView
      */
     public function view(Request $request, Response $response, array $args): Response
     {
-        if (!$this->container['view']->getSmarty()->isCached('courses.tpl', $request->getUri()->getPath())) {
+        if (!$this->container->get('view')->getSmarty()->isCached('courses.tpl', $request->getUri()->getPath())) {
             $this->loadCourses();
         }
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Youkok\Containers;
 
 use \Slim\Container;
-use \Slim\Views\Smarty as Smarty;
-use \Slim\Views\SmartyPlugins as SmartyPlugins;
+use \Slim\Views\Smarty;
+use \Slim\Views\SmartyPlugins;
 
 class View
 {
@@ -29,7 +29,7 @@ class View
             //$view->getSmarty()->setCompileCheck(false);
 
             // Add Slim specific plugins
-            $smartyPlugins = new SmartyPlugins($container['router'], $container['request']->getUri());
+            $smartyPlugins = new SmartyPlugins($container->get('router'), $container->get('request')->getUri());
             $view->registerPlugin('function', 'path_for', [$smartyPlugins, 'pathFor']);
             $view->registerPlugin('function', 'base_url', [$smartyPlugins, 'baseUrl']);
 
