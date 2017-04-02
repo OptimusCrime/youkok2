@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  youkok2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #command: apache2-foreground
+    #volumes:
+    #  - .:/var/www/html
+    ports:
+      - "8000:80"
+    environment:
+      - COMPOSER_ALLOW_SUPERUSER=1

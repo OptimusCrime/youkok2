@@ -12,6 +12,17 @@ return [
             'level' => \Monolog\Logger::DEBUG,
         ],
 
+        'db' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'database' => 'youkok2',
+            'username' => 'root',
+            'password' => 'youkok2',
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+        ],
+
         // Site specific settings, use uppercase for their keywords
         'site' => [
             'DEV' => true,
