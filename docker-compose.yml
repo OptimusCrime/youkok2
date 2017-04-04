@@ -1,6 +1,14 @@
 version: '2'
 
 services:
+  appdata:
+    image: "alpine:3.5"
+    command: tail -f /dev/null
+    user: "1000"
+    network_mode: "none"
+    volumes:
+      - .:/var/www/html
+
   db:
     restart: always
     image: "mysql:5.7.17"
@@ -13,10 +21,12 @@ services:
       - MYSQL_DATABASE=youkok2
     volumes:
       - /var/lib/mysql
-  youkok2:
+  
+  server:
     restart: always
     depends_on:
       - db
+      - appdata
     build:
       context: .
       dockerfile: Dockerfile
@@ -30,3 +40,5 @@ services:
       - MYSQL_DATABASE=youkok2
     links:
       - db
+    volumes_from:
+      - appdata

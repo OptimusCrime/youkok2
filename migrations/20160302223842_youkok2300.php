@@ -27,6 +27,15 @@ class Youkok2300 extends AbstractMigration
      */
     public function up()
     {
+        $this->execute('ALTER TABLE flag DROP FOREIGN KEY flag_ibfk_1');
+        $this->execute('ALTER TABLE flag DROP FOREIGN KEY flag_ibfk_2');
+
+        $this->execute('ALTER TABLE report DROP FOREIGN KEY report_ibfk_1');
+        $this->execute('ALTER TABLE report DROP FOREIGN KEY report_ibfk_2');
+
+        $this->execute('ALTER TABLE vote DROP FOREIGN KEY vote_ibfk_1');
+        $this->execute('ALTER TABLE vote DROP FOREIGN KEY vote_ibfk_2');
+
         $this->dropTable('flag');
         $this->dropTable('report');
         $this->dropTable('vote');
