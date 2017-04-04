@@ -1,5 +1,8 @@
 FROM php:7.1.3-apache
 
+# Copy the PHP settings into place
+COPY config/php.ini /usr/local/etc/php/
+
 # Install composer
 RUN cd /usr/src && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

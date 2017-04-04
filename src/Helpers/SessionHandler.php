@@ -111,7 +111,7 @@ class SessionHandler
         // Store the session
     }
 
-    private function createSession(): array
+    private function createSession()
     {
         $this->hash = Utilities::randomToken(self::SESSION_TOKEN_LENGTH);
 
