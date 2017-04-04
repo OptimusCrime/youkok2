@@ -14,10 +14,10 @@ return [
 
         'db' => [
             'driver' => 'mysql',
-            'host' => 'localhost',
+            'host' => isset($_ENV['docker']) ? 'db' : 'localhost',
             'database' => 'youkok2',
-            'username' => 'root',
-            'password' => 'youkok2',
+            'username' => isset($_ENV['MYSQL_USER']) ? $_ENV['MYSQL_USER'] : 'root',
+            'password' => isset($_ENV['MYSQL_PASSWORD']) ? $_ENV['MYSQL_PASSWORD'] : 'youkok2',
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',

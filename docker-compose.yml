@@ -1,14 +1,32 @@
 version: '2'
 
 services:
+  db:
+    restart: always
+    image: "mysql:5.7.17"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=youkok2
+      - MYSQL_PASSWORD=youkok2
+      - MYSQL_DATABASE=youkok2
+    volumes:
+      - /var/lib/mysql
   youkok2:
+    restart: always
+    depends_on:
+      - db
     build:
       context: .
       dockerfile: Dockerfile
-    #command: apache2-foreground
-    #volumes:
-    #  - .:/var/www/html
     ports:
       - "8000:80"
     environment:
+      - docker=1
       - COMPOSER_ALLOW_SUPERUSER=1
+      - MYSQL_USER=youkok2
+      - MYSQL_PASSWORD=youkok2
+      - MYSQL_DATABASE=youkok2
+    links:
+      - db

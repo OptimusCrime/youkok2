@@ -6,10 +6,10 @@ environments:
     default_database: production
     production:
         adapter: mysql
-        host: localhost
-        name: production_db
-        user: root
-        pass: ''
+        host: db
+        name: youkok2
+        user: youkok2
+        pass: 'youkok2'
         port: 3306
         charset: utf8
     test:
