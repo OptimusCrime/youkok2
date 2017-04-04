@@ -31,6 +31,7 @@ class Youkok
     {
         $this->app->get('/', '\Youkok\Views\Frontpage:view')->setName('home');
         $this->app->get('/emner', '\Youkok\Views\Courses:view')->setName('courses');
+        $this->app->get('/emner/[{params:.*}/]', '\Youkok\Views\Archive:view')->setName('archive');
         $this->app->get('/sok', '\Youkok\Views\Search:view')->setName('search');
         $this->app->get('/help', '\Youkok\Views\Flat:help')->setName('help');
         $this->app->get('/om', '\Youkok\Views\Flat:about')->setName('about');

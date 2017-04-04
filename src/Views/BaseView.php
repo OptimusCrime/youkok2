@@ -50,7 +50,7 @@ class BaseView
         $this->templateData[$key] = $value;
     }
 
-    protected function render(Response $response, String $template, array $data): Response
+    protected function render(Response $response, String $template, array $data = []): Response
     {
         $this->setTemplateData('USER', $this->sessionHandler->getData());
 
@@ -60,5 +60,13 @@ class BaseView
             $this->templateData,
             $data
         ));
+    }
+
+    protected function render404(Response $response): Response
+    {
+        return $this->render($response, '404.tpl', [
+            'HEADER_MENU' => '',
+            'VIEW_NAME' => '404',
+        ]);
     }
 }

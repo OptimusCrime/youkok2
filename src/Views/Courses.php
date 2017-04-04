@@ -31,7 +31,7 @@ class Courses extends BaseView
         $previous_letter = null;
         $collection = [];
 
-        $elementCollection = Element::select('id', 'name', 'slug', 'empty')
+        $elementCollection = Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')
             ->where('parent', null)
             ->where('directory', 1)
             ->where('pending', 0)

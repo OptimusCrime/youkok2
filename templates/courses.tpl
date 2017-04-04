@@ -21,7 +21,10 @@
                         <ul class="list-group">[[+foreach $SUB_COLLECTION.courses as $element]]
 
                             <li class="[[+if $element->empty]]course-empty [[+/if]]list-group-item">
-                                <a href="[[+$element->fullUrl]]"><strong>[[+$element->courseCode]]</strong> &mdash; [[+$element->courseName]]</a>
+                                <a href="[[+path_for
+                                    name="archive"
+                                    data=["params" => "[[+$element->fullUri]]" ]
+                                ]]"><strong>[[+$element->courseCode]]</strong> &mdash; [[+$element->courseName]]</a>
                             </li>[[+/foreach]]
 
                         </ul>

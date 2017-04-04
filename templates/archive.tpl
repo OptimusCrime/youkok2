@@ -2,32 +2,45 @@
             <div class="row">
                 <div id="archive-top" class="col-xs-12 col-md-8">
                     <ol class="breadcrumb" id="archive-breadcrumbs">
-                        <li><a href="[[+$SITE_URL]]">Hjem</a></li>
-                        <li><a href="[[+TemplateHelper::urlFor('courses')]]">Emner</a></li>[[+foreach $ARCHIVE_ELEMENT_PARENTS as $element]]
-
-                        <li>[[+if $element->getId() == $ARCHIVE_ELEMENT->getId()]][[+if !$ARCHIVE_ELEMENT->hasParent()]][[+$ARCHIVE_ELEMENT->getCourseCode()]][[+else]][[+$element->getName()]][[+/if]][[+else]]<a href="[[+$element->getFullUrl()]]">[[+if !$element->hasParent()]][[+$element->getCourseCode()]][[+else]][[+$element->getName()]][[+/if]]</a>[[+/if]]</li>[[+/foreach]]
-
+                        <li><a href="[[+base_url]]">Hjem</a></li>
+                        <li><a href="[[+path_for name="courses"]]">Emner</a></li>[[+foreach $ARCHIVE_PARENTS as $parent]]
+                        <li>
+                            [[+if $parent->id != $ARCHIVE_ID]]
+                                <a href="[[+path_for name="archive" data=["params" => "[[+$parent->fullUri]]"] ]]">
+                            [[+/if]]
+                           [[+if $parent->parent === null]]
+                                [[+$parent->courseCode]]
+                           [[+else]]
+                                [[+$parent->name]]
+                           [[+/if]]
+                            [[+if $parent->id != $ARCHIVE_ID]]
+                                </a>
+                             [[+/if]]
+                        </li>[[+/foreach]]
                     </ol>
-                    [[+nocache]]<div id="archive-title">
-                        [[+if !$ARCHIVE_ELEMENT->hasParent()]]<h1>[[+$ARCHIVE_ELEMENT->getCourseCode()]]</h1>
-                        <span>&mdash;</span>
-                        <h2>[[+$ARCHIVE_ELEMENT->getCourseName()]]</h2>[[+else]]<h1>[[+$ARCHIVE_ELEMENT->getName()]]</h1>[[+/if]]
-                        [[+if $USER_IS_LOGGED_IN]]
+                    <div id="archive-title">
+                        <h1>
+                            [[+$ARCHIVE_TITLE]]
+                            [[+if $ARCHIVE_SUB_TITLE != null]]
+                                <span>&mdash;</span>
+                                <h2>[[+$ARCHIVE_SUB_TITLE]]</h2>
+                            [[+/if]]
+                        </h1>
 
-                        <i class="fa fa-star archive-heading-star-TODO" data-archive-id="[[+$ARCHIVE_ELEMENT->getId()]]" id="archive-heading-star"></i>[[+/if]]
+                        <i class="fa fa-star archive-heading-star-TODO" data-archive-id="[[+$ARCHIVE_ID]]" id="archive-heading-star"></i>
 
-                    </div>[[+/nocache]][[+if $ARCHIVE_EMPTY === true]]
+                    </div>[[+if $ARCHIVE_EMPTY === true]]
 
 [[+include file="archive_empty.tpl"]][[+else]]
 
-[[+include file="archive_content.tpl"]][[+/if]]
+[[*include file="archive_content.tpl"*]][[+/if]]
 
                 </div>
-                <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">[[+include file="archive_sidebar.tpl"]]
+                <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">[[*+include file="archive_sidebar.tpl"*]]
                 </div>
             </div>
 [[+include file="footer.tpl"]]
-[[+include file="sidebar_templates.tpl"]]
-[[+include file="sidebar_archive.tpl"]]
+[[*+include file="xsidebar_templates.tpl"*]]
+[[*+include file="xsidebar_archive.tpl"*]]
 </body>
 </html>

@@ -28,6 +28,7 @@ return [
             'DEV' => true,
             'VERSION' => '3.0.0-alpha',
             'GOOGLE_ANALYTICS' => false,
+            'EMAIL_CONTACT' => 'foo@bar.tld'
         ],
     ],
 ];

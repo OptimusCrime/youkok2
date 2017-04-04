@@ -36,6 +36,71 @@ class Element extends Model
         return explode('||', $this->name);
     }
 
+    private function getFullUri(): string
+    {
+        if ($this->uri !== null and strlen($this->uri) > 0) {
+            return $this->uri;
+        }
+
+        return $this->createUri();
+    }
+
+    public function isLink(): bool
+    {
+        return $this->link !== null and strlen($this->link) > 0;
+    }
+
+    private function createUri(): string
+    {
+        if ($this->isLink()) {
+            return $this->link;
+        }
+
+        $fragments = [$this->slug];
+        $currentParent = $this->parent;
+        do {
+            // Get the parent object
+            $parent = Element::select('id', 'parent', 'slug', 'uri')
+                ->find($currentParent);
+
+            // If we have no valid parent object anyway we have no option but to quit (LOG ERROR)
+            if ($parent === null) {
+                break;
+            }
+
+            // If our parent object has their uri we can just reuse its uri
+            if ($parent->uri !== null and strlen($parent->uri) > 0) {
+                $fragments[] = $parent->uri;
+                break;
+            }
+
+            // Just grab the slug and update parent
+            $fragments[] = $parent->slug;
+            $currentParent = $parent->parent;
+        } while ($currentParent !== 0 and $currentParent !== null);
+
+        // Filter the fragments
+        $cleanFragments = self::cleanFragments($fragments);
+
+        // Set the uri for this object
+        $this->uri = implode('/', array_reverse($cleanFragments));
+        $this->save();
+
+        return $this->uri;
+    }
+
+    private static function cleanFragments(array $fragments): array
+    {
+        $clean = [];
+        foreach ($fragments as $fragment) {
+            if ($fragment !== null and strlen($fragment) > 0) {
+                $clean[] = $fragment;
+            }
+        }
+
+        return $clean;
+    }
+
     public function __get($key)
     {
         $value = parent::__get($key);
@@ -49,16 +114,10 @@ class Element extends Model
         if ($key == 'courseName') {
             return $this->getCourseName();
         }
-        if ($key == 'fullUrl') {
-            return 'not-yet.html';
+        if ($key == 'fullUri') {
+            return $this->getFullUri();
         }
 
-        $trace = debug_backtrace();
-        trigger_error(
-            'Undefined property via __get(): ' . $key .
-            ' in ' . $trace[0]['file'] .
-            ' on line ' . $trace[0]['line'],
-            E_USER_NOTICE);
         return null;
     }
 }
