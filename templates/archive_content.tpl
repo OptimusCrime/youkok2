@@ -1,4 +1,4 @@
-                    <ul id="archive-list">[[+foreach $ARCHIVE_CONTENT as $element]]
+                    <ul id="archive-list">[[+foreach $ARCHIVE_CHILDREN as $child]]
 
                         <li>
                             <div class="archive-item-dropdown">
@@ -14,14 +14,14 @@
                                     </ul>
                                 </div>
                             </div>
-                            <a href="[[+$element->getFullUrl()]]"[[+if !$element->isDirectory()]] target="_blank"[[+/if]][[+if $element->isLink()]] title="Link til: [[+$element->getUrl()]]"[[+/if]]>
+                            <a href="[[+$child->fullUrl]]"[[+if $child->directory === 0]] target="_blank"[[+/if]][[+if $child->link !== null]] title="Link til: [[+$child->link]]"[[+/if]]>
                                 <div class="archive-item">
                                     <div class="archive-badge archive-badge-right hidden">
                                         <i class="fa fa-comments-o"></i>
                                     </div>
-                                    <div class="archive-item-icon" style="background-image: url('assets/images/icons/[[+if $element->isDirectory()]]folder.png[[+elseif $element->isLink()]]link.png[[+else]][[+if $element->getMissingImage()]]unknown.png[[+else]][[+$element->getMimeType()]].png[[+/if]][[+/if]]');"></div>
+                                    <div class="archive-item-icon" style="background-image: url('assets/images/icons/[[+if $child->directory === 1]]folder.png[[+elseif $element->isLink()]]link.png[[+else]][[+if $element->getMissingImage()]]unknown.png[[+else]][[+$element->getMimeType()]].png[[+/if]][[+/if]]');"></div>
                                     <div class="archive-item-label">
-                                        <h4>[[+$element->getName()]]</h4>
+                                        <h4>[[+$element->name]]</h4>
                                      </div>
                                 </div>
                             </a>

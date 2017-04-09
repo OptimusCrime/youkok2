@@ -33,7 +33,7 @@
 
 [[+include file="archive_empty.tpl"]][[+else]]
 
-[[*include file="archive_content.tpl"*]][[+/if]]
+[[+include file="archive_content.tpl"]][[+/if]]
 
                 </div>
                 <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">[[*+include file="archive_sidebar.tpl"*]]

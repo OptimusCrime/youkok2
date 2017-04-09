@@ -34,9 +34,14 @@ class Archive extends BaseView
     {
         $this->setTemplateData('ARCHIVE_ID', $element->id);
         $this->setTemplateData('ARCHIVE_SUB_TITLE', null);
-        $this->setTemplateData('ARCHIVE_EMPTY', true);
         $this->setTemplateData('ARCHIVE_PARENTS', self::getArchiveParents($element));
 
+
+        // Load empty
+        $this->setTemplateData('ARCHIVE_EMPTY', $element->empty);
+        $this->setTemplateData('ARCHIVE_CHILDREN', self::getArchiveChildren($element));
+
+        // Title
         if ($element->parent === null) {
             $this->setTemplateData('ARCHIVE_TITLE', $element->courseCode);
             $this->setTemplateData('ARCHIVE_SUB_TITLE', $element->courseName);
@@ -44,6 +49,22 @@ class Archive extends BaseView
         else {
             $this->setTemplateData('ARCHIVE_TITLE', $element->name);
         }
+    }
+
+    private static function getArchiveChildren(Element $element): array
+    {
+        if ($element->empty) {
+            return [];
+        }
+
+        return Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link')
+            ->where('parent', $element->id)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->orderBy('directory', 'DESC')
+            ->orderBy('name', 'ASC')
+            ->get();
+
     }
 
     private static function getArchiveParents(Element $element): array
