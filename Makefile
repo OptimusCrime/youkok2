@@ -2,9 +2,7 @@
 
 SERVER_SERVICE_NAME = server
 
-all:
-	build
-	start
+all: build start
 
 bash:
 	@docker-compose run --rm $(SERVER_SERVICE_NAME) bash
@@ -22,9 +20,7 @@ down:
 logs:
 	@docker-compose logs -f
 
-restart: 
-	stop 
-	start
+restart: stop start
 
 start:
 	@docker-compose up -d
@@ -36,7 +32,7 @@ stop:
 	@docker-compose stop
 
 tail:
-	@docker-compose logs $(OW4_MAKE_TARGET)
+	@docker-compose logs $(SERVER_SERVICE_NAME)
 
 migrate:
-	@docker-compose run --rm $(SERVER_SERVICE_NAME) php 
+	@docker-compose run --rm $(SERVER_SERVICE_NAME) php vendor/bin/phinx migrate -c config/docker-phinx.yml

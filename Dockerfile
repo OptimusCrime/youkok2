@@ -1,7 +1,7 @@
 FROM php:7.1.3-apache
 
 # Copy the PHP settings into place
-COPY config/php.ini /usr/local/etc/php/
+COPY docker/php.ini /usr/local/etc/php/
 
 # Install composer
 RUN cd /usr/src && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -17,9 +17,3 @@ RUN sed -i 's/\/var\/www\/html/\/var\/www\/html\/public/g' /etc/apache2/sites-av
 
 # Install PHP extensions
 RUN docker-php-ext-install zip pdo pdo_mysql
-
-# Change owner of Apache root directory
-RUN chown -R www-data:www-data /var/www/html
-
-# Create user for simplicity
-RUN useradd -ms /bin/bash youkok2
