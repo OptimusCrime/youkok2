@@ -2,16 +2,16 @@
 <html>
 <head>
     <base href="[[+base_url]]" />
-    <title>Youkok2.com :: [[+$SITE_TITLE]]</title>
+    <title>[[+$SITE_TITLE]] :: Youkok2.com</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta name="description" content="[[+if isset($SITE_DESCRPTION)]][[+$SITE_DESCRPTION]][[+else]]Youkok2 er den beste kokeboka for studenter på NTNU i en knipen studiehverdag.[[+/if]]" />
+    <meta name="description" content="[[+if isset($SITE_DESCRIPTION)]][[+$SITE_DESCRIPTION]][[+else]]Youkok2 er den beste kokeboka for studenter på NTNU i en knipen studiehverdag.[[+/if]]" />
     <meta name="keywords" content="ntnu, kok, youkok, kokebok, øvinger, lekser, eksamen, oppgaver, fasit, trondheim" />
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/youkok.min.css" />
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjpbLG7YxoVW1zeiEFAEluUhE5tqcEQV0"></script>
+    <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/youkok.css" />
     [[+nocache]]<script type="text/javascript">var SITE_DATA = "[[+$SITE_DATA]]";</script>[[+/nocache]]
 </head>
 <body>

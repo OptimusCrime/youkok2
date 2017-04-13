@@ -29,22 +29,15 @@
                     <div class="list-header">
                         <h2>Mine favoritter</h2>
                     </div>
-                    <ul class="list-group" id="favorites-list">[[+if $USER_IS_LOGGED_IN == true]][[+if count($HOME_USER_FAVORITES) == 0]]
+                    <ul class="list-group" id="favorites-list">[[+if count($USER.favorites) === 0]]
 
-                        <li class="list-group-item"><em>Du har ingen favoritter</em></li>[[+else]][[+foreach $HOME_USER_FAVORITES as $element]]
+                        <li class="list-group-item"><em>Du har ingen favoritter</em></li>[[+else]][[+foreach $USER.favorites as $element]]
 
                         <li class="list-group-item">
                             <a[[+if !$element->isDirectory()]] target="_blank"[[+/if]] href="[[+$element->getFullUrl()]]">[[+if !$element->hasParent()]]<strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]][[+else]][[+$element->getName()]][[+/if]]</a>
                             <i title="Fjern favoritt" data-id="[[+$element->getId()]]" class="fa fa-times-circle star-remove"></i>
                         </li>[[+/foreach]]
                         [[+/if]]
-                    [[+else]]
-
-                        <li class="list-group-item">
-                            <em>
-
-                            </em>
-                        </li>[[+/if]]
 
                     </ul>
                 </div>
@@ -52,9 +45,9 @@
                     <div class="list-header">
                         <h2>Mine siste nedlastninger</h2>
                     </div>
-                    <ul class="list-group">[[+if $USER_IS_LOGGED_IN == true]][[+if count($HOME_USER_LATEST) == 0]]
+                    <ul class="list-group">[[+if count($USER.downloads) === 0]]
 
-                        <li class="list-group-item"><em>Du har ingen nedlastninger</em></li>[[+else]][[+foreach $HOME_USER_LATEST as $element]]
+                        <li class="list-group-item"><em>Du har ingen nedlastninger</em></li>[[+else]][[+foreach $USER.downloads as $element]]
 
                         <li class="list-group-item">
                             <a rel="nofollow" target="_blank" href="[[+$element->getFullUrl()]]">
@@ -67,13 +60,6 @@
 
                         </li>[[+/foreach]]
                         [[+/if]]
-                    [[+else]]
-
-                        <li class="list-group-item">
-                            <em>
-
-                            </em>
-                        </li>[[+/if]]
 
                     </ul>
                 </div>
@@ -84,19 +70,15 @@
                         <h2>Nyeste elementer</h2>
                     </div>
                     <ul class="list-group">
-                    [[+if count($FRONTPAGE_LATEST) == 0]]    <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>[[+else]][[+foreach $FRONTPAGE_LATEST as $element]]    <li class="list-group-item">
-                            <a rel="nofollow" target="_blank" href="[[+$element->getFullUrl()]]">
-                                [[+$element->getName()]]
-                            </a>[[+if $element->hasParent()]] @ [[+if $element->getParent(true)->hasParent()]]
-
-                            <a href="[[+$element->getParent(true)->getFullUrl()]]">[[+$element->getParent(true)->getName()]]</a>, [[+/if]]
-
-                            <a href="[[+$element->getRootParent()->getFullUrl()]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
-
-                            [<span class="moment-timestamp help" data-toggle="tooltip" title="[[+$element->getAdded(true)]]" data-ts="[[+$element->getAdded()]]">Laster...</span>]
-                        </li>
-                    [[+/foreach]]
- [[+/if]]</ul>
+                        [[+if count($FRONTPAGE_LATEST_ELEMENTS) == 0]]
+                            <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>
+                        [[+else]]
+                            [[+include file="scopes/frontpage_elements_general.tpl"
+                                ELEMENTS=$FRONTPAGE_LATEST_ELEMENTS
+                                DISPLAY='added'
+                            ]]
+                        [[+/if]]
+                    </ul>
                 </div>
                 <div class="col-xs-12 col-sm-6 frontpage-box frontpage-module" data-id="1" data-variable="module1_delta">
                     <div class="list-header">
@@ -104,34 +86,29 @@
                         <div class="btn-group">
                             <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                             <span class="most-popular-label">
-                                [[+if $USER_MOST_POPULAR_ELEMENT == 1]]I dag[[+else if $USER_MOST_POPULAR_ELEMENT == 2]]Denne uka[[+else if $USER_MOST_POPULAR_ELEMENT == 3]]Dette måneden[[+else if $USER_MOST_POPULAR_ELEMENT == 4]]Dette året[[+else]]Alltid[[+/if]]
+                                [[+if $USER.frontpage.most_popular_element == 1]]I dag[[+else if $USER.frontpage.most_popular_element == 2]]Denne uka[[+else if $USER.frontpage.most_popular_element == 3]]Dette måneden[[+else if $USER.frontpage.most_popular_element == 4]]Dette året[[+else]]Alltid[[+/if]]
 
                             </span>
                             <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu home-most-popular-dropdown">
-                                <li[[+if $USER_MOST_POPULAR_ELEMENT == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">I dag</a></li>
-                                <li[[+if $USER_MOST_POPULAR_ELEMENT == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Denne uka</a></li>
-                                <li[[+if $USER_MOST_POPULAR_ELEMENT == 3]] class="disabled"[[+/if]]><a data-delta="3" href="#">Denne måneden</a></li>
-                                <li[[+if $USER_MOST_POPULAR_ELEMENT == 4]] class="disabled"[[+/if]]><a data-delta="4" href="#">Dette året</a></li>
-                                <li[[+if $USER_MOST_POPULAR_ELEMENT == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Alltid</a></li>
+                                <li[[+if $USER.frontpage.most_popular_element == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">I dag</a></li>
+                                <li[[+if $USER.frontpage.most_popular_element == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Denne uka</a></li>
+                                <li[[+if $USER.frontpage.most_popular_element == 3]] class="disabled"[[+/if]]><a data-delta="3" href="#">Denne måneden</a></li>
+                                <li[[+if $USER.frontpage.most_popular_element == 4]] class="disabled"[[+/if]]><a data-delta="4" href="#">Dette året</a></li>
+                                <li[[+if $USER.frontpage.most_popular_element == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Alltid</a></li>
                             </ul>
                         </div>
                     </div>
                     <ul class="list-group">
-                    [[+if count($HOME_MOST_POPULAR_ELEMENTS) == 0]]    <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>[[+else]][[+foreach $HOME_MOST_POPULAR_ELEMENTS as $element]]    <li class="list-group-item">
-                            <a rel="nofollow" target="_blank" href="[[+$element->getFullUrl()]]">
-                                [[+$element->getName()]]
-                            </a>[[+if $element->hasParent()]] @ [[+if $element->getParent(true)->hasParent()]]
-
-                            <a href="[[+$element->getParent(true)->getFullUrl()]]">[[+$element->getParent(true)->getName()]]</a>, [[+/if]]
-
-                            <a href="[[+$element->getRootParent()->getFullUrl()]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
-
-                            [[[+$element->getDownLoadCount($USER_MOST_POPULAR_ELEMENT)]]]
-                        </li>
-                    [[+/foreach]]
-[[+/if]]</ul>
+                    [[+if count($FRONTPAGE_MOST_POPULAR_ELEMENTS) == 0]]
+                        <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>
+                    [[+else]]
+                        [[+include file="scopes/frontpage_elements_general.tpl"
+                            ELEMENTS=$FRONTPAGE_MOST_POPULAR_ELEMENTS
+                            DISPLAY='downloads'
+                        ]]
+                    [[+/if]]
                 </div>
             </div>
             <div class="row">
@@ -141,22 +118,22 @@
                         <div class="btn-group">
                             <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                             <span class="most-popular-label">
-                                [[+if $USER_MOST_POPULAR_COURSES == 1]]I dag[[+else if $USER_MOST_POPULAR_COURSES == 2]]Denne uka[[+else if $USER_MOST_POPULAR_COURSES == 3]]Dette måneden[[+else if $USER_MOST_POPULAR_COURSES == 4]]Dette året[[+else]]Alltid[[+/if]]
+                                [[+if $USER.frontpage.most_popular_course == 1]]I dag[[+else if $USER.frontpage.most_popular_course == 2]]Denne uka[[+else if $USER.frontpage.most_popular_course == 3]]Dette måneden[[+else if $USER.frontpage.most_popular_course == 4]]Dette året[[+else]]Alltid[[+/if]]
 
                             </span>
                             <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu home-most-popular-dropdown">
-                                <li[[+if $USER_MOST_POPULAR_COURSES == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">I dag</a></li>
-                                <li[[+if $USER_MOST_POPULAR_COURSES == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Denne uka</a></li>
-                                <li[[+if $USER_MOST_POPULAR_COURSES == 3]] class="disabled"[[+/if]]><a data-delta="3" href="#">Denne måneden</a></li>
-                                <li[[+if $USER_MOST_POPULAR_COURSES == 4]] class="disabled"[[+/if]]><a data-delta="4" href="#">Dette året</a></li>
-                                <li[[+if $USER_MOST_POPULAR_COURSES == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Alltid</a></li>
+                                <li[[+if $USER.frontpage.most_popular_course == 1]] class="disabled"[[+/if]]><a data-delta="1" href="#">I dag</a></li>
+                                <li[[+if $USER.frontpage.most_popular_course == 2]] class="disabled"[[+/if]]><a data-delta="2" href="#">Denne uka</a></li>
+                                <li[[+if $USER.frontpage.most_popular_course == 3]] class="disabled"[[+/if]]><a data-delta="3" href="#">Denne måneden</a></li>
+                                <li[[+if $USER.frontpage.most_popular_course == 4]] class="disabled"[[+/if]]><a data-delta="4" href="#">Dette året</a></li>
+                                <li[[+if $USER.frontpage.most_popular_course == 0]] class="disabled"[[+/if]]><a data-delta="0" href="#">Alltid</a></li>
                             </ul>
                         </div>
                     </div>
                     <ul class="list-group">
-                    [[+if count($HOME_MOST_POPULAR_COURSES) == 0]]    <li class="list-group-item"><em>Det er visst ingen fag her</em></li>[[+else]][[+foreach $HOME_MOST_POPULAR_COURSES as $element]]    <li class="list-group-item">
+                    [[+if count($FRONTPAGE_MOST_POPULAR_COURSES) == 0]]    <li class="list-group-item"><em>Det er visst ingen fag her</em></li>[[+else]][[+foreach $FRONTPAGE_MOST_POPULAR_COURSES as $element]]    <li class="list-group-item">
                             <a rel="nofollow" href="[[+$element->getFullUrl()]]">
                                 <strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]
                             </a> [~[[+$element->getDownLoadCount($USER_MOST_POPULAR_COURSES)]]]
@@ -169,13 +146,15 @@
                         <h2>Siste besøkte fag</h2>
                     </div>
                     <ul class="list-group">
-                    [[+if count($HOME_LAST_VISITED) == 0]]    <li class="list-group-item"><em>Det er visst ingen fag her</em></li>[[+else]][[+foreach $HOME_LAST_VISITED as $element]]    <li class="list-group-item">
-                            <a rel="nofollow" href="[[+$element->getFullUrl()]]">
-                                <strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]]
-                            </a>
-                        </li>
-                    [[+/foreach]]
-[[+/if]]</ul>
+                        [[+if count($FRONTPAGE_LATEST_VISITED) == 0]]
+                            <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>
+                        [[+else]]
+                            [[+include file="scopes/frontpage_courses.tpl"
+                                ELEMENTS=$FRONTPAGE_LATEST_VISITED
+                                DISPLAY='visited'
+                            ]]
+                        [[+/if]]
+                    </ul>
                 </div>
             </div>
 [[+include file="footer.tpl"]]

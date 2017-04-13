@@ -40,10 +40,10 @@
                         <p>Dersom du savner et fag i listen kan du <a href="mailto:[[+$SITE_EMAIL_CONTACT]]">kontakte oss</a>, så legger vi det til.</p>
                     </div>
                 </div>
-[[+include file="sidebar.tpl"]]
+[[+include file="sidebar/general.tpl"]]
             </div>
         </div>
 [[+include file="footer.tpl"]]
-[[+include file="sidebar_templates.tpl"]]
+[[+include file="sidebar/templates.tpl"]]
 </body>
 </html>

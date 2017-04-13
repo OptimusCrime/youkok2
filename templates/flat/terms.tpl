@@ -24,11 +24,11 @@
                     [[+/foreach]]</ul>
                 </div>
                 <div id="sidebar" class="col-xs-12 col-md-4">
-[[+include file="sidebar_flat.tpl"]]
-[[+include file="sidebar.tpl"]]
+                    [[+include file="sidebar/flat.tpl"]]
+                    [[+include file="sidebar/general.tpl"]]
                 </div>
             </div>
 [[+include file="footer.tpl"]]
-[[+include file="sidebar_templates.tpl"]]
+[[+include file="sidebar/templates.tpl"]]
 </body>
 </html>

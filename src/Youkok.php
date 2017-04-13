@@ -32,9 +32,12 @@ class Youkok
         $this->app->get('/', '\Youkok\Views\Frontpage:view')->setName('home');
         $this->app->get('/emner', '\Youkok\Views\Courses:view')->setName('courses');
         $this->app->get('/emner/[{params:.*}/]', '\Youkok\Views\Archive:view')->setName('archive');
+        $this->app->get('/redirect/{id:[0-9]+}', '\Youkok\Views\ElementHandler:redirect')->setName('redirect');
+        $this->app->get('/last-ned/{id:[0-9]+}', '\Youkok\Views\ElementHandler:download')->setName('download');
         $this->app->get('/sok', '\Youkok\Views\Search:view')->setName('search');
         $this->app->get('/help', '\Youkok\Views\Flat:help')->setName('help');
         $this->app->get('/om', '\Youkok\Views\Flat:about')->setName('about');
+        $this->app->get('/changelog.txt', '\Youkok\Views\Flat:changelog')->setName('changelog');
         $this->app->get('/retningslinjer', '\Youkok\Views\Flat:terms')->setName('terms');
     }
 
@@ -48,6 +51,7 @@ class Youkok
         Containers::load($this->app->getContainer(), [
             \Youkok\Containers\View::class,
             \Youkok\Containers\Database::class,
+            \Youkok\Containers\Cache::class,
         ]);
     }
 }

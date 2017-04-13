@@ -20,6 +20,7 @@ class Courses extends BaseView
         }
 
         return $this->render($response, 'courses.tpl', [
+            'SITE_TITLE' => 'Emner',
             'HEADER_MENU' => 'courses',
             'VIEW_NAME' => 'courses'
         ]);
@@ -35,6 +36,7 @@ class Courses extends BaseView
             ->where('parent', null)
             ->where('directory', 1)
             ->where('pending', 0)
+            ->where('deleted', 0)
             ->orderBy('name')
             ->get();
 

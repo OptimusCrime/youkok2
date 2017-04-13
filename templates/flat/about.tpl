@@ -40,11 +40,11 @@
                     <p>I tillegg er ikoner for filtyper og noe inspirasjon hentet fra <a href="http://www.mollify.org" target="_blank">Mollify</a>.</p>
                 </div>
                 <div class="col-xs-12 col-md-4" id="sidebar">
-[[+include file="sidebar_flat.tpl"]]
-[[+include file="sidebar.tpl"]]
+[[+include file="sidebar/flat.tpl"]]
+[[+include file="sidebar/general.tpl"]]
                 </div>
             </div>
 [[+include file="footer.tpl"]]
-[[+include file="sidebar_templates.tpl"]]
+[[+include file="sidebar/templates.tpl"]]
 </body>
 </html>

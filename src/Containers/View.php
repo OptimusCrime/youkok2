@@ -7,6 +7,8 @@ use \Slim\Container;
 use \Slim\Views\Smarty;
 use \Slim\Views\SmartyPlugins;
 
+use Youkok\Plugins\ElementUrl;
+
 class View
 {
     public static function load(Container $container)
@@ -17,7 +19,6 @@ class View
             $view = new Smarty($baseDir . '/templates', [
                 'cacheDir' => $baseDir . '/smarty/cache',
                 'compileDir' =>  $baseDir . '/smarty/compile',
-                //'pluginsDir' => ['path/to/plugins', 'another/path/to/plugins']
             ]);
 
             $view->getSmarty()->setLeftDelimiter('[[+');
@@ -32,6 +33,10 @@ class View
             $smartyPlugins = new SmartyPlugins($container->get('router'), $container->get('request')->getUri());
             $view->registerPlugin('function', 'path_for', [$smartyPlugins, 'pathFor']);
             $view->registerPlugin('function', 'base_url', [$smartyPlugins, 'baseUrl']);
+
+            // Plugin to easier create links for Elements
+            $elementUrlPlugin = new ElementUrl($container->get('router'));
+            $view->registerPlugin('function', 'element_url', [$elementUrlPlugin, 'elementUrl']);
 
             return $view;
         };

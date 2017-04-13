@@ -3,13 +3,28 @@ declare(strict_types=1);
 
 namespace Youkok\Views;
 
+use \Carbon\Carbon;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Slim\Container;
 
 use Youkok\Models\Element;
 
 class Archive extends BaseView
 {
+    private $rootParent;
+    private $parents;
+    private $element;
+
+    public function __construct(Container $container)
+    {
+        parent::__construct($container);
+
+        $this->rootParent = null;
+        $this->parents = null;
+        $this->element = null;
+    }
+
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -17,12 +32,13 @@ class Archive extends BaseView
     {
         $uri = self::cleanUri($request->getAttribute('params'));
 
-        $archiveObject = $this->getArchiveObject($uri);
-        if ($archiveObject === null) {
+        if (!$this->getArchiveObject($uri)) {
             return $this->render404($response);
         }
 
-        $this->setArchiveData($archiveObject);
+        $this->setArchiveData();
+        $this->updateRootParent();
+
 
         return $this->render($response, 'archive.tpl', [
             'HEADER_MENU' => 'courses',
@@ -30,50 +46,87 @@ class Archive extends BaseView
         ]);
     }
 
-    private function setArchiveData(Element $element)
+    private function setArchiveData()
     {
-        $this->setTemplateData('ARCHIVE_ID', $element->id);
+        $this->setTemplateData('ARCHIVE_ID', $this->element->id);
         $this->setTemplateData('ARCHIVE_SUB_TITLE', null);
-        $this->setTemplateData('ARCHIVE_PARENTS', self::getArchiveParents($element));
-
+        $this->setTemplateData('ARCHIVE_PARENTS', $this->getArchiveParents());
+        $this->setTemplateData('SITE_DESCRIPTION', $this->getSiteDescription());
 
         // Load empty
-        $this->setTemplateData('ARCHIVE_EMPTY', $element->empty);
-        $this->setTemplateData('ARCHIVE_CHILDREN', self::getArchiveChildren($element));
+        $this->setTemplateData('ARCHIVE_CHILDREN', $this->getArchiveChildren());
 
         // Title
-        if ($element->parent === null) {
-            $this->setTemplateData('ARCHIVE_TITLE', $element->courseCode);
-            $this->setTemplateData('ARCHIVE_SUB_TITLE', $element->courseName);
+        if ($this->element->parent === null) {
+            $this->setTemplateData('ARCHIVE_TITLE', $this->element->courseCode);
+            $this->setTemplateData('ARCHIVE_SUB_TITLE', $this->element->courseName);
+            $this->setTemplateData('SITE_TITLE', $this->element->courseCode . ' :: ' . $this->element->courseName);
         }
         else {
-            $this->setTemplateData('ARCHIVE_TITLE', $element->name);
+            $this->setTemplateData('ARCHIVE_TITLE', $this->element->name);
+            $this->setTemplateData('SITE_TITLE', $this->element->name);
         }
     }
 
-    private static function getArchiveChildren(Element $element): array
+    private function updateRootParent()
     {
-        if ($element->empty) {
+        $this->rootParent->last_visited = Carbon::now();
+        $this->rootParent->save();
+    }
+
+    private function getSiteDescription(): string
+    {
+        $descriptionObject = $this->element;
+        if ($this->element->parent !== null) {
+            // Safe guarding nullpointer
+            if ($this->rootParent === null) {
+                $this->getArchiveParents();
+            }
+
+            $descriptionObject = $this->rootParent;
+        }
+
+        return $descriptionObject->courseCode . ' - ' . $descriptionObject->courseName . ': ' .
+            'Øvinger, løsningsforslag, gamle eksamensoppgaver ' .
+            'og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
+    }
+
+    private function getArchiveChildren()
+    {
+        if ($this->element->empty) {
             return [];
         }
 
-        return Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link')
-            ->where('parent', $element->id)
+        $children = Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link', 'checksum')
+            ->where('parent', $this->element->id)
             ->where('deleted', 0)
             ->where('pending', 0)
             ->orderBy('directory', 'DESC')
             ->orderBy('name', 'ASC')
             ->get();
 
+        // Guard for empty set of query
+        if (count($children) > 0) {
+            return $children;
+        }
+
+        return [];
     }
 
-    private static function getArchiveParents(Element $element): array
+    private function getArchiveParents(): array
     {
-        $parents = [$element];
-        $currentParentId = $element->parent;
+        if ($this->this->parents !== null) {
+            return $this->this->parents;
+        }
+
+        $parents = [$this->element];
+        $currentParentId = $this->element->parent;
         do {
             $directParent = Element::select('id', 'name', 'slug', 'uri', 'parent')
                 ->where('id', $currentParentId)
+                ->where('deleted', 0)
+                ->where('pending', 0)
+                ->where('directory', 1)
                 ->first();
 
             if ($directParent === null) {
@@ -85,14 +138,17 @@ class Archive extends BaseView
 
         } while ($currentParentId !== 0 and $currentParentId !== null);
 
-        return array_reverse($parents);
+        $this->parents = array_reverse($parents);
+
+        $this->rootParent = $this->parents[0];
+
+        return $this->parents;
     }
 
-    private function getArchiveObject(string $uri)
+    private function getArchiveObject(string $uri): bool
     {
-        $uriObject = $this->getObjectByUri($uri);
-        if ($uriObject !== null) {
-            return $uriObject;
+        if ($this->getObjectByUri($uri)) {
+            return true;
         }
 
         return $this->getObjectByFragments($uri);
@@ -102,18 +158,24 @@ class Archive extends BaseView
     {
         $element = Element::select('id', 'parent', 'name', 'checksum', 'link')
             ->where('uri', $uri)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->where('directory', 1)
             ->first();
 
         if ($element->checksum !== null or $element->link !== null) {
-            return null;
+            return false;
         }
 
-        return $element;
+        $this->element = $element;
+
+        return true;
     }
 
-    private function getObjectByFragments(string $uri)
+    private function getObjectByFragments(string $uri): bool
     {
         // TODO
+        return false;
     }
 
     private static function cleanUri(string $uri): string

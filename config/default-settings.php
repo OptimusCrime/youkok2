@@ -1,7 +1,7 @@
 <?php
 return [
     'settings' => [
-        'displayErrorDetails' => false,
+        'displayErrorDetails' => true,
         'addContentLengthHeader' => false,
 
         'base_dir' => dirname(__DIR__),

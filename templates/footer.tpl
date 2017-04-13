@@ -5,12 +5,12 @@
     <div class="row">
         <div class="col-xs-12" id="footer">
             <p>
-                <span><a href="changelog.txt">Youkok2 v[[+$SITE_SETTINGS.VERSION]]</a></span>
+                <span><a href="[[+path_for name="changelog"]]">Youkok2 v[[+$SITE_SETTINGS.VERSION]]</a></span>
                 <span><a href="[[+path_for name="about"]]">Om Youkok2</a></span>
                 <span><a href="[[+path_for name="terms"]]">Retningslinjer</a></span>
                 <span><a href="[[+path_for name="help"]]">Hjelp</a></span>
-                <span><a href="mailto:[[+$SITE_EMAIL_CONTACT]]">Kontakt</a></span>
-                <span>[[+nocache]][[+$TIMER]][[+/nocache]]</span>
+                <span><a href="mailto:[[+$SITE_SETTINGS.EMAIL_CONTACT]]">Kontakt</a></span>
+                <span>[[+nocache]][[*+$TIMER*]][[+/nocache]]</span>
                 <span><a href="https://github.com/OptimusCrime/youkok2" target="_blank">GitHub</a></span>
             </p>
         </div>

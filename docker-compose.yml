@@ -1,6 +1,11 @@
 version: '2'
 
 services:
+
+  ###############################################
+  #                    Files                    #
+  ###############################################
+
   appdata:
     image: "alpine:3.5"
     command: tail -f /dev/null
@@ -8,6 +13,11 @@ services:
     network_mode: "none"
     volumes:
       - .:/var/www/html
+
+
+  ###############################################
+  #                   Database                  #
+  ###############################################
 
   db:
     restart: always
@@ -21,7 +31,12 @@ services:
       - MYSQL_DATABASE=youkok2
     volumes:
       - /var/lib/mysql
-  
+
+
+  ###############################################
+  #                  Webserver                  #
+  ###############################################
+
   server:
     restart: always
     depends_on:

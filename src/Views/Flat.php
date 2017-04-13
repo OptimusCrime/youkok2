@@ -13,7 +13,7 @@ class Flat extends BaseView
      */
     public function help(Request $request, Response $response, array $args): Response
     {
-        return $this->render($response, 'help.tpl', [
+        return $this->render($response, 'flat/help.tpl', [
             'SITE_TITLE' => 'Hjelp',
             'HEADER_MENU' => 'help',
             'VIEW_NAME' => 'help'
@@ -25,7 +25,7 @@ class Flat extends BaseView
      */
     public function about(Request $request, Response $response, array $args): Response
     {
-        return $this->render($response, 'about.tpl', [
+        return $this->render($response, 'flat/about.tpl', [
             'SITE_TITLE' => 'Om Youkok2',
             'HEADER_MENU' => 'about',
             'VIEW_NAME' => 'about'
@@ -37,10 +37,22 @@ class Flat extends BaseView
      */
     public function terms(Request $request, Response $response, array $args): Response
     {
-        return $this->render($response, 'terms.tpl', [
+        return $this->render($response, 'flat/terms.tpl', [
             'SITE_TITLE' => 'Retningslinjer',
             'HEADER_MENU' => '',
             'VIEW_NAME' => 'terms'
+        ]);
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function changelog(Request $request, Response $response, array $args): Response
+    {
+        $response = $response->withHeader('Content-Type', 'text/plain');
+
+        return $this->render($response, 'flat/changelog.tpl', [
+            'CONTENT' => file_get_contents($this->container->get('settings')['base_dir'] . '/CHANGELOG.md')
         ]);
     }
 }

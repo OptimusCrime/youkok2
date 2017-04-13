@@ -5,10 +5,26 @@ namespace Youkok\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Youkok\Helpers\Utilities;
+
 class Element extends Model
 {
-    protected $table = 'element';
     public $timestamps = false;
+
+    protected $table = 'element';
+    protected $fillable = array('*');
+    protected $guarded = array('');
+
+    private $parentObject;
+    private $parentRootObject;
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->parentObject = null;
+        $this->parentRootObject = null;
+    }
 
     private function getCourseCode(): string
     {
@@ -61,6 +77,8 @@ class Element extends Model
         do {
             // Get the parent object
             $parent = Element::select('id', 'parent', 'slug', 'uri')
+                ->where('deleted', 0)
+                ->where('pending', 0)
                 ->find($currentParent);
 
             // If we have no valid parent object anyway we have no option but to quit (LOG ERROR)
@@ -89,6 +107,81 @@ class Element extends Model
         return $this->uri;
     }
 
+    private function getIcon(): string
+    {
+        if ($this->directory) {
+            return 'folder.png';
+        }
+
+        if ($this->child === null) {
+            return 'link.png';
+        }
+
+        if ($this->mime_type === null) {
+            return 'unknown.png';
+        }
+
+        return $this->mime_type . '.png';
+    }
+
+    private function getParentObject()
+    {
+        if ($this->parent === null) {
+            return null;
+        }
+
+        if ($this->parentObject !== null) {
+            return $this->parentObject;
+        }
+
+        $this->parentObject = Element::select('id', 'name', 'parent', 'slug', 'uri', 'link')
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->where('id', $this->parent)
+            ->first();
+
+        return $this->parentObject;
+    }
+
+    private function getParentRootObj()
+    {
+        if ($this->parent === null) {
+            return null;
+        }
+
+        if ($this->parentRootObject !== null) {
+            return $this->parentRootObject;
+        }
+
+        $currentParent = $this->parent;
+
+        while (true) {
+            $this->parentRootObject = Element::select('id', 'name', 'parent', 'slug', 'uri', 'link')
+                ->where('deleted', 0)
+                ->where('pending', 0)
+                ->where('id', $currentParent)
+                ->first();
+
+            $currentParent = $this->parentRootObject->parent;
+
+            if ($currentParent === null) {
+                break;
+            }
+        }
+
+        return $this->parentRootObject;
+    }
+
+    private function getAddedPretty()
+    {
+        return Utilities::prettifySQLDate($this->added);
+    }
+
+    private function getAddedPrettyAll()
+    {
+        return Utilities::prettifySQLDate($this->added, false);
+    }
+
     private static function cleanFragments(array $fragments): array
     {
         $clean = [];
@@ -108,14 +201,29 @@ class Element extends Model
             return $value;
         }
 
-        if ($key == 'courseCode') {
+        if ($key === 'courseCode') {
             return $this->getCourseCode();
         }
-        if ($key == 'courseName') {
+        if ($key === 'courseName') {
             return $this->getCourseName();
         }
-        if ($key == 'fullUri') {
+        if ($key === 'fullUri') {
             return $this->getFullUri();
+        }
+        if ($key === 'icon') {
+            return $this->getIcon();
+        }
+        if ($key === 'parentObj') {
+            return $this->getParentObject();
+        }
+        if ($key === 'parentRootObj') {
+            return $this->getParentRootObj();
+        }
+        if ($key === 'addedPretty') {
+            return $this->getAddedPretty();
+        }
+        if ($key === 'addedPrettyAll') {
+            return $this->getAddedPrettyAll();
         }
 
         return null;
