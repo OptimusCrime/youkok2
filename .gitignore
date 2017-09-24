@@ -7,3 +7,5 @@ node_modules
 phinx.yml
 settings.php
 composer.phar
+
+!docker/phinx.yml
