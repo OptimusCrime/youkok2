@@ -14,15 +14,15 @@ class BaseView
 
     public function __construct(Container $container)
     {
-        $this->container = $container;
-
-        $this->setDefaultTemplateData();
         $this->sessionHandler = new SessionHandler();
+
+        $this->container = $container;
+        $this->templateData = $this->getDefaultTemplateData();
     }
 
-    private function setDefaultTemplateData()
+    private function getDefaultTemplateData()
     {
-        $this->templateData = [
+        return [
             // Messages to display to the user
             'SITE_MESSAGES' => [],
 
@@ -33,7 +33,7 @@ class BaseView
             'SITE_DATA' => json_encode([]),
 
             // Information about the current user
-            'USER' => [],
+            'USER' => $this->sessionHandler->getData(),
 
             // Other things
             'SITE_TITLE' => 'Den beste kokeboka på nettet',
@@ -43,15 +43,8 @@ class BaseView
         ];
     }
 
-    protected function setTemplateData($key, $value)
-    {
-        $this->templateData[$key] = $value;
-    }
-
     protected function render(Response $response, String $template, array $data = [])
     {
-        $this->setTemplateData('USER', $this->sessionHandler->getData());
-
         $this->sessionHandler->store();
 
         return $this->container->get('view')->render($response, $template, array_merge(
