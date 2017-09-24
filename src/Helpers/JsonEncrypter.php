@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Youkok\Helpers;
 
 use Illuminate\Contracts\Encryption\Encrypter;

@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Youkok\Views;
 
 use \Carbon\Carbon;
@@ -28,7 +26,7 @@ class Archive extends BaseView
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function view(Request $request, Response $response, array $args): Response
+    public function view(Request $request, Response $response, array $args)
     {
         $uri = self::cleanUri($request->getAttribute('params'));
 
@@ -70,11 +68,13 @@ class Archive extends BaseView
 
     private function updateRootParent()
     {
+        /*
         $this->rootParent->last_visited = Carbon::now();
         $this->rootParent->save();
+        */
     }
 
-    private function getSiteDescription(): string
+    private function getSiteDescription()
     {
         $descriptionObject = $this->element;
         if ($this->element->parent !== null) {
@@ -113,8 +113,9 @@ class Archive extends BaseView
         return [];
     }
 
-    private function getArchiveParents(): array
+    private function getArchiveParents()
     {
+        /*
         if ($this->this->parents !== null) {
             return $this->this->parents;
         }
@@ -143,9 +144,10 @@ class Archive extends BaseView
         $this->rootParent = $this->parents[0];
 
         return $this->parents;
+        */
     }
 
-    private function getArchiveObject(string $uri): bool
+    private function getArchiveObject($uri)
     {
         if ($this->getObjectByUri($uri)) {
             return true;
@@ -154,7 +156,7 @@ class Archive extends BaseView
         return $this->getObjectByFragments($uri);
     }
 
-    private function getObjectByUri(string $uri)
+    private function getObjectByUri($uri)
     {
         $element = Element::select('id', 'parent', 'name', 'checksum', 'link')
             ->where('uri', $uri)
@@ -172,13 +174,13 @@ class Archive extends BaseView
         return true;
     }
 
-    private function getObjectByFragments(string $uri): bool
+    private function getObjectByFragments($uri)
     {
         // TODO
         return false;
     }
 
-    private static function cleanUri(string $uri): string
+    private static function cleanUri($uri)
     {
         $fragments = [];
         $uriSplit = explode('/', $uri);

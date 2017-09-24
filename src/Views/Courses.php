@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Youkok\Views;
 
 use \Psr\Http\Message\ResponseInterface as Response;
@@ -13,7 +11,7 @@ class Courses extends BaseView
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function view(Request $request, Response $response, array $args): Response
+    public function view(Request $request, Response $response, array $args)
     {
         if (!$this->container->get('view')->getSmarty()->isCached('courses.tpl', $request->getUri()->getPath())) {
             $this->loadCourses();

@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Youkok\Helpers;
 
 class Utilities
@@ -11,12 +9,12 @@ class Utilities
         'jul', 'aug', 'sep',
         'okt', 'nov', 'des'];
 
-    public static function numberFormat($num): string
+    public static function numberFormat($num)
     {
         return number_format($num, 0, '.', ' ');
     }
 
-    public static function randomToken($length): string
+    public static function randomToken($length)
     {
         $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $str = '';
@@ -27,7 +25,7 @@ class Utilities
         return $str;
     }
 
-    public static function prettifySQLDate($d, $excludeTime = true): string
+    public static function prettifySQLDate($d, $excludeTime = true)
     {
         $split1 = explode(' ', $d);
         $split2 = explode('-', $split1[0]);

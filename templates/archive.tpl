@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">
-                    [[*+include file="archive_sidebar.tpl"*]]
+                    [[+include file="archive_sidebar_upload.tpl"]]
                 </div>
             </div>
 [[+include file="footer.tpl"]]

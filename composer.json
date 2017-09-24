@@ -31,8 +31,9 @@
             "@phpcs",
             "@phpmd"
         ],
-        "phpunit": "php vendor/bin/phpunit",
-        "phpcs": "php vendor/bin/phpcs",
-        "phpmd": "php vendor/bin/phpmd"
+        "phpunit": "vendor/bin/phpunit",
+        "phpcs": "vendor/bin/phpcs",
+        "phpmd": "vendor/bin/phpmd",
+        "migrate": "vendor/bin/phinx -c docker/docker-phinx.yml"
     }
 }

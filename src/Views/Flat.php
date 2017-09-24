@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Youkok\Views;
 
 use \Psr\Http\Message\ResponseInterface as Response;
@@ -11,7 +9,7 @@ class Flat extends BaseView
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function help(Request $request, Response $response, array $args): Response
+    public function help(Request $request, Response $response, array $args)
     {
         return $this->render($response, 'flat/help.tpl', [
             'SITE_TITLE' => 'Hjelp',
@@ -23,7 +21,7 @@ class Flat extends BaseView
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function about(Request $request, Response $response, array $args): Response
+    public function about(Request $request, Response $response, array $args)
     {
         return $this->render($response, 'flat/about.tpl', [
             'SITE_TITLE' => 'Om Youkok2',
@@ -35,7 +33,7 @@ class Flat extends BaseView
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function terms(Request $request, Response $response, array $args): Response
+    public function terms(Request $request, Response $response, array $args)
     {
         return $this->render($response, 'flat/terms.tpl', [
             'SITE_TITLE' => 'Retningslinjer',
@@ -47,7 +45,7 @@ class Flat extends BaseView
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function changelog(Request $request, Response $response, array $args): Response
+    public function changelog(Request $request, Response $response, array $args)
     {
         $response = $response->withHeader('Content-Type', 'text/plain');
 

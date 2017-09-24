@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Youkok\Helpers;
 
 class SettingsParser
@@ -19,7 +17,7 @@ class SettingsParser
         }
     }
 
-    private function handleFile(string $file)
+    private function handleFile($file)
     {
         if (file_exists($file) and is_readable($file)) {
             try {
@@ -39,7 +37,7 @@ class SettingsParser
         // Log error here
     }
 
-    public function getSettings(): array
+    public function getSettings()
     {
         return $this->settings;
     }

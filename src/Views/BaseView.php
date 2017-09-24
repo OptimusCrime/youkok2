@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Youkok\Views;
 
 use \Psr\Http\Message\ResponseInterface as Response;
@@ -45,12 +43,12 @@ class BaseView
         ];
     }
 
-    protected function setTemplateData(string $key, $value)
+    protected function setTemplateData($key, $value)
     {
         $this->templateData[$key] = $value;
     }
 
-    protected function render(Response $response, String $template, array $data = []): Response
+    protected function render(Response $response, String $template, array $data = [])
     {
         $this->setTemplateData('USER', $this->sessionHandler->getData());
 
@@ -62,7 +60,7 @@ class BaseView
         ));
     }
 
-    protected function render404(Response $response): Response
+    protected function render404(Response $response)
     {
         return $this->render($response, 'errors/404.tpl', [
             'HEADER_MENU' => '',

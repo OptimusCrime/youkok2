@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Youkok\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +16,19 @@ class Element extends Model
     private $parentObject;
     private $parentRootObject;
 
+    public static function fromId($id)
+    {
+        if (!isset($id) or !is_numeric($id)) {
+            return null;
+        }
+
+        return Element::select('id', 'link', 'checksum')
+            ->where('id', $id)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->first();
+    }
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -26,13 +37,13 @@ class Element extends Model
         $this->parentRootObject = null;
     }
 
-    private function getCourseCode(): string
+    private function getCourseCode()
     {
         $courseArr = $this->getCourseArray();
         return $courseArr[0];
     }
 
-    private function getCourseName(): string
+    private function getCourseName()
     {
         $courseArr = $this->getCourseArray();
 
@@ -43,7 +54,7 @@ class Element extends Model
         return '';
     }
 
-    private function getCourseArray(): array
+    private function getCourseArray()
     {
         if ($this->name == null) {
             return [''];
@@ -52,7 +63,7 @@ class Element extends Model
         return explode('||', $this->name);
     }
 
-    private function getFullUri(): string
+    private function getFullUri()
     {
         if ($this->uri !== null and strlen($this->uri) > 0) {
             return $this->uri;
@@ -61,12 +72,12 @@ class Element extends Model
         return $this->createUri();
     }
 
-    public function isLink(): bool
+    public function isLink()
     {
         return $this->link !== null and strlen($this->link) > 0;
     }
 
-    private function createUri(): string
+    private function createUri()
     {
         if ($this->isLink()) {
             return $this->link;
@@ -107,7 +118,7 @@ class Element extends Model
         return $this->uri;
     }
 
-    private function getIcon(): string
+    private function getIcon()
     {
         if ($this->directory) {
             return 'folder.png';
@@ -182,7 +193,7 @@ class Element extends Model
         return Utilities::prettifySQLDate($this->added, false);
     }
 
-    private static function cleanFragments(array $fragments): array
+    private static function cleanFragments(array $fragments)
     {
         $clean = [];
         foreach ($fragments as $fragment) {
@@ -192,6 +203,15 @@ class Element extends Model
         }
 
         return $clean;
+    }
+
+    public function addDownload()
+    {
+        $download = new Download();
+        $download->resource = $this->id;
+        $download->ip = $_SERVER['REMOTE_ADDR']; // TODO
+        $download->agent = $_SERVER['HTTP_USER_AGENT']; // TODO
+        $download->save();
     }
 
     public function __get($key)

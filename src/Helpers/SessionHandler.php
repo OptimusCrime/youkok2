@@ -1,12 +1,9 @@
 <?php
-declare(strict_types=1);
-
 namespace Youkok\Helpers;
 
 use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
 use Youkok\Models\Session;
-use Youkok\Helpers\Utilities;
 
 class SessionHandler
 {

@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Youkok\Views;
 
 use \Psr\Http\Message\ResponseInterface as Response;
@@ -11,7 +9,7 @@ class Search extends BaseView
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function view(Request $request, Response $response, array $args): Response
+    public function view(Request $request, Response $response, array $args)
     {
         return $this->render($response, 'search.tpl', [
             'SITE_TITLE' => 'Søk',
