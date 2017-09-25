@@ -23,6 +23,10 @@ return [
             'prefix'    => '',
         ],
 
+        'file_endings' => [
+            'pdf', 'txt', 'java', 'py', 'html', 'htm', 'sql'
+        ],
+
         // Site specific settings, use uppercase for their keywords
         'site' => [
             'DEV' => true,

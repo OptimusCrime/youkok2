@@ -2,9 +2,10 @@
 namespace Youkok\Containers;
 
 use \Slim\Container;
-use \Slim\Views\Smarty;
-use \Slim\Views\SmartyPlugins;
+use \Slim\Views\Twig;
+use \Slim\Views\TwigExtension;
 
+use Twig_Extension_Debug;
 use Youkok\Plugins\ElementUrl;
 
 class View
@@ -14,27 +15,16 @@ class View
         $baseDir = $container->get('settings')['base_dir'];
 
         $container['view'] = function ($container) use ($baseDir) {
-            $view = new Smarty($baseDir . '/templates', [
-                'cacheDir' => $baseDir . '/smarty/cache',
-                'compileDir' =>  $baseDir . '/smarty/compile',
+            $view = new Twig($baseDir . '/templates/', [
+                'cache' => false,
+                'auto_reload' => true,
+                'debug' => true
             ]);
 
-            $view->getSmarty()->setLeftDelimiter('[[+');
-            $view->getSmarty()->setRightDelimiter(']]');
-
-            // TODO
-            $view->getSmarty()->setCaching(false);
-            $view->getSmarty()->setDebugging(true);
-            //$view->getSmarty()->setCompileCheck(false);
-
-            // Add Slim specific plugins
-            $smartyPlugins = new SmartyPlugins($container->get('router'), $container->get('request')->getUri());
-            $view->registerPlugin('function', 'path_for', [$smartyPlugins, 'pathFor']);
-            $view->registerPlugin('function', 'base_url', [$smartyPlugins, 'baseUrl']);
-
-            // Plugin to easier create links for Elements
-            $elementUrlPlugin = new ElementUrl($container->get('router'));
-            $view->registerPlugin('function', 'element_url', [$elementUrlPlugin, 'elementUrl']);
+            // Instantiate and add Slim specific extension
+            $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
+            $view->addExtension(new TwigExtension($container['router'], $basePath));
+            $view->addExtension(new Twig_Extension_Debug());
 
             return $view;
         };

@@ -28,12 +28,17 @@ class Youkok3000 extends AbstractMigration
     public function change()
     {
         // Remove foreign keys
-        $this->execute('ALTER TABLE download DROP FOREIGN KEY download_ibfk_1');
-        $this->execute('ALTER TABLE download DROP FOREIGN KEY download_ibfk_2');
-        
-        $this->execute('ALTER TABLE element DROP FOREIGN KEY element_ibfk_1');
-        $this->execute('ALTER TABLE element DROP FOREIGN KEY element_ibfk_3');
-        
-        $this->execute('ALTER TABLE verify DROP FOREIGN KEY verify_ibfk_1');
+        try {
+            $this->execute('ALTER TABLE download DROP FOREIGN KEY download_ibfk_1');
+            $this->execute('ALTER TABLE download DROP FOREIGN KEY download_ibfk_2');
+
+            $this->execute('ALTER TABLE element DROP FOREIGN KEY element_ibfk_1');
+            $this->execute('ALTER TABLE element DROP FOREIGN KEY element_ibfk_3');
+
+            $this->execute('ALTER TABLE verify DROP FOREIGN KEY verify_ibfk_1');
+        }
+        catch (\Exception $e) {
+            //
+        }
     }
 }

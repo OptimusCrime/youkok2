@@ -5,6 +5,17 @@ use Youkok\Models\Element;
 
 class ElementController
 {
+    public static function getAllCourses()
+    {
+        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')
+            ->where('parent', null)
+            ->where('directory', 1)
+            ->where('pending', 0)
+            ->where('deleted', 0)
+            ->orderBy('name')
+            ->get();
+    }
+
     public static function getMostPopularCoursesFromDelta($delta)
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'added')
@@ -39,7 +50,7 @@ class ElementController
             ->get();
     }
 
-    public static function getLatest()
+    public static function getLatest($limit = 10)
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'added')
             ->where('directory', 0)
@@ -47,6 +58,7 @@ class ElementController
             ->where('deleted', 0)
             ->orderBy('added', 'DESC')
             ->orderBy('name', 'DESC')
+            ->limit($limit)
             ->get();
     }
 }

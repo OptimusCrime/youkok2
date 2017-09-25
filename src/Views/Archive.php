@@ -10,37 +10,23 @@ use Youkok\Models\Element;
 
 class Archive extends BaseView
 {
-    private $rootParent;
-    private $parents;
-    private $element;
-
-    public function __construct(Container $container)
-    {
-        parent::__construct($container);
-
-        $this->rootParent = null;
-        $this->parents = null;
-        $this->element = null;
-    }
-
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function view(Request $request, Response $response, array $args)
     {
-        $uri = self::cleanUri($request->getAttribute('params'));
-
-        if (!$this->getArchiveObject($uri)) {
+        $element = Element::fromUri($request->getAttribute('params'));
+        if ($element === null) {
             return $this->render404($response);
         }
 
-        $this->setArchiveData();
-        $this->updateRootParent();
+        $element->updateRootParent();
 
-
-        return $this->render($response, 'archive.tpl', [
+        return $this->render($response, 'archive.html', [
             'HEADER_MENU' => 'courses',
-            'VIEW_NAME' => 'archive'
+            'VIEW_NAME' => 'archive',
+            'ARCHIVE_ID' => $element->id,
+            'ARCHIVE_PARENTS' => $element->parents,
         ]);
     }
 
@@ -64,14 +50,6 @@ class Archive extends BaseView
             $this->setTemplateData('ARCHIVE_TITLE', $this->element->name);
             $this->setTemplateData('SITE_TITLE', $this->element->name);
         }
-    }
-
-    private function updateRootParent()
-    {
-        /*
-        $this->rootParent->last_visited = Carbon::now();
-        $this->rootParent->save();
-        */
     }
 
     private function getSiteDescription()
@@ -111,85 +89,5 @@ class Archive extends BaseView
         }
 
         return [];
-    }
-
-    private function getArchiveParents()
-    {
-        /*
-        if ($this->this->parents !== null) {
-            return $this->this->parents;
-        }
-
-        $parents = [$this->element];
-        $currentParentId = $this->element->parent;
-        do {
-            $directParent = Element::select('id', 'name', 'slug', 'uri', 'parent')
-                ->where('id', $currentParentId)
-                ->where('deleted', 0)
-                ->where('pending', 0)
-                ->where('directory', 1)
-                ->first();
-
-            if ($directParent === null) {
-                break;
-            }
-
-            $parents[] = $directParent;
-            $currentParentId = $directParent->parent;
-
-        } while ($currentParentId !== 0 and $currentParentId !== null);
-
-        $this->parents = array_reverse($parents);
-
-        $this->rootParent = $this->parents[0];
-
-        return $this->parents;
-        */
-    }
-
-    private function getArchiveObject($uri)
-    {
-        if ($this->getObjectByUri($uri)) {
-            return true;
-        }
-
-        return $this->getObjectByFragments($uri);
-    }
-
-    private function getObjectByUri($uri)
-    {
-        $element = Element::select('id', 'parent', 'name', 'checksum', 'link')
-            ->where('uri', $uri)
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->where('directory', 1)
-            ->first();
-
-        if ($element->checksum !== null or $element->link !== null) {
-            return false;
-        }
-
-        $this->element = $element;
-
-        return true;
-    }
-
-    private function getObjectByFragments($uri)
-    {
-        // TODO
-        return false;
-    }
-
-    private static function cleanUri($uri)
-    {
-        $fragments = [];
-        $uriSplit = explode('/', $uri);
-        foreach ($uriSplit as $item) {
-            if (strlen($item) > 0) {
-                $fragments[] = $item;
-            }
-        }
-
-        return implode('/', $fragments);
     }
 }

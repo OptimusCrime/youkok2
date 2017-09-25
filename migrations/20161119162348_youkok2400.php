@@ -33,16 +33,21 @@ class Youkok2400 extends AbstractMigration
         $userTable = $this->table('user');
         $userTable->rename('contributor');
 
-        $this->execute('ALTER TABLE resource DROP FOREIGN KEY resource_ibfk_2');
+        try {
+            $this->execute('ALTER TABLE resource DROP FOREIGN KEY resource_ibfk_2');
 
-        $this->execute('ALTER TABLE favorite DROP FOREIGN KEY favorite_ibfk_1');
-        $this->execute('ALTER TABLE favorite DROP FOREIGN KEY favorite_ibfk_2');
+            $this->execute('ALTER TABLE favorite DROP FOREIGN KEY favorite_ibfk_1');
+            $this->execute('ALTER TABLE favorite DROP FOREIGN KEY favorite_ibfk_2');
 
-        $this->execute('ALTER TABLE history DROP FOREIGN KEY history_ibfk_1');
-        $this->execute('ALTER TABLE history DROP FOREIGN KEY history_ibfk_2');
+            $this->execute('ALTER TABLE history DROP FOREIGN KEY history_ibfk_1');
+            $this->execute('ALTER TABLE history DROP FOREIGN KEY history_ibfk_2');
 
-        $this->execute('ALTER TABLE karma DROP FOREIGN KEY karma_ibfk_1');
-        $this->execute('ALTER TABLE karma DROP FOREIGN KEY karma_ibfk_2');
+            $this->execute('ALTER TABLE karma DROP FOREIGN KEY karma_ibfk_1');
+            $this->execute('ALTER TABLE karma DROP FOREIGN KEY karma_ibfk_2');
+        }
+        catch (\Exception $e) {
+            //
+        }
 
         $this->dropTable('changepassword');
         $this->dropTable('course');

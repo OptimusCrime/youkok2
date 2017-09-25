@@ -1,9 +1,11 @@
 <?php
 namespace Youkok\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 use Youkok\Helpers\Utilities;
+use Youkok\Utilities\UriCleaner;
 
 class Element extends Model
 {
@@ -13,8 +15,7 @@ class Element extends Model
     protected $fillable = array('*');
     protected $guarded = array('');
 
-    private $parentObject;
-    private $parentRootObject;
+    private $parents;
 
     public static function fromId($id)
     {
@@ -29,12 +30,52 @@ class Element extends Model
             ->first();
     }
 
+    public static function fromUri($uri)
+    {
+        $element = Element::select('id', 'parent', 'name', 'checksum', 'link')
+            ->where('uri', UriCleaner::clean($uri))
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->where('directory', 1)
+            ->first();
+
+        if ($element === null) {
+            return self::fromUriFragments($uri);
+        }
+
+        return $element;
+    }
+
+    public static function fromUriFragments($uri)
+    {
+        $fragments = explode('/', $uri);
+        $parent = null;
+        $element = null;
+
+        foreach ($fragments as $fragment) {
+            $element = Element::select('id', 'parent', 'name', 'checksum', 'link')
+                ->where('slug', $fragment)
+                ->where('parent', $parent)
+                ->where('deleted', 0)
+                ->where('pending', 0)
+                ->where('directory', 1)
+                ->first();
+
+            if ($element === null) {
+                return null;
+            }
+
+            $parent = $element->id;
+        }
+
+        return $element;
+    }
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
-        $this->parentObject = null;
-        $this->parentRootObject = null;
+        $this->parents = null;
     }
 
     private function getCourseCode()
@@ -77,6 +118,55 @@ class Element extends Model
         return $this->link !== null and strlen($this->link) > 0;
     }
 
+    public function updateRootParent()
+    {
+        $rootParent = $this->getRootParent();
+        if ($rootParent === null) {
+            return null;
+        }
+
+        $rootParent->last_visited = Carbon::now();
+        $rootParent->save();
+    }
+
+    public function getRootParent()
+    {
+        if ($this->parents === null) {
+            $this->getParents();
+        }
+
+        if (count($this->parents) === 0) {
+            return null;
+        }
+
+        return $this->parents[0];
+    }
+
+    public function getParents()
+    {
+        if ($this->parents !== null) {
+            return $this->parents[0];
+        }
+
+        $parents = [];
+        $currentObject = $this;
+        while($currentObject->parent !== null and $currentObject->parent !== 0) {
+            $currentObject = Element::select('id', 'name', 'slug', 'uri', 'parent')
+                ->where('id', $currentObject->parent)
+                ->where('deleted', 0)
+                ->where('pending', 0)
+                ->where('directory', 1)
+                ->first();
+
+            $parents[] = $currentObject;
+        }
+
+        $this->parents = array_reverse($parents);
+
+        return $this->parents;
+    }
+
+    // Can be removed?
     private function createUri()
     {
         if ($this->isLink()) {
@@ -135,54 +225,6 @@ class Element extends Model
         return $this->mime_type . '.png';
     }
 
-    private function getParentObject()
-    {
-        if ($this->parent === null) {
-            return null;
-        }
-
-        if ($this->parentObject !== null) {
-            return $this->parentObject;
-        }
-
-        $this->parentObject = Element::select('id', 'name', 'parent', 'slug', 'uri', 'link')
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->where('id', $this->parent)
-            ->first();
-
-        return $this->parentObject;
-    }
-
-    private function getParentRootObj()
-    {
-        if ($this->parent === null) {
-            return null;
-        }
-
-        if ($this->parentRootObject !== null) {
-            return $this->parentRootObject;
-        }
-
-        $currentParent = $this->parent;
-
-        while (true) {
-            $this->parentRootObject = Element::select('id', 'name', 'parent', 'slug', 'uri', 'link')
-                ->where('deleted', 0)
-                ->where('pending', 0)
-                ->where('id', $currentParent)
-                ->first();
-
-            $currentParent = $this->parentRootObject->parent;
-
-            if ($currentParent === null) {
-                break;
-            }
-        }
-
-        return $this->parentRootObject;
-    }
-
     private function getAddedPretty()
     {
         return Utilities::prettifySQLDate($this->added);
@@ -191,18 +233,6 @@ class Element extends Model
     private function getAddedPrettyAll()
     {
         return Utilities::prettifySQLDate($this->added, false);
-    }
-
-    private static function cleanFragments(array $fragments)
-    {
-        $clean = [];
-        foreach ($fragments as $fragment) {
-            if ($fragment !== null and strlen($fragment) > 0) {
-                $clean[] = $fragment;
-            }
-        }
-
-        return $clean;
     }
 
     public function addDownload()
@@ -214,6 +244,19 @@ class Element extends Model
         $download->save();
     }
 
+    public function __isset($name)
+    {
+        return in_array($name, [
+            'courseCode',
+            'courseName',
+            'fullUri',
+            'icon',
+            'parents',
+            'addedPretty',
+            'addedPrettyAll'
+        ]);
+    }
+
     public function __get($key)
     {
         $value = parent::__get($key);
@@ -221,31 +264,23 @@ class Element extends Model
             return $value;
         }
 
-        if ($key === 'courseCode') {
-            return $this->getCourseCode();
+        switch ($key) {
+            case 'courseCode':
+                return $this->getCourseCode();
+            case 'courseName':
+                return $this->getCourseName();
+            case 'fullUri':
+                return $this->getFullUri();
+            case 'icon':
+                return $this->getIcon();
+            case 'parents':
+                return $this->getParents();
+            case 'addedPretty':
+                return $this->getAddedPretty();
+            case 'addedPrettyAll':
+                return $this->getAddedPrettyAll();
+            default:
+                return null;
         }
-        if ($key === 'courseName') {
-            return $this->getCourseName();
-        }
-        if ($key === 'fullUri') {
-            return $this->getFullUri();
-        }
-        if ($key === 'icon') {
-            return $this->getIcon();
-        }
-        if ($key === 'parentObj') {
-            return $this->getParentObject();
-        }
-        if ($key === 'parentRootObj') {
-            return $this->getParentRootObj();
-        }
-        if ($key === 'addedPretty') {
-            return $this->getAddedPretty();
-        }
-        if ($key === 'addedPrettyAll') {
-            return $this->getAddedPrettyAll();
-        }
-
-        return null;
     }
 }
