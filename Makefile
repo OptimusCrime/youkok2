@@ -2,7 +2,7 @@
 
 SERVER_SERVICE_NAME = server
 
-all: build start
+all: start
 
 bash:
 	@docker-compose run --rm $(SERVER_SERVICE_NAME) bash
@@ -39,8 +39,5 @@ migrate:
 
 composer:
 	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer install
-
-populate:
-	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer run-script populate
 
 install: composer migrate
