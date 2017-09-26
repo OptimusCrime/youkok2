@@ -129,26 +129,13 @@ class Element extends Model
         $rootParent->save();
     }
 
-    public function getRootParent()
-    {
-        if ($this->parents === null) {
-            $this->getParents();
-        }
-
-        if (count($this->parents) === 0) {
-            return null;
-        }
-
-        return $this->parents[0];
-    }
-
-    public function getParents()
+    private function getParents()
     {
         if ($this->parents !== null) {
-            return $this->parents[0];
+            return $this->parents;
         }
 
-        $parents = [];
+        $parents = [$this];
         $currentObject = $this;
         while($currentObject->parent !== null and $currentObject->parent !== 0) {
             $currentObject = Element::select('id', 'name', 'slug', 'uri', 'parent')
@@ -164,6 +151,16 @@ class Element extends Model
         $this->parents = array_reverse($parents);
 
         return $this->parents;
+    }
+
+    private function getRootParent()
+    {
+        $parents = $this->getParents();
+        if ($parents === null or count($parents) === 0) {
+            return null;
+        }
+
+        return $parents[0];
     }
 
     // Can be removed?
@@ -199,7 +196,7 @@ class Element extends Model
         } while ($currentParent !== 0 and $currentParent !== null);
 
         // Filter the fragments
-        $cleanFragments = self::cleanFragments($fragments);
+        $cleanFragments = UriCleaner::cleanFragments($fragments);
 
         // Set the uri for this object
         $this->uri = implode('/', array_reverse($cleanFragments));
@@ -252,6 +249,7 @@ class Element extends Model
             'fullUri',
             'icon',
             'parents',
+            'rootParent',
             'addedPretty',
             'addedPrettyAll'
         ]);
@@ -275,6 +273,8 @@ class Element extends Model
                 return $this->getIcon();
             case 'parents':
                 return $this->getParents();
+            case 'rootParent':
+                return $this->getRootParent();
             case 'addedPretty':
                 return $this->getAddedPretty();
             case 'addedPrettyAll':

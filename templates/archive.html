@@ -1,10 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12 col-md-8">
+            <div class="row">
+                <div class="col-xs-12">
+                    <ol class="breadcrumb" id="archive-breadcrumbs">
+                        <li><a href="[[+base_url]]">Hjem</a></li>
+                        <li><a href="{{ path_for('courses') }}">Emner</a></li>
+                        {% for PARENT in ARCHIVE.PARENTS %}
+                            <li>
+                                {% if PARENT.id != ARCHIVE.ID %}
+                                    <a href="{{ path_for('archive', {'params': PARENT.fullUri }) }}">
+                                {% endif %}
+
+                                {% if PARENT.parent == null %}
+                                    {{ PARENT.courseCode }}
+                                {% else %}
+                                    {{ PARENT.name }}
+                                {% endif %}
+
+                                {% if PARENT.id != ARCHIVE.ID %}
+                                    </a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 archive-title">
+                    <h1>
+                        {{ ARCHIVE.TITLE }}
+                    </h1>
+                    {% if ARCHIVE.SUB_TITLE != null %}
+                        <h2>{{ ARCHIVE.SUB_TITLE }}</h2>
+                    {% endif %}
+
+                    <i class="fa fa-star archive-heading-star-TODO" data-archive-id="{{ ARCHIVE.id }}" id="archive-heading-star"></i>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    {% if ARCHIVE.CHILDREN|length == 0 %}
+                        <div id="archive-empty" class="well">
+                            <p>Huffa!</p>
+                            <p>Det er visst ingen filer her. Du kan bidra ved å laste opp filer i panelet til høyre. Pass på at du leser våre <a href="[[+path_for name="terms"]]">retningslinjer</a> før du eventuelt gjør dette.</p>
+                            <p>Det er visst ingen filer her. Dessverre ser det også ut som om du er bannet i systemet vårt, så det betyr at du dessverre ikke kan gjøre noe med dette heller.</p>
+                            <p>Det er visst ingen filer her. Du kan gjøre noe med dette ved å <a href="registrer">registrere deg</a> og bidra på Youkok2. Dersom du allerede er registrert kan du logge inn i menyen ovenfor.</p>
+                            <p>- YouKok2</p>
+                        </div>
+                    {% else %}
+                    <div class="archive-list">
+                        {% for CHILD in ARCHIVE.CHILDREN %}
+                            <div class="archive-row">
+                                <div class="archive-row-icon">
+                                    <div style="background-image: url('assets/images/icons/{{ CHILD.icon }}');"></div>
+                                </div>
+                                <div class="archive-row-name">
+                                    <span>
+                                        <a href="[[+element_url element=[[+$child]]]]"[[+if $child->link !== null]] target="_blank" title="Link til: [[+$child->link]]"[[+/if]]>
+                                            {{ CHILD.name }}
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="archive-row-downloads">
+                                    <span>
+                                        2,761
+                                    </span>
+                                </div>
+                                <div class="archive-row-age">
+                                    <span>
+                                        1. april 2017
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">
+            {% include "sidebar/upload.html" %}
+        </div>
+    </div>
+{% endblock %}
