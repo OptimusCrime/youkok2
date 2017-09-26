@@ -29,7 +29,7 @@ class Youkok
     {
         $this->app->get('/', '\Youkok\Views\Frontpage:view')->setName('home');
         $this->app->get('/emner', '\Youkok\Views\Courses:view')->setName('courses');
-        $this->app->get('/emner/[{params:.*}/]', '\Youkok\Views\Archive:view')->setName('archive');
+        $this->app->get('/emner/[{params:.*}]', '\Youkok\Views\Archive:view')->setName('archive');
         $this->app->get('/redirect/{id:[0-9]+}', '\Youkok\Views\Redirect:view')->setName('redirect');
         $this->app->get('/last-ned/{id:[0-9]+}', '\Youkok\Views\Download:view')->setName('download');
         $this->app->get('/sok', '\Youkok\Views\Search:view')->setName('search');
