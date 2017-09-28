@@ -13,6 +13,7 @@ services:
     network_mode: "none"
     volumes:
       - .:/var/www/html
+      - ./youkok_files:/var/www/files
 
 
   ###############################################

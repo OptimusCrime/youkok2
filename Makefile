@@ -10,10 +10,6 @@ bash:
 build:
 	@docker-compose build
 
-clean:
-	stop
-	@docker-compose rm --force
-
 down:
 	@docker-compose down
 

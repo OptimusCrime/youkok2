@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <ol class="breadcrumb" id="archive-breadcrumbs">
-                        <li><a href="[[+base_url]]">Hjem</a></li>
+                        <li><a href="{{ youkok_url() }}">Hjem</a></li>
                         <li><a href="{{ path_for('courses') }}">Emner</a></li>
                         {% for PARENT in ARCHIVE.PARENTS %}
                             <li>
@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="archive-row-name">
                                     <span>
-                                        <a href="[[+element_url element=[[+$child]]]]"[[+if $child->link !== null]] target="_blank" title="Link til: [[+$child->link]]"[[+/if]]>
+                                        <a href="{{ element_url(CHILD)}}"{% if CHILD.link != null %} target="_blank" title="Link til: {{ CHILD.link }}"{% endif %}>
                                             {{ CHILD.name }}
                                         </a>
                                     </span>

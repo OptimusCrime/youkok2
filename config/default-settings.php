@@ -23,8 +23,15 @@ return [
             'prefix'    => '',
         ],
 
+        // MUST have an ending slash
+        'file_directory' => '/var/www/files/',
+
         'file_endings' => [
             'pdf', 'txt', 'java', 'py', 'html', 'htm', 'sql'
+        ],
+
+        'file_endings_display' => [
+            'pdf'
         ],
 
         // Site specific settings, use uppercase for their keywords

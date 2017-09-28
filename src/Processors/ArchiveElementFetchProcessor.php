@@ -58,7 +58,7 @@ class ArchiveElementFetchProcessor
             return [];
         }
 
-        $children = Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link')
+        $children = Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link', 'checksum')
             ->where('parent', $element->id)
             ->where('deleted', 0)
             ->where('pending', 0)

@@ -31,7 +31,7 @@ class Youkok
         $this->app->get('/emner', '\Youkok\Views\Courses:view')->setName('courses');
         $this->app->get('/emner/[{params:.*}]', '\Youkok\Views\Archive:view')->setName('archive');
         $this->app->get('/redirect/{id:[0-9]+}', '\Youkok\Views\Redirect:view')->setName('redirect');
-        $this->app->get('/last-ned/{id:[0-9]+}', '\Youkok\Views\Download:view')->setName('download');
+        $this->app->get('/last-ned/[{params:.*}]', '\Youkok\Views\Download:view')->setName('download');
         $this->app->get('/sok', '\Youkok\Views\Search:view')->setName('search');
         $this->app->get('/hjelp', '\Youkok\Views\Flat:help')->setName('help');
         $this->app->get('/om', '\Youkok\Views\Flat:about')->setName('about');

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base href="http://192.168.99.100:8000" />
+    <base href="{{ youkok_url() }}" />
     <title>{{ SITE_TITLE }} :: Youkok2.com</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="icon" type="image/png" href="favicon.png" />
@@ -24,11 +24,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="[[+base_url]]">Youkok2.com</a>
+            <a class="navbar-brand" href="{{ youkok_url() }}">Youkok2.com</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul id="main-nav" class="nav navbar-nav">
-                <li{% if HEADER_MENU == 'home' %} class="active"{% endif %}><a href="[[+base_url]]">Hjem</a></li>
+                <li{% if HEADER_MENU == 'home' %} class="active"{% endif %}><a href="{{ youkok_url() }}">Hjem</a></li>
                 <li{% if HEADER_MENU == 'courses' %} class="active"{% endif %}><a href="{{ path_for('courses') }}">Emner</a></li>
                 <li class="hidden{% if HEADER_MENU == 'search'%} active{% endif %}"><a href="{{ path_for('search') }}">Søk</a></li>
                 <li{% if HEADER_MENU == 'about' %} class="active"{% endif %}><a href="{{ path_for('about') }}">Om Youkok2</a></li>

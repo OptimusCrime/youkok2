@@ -9,6 +9,10 @@ use Youkok\Utilities\UriCleaner;
 
 class Element extends Model
 {
+    const ELEMENT_TYPE_DIRECTORIES = 0;
+    const ELEMENT_TYPE_FILES = 1;
+    const ELEMENT_TYPE_BOTH = 2;
+
     public $timestamps = false;
 
     protected $table = 'element';
@@ -30,36 +34,56 @@ class Element extends Model
             ->first();
     }
 
-    public static function fromUri($uri)
+    private static function handleElementType($element, $type)
     {
-        $element = Element::select('id', 'parent', 'name', 'checksum', 'link')
-            ->where('uri', UriCleaner::clean($uri))
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->where('directory', 1)
-            ->first();
-
-        if ($element === null) {
-            return self::fromUriFragments($uri);
+        switch($type) {
+            case self::ELEMENT_TYPE_DIRECTORIES:
+                $element->where('directory', 1);
+                break;
+            case self::ELEMENT_TYPE_FILES:
+                $element->where('directory', 0);
+                break;
+            default:
+                break;
         }
 
         return $element;
     }
 
-    public static function fromUriFragments($uri)
+    public static function fromUri($uri, $type = self::ELEMENT_TYPE_DIRECTORIES)
+    {
+        $query = Element::select('id', 'parent', 'name', 'checksum', 'link')
+            ->where('uri', UriCleaner::clean($uri))
+            ->where('deleted', 0)
+            ->where('pending', 0);
+
+        $query = static::handleElementType($query, $type);
+
+        $element = $query->first();
+
+        if ($element === null) {
+            return self::fromUriFragments($uri, $type);
+        }
+
+        return $element;
+    }
+
+    public static function fromUriFragments($uri, $type = self::ELEMENT_TYPE_DIRECTORIES)
     {
         $fragments = explode('/', $uri);
         $parent = null;
         $element = null;
 
         foreach ($fragments as $fragment) {
-            $element = Element::select('id', 'parent', 'name', 'checksum', 'link')
+            $query = Element::select('id', 'parent', 'name', 'checksum', 'link')
                 ->where('slug', $fragment)
                 ->where('parent', $parent)
                 ->where('deleted', 0)
-                ->where('pending', 0)
-                ->where('directory', 1)
-                ->first();
+                ->where('pending', 0);
+
+            $query = static::handleElementType($query, $type);
+
+            $element = $query->first();
 
             if ($element === null) {
                 return null;
