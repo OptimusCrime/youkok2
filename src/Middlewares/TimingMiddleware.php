@@ -1,12 +1,12 @@
 <?php
+namespace Youkok\Middlewares;
 
-/**
- * Created by PhpStorm.
- * User: gautvedt
- * Date: 2017-09-30
- * Time: 19:42
- */
 class TimingMiddleware
 {
+    public function __invoke($request, $response, $next)
+    {
+        \PHP_Timer::start();
 
+        return $next($request, $response);
+    }
 }

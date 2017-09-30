@@ -4,6 +4,7 @@ namespace Youkok;
 use \Slim\App as App;
 
 use Youkok\Loaders\Containers;
+use Youkok\Middlewares\TimingMiddleware;
 
 class Youkok
 {
@@ -19,7 +20,6 @@ class Youkok
     public function run()
     {
         $this->routes();
-        $this->middlewares();
         $this->dependencies();
 
         $this->app->run();
@@ -27,32 +27,38 @@ class Youkok
 
     private function routes()
     {
-        $this->app->get('/', '\Youkok\Views\Frontpage:view')->setName('home');
-        $this->app->get('/emner', '\Youkok\Views\Courses:view')->setName('courses');
-        $this->app->get('/emner/[{params:.*}]', '\Youkok\Views\Archive:view')->setName('archive');
-        $this->app->get('/redirect/{id:[0-9]+}', '\Youkok\Views\Redirect:view')->setName('redirect');
-        $this->app->get('/last-ned/[{params:.*}]', '\Youkok\Views\Download:view')->setName('download');
-        $this->app->get('/sok', '\Youkok\Views\Search:view')->setName('search');
-        $this->app->get('/hjelp', '\Youkok\Views\Flat:help')->setName('help');
-        $this->app->get('/om', '\Youkok\Views\Flat:about')->setName('about');
-        $this->app->get('/changelog.txt', '\Youkok\Views\Flat:changelog')->setName('changelog');
-        $this->app->get('/retningslinjer', '\Youkok\Views\Flat:terms')->setName('terms');
+        $app = $this->app;
 
-        $this->app->get('/processors/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularCourses:view');
-        $this->app->get('/processors/newest-elements', '\Youkok\Views\Processors\NewestElements:view');
-    }
+        $app->get('/', '\Youkok\Views\Frontpage:view')->setName('home')->add(new TimingMiddleware());
 
-    private function middlewares()
-    {
-        // TODO
+        $app->group('/', function() use ($app) {
+            $app->get('emner', '\Youkok\Views\Courses:view')->setName('courses');
+            $app->get('emner/[{params:.*}]', '\Youkok\Views\Archive:view')->setName('archive');
+            $app->get('redirect/{id:[0-9]+}', '\Youkok\Views\Redirect:view')->setName('redirect');
+            $app->get('last-ned/[{params:.*}]', '\Youkok\Views\Download:view')->setName('download');
+            $app->get('sok', '\Youkok\Views\Search:view')->setName('search');
+            $app->get('hjelp', '\Youkok\Views\Flat:help')->setName('help');
+            $app->get('om', '\Youkok\Views\Flat:about')->setName('about');
+            $app->get('changelog.txt', '\Youkok\Views\Flat:changelog')->setName('changelog');
+            $app->get('retningslinjer', '\Youkok\Views\Flat:terms')->setName('terms');
+        })->add(new TimingMiddleware());
+
+        $app->group('/processors', function () use ($app) {
+            $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularCourses:view');
+            $app->get('/newest-elements', '\Youkok\Views\Processors\NewestElements:view');
+        })->add(new TimingMiddleware());
     }
 
     private function dependencies()
     {
-        Containers::load($this->app->getContainer(), [
+        $containers = [
             \Youkok\Containers\View::class,
             \Youkok\Containers\Database::class,
             \Youkok\Containers\Cache::class,
-        ]);
+        ];
+
+        foreach ($containers as $container) {
+            call_user_func([$container, 'load'], $this->app->getContainer());
+        }
     }
 }

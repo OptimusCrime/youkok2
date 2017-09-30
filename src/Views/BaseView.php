@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Views;
 
+use PHP_Timer;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Slim\Container;
 
@@ -46,6 +47,8 @@ class BaseView
     protected function render(Response $response, String $template, array $data = [])
     {
         $this->sessionHandler->store();
+
+        $this->templateData['EXECUTION_TIME'] = PHP_Timer::secondsToTimeString(PHP_Timer::stop());
 
         return $this->container->get('view')->render($response, $template, array_merge(
             $this->templateData,
