@@ -2,12 +2,11 @@
 namespace Youkok\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 
 use Youkok\Helpers\Utilities;
 use Youkok\Utilities\UriCleaner;
 
-class Element extends Model
+class Element extends BaseModel
 {
     const ELEMENT_TYPE_DIRECTORIES = 0;
     const ELEMENT_TYPE_FILES = 1;
@@ -267,6 +266,10 @@ class Element extends Model
 
     public function __isset($name)
     {
+        if (parent::__isset($name)) {
+            return true;
+        }
+
         return in_array($name, [
             'courseCode',
             'courseName',

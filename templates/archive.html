@@ -49,6 +49,18 @@
                         </div>
                     {% else %}
                     <div class="archive-list">
+                        <div class="archive-row">
+                            <div class="archive-row-icon">&nbsp;</div>
+                            <div class="archive-row-name">
+                                <strong>Navn</strong>
+                            </div>
+                            <div class="archive-row-downloads">
+                                 <strong>Nedlastninger</strong>
+                            </div>
+                            <div class="archive-row-age">
+                                <strong>Postet</strong>
+                            </div>
+                        </div>
                         {% for CHILD in ARCHIVE.CHILDREN %}
                             <div class="archive-row">
                                 <div class="archive-row-icon">
@@ -62,13 +74,17 @@
                                     </span>
                                 </div>
                                 <div class="archive-row-downloads">
-                                    <span>
-                                        2,761
-                                    </span>
+                                    {% if CHILD._downloads %}
+                                        <span>
+                                            {{ whole_number_format(CHILD._downloads) }}
+                                        </span>
+                                    {% else %}
+                                        &nbsp;
+                                    {% endif %}
                                 </div>
                                 <div class="archive-row-age">
                                     <span>
-                                        1. april 2017
+                                        {{ posted_at(CHILD.added) }}
                                     </span>
                                 </div>
                             </div>

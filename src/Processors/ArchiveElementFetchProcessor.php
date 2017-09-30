@@ -1,6 +1,8 @@
 <?php
 namespace Youkok\Processors;
 
+use Illuminate\Database\Capsule\Manager as DB;
+use Youkok\Models\Download;
 use Youkok\Models\Element;
 
 class ArchiveElementFetchProcessor
@@ -62,7 +64,7 @@ class ArchiveElementFetchProcessor
             return [];
         }
 
-        $children = Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link', 'checksum')
+        $children = Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link', 'checksum', 'added')
             ->where('parent', $element->id)
             ->where('deleted', 0)
             ->where('pending', 0)
@@ -72,9 +74,32 @@ class ArchiveElementFetchProcessor
 
         // Guard for empty set of query
         if (count($children) > 0) {
-            return $children;
+            return static::getArchiveChildrenDownloadCount($children);
         }
 
         return [];
+    }
+
+    private static function getArchiveChildrenDownloadCount($children)
+    {
+        $newChildren = [];
+
+        foreach ($children as $child) {
+            $newChild = clone $child;
+
+            // TODO: attempt to fetch cache here
+
+            $downloads = Download::select(DB::raw("COUNT(`id`) as `result`"))
+                ->where('resource', $child->id)
+                ->count();
+
+            // TODO: cache the number of downloads here
+
+            $newChild->_downloads = $downloads;
+
+            $newChildren[] = $newChild;
+        }
+
+        return $newChildren;
     }
 }

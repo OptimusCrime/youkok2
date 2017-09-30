@@ -1,9 +1,7 @@
 <?php
 namespace Youkok\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Download extends Model
+class Download extends BaseModel
 {
     protected $table = 'download';
     public $timestamps = false;

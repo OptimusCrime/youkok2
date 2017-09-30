@@ -1,6 +1,8 @@
 <?php
 namespace Youkok\TwigPlugins;
 
+use Youkok\Utilities\TimeFormatter;
+
 class YoukokTwigExtension extends \Twig_Extension
 {
     private $router;
@@ -16,8 +18,20 @@ class YoukokTwigExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFunction('element_url', array($this, 'elementUrl')),
-            new \Twig_SimpleFunction('youkok_url', array($this, 'youkokUrl'))
+            new \Twig_SimpleFunction('youkok_url', array($this, 'youkokUrl')),
+            new \Twig_SimpleFunction('posted_at', array($this, 'postedAt')),
+            new \Twig_SimpleFunction('whole_number_format', array($this, 'wholeNumberFormat')),
         ];
+    }
+
+    public function wholeNumberFormat($number)
+    {
+        return number_format($number, 0, '', ' ');
+    }
+
+    public function postedAt($dateTime)
+    {
+        return TimeFormatter::clean($dateTime);
     }
 
     public function elementUrl($element = null)
