@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/youkok.css" />
     <script type="text/javascript">var SITE_DATA = "{{ SITE_DATA }}";</script>
 </head>
-<body>
+<body{% if BODY_CLASS != null %} class="{{ BODY_CLASS }}"{% endif %}>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -95,10 +95,7 @@
 <script type="text/javascript" src="assets/js/libs/jquery.fileupload.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery.ba-outside-events.min.js"></script>
 <script type="text/javascript" src="assets/js/libs/jquery.countdown.min.js"></script>
-<script type="text/javascript" src="assets/js/youkok/views/youkok.user.js?v=2.4.1-pl"></script>
-<script type="text/javascript" src="assets/js/youkok/views/youkok.register.js?v=2.4.1-pl"></script>
 <script type="text/javascript" src="assets/js/youkok/views/youkok.frontpage.js?v=2.4.1-pl"></script>
-<script type="text/javascript" src="assets/js/youkok/views/youkok.forgottenpassword.js?v=2.4.1-pl"></script>
 <script type="text/javascript" src="assets/js/youkok/views/youkok.archive.js?v=2.4.1-pl"></script>
 <script type="text/javascript" src="assets/js/youkok/sections/youkok.search.js?v=2.4.1-pl"></script>
 <script type="text/javascript" src="assets/js/youkok/sections/youkok.grayboxes.js?v=2.4.1-pl"></script>
@@ -113,7 +110,6 @@
 <script type="text/javascript" src="assets/js/youkok/utilities/youkok.debug.js?v=2.4.1-pl"></script>
 <script type="text/javascript" src="assets/js/youkok/create/youkok.create.link.js?v=2.4.1-pl"></script>
 <script type="text/javascript" src="assets/js/youkok/create/youkok.create.file.js?v=2.4.1-pl"></script>
-<script type="text/javascript" src="assets/js/youkok/create/youkok.create.directory.js?v=2.4.1-pl"></script>
 <script type="text/javascript" src="assets/js/youkok/youkok.js?v=2.4.1-pl"></script>
 </body>
 </html>

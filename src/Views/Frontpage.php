@@ -27,7 +27,8 @@ class Frontpage extends BaseView
             'FRONTPAGE_LATEST_ELEMENTS' => ElementController::getLatest(),
             'FRONTPAGE_MOST_POPULAR_ELEMENTS' => PopularElementsProcessor::currentUser(),
             'FRONTPAGE_MOST_POPULAR_COURSES' => PopularCoursesProcessor::currentUser(),
-            'FRONTPAGE_LATEST_VISITED' => ElementController::getLastVisitedCourses()
+            'FRONTPAGE_LATEST_VISITED' => ElementController::getLastVisitedCourses(),
+            'BODY_CLASS' => 'frontpage'
         ]);
     }
 }

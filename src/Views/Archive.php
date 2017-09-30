@@ -27,6 +27,7 @@ class Archive extends BaseView
             'HEADER_MENU' => 'courses',
             'VIEW_NAME' => 'archive',
             'ARCHIVE' => ArchiveElementFetchProcessor::fromElement($element),
+            'BODY_CLASS' => 'archive'
         ]);
     }
 }

@@ -86,7 +86,7 @@ var Youkok = (function (module) {
             type: "post",
             url: "processor/history/get",
             data: {
-                id: Youkok.getData('archive_id'), 
+                id: Youkok.getData('archive_id')
             },
             success: function(json) {
                 // Check if anything was returned
@@ -123,17 +123,12 @@ var Youkok = (function (module) {
             // Add listeners
             $('.archive-item-dropdown').on('click', itemDropdownOpen);
             $('.archive-dropdown-close').on('click', itemDropdownClose);
-            
-            // Load history
+
             getHistory();
+            initOnline();
             
             // Init the counter
             Youkok.countdown.init();
-            
-            // Check if we should initOnline
-            if (Youkok.getData('online') == true) {
-                initOnline();
-            }
         },
     };
 

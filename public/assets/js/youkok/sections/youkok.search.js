@@ -8,6 +8,7 @@ var Youkok = (function (module) {
      * Init Bloodhound
      */
     var initBloodhound = function() {
+        /*
         courses = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('course'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -15,12 +16,14 @@ var Youkok = (function (module) {
             prefetch: 'processor/search/courses.json'
         });
         courses.initialize();
+        */
     };
     
     /*
      * Init typeahead
      */
     var initTypeahead = function() {
+        /*
         // Check if we should clear cache first
         if (Youkok.getData('cache_time') != localStorage.getItem('ts')) {
             // Clear first
@@ -41,6 +44,7 @@ var Youkok = (function (module) {
         }).on('typeahead:selected', function($e, datum) {
             window.location.href = datum.url;
         });
+        */
     };
     
     /*

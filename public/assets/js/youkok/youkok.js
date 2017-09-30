@@ -10,7 +10,6 @@ var Youkok = (function (module) {
      */
     var initSubModules = function() {
         // Independent sub modules (always loaded)
-        Youkok.user.init();
         Youkok.message.init();
         Youkok.general.init();
         Youkok.grayboxes.init();
@@ -18,15 +17,10 @@ var Youkok = (function (module) {
         Youkok.debug.init();
         
         // Archive
-        if (Youkok.getData('view') == 'archive') {
+        if ($('body').hasClass('archive')) {
             Youkok.archive.init();
             Youkok.createFile.init();
             Youkok.createLink.init();
-            
-            // Init submodule for logged in archive
-            if (Youkok.getData('online') == true) {
-                Youkok.createDirectory.init();
-            }
         }
         
         // Frontpage
@@ -34,18 +28,8 @@ var Youkok = (function (module) {
             Youkok.frontpage.init();
         }
         
-        // Forgotten password
-        if (Youkok.getData('view') == 'forgotten-password' || Youkok.getData('view') == 'profile') {
-            Youkok.forgottenPassword.init();
-        }
-        
-        // Register
-        if (Youkok.getData('view') == 'register') {
-            Youkok.register.init();
-        }
-        
         // Admin
-        if (Youkok.getData('admin_view')) {
+        if ($('body').hasClass('admin')) {
             Youkok.admin.init();
         }
     };

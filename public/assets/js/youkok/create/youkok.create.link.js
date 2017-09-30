@@ -55,7 +55,7 @@ var Youkok = (function (module) {
             autocomplete_title_xhr = $.ajax({
                 cache: false,
                 type: 'post',
-                url: 'processor/link/title',
+                url: 'processors/link/title',
                 data: { 
                     url: link_url,
                 },
