@@ -31,7 +31,7 @@ tail:
 	@docker-compose logs $(SERVER_SERVICE_NAME)
 
 migrate:
-	@docker-compose run --rm $(SERVER_SERVICE_NAME) vendor/bin/phinx migrate -c docker/docker-phinx.yml
+	@docker-compose run --rm $(SERVER_SERVICE_NAME) vendor/bin/phinx migrate -c docker/phinx.yml
 
 composer:
 	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer install
