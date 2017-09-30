@@ -29,7 +29,7 @@
         <div class="navbar-collapse collapse">
             <ul id="main-nav" class="nav navbar-nav">
                 <li{% if HEADER_MENU == 'home' %} class="active"{% endif %}><a href="{{ youkok_url() }}">Hjem</a></li>
-                <li{% if HEADER_MENU == 'courses' %} class="active"{% endif %}><a href="{{ path_for('courses') }}">Emner</a></li>
+                <li{% if HEADER_MENU == 'courses' %} class="active"{% endif %}><a href="{{ path_for('archive') }}">Emner</a></li>
                 <li class="hidden{% if HEADER_MENU == 'search'%} active{% endif %}"><a href="{{ path_for('search') }}">Søk</a></li>
                 <li{% if HEADER_MENU == 'about' %} class="active"{% endif %}><a href="{{ path_for('about') }}">Om Youkok2</a></li>
                 <li{% if HEADER_MENU == 'help' %} class="active"{% endif %}><a href="{{ path_for('help') }}">Hjelp</a></li>

@@ -16,6 +16,12 @@ class Archive extends BaseView
      */
     public function view(Request $request, Response $response, array $args)
     {
+        if (empty($args) or !isset($args['params']) or strlen($args['params']) === 0) {
+            $courseView = new Courses($this->container);
+            return $courseView->view($request, $response, $args);
+        }
+
+
         $element = Element::fromUri($request->getAttribute('params'));
         if ($element === null) {
             return $this->render404($response);

@@ -32,8 +32,7 @@ class Youkok
         $app->get('/', '\Youkok\Views\Frontpage:view')->setName('home')->add(new TimingMiddleware());
 
         $app->group('/', function() use ($app) {
-            $app->get('emner', '\Youkok\Views\Courses:view')->setName('courses');
-            $app->get('emner/[{params:.*}]', '\Youkok\Views\Archive:view')->setName('archive');
+            $app->get('emner[/{params:.*}]', '\Youkok\Views\Archive:view')->setName('archive');
             $app->get('redirect/{id:[0-9]+}', '\Youkok\Views\Redirect:view')->setName('redirect');
             $app->get('last-ned/[{params:.*}]', '\Youkok\Views\Download:view')->setName('download');
             $app->get('sok', '\Youkok\Views\Search:view')->setName('search');

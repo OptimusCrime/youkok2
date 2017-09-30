@@ -70,7 +70,7 @@ class Element extends Model
 
     public static function fromUriFragments($uri, $type = self::ELEMENT_TYPE_DIRECTORIES)
     {
-        $fragments = explode('/', $uri);
+        $fragments = UriCleaner::cleanFragments(explode('/', $uri));
         $parent = null;
         $element = null;
 
