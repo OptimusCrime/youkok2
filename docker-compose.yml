@@ -7,6 +7,7 @@ services:
   ###############################################
 
   appdata:
+    container_name: "youkok2_files"
     image: "alpine:3.5"
     command: tail -f /dev/null
     user: "1000"
@@ -21,6 +22,7 @@ services:
   ###############################################
 
   db:
+    container_name: "youkok2_db"
     image: "mysql:5.7.17"
     ports:
       - "3306:3306"
@@ -38,6 +40,7 @@ services:
   ###############################################
 
   server:
+    container_name: "youkok2_web"
     depends_on:
       - db
       - appdata
