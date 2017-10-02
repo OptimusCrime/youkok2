@@ -31,7 +31,7 @@ class BaseView
             'SITE_SETTINGS' => $this->container->get('settings')['site'],
 
             // Data to send to the site. Typically stuff we need for JavaScript things
-            'SITE_DATA' => json_encode([]),
+            'SITE_DATA' => [],
 
             // Information about the current user
             'USER' => $this->sessionHandler->getData(),
@@ -42,6 +42,11 @@ class BaseView
             'VIEW_NAME' => 'frontpage',
             'SEARCH_QUERY' => '',
         ];
+    }
+
+    protected function setSiteData($key, $value)
+    {
+        $this->templateData['SITE_DATA'][$key] = $value;
     }
 
     protected function render(Response $response, String $template, array $data = [])

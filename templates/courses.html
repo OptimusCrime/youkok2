@@ -1,46 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-md-8">
-            <div class="row">
-                <div class="col-xs-12">
-                    <ol class="breadcrumb" id="archive-breadcrumbs">
-                        <li><a href="[[+$SITE_URL]]">Hjem</a></li>
-                        <li class="active">Emner</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 center">
-                    <h1>Emner</h1>
-                </div>
-            </div>
-            <div class="row">{% for LETTER, COLLECTION in COURSES %}
-
-                <div class="col-xs-12 col-md-6 course-box">
-                    <h3>{{ LETTER }}</h3>
-                    <ul class="list-group">
-                        {% for COURSE in COLLECTION %}
-                            <li class="{% if COURSE.empty %}course-empty {% endif %}list-group-item">
-                                <a href="{{ path_for('archive', {'params': COURSE.fullUri }) }}">
-                                    <strong>{{ COURSE.courseCode }}</strong> &mdash; {{ COURSE.courseName }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endfor %}
+<div class="row">
+    <div class="col-xs-12 col-md-8">
+        <div class="row">
+            <div class="col-xs-12">
+                <ol class="breadcrumb" id="archive-breadcrumbs">
+                    <li><a href="[[+$SITE_URL]]">Hjem</a></li>
+                    <li class="active">Emner</li>
+                </ol>
             </div>
         </div>
-        <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">
-            <div class="sidebar-element">
-                <div class="sidebar-element-inner">
-                    <p>Fagene står alfabetisk sortert etter fagkode.</p>
-                    <p>Du kan også bruke søkefeltet for å søke etter fagkoder og fagnavn.</p>
-                    <p>Dersom du savner et fag i listen kan du <a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">kontakte oss</a>, så legger vi det til.</p>
-                </div>
+        <div class="row">
+            <div class="col-xs-12 center">
+                <h1>Emner</h1>
             </div>
-            {% include "sidebar/general.html" %}
+        </div>
+        <div class="row">{% for LETTER, COLLECTION in COURSES %}
+
+            <div class="col-xs-12 col-md-6 course-box">
+                <h3>{{ LETTER }}</h3>
+                <ul class="list-group">
+                    {% for COURSE in COLLECTION %}
+                        <li class="{% if COURSE.empty %}course-empty {% endif %}list-group-item">
+                            <a href="{{ path_for('archive', {'params': COURSE.fullUri }) }}">
+                                <strong>{{ COURSE.courseCode }}</strong> &mdash; {{ COURSE.courseName }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
         </div>
     </div>
+    <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">
+        <div class="sidebar-element">
+            <div class="sidebar-element-inner">
+                <p>Fagene står alfabetisk sortert etter fagkode.</p>
+                <p>Du kan også bruke søkefeltet for å søke etter fagkoder og fagnavn.</p>
+                <p>Dersom du savner et fag i listen kan du <a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">kontakte oss</a>, så legger vi det til.</p>
+            </div>
+        </div>
+        {% include "sidebar/general.html" %}
+    </div>
+</div>
 {% endblock %}

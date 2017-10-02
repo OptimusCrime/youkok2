@@ -3,6 +3,7 @@ namespace Youkok\Processors;
 
 use Illuminate\Database\Capsule\Manager as DB;
 
+use Youkok\Controllers\ElementController;
 use Youkok\Helpers\SessionHandler;
 use Youkok\Models\Download;
 use Youkok\Models\Element;
@@ -96,13 +97,7 @@ class ArchiveElementFetchProcessor
             return [];
         }
 
-        $children = Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link', 'checksum', 'added')
-            ->where('parent', $element->id)
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->orderBy('directory', 'DESC')
-            ->orderBy('name', 'ASC')
-            ->get();
+        $children = ElementController::getVisibleChildren($element->id);
 
         // Guard for empty set of query
         if (count($children) > 0) {

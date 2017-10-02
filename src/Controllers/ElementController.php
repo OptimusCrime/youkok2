@@ -5,6 +5,9 @@ use Youkok\Models\Element;
 
 class ElementController
 {
+    const SORT_TYPE_ORGANIZED = 0;
+    const SORT_TYPE_AGE = 1;
+
     public static function getAllCourses()
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')
@@ -60,5 +63,22 @@ class ElementController
             ->orderBy('name', 'DESC')
             ->limit($limit)
             ->get();
+    }
+
+    public static function getVisibleChildren($id, $order = self::SORT_TYPE_ORGANIZED)
+    {
+        $query = Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link', 'checksum', 'added')
+            ->where('parent', $id)
+            ->where('deleted', 0)
+            ->where('pending', 0);
+
+        if ($order === static::SORT_TYPE_ORGANIZED) {
+            $query = $query->orderBy('directory', 'DESC')->orderBy('name', 'ASC');
+        }
+        else {
+            $query = $query->orderBy('added', 'DESC');
+        }
+
+        return $query->get();
     }
 }

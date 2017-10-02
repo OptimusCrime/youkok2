@@ -83,11 +83,8 @@ var Youkok = (function (module) {
     var getHistory = function() {
         $.ajax({
             cache: false,
-            type: "post",
-            url: "processor/history/get",
-            data: {
-                id: Youkok.getData('archive_id')
-            },
+            type: "get",
+            url: "processors/history/" + Youkok.getData('archive_id'),
             success: function(json) {
                 // Check if anything was returned
                 if (json.data.length > 0) {

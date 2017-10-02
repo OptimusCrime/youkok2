@@ -29,6 +29,8 @@ class Archive extends BaseView
 
         $element->updateRootParent();
 
+        $this->setSiteData('archive_id', $element->id);
+
         return $this->render($response, 'archive.html', [
             'HEADER_MENU' => 'courses',
             'VIEW_NAME' => 'archive',
