@@ -28,7 +28,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12 archive-title">
+                <div class="col-xs-12" id="archive-title">
                     <h1>
                         {{ ARCHIVE.TITLES.PRIMARY }}
                     </h1>
@@ -36,7 +36,7 @@
                         <h2>{{ ARCHIVE.TITLES.SECONDARY }}</h2>
                     {% endif %}
 
-                    <i class="fa fa-star archive-heading-star-TODO" data-archive-id="{{ ARCHIVE.id }}" id="archive-heading-star"></i>
+                    <i class="fa fa-star archive-heading-star-{% if ARCHIVE.STARRED %}1{% else %}0{% endif %}" data-archive-id="{{ ARCHIVE.ID }}" id="archive-heading-star"></i>
                 </div>
             </div>
             <div class="row">
@@ -50,7 +50,7 @@
                     {% else %}
                     <div class="archive-list">
                         <div class="archive-row">
-                            <div class="archive-row-icon">&nbsp;</div>
+                            <div class="archive-row-icon"></div>
                             <div class="archive-row-name">
                                 <strong>Navn</strong>
                             </div>
@@ -78,8 +78,6 @@
                                         <span>
                                             {{ whole_number_format(CHILD._downloads) }}
                                         </span>
-                                    {% else %}
-                                        &nbsp;
                                     {% endif %}
                                 </div>
                                 <div class="archive-row-age">

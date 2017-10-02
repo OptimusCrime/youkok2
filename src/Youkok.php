@@ -45,6 +45,7 @@ class Youkok
         $app->group('/processors', function () use ($app) {
             $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularCourses:view');
             $app->get('/newest-elements', '\Youkok\Views\Processors\NewestElements:view');
+            $app->post('/favorite', '\Youkok\Views\Processors\ToggleFavorite:view');
 
             $app->group('/link', function () use ($app) {
                 $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');

@@ -32,7 +32,10 @@ class Archive extends BaseView
         return $this->render($response, 'archive.html', [
             'HEADER_MENU' => 'courses',
             'VIEW_NAME' => 'archive',
-            'ARCHIVE' => ArchiveElementFetchProcessor::fromElement($element),
+            'ARCHIVE' => ArchiveElementFetchProcessor
+                ::fromElement($element)
+                ->withSessionHandler($this->sessionHandler)
+                ->run(),
             'BODY_CLASS' => 'archive'
         ]);
     }

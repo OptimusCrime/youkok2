@@ -1,12 +1,12 @@
 var Youkok = (function (module) {
-    
+
     /*
      * Inits functions for online users
      */
     var initOnline = function() {
         $('#archive-heading-star').on('click', toggleFavorite);
     };
-    
+
     /*
      * Toggle as favorite
      */
@@ -16,7 +16,7 @@ var Youkok = (function (module) {
 
         // Check which way to favorite
         var favorite_type = 'add';
-        
+
         if ($that.hasClass('archive-heading-star-1')) {
             favorite_type = 'remove';
         }
@@ -25,8 +25,8 @@ var Youkok = (function (module) {
         $.ajax({
             cache: false,
             type: "post",
-            url: 'processor/favorite',
-            data: { 
+            url: 'processors/favorite',
+            data: {
                 id: $that.data('archive-id') ,
                 type: favorite_type
             },
@@ -50,14 +50,14 @@ var Youkok = (function (module) {
             }
         });
     };
-    
+
     /*
      * Handles dropdown for archive items
      */
     var itemDropdownOpen = function() {
         var $caret = $('i', this);
         var $dropdown = $('.archive-dropdown-content', this);
-        
+
         if ($dropdown.is(':visible')) {
             $dropdown.slideUp(400, function () {
                 $caret.removeClass('fa-caret-up').addClass('fa-caret-down');
@@ -72,11 +72,11 @@ var Youkok = (function (module) {
     var itemDropdownClose = function(e) {
         // Prevent default
         e.preventDefault();
-        
+
         // Trigger click to avoid writing the same fuction twice (duh)
         $(this).parent().parent().parent().parent().find('.archive-item-dropdown-arrow').trigger('click');
     };
-    
+
     /*
      * Fetches history
      */
@@ -110,12 +110,12 @@ var Youkok = (function (module) {
             }
         });
     };
-    
+
     /*
      * Public methods
      */
     module.archive = {
-        
+
         /*
          * Init function
          */
@@ -126,7 +126,7 @@ var Youkok = (function (module) {
 
             getHistory();
             initOnline();
-            
+
             // Init the counter
             Youkok.countdown.init();
         },

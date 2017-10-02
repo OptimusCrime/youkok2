@@ -4,11 +4,15 @@ namespace Youkok\Helpers;
 use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
 use Youkok\Models\Session;
+use Youkok\Utilities\CookieHelper;
 
 class SessionHandler
 {
+    const MODE_ADD = 0;
+    const MODE_OVERWRITE = 1;
+
     const SESSION_TOKEN_LENGTH = 100;
-    const SESSION_LIFE_TIME = (60 * 60 * 24 * 120);
+    const SESSION_LIFE_TIME = 60 * 60 * 24 * 120;
 
     private $data;
     private $hash;
@@ -37,11 +41,12 @@ class SessionHandler
      */
     public function loadSession()
     {
-        if (!isset($_COOKIE['youkok2']) or strlen($_COOKIE['youkok2']) == 0) {
+        $cookie = CookieHelper::getCookie('youkok2');
+        if ($cookie === null) {
             return $this->createSession();
         }
 
-        $currentSession = Session::where('hash', $_COOKIE['youkok2'])->first();
+        $currentSession = $this->getSession($cookie);
 
         if ($currentSession == null) {
             return $this->createSession();
@@ -50,7 +55,12 @@ class SessionHandler
         // TODO merge the default array or something to make sure we have all the default values in case some values
         // were added after the session was created
         $this->data = json_decode($currentSession->data, true);
-        $this->hash = $_COOKIE['youkok2'];
+        $this->hash = $cookie;
+    }
+
+    private function getSession($hash)
+    {
+        return Session::where('hash', $hash)->first();;
     }
 
     public function getData()
@@ -58,7 +68,16 @@ class SessionHandler
         return $this->data;
     }
 
-    public function setData(string $path, $value)
+    public function getDataWithKey($key)
+    {
+        if (!isset($this->data[$key])) {
+            return null;
+        }
+
+        return $this->data[$key];
+    }
+
+    public function setData(string $path, $value, $mode = self::MODE_ADD)
     {
         // Mark session as dirty
         $this->dirty = true;
@@ -74,7 +93,7 @@ class SessionHandler
             if (!isset($currentScope[$currentFragment])) {
                 // Check if we are on the final element or if we should continue iterating
                 if ($i === (count($pathFragments) - 1)) {
-                    $this->insertData($currentScope, $currentFragment, $value);
+                    $this->insertData($currentScope, $currentFragment, $value, $mode);
                 }
 
                 $currentScope[$currentFragment] = [];
@@ -85,13 +104,18 @@ class SessionHandler
                 continue;
             }
 
-            $this->insertData($currentScope, $currentFragment, $value);
+            $this->insertData($currentScope, $currentFragment, $value, $mode);
         }
     }
 
-    private function insertData(array &$scope, string $fragment, $value)
+    private function insertData(array &$scope, string $fragment, $value, $mode)
     {
         if (gettype($scope[$fragment]) === 'array') {
+            if ($mode === static::MODE_OVERWRITE) {
+                $scope[$fragment] = $value;
+                return;
+            }
+
             $scope[$fragment][] = $value;
             return;
         }
@@ -105,7 +129,15 @@ class SessionHandler
             return;
         }
 
-        // Store the session
+        $currentSession = $this->getSession($this->hash);
+        if ($currentSession === null) {
+            // This should never happen, log error
+            $this->createSession();
+            return;
+        }
+
+        $currentSession->data = json_encode($this->data);
+        $currentSession->save();
     }
 
     private function createSession()
@@ -117,6 +149,6 @@ class SessionHandler
         $session->data = json_encode($this->data);
         $session->save();
 
-        setcookie('youkok2', $this->hash, time() + self::SESSION_LIFE_TIME);
+        CookieHelper::setCookie('youkok2', $this->hash, static::SESSION_LIFE_TIME);
     }
 }

@@ -48,7 +48,7 @@ class Flat extends BaseView
      */
     public function changelog(Request $request, Response $response, array $args)
     {
-        $response = $response->withHeader('Content-Type', 'text/plain');
+        $response = $response->withHeader('Content-Type', 'text/plain; charset=utf-8');
 
         return $this->render($response, 'flat/changelog.txt', [
             'CONTENT' => file_get_contents($this->container->get('settings')['base_dir'] . '/CHANGELOG.md')

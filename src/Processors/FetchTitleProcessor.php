@@ -1,8 +1,6 @@
 <?php
 namespace Youkok\Processors;
 
-use Youkok\Controllers\ElementController;
-
 class FetchTitleProcessor
 {
     public static function fromUrl($url)

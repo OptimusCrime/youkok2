@@ -2,23 +2,55 @@
 namespace Youkok\Processors;
 
 use Illuminate\Database\Capsule\Manager as DB;
+
+use Youkok\Helpers\SessionHandler;
 use Youkok\Models\Download;
 use Youkok\Models\Element;
 
 class ArchiveElementFetchProcessor
 {
+    private $element;
+    private $sessionHandler;
+
+    private function __construct(Element $element)
+    {
+        $this->element = $element;
+        return $this;
+    }
+
+    public function withSessionHandler(SessionHandler $sessionHandler)
+    {
+        $this->sessionHandler = $sessionHandler;
+        return $this;
+    }
+
+    public function run()
+    {
+        return [
+            'SITE_DESCRIPTION' => static::getSiteDescription($this->element),
+            'ID' => $this->element->id,
+            'ROOT_ID' => $this->element->rootParent->id,
+            'PARENTS' => $this->element->parents,
+            'CHILDREN' => static::getArchiveChildren($this->element),
+            'TITLES' => static::getArchiveTitles($this->element),
+            'SITE_TITLE' => static::getSiteTitle($this->element),
+            'STARRED' => static::currentElementIsStarred($this->element, $this->sessionHandler)
+        ];
+    }
 
     public static function fromElement(Element $element)
     {
-        return [
-            'SITE_DESCRIPTION' => static::getSiteDescription($element),
-            'ID' => $element->id,
-            'ROOT_ID' => $element->rootParent->id,
-            'PARENTS' => $element->parents,
-            'CHILDREN' => static::getArchiveChildren($element),
-            'TITLES' => static::getArchiveTitles($element),
-            'SITE_TITLE' => static::getSiteTitle($element)
-        ];
+        return new ArchiveElementFetchProcessor($element);
+    }
+
+    private static function currentElementIsStarred(Element $element, SessionHandler $sessionHandler)
+    {
+        $favorites = $sessionHandler->getDataWithKey('favorites');
+        if ($favorites === null or empty($favorites)) {
+            return false;
+        }
+
+        return in_array($element->id, $favorites);
     }
 
     private static function getArchiveTitles(Element $element)
