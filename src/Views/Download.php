@@ -5,8 +5,8 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
 use Youkok\Helpers\DownloadHelper;
-use Youkok\Helpers\ElementHelper;
 use Youkok\Models\Element;
+use Youkok\Processors\UpdateDownloadsProcessor;
 
 class Download extends BaseView
 {
@@ -20,7 +20,10 @@ class Download extends BaseView
             return $this->render404($response);
         }
 
-        $element->addDownload();
+        UpdateDownloadsProcessor
+            ::fromElement($element)
+            ->withSessionHandler($this->sessionHandler)
+            ->run();
 
         $downloadResponse = DownloadHelper::render($response, $element, $this->container->get('settings')->all());
         if ($downloadResponse === null) {

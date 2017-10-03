@@ -8,21 +8,11 @@ use Youkok\Helpers\SessionHandler;
 use Youkok\Models\Download;
 use Youkok\Models\Element;
 
-class ArchiveElementFetchProcessor
+class ArchiveElementFetchProcessor extends AbstractElementFactoryProcessor
 {
-    private $element;
-    private $sessionHandler;
-
-    private function __construct(Element $element)
+    public static function fromElement(Element $element)
     {
-        $this->element = $element;
-        return $this;
-    }
-
-    public function withSessionHandler(SessionHandler $sessionHandler)
-    {
-        $this->sessionHandler = $sessionHandler;
-        return $this;
+        return new ArchiveElementFetchProcessor($element);
     }
 
     public function run()
@@ -37,11 +27,6 @@ class ArchiveElementFetchProcessor
             'SITE_TITLE' => static::getSiteTitle($this->element),
             'STARRED' => static::currentElementIsStarred($this->element, $this->sessionHandler)
         ];
-    }
-
-    public static function fromElement(Element $element)
-    {
-        return new ArchiveElementFetchProcessor($element);
     }
 
     private static function currentElementIsStarred(Element $element, SessionHandler $sessionHandler)
