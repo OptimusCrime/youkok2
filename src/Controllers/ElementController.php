@@ -33,7 +33,7 @@ class ElementController
 
     public static function getLastVisitedCourses()
     {
-        return Element::select('id', 'name', 'slug', 'uri')
+        return Element::select('id', 'name', 'slug', 'uri', 'last_visited')
             ->where('parent', null)
             ->where('directory', 1)
             ->where('pending', 0)

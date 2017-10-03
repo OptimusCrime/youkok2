@@ -10,6 +10,7 @@ use Youkok\Helpers\Utilities;
 use Youkok\Models\Contributor;
 use Youkok\Models\Download;
 use Youkok\Models\Element;
+use Youkok\Processors\FrontpageFetchProcessor;
 use Youkok\Processors\PopularCoursesProcessor;
 use Youkok\Processors\PopularElementsProcessor;
 
@@ -20,14 +21,8 @@ class Frontpage extends BaseView
      */
     public function view(Request $request, Response $response, array $args)
     {
-        return $this->render($response, 'frontpage.tpl', [
-            'FRONTPAGE_INFO_USERS' => Utilities::numberFormat(Contributor::where('banned', 0)->count()),
-            'FRONTPAGE_INFO_FILES' => Utilities::numberFormat(Element::where('directory', 0)->where('deleted', 0)->count()),
-            'FRONTPAGE_INFO_DOWNLOADS' => Utilities::numberFormat(Download::count()),
-            'FRONTPAGE_LATEST_ELEMENTS' => ElementController::getLatest(),
-            'FRONTPAGE_MOST_POPULAR_ELEMENTS' => PopularElementsProcessor::currentUser(),
-            'FRONTPAGE_MOST_POPULAR_COURSES' => PopularCoursesProcessor::currentUser(),
-            'FRONTPAGE_LATEST_VISITED' => ElementController::getLastVisitedCourses(),
+        return $this->render($response, 'frontpage.html', [
+            'FRONTPAGE' => FrontpageFetchProcessor::fromSessionHandler($this->sessionHandler),
             'BODY_CLASS' => 'frontpage'
         ]);
     }

@@ -2,10 +2,12 @@
 namespace Youkok\Processors;
 
 use Youkok\Controllers\ElementController;
+use Youkok\Enums\MostPopularElement;
+use Youkok\Helpers\SessionHandler;
 
-class PopularCoursesProcessor
+class PopularCoursesProcessor extends AbstractPopularListingProcessor
 {
-    public static function fromDelta($delta)
+    public static function fromDelta($delta = MostPopularElement::MONTH)
     {
         $courses = ElementController::getMostPopularCoursesFromDelta($delta);
 
@@ -19,9 +21,8 @@ class PopularCoursesProcessor
         return $courses;
     }
 
-    public static function currentUser()
+    public static function fromSessionHandler(SessionHandler $sessionHandler)
     {
-        // TODO
-        return self::fromDelta(1);
+        return parent::fromSessionHandler($sessionHandler, 'most_popular_course');
     }
 }

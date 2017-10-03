@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row" id="frontpage-wellholder">
+    <div class="well">
+        <div class="row">
+            <div class="col-xs-12">
+                <p>Vi har for tiden <strong>{{ FRONTPAGE.INFO_FILES }}</strong> filer fordelt på total <strong>xx</strong> fag. Disse filene er lastet ned <strong>{{ FRONTPAGE.INFO_DOWNLOADS }}</strong> ganger.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 frontpage-box">
+        <div class="list-header">
+            <h2>Favoritter</h2>
+        </div>
+        <ul class="list-group" id="favorites-list">[[if count($USER.favorites) === 0]]
+
+            <li class="list-group-item"><em>Du har ingen favoritter</em></li>[[+else]][[+foreach $USER.favorites as $element]]
+
+            <li class="list-group-item">
+                <a[[+if !$element->isDirectory()]] target="_blank"[[+/if]] href="[[+$element->getFullUrl()]]">[[+if !$element->hasParent()]]<strong>[[+$element->getCourseCode()]]</strong> &mdash; [[+$element->getCourseName()]][[+else]][[+$element->getName()]][[+/if]]</a>
+                <i title="Fjern favoritt" data-id="[[+$element->getId()]]" class="fa fa-times-circle star-remove"></i>
+            </li>[[+/foreach]]
+            [[+/if]]
+
+        </ul>
+    </div>
+    <div class="col-xs-12 col-sm-6 frontpage-box">
+        <div class="list-header">
+            <h2>Siste nedlastninger</h2>
+        </div>
+        <ul class="list-group">[[+if count($USER.downloads) === 0]]
+
+            <li class="list-group-item"><em>Du har ingen nedlastninger</em></li>[[+else]][[+foreach $USER.downloads as $element]]
+
+            <li class="list-group-item">
+                <a rel="nofollow" target="_blank" href="[[+$element->getFullUrl()]]">
+                    [[+$element->getName()]]
+                </a>[[+if $element->hasParent()]] @ [[+if $element->getParent(true)->hasParent()]]
+
+                <a href="[[+$element->getParent(true)->getFullUrl()]]">[[+$element->getParent(true)->getName()]]</a>, [[+/if]]
+
+                <a href="[[+$element->getRootParent()->getFullUrl()]]" title="[[+$element->getRootParent()->getCourseName()]]" data-placement="top" data-toggle="tooltip">[[+$element->getRootParent()->getCourseCode()]]</a>[[+/if]]
+
+            </li>[[+/foreach]]
+            [[+/if]]
+
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-6 frontpage-box">
+        <div class="list-header">
+            <h2>Nyeste</h2>
+        </div>
+        <ul class="list-group">
+            [[+if count($FRONTPAGE_LATEST_ELEMENTS) == 0]]
+            <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>
+            [[+else]]
+            [[+include file="scopes/frontpage_elements_general.tpl"
+            ELEMENTS=$FRONTPAGE_LATEST_ELEMENTS
+            DISPLAY='added'
+            ]]
+            [[+/if]]
+        </ul>
+    </div>
+    <div class="col-xs-12 col-sm-6 frontpage-box frontpage-module" data-id="1" data-variable="module1_delta">
+        <div class="list-header">
+            <h2 class="can-i-be-inline">Mest populære</h2>
+            <div class="btn-group">
+                <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                    <span class="most-popular-label">
+                        {% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_ELEMENTS == FRONTPAGE.CONST.TODAY %}
+                            I dag
+                        {% elseif FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_ELEMENTS == FRONTPAGE.CONST.WEEK %}
+                            Denne uka
+                        {% elseif FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_ELEMENTS == FRONTPAGE.CONST.MONTH %}
+                            Denne måneden
+                        {% elseif FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_ELEMENTS == FRONTPAGE.CONST.YEAR %}
+                            Dette året
+                        {% else %}
+                            Alltid
+                        {% endif %}
+                    </span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu home-most-popular-dropdown">
+                    <li{% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_ELEMENTS == FRONTPAGE.CONST.TODAY %} class="disabled"{% endif %}>
+                    <a data-delta="{{ FRONTPAGE.CONST.TODAY }}" href="#">I dag</a>
+                    </li>
+                    <li{% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_ELEMENTS == FRONTPAGE.CONST.WEEK %} class="disabled"{% endif %}>
+                    <a data-delta="{{ FRONTPAGE.CONST.WEEK }}" href="#">Denne uka</a>
+                    </li>
+                    <li{% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_ELEMENTS == FRONTPAGE.CONST.MONTH %} class="disabled"{% endif %}>
+                    <a data-delta="{{ FRONTPAGE.CONST.MONTH }}" href="#">Denne måneden</a>
+                    </li>
+                    <li{% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_ELEMENTS == FRONTPAGE.CONST.YEAR %} class="disabled"{% endif %}>
+                    <a data-delta="{{ FRONTPAGE.CONST.YEAR }}" href="#">Dette året</a>
+                    </li>
+                    <li{% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_ELEMENTS == FRONTPAGE.CONST.ALL %} class="disabled"{% endif %}>
+                    <a data-delta="{{ FRONTPAGE.CONST.ALL }}" href="#">Alltid</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul class="list-group">
+            [[+if count($FRONTPAGE_MOST_POPULAR_ELEMENTS) == 0]]
+            <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>
+            [[+else]]
+            [[+include file="scopes/frontpage_elements_general.tpl"
+            ELEMENTS=$FRONTPAGE_MOST_POPULAR_ELEMENTS
+            DISPLAY='downloads'
+            ]]
+            [[+/if]]
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-6 frontpage-box frontpage-module">
+        <div class="list-header">
+            <h2 class="can-i-be-inline">Mest populære fag</h2>
+            <div class="btn-group">
+                <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                    <span class="most-popular-label">
+                        {% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_COURSES == FRONTPAGE.CONST.TODAY %}
+                            I dag
+                        {% elseif FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_COURSES == FRONTPAGE.CONST.WEEK %}
+                            Denne uka
+                        {% elseif FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_COURSES == FRONTPAGE.CONST.MONTH %}
+                            Denne måneden
+                        {% elseif FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_COURSES == FRONTPAGE.CONST.YEAR %}
+                            Dette året
+                        {% else %}
+                            Alltid
+                        {% endif %}
+                    </span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu home-most-popular-dropdown">
+                    <li{% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_COURSES == FRONTPAGE.CONST.TODAY %} class="disabled"{% endif %}>
+                        <a data-delta="{{ FRONTPAGE.CONST.TODAY }}" href="#">I dag</a>
+                    </li>
+                    <li{% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_COURSES == FRONTPAGE.CONST.WEEK %} class="disabled"{% endif %}>
+                        <a data-delta="{{ FRONTPAGE.CONST.WEEK }}" href="#">Denne uka</a>
+                    </li>
+                    <li{% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_COURSES == FRONTPAGE.CONST.MONTH %} class="disabled"{% endif %}>
+                        <a data-delta="{{ FRONTPAGE.CONST.MONTH }}" href="#">Denne måneden</a>
+                    </li>
+                    <li{% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_COURSES == FRONTPAGE.CONST.YEAR %} class="disabled"{% endif %}>
+                        <a data-delta="{{ FRONTPAGE.CONST.YEAR }}" href="#">Dette året</a>
+                    </li>
+                    <li{% if FRONTPAGE.USER_PREFERENCES.DELTA_POST_POPULAR_COURSES == FRONTPAGE.CONST.ALL %} class="disabled"{% endif %}>
+                        <a data-delta="{{ FRONTPAGE.CONST.ALL }}" href="#">Alltid</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul class="list-group">
+            {% if FRONTPAGE.MOST_POPULAR_COURSES|length == 0 %}
+                <li class="list-group-item"><em>Det er visst ingen fag her</em></li>
+            {% else %}
+                {% for ELEMENT in FRONTPAGE.MOST_POPULAR_COURSES %}
+                    <li class="list-group-item">
+                        <a href="{{ element_url(ELEMENT) }}">
+                            <strong>{{ ELEMENT.courseCode }}</strong> &mdash; {{ ELEMENT.courseName }}
+                        </a> [~TODO]
+                    </li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+    <div class="col-xs-12 col-sm-6 frontpage-box">
+        <div class="list-header">
+            <h2>Siste besøkte fag</h2>
+        </div>
+        <ul class="list-group">
+            {% if FRONTPAGE.LATEST_VISITED|length == 0 %}
+                <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>
+            {% else %}
+                {% for ELEMENT in FRONTPAGE.MOST_POPULAR_COURSES %}
+                    <li class="list-group-item">
+                        <a href="{{ element_url(ELEMENT) }}">
+                            <strong>{{ ELEMENT.courseCode }}</strong> &mdash; {{ ELEMENT.courseName }}
+                        </a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+</div>
+[[+include file="footer.tpl"]]
+<script type="text/template" class="template-frontpage-popular-elements">
+    <ul class="list-group">
+        <% _.each(rc.elements,function(element) { %>
+        <li class="list-group-item">
+            <a href="<%- element.full_url %>" target="_blank" <% if (element.url !== null) { %>title="Link til: <%- element.url %>"<% } %>>
+            <%- element.name %>
+            </a> @ <% if (element.parents.length == 2) { %>
+            <a href="<%- element.parents[0].full_url %>"><%- element.parents[0].name %></a>,
+            <% } %>
+            <a title="<% if (element.parents.length == 2) { %><%- element.parents[1].course_name %><% } else { %><%- element.parents[0].course_name %><% } %>" data-placement="top" data-toggle="tooltip" href="<% if (element.parents.length == 2) { %><%- element.parents[1].full_url %><% } else { %><%- element.parents[0].full_url %><% } %>"><% if (element.parents.length == 2) { %><%- element.parents[1].course_code %><% } else { %><%- element.parents[0].course_code %><% } %></a>
+            [<% if (element.download_count !== null) { %><%- element.download_count %><% } else { %>0<% } %>]
+        </li>
+        <% }); %>
+    </ul>
+</script>
+<script type="text/template" class="template-frontpage-no-popular-elements">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <em>Det er visst ingen nedlastninger her</em>
+        </li>
+    </ul>
+</script>
+<script type="text/template" class="template-frontpage-popular-courses">
+    <ul class="list-group">
+        <% _.each(rc.elements,function(element) { %>
+        <li class="list-group-item">
+            <a href="<%- element.full_url %>">
+                <strong><%- element.course_code %></strong> &mdash; <%- element.course_name %>
+            </a> [~<%- element.download_count %>]
+        </li>
+        <% }); %>
+    </ul>
+</script>
+<script type="text/template" class="template-frontpage-no-popular-courses">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <em>Det er visst ingen fag her</em>
+        </li>
+    </ul>
+</script>
+{% endblock %}

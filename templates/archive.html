@@ -33,6 +33,7 @@
                     {{ ARCHIVE.TITLES.PRIMARY }}
                 </h1>
                 {% if ARCHIVE.TITLES.SECONDARY != null %}
+                    <span>&mdash;</span>
                     <h2>{{ ARCHIVE.TITLES.SECONDARY }}</h2>
                 {% endif %}
 
@@ -44,7 +45,7 @@
                 {% if ARCHIVE.CHILDREN|length == 0 %}
                     <div id="archive-empty" class="well">
                         <p>Ingen filer eller linker!</p>
-                        <p>Det er visst ingen filer eller linker her. Du kan bidra ved å laste opp filer i panelet til høyre. Pass på at du leser våre <a href=" {{ path_for('terms') }}">retningslinjer</a> før du eventuelt gjør dette.</p>
+                        <p>Det er visst ingen filer eller linker her. Du kan bidra ved å laste opp filer eller poste linker i panelet til høyre. Pass på at du leser våre <a href=" {{ path_for('terms') }}">retningslinjer</a> før du eventuelt gjør dette.</p>
                         <p>- YouKok2</p>
                     </div>
                 {% else %}

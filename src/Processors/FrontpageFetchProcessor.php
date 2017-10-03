@@ -1,0 +1,70 @@
+<?php
+namespace Youkok\Processors;
+
+
+use Youkok\Controllers\ElementController;
+use Youkok\Enums\MostPopularElement;
+use Youkok\Helpers\SessionHandler;
+use Youkok\Helpers\Utilities;
+use Youkok\Models\Download;
+use Youkok\Models\Element;
+
+class FrontpageFetchProcessor
+{
+    public static function fromSessionHandler(SessionHandler $sessionHandler)
+    {
+        return [
+            'INFO_FILES' => Utilities::numberFormat(Element::where('directory', 0)->where('deleted', 0)->count()),
+            'INFO_DOWNLOADS' => Utilities::numberFormat(Download::count()),
+            'LATEST_ELEMENTS' => ElementController::getLatest(),
+            'MOST_POPULAR_ELEMENTS' => static::getMostPopularElementFromSessionHandler($sessionHandler),
+            'MOST_POPULAR_COURSES' => static::getMostPopularCoursesFromSessionHandler($sessionHandler),
+            'LATEST_VISITED' => ElementController::getLastVisitedCourses(),
+            'USER_PREFERENCES' => static::getUserPreferences($sessionHandler),
+            'CONST' => static::getPopularConsts()
+        ];
+    }
+
+    private static function getMostPopularElementFromSessionHandler(SessionHandler $sessionHandler)
+    {
+        return PopularElementsProcessor::fromSessionHandler($sessionHandler);
+    }
+
+    private static function getMostPopularCoursesFromSessionHandler(SessionHandler $sessionHandler)
+    {
+        return PopularCoursesProcessor::fromSessionHandler($sessionHandler);
+    }
+
+    private static function getPopularConsts()
+    {
+        return [
+            'TODAY' => MostPopularElement::TODAY,
+            'WEEK' => MostPopularElement::WEEK,
+            'MONTH' => MostPopularElement::MONTH,
+            'YEAR' => MostPopularElement::YEAR,
+            'ALL' => MostPopularElement::ALL
+        ];
+    }
+
+    private static function getUserPreferences(SessionHandler $sessionHandler)
+    {
+        return [
+            'DELTA_POST_POPULAR_ELEMENTS' => static::getUserPreferenceForKey($sessionHandler, 'most_popular_element'),
+            'DELTA_POST_POPULAR_COURSES' => static::getUserPreferenceForKey($sessionHandler, 'most_popular_course'),
+        ];
+    }
+
+    private static function getUserPreferenceForKey(SessionHandler $sessionHandler, $key)
+    {
+        $frontpageSettings = $sessionHandler->getDataWithKey('frontpage');
+        if ($frontpageSettings === null or !is_array($frontpageSettings)) {
+            return MostPopularElement::MONTH;
+        }
+
+        if (!isset($frontpageSettings[$key])) {
+            return MostPopularElement::MONTH;
+        }
+
+        return $frontpageSettings[$key];
+    }
+}
