@@ -5,6 +5,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
 use Youkok\Models\Element;
+use Youkok\Processors\UpdateDownloadsProcessor;
 
 class Redirect extends BaseView
 {
@@ -18,8 +19,11 @@ class Redirect extends BaseView
             return $this->render404($response);
         }
 
-        $element->addDownload();
+        UpdateDownloadsProcessor
+            ::fromElement($element)
+            ->withSessionHandler($this->sessionHandler)
+            ->run();
 
-        return $response->withStatus(302)->withHeader('Location', $element->link);
+        return $this->returnResponse($response->withStatus(302)->withHeader('Location', $element->link));
     }
 }

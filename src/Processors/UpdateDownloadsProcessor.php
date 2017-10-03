@@ -32,7 +32,6 @@ class UpdateDownloadsProcessor extends AbstractElementFactoryProcessor
         }
 
         $newDownloads = ArrayHelper::addToArray($downloads, $element->id);
-
         $sessionHandler->setData('downloads', $newDownloads, SessionHandler::MODE_OVERWRITE);
     }
 }

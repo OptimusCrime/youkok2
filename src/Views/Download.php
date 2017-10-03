@@ -30,6 +30,6 @@ class Download extends BaseView
             return $this->render404($response);
         }
 
-        return $downloadResponse;
+        return $this->returnResponse($downloadResponse);
     }
 }

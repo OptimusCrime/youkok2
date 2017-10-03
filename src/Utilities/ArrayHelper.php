@@ -33,7 +33,7 @@ class ArrayHelper {
                 continue;
             }
 
-            $newArray = $v;
+            $newArray[] = $v;
         }
         return $newArray;
     }

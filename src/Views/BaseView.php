@@ -49,9 +49,21 @@ class BaseView
         $this->templateData['SITE_DATA'][$key] = $value;
     }
 
-    protected function render(Response $response, String $template, array $data = [])
+    private function cleanUp()
     {
         $this->sessionHandler->store();
+    }
+
+    protected function returnResponse(Response $response)
+    {
+        $this->cleanUp();
+
+        return $response;
+    }
+
+    protected function render(Response $response, String $template, array $data = [])
+    {
+        $this->cleanUp();
 
         $this->templateData['EXECUTION_TIME'] = PHP_Timer::secondsToTimeString(PHP_Timer::stop());
 
