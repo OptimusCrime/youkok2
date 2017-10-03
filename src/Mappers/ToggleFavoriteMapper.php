@@ -37,6 +37,6 @@ class ToggleFavoriteMapper implements Mapper
             return false;
         }
 
-        return in_array($response['mode'], [ToggleFavoriteProcessor::ADD, ToggleFavoriteProcessor::REMOVE]);
+        return !in_array($response['mode'], [ToggleFavoriteProcessor::ADD, ToggleFavoriteProcessor::REMOVE]);
     }
 }
