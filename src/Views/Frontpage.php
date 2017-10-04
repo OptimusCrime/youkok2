@@ -19,7 +19,7 @@ class Frontpage extends BaseView
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function view(Request $request, Response $response, array $args)
+    public function view(Request $request, Response $response)
     {
         return $this->render($response, 'frontpage.html', [
             'FRONTPAGE' => FrontpageFetchProcessor::fromSessionHandler($this->sessionHandler),

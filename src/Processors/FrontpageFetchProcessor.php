@@ -16,10 +16,10 @@ class FrontpageFetchProcessor
         return [
             'INFO_FILES' => Utilities::numberFormat(Element::where('directory', 0)->where('deleted', 0)->count()),
             'INFO_DOWNLOADS' => Utilities::numberFormat(Download::count()),
-            'LATEST_ELEMENTS' => ElementController::getLatest(),
+            'LATEST_ELEMENTS' => ElementController::getLatest(15),
             'MOST_POPULAR_ELEMENTS' => static::getMostPopularElementFromSessionHandler($sessionHandler),
             'MOST_POPULAR_COURSES' => static::getMostPopularCoursesFromSessionHandler($sessionHandler),
-            'LATEST_VISITED' => ElementController::getLastVisitedCourses(),
+            'LATEST_VISITED' => ElementController::getLastVisitedCourses(15),
             'USER_PREFERENCES' => static::getUserPreferences($sessionHandler),
             'CONST' => static::getPopularConsts()
         ];

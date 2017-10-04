@@ -9,7 +9,7 @@ class PopularCoursesProcessor extends AbstractPopularListingProcessor
 {
     public static function fromDelta($delta = MostPopularElement::MONTH)
     {
-        $courses = ElementController::getMostPopularCoursesFromDelta($delta);
+        $courses = ElementController::getMostPopularCoursesFromDelta(15, $delta);
 
         /*
          * $this->container->get('cache')->forever('frontpage_most_popular_elements', [1, 2, 3, 4]);
