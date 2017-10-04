@@ -230,19 +230,22 @@ class Element extends BaseModel
 
     private function getIcon()
     {
+
         if ($this->directory) {
             return 'folder.png';
         }
 
-        if ($this->child === null) {
+        if ($this->link !== null) {
             return 'link.png';
         }
 
-        if ($this->mime_type === null) {
+        if (strpos($this->checksum, '.') === false) {
             return 'unknown.png';
         }
 
-        return $this->mime_type . '.png';
+        $ext = pathinfo($this->checksum, \PATHINFO_EXTENSION);
+
+        return $ext . '.png';
     }
 
     private function getAddedPretty()

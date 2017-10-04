@@ -7,7 +7,7 @@ class ElementHelper
 {
     public static function shouldDisplay(Element $element, array $fileTypes)
     {
-        $ext = pathinfo($element->checksum, PATHINFO_EXTENSION);
+        $ext = pathinfo($element->checksum, \PATHINFO_EXTENSION);
         return in_array($ext, $fileTypes);
     }
 
