@@ -52,6 +52,8 @@ class YoukokTwigExtension extends \Twig_Extension
             ]);
         }
 
+        // TODO handle redirect or download better?!
+
         return $this->router->pathFor('archive', [
             'params' => $element->fullUri
         ]);

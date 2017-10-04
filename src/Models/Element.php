@@ -176,6 +176,24 @@ class Element extends BaseModel
         return $this->parents;
     }
 
+    private function getParentObj()
+    {
+        $parents = $this->parents;
+        if ($parents === null) {
+            $parents = $this->getParents();
+        }
+
+        if ($parents === null or count($parents) === 0) {
+            return null;
+        }
+
+        if (count($parents) === 1) {
+            return $parents[0];
+        }
+
+        return $parents[count($parents) - 2];
+    }
+
     private function getRootParent()
     {
         $parents = $this->getParents();
@@ -279,6 +297,7 @@ class Element extends BaseModel
             'fullUri',
             'icon',
             'parents',
+            'parentObj',
             'rootParent',
             'addedPretty',
             'addedPrettyAll'
@@ -303,6 +322,8 @@ class Element extends BaseModel
                 return $this->getIcon();
             case 'parents':
                 return $this->getParents();
+            case 'parentObj':
+                return $this->getParentObj();
             case 'rootParent':
                 return $this->getRootParent();
             case 'addedPretty':

@@ -60,7 +60,7 @@ class ElementController
 
     public static function getLatest($limit = 10)
     {
-        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'added')
+        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'added', 'checksum')
             ->where('directory', 0)
             ->where('pending', 0)
             ->where('deleted', 0)

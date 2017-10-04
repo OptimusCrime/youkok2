@@ -56,14 +56,33 @@
             <h2>Nyeste</h2>
         </div>
         <ul class="list-group">
-            [[+if count($FRONTPAGE_LATEST_ELEMENTS) == 0]]
-            <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>
-            [[+else]]
-            [[+include file="scopes/frontpage_elements_general.tpl"
-            ELEMENTS=$FRONTPAGE_LATEST_ELEMENTS
-            DISPLAY='added'
-            ]]
-            [[+/if]]
+            {% if FRONTPAGE.LATEST_ELEMENTS|length == 0 %}
+                <li class="list-group-item"><em>Det er visst ingenting her</em></li>
+            {% else %}
+                {% for ELEMENT in FRONTPAGE.LATEST_ELEMENTS %}
+                    <li class="list-group-item">
+                        <a
+                            href="{{ element_url(ELEMENT) }}"
+                            {% if ELEMENT.link != null %}target="_blank" title="Link til: {{ ELEMENT.link}}"{% endif %}]>
+                            {{ ELEMENT.name }}
+                        </a>
+                        {% if ELEMENT.parent != null %} @
+                            {% if ELEMENT.parentObj.id != ELEMENT.rootParent.id %}
+                                <a href="{{ element_url(ELEMENT.parentObj) }}">
+                                    {{ ELEMENT.parentObj.name }}
+                                </a>,
+                            {% endif %}
+
+                            <a href="{{ element_url(ELEMENT.rootParent) }}"
+                               title="{{ ELEMENT.rootParent.courseName }}" data-placement="top" data-toggle="tooltip">
+                                {{ ELEMENT.rootParent.courseCode }}
+                            </a>
+                        {% endif %}
+
+                        [<span class="moment-timestamp help" data-toggle="tooltip" title="[[+$element->addedPrettyAll]]" data-ts="{{ ELEMENT.added }}">Laster...</span>]
+                    </li>
+                {% endfor %}
+            {% endif %}
         </ul>
     </div>
     <div class="col-xs-12 col-sm-6 frontpage-box frontpage-module" data-id="1" data-variable="module1_delta">
