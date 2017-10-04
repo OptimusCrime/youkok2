@@ -1129,13 +1129,18 @@ a:visited {
 .archive-row {
     border-top: 1px solid #ddd;
     padding: 10px 15px;
+    display: block;
+    color: #333333;
 }
 .archive-row::after {
     content: '';
     display: block;
     clear: both;
 }
-.archive-list div:first-child {
+.archive-row.archive-row--header:hover {
+    background-color: #fff;
+}
+.archive-list>*:first-child {
     border: none;
 }
 .archive-row div {
@@ -1143,6 +1148,10 @@ a:visited {
 }
 .archive-row:hover {
     background-color: #eee;
+    color: #333333;
+}
+.archive-row:hover .archive-row-name span {
+    color: #3498DB;
 }
 .archive-row a {
     display: block;
