@@ -20,7 +20,7 @@ class PopularElementsProcessor extends AbstractPopularListingProcessor
         return $elements;
     }
 
-    public static function fromSessionHandler(SessionHandler $sessionHandler)
+    public static function fromSessionHandler(SessionHandler $sessionHandler, $key = null)
     {
         return parent::fromSessionHandler($sessionHandler, 'most_popular_element');
     }

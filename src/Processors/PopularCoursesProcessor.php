@@ -21,7 +21,7 @@ class PopularCoursesProcessor extends AbstractPopularListingProcessor
         return $courses;
     }
 
-    public static function fromSessionHandler(SessionHandler $sessionHandler)
+    public static function fromSessionHandler(SessionHandler $sessionHandler, $key = null)
     {
         return parent::fromSessionHandler($sessionHandler, 'most_popular_course');
     }

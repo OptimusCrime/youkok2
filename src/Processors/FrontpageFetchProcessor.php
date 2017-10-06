@@ -1,7 +1,6 @@
 <?php
 namespace Youkok\Processors;
 
-
 use Youkok\Controllers\ElementController;
 use Youkok\Enums\MostPopularElement;
 use Youkok\Helpers\SessionHandler;

@@ -195,9 +195,9 @@
         </div>
         <ul class="list-group">
             {% if FRONTPAGE.LATEST_VISITED|length == 0 %}
-                <li class="list-group-item"><em>Det er visst ingen nedlastninger her</em></li>
+                <li class="list-group-item"><em>Det er visst ingen fag her</em></li>
             {% else %}
-                {% for ELEMENT in FRONTPAGE.MOST_POPULAR_COURSES %}
+                {% for ELEMENT in FRONTPAGE.LATEST_VISITED %}
                     <li class="list-group-item">
                         <a href="{{ element_url(ELEMENT) }}">
                             <strong>{{ ELEMENT.courseCode }}</strong> &mdash; {{ ELEMENT.courseName }}
@@ -208,7 +208,6 @@
         </ul>
     </div>
 </div>
-[[+include file="footer.tpl"]]
 <script type="text/template" class="template-frontpage-popular-elements">
     <ul class="list-group">
         <% _.each(rc.elements,function(element) { %>
