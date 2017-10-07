@@ -10,6 +10,9 @@ use Youkok\Models\Element;
 
 class FrontpageFetchProcessor
 {
+    const FAVORITES = 'favorites';
+    const DOWNLOADS = 'downloads';
+
     public static function fromSessionHandler(SessionHandler $sessionHandler)
     {
         return [
@@ -20,6 +23,8 @@ class FrontpageFetchProcessor
             'MOST_POPULAR_COURSES' => static::getMostPopularCoursesFromSessionHandler($sessionHandler),
             'LATEST_VISITED' => ElementController::getLastVisitedCourses(15),
             'USER_PREFERENCES' => static::getUserPreferences($sessionHandler),
+            'USER_FAVORITES' => static::getUserListing($sessionHandler, static::FAVORITES),
+            'USER_DOWNLOADS' => static::getUserListing($sessionHandler, static::DOWNLOADS),
             'CONST' => static::getPopularConsts()
         ];
     }
@@ -65,5 +70,23 @@ class FrontpageFetchProcessor
         }
 
         return $frontpageSettings[$key];
+    }
+
+    private static function getUserListing(SessionHandler $sessionHandler, $type = self::FAVORITES)
+    {
+        $ids = $sessionHandler->getDataWithKey($type);
+        if (!is_array($ids) or count($ids) === 0) {
+            return [];
+        }
+
+        $elements = [];
+        foreach ($ids as $id) {
+            $element = Element::fromId($id, ['id', 'name', 'parent', 'directory', 'checksum', 'link', 'pending', 'deleted', 'uri']);
+            if ($elements !== null) {
+                $elements[] = $element;
+            }
+        }
+
+        return $elements;
     }
 }

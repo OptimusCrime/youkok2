@@ -8,6 +8,9 @@ class ElementController
     const SORT_TYPE_ORGANIZED = 0;
     const SORT_TYPE_AGE = 1;
 
+    // TODO add parameter to fetch whatever attributes we'd like for all methods
+    // builder pattern?
+
     public static function getAllCourses()
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')

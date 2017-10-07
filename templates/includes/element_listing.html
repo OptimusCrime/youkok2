@@ -1,0 +1,34 @@
+{% if ELEMENT.isCourse() or (COURSE is not null and COURSE) %}
+    <a href="{{ element_url(ELEMENT) }}">
+        <strong>{{ ELEMENT.courseCode }}</strong> &mdash; {{ ELEMENT.courseName }}
+        {% if CONTENT_INSIDE %}
+            {{ CONTENT_INSIDE|raw }}
+        {% endif %}
+    </a>
+
+    {% if CONTENT_OUTSIDE %}
+        {{ CONTENT_OUTSIDE|raw }}
+    {% endif %}
+{% else %}
+    <a href="{{ element_url(ELEMENT) }}"
+       {% if ELEMENT.link != null %}target="_blank" title="Link til: {{ ELEMENT.link}}"{% endif %}]
+    >{{ ELEMENT.name }}
+    {% if CONTENT_INSIDE %}
+        {{ CONTENT_INSIDE|raw }}
+    {% endif %}
+    </a>
+
+    {% if ELEMENT.parent != null %} @
+        {% if ELEMENT.parentObj.id != ELEMENT.rootParent.id %}
+            <a href="{{ element_url(ELEMENT.parentObj) }}">{{ ELEMENT.parentObj.name }}</a>,
+        {% endif %}
+
+        <a href="{{ element_url(ELEMENT.rootParent) }}"
+           title="{{ ELEMENT.rootParent.courseName }}" data-placement="top" data-toggle="tooltip"
+        >{{ ELEMENT.rootParent.courseCode }}</a>
+    {% endif %}
+
+    {% if CONTENT_OUTSIDE %}
+        {{ CONTENT_OUTSIDE|raw }}
+    {% endif %}
+{% endif %}

@@ -20,13 +20,21 @@ class Element extends BaseModel
 
     private $parents;
 
-    public static function fromId($id)
+    public static function fromId($id, $attributes = [])
     {
         if (!isset($id) or !is_numeric($id)) {
             return null;
         }
 
-        return Element::select('id', 'link', 'checksum')
+        if (!is_array($attributes) or count($attributes) === 0) {
+            return Element::select('id', 'link', 'checksum')
+                ->where('id', $id)
+                ->where('deleted', 0)
+                ->where('pending', 0)
+                ->first();
+        }
+
+        return Element::select($attributes)
             ->where('id', $id)
             ->where('deleted', 0)
             ->where('pending', 0)
@@ -49,6 +57,7 @@ class Element extends BaseModel
         return $element;
     }
 
+    // TODO add parameter to fetch whatever attributes we'd like
     public static function fromUri($uri, $type = self::ELEMENT_TYPE_DIRECTORIES)
     {
         $query = Element::select('id', 'parent', 'name', 'checksum', 'link')
@@ -67,6 +76,7 @@ class Element extends BaseModel
         return $element;
     }
 
+    // TODO add parameter to fetch whatever attributes we'd like
     public static function fromUriFragments($uri, $type = self::ELEMENT_TYPE_DIRECTORIES)
     {
         $fragments = UriCleaner::cleanFragments(explode('/', $uri));
@@ -141,6 +151,11 @@ class Element extends BaseModel
         return $this->link !== null and strlen($this->link) > 0;
     }
 
+    public function isCourse()
+    {
+        return $this->parent === null and $this->directory === 1;
+    }
+
     public function updateRootParent()
     {
         $rootParent = $this->getRootParent();
@@ -152,6 +167,7 @@ class Element extends BaseModel
         $rootParent->save();
     }
 
+    // TODO add parameter to fetch whatever attributes we'd like
     private function getParents()
     {
         if ($this->parents !== null) {
@@ -176,6 +192,7 @@ class Element extends BaseModel
         return $this->parents;
     }
 
+    // TODO add parameter to fetch whatever attributes we'd like
     private function getParentObj()
     {
         $parents = $this->parents;
@@ -194,6 +211,7 @@ class Element extends BaseModel
         return $parents[count($parents) - 2];
     }
 
+    // TODO add parameter to fetch whatever attributes we'd like
     private function getRootParent()
     {
         $parents = $this->getParents();
@@ -280,8 +298,8 @@ class Element extends BaseModel
     {
         $download = new Download();
         $download->resource = $this->id;
-        $download->ip = $_SERVER['REMOTE_ADDR']; // TODO
-        $download->agent = $_SERVER['HTTP_USER_AGENT']; // TODO
+        $download->ip = $_SERVER['REMOTE_ADDR'];
+        $download->agent = $_SERVER['HTTP_USER_AGENT'];
         $download->save();
     }
 
