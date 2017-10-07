@@ -11,6 +11,21 @@ class ElementController
     // TODO add parameter to fetch whatever attributes we'd like for all methods
     // builder pattern?
 
+    public static function getElementsFromSearchQuery($query = null)
+    {
+        if ($query === null or strlen($query) === 0) {
+            return [];
+        }
+
+        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')
+            ->where('parent', null)
+            ->where('directory', 1)
+            ->where('pending', 0)
+            ->where('deleted', 0)
+            ->orderBy('name')
+            ->get();
+    }
+
     public static function getAllCourses()
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')
