@@ -31,7 +31,9 @@ class BaseView
             'SITE_SETTINGS' => $this->container->get('settings')['site'],
 
             // Data to send to the site. Typically stuff we need for JavaScript things
-            'SITE_DATA' => [],
+            'SITE_DATA' => [
+                'version' => $this->container->get('settings')['site']['VERSION']
+            ],
 
             // Information about the current user
             'USER' => $this->sessionHandler->getData(),

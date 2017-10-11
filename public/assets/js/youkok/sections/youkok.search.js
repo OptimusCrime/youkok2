@@ -22,12 +22,12 @@ var Youkok = (function (module) {
      */
     var initTypeahead = function() {
         // Check if we should clear cache first
-        if (Youkok.getData('cache_time') != localStorage.getItem('ts')) {
+        if (Youkok.getData('version') != localStorage.getItem('version')) {
             // Clear first
             localStorage.clear();
             
             // Assign ts
-            localStorage.setItem('ts', Youkok.getData('cache_time'));
+            localStorage.setItem('version', Youkok.getData('version'));
         }
         
         // Init typeahead here
