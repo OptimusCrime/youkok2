@@ -36,6 +36,19 @@ services:
 
 
   ###############################################
+  #                    Cache                    #
+  ###############################################
+
+  cache:
+    container_name: "youkok_cache"
+    image: "redis:4.0.2-alpine"
+    ports:
+     - "6379:6379"
+    volumes:
+      - /data
+
+
+  ###############################################
   #                  Webserver                  #
   ###############################################
 
@@ -44,9 +57,10 @@ services:
     depends_on:
       - db
       - appdata
+      - cache
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.server
     ports:
       - "8000:80"
     environment:
@@ -57,5 +71,6 @@ services:
       - MYSQL_DATABASE=youkok2
     links:
       - db
+      - cache
     volumes_from:
       - appdata
