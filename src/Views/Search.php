@@ -3,6 +3,8 @@ namespace Youkok\Views;
 
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
+
+use Youkok\Mappers\SearchMapper;
 use Youkok\Processors\SearchProcessor;
 
 class Search extends BaseView
@@ -16,14 +18,35 @@ class Search extends BaseView
     {
         $query = null;
         if (isset($request->getParams()[static::SEARCH_GET_PARAMETER]) and strlen($request->getParams()[static::SEARCH_GET_PARAMETER]) > 0) {
-            $query = $request->getParams()[static::SEARCH_GET_PARAMETER];
+            $query = str_replace('|', '', strip_tags($request->getParams()[static::SEARCH_GET_PARAMETER]));
         }
 
+        $searchResults = SearchProcessor::run($query);
+        if (count($searchResults['results']) === 0) {
+            return $this->redirectIfNoWildcardSearch($response, $query, $searchResults);
+        }
+
+        return $this->returnSearchResults($response, $query, $searchResults);
+    }
+
+    private function redirectIfNoWildcardSearch(Response $response, $query, array $searchResults)
+    {
+        if (strpos($query, '*') === false) {
+            // TODO
+            echo 'derp';
+            die();
+        }
+
+        return $this->returnSearchResults($response, $query, $searchResults);
+    }
+
+    private function returnSearchResults(Response $response, $query, array $searchResults)
+    {
         return $this->render($response, 'search.html', [
             'SITE_TITLE' => 'Søk',
             'HEADER_MENU' => 'search',
             'VIEW_NAME' => 'search',
-            'RESULTS' => SearchProcessor::run($query),
+            'RESULTS' => SearchMapper::map($searchResults['results'], $searchResults['permutations']),
             'SEARCH_QUERY' => $query
         ]);
     }

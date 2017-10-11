@@ -21,7 +21,7 @@
                         {% for ELEMENT in RESULTS %}
                             <li class="list-group-item{% if ELEMENT.empty %} course-empty{% endif %}">
                                 <a href="{{ element_url(ELEMENT) }}">
-                                    {{ ELEMENT.courseCode }}&mdash; {{ ELEMENT.courseName }}
+                                    {{ ELEMENT.courseCode|raw }}&mdash; {{ ELEMENT.courseName|raw }}
                                 </a>
                             </li>
                         {% endfor %}

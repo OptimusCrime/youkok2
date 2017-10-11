@@ -3,7 +3,7 @@ namespace Youkok\Mappers;
 
 class ElementsMapper implements Mapper
 {
-    public static function map($obj)
+    public static function map($obj, $data = null)
     {
         if (count($obj) === 0) {
             return [];

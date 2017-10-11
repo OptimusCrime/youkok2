@@ -9,19 +9,24 @@ class SearchProcessor
 {
     public static function run($query = null)
     {
-        return ElementController::getElementsFromSearchQuery(static::cleanSearch($query));
+        $permutations = static::getPermutationsFromSearch($query);
+
+        return [
+            'results' => ElementController::getElementsFromSearch($permutations),
+            'permutations' => $permutations
+        ];
     }
 
-    private static function cleanSearch($search)
+    private static function getPermutationsFromSearch($search)
     {
-        // TODO upper limit for number of sub queries to avoid crashing everything
+        $splitSearch = static::splitSearch($search);
 
-        $splitQuery = static::splitSearch($search);
-        $splitQuerySQL = static::translateToSQL($splitQuery);
+        if (count($splitSearch) > 5) {
+            return [];
+        }
 
-        $permutations = static::buildQueryPermutations($splitQuerySQL);
-        var_dump($permutations);
-        die();
+        $sqlSearch = static::translateToSQL($splitSearch);
+        return static::calculatePermutations($sqlSearch);
     }
 
     private static function splitSearch($search)
@@ -51,7 +56,7 @@ class SearchProcessor
         return $newSearch;
     }
 
-    private static function buildQueryPermutations(array $search)
+    private static function calculatePermutations(array $search)
     {
         if (count($search) === 1) {
             return [
@@ -67,13 +72,21 @@ class SearchProcessor
             // second should have one values on the left side, and the remaining right, ...
             $partitions = static::partitionPermutations($v);
             foreach ($partitions as $par) {
-                // TODO
+                $left = '%';
+                if (count($par['left']) > 0) {
+                    $left = implode('', $par['left']);
+                }
+
+                $right = '%';
+                if (count($par['right']) > 0) {
+                    $right = implode('', $par['right']);
+                }
+
+               $query[] = $left . '||' . $right;
             }
         }
 
-        //var_dump($query);
-
-        die();
+        return $query;
     }
 
     private static function partitionPermutations(array $values)

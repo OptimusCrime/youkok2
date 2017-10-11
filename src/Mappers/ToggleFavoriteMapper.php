@@ -5,7 +5,7 @@ use Youkok\Processors\ToggleFavoriteProcessor;
 
 class ToggleFavoriteMapper implements Mapper
 {
-    public static function map($obj)
+    public static function map($obj, $data = null)
     {
         if (static::isInvalidResponse($obj)) {
             return [
