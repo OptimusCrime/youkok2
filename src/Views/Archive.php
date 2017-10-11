@@ -8,6 +8,7 @@ use \Slim\Container;
 
 use Youkok\Models\Element;
 use Youkok\Processors\ArchiveElementFetchProcessor;
+use Youkok\Processors\ArchiveVisitProcessor;
 
 class Archive extends BaseView
 {
@@ -28,6 +29,10 @@ class Archive extends BaseView
         }
 
         $element->updateRootParent();
+
+        ArchiveVisitProcessor::fromElement($element)
+            ->withSessionHandler($this->sessionHandler)
+            ->run();
 
         $this->setSiteData('archive_id', $element->id);
 

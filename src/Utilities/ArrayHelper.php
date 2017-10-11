@@ -28,13 +28,47 @@ class ArrayHelper {
     {
         $newArray = [];
         foreach ($array as $v) {
-            if (is_object($v)) {
-                $newArray[] = clone $v;
-                continue;
-            }
+            $newArr[] = static::cloneVar($v);
 
-            $newArray[] = $v;
         }
+        return $newArray;
+    }
+
+    public static function cloneVar($var)
+    {
+        if (is_object($var)) {
+            return clone $var;
+        }
+
+        return $var;
+    }
+
+    public static function prependToArray(array $array, $value){
+        $newArray = [
+            static::cloneVar($value)
+        ];
+
+        foreach ($array as $v) {
+            $newArray[] = static::cloneVar($v);
+        }
+
+        return $newArray;
+    }
+
+    public static function limitArray(array $array, $limit)
+    {
+        if (count($array) === 0 or count($array) <= $limit) {
+            return static::cloneArray($array);
+        }
+
+        $newArray = [];
+        foreach ($array as $k => $v) {
+            $newArray[] = $v;
+            if (($k + 1) === $limit) {
+                break;
+            }
+        }
+
         return $newArray;
     }
 }

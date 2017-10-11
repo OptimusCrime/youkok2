@@ -60,7 +60,7 @@ class Element extends BaseModel
     // TODO add parameter to fetch whatever attributes we'd like
     public static function fromUri($uri, $type = self::ELEMENT_TYPE_DIRECTORIES)
     {
-        $query = Element::select('id', 'parent', 'name', 'checksum', 'link')
+        $query = Element::select('id', 'parent', 'name', 'checksum', 'link', 'directory')
             ->where('uri', UriCleaner::clean($uri))
             ->where('deleted', 0)
             ->where('pending', 0);
@@ -84,7 +84,7 @@ class Element extends BaseModel
         $element = null;
 
         foreach ($fragments as $fragment) {
-            $query = Element::select('id', 'parent', 'name', 'checksum', 'link')
+            $query = Element::select('id', 'parent', 'name', 'checksum', 'link', 'directory')
                 ->where('slug', $fragment)
                 ->where('parent', $parent)
                 ->where('deleted', 0)
@@ -177,7 +177,7 @@ class Element extends BaseModel
         $parents = [$this];
         $currentObject = $this;
         while($currentObject->parent !== null and $currentObject->parent !== 0) {
-            $currentObject = Element::select('id', 'name', 'slug', 'uri', 'parent')
+            $currentObject = Element::select('id', 'name', 'slug', 'uri', 'parent', 'directory')
                 ->where('id', $currentObject->parent)
                 ->where('deleted', 0)
                 ->where('pending', 0)

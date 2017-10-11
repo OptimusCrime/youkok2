@@ -13,11 +13,30 @@
 <div class="row">
     <div class="col-xs-12 col-sm-6 frontpage-box">
         <div class="list-header">
+            <h2>Siste besøkte fag</h2>
+        </div>
+        <ul class="list-group">
+            {% if FRONTPAGE.USER_LAST_VISITED_COURSES|length == 0 %}
+            <li class="list-group-item"><em>Du har ikke besøkt noen fag</em></li>
+            {% else %}
+            {% for ELEMENT in FRONTPAGE.USER_LAST_VISITED_COURSES %}
+            <li class="list-group-item">
+                {% include "includes/element_listing.html" with {
+                'ELEMENT': ELEMENT,
+                'COURSE': true
+                } %}
+            </li>
+            {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+    <div class="col-xs-12 col-sm-6 frontpage-box">
+        <div class="list-header">
             <h2>Favoritter</h2>
         </div>
         <ul class="list-group" id="favorites-list">
             {% if FRONTPAGE.USER_FAVORITES|length == 0 %}
-                <li class="list-group-item"><em>Du har visst ingen favoritter</em></li>
+                <li class="list-group-item"><em>Du har ingen favoritter</em></li>
             {% else %}
                 {% for ELEMENT in FRONTPAGE.USER_FAVORITES %}
                     <li class="list-group-item">
@@ -25,25 +44,6 @@
                             <i title="Fjern favoritt" data-id="{{ ELEMENT.id }}" class="fa fa-times-circle star-remove"></i>
                         {% endset %}
 
-                        {% include "includes/element_listing.html" with {
-                            'ELEMENT': ELEMENT,
-                            'CONTENT_INSIDE': content
-                        } %}
-                    </li>
-                {% endfor %}
-            {% endif %}
-        </ul>
-    </div>
-    <div class="col-xs-12 col-sm-6 frontpage-box">
-        <div class="list-header">
-            <h2>Siste nedlastninger</h2>
-        </div>
-        <ul class="list-group">
-            {% if FRONTPAGE.USER_DOWNLOADS|length == 0 %}
-                <li class="list-group-item"><em>Du har visst ingen nedlastninger</em></li>
-            {% else %}
-                {% for ELEMENT in FRONTPAGE.USER_DOWNLOADS %}
-                    <li class="list-group-item">
                         {% include "includes/element_listing.html" with {
                             'ELEMENT': ELEMENT,
                             'CONTENT_INSIDE': content
@@ -61,7 +61,7 @@
         </div>
         <ul class="list-group">
             {% if FRONTPAGE.LATEST_ELEMENTS|length == 0 %}
-                <li class="list-group-item"><em>Det er visst ingenting her</em></li>
+                <li class="list-group-item"><em>Det er ingenting her</em></li>
             {% else %}
                 {% for ELEMENT in FRONTPAGE.LATEST_ELEMENTS %}
                     <li class="list-group-item">
@@ -119,7 +119,7 @@
         </div>
         <ul class="list-group">
             {% if FRONTPAGE.MOST_POPULAR_ELEMENTS|length == 0 %}
-                <li class="list-group-item"><em>Det er visst ingenting her</em></li>
+                <li class="list-group-item"><em>Det er ingenting her</em></li>
             {% else %}
                 {% for ELEMENT in FRONTPAGE.MOST_POPULAR_ELEMENTS %}
                     <li class="list-group-item">
@@ -178,7 +178,7 @@
         </div>
         <ul class="list-group">
             {% if FRONTPAGE.MOST_POPULAR_COURSES|length == 0 %}
-                <li class="list-group-item"><em>Det er visst ingen fag her</em></li>
+                <li class="list-group-item"><em>Det er ingenting her</em></li>
             {% else %}
                 {% for ELEMENT in FRONTPAGE.MOST_POPULAR_COURSES %}
                     <li class="list-group-item">
@@ -202,7 +202,7 @@
         </div>
         <ul class="list-group">
             {% if FRONTPAGE.LATEST_VISITED|length == 0 %}
-                <li class="list-group-item"><em>Det er visst ingen fag her</em></li>
+                <li class="list-group-item"><em>Det er ingenting her</em></li>
             {% else %}
                 {% for ELEMENT in FRONTPAGE.LATEST_VISITED %}
                     <li class="list-group-item">
@@ -234,7 +234,7 @@
 <script type="text/template" class="template-frontpage-no-popular-elements">
     <ul class="list-group">
         <li class="list-group-item">
-            <em>Det er visst ingen nedlastninger her</em>
+            <em>Det er ingen nedlastninger her</em>
         </li>
     </ul>
 </script>

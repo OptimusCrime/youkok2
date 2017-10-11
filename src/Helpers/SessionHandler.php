@@ -22,7 +22,7 @@ class SessionHandler
     {
         // This is the default session data array
         $this->data = [
-            'downloads' => [],
+            'latest_course_visited' => [],
             'favorites' => [],
             'frontpage' => [
                 'most_popular_element' => MostPopularElement::MONTH,
@@ -52,15 +52,13 @@ class SessionHandler
             return $this->createSession();
         }
 
-        // TODO merge the default array or something to make sure we have all the default values in case some values
-        // were added after the session was created
-        $this->data = json_decode($currentSession->data, true);
+        $this->data = array_replace_recursive($this->data, json_decode($currentSession->data, true));
         $this->hash = $cookie;
     }
 
     private function getSession($hash)
     {
-        return Session::where('hash', $hash)->first();;
+        return Session::where('hash', $hash)->first();
     }
 
     public function getData()

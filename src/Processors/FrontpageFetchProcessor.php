@@ -11,7 +11,7 @@ use Youkok\Models\Element;
 class FrontpageFetchProcessor
 {
     const FAVORITES = 'favorites';
-    const DOWNLOADS = 'downloads';
+    const LATEST_COURSE_VISITED = 'latest_course_visited';
 
     public static function fromSessionHandler(SessionHandler $sessionHandler)
     {
@@ -24,7 +24,7 @@ class FrontpageFetchProcessor
             'LATEST_VISITED' => ElementController::getLastVisitedCourses(15),
             'USER_PREFERENCES' => static::getUserPreferences($sessionHandler),
             'USER_FAVORITES' => static::getUserListing($sessionHandler, static::FAVORITES),
-            'USER_DOWNLOADS' => static::getUserListing($sessionHandler, static::DOWNLOADS),
+            'USER_LAST_VISITED_COURSES' => static::getUserListing($sessionHandler, static::LATEST_COURSE_VISITED),
             'CONST' => static::getPopularConsts()
         ];
     }
