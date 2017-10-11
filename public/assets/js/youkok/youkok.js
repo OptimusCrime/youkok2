@@ -9,7 +9,6 @@ var Youkok = (function (module) {
         Youkok.general.init();
         Youkok.grayboxes.init();
         Youkok.search.init();
-        Youkok.debug.init();
 
         // Archive
         if ($('body').hasClass('archive')) {
