@@ -40,6 +40,9 @@ class Youkok
             $app->get('om', '\Youkok\Views\Flat:about')->setName('about');
             $app->get('changelog.txt', '\Youkok\Views\Flat:changelog')->setName('changelog');
             $app->get('retningslinjer', '\Youkok\Views\Flat:terms')->setName('terms');
+
+            $app->get('lorem', '\Youkok\Views\Admin\Login:display')->setName('admin_login');
+            $app->post('lorem', '\Youkok\Views\Admin\Login:submit')->setName('admin_login_submit');
         })->add(new TimingMiddleware());
 
         $app->group('/processors', function () use ($app) {
@@ -55,6 +58,10 @@ class Youkok
             });
 
         })->add(new TimingMiddleware());
+
+        $app->group('/admin', function () use ($app) {
+            $app->get('', '\Youkok\Views\Admin\Home:view')->setName('admin_home');
+        }); // TODO add middleware for admin here
     }
 
     private function dependencies()

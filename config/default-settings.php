@@ -23,6 +23,15 @@ return [
             'prefix'    => '',
         ],
 
+        'admin' => [
+            'pass1' => '$2y$10$EBVb8yJDKN6/E9M/O8nQQ.DoA3t/UIPxn6VoXlxs65xWa2zHAm/tK', // lorem
+            'pass2' => '$2y$10$TKwzrC/P4RSwz7dyAaV6TOXyLtPg9MotXHXTro3T4Hiznx4hryZMK', // empty string
+            'pass3' => '$2y$10$TKwzrC/P4RSwz7dyAaV6TOXyLtPg9MotXHXTro3T4Hiznx4hryZMK', // empty string
+            'pass4' => '$2y$10$TKwzrC/P4RSwz7dyAaV6TOXyLtPg9MotXHXTro3T4Hiznx4hryZMK', // empty string
+            'pass5' => '$2y$10$TKwzrC/P4RSwz7dyAaV6TOXyLtPg9MotXHXTro3T4Hiznx4hryZMK', // empty string
+            'pass6' => '$2y$10$TKwzrC/P4RSwz7dyAaV6TOXyLtPg9MotXHXTro3T4Hiznx4hryZMK', // empty string
+        ],
+
         // MUST have an ending slash
         'file_directory' => '/var/www/files/',
 

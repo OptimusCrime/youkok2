@@ -27,7 +27,8 @@ class SessionHandler
             'frontpage' => [
                 'most_popular_element' => MostPopularElement::MONTH,
                 'most_popular_course' => MostPopularCourse::MONTH,
-            ]
+            ],
+            'admin' => false
         ];
 
         $this->hash = null;
@@ -75,7 +76,7 @@ class SessionHandler
         return $this->data[$key];
     }
 
-    public function setData(string $path, $value, $mode = self::MODE_ADD)
+    public function setData($path, $value, $mode = self::MODE_ADD)
     {
         // Mark session as dirty
         $this->dirty = true;
@@ -136,6 +137,12 @@ class SessionHandler
 
         $currentSession->data = json_encode($this->data);
         $currentSession->save();
+    }
+
+    public function forceSetData($path, $value, $mode = self::MODE_ADD)
+    {
+        $this->setData($path, $value, $mode);
+        $this->store();
     }
 
     private function createSession()
