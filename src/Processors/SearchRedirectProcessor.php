@@ -36,9 +36,4 @@ class SearchRedirectProcessor
         }
         return implode('+', $newQueryArr);
     }
-
-    private static function returnResponse(Response $response, $router, $searchQuery)
-    {
-
-    }
 }
