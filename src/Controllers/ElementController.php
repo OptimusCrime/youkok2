@@ -32,6 +32,9 @@ class ElementController
             }
         });
 
+        $query->orderBy('empty');
+        $query->orderBy('name');
+
         return $query->get();
     }
 

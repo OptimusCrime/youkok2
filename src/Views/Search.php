@@ -6,6 +6,7 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 
 use Youkok\Mappers\SearchMapper;
 use Youkok\Processors\SearchProcessor;
+use Youkok\Processors\SearchRedirectProcessor;
 
 class Search extends BaseView
 {
@@ -31,10 +32,8 @@ class Search extends BaseView
 
     private function redirectIfNoWildcardSearch(Response $response, $query, array $searchResults)
     {
-        if (strpos($query, '*') === false) {
-            // TODO
-            echo 'derp';
-            die();
+        if (strlen($query) > 0 and strpos($query, '*') === false) {
+            return SearchRedirectProcessor::run($response, $this->container->get('router'), $query);
         }
 
         return $this->returnSearchResults($response, $query, $searchResults);
