@@ -36,7 +36,7 @@ class DownloadHelper
             ->withHeader('Content-Type', $fileInfo)
             ->withHeader('Content-Disposition', 'inline; filename="' . $element->name . '"')
             ->withHeader('Expires', '0')
-            ->withHeader('CacheOld-Control', 'must-revalidate')
+            ->withHeader('Cache-Control', 'must-revalidate')
             ->withHeader('Pragma', 'public')
             ->withHeader('Content-Length', filesize($filePath))
             ->withBody(new Stream($fd));
@@ -59,7 +59,7 @@ class DownloadHelper
             ->withHeader('Content-Disposition', 'attachment; filename="' . $element->name . '"')
             ->withHeader('Content-Transfer-Encoding', 'binary')
             ->withHeader('Expires', '0')
-            ->withHeader('CacheOld-Control', 'must-revalidate')
+            ->withHeader('Cache-Control', 'must-revalidate')
             ->withHeader('Pragm', 'public')
             ->withHeader('Content-Length', filesize($filePath))
             ->withBody(new Stream($fd));
