@@ -1,6 +1,9 @@
 <?php
 namespace Youkok\Controllers;
 
+use Illuminate\Database\Capsule\Manager as DB;
+
+use Youkok\Models\Download;
 use Youkok\Models\Element;
 
 class ElementController
@@ -109,5 +112,13 @@ class ElementController
         }
 
         return $query->get();
+    }
+
+    // TODO
+    public static function getDownloadsForElement(Element $element, $foo = 1)
+    {
+        return Download::select(DB::raw("COUNT(`id`) as `result`"))
+            ->where('resource', $element->id)
+            ->count();
     }
 }

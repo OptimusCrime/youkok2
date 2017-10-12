@@ -17,3 +17,11 @@ RUN sed -i 's/\/var\/www\/html/\/var\/www\/html\/public/g' /etc/apache2/sites-av
 
 # Install PHP extensions
 RUN docker-php-ext-install zip pdo pdo_mysql
+
+# https://stackoverflow.com/a/38567344
+ENV PHPREDIS_VERSION 3.1.4
+
+RUN mkdir -p /usr/src/php/ext/redis \
+    && curl -L https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
+    && echo 'redis' >> /usr/src/php-available-exts \
+    && docker-php-ext-install redis

@@ -20,15 +20,16 @@ class Download extends BaseView
             return $this->render404($response);
         }
 
-        UpdateDownloadsProcessor
-            ::fromElement($element)
-            ->withSessionHandler($this->sessionHandler)
-            ->run();
-
         $downloadResponse = DownloadHelper::render($response, $element, $this->container->get('settings')->all());
         if ($downloadResponse === null) {
             return $this->render404($response);
         }
+
+        UpdateDownloadsProcessor
+            ::fromElement($element)
+            ->withSessionHandler($this->sessionHandler)
+            ->withCache($this->container->get('cache'))
+            ->run();
 
         return $this->returnResponse($downloadResponse);
     }

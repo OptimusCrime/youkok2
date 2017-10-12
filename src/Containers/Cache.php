@@ -2,18 +2,24 @@
 namespace Youkok\Containers;
 
 use \Slim\Container;
-use \Illuminate\Cache\DatabaseStore;
-
-use Youkok\Helpers\JsonEncrypter;
 
 class Cache
 {
     public static function load(Container $container)
     {
-        $connection = $container->get('db')->getConnection();
+        $cache = null;
+        try {
+            $cacheSettings = $container->get('settings')['cache'];
 
-        $container['cache'] = function ($container) use ($connection) {
-            $cache = new DatabaseStore($connection, new JsonEncrypter(), 'cache');
+            $cache = new \Redis();
+            $cache->connect($cacheSettings['host'], $cacheSettings['port']);
+        }
+        catch (\RedisException $e) {
+            //
+        }
+
+        $container['cache'] = function ($container) use ($cache) {
+
 
             return $cache;
         };

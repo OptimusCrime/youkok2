@@ -40,7 +40,7 @@ services:
   ###############################################
 
   cache:
-    container_name: "youkok_cache"
+    container_name: "youkok2_cache"
     image: "redis:4.0.2-alpine"
     ports:
      - "6379:6379"

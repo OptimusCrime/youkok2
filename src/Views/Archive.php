@@ -42,6 +42,7 @@ class Archive extends BaseView
             'ARCHIVE' => ArchiveElementFetchProcessor
                 ::fromElement($element)
                 ->withSessionHandler($this->sessionHandler)
+                ->withCache($this->container->get('cache'))
                 ->run(),
             'BODY_CLASS' => 'archive'
         ]);

@@ -7,6 +7,7 @@ use Youkok\Controllers\ElementController;
 use Youkok\Helpers\SessionHandler;
 use Youkok\Models\Download;
 use Youkok\Models\Element;
+use Youkok\Utilities\CacheKeyGenerator;
 
 class ArchiveElementFetchProcessor extends AbstractElementFactoryProcessor
 {
@@ -22,7 +23,7 @@ class ArchiveElementFetchProcessor extends AbstractElementFactoryProcessor
             'ID' => $this->element->id,
             'ROOT_ID' => $this->element->rootParent->id,
             'PARENTS' => $this->element->parents,
-            'CHILDREN' => static::getArchiveChildren($this->element),
+            'CHILDREN' => static::getArchiveChildren($this->element, $this->cache),
             'TITLES' => static::getArchiveTitles($this->element),
             'SITE_TITLE' => static::getSiteTitle($this->element),
             'STARRED' => static::currentElementIsStarred($this->element, $this->sessionHandler)
@@ -76,7 +77,7 @@ class ArchiveElementFetchProcessor extends AbstractElementFactoryProcessor
                 'og andre ressurser på Youkok2.com, den beste kokeboka på nettet.';
     }
 
-    private static function getArchiveChildren(Element $element)
+    private static function getArchiveChildren(Element $element, $cache)
     {
         if ($element->empty) {
             return [];
@@ -86,26 +87,23 @@ class ArchiveElementFetchProcessor extends AbstractElementFactoryProcessor
 
         // Guard for empty set of query
         if (count($children) > 0) {
-            return static::getArchiveChildrenDownloadCount($children);
+            return static::getArchiveChildrenDownloadCount($children, $cache);
         }
 
         return [];
     }
 
-    private static function getArchiveChildrenDownloadCount($children)
+    private static function getArchiveChildrenDownloadCount($children, $cache)
     {
         $newChildren = [];
 
         foreach ($children as $child) {
             $newChild = clone $child;
 
-            // TODO: attempt to fetch cache here
-
-            $downloads = Download::select(DB::raw("COUNT(`id`) as `result`"))
-                ->where('resource', $child->id)
-                ->count();
-
-            // TODO: cache the number of downloads here
+            $downloads = static::getDownloadsFromCache($newChild, $cache);
+            if ($downloads === null) {
+                $downloads = static::getDownloadsFromDatabase($newChild, $cache);
+            }
 
             $newChild->_downloads = $downloads;
 
@@ -113,5 +111,32 @@ class ArchiveElementFetchProcessor extends AbstractElementFactoryProcessor
         }
 
         return $newChildren;
+    }
+
+    private static function getDownloadsFromCache(Element $element, $cache)
+    {
+        if ($cache === null) {
+            return null;
+        }
+
+        $downloads = $cache->get(CacheKeyGenerator::keyForElementDownloads($element->id));
+        if ($downloads === false) {
+            return null;
+        }
+
+        return $downloads;
+    }
+
+    private static function getDownloadsFromDatabase(Element $element, $cache)
+    {
+        $downloads = Download::select(DB::raw("COUNT(`id`) as `result`"))
+            ->where('resource', $element->id)
+            ->count();
+
+        if ($cache !== null) {
+            $cache->set(CacheKeyGenerator::keyForElementDownloads($element->id), $downloads);
+        }
+
+        return $downloads;
     }
 }

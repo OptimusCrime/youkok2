@@ -22,6 +22,7 @@ class Redirect extends BaseView
         UpdateDownloadsProcessor
             ::fromElement($element)
             ->withSessionHandler($this->sessionHandler)
+            ->withCache($this->container->get('cache'))
             ->run();
 
         return $this->returnResponse($response->withStatus(302)->withHeader('Location', $element->link));

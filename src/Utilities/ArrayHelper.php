@@ -28,8 +28,7 @@ class ArrayHelper {
     {
         $newArray = [];
         foreach ($array as $v) {
-            $newArr[] = static::cloneVar($v);
-
+            $newArray[] = static::cloneVar($v);
         }
         return $newArray;
     }
@@ -57,7 +56,7 @@ class ArrayHelper {
 
     public static function limitArray(array $array, $limit)
     {
-        if (count($array) === 0 or count($array) <= $limit) {
+        if (count($array) <= $limit) {
             return static::cloneArray($array);
         }
 

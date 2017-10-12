@@ -12,6 +12,11 @@ return [
             'level' => \Monolog\Logger::DEBUG,
         ],
 
+        'cache' => [
+            'host' => 'cache',
+            'port' => '6379'
+        ],
+
         'db' => [
             'driver' => 'mysql',
             'host' => isset($_ENV['docker']) ? 'db' : 'localhost',
