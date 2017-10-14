@@ -7,22 +7,14 @@ use Youkok\Helpers\SessionHandler;
 
 class PopularCoursesProcessor extends AbstractPopularListingProcessor
 {
-    public static function fromDelta($delta = MostPopularElement::MONTH)
+    public static function fromDelta($delta = MostPopularElement::MONTH, $limit, $cache)
     {
-        $courses = ElementController::getMostPopularCoursesFromDelta(15, $delta);
-
-        /*
-         * $this->container->get('cache')->forever('frontpage_most_popular_elements', [1, 2, 3, 4]);
-        $cache = $this->container->get('cache')->get('frontpage_most_popular_elements');
-         */
-
-        // Update user defaults
-
-        return $courses;
+        return [];
+        //return ElementController::getMostPopularCoursesFromDelta($limit, $delta);
     }
 
-    public static function fromSessionHandler(SessionHandler $sessionHandler, $key = null)
+    public static function fromSessionHandler(SessionHandler $sessionHandler)
     {
-        return parent::fromSessionHandler($sessionHandler, 'most_popular_course');
+        return new PopularCoursesProcessor($sessionHandler, 'most_popular_course');
     }
 }

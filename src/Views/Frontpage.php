@@ -22,7 +22,10 @@ class Frontpage extends BaseView
     public function view(Request $request, Response $response)
     {
         return $this->render($response, 'frontpage.html', [
-            'FRONTPAGE' => FrontpageFetchProcessor::fromSessionHandler($this->sessionHandler),
+            'FRONTPAGE' => FrontpageFetchProcessor
+                ::fromSessionHandler($this->sessionHandler)
+                ->withCache($this->container->get('cache'))
+                ->run(),
             'BODY_CLASS' => 'frontpage'
         ]);
     }

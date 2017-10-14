@@ -49,17 +49,16 @@ class ElementController
             ->get();
     }
 
-    public static function getMostPopularCoursesFromDelta($limit = 10, $delta)
+    public static function getMostPopularCoursesFromDelta($delta)
     {
         // TODO
-        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'added')
+        return Element::select('id')
             ->where('directory', 1)
             ->where('parent', null)
             ->where('pending', 0)
             ->where('deleted', 0)
             ->orderBy('added', 'DESC')
             ->orderBy('name', 'DESC')
-            ->limit($limit)
             ->get();
     }
 
@@ -71,19 +70,6 @@ class ElementController
             ->where('pending', 0)
             ->where('deleted', 0)
             ->orderBy('last_visited', 'DESC')
-            ->limit($limit)
-            ->get();
-    }
-
-    public static function getMostPopularElementsFromDelta($limit = 10, $delta)
-    {
-        // TODO
-        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'added')
-            ->where('directory', 0)
-            ->where('pending', 0)
-            ->where('deleted', 0)
-            ->orderBy('added', 'DESC')
-            ->orderBy('name', 'DESC')
             ->limit($limit)
             ->get();
     }

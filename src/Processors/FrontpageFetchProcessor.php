@@ -10,33 +10,60 @@ use Youkok\Models\Element;
 
 class FrontpageFetchProcessor
 {
+    const PROCESSORS_LIMIT = 15;
     const FAVORITES = 'favorites';
     const LATEST_COURSE_VISITED = 'latest_course_visited';
 
-    public static function fromSessionHandler(SessionHandler $sessionHandler)
+    private $sessionHandler;
+    private $cache;
+
+    public function __construct(SessionHandler $sessionHandler)
+    {
+        $this->sessionHandler = $sessionHandler;
+        return $this;
+    }
+
+    public function withCache($cache)
+    {
+        $this->cache = $cache;
+        return $this;
+    }
+
+    public function run()
     {
         return [
             'INFO_FILES' => Utilities::numberFormat(Element::where('directory', 0)->where('deleted', 0)->count()),
             'INFO_DOWNLOADS' => Utilities::numberFormat(Download::count()),
-            'LATEST_ELEMENTS' => ElementController::getLatest(15),
-            'MOST_POPULAR_ELEMENTS' => static::getMostPopularElementFromSessionHandler($sessionHandler),
-            'MOST_POPULAR_COURSES' => static::getMostPopularCoursesFromSessionHandler($sessionHandler),
-            'LATEST_VISITED' => ElementController::getLastVisitedCourses(15),
-            'USER_PREFERENCES' => static::getUserPreferences($sessionHandler),
-            'USER_FAVORITES' => static::getUserListing($sessionHandler, static::FAVORITES),
-            'USER_LAST_VISITED_COURSES' => static::getUserListing($sessionHandler, static::LATEST_COURSE_VISITED),
+            'LATEST_ELEMENTS' => ElementController::getLatest(static::PROCESSORS_LIMIT),
+            'MOST_POPULAR_ELEMENTS' => static::getMostPopularElement($this->sessionHandler, $this->cache),
+            'MOST_POPULAR_COURSES' => static::getMostPopularCourses($this->sessionHandler, $this->cache),
+            'LATEST_VISITED' => ElementController::getLastVisitedCourses(static::PROCESSORS_LIMIT),
+            'USER_PREFERENCES' => static::getUserPreferences($this->sessionHandler),
+            'USER_FAVORITES' => static::getUserListing($this->sessionHandler, static::FAVORITES),
+            'USER_LAST_VISITED_COURSES' => static::getUserListing($this->sessionHandler, static::LATEST_COURSE_VISITED),
             'CONST' => static::getPopularConsts()
         ];
     }
 
-    private static function getMostPopularElementFromSessionHandler(SessionHandler $sessionHandler)
+    public static function fromSessionHandler(SessionHandler $sessionHandler)
     {
-        return PopularElementsProcessor::fromSessionHandler($sessionHandler);
+        return new FrontpageFetchProcessor($sessionHandler);
     }
 
-    private static function getMostPopularCoursesFromSessionHandler(SessionHandler $sessionHandler)
+    private static function getMostPopularElement(SessionHandler $sessionHandler, $cache)
     {
-        return PopularCoursesProcessor::fromSessionHandler($sessionHandler);
+        return PopularElementsProcessor
+            ::fromSessionHandler($sessionHandler)
+            ->withCache($cache)
+            ->run(static::PROCESSORS_LIMIT);
+    }
+
+    private static function getMostPopularCourses(SessionHandler $sessionHandler, $cache)
+    {
+        return PopularCoursesProcessor
+            ::fromSessionHandler($sessionHandler)
+            ->withCache($cache)
+            ->run(static::PROCESSORS_LIMIT);
     }
 
     private static function getPopularConsts()

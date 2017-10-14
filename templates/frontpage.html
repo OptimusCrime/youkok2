@@ -124,7 +124,7 @@
                 {% for ELEMENT in FRONTPAGE.MOST_POPULAR_ELEMENTS %}
                     <li class="list-group-item">
                         {% set content %}
-                            [TODO]
+                            [{{ whole_number_format(ELEMENT._downloads) }}]
                         {% endset %}
 
                         {% include "includes/element_listing.html" with {
