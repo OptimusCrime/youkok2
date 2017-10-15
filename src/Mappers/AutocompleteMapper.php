@@ -28,7 +28,7 @@ class AutocompleteMapper implements Mapper
         foreach ($obj as $v) {
             $output[] = [
                 'course' => $v->courseCode . ' - ' . $v->courseName,
-                'url' => $this->urlFor($v)
+                'url' => $this->pathFor($v)
             ];
         }
 

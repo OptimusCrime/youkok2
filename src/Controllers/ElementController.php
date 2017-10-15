@@ -49,19 +49,6 @@ class ElementController
             ->get();
     }
 
-    public static function getMostPopularCoursesFromDelta($delta)
-    {
-        // TODO
-        return Element::select('id')
-            ->where('directory', 1)
-            ->where('parent', null)
-            ->where('pending', 0)
-            ->where('deleted', 0)
-            ->orderBy('added', 'DESC')
-            ->orderBy('name', 'DESC')
-            ->get();
-    }
-
     public static function getLastVisitedCourses($limit = 10)
     {
         return Element::select('id', 'name', 'slug', 'uri', 'last_visited')
@@ -84,6 +71,11 @@ class ElementController
             ->orderBy('name', 'DESC')
             ->limit($limit)
             ->get();
+    }
+
+    public static function getAllElements($columns = ['id', 'parent'])
+    {
+        return Element::select($columns)->get();
     }
 
     public static function getVisibleChildren($id, $order = self::SORT_TYPE_ORGANIZED)

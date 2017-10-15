@@ -20,24 +20,27 @@ class Element extends BaseModel
 
     private $parents;
 
-    public static function fromId($id, $attributes = [])
+    public static function fromId($id, $attributes = ['id', 'link', 'checksum'])
     {
         if (!isset($id) or !is_numeric($id)) {
             return null;
-        }
-
-        if (!is_array($attributes) or count($attributes) === 0) {
-            return Element::select('id', 'link', 'checksum')
-                ->where('id', $id)
-                ->where('deleted', 0)
-                ->where('pending', 0)
-                ->first();
         }
 
         return Element::select($attributes)
             ->where('id', $id)
             ->where('deleted', 0)
             ->where('pending', 0)
+            ->first();
+    }
+
+    public static function fromIdAll($id, $attributes = ['id', 'link', 'checksum'])
+    {
+        if (!isset($id) or !is_numeric($id)) {
+            return null;
+        }
+
+        return Element::select($attributes)
+            ->where('id', $id)
             ->first();
     }
 
@@ -168,7 +171,7 @@ class Element extends BaseModel
     }
 
     // TODO add parameter to fetch whatever attributes we'd like
-    private function getParents()
+    private function getParents($all = false)
     {
         if ($this->parents !== null) {
             return $this->parents;
@@ -178,11 +181,16 @@ class Element extends BaseModel
         $currentObject = $this;
         while($currentObject->parent !== null and $currentObject->parent !== 0) {
             $currentObject = Element::select('id', 'name', 'slug', 'uri', 'parent', 'directory')
-                ->where('id', $currentObject->parent)
-                ->where('deleted', 0)
-                ->where('pending', 0)
-                ->where('directory', 1)
-                ->first();
+                ->where('id', $currentObject->parent);
+
+            if (!$all) {
+                $currentObject = $currentObject
+                    ->where('deleted', 0)
+                    ->where('pending', 0)
+                    ->where('directory', 1);
+            }
+
+            $currentObject = $currentObject->first();
 
             $parents[] = $currentObject;
         }
@@ -212,9 +220,9 @@ class Element extends BaseModel
     }
 
     // TODO add parameter to fetch whatever attributes we'd like
-    private function getRootParent()
+    private function getRootParent($all = false)
     {
-        $parents = $this->getParents();
+        $parents = $this->getParents($all);
         if ($parents === null or count($parents) === 0) {
             return null;
         }
@@ -344,6 +352,8 @@ class Element extends BaseModel
                 return $this->getParentObj();
             case 'rootParent':
                 return $this->getRootParent();
+            case 'rootParentAll':
+                return $this->getRootParent(true);
             case 'addedPretty':
                 return $this->getAddedPretty();
             case 'addedPrettyAll':

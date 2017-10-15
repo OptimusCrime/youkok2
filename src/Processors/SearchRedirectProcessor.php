@@ -12,7 +12,7 @@ class SearchRedirectProcessor
 
         return $response
             ->withStatus(302)
-            ->withHeader('Location', $router->urlFor('search') . '?s=' . $newSearchQuery);
+            ->withHeader('Location', $router->pathFor('search') . '?s=' . $newSearchQuery);
     }
 
     private static function splitQuery($query)

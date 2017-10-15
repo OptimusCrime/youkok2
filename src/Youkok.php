@@ -55,11 +55,13 @@ class Youkok
         })->add(new TimingMiddleware());
 
         $app->group('/processors', function () use ($app) {
-            $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularCourses:view');
             $app->get('/newest-elements', '\Youkok\Views\Processors\NewestElements:view');
             $app->get('/history/{id:[0-9]+}', '\Youkok\Views\Processors\ArchiveHistory:view');
             $app->get('/autocomplete', '\Youkok\Views\Processors\Autocomplete:view');
             $app->post('/favorite', '\Youkok\Views\Processors\ToggleFavorite:view');
+
+            $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularCourses:fetch');
+            $app->post('/popular-courses', '\Youkok\Views\Processors\PopularCourses:update')->setName('popular_courses');
 
             $app->group('/link', function () use ($app) {
                 $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');

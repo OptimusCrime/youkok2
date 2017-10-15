@@ -18,7 +18,7 @@ var Youkok = (function (module) {
         }
 
         // Frontpage
-        if (Youkok.getData('view') == 'frontpage') {
+        if ($('body').hasClass('frontpage')) {
             Youkok.frontpage.init();
         }
 

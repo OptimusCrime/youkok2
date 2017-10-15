@@ -107,7 +107,7 @@ class SessionHandler
         }
     }
 
-    private function insertData(array &$scope, string $fragment, $value, $mode)
+    private function insertData(array &$scope, $fragment, $value, $mode)
     {
         if (gettype($scope[$fragment]) === 'array') {
             if ($mode === static::MODE_OVERWRITE) {
@@ -122,27 +122,29 @@ class SessionHandler
         $scope[$fragment] = $value;
     }
 
-    public function store()
+    public function store($force = false)
     {
-        if (!$this->dirty) {
-            return;
+        if (!$force and !$this->dirty) {
+            return false;
         }
 
         $currentSession = $this->getSession($this->hash);
         if ($currentSession === null) {
             // This should never happen, log error
             $this->createSession();
-            return;
+            return false;
         }
 
         $currentSession->data = json_encode($this->data);
         $currentSession->save();
+
+        return true;
     }
 
     public function forceSetData($path, $value, $mode = self::MODE_ADD)
     {
         $this->setData($path, $value, $mode);
-        $this->store();
+        return $this->store(true);
     }
 
     private function createSession()

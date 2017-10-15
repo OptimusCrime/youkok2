@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Helpers;
 
+use Youkok\CachePopulators\PopulateMostPopularCourses;
 use Youkok\CachePopulators\PopulateMostPopularElements;
 use Youkok\Utilities\CacheKeyGenerator;
 
@@ -24,6 +25,18 @@ class CacheHelper
         return static::getSortedRangeByKey($cache, $key, $limit);
     }
 
+    public static function getMostPopularCoursesFromDelta($cache, $delta)
+    {
+        $key = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
+        $result = static::getCacheByKey($cache, $key);
+
+        if (empty($result)) {
+            // Attempt to fetch on disk
+        }
+
+        return $result;
+    }
+
     private static function getSortedRangeByKey($cache, $key, $limit, $offset = 0)
     {
         if ($cache === null) {
@@ -37,5 +50,14 @@ class CacheHelper
             ],
             'withscores' => true
         ]);
+    }
+
+    private static function getCacheByKey($cache, $key)
+    {
+        if ($cache === null) {
+            return [];
+        }
+
+        return $cache->get($key);
     }
 }

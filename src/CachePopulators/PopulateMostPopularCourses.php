@@ -8,6 +8,7 @@ class PopulateMostPopularCourses extends AbstractCachePopulator
 {
     private $delta;
     private $config;
+    private $limit;
 
     public static function setCache($cache)
     {
@@ -20,6 +21,12 @@ class PopulateMostPopularCourses extends AbstractCachePopulator
         return $this;
     }
 
+    public function withLimit($limit)
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
     public function withConfig($config)
     {
         $this->config = $config;
@@ -28,11 +35,7 @@ class PopulateMostPopularCourses extends AbstractCachePopulator
 
     public function run()
     {
-        $courses = DownloadController::getMostPopularCoursesFromDelta($this->delta);
-        if (count($courses) === 0) {
-            return false;
-        }
-
+        $courses = DownloadController::getMostPopularCoursesFromDelta($this->delta, $this->limit);
         $setKey = CacheKeyGenerator::keyForMostPopularCoursesForDelta($this->delta);
 
         static::insertCoursesToCache($this->cache, $setKey, $courses);
@@ -41,9 +44,7 @@ class PopulateMostPopularCourses extends AbstractCachePopulator
 
     private static function insertCoursesToCache($cache, $setKey, $courses)
     {
-        foreach ($courses as $course) {
-            $cache->zadd($setKey, $course->download_count, $course->id);
-        }
+        $cache->set($setKey, json_encode($courses));
     }
 
     private static function storeDataInFile($config, $setKey, $courses)

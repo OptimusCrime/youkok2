@@ -8,7 +8,7 @@ var Youkok = (function (module) {
         e.preventDefault();
 
         // Get the current module class
-        $module_obj = $(this).closest('.frontpage-module');
+        var $module_obj = $(this).closest('.frontpage-module');
 
         // Swap content
         $module_obj.find('.most-popular-label').html($('a', this).html());
@@ -17,66 +17,36 @@ var Youkok = (function (module) {
         $module_obj.find('li.disabled').removeClass('disabled');
         $(this).addClass('disabled');
 
-        // Get the module id and variable
-        var module_id = $module_obj.data('id');
-        var module_variable = $module_obj.data('variable');
-
-        // Create the ajax data object
         var ajax_data = {
-            module: module_id
+            'delta': $(this).find('a').data('delta')
         };
-        ajax_data[module_variable] = $('a', $(this)).data('delta');
+
+        var template = $module_obj.data('template');
+        var template_empty = $module_obj.data('template-empty');
 
         // Send ajax call
         $.ajax({
             cache: false,
             type: "post",
-            url: "processor/module/update",
+            url: $module_obj.data('url'),
             data: ajax_data,
             success: function(json) {
                 // Check status code
-                if (json.code == 200) {
-                    // Change was successfull
+                if (json.code === 200) {
+                    // Change was successful
                     $module_obj.find('.list-group').slideUp(400, function () {
-                        // Check for the correct module
-                        if (module_id == 1 || module_id == 2) {
-                            // Check if actually have any elements to display
-                            if (json.data.length > 0) {
-                                // Get template
-                                var template_frontpage_popular;
-                                if (module_id == 1) {
-                                    template_frontpage_popular = _.template(
-                                        $('script.template-frontpage-popular-elements').html()
-                                    );
-                                }
-                                else {
-                                    template_frontpage_popular = _.template(
-                                        $('script.template-frontpage-popular-courses').html()
-                                    );
-                                }
-                                
-                                // Set content
-                                $module_obj.find('.list-group').html(template_frontpage_popular({'elements': json.data}));
-                                
-                                // Tooltip
-                                $module_obj.find('.list-group a').tooltip();
-                            }
-                            else {
-                                if (module_id == 1) {
-                                    $module_obj.find('.list-group').html(_.template(
-                                        $('script.template-frontpage-no-popular-elements').html()
-                                    ));
-                                }
-                                else {
-                                    $module_obj.find('.list-group').html(_.template(
-                                        $('script.template-frontpage-no-popular-courses').html()
-                                    ));
-                                }
-                            }
+                        var template_output = _.template(
+                            $(json.data.length > 0 ? template : template_empty).html()
+                        );
+
+                        // Set content
+                        $module_obj.find('.list-group').html(template_output({'elements': json.data}));
+
+                        // Tooltip
+                        $module_obj.find('.list-group a').tooltip();
                             
-                            // Slide up again
-                            $module_obj.find('.list-group').slideDown(400);
-                        }
+                        // Slide up again
+                        $module_obj.find('.list-group').slideDown(400);
                     });
                 }
                 else {

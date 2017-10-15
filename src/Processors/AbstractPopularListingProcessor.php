@@ -23,7 +23,7 @@ abstract class AbstractPopularListingProcessor
         return $this;
     }
 
-    public function run($limit)
+    public function run($limit = null)
     {
         if ($this->key === null) {
             return static::fromDelta(null, $limit, $this->cache);

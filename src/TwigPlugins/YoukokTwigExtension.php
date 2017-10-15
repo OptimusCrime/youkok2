@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\TwigPlugins;
 
+use Youkok\Utilities\NumberFormatter;
 use Youkok\Utilities\TimeFormatter;
 
 class YoukokTwigExtension extends \Twig_Extension
@@ -26,7 +27,7 @@ class YoukokTwigExtension extends \Twig_Extension
 
     public function wholeNumberFormat($number)
     {
-        return number_format($number, 0, '', ' ');
+        return NumberFormatter::format($number);
     }
 
     public function postedAt($dateTime)

@@ -22,10 +22,6 @@ class PopulateMostPopularElements extends AbstractCachePopulator
     public function run()
     {
         $elements = DownloadController::getMostPopularElementsFromDelta($this->delta);
-        if (count($elements) === 0) {
-            return false;
-        }
-
         $setKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($this->delta);
 
         static::insertElementsToCache($this->cache, $setKey, $elements);

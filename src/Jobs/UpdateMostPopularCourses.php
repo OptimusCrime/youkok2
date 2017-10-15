@@ -3,6 +3,7 @@ namespace Youkok\Jobs;
 
 use Youkok\CachePopulators\PopulateMostPopularCourses;
 use Youkok\Enums\MostPopularCourse;
+use Youkok\Processors\FrontpageFetchProcessor;
 use Youkok\Utilities\CacheKeyGenerator;
 
 class UpdateMostPopularCourses extends JobInterface
@@ -55,6 +56,7 @@ class UpdateMostPopularCourses extends JobInterface
             PopulateMostPopularCourses
                 ::setCache($cache)
                 ->withDelta($key)
+                ->withLimit(FrontpageFetchProcessor::PROCESSORS_LIMIT)
                 ->withConfig($this->containers->get('settings'))
                 ->run();
         }

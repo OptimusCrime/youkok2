@@ -137,7 +137,12 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-12 col-sm-6 frontpage-box frontpage-module">
+    <div
+            class="col-xs-12 col-sm-6 frontpage-box frontpage-module"
+            data-url="{{ path_for('popular_courses') }}"
+            data-template=".template-frontpage-popular-courses"
+            data-template-empty=".template-frontpage-no-popular-courses"
+    >
         <div class="list-header">
             <h2 class="can-i-be-inline">Mest populære fag</h2>
             <div class="btn-group">
@@ -183,7 +188,7 @@
                 {% for ELEMENT in FRONTPAGE.MOST_POPULAR_COURSES %}
                     <li class="list-group-item">
                         {% set content %}
-                            [TODO]
+                            [ca. {{ whole_number_format(ELEMENT._downloads) }}]
                         {% endset %}
 
                         {% include "includes/element_listing.html" with {
@@ -242,9 +247,9 @@
     <ul class="list-group">
         <% _.each(rc.elements,function(element) { %>
         <li class="list-group-item">
-            <a href="<%- element.full_url %>">
+            <a href="<%- element.full_uri %>">
                 <strong><%- element.course_code %></strong> &mdash; <%- element.course_name %>
-            </a> [~<%- element.download_count %>]
+            </a> [ca. <%- element.downloads %>]
         </li>
         <% }); %>
     </ul>
@@ -252,7 +257,7 @@
 <script type="text/template" class="template-frontpage-no-popular-courses">
     <ul class="list-group">
         <li class="list-group-item">
-            <em>Det er visst ingen fag her</em>
+            <em>Det er ingen fag her</em>
         </li>
     </ul>
 </script>

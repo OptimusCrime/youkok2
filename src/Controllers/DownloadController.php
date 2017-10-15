@@ -4,6 +4,7 @@ namespace Youkok\Controllers;
 use Illuminate\Database\Capsule\Manager as DB;
 
 use Youkok\Models\Download;
+use Youkok\Models\Element;
 
 class DownloadController
 {
@@ -27,9 +28,51 @@ class DownloadController
             ->get();
     }
 
-    public static function getMostPopularCoursesFromDelta($delta)
+    public static function getMostPopularCoursesFromDelta($delta, $limit = null)
     {
-        $downloads = static::getMostPopularElementsFromDelta($delta);
-        //
+        $result = static::summarizeDownloads(static::getMostPopularElementsFromDelta($delta));
+        if ($limit === null) {
+            return $result;
+        }
+
+        return array_slice($result, 0, $limit);
+    }
+
+    private static function summarizeDownloads($downloads)
+    {
+        $courses = [];
+        foreach ($downloads as $download) {
+            $downloadElement = Element::fromIdAll($download->id, ['id', 'parent']);
+            if ($downloadElement === null) {
+                continue;
+            }
+
+            $rootParent = $downloadElement->rootParentAll;
+            if ($rootParent === null) {
+                continue;
+            }
+
+            if (!isset($courses[$rootParent->id])) {
+                $courses[$rootParent->id] = 0;
+            }
+
+            $courses[$rootParent->id] += $download->download_count;
+        }
+
+        arsort($courses);
+
+        return static::transformResultArray($courses);
+    }
+
+    private static function transformResultArray($courses)
+    {
+        $newResult = [];
+        foreach ($courses as $courseId => $courseDownloads) {
+            $newResult[] = [
+                'id' => $courseId,
+                'downloads' => $courseDownloads
+            ];
+        }
+        return $newResult;
     }
 }

@@ -19,7 +19,7 @@ class JobRunner
 
     private static $upgradeSchedule = [
         \Youkok\Jobs\UpdateMostPopularCourses::class,
-        \Youkok\Jobs\UpdateMostPopularElements::class,
+        //\Youkok\Jobs\UpdateMostPopularElements::class,
     ];
 
     public function __construct($containers)

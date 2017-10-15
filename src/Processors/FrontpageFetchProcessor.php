@@ -63,7 +63,7 @@ class FrontpageFetchProcessor
         return PopularCoursesProcessor
             ::fromSessionHandler($sessionHandler)
             ->withCache($cache)
-            ->run(static::PROCESSORS_LIMIT);
+            ->run();
     }
 
     private static function getPopularConsts()
