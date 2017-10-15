@@ -30,6 +30,6 @@ class DownloadController
     public static function getMostPopularCoursesFromDelta($delta)
     {
         $downloads = static::getMostPopularElementsFromDelta($delta);
-        // TODO
+        //
     }
 }

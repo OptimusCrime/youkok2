@@ -1,8 +1,9 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 
-use \Youkok\Youkok;
-use \Youkok\Helpers\SettingsParser;
+use Youkok\Helpers\JobRunner;
+use Youkok\Youkok;
+use Youkok\Helpers\SettingsParser;
 
 $settingsParser = new SettingsParser();
 $settingsParser->parse([
@@ -11,4 +12,4 @@ $settingsParser->parse([
 ]);
 
 $app = new Youkok($settingsParser->getSettings());
-$app->runJobs(true);
+$app->runJobs(JobRunner::UPGRADE);

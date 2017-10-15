@@ -26,12 +26,12 @@ class Youkok
         $this->app->run();
     }
 
-    public function runJobs($force = false)
+    public function runJobs($mode = JobRunner::CRON_JOB)
     {
         $this->dependencies();
 
         $jobRunner = new JobRunner($this->app->getContainer());
-        $jobRunner->run($force);
+        $jobRunner->run($mode);
     }
 
     private function routes()

@@ -5,6 +5,9 @@ use Cron\CronExpression;
 
 class JobRunner
 {
+    const CRON_JOB = 0;
+    const UPGRADE = 1;
+
     private $containers;
 
     private static $schedule = [
@@ -14,14 +17,24 @@ class JobRunner
         ],
     ];
 
+    private static $upgradeSchedule = [
+        \Youkok\Jobs\UpdateMostPopularCourses::class,
+        \Youkok\Jobs\UpdateMostPopularElements::class,
+    ];
+
     public function __construct($containers)
     {
         $this->containers = $containers;
     }
 
-    public function run($force)
+    public function run($mode)
     {
-        $this->validateSchedule(static::$schedule, $force);
+        if ($mode == static::CRON_JOB) {
+            $this->validateSchedule(static::$schedule, $mode);
+            return null;
+        }
+
+        $this->runJobs(static::$upgradeSchedule);
     }
 
     private function validateSchedule(array $schedule, $force)
@@ -42,7 +55,7 @@ class JobRunner
                 $jobInstance->run();
             }
             catch (\Exception $e) {
-                // TODO
+                //
             }
         }
     }
