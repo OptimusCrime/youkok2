@@ -26,4 +26,10 @@ class DownloadController
             ->orderBy('element.added', 'DESC')
             ->get();
     }
+
+    public static function getMostPopularCoursesFromDelta($delta)
+    {
+        $downloads = static::getMostPopularElementsFromDelta($delta);
+        // TODO
+    }
 }

@@ -3,6 +3,7 @@ namespace Youkok;
 
 use \Slim\App as App;
 
+use Youkok\Helpers\JobRunner;
 use Youkok\Loaders\Containers;
 use Youkok\Middlewares\TimingMiddleware;
 
@@ -23,6 +24,14 @@ class Youkok
         $this->dependencies();
 
         $this->app->run();
+    }
+
+    public function runJobs($force = false)
+    {
+        $this->dependencies();
+
+        $jobRunner = new JobRunner($this->app->getContainer());
+        $jobRunner->run($force);
     }
 
     private function routes()

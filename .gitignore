@@ -9,4 +9,7 @@ settings.php
 composer.phar
 youkok_files
 
+public/*.php
+
+!public/index.php
 !docker/phinx.yml
