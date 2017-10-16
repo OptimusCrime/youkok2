@@ -63,6 +63,8 @@ class Youkok
             $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularCourses:fetch');
             $app->post('/popular-courses', '\Youkok\Views\Processors\PopularCourses:update')->setName('popular_courses');
 
+            $app->post('/popular-elements', '\Youkok\Views\Processors\PopularElements:update')->setName('popular_elements');
+
             $app->group('/link', function () use ($app) {
                 $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');
                 $app->post('/create', '\Youkok\Views\Processors\Create\CreateLink:view');

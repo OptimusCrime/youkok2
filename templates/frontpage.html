@@ -78,7 +78,12 @@
             {% endif %}
         </ul>
     </div>
-    <div class="col-xs-12 col-sm-6 frontpage-box frontpage-module" data-id="1" data-variable="module1_delta">
+    <div
+            class="col-xs-12 col-sm-6 frontpage-box frontpage-module"
+            data-url="{{ path_for('popular_elements') }}"
+            data-template=".template-frontpage-popular-elements"
+            data-template-empty=".template-frontpage-no-popular-elements"
+    >
         <div class="list-header">
             <h2 class="can-i-be-inline">Mest populære</h2>
             <div class="btn-group">
@@ -225,13 +230,13 @@
     <ul class="list-group">
         <% _.each(rc.elements,function(element) { %>
         <li class="list-group-item">
-            <a href="<%- element.full_url %>" target="_blank" <% if (element.url !== null) { %>title="Link til: <%- element.url %>"<% } %>>
+            <a href="<%- element.full_uri %>" target="_blank" <% if (element.link !== null) { %>title="Link til: <%- element.link %>"<% } %>>
             <%- element.name %>
             </a> @ <% if (element.parents.length == 2) { %>
-            <a href="<%- element.parents[0].full_url %>"><%- element.parents[0].name %></a>,
+            <a href="<%- element.parents[0].full_uri %>"><%- element.parents[0].name %></a>,
             <% } %>
-            <a title="<% if (element.parents.length == 2) { %><%- element.parents[1].course_name %><% } else { %><%- element.parents[0].course_name %><% } %>" data-placement="top" data-toggle="tooltip" href="<% if (element.parents.length == 2) { %><%- element.parents[1].full_url %><% } else { %><%- element.parents[0].full_url %><% } %>"><% if (element.parents.length == 2) { %><%- element.parents[1].course_code %><% } else { %><%- element.parents[0].course_code %><% } %></a>
-            [<% if (element.download_count !== null) { %><%- element.download_count %><% } else { %>0<% } %>]
+            <a title="<% if (element.parents.length == 2) { %><%- element.parents[1].course_name %><% } else { %><%- element.parents[0].course_name %><% } %>" data-placement="top" data-toggle="tooltip" href="<% if (element.parents.length == 2) { %><%- element.parents[1].full_uri %><% } else { %><%- element.parents[0].full_uri %><% } %>"><% if (element.parents.length == 2) { %><%- element.parents[1].course_code %><% } else { %><%- element.parents[0].course_code %><% } %></a>
+            [<% if (element.downloads !== null) { %><%- element.downloads %><% } else { %>0<% } %>]
         </li>
         <% }); %>
     </ul>
