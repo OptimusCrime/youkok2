@@ -25,7 +25,9 @@ class PopularCourses extends BaseProcessorView
                 $args['delta'],
                 FrontpageFetchProcessor::PROCESSORS_LIMIT,
                 $this->container->get('cache')
-            )
+            ), [
+                'router' => $this->container->get('router')
+            ]
         );
         return $this->output($response, $output);
     }

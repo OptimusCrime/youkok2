@@ -13,6 +13,22 @@ use Youkok\Processors\UpdateUserMostPopularProcessor;
 class PopularElements extends BaseProcessorView
 {
     const DELTA_POST_KEY = 'delta';
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function fetch(Request $request, Response $response, array $args)
+    {
+        $output = MostPopularElementsMapper::map(
+            PopularElementsProcessor::fromDelta(
+                $args['delta'],
+                FrontpageFetchProcessor::PROCESSORS_LIMIT,
+                $this->container->get('cache')
+            ), [
+                'router' => $this->container->get('router')
+            ]
+        );
+        return $this->output($response, $output);
+    }
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)

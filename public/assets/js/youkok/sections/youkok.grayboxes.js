@@ -1,5 +1,55 @@
 var Youkok = (function (module) {
 
+    var loadMostPopularElements = function () {
+        $.ajax({
+            cache: false,
+            url: $('#popular-elements-box').data('url'),
+            success: function(json) {
+                // Get template
+                var template_sidebar_newest = _.template(
+                    $('script.template-frontpage-popular-elements').html()
+                );
+
+                // Set content
+                $('#popular-elements-box div').html(template_sidebar_newest({'elements': json.data}));
+
+                // Apply moment.js
+                $('#popular-elements-box').find('.moment-timestamp').each(function () {
+                    var $that = $(this);
+                    $that.html(moment($(this).data('ts')).fromNow());
+                });
+
+                // Tooltip
+                $('#popular-elements-box').find('.moment-timestamp').tooltip();
+            }
+        });
+    };
+
+    var loadNewestElements = function () {
+        $.ajax({
+            cache: false,
+            url: $('#newest-elements-box').data('url'),
+            success: function(json) {
+                // Get template
+                var template_sidebar_newest = _.template(
+                    $('script.template-frontpage-popular-elements').html()
+                );
+
+                // Set content
+                $('#newest-elements-box div').html(template_sidebar_newest({'elements': json.data}));
+
+                // Apply moment.js
+                $('#newest-elements-box').find('.moment-timestamp').each(function () {
+                    var $that = $(this);
+                    $that.html(moment($(this).data('ts')).fromNow());
+                });
+
+                // Tooltip
+                $('#newest-elements-box').find('.moment-timestamp').tooltip();
+            }
+        });
+    };
+
     /*
      * Public methods
      */
@@ -10,68 +60,13 @@ var Youkok = (function (module) {
          */
         init: function () {
             // Init newest
-            if ($('#archive-sidebar-newest-inner').length > 0) {
-                $.ajax({
-                    cache: false,
-                    url: 'processors/newest-elements',
-                    success: function(json) {
-                        // Get template
-                        var template_sidebar_newest = _.template(
-                            $('script.template-sidebar-newest').html()
-                        );
-
-                        // Set content
-                        $('#archive-sidebar-newest-inner').html(template_sidebar_newest({'elements': json.data}));
-
-                         // Apply moment.js
-                        $('#archive-sidebar-newest-inner .moment-timestamp').each(function () {
-                            var $that = $(this);
-                            $that.html(moment($(this).data('ts')).fromNow());
-                        });
-
-                        // Tooltip
-                        $('#archive-sidebar-newest-inner .moment-timestamp').tooltip();
-                    }
-                });
+            if ($('#popular-elements-box').length > 0) {
+                loadMostPopularElements();
             }
-
-            // Init last downloads
-            if ($('#archive-sidebar-popular-inner').length > 0) {
-                $.ajax({
-                    cache: false,
-                    url: 'processor/graybox/popular',
-                    success: function(json) {
-                        // Get template
-                        var template_sidebar_popular = _.template(
-                            $('script.template-sidebar-popular').html()
-                        );
-
-                        // Set content
-                        $('#archive-sidebar-popular-inner').html(template_sidebar_popular({'elements': json.data}));
-
-                        // Tooltip
-                        $('#archive-sidebar-popular-inner a').tooltip();
-                    }
-                });
+            if ($('#newest-elements-box').length > 0) {
+                loadNewestElements();
             }
-
-            // Init numbers
-            if ($('#archive-sidebar-numbers-inner').length > 0) {
-                $.ajax({
-                    cache: false,
-                    url: 'processor/graybox/commits',
-                    success: function(json) {
-                        // Get template
-                        var template_sidebar_commits = _.template(
-                            $('script.template-sidebar-commits').html()
-                        );
-
-                        // Set content
-                        $('#archive-sidebar-numbers-inner').html(template_sidebar_commits({'commits': json.data}));
-                    }
-                });
-            }
-        },
+        }
     };
 
     /*

@@ -1,0 +1,18 @@
+<script type="text/template" class="template-frontpage-popular-courses">
+    <ul class="list-group">
+        <% _.each(rc.elements,function(element) { %>
+        <li class="list-group-item">
+            <a href="<%- element.full_uri %>">
+                <strong><%- element.course_code %></strong> &mdash; <%- element.course_name %>
+            </a> [ca. <%- element.downloads %>]
+        </li>
+        <% }); %>
+    </ul>
+</script>
+<script type="text/template" class="template-frontpage-no-popular-courses">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <em>Det er ingen fag her</em>
+        </li>
+    </ul>
+</script>

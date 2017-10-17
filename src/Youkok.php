@@ -55,15 +55,16 @@ class Youkok
         })->add(new TimingMiddleware());
 
         $app->group('/processors', function () use ($app) {
-            $app->get('/newest-elements', '\Youkok\Views\Processors\NewestElements:view');
             $app->get('/history/{id:[0-9]+}', '\Youkok\Views\Processors\ArchiveHistory:view');
             $app->get('/autocomplete', '\Youkok\Views\Processors\Autocomplete:view');
             $app->post('/favorite', '\Youkok\Views\Processors\ToggleFavorite:view');
 
-            $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularCourses:fetch');
+            $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularCourses:fetch')->setName('popular_courses_get');
             $app->post('/popular-courses', '\Youkok\Views\Processors\PopularCourses:update')->setName('popular_courses');
 
+            $app->get('/popular-elements/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularElements:fetch')->setName('popular_elements_get');
             $app->post('/popular-elements', '\Youkok\Views\Processors\PopularElements:update')->setName('popular_elements');
+            $app->get('/newest-elements', '\Youkok\Views\Processors\NewestElements:view')->setName('newest_elements');
 
             $app->group('/link', function () use ($app) {
                 $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');

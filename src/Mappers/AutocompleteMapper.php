@@ -18,7 +18,7 @@ class AutocompleteMapper implements Mapper
         return $autocompleteMapper->getCourses($obj);
     }
 
-    private function getCourses($obj)
+    public function getCourses($obj)
     {
         if (count($obj) === 0) {
             return [];
@@ -35,7 +35,7 @@ class AutocompleteMapper implements Mapper
         return $output;
     }
 
-    private function urlFor(Element $element)
+    private function pathFor(Element $element)
     {
         return $this->router->pathFor('archive', [
             'params' => $element->fullUri

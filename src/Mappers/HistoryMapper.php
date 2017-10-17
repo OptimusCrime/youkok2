@@ -7,12 +7,6 @@ class HistoryMapper implements Mapper
 {
     public static function map($obj, $data = null)
     {
-        if (empty($obj) or count($obj) === 0) {
-            return [
-                'code' => 400
-            ];
-        }
-
         $messages = [];
         foreach ($obj as $element) {
             $messages[] = [

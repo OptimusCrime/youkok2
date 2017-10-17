@@ -33,14 +33,10 @@
         </div>
     </div>
     <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">
-        <div class="sidebar-element">
-            <div class="sidebar-element-inner">
-                <p>Fagene står alfabetisk sortert etter fagkode.</p>
-                <p>Du kan også bruke søkefeltet for å søke etter fagkoder og fagnavn.</p>
-                <p>Dersom du savner et fag i listen kan du <a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">kontakte oss</a>, så legger vi det til.</p>
-            </div>
-        </div>
-        {% include "sidebar/general.html" %}
+        {% include "sidebar/courses.html" %}
+        {% include "sidebar/popular_elements.html" %}
+        {% include "sidebar/newest_elements.html" %}
     </div>
 </div>
+{% include "jstemplates/popular_elements.html" %}
 {% endblock %}
