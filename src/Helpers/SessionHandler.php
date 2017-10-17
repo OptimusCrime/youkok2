@@ -76,6 +76,11 @@ class SessionHandler
         return $this->data[$key];
     }
 
+    public function isAdmin()
+    {
+        return isset($this->data['admin']) and $this->data['admin'];
+    }
+
     public function setData($path, $value, $mode = self::MODE_ADD)
     {
         // Mark session as dirty

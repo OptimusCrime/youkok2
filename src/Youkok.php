@@ -71,10 +71,20 @@ class Youkok
                 $app->post('/create', '\Youkok\Views\Processors\Create\CreateLink:view');
             });
 
+            $app->group('/admin', function () use ($app) {
+                $app->get('/homeboxes', '\Youkok\Views\Processors\Admin\Homeboxes:view')->setName('admin_processor_homeboxes');
+            }); // TODO add middleware for admin here
+
         })->add(new TimingMiddleware());
 
         $app->group('/admin', function () use ($app) {
             $app->get('', '\Youkok\Views\Admin\Home:view')->setName('admin_home');
+            $app->get('/ventende', '\Youkok\Views\Admin\Pending:view')->setName('admin_pending');
+            $app->get('/filer', '\Youkok\Views\Admin\Files:view')->setName('admin_files');
+            $app->get('/statistikk', '\Youkok\Views\Admin\Statistics:view')->setName('admin_statistics');
+            $app->get('/diagnostikk', '\Youkok\Views\Admin\Diagnostics:view')->setName('admin_diagnostics');
+            $app->get('/logger', '\Youkok\Views\Admin\Logs:view')->setName('admin_logs');
+            $app->get('/scripts', '\Youkok\Views\Admin\Scripts:view')->setName('admin_scripts');
         }); // TODO add middleware for admin here
     }
 

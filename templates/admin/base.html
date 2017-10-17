@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="{{ youkok_url() }}" />
+    <title>{{ SITE_TITLE }} :: Youkok2.com</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/admin/AdminLTE.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/admin/youkok2.css" />
+    <script type="text/javascript">var SITE_DATA = {{ SITE_DATA|json_encode()|raw }};</script>
+</head>
+<body class="skin-blue sidebar-mini{% if BODY_CLASS != null %} {{ BODY_CLASS }}{% endif %}">
+<div class="wrapper">
+    <header class="main-header">
+        <a href="{{ youkok_url() }}" class="logo">
+            <span class="logo-mini">Yk2</span>
+            <span class="logo-lg">Youkok2</span>
+        </a>
+        <nav class="navbar navbar-static-top" role="navigation">
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+        </nav>
+    </header>
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="treeview{% if HEADER_MENU == 'admin_home' %} active{% endif %}">
+                    <a href="{{ path_for('admin_home') }}">
+                        <i class="fa fa-home"></i> <span>Hjem</span>
+                    </a>
+                </li>
+                <li class="treeview{% if HEADER_MENU == 'admin_pending' %} active{% endif %}">
+                    <a href="{{ path_for('admin_pending') }}">
+                        <i class="fa fa-upload"></i> <span>Nye bidrag</span>
+                        <span class="label label-primary pull-right">{{ NUM_PENDING }}</span>
+                    </a>
+                </li>
+                <li class="treeview{% if HEADER_MENU == 'admin_files' %} active{% endif %}">
+                    <a href="{{ path_for('admin_files') }}">
+                        <i class="fa fa-sitemap"></i> <span>Filer</span>
+                    </a>
+                </li>
+                <li class="treeview{% if HEADER_MENU == 'admin_statistics' %} active{% endif %}">
+                    <a href="{{ path_for('admin_statistics') }}">
+                        <i class="fa fa-bar-chart"></i> <span>Statistikk</span>
+                    </a>
+                </li>
+                <li class="treeview{% if HEADER_MENU == 'admin_diagnostics' %} active{% endif %}">
+                    <a href="{{ path_for('admin_diagnostics') }}">
+                        <i class="fa fa-dashboard"></i> <span>Diagnostikk</span>
+                    </a>
+                </li>
+                <li class="treeview{% if HEADER_MENU == 'admin_logs' %} active{% endif %}">
+                    <a href="{{ path_for('admin_logs') }}">
+                        <i class="fa fa-database"></i> <span>Logger</span>
+                    </a>
+                </li>
+                <li class="treeview{% if HEADER_MENU == 'admin_scripts' %} active{% endif %}">
+                    <a href="{{ path_for('admin_scripts') }}">
+                        <i class="fa fa-upload"></i> <span>Scripts</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </aside>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>
+                Youkok2 Dashboard &mdash; {{ ADMIN_TITLE }}
+            </h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="{{ youkok_url() }}">Youkok2</a>
+                </li>
+                <li class="active">Forside</li>
+            </ol>
+        </section>
+        {% block content %}{% endblock %}
+    </div>
+</div>
+{% include "javascripts.html" %}
+</body>
+</html>

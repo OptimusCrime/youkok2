@@ -63,10 +63,10 @@ class BaseView
         return $response;
     }
 
-    protected function render(Response $response, String $template, array $data = [])
+    protected function render(Response $response, $template, array $data = [])
     {
         $this->cleanUp();
-
+        $this->templateData['ADMIN'] = $this->sessionHandler->isAdmin();
         $this->templateData['EXECUTION_TIME'] = PHP_Timer::secondsToTimeString(PHP_Timer::stop());
 
         return $this->container->get('view')->render($response, $template, array_merge(

@@ -21,12 +21,12 @@ var Youkok = (function (module) {
     var fetchBoxes = function () {
         $.ajax({
             cache: false,
-            url: 'processor/admin/homeboxes',
+            url: $('#admin-homeboxes').data('url'),
             success: function(json) {
                 if (json.code == 200) {
                     $('#admin-home-downloads').html(json.data.downloads);
-                    $('#admin-home-users').html(json.data.users);
-                    $('#admin-home-files').html(json.data.files);
+                    $('#admin-home-sessions').html(json.data.sessions);
+                    $('#admin-home-elements').html(json.data.elements);
                     $('#admin-home-courses').html(json.data.courses);
                 }
             }
