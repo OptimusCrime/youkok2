@@ -8,7 +8,7 @@ use Youkok\Utilities\ArrayHelper;
 class ArchiveVisitProcessor extends AbstractElementFactoryProcessor
 {
     const SESSION_KEY = 'latest_course_visited';
-    const MAX_NUMBER_OF_VISITS_LISTED = 7;
+    const MAX_NUMBER_OF_VISITS_LISTED = 5;
 
     public static function fromElement(Element $element)
     {

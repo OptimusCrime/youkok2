@@ -48,6 +48,9 @@ a:visited {
     box-shadow: 0 2px 0 rgba(0, 0, 0, 0.05) inset;
     padding-bottom: 10px;
 }
+.frontpage #main {
+    padding-top: 25px;
+}
 #site-data {
     display: none;
 }
@@ -1192,3 +1195,50 @@ a:visited {
     display: block;
 }
 
+/*
+ * "New frontpage"
+ */
+
+.frontpage-info-box {
+    display: block;
+    min-height: 90px;
+    background: #fff;
+    width: 100%;
+    border: 1px solid #dddddd;
+    border-radius: 4px 4px;
+    box-sizing: content-box;
+}
+.info-box-icon {
+    border-top-left-radius: 2px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 2px;
+    display: block;
+    float: left;
+    height: 90px;
+    width: 90px;
+    text-align: center;
+    font-size: 45px;
+    line-height: 90px;
+    background: #375A7F;
+}
+.info-box-icon i {
+    color: #fff;
+}
+.info-box-content {
+    padding: 5px 10px;
+    margin-left: 90px;
+}
+.info-box-text {
+    display: block;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+}
+.info-box-number {
+    display: block;
+    font-weight: bold;
+    font-size: 39px;
+}
