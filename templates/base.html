@@ -46,15 +46,7 @@
     </div>
 </div>
 <div class="container" id="main">
-    <div class="row">
-        {% for MESSAGE in SITE_MESSAGES %}
-            <div class="alert alert-[[+$message->getType()]]">
-                <p>{{ MESSAGE.getMessage() }}</p>
-                <div class="alert-close">
-                    <i class="fa fa-times"></i>
-                </div>
-            </div>
-        {% endfor %}
+    <div class="row" id="messages">
         <div class="col-xs-12">
             {% block content %}{% endblock %}
         </div>

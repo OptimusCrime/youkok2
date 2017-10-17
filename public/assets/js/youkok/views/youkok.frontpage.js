@@ -50,8 +50,7 @@ var Youkok = (function (module) {
                     });
                 }
                 else {
-                    // Something went wrong
-                    alert('Noe gikk visst galt her. Ups!');
+                    // Handle empty response
                 }
             }
         });
@@ -76,19 +75,19 @@ var Youkok = (function (module) {
             $.ajax({
                 cache: false,
                 type: "post",
-                url: 'processor/favorite',
+                url: $('#user-favorites').data('url'),
                 data: { 
                     id: $el.data('id'),
                     type: 'remove'
                 },
                 success: function(json) {
                     // Check status code
-                    if (json.code == 200) {
+                    if (json.code === 200) {
                         // Everything went better than expected :)
-                        $el.parent().slideUp(function () {
+                        $el.parent().parent().slideUp(function () {
                             $(this).remove();
-                            if ($('#favorites-list li').length == 0) {
-                                $('#favorites-list').html('<li class="list-group-item" style="display: none;"><em>Du har ingen favoritter...</em></li>');
+                            if ($('#favorites-list li').length === 0) {
+                                $('#favorites-list').html('<li class="list-group-item" style="display: none;"><em>Du har ingen favoritter</em></li>');
                                 $('#favorites-list li').slideDown();
                             }
                         });

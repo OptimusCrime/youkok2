@@ -39,7 +39,7 @@ class FrontpageFetchProcessor
             'MOST_POPULAR_COURSES' => static::getMostPopularCourses($this->sessionHandler, $this->cache),
             'LATEST_VISITED' => ElementController::getLastVisitedCourses(static::PROCESSORS_LIMIT),
             'USER_PREFERENCES' => static::getUserPreferences($this->sessionHandler),
-            'USER_FAVORITES' => static::getUserListing($this->sessionHandler, static::FAVORITES),
+            'USER_FAVORITES' => array_reverse(static::getUserListing($this->sessionHandler, static::FAVORITES)),
             'USER_LAST_VISITED_COURSES' => static::getUserListing($this->sessionHandler, static::LATEST_COURSE_VISITED),
             'CONST' => static::getPopularConsts()
         ];

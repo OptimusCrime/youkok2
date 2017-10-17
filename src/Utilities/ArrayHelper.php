@@ -11,7 +11,7 @@ class ArrayHelper {
                 continue;
             }
 
-            $newArray[] = clone $v;
+            $newArray[] = static::cloneVar($v);
         }
         return $newArray;
     }
