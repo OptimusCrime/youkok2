@@ -616,6 +616,7 @@ a:visited {
 }
 #archive-title h1 {
     margin: 0px;
+    margin-bottom: 10px;
 }
 #archive-title h2 {
     font-size: 22px;
@@ -1129,7 +1130,7 @@ a:visited {
     background-color: #fff;
     border-style: solid;
 }
-.archive-row {
+a.archive-row, .archive-row {
     border-top: 1px solid #ddd;
     padding: 10px 15px;
     display: block;
@@ -1139,6 +1140,9 @@ a:visited {
     content: '';
     display: block;
     clear: both;
+}
+a.archive-row .archive-row-name {
+    color: #3498DB;
 }
 .archive-row.archive-row--header:hover {
     background-color: #fff;
