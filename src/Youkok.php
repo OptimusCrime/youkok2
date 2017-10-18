@@ -68,7 +68,7 @@ class Youkok
 
             $app->group('/link', function () use ($app) {
                 $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');
-                $app->post('/create', '\Youkok\Views\Processors\Create\CreateLink:view');
+                $app->post('/create', '\Youkok\Views\Processors\Create\CreateLink:view')->setName('link_submit');
             });
 
             $app->group('/admin', function () use ($app) {

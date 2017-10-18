@@ -111,7 +111,7 @@ var Youkok = (function (module) {
                 $.ajax({
                     cache: false,
                     type: 'post',
-                    url: 'processor/link/create',
+                    url: $('#archive-create-link-div').data('url'),
                     data: { 
                         id: Youkok.getData('archive_id'), 
                         url: $('#archive-create-link-url').val(),
@@ -119,7 +119,7 @@ var Youkok = (function (module) {
                     },
                     success: function(json) {
                         working = false;
-                        if (json.code == 200) {
+                        if (json.code === 200) {
                             // Refresh
                             window.location.reload();
                         }
