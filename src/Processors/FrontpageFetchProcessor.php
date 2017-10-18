@@ -1,10 +1,11 @@
 <?php
 namespace Youkok\Processors;
 
+use Carbon\Carbon;
+
 use Youkok\Controllers\ElementController;
 use Youkok\Enums\MostPopularElement;
 use Youkok\Helpers\SessionHandler;
-use Youkok\Helpers\Utilities;
 use Youkok\Models\Download;
 use Youkok\Models\Element;
 
@@ -31,9 +32,25 @@ class FrontpageFetchProcessor
 
     public function run()
     {
+
         return [
-            'INFO_FILES' => Utilities::numberFormat(Element::where('directory', 0)->where('deleted', 0)->count()),
-            'INFO_DOWNLOADS' => Utilities::numberFormat(Download::count()),
+            'INFO_FILES' => Element
+                ::where('directory', 0)
+                ->where('deleted', 0)
+                ->where('pending', 0)
+                ->count(),
+            'INFO_DOWNLOADS' => Download::count(),
+            'INFO_NON_EMPTY_COURSES' => Element
+                ::where('directory', 1)
+                ->where('parent', null)
+                ->where('deleted', 0)
+                ->where('empty', 0)
+                ->count(),
+            'INFO_NEW_ELEMENTS_THIS_MONTH' => Element
+                ::where('directory', 0)
+                ->where('deleted', 0)
+                ->whereDate('added', '>=', Carbon::now()->subMonth())
+                ->count(),
             'LATEST_ELEMENTS' => ElementController::getLatest(static::PROCESSORS_LIMIT),
             'MOST_POPULAR_ELEMENTS' => static::getMostPopularElement($this->sessionHandler, $this->cache),
             'MOST_POPULAR_COURSES' => static::getMostPopularCourses($this->sessionHandler, $this->cache),

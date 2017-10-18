@@ -6,7 +6,7 @@
             <span class="info-box-icon bg-aqua"><i class="fa fa-download"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Nedlastninger</span>
-                <span class="info-box-number">207 301</span>
+                <span class="info-box-number">{{ whole_number_format(FRONTPAGE.INFO_DOWNLOADS) }}</span>
             </div>
         </div>
     </div>
@@ -15,16 +15,16 @@
             <span class="info-box-icon bg-red"><i class="fa fa-star"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Bidrag siste mnd</span>
-                <span class="info-box-number">21</span>
+                <span class="info-box-number">{{ whole_number_format(FRONTPAGE.INFO_NEW_ELEMENTS_THIS_MONTH) }}</span>
             </div>
         </div>
     </div>
     <div class="col-md-3 col-sm-6 col-xs-12">
         <div class="frontpage-info-box">
-            <span class="info-box-icon bg-green"><i class="fa fa-files-o"></i></span>
+            <span class="info-box-icon bg-green"><i class="fa fa-archive"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Filer og linker</span>
-                <span class="info-box-number">681</span>
+                <span class="info-box-number">{{ whole_number_format(FRONTPAGE.INFO_FILES) }}</span>
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
             <span class="info-box-icon bg-yellow"><i class="fa fa-graduation-cap"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Fag med innhold</span>
-                <span class="info-box-number">87</span>
+                <span class="info-box-number">{{ whole_number_format(FRONTPAGE.INFO_NON_EMPTY_COURSES) }}</span>
             </div>
         </div>
     </div>
