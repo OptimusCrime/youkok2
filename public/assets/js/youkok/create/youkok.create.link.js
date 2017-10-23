@@ -120,14 +120,12 @@ var Youkok = (function (module) {
                     success: function(json) {
                         working = false;
                         if (json.code === 200) {
-                            // Refresh
-                            window.location.reload();
-                        }
-                        else if (json.code == 400) {
-                            Youkok.message.add([{'text': 'Et element med denne URLen finnes fra før!', 'type': 'danger'}]);
+                            Youkok.message.add([{'text': 'Linken er lagt til. Den blir synlig for andre brukere så fort den blir godkjent. Takk for ditt bidrag.', 'type': 'success'}]);
+                            $('#archive-create-link-url').val('');
+                            $('#archive-create-link-name').val('');
                             $('#archive-create-link-form-submit').html('Post link').prop('disabled', false);
                         }
-                        else if (json.code == 401) {
+                        else if (json.code === 401) {
                             Youkok.message.add([{'text': 'Navnet på linken er for kort. Minst 4 tegn. La feltet så tomt hvis du ønsker å bruke URLen.', 'type': 'danger'}]);
                             $('#archive-create-link-form-submit').html('Post link').prop('disabled', false);
                         }

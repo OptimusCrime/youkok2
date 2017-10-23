@@ -1,6 +1,11 @@
 <?php
 namespace Youkok\Views\Processors\Create;
 
+use \Psr\Http\Message\ResponseInterface as Response;
+use \Psr\Http\Message\ServerRequestInterface as Request;
+
+use Youkok\Mappers\Create\CreateLinkMapper;
+use Youkok\Processors\Create\CreateLinkProcessor;
 use Youkok\Views\Processors\BaseProcessorView;
 
 class CreateLink extends BaseProcessorView
@@ -10,6 +15,10 @@ class CreateLink extends BaseProcessorView
      */
     public function view(Request $request, Response $response, array $args)
     {
-        return $this->output($response, ['foo' => 'bar']);
+        return $this->output($response, CreateLinkMapper::map(CreateLinkProcessor
+            ::fromRequest($request)
+            ->withResponse($response)
+            ->run()
+        ));
     }
 }
