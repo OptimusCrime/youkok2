@@ -94,6 +94,7 @@ class ElementController
     {
         return Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link', 'checksum', 'added', 'deleted')
             ->where('parent', $id)
+            ->where('pending', 0)
             ->orderBy('deleted', 'ASC')
             ->orderBy('directory', 'DESC')
             ->orderBy('name', 'ASC')
