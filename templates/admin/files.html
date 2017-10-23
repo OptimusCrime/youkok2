@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<section class="content">
+    <div class="row">
+        {% for COURSE in FILES %}
+            <div class="col-md-6">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h2 class="box-title">{{ COURSE.courseCode }} &mdash; {{ COURSE.courseName }}</h2>
+                    </div>
+                    <div class="box-body admin-file-tree">
+                        {% for ELEMENT in COURSE.childrenObjects %}
+                            {% include "admin/includes/files_tree.html" with {'ELEMENT': ELEMENT, 'PADDING': 0} %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

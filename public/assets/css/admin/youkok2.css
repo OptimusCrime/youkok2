@@ -1,3 +1,34 @@
 body {
     background-color: #ecf0f5;
 }
+
+.admin-file-tree ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.admin-file-tree-type {
+    margin-right: 5px;
+}
+.admin-file-tree-padding {
+    height: 1px;
+    display: inline-block;
+}
+.admin-file-tree-directory-none {
+    visibility: hidden;
+}
+.admin-file-line {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 30px;
+    position: relative;
+}
+.admin-file-line-deleted {
+    opacity: 0.5;
+}
+.admin-file-line:hover {
+    background-color: #ecf0f5;
+}
+.admin-tree-edit {
+    margin-left: 10px;
+}

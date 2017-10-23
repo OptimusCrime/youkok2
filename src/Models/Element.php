@@ -19,6 +19,7 @@ class Element extends BaseModel
     protected $guarded = array('');
 
     private $parents;
+    private $childrenObjects;
 
     public static function fromId($id, $attributes = ['id', 'link', 'checksum'])
     {
@@ -311,6 +312,25 @@ class Element extends BaseModel
         $download->save();
     }
 
+    public function getChildrenObjects()
+    {
+        if ($this->childrenObjects === null) {
+            return [];
+        }
+
+        return $this->childrenObjects;
+    }
+
+    public function __set($name, $value)
+    {
+        if ($name === 'childrenObjects') {
+            $this->childrenObjects = $value;
+        }
+        else {
+            parent::__set($name, $value);
+        }
+    }
+
     public function __isset($name)
     {
         if (parent::__isset($name)) {
@@ -326,7 +346,8 @@ class Element extends BaseModel
             'parentObj',
             'rootParent',
             'addedPretty',
-            'addedPrettyAll'
+            'addedPrettyAll',
+            'childrenObjects'
         ]);
     }
 
@@ -358,6 +379,8 @@ class Element extends BaseModel
                 return $this->getAddedPretty();
             case 'addedPrettyAll':
                 return $this->getAddedPrettyAll();
+            case 'childrenObjects':
+                return $this->getChildrenObjects();
             default:
                 return null;
         }

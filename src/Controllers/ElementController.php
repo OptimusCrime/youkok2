@@ -49,6 +49,18 @@ class ElementController
             ->get();
     }
 
+    public static function getAllNoneEmptyCourses()
+    {
+        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')
+            ->where('parent', null)
+            ->where('directory', 1)
+            ->where('pending', 0)
+            ->where('deleted', 0)
+            ->where('empty', 0)
+            ->orderBy('name')
+            ->get();
+    }
+
     public static function getLastVisitedCourses($limit = 10)
     {
         return Element::select('id', 'name', 'slug', 'uri', 'last_visited')
@@ -76,6 +88,16 @@ class ElementController
     public static function getAllElements($columns = ['id', 'parent'])
     {
         return Element::select($columns)->get();
+    }
+
+    public static function getAllChildren($id)
+    {
+        return Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link', 'checksum', 'added', 'deleted')
+            ->where('parent', $id)
+            ->orderBy('deleted', 'ASC')
+            ->orderBy('directory', 'DESC')
+            ->orderBy('name', 'ASC')
+            ->get();
     }
 
     public static function getVisibleChildren($id, $order = self::SORT_TYPE_ORGANIZED)

@@ -1,0 +1,30 @@
+<ul>
+    <li>
+        <div class="admin-file-line{% if ELEMENT.deleted == 1 %} admin-file-line-deleted{% endif %}">
+            <div class="admin-file-tree-padding" style="width: {{ PADDING }}px;"></div>
+            {% if ELEMENT.directory == 1 %}
+                <i class="fa fa-caret-down admin-file-tree-directory" aria-hidden="true"></i>
+            {% else %}
+                <i class="fa fa-caret-down admin-file-tree-directory-none" aria-hidden="true"></i>
+            {% endif %}
+
+            {% if ELEMENT.directory == 1 %}
+                <i class="fa fa-folder-o admin-tree-type" aria-hidden="true"></i>
+            {% elseif ELEMENT.link|length > 0 %}
+                <i class="fa fa-link admin-tree-type" aria-hidden="true"></i>
+            {% else %}
+                <i class="fa fa-file-o admin-tree-type" aria-hidden="true"></i>
+            {% endif %}
+
+            <a href="#">{{ ELEMENT.name }}</a>
+            <a href="#"><i class="fa fa-cog admin-tree-edit" aria-hidden="true"></i></a>
+        </div>
+        {% if ELEMENT.childrenObjects|length > 0 %}
+            <ul>
+                {% for CHILD in ELEMENT.childrenObjects %}
+                    {% include "admin/includes/files_tree.html" with {'ELEMENT': CHILD, 'PADDING': PADDING + 30} %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+</ul>

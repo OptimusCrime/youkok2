@@ -43,8 +43,6 @@ class CreateLinkProcessor
             ];
         }
 
-        // TODO validate parent
-
         return static::addNewElement($this->request);
     }
 
