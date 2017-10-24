@@ -35,6 +35,7 @@ class Archive extends BaseView
             ->run();
 
         $this->setSiteData('archive_id', $element->id);
+        $this->setSiteData('file_types', $this->container->get('settings')['file_endings']);
 
         return $this->render($response, 'archive.html', [
             'HEADER_MENU' => 'courses',
@@ -42,6 +43,7 @@ class Archive extends BaseView
             'ARCHIVE' => ArchiveElementFetchProcessor
                 ::fromElement($element)
                 ->withSessionHandler($this->sessionHandler)
+                ->withSettings($this->container->get('settings'))
                 ->withCache($this->container->get('cache'))
                 ->run(),
             'BODY_CLASS' => 'archive'

@@ -1,32 +1,18 @@
 <?php
 namespace Youkok\Processors\Create;
 
-use Carbon\Carbon;
-use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
+use Carbon\Carbon;
+
 use Youkok\Models\Element;
 
-class CreateLinkProcessor
+class CreateLinkProcessor extends AbstractCreateProcessor
 {
     const MINIMUM_NAME_LENGTH = 4;
-
-    private $response;
-    private $request;
-
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
 
     public static function fromRequest(Request $request)
     {
         return new CreateLinkProcessor($request);
-    }
-
-    public function withResponse(Response $response)
-    {
-        $this->response = $response;
-        return $this;
     }
 
     public function run()

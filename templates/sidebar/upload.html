@@ -4,7 +4,7 @@
             <button type="button" id="archive-create-file" class="btn btn-default">Last opp fil</button>
             <button type="button" class="btn btn-default" id="archive-create-link">Post link</button>
         </div>
-        <div id="archive-create-file-div">
+        <div id="archive-create-file-div" data-url="{{ path_for('upload_file') }}">
             <form role="form" action="" id="archive-create-file-form" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <p><strong>Velg filer</strong></p>
@@ -21,6 +21,7 @@
                     <div id="progress">
                         <div class="bar" style="width: 0%;"></div>
                     </div>
+                    <p>Godkjente filtyper: {{ ARCHIVE.FILE_TYPES }}</p>
                 </div>
                 <button id="archive-create-file-form-submit" type="submit" class="btn btn-default">Last opp</button> eller <a href="#">avbryt</a>.
             </form>

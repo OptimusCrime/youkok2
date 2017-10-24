@@ -72,6 +72,10 @@ class Youkok
                 $app->post('/create', '\Youkok\Views\Processors\Create\CreateLink:view')->setName('link_submit');
             });
 
+            $app->group('file', function() use ($app) {
+                $app->post('/upload', '\Youkok\Views\Processors\Create\UploadFile:view')->setName('upload_file');
+            });
+
             $app->group('/admin', function () use ($app) {
                 $app->get('/homeboxes', '\Youkok\Views\Processors\Admin\Homeboxes:view')->setName('admin_processor_homeboxes');
             }); // TODO add middleware for admin here

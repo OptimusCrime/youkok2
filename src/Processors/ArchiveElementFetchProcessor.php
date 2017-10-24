@@ -11,9 +11,17 @@ use Youkok\Utilities\CacheKeyGenerator;
 
 class ArchiveElementFetchProcessor extends AbstractElementFactoryProcessor
 {
+    private $settings;
+
     public static function fromElement(Element $element)
     {
         return new ArchiveElementFetchProcessor($element);
+    }
+
+    public function withSettings($settings)
+    {
+        $this->settings = $settings;
+        return $this;
     }
 
     public function run()
@@ -26,7 +34,8 @@ class ArchiveElementFetchProcessor extends AbstractElementFactoryProcessor
             'CHILDREN' => static::getArchiveChildren($this->element, $this->cache),
             'TITLES' => static::getArchiveTitles($this->element),
             'SITE_TITLE' => static::getSiteTitle($this->element),
-            'STARRED' => static::currentElementIsStarred($this->element, $this->sessionHandler)
+            'STARRED' => static::currentElementIsStarred($this->element, $this->sessionHandler),
+            'FILE_TYPES' => static::listAcceptedFileTypes($this->settings['file_endings'])
         ];
     }
 
@@ -138,5 +147,15 @@ class ArchiveElementFetchProcessor extends AbstractElementFactoryProcessor
         }
 
         return $downloads;
+    }
+
+    private static function listAcceptedFileTypes(array $fileTypes)
+    {
+        $fileTypesFormatted = [];
+        foreach ($fileTypes as $fileType) {
+            $fileTypesFormatted[] = '.' . $fileType;
+        }
+
+        return implode(', ', $fileTypesFormatted);
     }
 }

@@ -9,10 +9,10 @@ var Youkok = (function (module) {
      */
     var fileuploaderInit = function () {
         $('#archive-create-file-form').fileupload({
-            url: 'processor/file/create?format=html&parent=' + Youkok.getData('archive_id'),
+            url: $('#archive-create-file-div').data('url') + '?parent=' + Youkok.getData('archive_id'),
             add: fileuploaderAdd,
             done: fileuploaderDone,
-            progressall: fileuploaderProgressAll,
+            progressall: fileuploaderProgressAll
         });
     };
     
