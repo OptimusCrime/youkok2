@@ -53,7 +53,11 @@ class BaseView
 
     private function cleanUp()
     {
-        $this->sessionHandler->store();
+        $stored = $this->sessionHandler->store();
+        if (!$stored) {
+            // Make sure we update the last_updated field in the database
+            $this->sessionHandler->update();
+        }
     }
 
     protected function returnResponse(Response $response)

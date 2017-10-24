@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Helpers;
 
+use Carbon\Carbon;
 use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
 use Youkok\Models\Session;
@@ -12,7 +13,7 @@ class SessionHandler
     const MODE_OVERWRITE = 1;
 
     const SESSION_TOKEN_LENGTH = 100;
-    const SESSION_LIFE_TIME = 60 * 60 * 24 * 120;
+    const SESSION_LIFE_TIME = 60 * 60 * 24 * 120; // 120 days
 
     private $data;
     private $hash;
@@ -141,6 +142,21 @@ class SessionHandler
         }
 
         $currentSession->data = json_encode($this->data);
+        $currentSession->last_updated = Carbon::now();
+        $currentSession->save();
+
+        return true;
+    }
+
+    public function update()
+    {
+        $currentSession = $this->getSession($this->hash);
+        if ($currentSession === null) {
+            // It is more or less impossible that this happens...
+            return false;
+        }
+
+        $currentSession->last_updated = Carbon::now();
         $currentSession->save();
 
         return true;
@@ -159,6 +175,8 @@ class SessionHandler
         $session = new Session();
         $session->hash = $this->hash;
         $session->data = json_encode($this->data);
+        $session->last_updated = Carbon::now();
+        $session->expire = Carbon::createFromTimestamp(time() + static::SESSION_LIFE_TIME);
         $session->save();
 
         CookieHelper::setCookie('youkok2', $this->hash, static::SESSION_LIFE_TIME);

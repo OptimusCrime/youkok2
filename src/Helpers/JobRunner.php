@@ -14,12 +14,14 @@ class JobRunner
         '0 0 * * *' => [
             \Youkok\Jobs\UpdateMostPopularCourses::class,
             \Youkok\Jobs\UpdateMostPopularElements::class,
+            \Youkok\Jobs\RemoveOldSessions::class,
         ],
     ];
 
     private static $upgradeSchedule = [
         \Youkok\Jobs\UpdateMostPopularCourses::class,
-        //\Youkok\Jobs\UpdateMostPopularElements::class,
+        \Youkok\Jobs\UpdateMostPopularElements::class,
+        \Youkok\Jobs\RemoveOldSessions::class,
     ];
 
     public function __construct($containers)
