@@ -106,6 +106,44 @@ var Youkok = (function (module) {
             });
         }
     };
+
+     var emptyBox = function(e) {
+         e.preventDefault();
+
+         // Set ajax call
+         var $link = $(this);
+         $.ajax({
+             cache: false,
+             type: "post",
+             url: $(this).data('url'),
+             data: {
+                 type: $(this).data('type')
+             },
+             success: function(json) {
+                 // Check status code
+                 if (json.code === 200) {
+                     var $list_group = $link.closest('.frontpage-box').find('.list-group');
+                     $list_group.find('li').remove();
+
+                     if ($link.data('type') === 'history') {
+                         $list_group.html('<li class="list-group-item"><em>Du har ikke besøkt noen fag</em></li>');
+                     }
+                     else {
+                         $list_group.html('<li class="list-group-item"><em>Du har ingen favoritter</em></li>');
+                     }
+
+                     $link.remove();
+                 }
+                 else {
+                     // Something went wrong
+                     alert('Noe gikk visst galt her. Ups!');
+
+                     // Remove attribute
+                     $el.removeData('disabled');
+                 }
+             }
+         });
+     };
     
     /*
      * Public methods
@@ -119,6 +157,7 @@ var Youkok = (function (module) {
             // Add listeners
             $('.home-most-popular-dropdown li').on('click', changeMostPopular);
             $('.star-remove').on('click', removeFavorite);
+            $('.frontpage-box-clear').on('click', emptyBox);
         },
     };
 

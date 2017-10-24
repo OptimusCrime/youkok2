@@ -43,25 +43,31 @@
     <div class="col-xs-12 col-sm-6 frontpage-box">
         <div class="list-header">
             <h2>Siste besøkte fag</h2>
+            {% if FRONTPAGE.USER_LAST_VISITED_COURSES|length > 0 %}
+                <a href="#" class="frontpage-box-clear" id="frontpage-empty-history" data-url="{{ path_for('clear_frontpage_box') }}" data-type="history">Fjern historikk</a>
+            {% endif %}
         </div>
         <ul class="list-group">
             {% if FRONTPAGE.USER_LAST_VISITED_COURSES|length == 0 %}
-            <li class="list-group-item"><em>Du har ikke besøkt noen fag</em></li>
+                <li class="list-group-item"><em>Du har ikke besøkt noen fag</em></li>
             {% else %}
-            {% for ELEMENT in FRONTPAGE.USER_LAST_VISITED_COURSES %}
-            <li class="list-group-item">
-                {% include "includes/element_listing.html" with {
-                'ELEMENT': ELEMENT,
-                'COURSE': true
-                } %}
-            </li>
-            {% endfor %}
+                {% for ELEMENT in FRONTPAGE.USER_LAST_VISITED_COURSES %}
+                    <li class="list-group-item">
+                        {% include "includes/element_listing.html" with {
+                            'ELEMENT': ELEMENT,
+                            'COURSE': true
+                        } %}
+                    </li>
+                {% endfor %}
             {% endif %}
         </ul>
     </div>
     <div class="col-xs-12 col-sm-6 frontpage-box" id="user-favorites" data-url="{{ path_for('toggle_favorite') }}">
         <div class="list-header">
             <h2>Favoritter</h2>
+            {% if FRONTPAGE.USER_FAVORITES|length > 0 %}
+                <a href="#" class="frontpage-box-clear" id="frontpage-empty-favorites" data-url="{{ path_for('clear_frontpage_box') }}" data-type="favorites">Fjern favoritter</a>
+            {% endif %}
         </div>
         <ul class="list-group" id="favorites-list">
             {% if FRONTPAGE.USER_FAVORITES|length == 0 %}

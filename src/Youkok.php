@@ -58,6 +58,7 @@ class Youkok
             $app->get('/history/{id:[0-9]+}', '\Youkok\Views\Processors\ArchiveHistory:view');
             $app->get('/autocomplete', '\Youkok\Views\Processors\Autocomplete:view');
             $app->post('/favorite', '\Youkok\Views\Processors\ToggleFavorite:view')->setName('toggle_favorite');
+            $app->post('/clear-frontpage-box', '\Youkok\Views\Processors\ClearFrontpageBox:view')->setName('clear_frontpage_box');
 
             $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularCourses:fetch')->setName('popular_courses_get');
             $app->post('/popular-courses', '\Youkok\Views\Processors\PopularCourses:update')->setName('popular_courses');

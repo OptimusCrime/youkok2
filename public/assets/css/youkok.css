@@ -333,8 +333,14 @@ a:visited {
     margin-bottom: 0px;
     vertical-align: bottom;
 }
+.frontpage-box-clear {
+    position: absolute;
+    bottom: 10px;
+    right: 0;
+}
 .frontpage-box .list-header {
     padding-bottom: 10px;
+    position: relative;
 }
 
 /*
