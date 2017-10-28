@@ -56,15 +56,6 @@ class CreateLinkProcessor extends AbstractCreateProcessor
         return static::parentIsValid($request->getParams()['id']);
     }
 
-    private static function parentIsValid($id)
-    {
-        return Element::where('id', $id)
-            ->where('deleted', 0)
-            ->where('pending',0)
-            ->where('directory', 1)
-            ->get() !== null;
-    }
-
     private static function nameIsLongEnough(Request $request)
     {
         return strlen($request->getParams()['name']) > static::MINIMUM_NAME_LENGTH;

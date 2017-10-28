@@ -3,6 +3,7 @@ namespace Youkok\Processors\Create;
 
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
+use Youkok\Models\Element;
 
 abstract class AbstractCreateProcessor
 {
@@ -18,6 +19,15 @@ abstract class AbstractCreateProcessor
     {
         $this->response = $response;
         return $this;
+    }
+
+    protected static function parentIsValid($id)
+    {
+        return Element::where('id', $id)
+                ->where('deleted', 0)
+                ->where('pending',0)
+                ->where('directory', 1)
+                ->get() !== null;
     }
 
     abstract public function run();

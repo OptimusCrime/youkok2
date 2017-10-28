@@ -4,6 +4,7 @@ namespace Youkok\Views\Processors\Create;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
+use Youkok\Processors\Create\UploadFileProcessor;
 use Youkok\Views\Processors\BaseProcessorView;
 
 class UploadFile extends BaseProcessorView
@@ -15,6 +16,7 @@ class UploadFile extends BaseProcessorView
     {
         return $this->output($response, UploadFileProcessor
             ::fromRequest($request)
+            ->withSettings($this->container->get('settings'))
             ->withResponse($response)
             ->run()
         );
