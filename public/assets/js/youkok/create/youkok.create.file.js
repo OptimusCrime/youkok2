@@ -98,9 +98,24 @@ var Youkok = (function (module) {
         
         // Check if all done
         if (num_of_files_uploaded == ($('.fileupload-file').length - 1)) {
-            // Reload page
-            window.location.reload();
+            var message = [
+                {
+                    'text' : '<p>Takk for ditt bidrag. Bidraget ditt er sent til godkjenning. Så fort det er godkjent vil det vises på siden.</p>',
+                    'type' : 'success'
+                }
+            ];
+
+            // Display message
+            Youkok.message.add(message);
+
+            resetForm();
         }
+    };
+
+    var resetForm = function() {
+        $('#fileupload-files-inner div').remove();
+        $('#archive-create-file-form-submit').html('Last opp').prop('disabled', false);
+        $('#archive-create-file-div').slideUp();
     };
     
     /*
