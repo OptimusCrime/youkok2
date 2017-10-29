@@ -95,6 +95,11 @@ var Youkok = (function (module) {
         if (Youkok.getData('view') == 'admin_home') {
             Youkok.admin.home.init();
         }
+
+        if (Youkok.getData('view') == 'admin_files') {
+            Youkok.admin.listing.init();
+            Youkok.admin.filter.init();
+        }
     };
     
     /*

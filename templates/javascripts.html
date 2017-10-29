@@ -4,7 +4,7 @@
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    ga('create', 'UA-50619069-1', 'youkok2.com');
+    ga('create', '{{ SITE_SETTINGS.GOOGLE_ANALYTICS_CODE }}', 'youkok2.com');
     ga('send', 'pageview');
 </script>
 {% endif %}
@@ -25,9 +25,6 @@
 <script type="text/javascript" src="assets/js/youkok/sections/youkok.countdown.js?v={{ SITE_SETTINGS.VERSION }}"></script>
 <script type="text/javascript" src="assets/js/youkok/sections/youkok.message.js?v={{ SITE_SETTINGS.VERSION }}"></script>
 <script type="text/javascript" src="assets/js/youkok/load.js?v={{ SITE_SETTINGS.VERSION }}"></script>
-<script type="text/javascript" src="assets/js/youkok/admin/youkok.admin.home.js?v={{ SITE_SETTINGS.VERSION }}"></script>
-<script type="text/javascript" src="assets/js/youkok/admin/youkok.admin.graph.home.js?v={{ SITE_SETTINGS.VERSION }}"></script>
-<script type="text/javascript" src="assets/js/youkok/admin/youkok.admin.js?v={{ SITE_SETTINGS.VERSION }}"></script>
 <script type="text/javascript" src="assets/js/youkok/utilities/youkok.utilities.js?v={{ SITE_SETTINGS.VERSION }}"></script>
 <script type="text/javascript" src="assets/js/youkok/create/youkok.create.link.js?v={{ SITE_SETTINGS.VERSION }}"></script>
 <script type="text/javascript" src="assets/js/youkok/create/youkok.create.file.js?v={{ SITE_SETTINGS.VERSION }}"></script>

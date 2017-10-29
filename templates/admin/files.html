@@ -2,8 +2,18 @@
 {% block content %}
 <section class="content">
     <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group div-relative" id="admin-filter">
+                <input type="text" placeholder="Filtrer" class="form-control typeahead" id="s2" name="s" />
+                <button class="btn" type="button" id="reset-filter">
+                    <i class="fa fa-close"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         {% for COURSE in FILES %}
-            <div class="col-md-6">
+            <div class="col-md-6 youkok-file-box" data-identifier="{{ COURSE.courseCode }} - {{ COURSE.courseName }}">
                 <div class="box">
                     <div class="box-header with-border">
                         <h2 class="box-title">{{ COURSE.courseCode }} &mdash; {{ COURSE.courseName }}</h2>
