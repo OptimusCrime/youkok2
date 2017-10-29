@@ -27,7 +27,7 @@ class PopularCoursesProcessor extends AbstractPopularListingProcessor
             return [];
         }
 
-        return static::resultArrayToElements($resultArr);
+        return static::resultArrayToElements($resultArr, $limit);
     }
 
     public static function fromSessionHandler(SessionHandler $sessionHandler)
@@ -35,7 +35,7 @@ class PopularCoursesProcessor extends AbstractPopularListingProcessor
         return new PopularCoursesProcessor($sessionHandler, 'most_popular_course');
     }
 
-    private static function resultArrayToElements(array $result)
+    private static function resultArrayToElements(array $result, $limit = null)
     {
         $elements = [];
         foreach ($result as $res) {
@@ -44,6 +44,24 @@ class PopularCoursesProcessor extends AbstractPopularListingProcessor
 
             $elements[] = $element;
         }
-        return $elements;
+
+        if ($limit === null) {
+            return $elements;
+        }
+
+        return static::resultArrayToMaxLimit($elements, $limit);
+    }
+
+    private static function resultArrayToMaxLimit(array $elements, $limit)
+    {
+        $newElements = [];
+        foreach ($elements as $element) {
+            $newElements[] = $element;
+            if (count($newElements) === $limit) {
+                break;
+            }
+        }
+
+        return $newElements;
     }
 }

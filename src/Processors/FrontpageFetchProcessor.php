@@ -13,7 +13,7 @@ use Youkok\Processors\PopularListing\PopularElementsProcessor;
 
 class FrontpageFetchProcessor
 {
-    const PROCESSORS_LIMIT = 15;
+    const PROCESSORS_LIMIT = 10;
     const FAVORITES = 'favorites';
     const LATEST_COURSE_VISITED = 'latest_course_visited';
 
@@ -90,7 +90,7 @@ class FrontpageFetchProcessor
             ::fromSessionHandler($sessionHandler)
             ->withCache($cache)
             ->withSettings($settings)
-            ->run();
+            ->run(static::PROCESSORS_LIMIT);
     }
 
     private static function getPopularConsts()
