@@ -32,18 +32,18 @@ abstract class AbstractPopularListingProcessor
     public function run($limit = null)
     {
         if ($this->key === null) {
-            return static::fromDelta(null, $limit, $this->cache, $this->settings);
+            return static::fromDelta(null, $this->cache, $limit, $this->settings);
         }
 
         $frontpageSettings = $this->sessionHandler->getDataWithKey('frontpage');
         if ($frontpageSettings === null or !is_array($frontpageSettings)) {
-            return static::fromDelta(null, $limit, $this->cache, $this->settings);
+            return static::fromDelta(null, $this->cache, $limit, $this->settings);
         }
 
         if (!isset($frontpageSettings[$this->key])) {
-            return static::fromDelta(null, $limit, $this->cache, $this->settings);
+            return static::fromDelta(null, $this->cache, $limit, $this->settings);
         }
 
-        return static::fromDelta($frontpageSettings[$this->key], $limit, $this->cache, $this->settings);
+        return static::fromDelta($frontpageSettings[$this->key], $this->cache, $limit, $this->settings);
     }
 }

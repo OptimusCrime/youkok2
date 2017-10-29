@@ -13,8 +13,7 @@ class Cache
 
             $cache = new \Redis();
             $cache->connect($cacheSettings['host'], $cacheSettings['port']);
-        }
-        catch (\RedisException $e) {
+        } catch (\RedisException $e) {
             //
         }
 

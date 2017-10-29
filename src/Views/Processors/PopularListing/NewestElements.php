@@ -16,7 +16,8 @@ class NewestElements extends BaseProcessorView
     public function view(Request $request, Response $response)
     {
         return $this->output($response, MostPopularElementsMapper::map(
-            NewestElementsProcessor::run(), [
+            NewestElementsProcessor::run(),
+            [
                 'router' => $this->container->get('router')
             ]
         ));

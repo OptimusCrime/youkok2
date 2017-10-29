@@ -26,7 +26,7 @@ class ElementController
             ->where('pending', 0)
             ->where('deleted', 0);
 
-        $query->where(function($query) use ($search) {
+        $query->where(function ($query) use ($search) {
             foreach ($search as $v) {
                 $query->orWhere('name', 'LIKE', $v);
             }
@@ -92,7 +92,11 @@ class ElementController
 
     public static function getAllChildren($id)
     {
-        return Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link', 'checksum', 'added', 'deleted')
+        return Element::select([
+            'id', 'name', 'slug', 'uri', 'parent', 'empty',
+            'directory', 'link', 'checksum',
+            'added', 'deleted'
+        ])
             ->where('parent', $id)
             ->where('pending', 0)
             ->orderBy('deleted', 'ASC')
@@ -103,15 +107,18 @@ class ElementController
 
     public static function getVisibleChildren($id, $order = self::SORT_TYPE_ORGANIZED)
     {
-        $query = Element::select('id', 'name', 'slug', 'uri', 'parent', 'empty', 'directory', 'link', 'checksum', 'added')
+        $query = Element::select([
+            'id', 'name', 'slug', 'uri', 'parent', 'empty',
+            'directory', 'link',
+            'checksum', 'added'
+        ])
             ->where('parent', $id)
             ->where('deleted', 0)
             ->where('pending', 0);
 
         if ($order === static::SORT_TYPE_ORGANIZED) {
             $query = $query->orderBy('directory', 'DESC')->orderBy('name', 'ASC');
-        }
-        else {
+        } else {
             $query = $query->orderBy('added', 'DESC');
         }
 

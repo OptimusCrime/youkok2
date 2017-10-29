@@ -18,8 +18,7 @@ class BaseModel extends Model
     {
         if (substr($name, 0, 1) === '_') {
             $this->dataStore[substr($name, 1)] = $value;
-        }
-        else {
+        } else {
             parent::__set($name, $value);
         }
     }
@@ -65,14 +64,14 @@ class BaseModel extends Model
             return $value;
         }
 
-       if ($key === 'dataStore') {
+        if ($key === 'dataStore') {
             return $this->getDataStore();
-       }
+        }
 
-       if (!$this->hasDataStoreKey($key)) {
+        if (!$this->hasDataStoreKey($key)) {
             return null;
-       }
+        }
 
-       return $this->getDataStoreKey($key);
+        return $this->getDataStoreKey($key);
     }
 }

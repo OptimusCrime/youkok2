@@ -62,7 +62,11 @@ class FrontpageFetchProcessor
                 ->count(),
             'LATEST_ELEMENTS' => ElementController::getLatest(static::PROCESSORS_LIMIT),
             'MOST_POPULAR_ELEMENTS' => static::getMostPopularElement($this->sessionHandler, $this->cache),
-            'MOST_POPULAR_COURSES' => static::getMostPopularCourses($this->sessionHandler, $this->cache, $this->settings),
+            'MOST_POPULAR_COURSES' => static::getMostPopularCourses(
+                $this->sessionHandler,
+                $this->cache,
+                $this->settings
+            ),
             'LATEST_VISITED' => ElementController::getLastVisitedCourses(static::PROCESSORS_LIMIT),
             'USER_PREFERENCES' => static::getUserPreferences($this->sessionHandler),
             'USER_FAVORITES' => array_reverse(static::getUserListing($this->sessionHandler, static::FAVORITES)),
@@ -135,7 +139,8 @@ class FrontpageFetchProcessor
 
         $elements = [];
         foreach ($ids as $id) {
-            $element = Element::fromId($id, ['id', 'name', 'parent', 'directory', 'checksum', 'link', 'pending', 'deleted', 'uri']);
+            $element = Element::fromId($id, ['id', 'name', 'parent', 'directory', 'checksum', 'link', 'pending',
+                'deleted', 'uri']);
             if ($elements !== null) {
                 $elements[] = $element;
             }

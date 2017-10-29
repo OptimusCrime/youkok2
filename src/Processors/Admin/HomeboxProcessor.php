@@ -8,20 +8,18 @@ use Youkok\Utilities\NumberFormatter;
 
 class HomeboxProcessor
 {
-    public static function run ()
+    public static function run()
     {
         return [
             'downloads' => NumberFormatter::format(Download::count()),
             'sessions' => NumberFormatter::format(Session::count()),
             'elements' => NumberFormatter::format(Element
                 ::where('directory', 0)
-                ->count()
-            ),
+                ->count()),
             'courses' => NumberFormatter::format(Element
                 ::where('directory', 1)
                 ->where('parent', null)
-                ->count()
-            )
+                ->count())
         ];
     }
 }

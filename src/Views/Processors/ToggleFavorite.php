@@ -23,8 +23,7 @@ class ToggleFavorite extends BaseProcessorView
         if (isset($request->getParams()['type'])) {
             if ($request->getParams()['type'] === ToggleFavoriteProcessor::REMOVE) {
                 $type = ToggleFavoriteProcessor::REMOVE;
-            }
-            else if ($request->getParams()['type'] === ToggleFavoriteProcessor::ADD) {
+            } elseif ($request->getParams()['type'] === ToggleFavoriteProcessor::ADD) {
                 $type = ToggleFavoriteProcessor::ADD;
             }
         }

@@ -34,7 +34,8 @@ class UpdateMostPopularElements extends JobInterface
         }
     }
 
-    private function populateCache() {
+    private function populateCache()
+    {
         $cache = $this->containers->get('cache');
         if ($cache === null) {
             return null;

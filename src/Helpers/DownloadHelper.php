@@ -47,7 +47,7 @@ class DownloadHelper
         $filePath = ElementHelper::getPhysicalFileLocation($element, $directory);
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileInfo = finfo_file($finfo, $filePath);
-        $fd = fopen ($filePath, "r");
+        $fd = fopen($filePath, "r");
 
         if ($fd === false or $fd === null) {
             return null;

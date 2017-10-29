@@ -18,7 +18,8 @@ class Search extends BaseView
     public function view(Request $request, Response $response, array $args)
     {
         $query = null;
-        if (isset($request->getParams()[static::SEARCH_GET_PARAMETER]) and strlen($request->getParams()[static::SEARCH_GET_PARAMETER]) > 0) {
+        if (isset($request->getParams()[static::SEARCH_GET_PARAMETER])
+            and strlen($request->getParams()[static::SEARCH_GET_PARAMETER]) > 0) {
             $query = str_replace('|', '', strip_tags($request->getParams()[static::SEARCH_GET_PARAMETER]));
         }
 

@@ -24,7 +24,8 @@ class PopularElements extends BaseProcessorView
                 $args['delta'],
                 FrontpageFetchProcessor::PROCESSORS_LIMIT,
                 $this->container->get('cache')
-            ), [
+            ),
+            [
                 'router' => $this->container->get('router')
             ]
         );
@@ -37,7 +38,8 @@ class PopularElements extends BaseProcessorView
     public function update(Request $request, Response $response)
     {
         $delta = null;
-        if (isset($request->getParams()[static::DELTA_POST_KEY]) and strlen($request->getParams()[static::DELTA_POST_KEY]) > 0) {
+        if (isset($request->getParams()[static::DELTA_POST_KEY])
+            and strlen($request->getParams()[static::DELTA_POST_KEY]) > 0) {
             $delta = $request->getParams()[static::DELTA_POST_KEY];
         }
 
@@ -51,9 +53,10 @@ class PopularElements extends BaseProcessorView
         $output = MostPopularElementsMapper::map(
             PopularElementsProcessor::fromDelta(
                 $delta,
-                FrontpageFetchProcessor::PROCESSORS_LIMIT,
-                $this->container->get('cache')
-            ), [
+                $this->container->get('cache'),
+                FrontpageFetchProcessor::PROCESSORS_LIMIT
+            ),
+            [
                 'router' => $this->container->get('router')
             ]
         );

@@ -1,9 +1,11 @@
 <?php
 namespace Youkok\Utilities;
 
-class TimeFormatter {
+class TimeFormatter
+{
 
-    public static function clean($d, $include_time = true) {
+    public static function clean($d, $include_time = true)
+    {
         if ($d == 'CURRENT_TIMESTAMP') {
             $d = date('Y-m-d  G:i:s');
         }

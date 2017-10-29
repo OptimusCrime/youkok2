@@ -11,7 +11,7 @@ class PopularCoursesProcessor extends AbstractPopularListingProcessor
     const CACHE_DIRECTORY_KEY = 'cache_directory';
     const CACHE_DIRECTORY_SUB = 'courses';
 
-    public static function fromDelta($delta = MostPopularElement::MONTH, $limit = null, $cache, $settings = null)
+    public static function fromDelta($delta, $cache, $limit = null, $settings = null)
     {
         $result = CacheHelper::getMostPopularCoursesFromDelta($cache, $delta, $settings);
         if (empty($result)) {

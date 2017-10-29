@@ -6,6 +6,7 @@ use Youkok\Enums\MostPopularCourse;
 use Youkok\Processors\FrontpageFetchProcessor;
 use Youkok\Processors\PopularListing\PopularCoursesProcessor;
 use Youkok\Utilities\CacheKeyGenerator;
+
 class UpdateMostPopularCourses extends JobInterface
 {
     private static $mostPopularKeys = [
@@ -43,7 +44,8 @@ class UpdateMostPopularCourses extends JobInterface
 
     private function clearFileCache()
     {
-        $cacheDirectory = $this->containers->get('settings')[PopularCoursesProcessor::CACHE_DIRECTORY_KEY] . PopularCoursesProcessor::CACHE_DIRECTORY_SUB;
+        $cacheDirectory = $this->containers->get('settings')[PopularCoursesProcessor::CACHE_DIRECTORY_KEY]
+            . PopularCoursesProcessor::CACHE_DIRECTORY_SUB;
         if (!file_exists($cacheDirectory)) {
             return;
         }
@@ -56,7 +58,8 @@ class UpdateMostPopularCourses extends JobInterface
         return true;
     }
 
-    private function populateCache() {
+    private function populateCache()
+    {
         $cache = $this->containers->get('cache');
         if ($cache === null) {
             return null;

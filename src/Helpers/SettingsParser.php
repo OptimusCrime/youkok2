@@ -28,8 +28,7 @@ class SettingsParser
                 }
 
                 $this->settings = array_replace_recursive($this->settings, $newSettings);
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 // Log error here
             }
         }
@@ -41,5 +40,4 @@ class SettingsParser
     {
         return $this->settings;
     }
-
 }

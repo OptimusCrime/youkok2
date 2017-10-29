@@ -14,8 +14,7 @@ class FetchTitleProcessor
         $site_content = null;
         try {
             $site_content = @file_get_contents($_POST['url']);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             // The fuck
             return static::returnError();
         }

@@ -16,7 +16,6 @@ class CreateLink extends BaseProcessorView
     {
         return $this->output($response, CreateLinkProcessor::fromRequest($request)
             ->withResponse($response)
-            ->run()
-        );
+            ->run());
     }
 }

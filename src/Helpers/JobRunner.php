@@ -55,8 +55,7 @@ class JobRunner
             try {
                 $jobInstance = new $job($this->containers);
                 $jobInstance->run();
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 //
             }
         }

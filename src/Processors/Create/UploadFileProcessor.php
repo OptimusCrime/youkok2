@@ -222,8 +222,7 @@ class UploadFileProcessor extends AbstractCreateProcessor
         try {
             $uploadedFile->moveTo(static::getTarget($settings, $checksum) . $checksum);
             return true;
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             // TODO better handling here (and logging)
             return false;
         }

@@ -14,6 +14,6 @@ class ArchiveHistoryProcessor
             return [];
         }
 
-       return ElementController::getVisibleChildren($element->id, ElementController::SORT_TYPE_AGE);
+        return ElementController::getVisibleChildren($element->id, ElementController::SORT_TYPE_AGE);
     }
 }

@@ -15,8 +15,8 @@ class Element extends BaseModel
     public $timestamps = false;
 
     protected $table = 'element';
-    protected $fillable = array('*');
-    protected $guarded = array('');
+    protected $fillable = ['*'];
+    protected $guarded = [''];
 
     private $parents;
     private $childrenObjects;
@@ -47,7 +47,7 @@ class Element extends BaseModel
 
     private static function handleElementType($element, $type)
     {
-        switch($type) {
+        switch ($type) {
             case self::ELEMENT_TYPE_DIRECTORIES:
                 $element->where('directory', 1);
                 break;
@@ -180,7 +180,7 @@ class Element extends BaseModel
 
         $parents = [$this];
         $currentObject = $this;
-        while($currentObject->parent !== null and $currentObject->parent !== 0) {
+        while ($currentObject->parent !== null and $currentObject->parent !== 0) {
             $currentObject = Element::select('id', 'name', 'slug', 'uri', 'parent', 'directory')
                 ->where('id', $currentObject->parent);
 
@@ -325,8 +325,7 @@ class Element extends BaseModel
     {
         if ($name === 'childrenObjects') {
             $this->childrenObjects = $value;
-        }
-        else {
+        } else {
             parent::__set($name, $value);
         }
     }

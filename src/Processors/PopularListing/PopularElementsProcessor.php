@@ -8,7 +8,7 @@ use Youkok\Models\Element;
 
 class PopularElementsProcessor extends AbstractPopularListingProcessor
 {
-    public static function fromDelta($delta = MostPopularElement::MONTH, $limit, $cache)
+    public static function fromDelta($delta, $cache, $limit)
     {
         $ids = CacheHelper::getMostPopularElementsFromDelta($cache, $delta, $limit);
         if (empty($ids)) {

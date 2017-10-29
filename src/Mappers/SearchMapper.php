@@ -137,7 +137,6 @@ class SearchMapper implements Mapper
             if (isset($matches[0]) and isset($matches[0])) {
                 return $permutation;
             }
-
         }
 
         return null;
@@ -150,7 +149,11 @@ class SearchMapper implements Mapper
             return null;
         }
 
-        return '/^' . static::replaceWildcardToken($expressionSplit[0]) . '\|\|' . static::replaceWildcardToken($expressionSplit[1]) . '$/i';
+        return '/^'
+            . static::replaceWildcardToken($expressionSplit[0])
+            . '\|\|'
+            . static::replaceWildcardToken($expressionSplit[1])
+            . '$/i';
     }
 
     private static function replaceWildcardToken($string)

@@ -25,7 +25,7 @@ abstract class AbstractCreateProcessor
     {
         return Element::where('id', $id)
                 ->where('deleted', 0)
-                ->where('pending',0)
+                ->where('pending', 0)
                 ->where('directory', 1)
                 ->get() !== null;
     }

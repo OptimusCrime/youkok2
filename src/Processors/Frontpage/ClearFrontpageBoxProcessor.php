@@ -65,8 +65,7 @@ class ClearFrontpageBoxProcessor
     {
         if ($type === static::PARAM_VALUE_HISTORY) {
             $sessionHandler->setData('latest_course_visited', [], SessionHandler::MODE_OVERWRITE);
-        }
-        else {
+        } else {
             $sessionHandler->setData('favorites', [], SessionHandler::MODE_OVERWRITE);
         }
 

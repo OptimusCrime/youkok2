@@ -66,7 +66,7 @@ class SearchProcessor
         }
 
         $query = [];
-        $permutations = static::pc_permute($search);
+        $permutations = static::pcPermute($search);
         foreach ($permutations as $v) {
             // Partition the array. First result should have no values on the left side, and all on the right,
             // second should have one values on the left side, and the remaining right, ...
@@ -82,7 +82,7 @@ class SearchProcessor
                     $right = implode('', $par['right']);
                 }
 
-               $query[] = $left . '||' . $right;
+                $query[] = $left . '||' . $right;
             }
         }
 
@@ -118,7 +118,8 @@ class SearchProcessor
     }
 
     // TODO split out and clean up
-    private static function pc_permute($items, $perms = array( )) {
+    private static function pcPermute($items, $perms = [ ])
+    {
         if (empty($items)) {
             return [$perms];
         }
@@ -129,10 +130,9 @@ class SearchProcessor
             $newperms = $perms;
             list($foo) = array_splice($newitems, $i, 1);
             array_unshift($newperms, $foo);
-            $return = array_merge($return, static::pc_permute($newitems, $newperms));
+            $return = array_merge($return, static::pcPermute($newitems, $newperms));
         }
 
         return $return;
     }
-
 }

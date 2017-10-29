@@ -18,10 +18,10 @@ class YoukokTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('element_url', array($this, 'elementUrl')),
-            new \Twig_SimpleFunction('youkok_url', array($this, 'youkokUrl')),
-            new \Twig_SimpleFunction('posted_at', array($this, 'postedAt')),
-            new \Twig_SimpleFunction('whole_number_format', array($this, 'wholeNumberFormat')),
+            new \Twig_SimpleFunction('element_url', [$this, 'elementUrl']),
+            new \Twig_SimpleFunction('youkok_url', [$this, 'youkokUrl']),
+            new \Twig_SimpleFunction('posted_at', [$this, 'postedAt']),
+            new \Twig_SimpleFunction('whole_number_format', [$this, 'wholeNumberFormat']),
         ];
     }
 
@@ -63,6 +63,7 @@ class YoukokTwigExtension extends \Twig_Extension
     public function youkokUrl()
     {
         $uri = $this->request->getUri();
-        return $uri->getScheme() . '://' . $uri->getHost() . (in_array($uri->getPort(), [80, 443]) ? '' : (':' . $uri->getPort()));
+        return $uri->getScheme() . '://' . $uri->getHost()
+            . (in_array($uri->getPort(), [80, 443]) ? '' : (':' . $uri->getPort()));
     }
 }

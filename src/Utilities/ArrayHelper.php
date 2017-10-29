@@ -1,7 +1,8 @@
 <?php
 namespace Youkok\Utilities;
 
-class ArrayHelper {
+class ArrayHelper
+{
 
     public static function removeFromArray(array $array, $value)
     {
@@ -42,7 +43,8 @@ class ArrayHelper {
         return $var;
     }
 
-    public static function prependToArray(array $array, $value){
+    public static function prependToArray(array $array, $value)
+    {
         $newArray = [
             static::cloneVar($value)
         ];

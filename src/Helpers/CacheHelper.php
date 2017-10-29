@@ -41,7 +41,8 @@ class CacheHelper
 
     private static function getMostPopularCoursesFromDisk($key, $settings)
     {
-        $cacheDirectory = $settings[PopularCoursesProcessor::CACHE_DIRECTORY_KEY] . PopularCoursesProcessor::CACHE_DIRECTORY_SUB;
+        $cacheDirectory = $settings[PopularCoursesProcessor::CACHE_DIRECTORY_KEY]
+            . PopularCoursesProcessor::CACHE_DIRECTORY_SUB;
         $cacheFile = $cacheDirectory . DIRECTORY_SEPARATOR . $key . '.json';
 
         $fileContents = file_get_contents($cacheFile);

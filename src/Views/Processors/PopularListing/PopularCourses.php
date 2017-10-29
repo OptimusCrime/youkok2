@@ -24,10 +24,11 @@ class PopularCourses extends BaseProcessorView
         $output = ElementsMapper::map(
             PopularCoursesProcessor::fromDelta(
                 $args['delta'],
-                FrontpageFetchProcessor::PROCESSORS_LIMIT,
                 $this->container->get('cache'),
+                FrontpageFetchProcessor::PROCESSORS_LIMIT,
                 $this->container->get('settings')
-            ), [
+            ),
+            [
                 'router' => $this->container->get('router')
             ]
         );
@@ -40,7 +41,8 @@ class PopularCourses extends BaseProcessorView
     public function update(Request $request, Response $response)
     {
         $delta = null;
-        if (isset($request->getParams()[static::DELTA_POST_KEY]) and strlen($request->getParams()[static::DELTA_POST_KEY]) > 0) {
+        if (isset($request->getParams()[static::DELTA_POST_KEY])
+            and strlen($request->getParams()[static::DELTA_POST_KEY]) > 0) {
             $delta = $request->getParams()[static::DELTA_POST_KEY];
         }
 
@@ -54,10 +56,11 @@ class PopularCourses extends BaseProcessorView
         $output = MostPopularCoursesMapper::map(
             PopularCoursesProcessor::fromDelta(
                 $delta,
-                FrontpageFetchProcessor::PROCESSORS_LIMIT,
                 $this->container->get('cache'),
+                FrontpageFetchProcessor::PROCESSORS_LIMIT,
                 $this->container->get('settings')
-            ), [
+            ),
+            [
                 'router' => $this->container->get('router')
             ]
         );

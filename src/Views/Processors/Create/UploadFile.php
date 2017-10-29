@@ -18,7 +18,6 @@ class UploadFile extends BaseProcessorView
             ::fromRequest($request)
             ->withSettings($this->container->get('settings'))
             ->withResponse($response)
-            ->run()
-        );
+            ->run());
     }
 }
