@@ -2,6 +2,7 @@
 namespace Youkok\CachePopulators;
 
 use Youkok\Controllers\DownloadController;
+use Youkok\Processors\PopularListing\PopularCoursesProcessor;
 use Youkok\Utilities\CacheKeyGenerator;
 
 class PopulateMostPopularCourses extends AbstractCachePopulator
@@ -49,6 +50,27 @@ class PopulateMostPopularCourses extends AbstractCachePopulator
 
     private static function storeDataInFile($config, $setKey, $courses)
     {
-        // TODO
+        // Make sure we have the directory first
+        if (!static::createCacheDirectory($config)) {
+            return false;
+        }
+
+        $cacheDirectory = static::getCacheDirectory($config);
+        return file_put_contents($cacheDirectory . DIRECTORY_SEPARATOR . $setKey . '.json', json_encode($courses));
+    }
+
+    private static function createCacheDirectory($config)
+    {
+        $cacheDirectory = static::getCacheDirectory($config);
+        if (file_exists($cacheDirectory)) {
+            return true;
+        }
+
+        return mkdir($cacheDirectory, 0777, true);
+    }
+
+    private static function getCacheDirectory($config)
+    {
+        return $config[PopularCoursesProcessor::CACHE_DIRECTORY_KEY] . PopularCoursesProcessor::CACHE_DIRECTORY_SUB;
     }
 }

@@ -8,6 +8,8 @@ use Youkok\Enums\MostPopularElement;
 use Youkok\Helpers\SessionHandler;
 use Youkok\Models\Download;
 use Youkok\Models\Element;
+use Youkok\Processors\PopularListing\PopularCoursesProcessor;
+use Youkok\Processors\PopularListing\PopularElementsProcessor;
 
 class FrontpageFetchProcessor
 {
@@ -17,6 +19,7 @@ class FrontpageFetchProcessor
 
     private $sessionHandler;
     private $cache;
+    private $settings;
 
     public function __construct(SessionHandler $sessionHandler)
     {
@@ -27,6 +30,12 @@ class FrontpageFetchProcessor
     public function withCache($cache)
     {
         $this->cache = $cache;
+        return $this;
+    }
+
+    public function withSettings($settings)
+    {
+        $this->settings = $settings;
         return $this;
     }
 
@@ -53,7 +62,7 @@ class FrontpageFetchProcessor
                 ->count(),
             'LATEST_ELEMENTS' => ElementController::getLatest(static::PROCESSORS_LIMIT),
             'MOST_POPULAR_ELEMENTS' => static::getMostPopularElement($this->sessionHandler, $this->cache),
-            'MOST_POPULAR_COURSES' => static::getMostPopularCourses($this->sessionHandler, $this->cache),
+            'MOST_POPULAR_COURSES' => static::getMostPopularCourses($this->sessionHandler, $this->cache, $this->settings),
             'LATEST_VISITED' => ElementController::getLastVisitedCourses(static::PROCESSORS_LIMIT),
             'USER_PREFERENCES' => static::getUserPreferences($this->sessionHandler),
             'USER_FAVORITES' => array_reverse(static::getUserListing($this->sessionHandler, static::FAVORITES)),
@@ -75,11 +84,12 @@ class FrontpageFetchProcessor
             ->run(static::PROCESSORS_LIMIT);
     }
 
-    private static function getMostPopularCourses(SessionHandler $sessionHandler, $cache)
+    private static function getMostPopularCourses(SessionHandler $sessionHandler, $cache, $settings)
     {
         return PopularCoursesProcessor
             ::fromSessionHandler($sessionHandler)
             ->withCache($cache)
+            ->withSettings($settings)
             ->run();
     }
 

@@ -1,5 +1,5 @@
 <?php
-namespace Youkok\Processors;
+namespace Youkok\Processors\PopularListing;
 
 use Youkok\Enums\MostPopularElement;
 use Youkok\Helpers\CacheHelper;

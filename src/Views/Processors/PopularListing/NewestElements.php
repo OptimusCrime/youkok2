@@ -1,11 +1,12 @@
 <?php
-namespace Youkok\Views\Processors;
+namespace Youkok\Views\Processors\PopularListing;
 
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
 use Youkok\Mappers\MostPopularElementsMapper;
 use Youkok\Processors\NewestElementsProcessor;
+use Youkok\Views\Processors\BaseProcessorView;
 
 class NewestElements extends BaseProcessorView
 {

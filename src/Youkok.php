@@ -60,12 +60,12 @@ class Youkok
             $app->post('/favorite', '\Youkok\Views\Processors\ToggleFavorite:view')->setName('toggle_favorite');
             $app->post('/clear-frontpage-box', '\Youkok\Views\Processors\ClearFrontpageBox:view')->setName('clear_frontpage_box');
 
-            $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularCourses:fetch')->setName('popular_courses_get');
-            $app->post('/popular-courses', '\Youkok\Views\Processors\PopularCourses:update')->setName('popular_courses');
+            $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularListing\PopularCourses:fetch')->setName('popular_courses_get');
+            $app->post('/popular-courses', '\Youkok\Views\Processors\PopularListing\PopularCourses:update')->setName('popular_courses');
 
-            $app->get('/popular-elements/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularElements:fetch')->setName('popular_elements_get');
-            $app->post('/popular-elements', '\Youkok\Views\Processors\PopularElements:update')->setName('popular_elements');
-            $app->get('/newest-elements', '\Youkok\Views\Processors\NewestElements:view')->setName('newest_elements');
+            $app->get('/popular-elements/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularListing\PopularElements:fetch')->setName('popular_elements_get');
+            $app->post('/popular-elements', '\Youkok\Views\Processors\PopularListing\PopularElements:update')->setName('popular_elements');
+            $app->get('/newest-elements', '\Youkok\Views\Processors\PopularListing\NewestElements:view')->setName('newest_elements');
 
             $app->group('/link', function () use ($app) {
                 $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');

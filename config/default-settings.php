@@ -40,6 +40,9 @@ return [
         // MUST have an ending slash
         'file_directory' => '/var/www/files/',
 
+        // MUST have an ending slash
+        'cache_directory' => '/var/www/cache/',
+
         'file_endings' => [
             'pdf', 'txt', 'java', 'py', 'html', 'htm', 'sql'
         ],

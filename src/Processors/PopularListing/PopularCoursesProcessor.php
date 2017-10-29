@@ -1,7 +1,6 @@
 <?php
-namespace Youkok\Processors;
+namespace Youkok\Processors\PopularListing;
 
-use Youkok\Controllers\ElementController;
 use Youkok\Enums\MostPopularElement;
 use Youkok\Helpers\CacheHelper;
 use Youkok\Helpers\SessionHandler;
@@ -9,9 +8,12 @@ use Youkok\Models\Element;
 
 class PopularCoursesProcessor extends AbstractPopularListingProcessor
 {
-    public static function fromDelta($delta = MostPopularElement::MONTH, $limit = null, $cache)
+    const CACHE_DIRECTORY_KEY = 'cache_directory';
+    const CACHE_DIRECTORY_SUB = 'courses';
+
+    public static function fromDelta($delta = MostPopularElement::MONTH, $limit = null, $cache, $settings = null)
     {
-        $result = CacheHelper::getMostPopularCoursesFromDelta($cache, $delta);
+        $result = CacheHelper::getMostPopularCoursesFromDelta($cache, $delta, $settings);
         if (empty($result)) {
             return [];
         }

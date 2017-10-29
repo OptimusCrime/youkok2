@@ -3,16 +3,8 @@ namespace Youkok\Views;
 
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Slim\Container;
 
-use Youkok\Controllers\ElementController;
-use Youkok\Helpers\Utilities;
-use Youkok\Models\Contributor;
-use Youkok\Models\Download;
-use Youkok\Models\Element;
 use Youkok\Processors\FrontpageFetchProcessor;
-use Youkok\Processors\PopularCoursesProcessor;
-use Youkok\Processors\PopularElementsProcessor;
 
 class Frontpage extends BaseView
 {
@@ -25,6 +17,7 @@ class Frontpage extends BaseView
             'FRONTPAGE' => FrontpageFetchProcessor
                 ::fromSessionHandler($this->sessionHandler)
                 ->withCache($this->container->get('cache'))
+                ->withSettings($this->container->get('settings'))
                 ->run(),
             'BODY_CLASS' => 'frontpage'
         ]);

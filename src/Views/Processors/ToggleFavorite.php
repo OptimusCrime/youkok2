@@ -4,10 +4,7 @@ namespace Youkok\Views\Processors;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
-use Youkok\Mappers\ElementsMapper;
 use Youkok\Mappers\ToggleFavoriteMapper;
-use Youkok\Processors\NewestElementsProcessor;
-use Youkok\Processors\PopularCoursesProcessor;
 use Youkok\Processors\ToggleFavoriteProcessor;
 
 class ToggleFavorite extends BaseProcessorView
