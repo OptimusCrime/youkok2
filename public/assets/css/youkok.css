@@ -607,6 +607,9 @@ a:visited {
 #archive-asd {
     margin-bottom: 20px;
 }
+#archive-create-terms {
+    margin-bottom: 10px;
+}
 #archive-create-folder-div,
 #archive-create-file-div,
 #archive-create-link-div {
@@ -1251,4 +1254,7 @@ a.archive-row .archive-row-name {
     display: block;
     font-weight: bold;
     font-size: 39px;
+}
+.flat h2 a {
+    color: #333333;
 }

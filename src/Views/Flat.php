@@ -14,7 +14,8 @@ class Flat extends BaseView
         return $this->render($response, 'flat/help.html', [
             'SITE_TITLE' => 'Hjelp',
             'HEADER_MENU' => 'help',
-            'VIEW_NAME' => 'help'
+            'VIEW_NAME' => 'help',
+            'BODY_CLASS' => 'flat'
         ]);
     }
 
@@ -26,7 +27,8 @@ class Flat extends BaseView
         return $this->render($response, 'flat/about.html', [
             'SITE_TITLE' => 'Om Youkok2',
             'HEADER_MENU' => 'about',
-            'VIEW_NAME' => 'about'
+            'VIEW_NAME' => 'about',
+            'BODY_CLASS' => 'flat'
         ]);
     }
 
@@ -39,7 +41,8 @@ class Flat extends BaseView
             'SITE_TITLE' => 'Retningslinjer',
             'HEADER_MENU' => '',
             'VIEW_NAME' => 'terms',
-            'FILE_ENDINGS' => $this->container->get('settings')['file_endings']
+            'FILE_ENDINGS' => $this->container->get('settings')['file_endings'],
+            'BODY_CLASS' => 'flat'
         ]);
     }
 

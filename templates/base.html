@@ -63,7 +63,8 @@
                 <span><a href="{{ path_for('about') }}">Om Youkok2</a></span>
                 <span><a href="{{ path_for('terms') }}">Retningslinjer</a></span>
                 <span><a href="{{ path_for('help') }}">Hjelp</a></span>
-                <span><a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">Kontakt</a></span>
+                <span><a href="{{ path_for('terms') }}#cookies">Om informasjonskapsler (cookies)</a></span>
+                <span><a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">{{ SITE_SETTINGS.EMAIL_CONTACT }}</a></span>
                 <span>{{ EXECUTION_TIME }}</span>
                 <span><a href="https://github.com/OptimusCrime/youkok2" target="_blank">GitHub</a></span>
             </p>

@@ -1,3 +1,23 @@
+Youkok2 - 3.0.0-alpha  (xx. xxxx 20xx)
+======================================
+
+- [Info] Total omskrivning.
+- [Technical] Skrevet om hele nettsiden til Request/Response pattern i Slim3.
+- [Technical] Caching bruker nå Redis key-value storage.
+- [Technical] Docker-basert arkitektur, både i produksjon og i utvikling.
+- [Removed] Brukere og all logikk knyttet til innlogging og registrering.
+- [Removed] Mine siste nedlastninger.
+- [Removed] Karma og alt det surret der.
+- [Removed] Mulighet for brukere til å selv opprette mapper.
+- [New] Session-basert cookie opplegg.
+- [New] Mine siste besøkte fag.
+- [Enhanced] Bedre søk og bedre highlight
+- [Fixed] Opplastede filer vil ikke miste filtypen i URIen sin.
+- [Enhanced] Forsiden har fått en mindre overhalling.
+- [Enhanced] Nytt/Bedre innhold i sidebar.
+- [Enhanced] Opplisting av mapper og filer bruker nå en listevisning i stede for rutenett.
+- [New] Skrevet om alle statiske sider.
+
 Youkok2 - 2.4.1-pl  (29. april 2016)
 ====================================
 

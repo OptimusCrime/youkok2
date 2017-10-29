@@ -3,7 +3,9 @@
 <div class="row">
     <div class="col-xs-12 col-md-8">
         <h1>Hjelp</h1>
-        <p>Lorem ipsum dolor sit amet</p>
+        <p>Kontakt oss på <a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">{{ SITE_SETTINGS.EMAIL_CONTACT }}</a> dersom du har problemer med nettsiden eller om du trenger hjelp.</p>
+        <h2>Jeg får ikke lastet opp bidrag</h2>
+        <p>Opplasteren skal fungere i alle moderne nettlesere. Pass på at bidraget har <a href="{{ path_for('terms') }}#filtyper">godkjent filendelse</a>. Ta kontakt med oss dersom du fortsatt opplever problemer med opplasting av bidrag.</p>
     </div>
     <div class="col-xs-12 col-md-4" id="sidebar">
         {% include "sidebar/flat.html" %}
