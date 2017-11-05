@@ -81,6 +81,8 @@ class BaseView
 
     protected function render404(Response $response)
     {
+        $response = $response->withStatus(404);
+
         return $this->render($response, 'errors/404.html', [
             'HEADER_MENU' => '',
             'VIEW_NAME' => '404',
