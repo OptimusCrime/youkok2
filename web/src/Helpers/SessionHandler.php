@@ -19,7 +19,7 @@ class SessionHandler
     private $hash;
     private $dirty;
 
-    public function __construct()
+    public function __construct($loadSessions = true)
     {
         // This is the default session data array
         $this->data = [
@@ -35,7 +35,9 @@ class SessionHandler
         $this->hash = null;
         $this->dirty = false;
 
-        $this->loadSession();
+        if ($loadSessions) {
+            $this->loadSession();
+        }
     }
 
     /**
@@ -56,6 +58,16 @@ class SessionHandler
 
         $this->data = array_replace_recursive($this->data, json_decode($currentSession->data, true));
         $this->hash = $cookie;
+    }
+
+    public function getSessionDataFromHash($hash)
+    {
+        $currentSession = $this->getSession($hash);
+        if ($currentSession === null) {
+            return $this->data;
+        }
+
+        return array_replace_recursive($this->data, json_decode($currentSession->data, true));
     }
 
     private function getSession($hash)

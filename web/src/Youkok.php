@@ -5,6 +5,7 @@ use \Slim\App as App;
 
 use Youkok\Helpers\JobRunner;
 use Youkok\Loaders\Containers;
+use Youkok\Middlewares\AdminAuthMiddleware;
 use Youkok\Middlewares\ReverseProxyMiddleware;
 use Youkok\Middlewares\TimingMiddleware;
 
@@ -112,7 +113,7 @@ class Youkok
                     '/homeboxes',
                     '\Youkok\Views\Processors\Admin\Homeboxes:view'
                 )->setName('admin_processor_homeboxes');
-            }); // TODO add middleware for admin here
+            })->add(new AdminAuthMiddleware());
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 
         $app->group('/admin', function () use ($app) {
@@ -144,7 +145,7 @@ class Youkok
                 '/scripts',
                 '\Youkok\Views\Admin\Scripts:view'
             )->setName('admin_scripts');
-        })->add(new ReverseProxyMiddleware());; // TODO add middleware for admin here
+        })->add(new ReverseProxyMiddleware())->add(new AdminAuthMiddleware());
     }
 
     private function dependencies()
