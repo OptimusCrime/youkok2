@@ -18,7 +18,8 @@ class Pending extends AdminBaseView
             'ADMIN_TITLE' => 'Nye bidrag',
             'HEADER_MENU' => 'admin_pending',
             'VIEW_NAME' => 'admin_pending',
-            'BODY_CLASS' => 'admin'
+            'BODY_CLASS' => 'admin',
+            'FILES' => AdminPendingFetchProcessor::run()
         ]);
     }
 }

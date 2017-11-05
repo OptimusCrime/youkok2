@@ -16,7 +16,7 @@ class AdminFileFetchProcessor
         return $courses;
     }
 
-    private static function fetchChildren(Element $element)
+    public static function fetchChildren(Element $element)
     {
         $children = ElementController::getAllChildren($element->id);
         if (count($children) > 0) {

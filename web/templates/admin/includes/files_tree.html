@@ -17,7 +17,7 @@
             {% endif %}
 
             <a href="#">{{ ELEMENT.name }} {% if ELEMENT.link|length > 0%} ({{ ELEMENT.link }}){% endif %}</a>
-            <a href="#"><i class="fa fa-cog admin-tree-edit" aria-hidden="true"></i></a>
+            <a href="#"><i class="fa fa-cog admin-tree-edit" data-id="{{ ELEMENT.id }}" data-url="{{ path_for('admin_processor_element_details_fetch', {'id': ELEMENT.id}) }}" aria-hidden="true"></i></a>
         </div>
         {% if ELEMENT.childrenObjects|length > 0 %}
             <ul>

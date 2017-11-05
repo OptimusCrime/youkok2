@@ -113,6 +113,10 @@ class Youkok
                     '/homeboxes',
                     '\Youkok\Views\Processors\Admin\Homeboxes:view'
                 )->setName('admin_processor_homeboxes');
+                $app->get(
+                    '/element-details/{id:[0-9]+}',
+                    '\Youkok\Views\Processors\Admin\ElementDetails:fetch'
+                )->setName('admin_processor_element_details_fetch');
             })->add(new AdminAuthMiddleware());
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 
