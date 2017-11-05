@@ -149,6 +149,7 @@ class Youkok
             \Youkok\Containers\View::class,
             \Youkok\Containers\Database::class,
             \Youkok\Containers\Cache::class,
+            \Youkok\Containers\PageNotFound::class,
         ];
 
         foreach ($containers as $container) {
