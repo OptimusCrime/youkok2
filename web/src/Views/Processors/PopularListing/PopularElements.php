@@ -22,8 +22,8 @@ class PopularElements extends BaseProcessorView
         $output = MostPopularElementsMapper::map(
             PopularElementsProcessor::fromDelta(
                 $args['delta'],
-                FrontpageFetchProcessor::PROCESSORS_LIMIT,
-                $this->container->get('cache')
+                $this->container->get('cache'),
+                FrontpageFetchProcessor::PROCESSORS_LIMIT
             ),
             [
                 'router' => $this->container->get('router')
