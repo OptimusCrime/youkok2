@@ -21,14 +21,13 @@ restart: stop start
 start:
 	@docker-compose up -d
 
+up: start
+
 status:
 	@docker-compose ps
 
 stop:
 	@docker-compose stop
-
-tail:
-	@docker-compose logs $(SERVER_SERVICE_NAME)
 
 migrate:
 	@docker-compose run --rm $(SERVER_SERVICE_NAME) vendor/bin/phinx migrate -c docker/phinx.yml
@@ -37,3 +36,5 @@ composer:
 	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer install
 
 install: composer migrate
+
+upgrade: build restart

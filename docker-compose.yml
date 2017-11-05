@@ -13,9 +13,9 @@ services:
     user: "1000"
     network_mode: "none"
     volumes:
-      - .:/var/www/html
-      - ./../youkok_files:/var/www/files
-      - ./../youkok_cache:/var/www/cache
+      - ./web:/var/www/html
+      - ./files:/var/www/files
+      - ./cache:/var/www/cache
 
 
   ###############################################
@@ -26,7 +26,7 @@ services:
     container_name: "youkok2_db"
     image: "mysql:5.7.17"
     ports:
-      - "3306:3306"
+      - "3316:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=youkok2
@@ -44,7 +44,7 @@ services:
     container_name: "youkok2_cache"
     image: "redis:4.0.2-alpine"
     ports:
-     - "6379:6379"
+     - "6389:6379"
     volumes:
       - /data
 
@@ -64,12 +64,9 @@ services:
       dockerfile: Dockerfile.server
     ports:
       - "8000:80"
-    environment:
-      - docker=1
-      - COMPOSER_ALLOW_SUPERUSER=1
-      - MYSQL_USER=youkok2
-      - MYSQL_PASSWORD=youkok2
-      - MYSQL_DATABASE=youkok2
+    volumes:
+      - ./apache:/etc/apache2/sites-enabled
+      - ./logs:/var/log/apache2
     links:
       - db
       - cache
