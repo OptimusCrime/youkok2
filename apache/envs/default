@@ -1,5 +1,6 @@
 # Various default settings
 export COMPOSER_ALLOW_SUPERUSER=1
+export SSL=0
 
 # Database default settings
 export MYSQL_TABLE=youkok2

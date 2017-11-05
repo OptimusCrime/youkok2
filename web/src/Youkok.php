@@ -5,6 +5,7 @@ use \Slim\App as App;
 
 use Youkok\Helpers\JobRunner;
 use Youkok\Loaders\Containers;
+use Youkok\Middlewares\ReverseProxyMiddleware;
 use Youkok\Middlewares\TimingMiddleware;
 
 class Youkok
@@ -38,7 +39,10 @@ class Youkok
     {
         $app = $this->app;
 
-        $app->get('/', '\Youkok\Views\Frontpage:view')->setName('home')->add(new TimingMiddleware());
+        $app
+            ->get('/', '\Youkok\Views\Frontpage:view')->setName('home')
+            ->add(new TimingMiddleware())
+            ->add(new ReverseProxyMiddleware());
 
         $app->group('/', function () use ($app) {
             $app->get('emner[/{params:.*}]', '\Youkok\Views\Archive:view')->setName('archive');
@@ -52,7 +56,7 @@ class Youkok
 
             $app->get('lorem', '\Youkok\Views\Admin\Login:display')->setName('admin_login');
             $app->post('lorem', '\Youkok\Views\Admin\Login:submit')->setName('admin_login_submit');
-        })->add(new TimingMiddleware());
+        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 
         $app->group('/processors', function () use ($app) {
             $app->get('/history/{id:[0-9]+}', '\Youkok\Views\Processors\ArchiveHistory:view');
@@ -109,7 +113,7 @@ class Youkok
                     '\Youkok\Views\Processors\Admin\Homeboxes:view'
                 )->setName('admin_processor_homeboxes');
             }); // TODO add middleware for admin here
-        })->add(new TimingMiddleware());
+        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 
         $app->group('/admin', function () use ($app) {
             $app->get(
@@ -140,7 +144,7 @@ class Youkok
                 '/scripts',
                 '\Youkok\Views\Admin\Scripts:view'
             )->setName('admin_scripts');
-        }); // TODO add middleware for admin here
+        })->add(new ReverseProxyMiddleware());; // TODO add middleware for admin here
     }
 
     private function dependencies()

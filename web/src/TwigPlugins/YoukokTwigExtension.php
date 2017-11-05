@@ -62,8 +62,10 @@ class YoukokTwigExtension extends \Twig_Extension
 
     public function youkokUrl()
     {
+        $scheme = getenv('SSL') === '1' ? 'https' : 'http';
+
         $uri = $this->request->getUri();
-        return $uri->getScheme() . '://' . $uri->getHost()
+        return $scheme . '://' . $uri->getHost()
             . (in_array($uri->getPort(), [80, 443]) ? '' : (':' . $uri->getPort()));
     }
 }
