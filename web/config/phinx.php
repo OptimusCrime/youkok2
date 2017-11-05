@@ -12,7 +12,7 @@ return [
         'seeds' => '%%PHINX_CONFIG_DIR%%/../phinx/seeds',
     ],
     'environments' => [
-        'default_migration_table' => 'phixlog',
+        'default_migration_table' => 'phinxlog',
         'default_database' => 'production',
         'production' => [
             'adapter' => 'mysql',
