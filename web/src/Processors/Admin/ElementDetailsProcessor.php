@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Processors\Admin;
 
+use Youkok\Helpers\ElementHelper;
 use Youkok\Models\Download;
 use Youkok\Models\Element;
 use Youkok\Models\Session;
@@ -8,15 +9,34 @@ use Youkok\Utilities\NumberFormatter;
 
 class ElementDetailsProcessor
 {
+    private $id;
+    private $settings;
+
+    public function __construct($id)
+    {
+        $this->id = $id;
+    }
+
+    public function withSettings($settings)
+    {
+        $this->settings = $settings;
+        return $this;
+    }
+
     public static function fetch($id)
     {
-        if ($id === null) {
+        return new ElementDetailsProcessor($id);
+    }
+
+    public function run()
+    {
+        if ($this->id === null) {
             return [
                 'code' => 400
             ];
         }
 
-        $element = Element::fromIdAll($id, [
+        $element = Element::fromIdAll($this->id, [
             'id', 'name', 'slug', 'uri', 'parent', 'empty' , 'checksum', 'size', 'directory',
             'pending', 'deleted', 'link' , 'added', 'last_visited'
         ]);
@@ -42,8 +62,21 @@ class ElementDetailsProcessor
             'link' => $element->link,
             'added' => $element->added,
             'last_visited' => $element->last_visited,
-            'parents' => static::getChildrenForElement($element, $element->rootParentAll)
+            'parents' => static::getChildrenForElement($element, $element->rootParentAll),
+            'checksum_verified' => static::verifyChecksum($element, $this->settings)
         ];
+    }
+
+    private static function verifyChecksum(Element $element, $settings)
+    {
+        if ($element->link !== null) {
+            return null;
+        }
+        if ($element->directory === 1) {
+            return null;
+        }
+
+        return ElementHelper::fileExists($element, $settings['file_directory']);
     }
 
     private static function getChildrenForElement(Element $original, Element $element, $depth = 0)

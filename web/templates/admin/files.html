@@ -40,15 +40,17 @@
                     <input type="hidden" id="element-id" value="" />
                     <div class="form-group">
                         <label for="element-name">Navn</label>
-                        <input type="text" class="form-control" id="element-name" placeholder="Eksamensoppgaver">
+                        <input type="text" class="form-control" id="element-name">
                     </div>
                     <div class="form-group">
                         <label for="element-slug">Slug</label>
-                        <input type="text" class="form-control" id="element-slug" placeholder="tdt4110">
+                        <a href="#" id="element-modal-slug-regenerate" data-url="foo">Generer</a>
+                        <input type="text" class="form-control" id="element-slug">
                     </div>
                     <div class="form-group">
                         <label for="element-uri">URI</label>
-                        <input type="text" class="form-control" id="element-uri" placeholder="tdt4110/eksamensoppgaver/lf2014.pdf">
+                        <a href="#" id="element-modal-uri-regenerate" data-url="foo">Generer</a>
+                        <input type="text" class="form-control" id="element-uri">
                     </div>
                     <div class="form-group">
                         <label for="element-parent">Forelder</label>
@@ -57,29 +59,29 @@
                     </div>
                     <div class="form-group">
                         <label for="element-checksum">Checksum</label>
-                        <input type="text" class="form-control" id="element-checksum" placeholder="7ce8636c076f5f42316676f7ca5ccfbe.pdf">
+                        <input type="text" class="form-control" id="element-checksum">
                     </div>
                     <div class="form-group">
                         <label for="element-size">Størrelse</label>
-                        <input type="number" class="form-control" id="element-size" placeholder="101671">
+                        <input type="number" class="form-control" id="element-size">
                     </div>
                     <div class="form-group">
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="element-empty" value="option1"> Empty
+                            <input type="checkbox" id="element-empty" value="1"> Empty
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="element-directory" value="option1"> Directory
+                            <input type="checkbox" id="element-directory" value="1"> Directory
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="element-pending" value="option1"> Pending
+                            <input type="checkbox" id="element-pending" value="1"> Pending
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="element-deleted" value="option1"> Slettet
+                            <input type="checkbox" id="element-deleted" value="1"> Slettet
                         </label>
                     </div>
                     <div class="form-group">
                         <label for="element-link">Link</label>
-                        <input type="url" class="form-control" id="element-link" placeholder="http://www.vg.no">
+                        <input type="url" class="form-control" id="element-link">
                     </div>
                 </form>
             </div>

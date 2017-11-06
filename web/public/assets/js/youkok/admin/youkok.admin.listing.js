@@ -17,6 +17,10 @@ var Youkok = (function (module) {
         $('#element-modal').modal('show');
         $('#element-modal-title').html('Laster...');
         $('#element-modal input').prop('disabled', true);
+        $('#element-modal input[type="text"], #element-modal input[type="numer"], #element-modal input[type="url"]').val('');
+        $('#element-modal input[type="checkbox"]').prop('checked', false);
+        $('#element-modal .has-success, #element-modal .has-error').removeClass('has-success has-error');
+        $('#element-modal .help-block').remove();
 
         $.ajax({
             cache: false,
@@ -44,12 +48,25 @@ var Youkok = (function (module) {
                     }
 
                     $('#element-id').val(json.id);
+
+                    $('#element-modal-slug-regenerate, #element-modal-uri-regenerate').data('id', json.id);
+
                     $('#element-name').val(json.name);
                     $('#element-slug').val(json.slug);
                     $('#element-uri').val(json.uri);
                     $('#element-parent').val(json.parent);
                     $('#element-empty').prop('checked', json.empty === 1);
                     $('#element-checksum').val(json.checksum);
+
+                    if (json.checksum_verified === true) {
+                        $('#element-checksum').parent().append('<span class="help-block">File in place.</span>');
+                        $('#element-checksum').parent().addClass('has-success');
+                    }
+                    else if (json.checksum_verified === false) {
+                        $('#element-checksum').parent().append('<span class="help-block">File is missing.</span>');
+                        $('#element-checksum').parent().addClass('has-error');
+                    }
+
                     $('#element-size').val(json.size);
                     $('#element-directory').prop('checked', json.directory === 1);
                     $('#element-pending').prop('checked', json.pending === 1);
@@ -59,9 +76,22 @@ var Youkok = (function (module) {
                     $('#element-last-visited').val(json.last_visited);
 
                     $('#element-modal input').prop('disabled', false);
+
+                    if (json.directory === 1) {
+                        $('#element-checksum, #element-link, #element-size').prop('disabled', true);
+                    }
+                    if (json.link !== null) {
+                        $('#element-checksum, #element-uri, #element-slug, #element-size').prop('disabled', true);
+                    }
                 }
             }
         });
+    };
+
+    var regenElementField = function(e) {
+        e.preventDefault();
+
+        console.log($(this).data('id'));
     };
 
     /*
@@ -75,6 +105,7 @@ var Youkok = (function (module) {
         init: function () {
             $('body').on('click', '.admin-file-tree-directory', initShowHide);
             $('body').on('click', '.admin-tree-edit', showEditModal);
+            $('body').on('click', '#element-modal-slug-regenerate, #element-modal-uri-regenerate', regenElementField)
         }
     };
 

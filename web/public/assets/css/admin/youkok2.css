@@ -58,3 +58,7 @@ body {
 .admin-file-tree-directory {
     cursor: pointer;
 }
+#element-modal-slug-regenerate, #element-modal-uri-regenerate {
+    position: absolute;
+    right: 20px;
+}

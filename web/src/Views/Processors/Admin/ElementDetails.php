@@ -21,6 +21,10 @@ class ElementDetails extends BaseProcessorView
             $id = $args['id'];
         }
 
-        return $this->output($response, ElementDetailsProcessor::fetch($id));
+        return $this->output($response, ElementDetailsProcessor
+            ::fetch($id)
+            ->withSettings($this->container->get('settings'))
+            ->run()
+        );
     }
 }
