@@ -19,7 +19,7 @@ class PopularCourses extends BaseProcessorView
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function fetch(Request $request, Response $response, array $args)
+    public function get(Request $request, Response $response, array $args)
     {
         $output = ElementsMapper::map(
             PopularCoursesProcessor::fromDelta(

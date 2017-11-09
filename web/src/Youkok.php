@@ -73,7 +73,7 @@ class Youkok
 
             $app->get(
                 '/popular-courses/{delta:[0-9]{1}}',
-                '\Youkok\Views\Processors\PopularListing\PopularCourses:fetch'
+                '\Youkok\Views\Processors\PopularListing\PopularCourses:get'
             )->setName('popular_courses_get');
             $app->post(
                 '/popular-courses',
@@ -82,7 +82,7 @@ class Youkok
 
             $app->get(
                 '/popular-elements/{delta:[0-9]{1}}',
-                '\Youkok\Views\Processors\PopularListing\PopularElements:fetch'
+                '\Youkok\Views\Processors\PopularListing\PopularElements:get'
             )->setName('popular_elements_get');
             $app->post(
                 '/popular-elements',
@@ -115,8 +115,24 @@ class Youkok
                 )->setName('admin_processor_homeboxes');
                 $app->get(
                     '/element-details/{id:[0-9]+}',
-                    '\Youkok\Views\Processors\Admin\ElementDetails:fetch'
+                    '\Youkok\Views\Processors\Admin\ElementDetails:get'
                 )->setName('admin_processor_element_details_fetch');
+                $app->put(
+                    '/element-details',
+                    '\Youkok\Views\Processors\Admin\ElementDetails:update'
+                )->setName('admin_processor_element_details_update');
+                $app->get(
+                    '/element-markup/{id:[0-9]+}',
+                    '\Youkok\Views\Processors\Admin\ElementListMarkup:get'
+                )->setName('admin_processor_element_list_markup_fetch');
+                $app->post(
+                    '/element-create',
+                    '\Youkok\Views\Processors\Admin\ElementCreate:run'
+                )->setName('admin_processor_element_create');
+                $app->put(
+                    '/element-regenerate/uri',
+                    '\Youkok\Views\Processors\Admin\ElementRegenerate:uri'
+                )->setName('admin_processor_element_regenerate_uri');
             })->add(new AdminAuthMiddleware());
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 

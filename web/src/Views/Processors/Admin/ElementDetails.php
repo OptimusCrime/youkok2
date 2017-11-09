@@ -11,10 +11,12 @@ use Youkok\Mappers\Admin\HomeboxMapper;
 
 class ElementDetails extends BaseProcessorView
 {
+    const ELEMENT_UPDATE_PARAMETER = 'element-id';
+
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function fetch(Request $request, Response $response, array $args)
+    public function get(Request $request, Response $response, array $args)
     {
         $id = null;
         if (isset($args['id'])) {
@@ -22,9 +24,28 @@ class ElementDetails extends BaseProcessorView
         }
 
         return $this->output($response, ElementDetailsProcessor
-            ::fetch($id)
+            ::id($id)
             ->withSettings($this->container->get('settings'))
-            ->run()
+            ->fetch()
+        );
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function update(Request $request, Response $response)
+    {
+        $id = null;
+        if (isset($request->getParams()[static::ELEMENT_UPDATE_PARAMETER])) {
+            $id = $request->getParams()[static::ELEMENT_UPDATE_PARAMETER];
+        }
+
+        return $this->output($response, ElementDetailsProcessor
+            ::id($id)
+            ->withParams($request->getParams())
+            ->withRouter($this->container->get('router'))
+            ->withSettings($this->container->get('settings'))
+            ->update()
         );
     }
 }

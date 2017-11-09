@@ -51,11 +51,9 @@ class ElementController
 
     public static function getAllNoneEmptyCourses()
     {
-        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')
+        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'deleted', 'pending')
             ->where('parent', null)
             ->where('directory', 1)
-            ->where('pending', 0)
-            ->where('deleted', 0)
             ->where('empty', 0)
             ->orderBy('name')
             ->get();
@@ -98,7 +96,6 @@ class ElementController
             'added', 'deleted'
         ])
             ->where('parent', $id)
-            ->where('pending', 0)
             ->orderBy('deleted', 'ASC')
             ->orderBy('directory', 'DESC')
             ->orderBy('name', 'ASC')

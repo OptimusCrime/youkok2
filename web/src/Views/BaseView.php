@@ -79,6 +79,14 @@ class BaseView
         ));
     }
 
+    protected function fetch($template, array $data = [])
+    {
+        return $this->container->get('view')->fetch($template, array_merge(
+            $this->templateData,
+            $data
+        ));
+    }
+
     protected function render404(Response $response)
     {
         $response = $response->withStatus(404);

@@ -15,6 +15,7 @@ var Youkok = (function (module) {
         e.preventDefault();
 
         $('#element-modal').modal('show');
+        $('#element-modal-save-message').stop().hide();
         $('#element-modal-title').html('Laster...');
         $('#element-modal input').prop('disabled', true);
         $('#element-modal input[type="text"], #element-modal input[type="numer"], #element-modal input[type="url"]').val('');
@@ -90,8 +91,125 @@ var Youkok = (function (module) {
 
     var regenElementField = function(e) {
         e.preventDefault();
+    };
 
-        console.log($(this).data('id'));
+    var refreshContent = function(id, url) {
+        $('#element-container-' + id).css('opacity', 0.2);
+
+        $.ajax({
+            cache: false,
+            url: url,
+            success: function (json) {
+                if (json.code === 200) {
+                    $('#element-container-' + id).html(json.html);
+                }
+                else {
+                    alert('Something went wrong');
+                }
+
+                $('#element-container-' + id).css('opacity', 1);
+            }
+        });
+    };
+
+    var saveModal = function(e) {
+        e.preventDefault();
+
+        var close = this.id === 'element-modal-save-close';
+
+        $.ajax({
+            cache: false,
+            type: 'put',
+            url: $(this).data('url'),
+            data: $('#element-modal-form').serialize(),
+            success: function(json) {
+                if (json.code === 400) {
+                    alert('Someting went wrong');
+                }
+                else {
+                    refreshContent(json.course, json.action);
+                    if (close) {
+                        $('#element-modal').modal('hide');
+                    }
+                    else {
+                        $('#element-modal-save-message').css('display', 'inline-block').delay(6000).queue(function (next) {
+                            $(this).hide();
+                            next();
+                        });
+                    }
+                }
+            }
+        });
+    };
+
+    var regenUri = function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            cache: false,
+            type: 'put',
+            url: $(this).data('url'),
+            data: {
+                'id': $('#element-id').val()
+            },
+            success: function(json) {
+                if (json.code === 400) {
+                    alert('Someting went wrong');
+                }
+                else {
+                    $('#element-uri').val(json.uri);
+                }
+            }
+        });
+    };
+
+    var addChild = function(e) {
+        e.preventDefault();
+
+        $('#directory-modal').modal('show');
+        $('#directory-modal-title').html('Opprett undermappe til ' + $(this).data('name'));
+        $('#directory-parent').val($(this).data('id'));
+        $('#directory-name').val('');
+    };
+
+    var addElement = function(e) {
+        e.preventDefault();
+
+        if ($('#directory-name').length === 0) {
+            alert('Gi mappen et navn');
+            return;
+        }
+
+        $.ajax({
+            cache: false,
+            type: 'post',
+            url: $(this).data('url'),
+            data: $('#directory-modal-form').serialize(),
+            success: function(json) {
+                if (json.code === 400) {
+                    alert('Someting went wrong');
+                }
+                else {
+                    refreshContent(json.course, json.action);
+                    $('#directory-modal').modal('hide');
+                }
+            }
+        });
+
+    };
+
+    var submitElementForm = function(e) {
+        e.preventDefault();
+
+        $('#element-modal-save-close').trigger('click');
+        return false;
+    };
+
+    var submitDirectoryForm = function(e) {
+        e.preventDefault();
+
+        $('#directory-modal-save-close').trigger('click');
+        return false;
     };
 
     /*
@@ -104,8 +222,14 @@ var Youkok = (function (module) {
          */
         init: function () {
             $('body').on('click', '.admin-file-tree-directory', initShowHide);
-            $('body').on('click', '.admin-tree-edit', showEditModal);
-            $('body').on('click', '#element-modal-slug-regenerate, #element-modal-uri-regenerate', regenElementField)
+            $('body').on('click', '.admin-tree-edit, .admin-course-edit', showEditModal);
+            $('body').on('click', '#element-modal-slug-regenerate, #element-modal-uri-regenerate', regenElementField);
+            $('body').on('click', '#element-modal-save, #element-modal-save-close', saveModal);
+            $('body').on('click', '#directory-modal-save-close', addElement);
+            $('body').on('click', '#element-modal-uri-regenerate', regenUri);
+            $('body').on('click', '.admin-tree-add-child', addChild);
+            $('body').on('submit', '#element-modal-form', submitElementForm);
+            $('body').on('submit', '#directory-modal-form', submitDirectoryForm);
         }
     };
 

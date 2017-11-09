@@ -17,7 +17,7 @@ class PopularElements extends BaseProcessorView
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function fetch(Request $request, Response $response, array $args)
+    public function get(Request $request, Response $response, array $args)
     {
         $output = MostPopularElementsMapper::map(
             PopularElementsProcessor::fromDelta(

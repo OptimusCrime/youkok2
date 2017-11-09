@@ -3,6 +3,7 @@ namespace Youkok\Models;
 
 use Carbon\Carbon;
 
+use Youkok\Helpers\ElementHelper;
 use Youkok\Helpers\Utilities;
 use Youkok\Utilities\UriCleaner;
 
@@ -147,7 +148,7 @@ class Element extends BaseModel
             return $this->uri;
         }
 
-        return $this->createUri();
+        return ElementHelper::constructUri($this->id);
     }
 
     public function isLink()
@@ -229,48 +230,6 @@ class Element extends BaseModel
         }
 
         return $parents[0];
-    }
-
-    // Can be removed?
-    private function createUri()
-    {
-        if ($this->isLink()) {
-            return $this->link;
-        }
-
-        $fragments = [$this->slug];
-        $currentParent = $this->parent;
-        do {
-            // Get the parent object
-            $parent = Element::select('id', 'parent', 'slug', 'uri')
-                ->where('deleted', 0)
-                ->where('pending', 0)
-                ->find($currentParent);
-
-            // If we have no valid parent object anyway we have no option but to quit (LOG ERROR)
-            if ($parent === null) {
-                break;
-            }
-
-            // If our parent object has their uri we can just reuse its uri
-            if ($parent->uri !== null and strlen($parent->uri) > 0) {
-                $fragments[] = $parent->uri;
-                break;
-            }
-
-            // Just grab the slug and update parent
-            $fragments[] = $parent->slug;
-            $currentParent = $parent->parent;
-        } while ($currentParent !== 0 and $currentParent !== null);
-
-        // Filter the fragments
-        $cleanFragments = UriCleaner::cleanFragments($fragments);
-
-        // Set the uri for this object
-        $this->uri = implode('/', array_reverse($cleanFragments));
-        $this->save();
-
-        return $this->uri;
     }
 
     private function getIcon()

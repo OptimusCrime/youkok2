@@ -23,13 +23,20 @@ body {
     padding-left: 30px;
     position: relative;
 }
-.admin-file-line-deleted {
+.admin-file-line-deleted .admin-tree-edit, .box-title.admin-file-line-deleted a {
+    text-decoration: line-through;
+    color: #a94442;
+}
+.admin-file-line-empty {
     opacity: 0.5;
 }
 .admin-file-line:hover {
     background-color: #ecf0f5;
 }
-.admin-tree-edit {
+.admin-tree-add-child {
+    margin-left: 10px;
+}
+.admin-tree-course-link {
     margin-left: 10px;
 }
 #admin-filter {
@@ -61,4 +68,10 @@ body {
 #element-modal-slug-regenerate, #element-modal-uri-regenerate {
     position: absolute;
     right: 20px;
+}
+.modal-saved-inline {
+    text-align: right;
+    padding-right: 15px;
+    color: #3c763d;
+    display: none;
 }
