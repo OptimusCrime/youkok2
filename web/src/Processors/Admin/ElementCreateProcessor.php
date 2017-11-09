@@ -63,10 +63,10 @@ class ElementCreateProcessor
 
         return [
             'code' => 200,
-            'course' => $parent->rootParentAll->id,
+            'course' => $element->rootParentAll->id,
             'action' => $this->router->pathFor(
                 'admin_processor_element_list_markup_fetch', [
-                    'id' => $parent->rootParentAll->id
+                    'id' => $element->rootParentAll->id
                 ]
             )
         ];
