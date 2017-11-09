@@ -92,11 +92,11 @@ var Youkok = (function (module) {
     
     var initSubViews = function () {
         // Archive
-        if (Youkok.getData('view') == 'admin_home') {
+        if (Youkok.getData('view') === 'admin_home') {
             Youkok.admin.home.init();
         }
 
-        if (Youkok.getData('view') == 'admin_files') {
+        if (Youkok.getData('view') === 'admin_files' || Youkok.getData('view') === 'admin_pending') {
             Youkok.admin.listing.init();
             Youkok.admin.filter.init();
         }

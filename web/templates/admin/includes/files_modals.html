@@ -1,0 +1,91 @@
+<div class="modal fade" id="element-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="element-modal-title">Laster...</h4>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post" id="element-modal-form">
+                    <div class="form-group">
+                        <label for="element-name">ID</label>
+                        <input type="text" class="form-control" name="element-id" id="element-id">
+                    </div>
+                    <div class="form-group">
+                        <label for="element-name">Navn</label>
+                        <input type="text" class="form-control" name="element-name" id="element-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="element-slug">Slug</label>
+                        <input type="text" class="form-control" name="element-slug" id="element-slug">
+                    </div>
+                    <div class="form-group">
+                        <label for="element-uri">URI</label>
+                        <a href="#" id="element-modal-uri-regenerate" data-url="{{ path_for('admin_processor_element_regenerate_uri') }}">Generer</a>
+                        <input type="text" class="form-control" name="element-uri" id="element-uri">
+                    </div>
+                    <div class="form-group">
+                        <label for="element-parent">Forelder</label>
+                        <select class="form-control" name="element-parent" id="element-parent">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="element-checksum">Checksum</label>
+                        <input type="text" class="form-control" name="element-checksum" id="element-checksum">
+                    </div>
+                    <div class="form-group">
+                        <label for="element-size">Størrelse</label>
+                        <input type="number" class="form-control" name="element-size" id="element-size">
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="element-empty" name="element-empty" value="1"> Empty
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="element-directory" name="element-directory" value="1"> Directory
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="element-pending" name="element-pending" value="1"> Pending
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="element-deleted" name="element-deleted" value="1"> Slettet
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="element-link">Link</label>
+                        <input type="url" class="form-control" name="element-link" id="element-link">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p class="modal-saved-inline" id="element-modal-save-message">Lagret</p>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
+                <button type="button" class="btn btn-default" id="element-modal-save" data-url="{{ path_for('admin_processor_element_details_update') }}">Lagre</button>
+                <button type="button" class="btn btn-primary" id="element-modal-save-close" data-url="{{ path_for('admin_processor_element_details_update') }}">Lagre og lukk</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="directory-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="directory-modal-title">Laster...</h4>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post" id="directory-modal-form">
+                    <input type="hidden" name="directory-parent" id="directory-parent">
+                    <div class="form-group">
+                        <label for="element-name">Navn</label>
+                        <input type="text" class="form-control" name="directory-name" id="directory-name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
+                <button type="button" class="btn btn-primary" id="directory-modal-save-close" data-url="{{ path_for('admin_processor_element_create') }}">Lagre</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -158,7 +158,12 @@ class ElementDetailsProcessor
                 'admin_processor_element_list_markup_fetch', [
                     'id' => $element->rootParentAll->id
                 ]
-            )
+            ),
+            'action_pending' => $this->router->pathFor(
+                'admin_processor_element_list_pending_markup_fetch', [
+                    'id' => $element->rootParentAll->id
+                ]
+            ),
         ];
     }
 

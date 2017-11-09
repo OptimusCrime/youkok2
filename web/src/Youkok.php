@@ -125,6 +125,10 @@ class Youkok
                     '/element-markup/{id:[0-9]+}',
                     '\Youkok\Views\Processors\Admin\ElementListMarkup:get'
                 )->setName('admin_processor_element_list_markup_fetch');
+                $app->get(
+                    '/element-markup-pending/{id:[0-9]+}',
+                    '\Youkok\Views\Processors\Admin\ElementListPendingMarkup:get'
+                )->setName('admin_processor_element_list_pending_markup_fetch');
                 $app->post(
                     '/element-create',
                     '\Youkok\Views\Processors\Admin\ElementCreate:run'

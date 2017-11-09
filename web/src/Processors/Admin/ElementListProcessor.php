@@ -1,10 +1,10 @@
 <?php
-namespace Youkok\Processors\Admin\File;
+namespace Youkok\Processors\Admin;
 
 use Youkok\Controllers\ElementController;
 use Youkok\Models\Element;
 
-class AdminFileFetchProcessor
+class ElementListProcessor
 {
     public static function run()
     {

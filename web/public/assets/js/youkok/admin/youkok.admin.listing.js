@@ -112,6 +112,25 @@ var Youkok = (function (module) {
         });
     };
 
+    var refreshPending = function(id, url) {
+        $('#pending-container-' + id).css('opacity', 0.2);
+
+        $.ajax({
+            cache: false,
+            url: url,
+            success: function (json) {
+                if (json.code === 200) {
+                    $('#pending-container-' + id).html(json.html);
+                }
+                else {
+                    alert('Something went wrong');
+                }
+
+                $('#pending-container-' + id).css('opacity', 1);
+            }
+        });
+    };
+
     var saveModal = function(e) {
         e.preventDefault();
 
@@ -128,6 +147,11 @@ var Youkok = (function (module) {
                 }
                 else {
                     refreshContent(json.course, json.action);
+
+                    if (Youkok.getData('view') === 'admin_pending') {
+                        refreshPending(json.course, json.action_pending);
+                    }
+
                     if (close) {
                         $('#element-modal').modal('hide');
                     }
@@ -221,6 +245,7 @@ var Youkok = (function (module) {
          * Init the module
          */
         init: function () {
+            console.log('init');
             $('body').on('click', '.admin-file-tree-directory', initShowHide);
             $('body').on('click', '.admin-tree-edit, .admin-course-edit', showEditModal);
             $('body').on('click', '#element-modal-slug-regenerate, #element-modal-uri-regenerate', regenElementField);

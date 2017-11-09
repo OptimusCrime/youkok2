@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group div-relative" id="admin-filter">
+                <input type="text" placeholder="Filtrer" class="form-control typeahead" id="s2" name="s" />
+                <button class="btn" type="button" id="reset-filter">
+                    <i class="fa fa-close"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {% for OBJ in PENDING %}
+        <div class="row">
+            <div class="col-md-6 youkok-file-box" id="element-container-{{ OBJ.COURSE.id }}" data-identifier="{{ OBJ.COURSE.courseCode }} - {{ OBJ.COURSE.courseName }}">
+                {% include "admin/includes/files_markup.html" with {'COURSE': OBJ.COURSE} %}
+            </div>
+            <div class="col-md-6 youkok-file-box" id="pending-container-{{ OBJ.COURSE.id }}">
+                {% include "admin/includes/files_markup_pending.html" with {'PENDING_ELEMENTS': OBJ.PENDING} %}
+            </div>
+        </div>
+    {% endfor %}
+</section>
+{% include "admin/includes/files_modals.html" %}
+{% endblock %}

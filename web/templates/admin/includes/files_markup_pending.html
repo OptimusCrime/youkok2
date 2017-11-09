@@ -1,0 +1,12 @@
+<div class="box">
+    <div class="box-header with-border">
+        <h2 class="box-title">
+            Elementer som venter på godkjenning
+        </h2>
+    </div>
+    <div class="box-body admin-file-tree">
+        {% for ELEMENT in PENDING_ELEMENTS %}
+            {% include "admin/includes/files_tree.html" with {'ELEMENT': ELEMENT, 'PADDING': 0} %}
+        {% endfor %}
+    </div>
+</div>

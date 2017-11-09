@@ -4,10 +4,10 @@ namespace Youkok\Views\Processors\Admin;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
-use Youkok\Processors\Admin\ElementListProcessor;
+use Youkok\Processors\Admin\ElementListPendingProcessor;
 use Youkok\Views\Processors\BaseProcessorView;
 
-class ElementListMarkup extends BaseProcessorView
+class ElementListPendingMarkup extends BaseProcessorView
 {
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -21,8 +21,8 @@ class ElementListMarkup extends BaseProcessorView
 
         return $this->output($response, [
             'code' => 200,
-            'html' => $this->fetch('admin/includes/files_markup.html', [
-                'COURSE' => ElementListProcessor::fetchChildrenForId($id)
+            'html' => $this->fetch('admin/includes/files_markup_pending.html', [
+                'PENDING_ELEMENTS' => ElementListPendingProcessor::fetchPendingForId($id)
             ])
         ]);
     }

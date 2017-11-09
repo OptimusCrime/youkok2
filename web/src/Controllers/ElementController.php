@@ -14,6 +14,15 @@ class ElementController
     // TODO add parameter to fetch whatever attributes we'd like for all methods
     // builder pattern?
 
+    public static function getAllPending()
+    {
+        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'deleted', 'directory')
+            ->where('pending', 1)
+            ->whereNotNull('parent')
+            ->orderBy('name')
+            ->get();
+    }
+
     public static function getElementsFromSearch($search = null)
     {
         if ($search === null or count($search) === 0) {
@@ -96,6 +105,7 @@ class ElementController
             'added', 'deleted'
         ])
             ->where('parent', $id)
+            ->where('pending', 0)
             ->orderBy('deleted', 'ASC')
             ->orderBy('directory', 'DESC')
             ->orderBy('name', 'ASC')

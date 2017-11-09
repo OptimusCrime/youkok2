@@ -3,7 +3,7 @@ namespace Youkok\Views\Admin;
 
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
-use Youkok\Processors\Admin\File\AdminFileFetchProcessor;
+use Youkok\Processors\Admin\ElementListProcessor;
 
 class Files extends AdminBaseView
 {
@@ -20,7 +20,7 @@ class Files extends AdminBaseView
             'HEADER_MENU' => 'admin_files',
             'VIEW_NAME' => 'admin_files',
             'BODY_CLASS' => 'admin',
-            'FILES' => AdminFileFetchProcessor::run()
+            'FILES' => ElementListProcessor::run()
         ]);
     }
 }
