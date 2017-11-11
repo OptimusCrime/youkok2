@@ -1,5 +1,5 @@
 *
 !.gitignore
 !default.conf
-!production-example.conf
+!production-example_conf
 !envs
