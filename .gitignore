@@ -5,3 +5,6 @@ node_modules
 
 # Slim config file
 youkok2/config/settings.php
+
+# Docker compose for production
+docker-compose-production.yml
