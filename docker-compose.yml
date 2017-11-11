@@ -13,9 +13,9 @@ services:
     user: "1000"
     network_mode: "none"
     volumes:
-      - ./web:/var/www/html
-      - ./files:/var/www/files
-      - ./cache:/var/www/cache
+      - ./youkok2:/var/www/html
+      - ./docker/files:/var/www/files
+      - ./docker/cache:/var/www/cache
 
 
   ###############################################
@@ -65,8 +65,8 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ./apache:/etc/apache2/sites-enabled
-      - ./logs:/var/log/apache2
+      - ./docker/config/apache2:/etc/apache2/sites-enabled
+      - ./docker/logs:/var/log/apache2
     links:
       - db
       - cache
