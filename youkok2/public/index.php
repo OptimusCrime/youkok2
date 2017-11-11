@@ -7,7 +7,11 @@ if (PHP_SAPI === 'cli-server') {
     return !is_file($file);
 }
 
-require __DIR__ . '/../vendor/autoload.php';
+if (!(include __DIR__ . '/../vendor/autoload.php')) {
+    error_log('Dependencies are not installed!', \E_USER_ERROR);
+    header("HTTP/1.1 500 Internal Server Error");
+    die();
+}
 
 use Youkok\Youkok;
 use Youkok\Helpers\SettingsParser;

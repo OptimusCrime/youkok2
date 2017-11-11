@@ -1,7 +1,7 @@
 <?php
 return [
     'settings' => [
-        'displayErrorDetails' => true,
+        'displayErrorDetails' => getenv('DEV') === '1',
         'addContentLengthHeader' => false,
 
         'base_dir' => dirname(__DIR__),
@@ -54,7 +54,7 @@ return [
 
         // Site specific settings, use uppercase for their keywords
         'site' => [
-            'DEV' => true,
+            'DEV' => getenv('DEV') === '1',
             'VERSION' => '3.0.0-alpha',
             'GOOGLE_ANALYTICS' => false,
             'GOOGLE_ANALYTICS_CODE' => 'foo',

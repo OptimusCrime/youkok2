@@ -18,6 +18,9 @@ logs:
 
 restart: stop start
 
+reload:
+	@docker-compose restart $(SERVER_SERVICE_NAME)
+
 start:
 	@docker-compose up -d
 

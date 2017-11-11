@@ -1,3 +1,6 @@
+# Youkok2 specific stuff
+export DEV=1
+
 # Various default settings
 export COMPOSER_ALLOW_SUPERUSER=1
 export SSL=0

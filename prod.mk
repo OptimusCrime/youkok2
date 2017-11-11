@@ -15,6 +15,9 @@ down:
 
 restart: stop start
 
+reload:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml $(SERVER_SERVICE_NAME) server
+
 start:
 	@docker-compose -f docker-compose.yml -f docker-compose-production.yml up -d
 
