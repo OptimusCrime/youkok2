@@ -3,6 +3,10 @@
 vendor
 node_modules
 
+# For devlopment and testing
+youkok2/public/*.php
+!youkok2/public/index.php
+
 # Slim config file
 youkok2/config/settings.php
 
