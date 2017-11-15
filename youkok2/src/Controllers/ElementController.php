@@ -18,6 +18,7 @@ class ElementController
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'deleted', 'directory')
             ->where('pending', 1)
+            ->where('deleted', 0)
             ->whereNotNull('parent')
             ->orderBy('name')
             ->get();
