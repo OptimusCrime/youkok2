@@ -108,13 +108,14 @@ class ArchiveElementFetchProcessor extends AbstractElementFactoryProcessor
 
         foreach ($children as $child) {
             $newChild = clone $child;
+            if ($child->directory === 0) {
+                $downloads = static::getDownloadsFromCache($newChild, $cache);
+                if ($downloads === null) {
+                    $downloads = static::getDownloadsFromDatabase($newChild, $cache);
+                }
 
-            $downloads = static::getDownloadsFromCache($newChild, $cache);
-            if ($downloads === null) {
-                $downloads = static::getDownloadsFromDatabase($newChild, $cache);
+                $newChild->_downloads = $downloads;
             }
-
-            $newChild->_downloads = $downloads;
 
             $newChildren[] = $newChild;
         }

@@ -73,7 +73,7 @@
                                     </span>
                                 </div>
                                 <div class="archive-row-downloads">
-                                    {% if CHILD._downloads != null %}
+                                    {% if CHILD.directory == 0 and CHILD._downloads != null %}
                                         <span>
                                             {{ whole_number_format(CHILD._downloads) }}
                                         </span>
