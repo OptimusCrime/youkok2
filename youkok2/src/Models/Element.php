@@ -12,6 +12,7 @@ class Element extends BaseModel
     const ELEMENT_TYPE_DIRECTORIES = 0;
     const ELEMENT_TYPE_FILES = 1;
     const ELEMENT_TYPE_BOTH = 2;
+    const ELEMENT_TYPE_FILE_LAST = 3;
 
     public $timestamps = false;
 
@@ -70,7 +71,13 @@ class Element extends BaseModel
             ->where('deleted', 0)
             ->where('pending', 0);
 
-        $query = static::handleElementType($query, $type);
+        if ($type == static::ELEMENT_TYPE_FILE_LAST) {
+            // Because this is the last element, we need to handle it as a file here
+            $query = static::handleElementType($query, self::ELEMENT_TYPE_FILES);
+        }
+        else {
+            $query = static::handleElementType($query, $type);
+        }
 
         $element = $query->first();
 
@@ -88,14 +95,24 @@ class Element extends BaseModel
         $parent = null;
         $element = null;
 
-        foreach ($fragments as $fragment) {
+        foreach ($fragments as $index => $fragment) {
             $query = Element::select('id', 'parent', 'name', 'checksum', 'link', 'directory')
                 ->where('slug', $fragment)
                 ->where('parent', $parent)
                 ->where('deleted', 0)
                 ->where('pending', 0);
 
-            $query = static::handleElementType($query, $type);
+            if ($type === static::ELEMENT_TYPE_FILE_LAST) {
+                if ($index === count($fragments) - 1) {
+                    $query = static::handleElementType($query, Element::ELEMENT_TYPE_FILES);
+                }
+                else {
+                    $query = static::handleElementType($query, Element::ELEMENT_TYPE_DIRECTORIES);
+                }
+            }
+            else {
+                $query = static::handleElementType($query, $type);
+            }
 
             $element = $query->first();
 

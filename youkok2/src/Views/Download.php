@@ -15,7 +15,7 @@ class Download extends BaseView
      */
     public function view(Request $request, Response $response, array $args)
     {
-        $element = Element::fromUri($args['params'], true);
+        $element = Element::fromUri($args['params'], Element::ELEMENT_TYPE_FILE_LAST);
         if ($element === null) {
             return $this->render404($response);
         }
