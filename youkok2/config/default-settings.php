@@ -54,7 +54,6 @@ return [
 
         // Site specific settings, use uppercase for their keywords
         'site' => [
-            'DEV' => getenv('DEV') === '1',
             'VERSION' => '3.0.0-alpha',
             'GOOGLE_ANALYTICS' => false,
             'GOOGLE_ANALYTICS_CODE' => 'foo',

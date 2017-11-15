@@ -31,7 +31,7 @@ class JobRunner
 
     public function run($mode)
     {
-        if ($mode == static::CRON_JOB) {
+        if ($mode == static::CRON_JOB and getenv('DEV') === '0') {
             $this->validateSchedule(static::$schedule, $mode);
             return null;
         }
@@ -56,7 +56,8 @@ class JobRunner
                 $jobInstance = new $job($this->containers);
                 $jobInstance->run();
             } catch (\Exception $e) {
-                //
+                var_dump($e->getMessage());
+                die();
             }
         }
     }

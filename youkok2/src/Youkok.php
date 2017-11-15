@@ -31,7 +31,6 @@ class Youkok
     public function runJobs($mode = JobRunner::CRON_JOB)
     {
         $this->dependencies();
-
         $jobRunner = new JobRunner($this->app->getContainer());
         $jobRunner->run($mode);
     }

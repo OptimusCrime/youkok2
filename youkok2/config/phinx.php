@@ -1,10 +1,16 @@
 <?php
-require_once dirname(__FILE__) . '/../_scripts/parse_env_variables.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$envDirectory = '/etc/apache2/sites-enabled/envs/';
+use Youkok\Utilities\EnvParser;
+use Youkok\Helpers\SettingsParser;
 
-parseEnvVariables($envDirectory . 'default');
-parseEnvVariables($envDirectory . 'production');
+EnvParser::parse('/etc/apache2/sites-enabled/envs/', ['default', 'production']);
+
+$settingsParser = new SettingsParser();
+$settingsParser->parse([
+    __DIR__ . '/../config/default-settings.php',
+    __DIR__ . '/../config/settings.php'
+]);
 
 return [
     'paths' => [

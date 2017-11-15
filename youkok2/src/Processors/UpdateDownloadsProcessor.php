@@ -2,9 +2,7 @@
 namespace Youkok\Processors;
 
 use Youkok\Controllers\ElementController;
-use Youkok\Helpers\SessionHandler;
 use Youkok\Models\Element;
-use Youkok\Utilities\ArrayHelper;
 use Youkok\Utilities\CacheKeyGenerator;
 
 class UpdateDownloadsProcessor extends AbstractElementFactoryProcessor
@@ -18,6 +16,12 @@ class UpdateDownloadsProcessor extends AbstractElementFactoryProcessor
     {
         static::addDownloadToElement($this->element);
         static::addDownloadToCache($this->cache, $this->element);
+
+        UpdateMostPopularElementRedisProcessor
+            ::addElement($this->element)
+            ->withCache($this->cache)
+            ->withKey()
+            ->run();
     }
 
     private static function addDownloadToElement(Element $element)
