@@ -13,8 +13,8 @@ services:
     user: "1000"
     network_mode: "none"
     volumes:
-      - ./youkok2:/var/www/html
-      - ./docker/files:/var/www/files
+      - ./youkok2:/var/www/html:z
+      - ./docker/files:/var/www/files:z
       - ./docker/cache:/var/www/cache
 
   ###############################################

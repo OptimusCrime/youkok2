@@ -26,6 +26,10 @@ RUN chmod 0644 /etc/cron.d/youkok2_cron
 # Install PHP extensions
 RUN docker-php-ext-install zip pdo pdo_mysql
 
+
+RUN usermod -u 1000 www-data
+RUN groupmod -g 1000 www-data
+
 # https://stackoverflow.com/a/38567344
 ENV PHPREDIS_VERSION 3.1.4
 
