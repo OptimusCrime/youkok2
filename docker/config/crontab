@@ -1,0 +1,1 @@
+* * * * * root /usr/bin/php /var/www/html/_scripts/cron.php >> /var/log/youkok2/cron.log 2>&1

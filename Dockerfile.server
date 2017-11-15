@@ -14,8 +14,14 @@ RUN a2enmod headers
 RUN echo '. /etc/apache2/sites-enabled/envs/default' >> /etc/apache2/envvars
 RUN echo 'if [ -f /etc/apache2/sites-enabled/envs/production ]; then\n    . /etc/apache2/sites-enabled/envs/production\nfi' >> /etc/apache2/envvars
 
-# Install zlib (required for Composer stuff)
-RUN apt-get update && apt-get install -y zlib1g-dev
+# Install zlib (required for Composer stuff) and cron
+RUN apt-get update && apt-get install -y zlib1g-dev cron
+
+# Add crontab file in the cron directory
+ADD docker/config/crontab /etc/cron.d/youkok2_cron
+
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/youkok2_cron
 
 # Install PHP extensions
 RUN docker-php-ext-install zip pdo pdo_mysql

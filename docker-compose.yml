@@ -63,7 +63,7 @@ services:
       - "8000:80"
     volumes:
       - ./docker/config/apache2:/etc/apache2/sites-enabled
-      - ./docker/logs:/var/log/apache2
+      - ./docker/logs:/var/log/youkok2
     links:
       - db
       - cache
