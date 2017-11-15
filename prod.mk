@@ -32,6 +32,9 @@ stop:
 migrate:
 	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) vendor/bin/phinx migrate -c docker/phinx.yml
 
+upgrade_script:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm php _scripts/upgrade.php
+
 composer:
 	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) composer install
 

@@ -2,6 +2,7 @@
 namespace Youkok\Processors;
 
 use Youkok\Controllers\ElementController;
+use Youkok\Enums\MostPopularElement;
 use Youkok\Helpers\SessionHandler;
 use Youkok\Models\Element;
 use Youkok\Utilities\ArrayHelper;
@@ -9,6 +10,14 @@ use Youkok\Utilities\CacheKeyGenerator;
 
 class UpdateMostPopularElementRedisProcessor
 {
+    private static $mostPopularDeltas = [
+        MostPopularElement::TODAY,
+        MostPopularElement::WEEK,
+        MostPopularElement::MONTH,
+        MostPopularElement::YEAR,
+        MostPopularElement::ALL,
+    ];
+
     private $element;
     private $cache;
 
@@ -25,6 +34,7 @@ class UpdateMostPopularElementRedisProcessor
     public function withCache($cache)
     {
         $this->cache = $cache;
+        return $this;
     }
 
     public function run()
@@ -33,16 +43,14 @@ class UpdateMostPopularElementRedisProcessor
             return;
         }
 
-        if (!static::setExists($this->cache)) {
-            static::createSet($this->cache);
+        foreach (static::$mostPopularDeltas as $delta) {
+            static::addDownloadToSet($this->element, $this->cache, $delta);
         }
     }
 
-    private static function setExists($cache)
+    private static function addDownloadToSet(Element $element, $cache, $delta)
     {
-        $key =
-
-        var_dump($cache->get($key));
-        die();
+        $setKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($delta);
+        return $cache->zIncrBy($setKey, 1, $element->id);
     }
 }

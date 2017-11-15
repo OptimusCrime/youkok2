@@ -20,7 +20,6 @@ class UpdateDownloadsProcessor extends AbstractElementFactoryProcessor
         UpdateMostPopularElementRedisProcessor
             ::addElement($this->element)
             ->withCache($this->cache)
-            ->withKey()
             ->run();
     }
 

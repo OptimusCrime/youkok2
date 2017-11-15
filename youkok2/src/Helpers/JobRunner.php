@@ -56,8 +56,7 @@ class JobRunner
                 $jobInstance = new $job($this->containers);
                 $jobInstance->run();
             } catch (\Exception $e) {
-                var_dump($e->getMessage());
-                die();
+                // TODO
             }
         }
     }

@@ -31,8 +31,6 @@ class Download extends BaseView
             ->withCache($this->container->get('cache'))
             ->run();
 
-        die();
-
         return $this->returnResponse($downloadResponse);
     }
 }
