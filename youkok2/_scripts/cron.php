@@ -1,4 +1,8 @@
 <?php
+if (php_sapi_name() !== 'cli') {
+    die('Script must be called from cli');
+}
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use Youkok\Helpers\JobRunner;

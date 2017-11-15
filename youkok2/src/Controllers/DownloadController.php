@@ -59,9 +59,37 @@ class DownloadController
             $courses[$rootParent->id] += $download->download_count;
         }
 
+        // Make sure to filter out all courses that are either deleted or filtered away
+        $courses = static::filterRemovedCourses($courses);
+
         arsort($courses);
 
         return static::transformResultArray($courses);
+    }
+
+    private static function filterRemovedCourses($courses)
+    {
+        $filteredCourses = [];
+        foreach ($courses as $courseId => $downloads) {
+            if (static::isValidCourseId($courseId)) {
+                $filteredCourses[$courseId] = $downloads;
+            }
+        }
+
+        return $filteredCourses;
+    }
+
+    private static function isValidCourseId($courseId)
+    {
+        $element = Element
+            ::select('id')
+            ->where('id', $courseId)
+            ->where('parent', null)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->get();
+
+        return count($element) !== 0;
     }
 
     private static function transformResultArray($courses)

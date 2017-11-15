@@ -24,6 +24,14 @@ class JobRunner
         \Youkok\Jobs\RemoveOldSessions::class,
     ];
 
+    private static $jobAlises = [
+        \Youkok\Jobs\UpdateMostPopularCourses::class => [
+            'courses',
+            'course',
+            'most_popular_courses',
+        ]
+    ];
+
     public function __construct($containers)
     {
         $this->containers = $containers;
@@ -37,6 +45,15 @@ class JobRunner
         }
 
         $this->runJobs(static::$upgradeSchedule);
+    }
+    public function runJobWithName($name)
+    {
+        foreach (static::$jobAlises as $job => $aliases) {
+            if (in_array($name, $aliases)) {
+                $this->runJob($job);
+                break;
+            }
+        }
     }
 
     private function validateSchedule(array $schedule, $force)
@@ -52,12 +69,17 @@ class JobRunner
     private function runJobs($jobs)
     {
         foreach ($jobs as $job) {
-            try {
-                $jobInstance = new $job($this->containers);
-                $jobInstance->run();
-            } catch (\Exception $e) {
-                // TODO
-            }
+            $this->runJob($job);
+        }
+    }
+
+    private function runJob($job)
+    {
+        try {
+            $jobInstance = new $job($this->containers);
+            $jobInstance->run();
+        } catch (\Exception $e) {
+            // TODO
         }
     }
 }

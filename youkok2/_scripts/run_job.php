@@ -3,6 +3,10 @@ if (php_sapi_name() !== 'cli') {
     die('Script must be called from cli');
 }
 
+if (count($argv) !== 2) {
+    die('Call as php _scripts/run_job.php [name of job]');
+}
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use Youkok\Helpers\JobRunner;
@@ -19,4 +23,4 @@ $settingsParser->parse([
 ]);
 
 $app = new Youkok($settingsParser->getSettings());
-$app->runJobs(JobRunner::UPGRADE);
+$app->runJob($argv[1]);
