@@ -1,5 +1,5 @@
-Youkok2 - 3.0.0-alpha  (xx. xxxx 20xx)
-======================================
+Youkok2 - 3.0.0-pl  (19. november 2017)
+=======================================
 
 - [Info] Total omskrivning.
 - [Technical] Skrevet om hele nettsiden til Request/Response pattern i Slim3.
