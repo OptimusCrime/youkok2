@@ -22,7 +22,7 @@ class MostPopularElementMapper implements Mapper
     private static function getUrlForElement(Element $element, $router)
     {
         if ($element->link === null) {
-            return $router->pathFor('download', ['params' => $element->uri]);
+            return $router->pathFor('download', ['params' => $element->fullUri]);
         }
 
         return $router->pathFor('redirect', ['id' => $element->id]);
