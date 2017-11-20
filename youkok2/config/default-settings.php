@@ -39,9 +39,8 @@ return [
         ],
 
         // MUST have an ending slash
+        'templates_dir' => '/var/www/html/templates/',
         'file_directory' => '/var/www/files/',
-
-        // MUST have an ending slash
         'cache_directory' => '/var/www/cache/',
 
         'file_endings' => [

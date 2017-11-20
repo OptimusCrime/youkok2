@@ -11,10 +11,10 @@ class View
 {
     public static function load(Container $container)
     {
-        $baseDir = $container->get('settings')['base_dir'];
+        $templatesDir = $container->get('settings')['templates_dir'];
         $cacheDir = $container->get('settings')['cache_directory'];
 
-        $container['view'] = function ($container) use ($baseDir, $cacheDir) {
+        $container['view'] = function ($container) use ($templatesDir, $cacheDir) {
             $cache = false;
             if (getenv('DEV') === '0') {
                 $twigCacheDir = $cacheDir . 'twig';
@@ -26,7 +26,7 @@ class View
                 }
             }
 
-            $view = new Twig($baseDir . '/templates/', [
+            $view = new Twig($templatesDir, [
                 'cache' => $cache,
                 'auto_reload' => getenv('DEV') === '1',
                 'debug' => getenv('DEV') === '1'

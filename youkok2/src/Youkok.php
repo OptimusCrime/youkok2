@@ -185,6 +185,7 @@ class Youkok
     private function dependencies()
     {
         $containers = [
+            \Youkok\Containers\InternalServerError::class,
             \Youkok\Containers\View::class,
             \Youkok\Containers\Database::class,
             \Youkok\Containers\Cache::class,

@@ -4,7 +4,7 @@ namespace Youkok\Views;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 
-class PageNotFound extends BaseView
+class InternalServerError extends BaseView
 {
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
