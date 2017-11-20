@@ -13,6 +13,15 @@
     <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/youkok.css" />
     <script type="text/javascript">var SITE_DATA = {{ SITE_DATA|json_encode()|raw }};</script>
+    {% if SITE_SETTINGS.GOOGLE_SENSE %}
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "{{ SITE_SETTINGS.GOOGLE_SENSE_CODE }}",
+            enable_page_level_ads: true
+        });
+    </script>
+    {% endif %}
 </head>
 <body{% if BODY_CLASS != null %} class="{{ BODY_CLASS }}"{% endif %}>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">

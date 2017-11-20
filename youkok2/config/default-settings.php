@@ -56,7 +56,9 @@ return [
         'site' => [
             'VERSION' => '3.0.0-alpha',
             'GOOGLE_ANALYTICS' => false,
+            'GOOGLE_SENSE' => false,
             'GOOGLE_ANALYTICS_CODE' => 'foo',
+            'GOOGLE_SENSE_CODE' => 'foo',
             'EMAIL_CONTACT' => 'foo@bar.tld',
         ],
     ],
