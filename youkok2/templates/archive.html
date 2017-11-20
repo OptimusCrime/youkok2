@@ -63,7 +63,7 @@
                             </div>
                         </div>
                         {% for CHILD in ARCHIVE.CHILDREN %}
-                            <a class="archive-row" href="{{ element_url(CHILD)}}"{% if CHILD.link != null %} target="_blank"{% endif %}>
+                            <a class="archive-row" href="{{ element_url(CHILD)}}"{% if CHILD.link != null %} target="_blank"{% endif %}{% if CHILD.link == null and CHILD.directory == 0%} {% endif %}>
                                 <div class="archive-row-icon">
                                     <div style="background-image: url('assets/images/icons/{{ CHILD.icon }}');"></div>
                                 </div>

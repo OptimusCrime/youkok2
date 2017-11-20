@@ -6,12 +6,6 @@ use Youkok\Utilities\UriCleaner;
 
 class ElementHelper
 {
-    public static function shouldDisplay(Element $element, array $fileTypes)
-    {
-        $ext = pathinfo($element->checksum, \PATHINFO_EXTENSION);
-        return in_array($ext, $fileTypes);
-    }
-
     public static function fileExists(Element $element, $basePath)
     {
         return file_exists(static::getPhysicalFileLocation($element, $basePath));

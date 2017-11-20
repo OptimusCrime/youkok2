@@ -48,10 +48,6 @@ return [
             'pdf', 'txt', 'java', 'py', 'html', 'htm', 'sql'
         ],
 
-        'file_endings_display' => [
-            'pdf'
-        ],
-
         // Site specific settings, use uppercase for their keywords
         'site' => [
             'VERSION' => '3.0.0-alpha',
