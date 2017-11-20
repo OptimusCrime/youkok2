@@ -6,6 +6,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Slim\Container;
 
+use Youkok\Helpers\ElementHelper;
 use Youkok\Models\Element;
 use Youkok\Processors\ArchiveElementFetchProcessor;
 use Youkok\Processors\ArchiveVisitProcessor;
@@ -21,7 +22,6 @@ class Archive extends BaseView
             $courseView = new Courses($this->container);
             return $courseView->view($request, $response, $args);
         }
-
 
         $element = Element::fromUri($request->getAttribute('params'));
         if ($element === null) {
@@ -46,7 +46,9 @@ class Archive extends BaseView
                 ->withSettings($this->container->get('settings'))
                 ->withCache($this->container->get('cache'))
                 ->run(),
-            'BODY_CLASS' => 'archive'
+            'BODY_CLASS' => 'archive',
+            'SITE_TITLE' => ElementHelper::siteTitleFor($element),
+            'SITE_DESCRIPTION' => ElementHelper::siteDescriptionFor($element)
         ]);
     }
 }

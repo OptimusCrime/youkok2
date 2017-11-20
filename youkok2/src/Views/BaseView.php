@@ -94,6 +94,8 @@ class BaseView
         return $this->render($response, 'errors/404.html', [
             'HEADER_MENU' => '',
             'VIEW_NAME' => '404',
+            'SITE_DESCRIPTION' => 'Siden ble ikke funnet.',
+            'SITE_TITLE' => 'Siden ble ikke funnet'
         ]);
     }
 }

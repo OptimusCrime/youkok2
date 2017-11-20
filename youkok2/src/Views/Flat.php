@@ -15,7 +15,8 @@ class Flat extends BaseView
             'SITE_TITLE' => 'Hjelp',
             'HEADER_MENU' => 'help',
             'VIEW_NAME' => 'help',
-            'BODY_CLASS' => 'flat'
+            'BODY_CLASS' => 'flat',
+            'SITE_DESCRIPTION' => 'Trenger du hjelp med Youkok2.com? Se her'
         ]);
     }
 
@@ -28,7 +29,8 @@ class Flat extends BaseView
             'SITE_TITLE' => 'Om Youkok2',
             'HEADER_MENU' => 'about',
             'VIEW_NAME' => 'about',
-            'BODY_CLASS' => 'flat'
+            'BODY_CLASS' => 'flat',
+            'SITE_DESCRIPTION' => 'Om Youkok2.com'
         ]);
     }
 
@@ -42,7 +44,8 @@ class Flat extends BaseView
             'HEADER_MENU' => '',
             'VIEW_NAME' => 'terms',
             'FILE_ENDINGS' => $this->container->get('settings')['file_endings'],
-            'BODY_CLASS' => 'flat'
+            'BODY_CLASS' => 'flat',
+            'SITE_DESCRIPTION' => 'Retningslinjer for Youkok2.com'
         ]);
     }
 

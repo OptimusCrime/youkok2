@@ -20,6 +20,24 @@ class ElementHelper
         return $basePath . $folder1 . DIRECTORY_SEPARATOR . $folder2 . DIRECTORY_SEPARATOR . $checksum;
     }
 
+    public static function siteTitleFor(Element $element)
+    {
+        if ($element->isCourse()) {
+            return 'Bidrag for ' . $element->courseCode . ' - ' . $element->courseName;
+        }
+
+        return 'Bidrag i ' . $element->name . ' for ' . $element->rootParent->courseCode . ' - ' . $element->rootParent->courseName;
+    }
+
+    public static function siteDescriptionFor(Element $element)
+    {
+        if ($element->isCourse()) {
+            return 'Bidrag for ' . $element->courseCode . ' - ' . $element->courseName . ' fra Youkok2, den beste kokeboka på nettet.';
+        }
+
+        return static::siteDescriptionFor($element->rootParent);
+    }
+
     public static function constructUri($id)
     {
         $element = Element::fromIdAll($id, ['id', 'link', 'slug', 'parent']);

@@ -47,7 +47,8 @@ class Search extends BaseView
             'HEADER_MENU' => 'search',
             'VIEW_NAME' => 'search',
             'RESULTS' => SearchMapper::map($searchResults['results'], $searchResults['permutations']),
-            'SEARCH_QUERY' => $query
+            'SEARCH_QUERY' => $query,
+            'SITE_DESCRIPTION' => 'Søk etter emner på NTNU'
         ]);
     }
 }
