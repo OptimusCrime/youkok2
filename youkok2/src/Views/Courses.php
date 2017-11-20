@@ -18,7 +18,7 @@ class Courses extends BaseView
             'SITE_TITLE' => 'Emner',
             'HEADER_MENU' => 'courses',
             'VIEW_NAME' => 'courses',
-            'COURSES' => CourseListProcessor::get(),
+            'COURSES' => CourseListProcessor::get(),x
             'SITE_DESCRIPTION' => 'Oversikt over alle emnene som ligger inne på Youkok2.com'
         ]);
     }

@@ -25,7 +25,7 @@ var Youkok = (function (module) {
             success: function(json) {
                 if (json.code == 200) {
                     $('#admin-home-downloads').html(json.data.downloads);
-                    $('#admin-home-sessions').html(json.data.sessions);
+                    $('#admin-home-sessions').html(json.data.sessions_day + ' (' + json.data.sessions_week + ')');
                     $('#admin-home-elements').html(json.data.elements);
                     $('#admin-home-courses').html(json.data.courses);
                 }

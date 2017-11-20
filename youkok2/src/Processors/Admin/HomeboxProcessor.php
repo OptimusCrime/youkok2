@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Processors\Admin;
 
+use Carbon\Carbon;
 use Youkok\Models\Download;
 use Youkok\Models\Element;
 use Youkok\Models\Session;
@@ -12,7 +13,12 @@ class HomeboxProcessor
     {
         return [
             'downloads' => NumberFormatter::format(Download::count()),
-            'sessions' => NumberFormatter::format(Session::count()),
+            'sessions_week' => NumberFormatter::format(Session
+                ::where('last_updated', '<=', Carbon::now()->subWeek())
+                ->count()),
+            'sessions_day' => NumberFormatter::format(Session
+                ::where('last_updated', '<=', Carbon::now()->subDay())
+                ->count()),
             'elements' => NumberFormatter::format(Element
                 ::where('directory', 0)
                 ->count()),
