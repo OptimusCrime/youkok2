@@ -12,12 +12,24 @@ class View
     public static function load(Container $container)
     {
         $baseDir = $container->get('settings')['base_dir'];
+        $cacheDir = $container->get('settings')['cache_directory'];
 
-        $container['view'] = function ($container) use ($baseDir) {
+        $container['view'] = function ($container) use ($baseDir, $cacheDir) {
+            $cache = false;
+            if (getenv('DEV') === '0') {
+                $twigCacheDir = $cacheDir . 'twig';
+                if (!file_exists($twigCacheDir)) {
+                    mkdir($twigCacheDir);
+                    if (file_exists($twigCacheDir) and is_writable($twigCacheDir)) {
+                        $cache = $twigCacheDir;
+                    }
+                }
+            }
+
             $view = new Twig($baseDir . '/templates/', [
-                'cache' => false,
-                'auto_reload' => true,
-                'debug' => true
+                'cache' => $cache,
+                'auto_reload' => getenv('DEV') === '1',
+                'debug' => getenv('DEV') === '1'
             ]);
 
             // Instantiate and add Slim specific extension
