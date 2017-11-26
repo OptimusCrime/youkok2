@@ -245,7 +245,6 @@ var Youkok = (function (module) {
          * Init the module
          */
         init: function () {
-            console.log('init');
             $('body').on('click', '.admin-file-tree-directory', initShowHide);
             $('body').on('click', '.admin-tree-edit, .admin-course-edit', showEditModal);
             $('body').on('click', '#element-modal-slug-regenerate, #element-modal-uri-regenerate', regenElementField);

@@ -69,6 +69,7 @@ class CreateLinkProcessor extends AbstractCreateProcessor
         $element->pending = 1;
         $element->link = $request->getParams()['url'];
         $element->added = Carbon::now();
+        $element->deleted = 0;
         $element->save();
 
         return [
