@@ -7,6 +7,9 @@ class PendingProcessor
 {
     public static function run()
     {
-        return Element::where('pending', 1)->count();
+        return Element
+            ::where('pending', 1)
+            ->where('deleted', 0)
+            ->count();
     }
 }
