@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h2 class="box-title">
+                        php.log
+                    </h2>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body admin-file-tree">
+                    <pre>{{ PHP_LOG_CONTENT }}</pre>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h2 class="box-title">
+                        error.log
+                    </h2>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body admin-file-tree">
+                    <pre>{{ ERROR_LOG_CONTENT }}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include "admin/includes/files_modals.html" %}
+{% endblock %}
