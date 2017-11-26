@@ -40,17 +40,15 @@ var Youkok = (function (module) {
     var initGraph = function () {
          $.ajax({
             cache: false,
-            url: 'processor/admin/homegraph',
+            url: $('#admin-home-graph').data('url'),
             success: function(json) {
                 if (json.code == 200) {
-                    // Display the delta
-                    $('#admin-home-graph-delta').html(json.data.delta);
                     
                     // Parse the plots
                     var admin_home_graph_series = [];
-                    for (var i = 0; i < json.data.graph.length; i++) {
-                        var plot_date = json.data.graph[i].date.split('-');
-                        admin_home_graph_series.push([Date.UTC(parseInt(plot_date[0]), parseInt(plot_date[1]) - 1, parseInt(plot_date[2]), 0, 0, 0), json.data.graph[i].downloads]);
+                    for (var i = 0; i < json.data.length; i++) {
+                        var plot_date = json.data[i].date.split('-');
+                        admin_home_graph_series.push([Date.UTC(parseInt(plot_date[0]), parseInt(plot_date[1]) - 1, parseInt(plot_date[2]), 0, 0, 0), json.data[i].downloads]);
                     }
                     admin_home_graph.series[0].data = admin_home_graph_series;
                     

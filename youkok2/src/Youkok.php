@@ -124,6 +124,10 @@ class Youkok
                     '\Youkok\Views\Processors\Admin\Homeboxes:view'
                 )->setName('admin_processor_homeboxes');
                 $app->get(
+                    '/homegraph',
+                    '\Youkok\Views\Processors\Admin\HomeGraph:view'
+                )->setName('admin_processor_homegraph');
+                $app->get(
                     '/element-details/{id:[0-9]+}',
                     '\Youkok\Views\Processors\Admin\ElementDetails:get'
                 )->setName('admin_processor_element_details_fetch');

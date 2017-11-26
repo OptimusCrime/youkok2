@@ -30,7 +30,7 @@ var admin_home_graph =  {
     },
     tooltip: {
         headerFormat: '<b>Antall totale nedlastninger</b><br>',
-        pointFormat: '{point.x:%e. %b %Y}: {point.y:.0f}'
+        pointFormat: '{point.x:%A %e. %b %Y}: {point.y:.0f}'
     },
     legend: {
         enabled: false
