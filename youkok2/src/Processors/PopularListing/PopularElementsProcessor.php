@@ -27,7 +27,7 @@ class PopularElementsProcessor extends AbstractPopularListingProcessor
     {
         $elements = [];
         foreach ($ids as $id => $downloads) {
-            $element = Element::fromId($id, ['id', 'name', 'slug', 'uri', 'link', 'empty', 'parent']);
+            $element = Element::fromId($id, ['id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'checksum']);
             $element->_downloads = (string) $downloads;
 
             $elements[] = $element;
