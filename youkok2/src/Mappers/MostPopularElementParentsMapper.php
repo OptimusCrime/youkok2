@@ -26,7 +26,7 @@ class MostPopularElementParentsMapper implements Mapper
     private static function mapCourseParent($obj, $router)
     {
         return [
-            'full_uri' => $router->pathFor('archive', ['params' => $obj->fullUri]),
+            'full_uri' => $router->pathFor('archive', ['course' => 'derp', 'params' => $obj->fullUri]),
             'course_code' => $obj->courseCode,
             'course_name' => $obj->courseName,
         ];
@@ -35,7 +35,7 @@ class MostPopularElementParentsMapper implements Mapper
     private static function mapDirectoryParent($obj, $router)
     {
         return [
-            'full_uri' => $router->pathFor('archive', ['params' => $obj->fullUri]),
+            'full_uri' => $router->pathFor('archive', ['course' => 'dero', 'params' => $obj->fullUri]),
             'name' => $obj->name
         ];
     }

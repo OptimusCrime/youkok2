@@ -1,0 +1,1 @@
+export const fetchFrontPageRest = () => fetch('/rest/frontpage');

@@ -22,7 +22,7 @@
                 <ul class="list-group">
                     {% for COURSE in COLLECTION %}
                         <li class="{% if COURSE.empty %}course-empty {% endif %}list-group-item">
-                            <a href="{{ path_for('archive', {'params': COURSE.fullUri }) }}">
+                            <a href="{{ path_for('archive', {'course': COURSE.fullUri }) }}">
                                 <strong>{{ COURSE.courseCode }}</strong> &mdash; {{ COURSE.courseName }}
                             </a>
                         </li>

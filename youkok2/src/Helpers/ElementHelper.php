@@ -1,8 +1,8 @@
 <?php
 namespace Youkok\Helpers;
 
-use Youkok\Models\Element;
-use Youkok\Utilities\UriCleaner;
+use Youkok\Common\Models\Element;
+use Youkok\Common\Utilities\UriCleaner;
 
 class ElementHelper
 {

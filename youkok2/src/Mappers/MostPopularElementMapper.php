@@ -1,8 +1,8 @@
 <?php
 namespace Youkok\Mappers;
 
-use Youkok\Models\Element;
-use Youkok\Utilities\NumberFormatter;
+use Youkok\Common\Models\Element;
+use Youkok\Common\Utilities\NumberFormatter;
 
 class MostPopularElementMapper implements Mapper
 {

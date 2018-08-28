@@ -1,7 +1,7 @@
 <?php
 namespace Youkok\Mappers;
 
-use Youkok\Models\Element;
+use Youkok\Common\Models\Element;
 
 class SearchMapper implements Mapper
 {

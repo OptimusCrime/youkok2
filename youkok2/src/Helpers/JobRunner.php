@@ -12,20 +12,20 @@ class JobRunner
 
     private static $schedule = [
         '0 0 * * *' => [
-            \Youkok\Jobs\UpdateMostPopularCourses::class,
-            \Youkok\Jobs\UpdateMostPopularElements::class,
-            \Youkok\Jobs\RemoveOldSessions::class,
+            Youkok\Jobs\UpdateMostPopularCourses::class,
+            Youkok\Jobs\UpdateMostPopularElements::class,
+            Youkok\Jobs\RemoveOldSessions::class,
         ],
     ];
 
     private static $upgradeSchedule = [
-        \Youkok\Jobs\UpdateMostPopularCourses::class,
-        \Youkok\Jobs\UpdateMostPopularElements::class,
-        \Youkok\Jobs\RemoveOldSessions::class,
+        Youkok\Jobs\UpdateMostPopularCourses::class,
+        Youkok\Jobs\UpdateMostPopularElements::class,
+        Youkok\Jobs\RemoveOldSessions::class,
     ];
 
     private static $jobAlises = [
-        \Youkok\Jobs\UpdateMostPopularCourses::class => [
+        Youkok\Jobs\UpdateMostPopularCourses::class => [
             'courses',
             'course',
             'most_popular_courses',

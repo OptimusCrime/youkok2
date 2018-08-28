@@ -3,9 +3,9 @@ namespace Youkok\Jobs;
 
 use Youkok\CachePopulators\PopulateMostPopularCourses;
 use Youkok\Enums\MostPopularCourse;
-use Youkok\Processors\FrontpageFetchProcessor;
-use Youkok\Processors\PopularListing\PopularCoursesProcessor;
-use Youkok\Utilities\CacheKeyGenerator;
+use Youkok\Biz\Services\FrontpageService;
+use Youkok\Biz\Services\PopularListing\PopularCoursesService;
+use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class UpdateMostPopularCourses extends JobInterface
 {
@@ -44,8 +44,8 @@ class UpdateMostPopularCourses extends JobInterface
 
     private function clearFileCache()
     {
-        $cacheDirectory = $this->containers->get('settings')[PopularCoursesProcessor::CACHE_DIRECTORY_KEY]
-            . PopularCoursesProcessor::CACHE_DIRECTORY_SUB;
+        $cacheDirectory = $this->containers->get('settings')[PopularCoursesService::CACHE_DIRECTORY_KEY]
+            . PopularCoursesService::CACHE_DIRECTORY_SUB;
         if (!file_exists($cacheDirectory)) {
             return;
         }
@@ -69,7 +69,7 @@ class UpdateMostPopularCourses extends JobInterface
             PopulateMostPopularCourses
                 ::setCache($cache)
                 ->withDelta($key)
-                ->withLimit(FrontpageFetchProcessor::PROCESSORS_LIMIT)
+                ->withLimit(FrontpageService::PROCESSORS_LIMIT)
                 ->withConfig($this->containers->get('settings'))
                 ->run();
         }

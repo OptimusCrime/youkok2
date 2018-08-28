@@ -1,35 +1,31 @@
 <?php
 namespace Youkok\CachePopulators;
 
-use Youkok\Controllers\DownloadController;
-use Youkok\Utilities\CacheKeyGenerator;
+use Redis;
 
-class PopulateMostPopularElements extends AbstractCachePopulator
+use Youkok\Common\Controllers\DownloadController;
+use Youkok\Common\Utilities\CacheKeyGenerator;
+
+class PopulateMostPopularElements
 {
-    private $delta;
+    private $cache;
 
-    public static function setCache($cache)
+    public function __construct(Redis $cache)
     {
-        return new PopulateMostPopularElements($cache);
+        $this->cache = $cache;
     }
 
-    public function withDelta($delta)
+    public function run($delta)
     {
-        $this->delta = $delta;
-        return $this;
+        $elements = DownloadController::getMostPopularElementsFromDelta($delta);
+        $setKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($delta);
+        $this->insertElementsToCache($this->cache, $setKey, $elements);
     }
 
-    public function run()
-    {
-        $elements = DownloadController::getMostPopularElementsFromDelta($this->delta);
-        $setKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($this->delta);
-        static::insertElementsToCache($this->cache, $setKey, $elements);
-    }
-
-    private static function insertElementsToCache($cache, $setKey, $elements)
+    private function insertElementsToCache($setKey, $elements)
     {
         foreach ($elements as $element) {
-            $cache->zadd($setKey, $element->download_count, $element->id);
+            $this->cache->zadd($setKey, $element->download_count, $element->id);
         }
     }
 }

@@ -6,11 +6,11 @@
             <div class="col-xs-12">
                 <ol class="breadcrumb" id="archive-breadcrumbs">
                     <li><a href="{{ youkok_url() }}">Hjem</a></li>
-                    <li><a href="{{ path_for('archive') }}">Emner</a></li>
+                    <li><a href="{{ path_for('courses') }}">Emner</a></li>
                     {% for PARENT in ARCHIVE.PARENTS %}
                     <li>
                         {% if PARENT.id != ARCHIVE.ID %}
-                        <a href="{{ path_for('archive', {'params': PARENT.fullUri }) }}">
+                        <a href="{{ path_for('archive', {'course': PARENT.uri, 'params': PARENT.fullUri }) }}">
                             {% endif %}
 
                             {% if PARENT.parent == null %}

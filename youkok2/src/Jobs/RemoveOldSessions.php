@@ -1,7 +1,7 @@
 <?php
 namespace Youkok\Jobs;
 
-use Youkok\Controllers\SessionController;
+use Youkok\Common\Controllers\SessionController;
 
 class RemoveOldSessions extends JobInterface
 {

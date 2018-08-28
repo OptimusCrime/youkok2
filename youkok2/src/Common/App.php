@@ -1,0 +1,154 @@
+<?php
+namespace Youkok\Common;
+
+use Slim\App as Slim;
+
+use Youkok\Common\Containers\Cache;
+use Youkok\Common\Containers\Database;
+use Youkok\Common\Containers\InternalServerError;
+use Youkok\Common\Containers\PageNotFound;
+use Youkok\Common\Containers\Services;
+use Youkok\Common\Containers\View;
+use Youkok\Common\Middlewares\AdminAuthMiddleware;
+use Youkok\Common\Middlewares\ReverseProxyMiddleware;
+use Youkok\Common\Middlewares\TimingMiddleware;
+use Youkok\Helpers\JobRunner;
+use Youkok\Rest\Endpoints\Frontpage as FrontpageRest;
+use Youkok\Web\Views\Archive;
+use Youkok\Web\Views\Courses;
+use Youkok\Web\Views\Download;
+use Youkok\Web\Views\Flat;
+use Youkok\Web\Views\Frontpage;
+use Youkok\Web\Views\Redirect;
+use Youkok\Web\Views\Search;
+use Youkok\Web\Views\Admin\Diagnostics;
+use Youkok\Web\Views\Admin\Files;
+use Youkok\Web\Views\Admin\Home;
+use Youkok\Web\Views\Admin\Login;
+use Youkok\Web\Views\Admin\Logs;
+use Youkok\Web\Views\Admin\Pending;
+use Youkok\Web\Views\Admin\Scripts;
+use Youkok\Web\Views\Admin\Statistics;
+
+class App
+{
+    private $app;
+
+    public function __construct(array $settings)
+    {
+        session_start();
+
+        $this->app = new Slim($settings);
+    }
+
+    public function run()
+    {
+        $this->dependencies();
+        $this->routes();
+        $this->app->run();
+    }
+
+    public function runJobs($mode = JobRunner::CRON_JOB)
+    {
+        $jobRunner = $this->getJobRunner();
+        $jobRunner->run($mode);
+    }
+
+    public function runJob($jobName)
+    {
+        $jobRunner = $this->getJobRunner();
+        $jobRunner->runJobWithName($jobName);
+    }
+
+    private function getJobRunner()
+    {
+        $this->dependencies();
+        return new JobRunner($this->app->getContainer());
+    }
+
+    private function routes()
+    {
+        $app = $this->app;
+
+        $app->group('/', function () use ($app) {
+            $app->get('', Frontpage::class . ':view')->setName('home');
+            $app->get('emner', Courses::class . ':view')->setName('courses');
+            $app->get('emner/{course:\s+}[/{params:.+}]', Archive::class . ':view')->setName('archive');
+            $app->get('redirect/{id:[0-9]+}', Redirect::class . ':view')->setName('redirect');
+            $app->get('last-ned/[{uri:.*}]', Download::class . ':view')->setName('download');
+            $app->get('sok', Search::class . ':view')->setName('search');
+            $app->get('hjelp', Flat::class . ':help')->setName('help');
+            $app->get('om', Flat::class . ':about')->setName('about');
+            $app->get('changelog.txt', Flat::class . ':changelog')->setName('changelog');
+            $app->get('retningslinjer', Flat::class . ':terms')->setName('terms');
+
+            $app->get('lorem', Login::class . ':display')->setName('admin_login');
+            $app->post('lorem', Login::class . ':submit')->setName('admin_login_submit');
+        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
+
+        $app->group('/admin', function () use ($app) {
+            $app->get('', Home::class . ':view')->setName('admin_home');
+            $app->get('/ventende', Pending::class . ':view')->setName('admin_pending');
+            $app->get('/filer', Files::class . ':view')->setName('admin_files');
+            $app->get('/statistikk', Statistics::class . ':view')->setName('admin_statistics');
+            $app->get('/diagnostikk', Diagnostics::class . ':view')->setName('admin_diagnostics');
+            $app->get('/logger', Logs::class . ':view')->setName('admin_logs');
+            $app->get('/scripts', Scripts::class . ':view')->setName('admin_scripts');
+        })->add(new ReverseProxyMiddleware())->add(new AdminAuthMiddleware($app->getContainer()));
+
+        $app->group('/rest', function () use ($app) {
+            $app->get('/frontpage', FrontpageRest::class . ':get');
+        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
+
+        $app->group('/processors', function () use ($app) {
+            $app->get('/history/{id:[0-9]+}', '\Youkok\Views\Processors\ArchiveHistory:view');
+            $app->get('/autocomplete', '\Youkok\Views\Processors\Autocomplete:view');
+            $app->post('/favorite', '\Youkok\Views\Processors\ToggleFavorite:view')->setName('toggle_favorite');
+            $app->post('/clear-frontpage-box', '\Youkok\Views\Processors\ClearFrontpageBox:view')->setName('clear_frontpage_box');
+
+            $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularListing\PopularCourses:get')->setName('popular_courses_get');
+            $app->post('/popular-courses', '\Youkok\Views\Processors\PopularListing\PopularCourses:update')->setName('popular_courses');
+
+            $app->get('/popular-elements/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularListing\PopularElements:get')->setName('popular_elements_get');
+            $app->post('/popular-elements', '\Youkok\Views\Processors\PopularListing\PopularElements:update')->setName('popular_elements');
+            $app->get('/newest-elements', '\Youkok\Views\Processors\PopularListing\NewestElements:view'
+            )->setName('newest_elements');
+
+            $app->group('/link', function () use ($app) {
+                $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');
+                $app->post('/create', '\Youkok\Views\Processors\Create\CreateLink:view')->setName('link_submit');
+            });
+
+            $app->group('file', function () use ($app) {
+                $app->post('/upload', '\Youkok\Views\Processors\Create\UploadFile:view')->setName('upload_file');
+            });
+
+            $app->group('/admin', function () use ($app) {
+                $app->get('/homeboxes', '\Youkok\Views\Processors\Admin\Homeboxes:view')->setName('admin_processor_homeboxes');
+                $app->get('/homegraph', '\Youkok\Views\Processors\Admin\HomeGraph:view')->setName('admin_processor_homegraph');
+                $app->get('/element-details/{id:[0-9]+}', '\Youkok\Views\Processors\Admin\ElementDetails:get')->setName('admin_processor_element_details_fetch');
+                $app->put('/element-details', '\Youkok\Views\Processors\Admin\ElementDetails:update')->setName('admin_processor_element_details_update');
+                $app->get('/element-markup/{id:[0-9]+}', '\Youkok\Views\Processors\Admin\ElementListMarkup:get')->setName('admin_processor_element_list_markup_fetch');
+                $app->get('/element-markup-pending/{id:[0-9]+}', '\Youkok\Views\Processors\Admin\ElementListPendingMarkup:get')->setName('admin_processor_element_list_pending_markup_fetch');
+                $app->post('/element-create', '\Youkok\Views\Processors\Admin\ElementCreate:run')->setName('admin_processor_element_create');
+                $app->put('/element-regenerate/uri', '\Youkok\Views\Processors\Admin\ElementRegenerate:uri')->setName('admin_processor_element_regenerate_uri');
+            })->add(new AdminAuthMiddleware($app->getContainer()));
+        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
+    }
+
+    private function dependencies()
+    {
+        $containers = [
+            Cache::class,
+            Database::class,
+            InternalServerError::class,
+            PageNotFound::class,
+            Services::class,
+            View::class,
+        ];
+
+        foreach ($containers as $container) {
+            call_user_func([$container, 'load'], $this->app->getContainer());
+        }
+    }
+}

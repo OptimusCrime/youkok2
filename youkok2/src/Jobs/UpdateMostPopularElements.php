@@ -3,7 +3,7 @@ namespace Youkok\Jobs;
 
 use Youkok\CachePopulators\PopulateMostPopularElements;
 use Youkok\Enums\MostPopularElement;
-use Youkok\Utilities\CacheKeyGenerator;
+use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class UpdateMostPopularElements extends JobInterface
 {

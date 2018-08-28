@@ -1,7 +1,7 @@
 <?php
 namespace Youkok\Mappers;
 
-use Youkok\Models\Element;
+use Youkok\Common\Models\Element;
 
 class AutocompleteMapper implements Mapper
 {
@@ -38,6 +38,7 @@ class AutocompleteMapper implements Mapper
     private function pathFor(Element $element)
     {
         return $this->router->pathFor('archive', [
+            'course' => 'dero',
             'params' => $element->fullUri
         ]);
     }

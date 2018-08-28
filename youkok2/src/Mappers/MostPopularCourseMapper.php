@@ -1,7 +1,7 @@
 <?php
 namespace Youkok\Mappers;
 
-use Youkok\Utilities\NumberFormatter;
+use Youkok\Common\Utilities\NumberFormatter;
 
 class MostPopularCourseMapper implements Mapper
 {
@@ -10,7 +10,7 @@ class MostPopularCourseMapper implements Mapper
         $router = $data['router'];
 
         return [
-            'full_uri' => $router->pathFor('archive', ['params' => $obj->fullUri]),
+            'full_uri' => $router->pathFor('archive', ['course' => 'derp', 'params' => $obj->fullUri]),
             'course_code' => $obj->courseCode,
             'course_name' => $obj->courseName,
             'downloads' => NumberFormatter::format($obj->_downloads)

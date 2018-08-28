@@ -5,7 +5,7 @@ use Youkok\Controllers\DownloadController;
 use Youkok\Processors\PopularListing\PopularCoursesProcessor;
 use Youkok\Utilities\CacheKeyGenerator;
 
-class PopulateMostPopularCourses extends AbstractCachePopulator
+class PopulateMostPopularCourses
 {
     private $delta;
     private $config;

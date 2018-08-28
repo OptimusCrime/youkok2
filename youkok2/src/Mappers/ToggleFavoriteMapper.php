@@ -1,7 +1,7 @@
 <?php
 namespace Youkok\Mappers;
 
-use Youkok\Processors\ToggleFavoriteProcessor;
+use Youkok\Biz\ToggleFavoriteProcessor;
 
 class ToggleFavoriteMapper implements Mapper
 {
