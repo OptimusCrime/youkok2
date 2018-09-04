@@ -1,17 +1,16 @@
 <?php
 namespace Youkok\Biz\Services\Mappers;
 
-use Slim\Interfaces\RouterInterface;
-
+use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
 
 class CourseMapper
 {
-    private $router;
+    private $urlService;
 
-    public function __construct(RouterInterface $router)
+    public function __construct(UrlService $urlService)
     {
-        $this->router = $router;
+        $this->urlService = $urlService;
     }
 
     public function map($courses)
@@ -30,7 +29,7 @@ class CourseMapper
             'id' => $element->id,
             'courseCode' => $element->courseCode,
             'courseName' => $element->courseName,
-            'url' => $this->router->pathFor('archive', ['course' => $element->courseCode]),
+            'url' => $this->urlService->urlForCourse($element),
             'type' => Element::COURSE
         ];
     }

@@ -4,6 +4,7 @@ namespace Youkok\Common\Containers;
 
 use Psr\Container\ContainerInterface;
 
+use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\Cache\CacheService;
 use Youkok\Biz\Services\Course\CourseService;
 use Youkok\Biz\Services\CourseListService;
@@ -18,6 +19,7 @@ use Youkok\Biz\Services\SearchRedirectService;
 use Youkok\Biz\Services\SessionService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
 use Youkok\Biz\Services\Cache\UpdateMostPopularElementRedisService;
+use Youkok\Biz\Services\UrlService;
 use Youkok\Biz\Services\User\UserService;
 use Youkok\CachePopulators\PopulateMostPopularElements;
 
@@ -120,17 +122,27 @@ class Services implements ContainersInterface
 
         $container[CourseMapper::class] = function (ContainerInterface $container) {
             return new CourseMapper(
-                $container->get('router')
+                $container->get(UrlService::class)
             );
         };
 
         $container[ElementMapper::class] = function (ContainerInterface $container) {
             return new ElementMapper(
-                $container->get('router'),
+                $container->get(UrlService::class),
                 $container->get(ElementService::class),
                 $container->get(CourseService::class),
                 $container->get(CourseMapper::class)
             );
+        };
+
+        $container[UrlService::class] = function (ContainerInterface $container) {
+            return new UrlService(
+                $container->get('router')
+            );
+        };
+
+        $container[ArchiveService::class] = function (ContainerInterface $container) {
+            return new ArchiveService();
         };
     }
 }

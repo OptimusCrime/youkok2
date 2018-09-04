@@ -1,7 +1,6 @@
 <?php
 namespace Youkok\Biz\Services\User;
 
-
 use Youkok\Biz\Services\SessionService;
 use Youkok\Common\Models\Element;
 use Youkok\Enums\MostPopularElement;
@@ -9,7 +8,7 @@ use Youkok\Enums\MostPopularElement;
 class UserService
 {
     const FAVORITES = 'favorites';
-    const LATEST_COURSE_VISITED = 'latest_course_visited';
+    const HISTORY = 'history';
 
     private $sessionService;
 

@@ -13,4 +13,8 @@ class BaseProcessorView extends BaseView
 
         return $response->withHeader('Content-Type', 'application/json')->withJson($object);
     }
+
+    protected function outputEmpty(Response $response) {
+        return $response->withHeader('Content-Type', 'application/json');
+    }
 }

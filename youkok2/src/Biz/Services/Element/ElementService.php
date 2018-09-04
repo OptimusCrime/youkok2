@@ -74,4 +74,15 @@ class ElementService
             ->whereDate('added', '>=', Carbon::now()->subMonth())
             ->count();
     }
+
+    public function getLatestElements($limit = 10)
+    {
+        return Element::where('directory', 0)
+            ->where('pending', 0)
+            ->where('deleted', 0)
+            ->orderBy('added', 'DESC')
+            ->orderBy('name', 'DESC')
+            ->limit($limit)
+            ->get();
+    }
 }

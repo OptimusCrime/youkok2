@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import BoxUserHistoryContainer from './boxes/user/user-history-container';
 import BoxLastVisitedContainer from './boxes/last-visited-container';
+import BoxLatestElements from './boxes/latest-elements';
 
 import { loading } from '../utilities/utils';
 
@@ -19,7 +21,7 @@ class InfoBoxesContainer extends Component {
     return (
       <React.Fragment>
         <div className="row">
-          <BoxLastVisitedContainer isLoading={isLoading} />
+          <BoxUserHistoryContainer isLoading={isLoading} />
           <div className="col-xs-12 col-sm-6 frontpage-box">
             <div className="list-header">
               <h2>Favoritter</h2>
@@ -32,14 +34,7 @@ class InfoBoxesContainer extends Component {
         </div>
 
         <div className="row">
-          <div className="col-xs-12 col-sm-6 frontpage-box">
-            <div className="list-header">
-              <h2>Nyeste</h2>
-            </div>
-            <ul className="list-group">
-              <li className="list-group-item"><em>Det er ingenting her</em></li>
-            </ul>
-          </div>
+          <BoxLatestElements isLoading={isLoading} />
           <div className="col-xs-12 col-sm-6 frontpage-box frontpage-module">
             <div className="list-header">
               <h2 className="can-i-be-inline">Mest populære</h2>
@@ -110,14 +105,7 @@ class InfoBoxesContainer extends Component {
               <li className="list-group-item"><em>Det er ingenting her</em></li>
             </ul>
           </div>
-          <div className="col-xs-12 col-sm-6 frontpage-box">
-            <div className="list-header">
-              <h2>Siste besøkte fag</h2>
-            </div>
-            <ul className="list-group">
-              <li className="list-group-item"><em>Det er ingenting her</em></li>
-            </ul>
-          </div>
+         <BoxLastVisitedContainer isLoading={isLoading} />
         </div>
       </React.Fragment>
     );

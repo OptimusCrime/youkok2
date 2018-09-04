@@ -45,6 +45,7 @@ class CacheService
         return $result;
     }
 
+    // TODO remove this? URI is also stored in the database...
     public function getElementFromUri($uri)
     {
         $key = CacheKeyGenerator::keyForElementUri($uri);

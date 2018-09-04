@@ -73,9 +73,9 @@ class App
         $app->group('/', function () use ($app) {
             $app->get('', Frontpage::class . ':view')->setName('home');
             $app->get('emner', Courses::class . ':view')->setName('courses');
-            $app->get('emner/{course:\s+}[/{params:.+}]', Archive::class . ':view')->setName('archive');
+            $app->get('emner/{course:[^/]+}[/{params:.+}]', Archive::class . ':view')->setName('archive');
             $app->get('redirect/{id:[0-9]+}', Redirect::class . ':view')->setName('redirect');
-            $app->get('last-ned/[{uri:.*}]', Download::class . ':view')->setName('download');
+            $app->get('last-ned/{uri:.*}', Download::class . ':view')->setName('download');
             $app->get('sok', Search::class . ':view')->setName('search');
             $app->get('hjelp', Flat::class . ':help')->setName('help');
             $app->get('om', Flat::class . ':about')->setName('about');
@@ -98,6 +98,7 @@ class App
 
         $app->group('/rest', function () use ($app) {
             $app->get('/frontpage', FrontpageRest::class . ':get');
+            $app->put('/frontpage', FrontpageRest::class . ':put');
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 
         $app->group('/processors', function () use ($app) {

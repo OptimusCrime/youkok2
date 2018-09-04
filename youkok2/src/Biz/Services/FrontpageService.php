@@ -4,11 +4,11 @@ namespace Youkok\Biz\Services;
 
 use Redis;
 
+use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\Course\CourseService;
 use Youkok\Biz\Services\Download\DownloadService;
 use Youkok\Biz\Services\Element\ElementService;
 use Youkok\Biz\Services\User\UserService;
-use Youkok\Common\Controllers\ElementController;
 use Youkok\Common\Models\Element;
 use Youkok\Biz\Services\PopularListing\PopularCoursesService;
 use Youkok\Biz\Services\PopularListing\PopularElementsService;
@@ -16,6 +16,9 @@ use Youkok\Biz\Services\PopularListing\PopularElementsService;
 class FrontpageService
 {
     const PROCESSORS_LIMIT = 10;
+    const FRONTPAGE_CHANGE_PARAM = 'type';
+    const FRONTPAGE_RESET_HISTORY = 'history';
+    const FRONTPAGE_RESET_FAVORITES = 'favorites';
 
     private $sessionService;
     private $cache;
@@ -60,7 +63,7 @@ class FrontpageService
             'number_downloads' => $this->downloadService->getNumberOfDownloads(),
             'number_courses_with_content' => $this->courseService->getNumberOfNonVisibleCourses(),
             'number_new_elements' => $this->elementService->getNumberOfFilesThisMonth(),
-            'elements_new' => ElementController::getLatest(static::PROCESSORS_LIMIT),
+            'latest_elements' => $this->elementService->getLatestElements(static::PROCESSORS_LIMIT),
             'courses_last_visited' => $this->getLastVisitedCourses(static::PROCESSORS_LIMIT),
 
             'elements_most_popular' => $this->popularElementsProcessor->run(static::PROCESSORS_LIMIT),
@@ -68,7 +71,7 @@ class FrontpageService
 
             'user_preferences' => $this->userService->getUserPreferences(),
             'user_favorites' => array_reverse($this->userService->getUserListing(UserService::FAVORITES)),
-            'user_last_visited_courses' => $this->userService->getUserListing(UserService::LATEST_COURSE_VISITED),
+            'user_history' => $this->userService->getUserListing(UserService::HISTORY),
         ];
     }
 
@@ -82,5 +85,35 @@ class FrontpageService
             ->orderBy('last_visited', 'DESC')
             ->limit($limit)
             ->get();
+    }
+
+    public function resetFrontpageBox($type)
+    {
+        die($type);
+        if (!static::isValidResetRequest($type)) {
+            throw new InvalidRequestException();
+        }
+
+        if ($type === static::FRONTPAGE_RESET_HISTORY) {
+            $this->sessionService->setData('latest_course_visited', [], SessionService::MODE_OVERWRITE);
+        }
+        else {
+            $this->sessionService->setData('favorites', [], SessionService::MODE_OVERWRITE);
+        }
+
+        $this->sessionService->store(true);
+
+        return true;
+    }
+
+    private static function isValidResetRequest($type)
+    {
+        switch ($type) {
+            case static::FRONTPAGE_RESET_HISTORY:
+            case static::FRONTPAGE_RESET_FAVORITES:
+                return true;
+            default:
+                return false;
+        }
     }
 }

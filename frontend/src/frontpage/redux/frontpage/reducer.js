@@ -5,8 +5,9 @@ import {
 import {
   FRONTPAGE_FETCH_FAILED,
   FRONTPAGE_FETCH_FINISHED,
-  FRONTPAGE_FETCH_STARTED
+  FRONTPAGE_FETCH_STARTED, FRONTPAGE_RESET_STARTED
 } from './constants';
+import {FRONTPAGE_RESET_HISTORY_TYPE} from "../../consts";
 
 const defaultState = {
   started: false,
@@ -20,7 +21,7 @@ const defaultState = {
     number_new_elements: null,
   },
 
-  elements_new: [],
+  latest_elements: [],
   courses_last_visited: [],
 
   elements_most_popular: [],
@@ -28,7 +29,7 @@ const defaultState = {
 
   user_preferences: [],
   user_favorites: [],
-  user_last_visited_courses: [],
+  user_history: [],
 };
 
 const frontpage = (state = defaultState, action) => {
@@ -59,6 +60,12 @@ const frontpage = (state = defaultState, action) => {
         ...state,
         failed: true,
         started: false,
+      };
+
+    case FRONTPAGE_RESET_STARTED:
+      return {
+        ...state,
+        user_history: action.frontpageType === FRONTPAGE_RESET_HISTORY_TYPE ? [] : state.user_history
       };
 
     default:

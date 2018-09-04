@@ -11,25 +11,18 @@ class BoxLastVisitedContainer extends Component {
 
     const {
       isLoading,
-      coursesLastVisited
+      coursesLastVisited,
     } = this.props;
 
     return (
       <div className="col-xs-12 col-sm-6 frontpage-box">
         <div className="list-header">
           <h2>Siste besøkte fag</h2>
-          {(!isLoading || coursesLastVisited.length > 0) &&
-            <a
-              href="#"
-              className="frontpage-box-clear"
-              onClick={}
-            >Fjern historikk</a>
-          }
         </div>
         <ul className="list-group">
-          {isLoading && <StencilItemList size={3} />}
+          {isLoading && <StencilItemList size={10} />}
           {!isLoading && coursesLastVisited.map((course, index) => <CourseItem course={course} key={index} /> )}
-          {!isLoading && coursesLastVisited.length === 0 && <EmptyItem text='Du har ikke besøkt noen fag' />}
+          {!isLoading && coursesLastVisited.length === 0 && <EmptyItem text='Det er ingenting her' />}
         </ul>
       </div>
     );

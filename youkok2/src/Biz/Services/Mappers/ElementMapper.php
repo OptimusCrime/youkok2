@@ -7,6 +7,7 @@ use Slim\Interfaces\RouterInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Course\CourseService;
 use Youkok\Biz\Services\Element\ElementService;
+use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
 
 class ElementMapper
@@ -17,20 +18,20 @@ class ElementMapper
     const DOWNLOADS = 'DOWNLOADS';
     const DOWNLOADS_ESTIMATE = 'DOWNLOADS_ESTIMATE';
 
-    private $router;
+    private $urlService;
     private $elementService;
     private $courseService;
     private $courseMapper;
 
 
     public function __construct(
-        RouterInterface $router,
+        UrlService $urlService,
         ElementService $elementService,
         CourseService $courseService,
         CourseMapper $courseMapper
     )
     {
-        $this->router = $router;
+        $this->urlService = $urlService;
         $this->elementService = $elementService;
         $this->courseService = $courseService;
         $this->courseMapper = $courseMapper;
@@ -46,12 +47,13 @@ class ElementMapper
         return $out;
     }
 
-    public function mapElement($element, $additionalFields = [])
+    public function mapElement(Element $element, $additionalFields = [])
     {
         $arr = [
             'id' => $element->id,
             'name' => $element->name,
-            'type' => static::getElementType($element),
+            'type' => $element->getType(),
+            'url' => $this->urlService->urlForElement($element)
         ];
 
         if (in_array(ElementMapper::POSTED_TIME, $additionalFields)) {
@@ -79,21 +81,6 @@ class ElementMapper
         }
 
         return $arr;
-    }
-
-    public static function getElementType(Element $element)
-    {
-        if ($element->isLink()) {
-            return Element::LINK;
-        }
-        if ($element->isCourse()) {
-            return Element::COURSE;
-        }
-        if ($element->isDirectory()) {
-            return Element::DIRECTORY;
-        }
-
-        return Element::FILE;
     }
 
 }

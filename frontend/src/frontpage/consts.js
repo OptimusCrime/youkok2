@@ -1,0 +1,1 @@
+export const FRONTPAGE_RESET_HISTORY_TYPE = 'history';

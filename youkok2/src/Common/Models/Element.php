@@ -28,93 +28,26 @@ class Element extends BaseModel
     private $parents;
     private $childrenObjects;
 
-    public static function fromIdVisible($id, $attributes = ['id', 'link', 'checksum'])
-    {
-        if (!isset($id) or !is_numeric($id)) {
-            return null;
-        }
-
-        return Element::select($attributes)
-            ->where('id', $id)
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->first();
-    }
-
-    public static function fromIdAll($id, $attributes = ['id', 'link', 'checksum'])
-    {
-        if (!isset($id) or !is_numeric($id)) {
-            return null;
-        }
-
-        return Element::select($attributes)
-            ->where('id', $id)
-            ->first();
-    }
-
-    public static function fromUriFileVisible($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'])
-    {
-        return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_FILE_LAST);
-    }
-
-    private static function fromUriFragments($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'], $type = self::ELEMENT_TYPE_DIRECTORIES)
-    {
-        $fragments = UriCleaner::cleanFragments(explode('/', $uri));
-        $parent = null;
-        $element = null;
-
-        foreach ($fragments as $index => $fragment) {
-            $query = Element::select($attributes)
-                ->where('slug', $fragment)
-                ->where('parent', $parent)
-                ->where('deleted', 0)
-                ->where('pending', 0);
-
-            if ($type === static::ELEMENT_TYPE_FILE_LAST) {
-                if ($index === count($fragments) - 1) {
-                    $query = static::handleElementType($query, Element::ELEMENT_TYPE_FILES);
-                }
-                else {
-                    $query = static::handleElementType($query, Element::ELEMENT_TYPE_DIRECTORIES);
-                }
-            }
-            else {
-                $query = static::handleElementType($query, $type);
-            }
-
-            $element = $query->first();
-
-            if ($element === null) {
-                return null;
-            }
-
-            $parent = $element->id;
-        }
-
-        return $element;
-    }
-
-    private static function handleElementType($element, $type)
-    {
-        switch ($type) {
-            case self::ELEMENT_TYPE_DIRECTORIES:
-                $element->where('directory', 1);
-                break;
-            case self::ELEMENT_TYPE_FILES:
-                $element->where('directory', 0);
-                break;
-            default:
-                break;
-        }
-
-        return $element;
-    }
-
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
         $this->parents = null;
+    }
+
+    public function getType()
+    {
+        if ($this->isLink()) {
+            return Element::LINK;
+        }
+        if ($this->isCourse()) {
+            return Element::COURSE;
+        }
+        if ($this->isDirectory()) {
+            return Element::DIRECTORY;
+        }
+
+        return Element::FILE;
     }
 
     private function getCourseCode()
@@ -348,5 +281,96 @@ class Element extends BaseModel
             default:
                 return null;
         }
+    }
+
+    public static function fromIdVisible($id, $attributes = ['id', 'link', 'checksum'])
+    {
+        if (!isset($id) or !is_numeric($id)) {
+            return null;
+        }
+
+        return Element::select($attributes)
+            ->where('id', $id)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->first();
+    }
+
+    public static function courseFromUriVisible($uri)
+    {
+        return Element::where('slug', $uri)
+            ->where('parent', null)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->first();
+    }
+
+    public static function fromIdAll($id, $attributes = ['id', 'link', 'checksum'])
+    {
+        if (!isset($id) or !is_numeric($id)) {
+            return null;
+        }
+
+        return Element::select($attributes)
+            ->where('id', $id)
+            ->first();
+    }
+
+    public static function fromUriFileVisible($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'])
+    {
+        return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_FILE_LAST);
+    }
+
+    private static function fromUriFragments($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'], $type = self::ELEMENT_TYPE_DIRECTORIES)
+    {
+        $fragments = UriCleaner::cleanFragments(explode('/', $uri));
+        $parent = null;
+        $element = null;
+
+        foreach ($fragments as $index => $fragment) {
+            $query = Element::select($attributes)
+                ->where('slug', $fragment)
+                ->where('parent', $parent)
+                ->where('deleted', 0)
+                ->where('pending', 0);
+
+            if ($type === static::ELEMENT_TYPE_FILE_LAST) {
+                if ($index === count($fragments) - 1) {
+                    $query = static::handleElementType($query, Element::ELEMENT_TYPE_FILES);
+                }
+                else {
+                    $query = static::handleElementType($query, Element::ELEMENT_TYPE_DIRECTORIES);
+                }
+            }
+            else {
+                $query = static::handleElementType($query, $type);
+            }
+
+            $element = $query->first();
+
+            if ($element === null) {
+                return null;
+            }
+
+            $parent = $element->id;
+        }
+
+        return $element;
+    }
+
+    private static function handleElementType($element, $type)
+    {
+        switch ($type) {
+            case self::ELEMENT_TYPE_DIRECTORIES:
+                $element->where('directory', 1);
+                break;
+            case self::ELEMENT_TYPE_FILES:
+                $element->where('directory', 0);
+                break;
+            default:
+                break;
+        }
+
+        return $element;
     }
 }

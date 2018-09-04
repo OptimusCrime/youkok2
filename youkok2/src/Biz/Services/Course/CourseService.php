@@ -31,7 +31,7 @@ class CourseService
     {
         if ($element->parent === 0) {
             // TODO log
-            throw new ElementNotFoundException('wtf1');
+            throw new ElementNotFoundException();
         }
 
         $currentObject = $element;
@@ -46,7 +46,7 @@ class CourseService
 
             if ($currentObject === null) {
                 // TODO log
-                throw new ElementNotFoundException('wtf2');
+                throw new ElementNotFoundException();
             }
         }
 
