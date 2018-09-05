@@ -1,12 +1,12 @@
 {% extends "base.html" %}
+
 {% block head %}
-<% for (let css in htmlWebpackPlugin.files.css) { %>
-<script src="<%= htmlWebpackPlugin.files.css[css] %>"></script>
-<% } %>
-{% endblock %}
+<% for (let css in htmlWebpackPlugin.files.css) { %><script src="<%= htmlWebpackPlugin.files.css[css] %>"></script>
+<% } %>{% endblock %}
+
 {% block content %}
-<div id="frontpage"></div>
-<% for (let js in htmlWebpackPlugin.files.js) { %>
-<script src="<%= htmlWebpackPlugin.files.js[js] %>"></script>
-<% } %>
-{% endblock %}
+<div id="frontpage"></div>{% endblock %}
+
+{% block scripts %}
+<% for (let js in htmlWebpackPlugin.files.js) { %><script src="<%= htmlWebpackPlugin.files.js[js] %>"></script>
+<% } %>{% endblock %}

@@ -13,7 +13,7 @@ export const fetchFrontpage = () => dispatch => {
   fetchFrontPageRest()
     .then(response => response.json())
     .then(data => dispatch({ type: FRONTPAGE_FETCH_FINISHED, data: data }))
-    .catch(dispatch({ type: FRONTPAGE_FETCH_FAILED }));
+    .catch(() => dispatch({ type: FRONTPAGE_FETCH_FAILED }));
 };
 
 export const updateFrontpage = type => dispatch => {

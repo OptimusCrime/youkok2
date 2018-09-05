@@ -5,7 +5,7 @@ import BoxUserHistoryContainer from './boxes/user/user-history-container';
 import BoxLastVisitedContainer from './boxes/last-visited-container';
 import BoxLatestElements from './boxes/latest-elements';
 
-import { loading } from '../utilities/utils';
+import { loading } from '../../common/utils';
 
 class InfoBoxesContainer extends Component {
 

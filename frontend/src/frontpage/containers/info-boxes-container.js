@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { InfoBox } from '../components/info-box';
-import { loading } from '../utilities/utils';
+import { loading } from '../../common/utils';
 
 class InfoBoxesContainer extends Component {
 

@@ -8,6 +8,7 @@ use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\Cache\CacheService;
 use Youkok\Biz\Services\Course\CourseService;
 use Youkok\Biz\Services\CourseListService;
+use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\Download\DownloadService;
 use Youkok\Biz\Services\Element\ElementService;
 use Youkok\Biz\Services\FrontpageService;
@@ -131,7 +132,8 @@ class Services implements ContainersInterface
                 $container->get(UrlService::class),
                 $container->get(ElementService::class),
                 $container->get(CourseService::class),
-                $container->get(CourseMapper::class)
+                $container->get(CourseMapper::class),
+                $container->get(DownloadCountService::class)
             );
         };
 
@@ -142,7 +144,15 @@ class Services implements ContainersInterface
         };
 
         $container[ArchiveService::class] = function (ContainerInterface $container) {
-            return new ArchiveService();
+            return new ArchiveService(
+                $container->get(CourseService::class)
+            );
+        };
+
+        $container[DownloadCountService::class] = function (ContainerInterface $container) {
+            return new DownloadCountService(
+                $container->get(CacheService::class)
+            );
         };
     }
 }

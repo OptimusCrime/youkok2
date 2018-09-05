@@ -5,7 +5,7 @@ export const CourseItem = ({ course }) => (
     <a
       href={course.url}
     >
-      <strong>{course.courseCode}</strong> &mdash;
+      <strong>{course.courseCode}</strong>&nbsp;&mdash;&nbsp;
       {course.courseName}
     </a>
   </li>

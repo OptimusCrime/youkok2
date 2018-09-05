@@ -5,6 +5,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const entries = {
+  frontpage: './src/frontpage/frontpage.js',
+  archive: './src/archive/archive.js',
+};
+
 module.exports = (env, argv) => {
 
   const generateHtmlWebpackPluginInfo = entry => ({
@@ -24,10 +29,7 @@ module.exports = (env, argv) => {
     'less-loader',
   ];
 
-  const htmlPlugin = [
-    new HtmlWebpackPlugin(generateHtmlWebpackPluginInfo('frontpage')),
-    new HtmlWebpackPlugin(generateHtmlWebpackPluginInfo('search')),
-  ];
+  const htmlPlugin = Object.keys(entries).map(key => new HtmlWebpackPlugin(generateHtmlWebpackPluginInfo(key)));
 
   const plugins = argv.mode === 'development' ? [ ...htmlPlugin ] : [
     ...htmlPlugin,
@@ -36,10 +38,7 @@ module.exports = (env, argv) => {
   ];
 
   return {
-    entry: {
-      frontpage: './src/frontpage/frontpage.js',
-      search: './src/search/search.js',
-    },
+    entry: entries,
     output: {
       // Prefix dev builds with dev. to ignore it
       filename: (argv.mode === 'development' ? 'dev.' : '') +  '[name].js?hash=[contenthash]',

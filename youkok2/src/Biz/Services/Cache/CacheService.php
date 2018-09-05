@@ -59,6 +59,24 @@ class CacheService
         }
     }
 
+    public function getDonwloadsForId($id)
+    {
+        if ($this->cache === null) {
+            return null;
+        }
+
+        return $this->cache->get(CacheKeyGenerator::keyForElementDownloads($id));
+    }
+
+    public function setDownloadsForId($id, $downloads)
+    {
+        if ($this->cache === null) {
+            return null;
+        }
+
+        $this->setByKey(CacheKeyGenerator::keyForElementDownloads($id), $downloads);
+    }
+
     private function getMostPopularCoursesFromDisk($key)
     {
         $cacheDirectoryKey = $this->settings[PopularCoursesService::CACHE_DIRECTORY_KEY];

@@ -27,9 +27,11 @@ class Archive extends BaseView
         $params = $request->getAttribute('params', null);
 
         try {
-            $element = $this->archiveService->get($course, $params);
+            $element = $this->archiveService->getArchiveElementFromUri($course, $params);
 
-            return $this->render($response, 'archive.html', [
+            $this->setSiteData('archive_id', $element->id);
+
+            return $this->renderReactApp($response, 'archive.html', [
                 'HEADER_MENU' => 'courses',
                 'VIEW_NAME' => 'archive',
                 'BODY_CLASS' => 'archive',

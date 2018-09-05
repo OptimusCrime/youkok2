@@ -14,6 +14,8 @@ class Element extends BaseModel
     const DIRECTORY = 'DIRECTORY';
     const FILE = 'FILE';
 
+    const ATTRIBUTES_ALL = 'all';
+
     const ELEMENT_TYPE_DIRECTORIES = 0;
     const ELEMENT_TYPE_FILES = 1;
     const ELEMENT_TYPE_BOTH = 2;
@@ -289,17 +291,18 @@ class Element extends BaseModel
             return null;
         }
 
-        return Element::select($attributes)
-            ->where('id', $id)
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->first();
-    }
+        $query = null;
+        if ($attributes == Element::ATTRIBUTES_ALL) {
+            $query = Element
+                ::where('id', $id);
+        }
+        else {
+            $query = Element
+                ::select($attributes)
+                ->where('id', $id);
+        }
 
-    public static function courseFromUriVisible($uri)
-    {
-        return Element::where('slug', $uri)
-            ->where('parent', null)
+        return $query
             ->where('deleted', 0)
             ->where('pending', 0)
             ->first();
@@ -311,7 +314,15 @@ class Element extends BaseModel
             return null;
         }
 
-        return Element::select($attributes)
+        $query = null;
+        if ($attributes == Element::ATTRIBUTES_ALL) {
+            return Element
+                ::where('id', $id)
+                ->first();
+        }
+
+        return Element
+            ::select($attributes)
             ->where('id', $id)
             ->first();
     }

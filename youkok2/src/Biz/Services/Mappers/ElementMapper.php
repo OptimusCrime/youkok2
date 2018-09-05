@@ -6,6 +6,7 @@ namespace Youkok\Biz\Services\Mappers;
 use Slim\Interfaces\RouterInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Course\CourseService;
+use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\Element\ElementService;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
@@ -16,25 +17,28 @@ class ElementMapper
     const PARENT_COURSE = 'PARENT_COURSE';
     const POSTED_TIME = 'POSTED_TIME';
     const DOWNLOADS = 'DOWNLOADS';
-    const DOWNLOADS_ESTIMATE = 'DOWNLOADS_ESTIMATE';
+    const DOWNLOADS_ESTIMATE = 'DOWNLOADS_ESTIMATE'; // TODO
+    const ICON = 'ICON';
 
     private $urlService;
     private $elementService;
     private $courseService;
     private $courseMapper;
+    private $downloadCountService;
 
 
     public function __construct(
         UrlService $urlService,
         ElementService $elementService,
         CourseService $courseService,
-        CourseMapper $courseMapper
-    )
-    {
+        CourseMapper $courseMapper,
+        DownloadCountService $downloadCountService
+    ) {
         $this->urlService = $urlService;
         $this->elementService = $elementService;
         $this->courseService = $courseService;
         $this->courseMapper = $courseMapper;
+        $this->downloadCountService = $downloadCountService;
     }
 
     public function map($elements, $additionalFields = [])
@@ -72,12 +76,19 @@ class ElementMapper
 
         if (in_array(ElementMapper::PARENT_COURSE, $additionalFields)) {
             try {
-                $course = $this->courseService->getCourseForElement($element);
+                $course = $this->courseService->getCourseFromElement($element);
                 $arr['course'] = $this->courseMapper->mapCourse($course);
             } catch (ElementNotFoundException $e) {
                 // TODO log
             }
+        }
 
+        if (in_array(ElementMapper::DOWNLOADS, $additionalFields)) {
+            $arr['downloads'] = $this->downloadCountService->getDownloadsForElement($element);
+        }
+
+        if (in_array(ElementMapper::ICON, $additionalFields)) {
+            $arr['icon'] = $element->icon;
         }
 
         return $arr;

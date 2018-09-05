@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block head %}
+<% for (let css in htmlWebpackPlugin.files.css) { %><script src="<%= htmlWebpackPlugin.files.css[css] %>"></script>
+<% } %>{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xs-12 col-md-8">
+        <div class="row">
+            <div class="col-xs-12">
+                <ol class="breadcrumb" id="archive-breadcrumbs">
+                    <li><a href="{{ youkok_url() }}">Hjem</a></li>
+                    <li><a href="{{ path_for('courses') }}">Emner</a></li>
+                    {% for PARENT in ARCHIVE.PARENTS %}
+                    <li>
+                        {% if PARENT.id != ARCHIVE.ID %}
+                        <a href="{{ path_for('archive', {'course': PARENT.uri, 'params': PARENT.fullUri }) }}">
+                            {% endif %}
+
+                            {% if PARENT.parent == null %}
+                            {{ PARENT.courseCode }}
+                            {% else %}
+                            {{ PARENT.name }}
+                            {% endif %}
+
+                            {% if PARENT.id != ARCHIVE.ID %}
+                        </a>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+        <div id="archive"></div>
+    </div>
+    <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">
+    </div>
+</div>{% endblock %}
+
+{% block scripts %}
+<% for (let js in htmlWebpackPlugin.files.js) { %><script src="<%= htmlWebpackPlugin.files.js[js] %>"></script>
+<% } %>{% endblock %}

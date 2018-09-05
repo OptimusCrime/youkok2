@@ -13,6 +13,7 @@ use Youkok\Common\Middlewares\AdminAuthMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Common\Middlewares\TimingMiddleware;
 use Youkok\Helpers\JobRunner;
+use Youkok\Rest\Endpoints\Archive as ArchiveRest;
 use Youkok\Rest\Endpoints\Frontpage as FrontpageRest;
 use Youkok\Web\Views\Archive;
 use Youkok\Web\Views\Courses;
@@ -99,6 +100,8 @@ class App
         $app->group('/rest', function () use ($app) {
             $app->get('/frontpage', FrontpageRest::class . ':get');
             $app->put('/frontpage', FrontpageRest::class . ':put');
+
+            $app->get('/archive/{id:[0-9]+}', ArchiveRest::class . ':get');
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 
         $app->group('/processors', function () use ($app) {
