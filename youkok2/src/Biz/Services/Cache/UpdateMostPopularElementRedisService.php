@@ -7,6 +7,7 @@ use Youkok\Enums\MostPopularElement;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 
+// TODO fjern denne klassen, flytt dette in i cacheService
 class UpdateMostPopularElementRedisService
 {
     private $cache;

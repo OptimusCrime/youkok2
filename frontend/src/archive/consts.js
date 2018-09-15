@@ -1,0 +1,1 @@
+export const ELEMENT_TYPE_DIRECTORY = 'DIRECTORY';

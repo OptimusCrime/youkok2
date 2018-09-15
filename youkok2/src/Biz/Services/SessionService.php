@@ -43,7 +43,6 @@ class SessionService
         return true;
     }
 
-
     public function loadSession()
     {
         $cookie = CookieHelper::getCookie('youkok2');
@@ -177,6 +176,17 @@ class SessionService
     {
         $this->setData($path, $value, $mode);
         return $this->store(true);
+    }
+
+    public function getExpiredSessions()
+    {
+        $sessions = Session::select('id')
+            ->where('expire', '<', Carbon::now())
+            ->get();
+
+        foreach ($sessions as $session) {
+            $session->delete();
+        }
     }
 
     private function createSession()

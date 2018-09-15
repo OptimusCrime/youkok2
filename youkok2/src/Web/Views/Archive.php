@@ -14,11 +14,15 @@ class Archive extends BaseView
     /** @var \Youkok\Biz\Services\ArchiveService */
     private $archiveService;
 
+    /** \Slim\Interfaces\RouterInterface */
+    private $router;
+
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
         $this->archiveService = $container->get(ArchiveService::class);
+        $this->router = $container->get('router');
     }
 
     public function view(Request $request, Response $response, array $args)
@@ -28,8 +32,14 @@ class Archive extends BaseView
 
         try {
             $element = $this->archiveService->getArchiveElementFromUri($course, $params);
+            $parents = $this->archiveService->getBreadcrumbsForElement($element);
 
             $this->setSiteData('archive_id', $element->id);
+            $this->setSiteData('archive_parents', $parents);
+            $this->setSiteData('archive_title', $element->isCourse() ? $element->courseCode : $element->name);
+            $this->setSiteData('archive_sub_title', $element->isCourse() ? $element->courseName : null);
+            $this->setSiteData('archive_url_frontpage', $this->router->pathFor('home'));
+            $this->setSiteData('archive_url_courses', $this->router->pathFor('courses'));
 
             return $this->renderReactApp($response, 'archive.html', [
                 'HEADER_MENU' => 'courses',

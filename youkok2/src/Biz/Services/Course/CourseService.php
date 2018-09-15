@@ -56,4 +56,19 @@ class CourseService
 
         return Element::fromIdVisible($currentObject->id, ['id', 'name']);
     }
+
+    public function getCourseFromUri($uri)
+    {
+        $element = Element::where('slug', $uri)
+            ->where('parent', null)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->first();
+
+        if ($element === null) {
+            throw new ElementNotFoundException();
+        }
+
+        return $element;
+    }
 }

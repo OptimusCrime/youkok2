@@ -1,5 +1,7 @@
 import React from "react";
-import {formatNumber} from "../../common/utils";
+
+import { formatNumber } from "../../common/utils";
+import { ELEMENT_TYPE_DIRECTORY } from "../consts";
 
 export const ArchiveRow = ({ item }) => (
   <a className="archive-row" href={item.url}>
@@ -10,7 +12,7 @@ export const ArchiveRow = ({ item }) => (
       <span>{item.name}</span>
     </div>
     <div className="archive-row-downloads">
-      <span>{formatNumber(item.downloads)}</span>
+      <span>{item.type === ELEMENT_TYPE_DIRECTORY ? '' : formatNumber(item.downloads)}</span>
     </div>
     <div className="archive-row-age">
       <span>{item.added}</span>

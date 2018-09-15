@@ -12,7 +12,6 @@
     "illuminate/cache": "^5.5",
     "slim/twig-view": "^2.3",
     "phpunit/php-timer": "^1.0",
-    "mtdowling/cron-expression": "^1.2",
     "vlucas/phpdotenv": "^2.5",
     "ext-json": "*",
     "ext-redis": "*",

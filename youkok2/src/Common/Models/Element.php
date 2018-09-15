@@ -12,6 +12,7 @@ class Element extends BaseModel
     const LINK = 'LINK';
     const COURSE = 'COURSE';
     const DIRECTORY = 'DIRECTORY';
+    const NON_DIRECTORY = 'NON_DIRECTORY';
     const FILE = 'FILE';
 
     const ATTRIBUTES_ALL = 'all';
@@ -100,17 +101,6 @@ class Element extends BaseModel
     public function isDirectory()
     {
         return !$this->isCourse() && $this->directory === 1;
-    }
-
-    public function updateRootParent()
-    {
-        $rootParent = $this->getRootParent();
-        if ($rootParent === null) {
-            return null;
-        }
-
-        $rootParent->last_visited = Carbon::now();
-        $rootParent->save();
     }
 
     // TODO add parameter to fetch whatever attributes we'd like
@@ -330,6 +320,11 @@ class Element extends BaseModel
     public static function fromUriFileVisible($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'])
     {
         return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_FILE_LAST);
+    }
+
+    public static function fromUriDirectoryVisible($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'])
+    {
+        return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_DIRECTORIES);
     }
 
     private static function fromUriFragments($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'], $type = self::ELEMENT_TYPE_DIRECTORIES)

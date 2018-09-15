@@ -13,8 +13,9 @@ class CacheService
     private $settings;
     private $populateMostPopularElements;
 
-    public function __construct(Redis $cache, PopulateMostPopularElements $populateMostPopularElements) {
+    public function __construct(Redis $cache, $settings, PopulateMostPopularElements $populateMostPopularElements) {
         $this->cache = $cache;
+        $this->settings = $settings; // TODO type hinting here
         $this->populateMostPopularElements = $populateMostPopularElements;
     }
 

@@ -12,7 +12,7 @@ use Youkok\Common\Containers\View;
 use Youkok\Common\Middlewares\AdminAuthMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Common\Middlewares\TimingMiddleware;
-use Youkok\Helpers\JobRunner;
+use Youkok\Biz\Services\JobService;
 use Youkok\Rest\Endpoints\Archive as ArchiveRest;
 use Youkok\Rest\Endpoints\Frontpage as FrontpageRest;
 use Youkok\Web\Views\Archive;
@@ -46,25 +46,15 @@ class App
     {
         $this->dependencies();
         $this->routes();
+
+        // TODO logging here
         $this->app->run();
     }
 
-    public function runJobs($mode = JobRunner::CRON_JOB)
+    public function runJobs($mode = JobService::CRON_JOB)
     {
-        $jobRunner = $this->getJobRunner();
+        $jobRunner = $this->app->getContainer()->get(JobService::class);
         $jobRunner->run($mode);
-    }
-
-    public function runJob($jobName)
-    {
-        $jobRunner = $this->getJobRunner();
-        $jobRunner->runJobWithName($jobName);
-    }
-
-    private function getJobRunner()
-    {
-        $this->dependencies();
-        return new JobRunner($this->app->getContainer());
     }
 
     private function routes()

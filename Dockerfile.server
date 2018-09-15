@@ -7,6 +7,8 @@ ENV PHPREDIS_VERSION 3.1.4
 RUN cd /usr/src && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY docker/config/apache2/* /etc/apache2/sites-enabled/
+
+
 #&& usermod -u 1000 root \
 #&& groupmod -g 1000 root \
 
@@ -16,7 +18,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
     && a2enmod rewrite \
     && a2enmod headers \
     && a2dissite 000-default \
-    && apt-get update && apt-get install -y zlib1g-dev cron \
+    && apt-get update && apt-get install -y zlib1g-dev \
     && docker-php-ext-install zip pdo_mysql \
     && mkdir -p /usr/src/php/ext/redis \
     && curl -L https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
@@ -24,8 +26,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
     && docker-php-ext-install redis \
     && service apache2 restart
 
-# Add crontab file in the cron directory
-# ADD docker/config/crontab /etc/cron.d/youkok2_cron
+COPY docker/cron_job /usr/local/bin/cron_job
 
-# Give execution rights on the cron job
-# RUN chmod 0644 /etc/cron.d/youkok2_cron
+RUN chmod u+x /usr/local/bin/cron_job

@@ -17,29 +17,14 @@ class ElementService
         $this->cacheService = $cacheService;
     }
 
-    public function getElementFromUri($uri)
+    public function getNonDirectoryFromUri($uri)
     {
-        $cleanUri = preg_replace("/[^A-Za-z0-9 ]/", '', $uri);
+        return $this->getAnyFromUri($uri, Element::NON_DIRECTORY);
+    }
 
-        if ($cleanUri === null || strlen($cleanUri) === 0) {
-            throw new ElementNotFoundException();
-        }
-
-        $elementId = $this->cacheService->getElementFromUri($uri);
-
-        if (is_integer($elementId)) {
-            return Element::fromIdVisible($elementId);
-        }
-
-        $element = Element::fromUriFileVisible($uri);
-
-        if ($element === null) {
-            throw new ElementNotFoundException();
-        }
-
-        $this->cacheService->setByKey(CacheKeyGenerator::keyForElementUri($uri), $element->id);
-
-        return $element;
+    public function getDirectoryFromUri($uri)
+    {
+        return $this->getAnyFromUri($uri, Element::DIRECTORY);
     }
 
     public function getParentForElement(Element $element)
@@ -84,5 +69,47 @@ class ElementService
             ->orderBy('name', 'DESC')
             ->limit($limit)
             ->get();
+    }
+
+    public function updateRootElementVisited(Element $element)
+    {
+        $rootParent = $element->rootParent;
+        if ($rootParent === null) {
+            return null;
+        }
+
+        $rootParent->last_visited = Carbon::now();
+        $rootParent->save();
+    }
+
+    private function getAnyFromUri($uri, $type)
+    {
+        $cleanUri = preg_replace("/[^A-Za-z0-9 ]/", '', $uri);
+
+        if ($cleanUri === null || strlen($cleanUri) === 0) {
+            throw new ElementNotFoundException();
+        }
+
+        $elementId = $this->cacheService->getElementFromUri($uri);
+
+        if (is_integer($elementId)) {
+            return Element::fromIdVisible($elementId);
+        }
+
+        $element = null;
+        if ($type === Element::DIRECTORY) {
+            $element = Element::fromUriDirectoryVisible($uri);
+        }
+        else {
+            $element = Element::fromUriFileVisible($uri);
+        }
+
+        if ($element === null) {
+            throw new ElementNotFoundException();
+        }
+
+        $this->cacheService->setByKey(CacheKeyGenerator::keyForElementUri($uri), $element->id);
+
+        return $element;
     }
 }

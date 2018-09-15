@@ -2,8 +2,6 @@
 
 namespace Youkok\Biz\Services;
 
-use Redis;
-
 use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\Course\CourseService;
 use Youkok\Biz\Services\Download\DownloadService;
@@ -12,6 +10,8 @@ use Youkok\Biz\Services\User\UserService;
 use Youkok\Common\Models\Element;
 use Youkok\Biz\Services\PopularListing\PopularCoursesService;
 use Youkok\Biz\Services\PopularListing\PopularElementsService;
+use Youkok\Enums\MostPopularCourse;
+use Youkok\Enums\MostPopularElement;
 
 class FrontpageService
 {
@@ -21,7 +21,6 @@ class FrontpageService
     const FRONTPAGE_RESET_FAVORITES = 'favorites';
 
     private $sessionService;
-    private $cache;
 
     private $popularCoursesProcessor;
     private $popularElementsProcessor;
@@ -33,7 +32,6 @@ class FrontpageService
 
     public function __construct(
         SessionService $sessionService,
-        Redis $cache,
 
         PopularCoursesService $popularCoursesProcessor,
         PopularElementsService $popularElementsProcessor,
@@ -45,7 +43,6 @@ class FrontpageService
     )
     {
         $this->sessionService = $sessionService;
-        $this->cache = $cache;
 
         $this->popularCoursesProcessor = $popularCoursesProcessor;
         $this->popularElementsProcessor = $popularElementsProcessor;
@@ -66,8 +63,8 @@ class FrontpageService
             'latest_elements' => $this->elementService->getLatestElements(static::PROCESSORS_LIMIT),
             'courses_last_visited' => $this->getLastVisitedCourses(static::PROCESSORS_LIMIT),
 
-            'elements_most_popular' => $this->popularElementsProcessor->run(static::PROCESSORS_LIMIT),
-            'courses_most_popular' => $this->popularCoursesProcessor->run(static::PROCESSORS_LIMIT),
+            'elements_most_popular' => $this->popularElementsProcessor->run(MostPopularElement::ALL, static::PROCESSORS_LIMIT),
+            'courses_most_popular' => $this->popularCoursesProcessor->run(MostPopularCourse::ALL, static::PROCESSORS_LIMIT),
 
             'user_preferences' => $this->userService->getUserPreferences(),
             'user_favorites' => array_reverse($this->userService->getUserListing(UserService::FAVORITES)),

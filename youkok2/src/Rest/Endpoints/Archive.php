@@ -27,7 +27,7 @@ class Archive extends BaseProcessorView
     public function get(Request $request, Response $response, array $args)
     {
         $payload = $this->archiveService->get($args['id']);
-        $payload['conten2t'] = $payload['content'];
+        $payload['conten2t'] = $payload['content']; // TODO
         $payload['content'] = $this->elementMapper->map($payload['content'], [
             ElementMapper::DOWNLOADS,
             ElementMapper::POSTED_TIME,

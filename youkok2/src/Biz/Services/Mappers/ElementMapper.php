@@ -94,4 +94,19 @@ class ElementMapper
         return $arr;
     }
 
+    public function mapBreadcrumbs(array $elements)
+    {
+        $out = [];
+        foreach ($elements as $key => $element) {
+            if ($key === 0) {
+                $out[] = $this->courseMapper->mapCourse($element);
+                continue;
+            }
+
+            $out[] = $this->mapElement($element);
+        }
+
+        return $out;
+    }
+
 }

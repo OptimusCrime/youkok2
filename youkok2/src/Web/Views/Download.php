@@ -30,7 +30,7 @@ class Download extends BaseView
     public function view(Request $request, Response $response, array $args)
     {
         try {
-            $element = $this->elementService->getElementFromUri($args['uri']);
+            $element = $this->elementService->getNonDirectoryFromUri($args['uri']);
 
             if (!$this->downloadService->fileExists($element)) {
                 // TODO logging

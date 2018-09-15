@@ -1,5 +1,7 @@
 <?php
-namespace Youkok\Jobs;
+namespace Youkok\Biz\Services\Jobs;
+
+use Redis;
 
 use Youkok\CachePopulators\PopulateMostPopularCourses;
 use Youkok\Enums\MostPopularCourse;
@@ -7,15 +9,19 @@ use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\PopularListing\PopularCoursesService;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 
-class UpdateMostPopularCourses extends JobInterface
+class UpdateMostPopularCoursesJobService implements JobServiceInterface
 {
-    private static $mostPopularKeys = [
-        MostPopularCourse::TODAY,
-        MostPopularCourse::WEEK,
-        MostPopularCourse::MONTH,
-        MostPopularCourse::YEAR,
-        MostPopularCourse::ALL,
-    ];
+    /** @var \Redis */
+    private $cache;
+
+    /** @var \Youkok\CachePopulators\PopulateMostPopularElements */
+    private $populateMostPopularElements;
+
+    public function __construct(Redis $cache)
+    {
+        $this->cache = $cache;
+        $this->populateMostPopularElements = $container->get(PopulateMostPopularElements::class);
+    }
 
     public function run()
     {
@@ -31,12 +37,12 @@ class UpdateMostPopularCourses extends JobInterface
 
     private function clearInMemoryCache()
     {
-        $cache = $this->containers->get('cache');
+        $cache = $this->cache;
         if ($cache === null) {
             return null;
         }
 
-        foreach (static::$mostPopularKeys as $key) {
+        foreach (MostPopularCourse::all() as $key) {
             $cacheKey = CacheKeyGenerator::keyForMostPopularCoursesForDelta($key);
             $cache->delete($cacheKey);
         }
@@ -60,7 +66,7 @@ class UpdateMostPopularCourses extends JobInterface
 
     private function populateCache()
     {
-        $cache = $this->containers->get('cache');
+        $cache = $this->cache;
         if ($cache === null) {
             return null;
         }

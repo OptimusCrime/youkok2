@@ -9,19 +9,22 @@ use Youkok\Biz\Services\SessionService;
 class BaseView
 {
     protected $container;
-    protected $sessionService;
+
+    /** @var \Slim\Views\Twig */
     protected $view;
-    protected $cache;
+
+    /** @var \Youkok\Biz\Services\SessionService */
+    protected $sessionService;
 
     protected $templateData;
 
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->view = $container->get('view');
-        $this->cache = $container->get('cache');
 
+        $this->view = $container->get('view');
         $this->sessionService = $container->get(SessionService::class);
+
         $this->sessionService->init();
 
         $this->templateData = $this->getDefaultTemplateData();
