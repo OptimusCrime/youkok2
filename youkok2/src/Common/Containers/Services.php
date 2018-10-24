@@ -33,10 +33,13 @@ class Services implements ContainersInterface
             return new SessionService();
         };
 
+        $container[SearchRedirectService::class] = function () {
+            return new SearchRedirectService();
+        };
+
         $container[CacheService::class] = function (ContainerInterface $container) {
             return new CacheService(
-                $container->get('cache'),
-                $container->get('settings')
+                $container->get('cache')
             );
         };
 
@@ -60,15 +63,8 @@ class Services implements ContainersInterface
 
         $container[MostPopularCoursesService::class] = function (ContainerInterface $container) {
             return new MostPopularCoursesService(
-                $container->get(SessionService::class),
+                $container->get('settings'),
                 $container->get(CacheService::class)
-            );
-        };
-
-        $container[SearchRedirectService::class] = function (ContainerInterface $container) {
-            return new SearchRedirectService(
-                $container->get('response'),
-                $container->get('router')
             );
         };
 

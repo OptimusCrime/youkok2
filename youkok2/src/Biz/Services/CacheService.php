@@ -3,19 +3,14 @@ namespace Youkok\Biz\Services;
 
 use Redis;
 
-use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class CacheService
 {
-    /** @var \Redis */
     private $cache;
 
-    private $settings;
-
-    public function __construct(Redis $cache, array $settings) {
+    public function __construct(Redis $cache) {
         $this->cache = $cache;
-        $this->settings = $settings;
     }
 
     public function getMostPopularElementsFromDelta($delta, $limit)

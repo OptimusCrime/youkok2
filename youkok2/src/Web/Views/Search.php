@@ -13,6 +13,9 @@ class Search extends BaseView
 {
     const SEARCH_GET_PARAMETER = 's';
 
+    /** @var \Slim\Interfaces\RouterInterface */
+    private $router;
+
     /** @var \Youkok\Biz\Services\SearchRedirectService */
     private $searchRedirectProcessor;
 
@@ -20,6 +23,7 @@ class Search extends BaseView
     {
         parent::__construct($container);
 
+        $this->router = $container->get('router');
         $this->searchRedirectProcessor = $container->get(SearchRedirectService::class);
     }
 
@@ -43,7 +47,11 @@ class Search extends BaseView
     private function redirectIfNoWildcardSearch(Response $response, $query, array $searchResults)
     {
         if (strlen($query) > 0 and strpos($query, '*') === false) {
-            return $this->searchRedirectProcessor->run($query);
+            $newSearchQuery = $this->searchRedirectProcessor->run($query);
+
+            return $response
+                ->withStatus(302)
+                ->withHeader('Location', $this->router->pathFor('search') . '?s=' . $newSearchQuery);
         }
 
         return $this->returnSearchResults($response, $query, $searchResults);

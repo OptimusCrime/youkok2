@@ -5,6 +5,7 @@ use \Psr\Http\Message\Response as Response;
 
 use Youkok\Biz\Services\SessionService;
 
+// TODO make middleware
 class LoginProcessor
 {
     private $params;

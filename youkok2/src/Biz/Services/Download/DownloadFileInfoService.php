@@ -14,7 +14,6 @@ class DownloadFileInfoService
         $this->updateDownloadsService = $updateDownloadsService;
     }
 
-    // TODO some of this methods should perhaps go in some other service container
     public function fileExists(Element $element)
     {
         $filePath = $this->getFilePath($element);

@@ -38,7 +38,7 @@ class ArchiveElementFetchProcessor
             'TITLES' => static::getArchiveTitles($this->element),
             'SITE_TITLE' => static::getSiteTitle($this->element),
             'STARRED' => static::currentElementIsStarred($this->element, $this->sessionHandler),
-            'FILE_TYPES' => static::listAcceptedFileTypes($this->settings['file_endings'])
+            'FILE_TYPES' => static::listAcceptedFileTypes($this->settings->get('file_endings'))
         ];
     }
 

@@ -33,6 +33,9 @@ INJECTION_EXP = r"(?:get\(\'?(?P<inject>(?:\w*)|\w*)(?:\:\:class)?\'?\))+"
 
 
 def get_injections(injections_raw):
+    if injections_raw is None or injections_raw == '':
+        return []
+
     injections = re.findall(INJECTION_EXP, injections_raw)
 
     return [] if injections is None or len(injections) == 0 else injections
@@ -48,7 +51,7 @@ def map_container(container):
 def get_containers(content):
     containers_raw = re.findall(CONTAINER_EXP, content)
 
-    return [map_container(container) for container in containers_raw if container[1] is not None and container[1] != '']
+    return [map_container(container) for container in containers_raw]
 
 
 def save_graph(containers):
@@ -56,7 +59,7 @@ def save_graph(containers):
 
     for container in containers:
         if len(container['injections']) == 0:
-            continue
+            unrolled_graph.append('    "{}"'.format(container['name']))
 
         for injection in container['injections']:
             unrolled_graph.append('    "{}" -> "{}"'.format(container['name'], injection))

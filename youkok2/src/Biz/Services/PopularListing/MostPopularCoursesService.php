@@ -1,28 +1,28 @@
 <?php
 namespace Youkok\Biz\Services\PopularListing;
 
+use Slim\Collection;
+
 use Youkok\Biz\Services\CacheService;
+use Youkok\Common\Controllers\DownloadController;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Enums\MostPopularCourse;
 
 class MostPopularCoursesService implements MostPopularInterface
 {
+    // We only display 10 on the actual frontpage, but it does not really make any differece. Good to have?
+    const MAX_COURSES_TO_FETCH = 20;
+
     const CACHE_DIRECTORY_KEY = 'cache_directory';
     const CACHE_DIRECTORY_SUB = 'courses';
 
     private $settings;
     private $cacheService;
 
-    public function __construct(array $settings, CacheService $cacheService) {
+    public function __construct(Collection $settings, CacheService $cacheService) {
         $this->settings = $settings;
         $this->cacheService = $cacheService;
-    }
-
-    public function refresh()
-    {
-        $this->clearFileCache();
-        $this->cacheService->clearCacheForKeys(MostPopularCourse::all());
     }
 
     public function fromDelta($delta, $limit = null)
@@ -45,12 +45,53 @@ class MostPopularCoursesService implements MostPopularInterface
         return static::resultArrayToElements($resultArr, $limit);
     }
 
+    public function refresh()
+    {
+        $this->clearFileCache();
+        $this->cacheService->clearCacheForKeys(MostPopularCourse::all());
+
+        foreach (MostPopularCourse::all() as $key) {
+            $this->refreshForDelta($key);
+        }
+    }
+
+    private function refreshForDelta($delta)
+    {
+        $courses = DownloadController::getMostPopularCoursesFromDelta($delta, static::MAX_COURSES_TO_FETCH);
+        $setKey = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
+
+        $this->cacheService->setByKey($setKey, json_encode($courses));
+
+        $this->storeDataInFile($setKey, $courses);
+    }
+
+    private function storeDataInFile($setKey, $courses)
+    {
+        // Make sure we have the directory first
+        if (!$this->createCacheDirectory()) {
+            // TODO error log here
+            return false;
+        }
+
+        $cacheDirectory = static::getCacheDirectory();
+        return file_put_contents($cacheDirectory . DIRECTORY_SEPARATOR . $setKey . '.json', json_encode($courses));
+    }
+
+    private function createCacheDirectory()
+    {
+        $cacheDirectory = $this->getCacheDirectory();
+        if (file_exists($cacheDirectory)) {
+            return true;
+        }
+
+        return mkdir($cacheDirectory, 0777, true);
+    }
+
     private function getMostPopularCoursesFromDisk($delta)
     {
         $key = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
 
-        $cacheDirectoryKey = $this->settings[MostPopularCoursesService::CACHE_DIRECTORY_KEY];
-        $cacheDirectory = $cacheDirectoryKey . MostPopularCoursesService::CACHE_DIRECTORY_SUB;
+        $cacheDirectory = $this->getCacheDirectory();
         $cacheFile = $cacheDirectory . DIRECTORY_SEPARATOR . $key . '.json';
 
         return file_get_contents($cacheFile);
@@ -58,8 +99,7 @@ class MostPopularCoursesService implements MostPopularInterface
 
     private function clearFileCache()
     {
-        $cacheDirectoryKey = $this->settings[MostPopularCoursesService::CACHE_DIRECTORY_KEY];
-        $cacheDirectory = $cacheDirectoryKey . MostPopularCoursesService::CACHE_DIRECTORY_SUB;
+        $cacheDirectory = $this->getCacheDirectory();
         if (!file_exists($cacheDirectory)) {
             return null;
         }
@@ -68,6 +108,12 @@ class MostPopularCoursesService implements MostPopularInterface
         foreach ($files as $file) {
             unlink($file);
         }
+    }
+
+    private function getCacheDirectory()
+    {
+        $cacheDirectoryKey = $this->settings->get(MostPopularCoursesService::CACHE_DIRECTORY_KEY);
+        return $cacheDirectoryKey . MostPopularCoursesService::CACHE_DIRECTORY_SUB;
     }
 
     private static function resultArrayToElements(array $result, $limit = null)

@@ -4,6 +4,9 @@ namespace Youkok\Biz\Services\Course;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 
+// TODO, rename this namespace Controllers, and move the other controllers into there
+// TODO edit: Or, perhaps, if all these methods could be static, move them into the controller instead,
+//      there is no need to make this a Service?
 class CourseService
 {
     public function getNumberOfNonVisibleCourses()
