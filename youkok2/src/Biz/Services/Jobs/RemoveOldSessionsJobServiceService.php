@@ -5,7 +5,6 @@ use Youkok\Biz\Services\SessionService;
 
 class RemoveOldSessionsJobServiceService implements JobServiceInterface
 {
-    /** @var \Youkok\Biz\Services\SessionService */
     private $sessionService;
 
     public function __construct(SessionService $sessionService)

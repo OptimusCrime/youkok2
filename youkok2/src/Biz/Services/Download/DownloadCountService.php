@@ -1,10 +1,8 @@
 <?php
 namespace Youkok\Biz\Services\Download;
 
-use Illuminate\Support\Facades\DB;
-
-use Youkok\Biz\Services\Cache\CacheService;
-use Youkok\Common\Models\Download;
+use Youkok\Biz\Services\CacheService;
+use Youkok\Common\Controllers\DownloadController;
 use Youkok\Common\Models\Element;
 
 class DownloadCountService
@@ -22,23 +20,12 @@ class DownloadCountService
             return 0;
         }
 
-        $downloads = $this->cacheService->getDonwloadsForId($element->id);
+        $downloads = $this->cacheService->getDownloadsForId($element->id);
 
         if ($downloads !== null) {
             return (int) $downloads;
         }
 
-        return $this->getDownloadsFromDatabase($element);
-    }
-
-    private function getDownloadsFromDatabase(Element $element)
-    {
-        $downloads = Download::select(DB::raw("COUNT(`id`) as `result`"))
-            ->where('resource', $element->id)
-            ->count();
-
-        $this->cacheService->setDownloadsForId($element->id, $downloads);
-
-        return (int) $downloads;
+        return (int) DownloadController::getDownloadsForId($element->id);
     }
 }

@@ -17,9 +17,4 @@ class CacheKeyGenerator
     {
         return 'most_popular_courses_' . $delta;
     }
-
-    public static function keyForElementUri($uri)
-    {
-        return 'uri_' . UriCleaner::cleanAll($uri);
-    }
 }

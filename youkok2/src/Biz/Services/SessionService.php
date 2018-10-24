@@ -3,6 +3,7 @@ namespace Youkok\Biz\Services;
 
 use Carbon\Carbon;
 
+use Youkok\Common\Controllers\SessionController;
 use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
 use Youkok\Common\Models\Session;
@@ -178,12 +179,9 @@ class SessionService
         return $this->store(true);
     }
 
-    public function getExpiredSessions()
+    public function deleteExpiredSessions()
     {
-        $sessions = Session::select('id')
-            ->where('expire', '<', Carbon::now())
-            ->get();
-
+        $sessions = SessionController::getExpiredSessions();
         foreach ($sessions as $session) {
             $session->delete();
         }

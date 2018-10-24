@@ -120,12 +120,4 @@ class ElementController
 
         return $query->get();
     }
-
-    // TODO
-    public static function getDownloadsForElement(Element $element, $foo = 1)
-    {
-        return Download::select(DB::raw("COUNT(`id`) as `result`"))
-            ->where('resource', $element->id)
-            ->count();
-    }
 }

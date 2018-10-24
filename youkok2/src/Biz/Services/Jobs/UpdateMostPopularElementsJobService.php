@@ -1,54 +1,19 @@
 <?php
 namespace Youkok\Biz\Services\Jobs;
 
-use Redis;
-
-use Youkok\CachePopulators\PopulateMostPopularElements;
-use Youkok\Enums\MostPopularElement;
-use Youkok\Common\Utilities\CacheKeyGenerator;
+use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 
 class UpdateMostPopularElementsJobService implements JobServiceInterface
 {
-    /** @var \Redis */
-    private $cache;
+    private $mostPopularElementsService;
 
-    /** @var \Youkok\CachePopulators\PopulateMostPopularElements */
-    private $populateMostPopularElements;
-
-    public function __construct(Redis $cache, PopulateMostPopularElements $populateMostPopularElements)
+    public function __construct(MostPopularElementsService $mostPopularElementsService)
     {
-        $this->cache = $cache;
-        $this->populateMostPopularElements = $populateMostPopularElements;
+        $this->mostPopularElementsService = $mostPopularElementsService;
     }
 
     public function run()
     {
-        $this->clearCache();
-        $this->populateCache();
-    }
-
-    private function clearCache()
-    {
-        $cache = $this->cache;
-        if ($cache === null) {
-            return null;
-        }
-
-        foreach (MostPopularElement::all() as $key) {
-            $cacheKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($key);
-            $cache->delete($cacheKey);
-        }
-    }
-
-    private function populateCache()
-    {
-        $cache = $this->cache;
-        if ($cache === null) {
-            return null;
-        }
-
-        foreach (MostPopularElement::all() as $key) {
-            $this->populateMostPopularElements->run($key);
-        }
+        $this->mostPopularElementsService->refresh();
     }
 }

@@ -4,12 +4,12 @@ namespace Youkok\Biz\Services;
 
 use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\Course\CourseService;
-use Youkok\Biz\Services\Download\DownloadService;
+use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Element\ElementService;
 use Youkok\Biz\Services\User\UserService;
 use Youkok\Common\Models\Element;
-use Youkok\Biz\Services\PopularListing\PopularCoursesService;
-use Youkok\Biz\Services\PopularListing\PopularElementsService;
+use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
+use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
 
@@ -33,11 +33,11 @@ class FrontpageService
     public function __construct(
         SessionService $sessionService,
 
-        PopularCoursesService $popularCoursesProcessor,
-        PopularElementsService $popularElementsProcessor,
+        MostPopularCoursesService $popularCoursesProcessor,
+        MostPopularElementsService $popularElementsProcessor,
 
         ElementService $elementService,
-        DownloadService $downloadService,
+        DownloadFileInfoService $downloadService,
         CourseService $courseService,
         UserService $userService
     )

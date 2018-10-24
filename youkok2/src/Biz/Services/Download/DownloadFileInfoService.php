@@ -5,7 +5,7 @@ use Youkok\Common\Models\Download;
 use Youkok\Common\Models\Element;
 use Youkok\Helpers\ElementHelper;
 
-class DownloadService
+class DownloadFileInfoService
 {
     private $updateDownloadsService;
 

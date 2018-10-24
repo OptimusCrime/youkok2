@@ -1,32 +1,29 @@
 <?php
-
 namespace Youkok\Common\Containers;
 
 use Psr\Container\ContainerInterface;
 
 use Youkok\Biz\Services\ArchiveService;
-use Youkok\Biz\Services\Cache\CacheService;
+use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Course\CourseService;
 use Youkok\Biz\Services\CourseListService;
 use Youkok\Biz\Services\Download\DownloadCountService;
-use Youkok\Biz\Services\Download\DownloadService;
+use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Element\ElementService;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Jobs\RemoveOldSessionsJobServiceService;
+use Youkok\Biz\Services\Jobs\UpdateMostPopularCoursesJobService;
 use Youkok\Biz\Services\Jobs\UpdateMostPopularElementsJobService;
 use Youkok\Biz\Services\JobService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
-use Youkok\Biz\Services\PopularListing\PopularCoursesService;
-use Youkok\Biz\Services\PopularListing\PopularElementsService;
+use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
+use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 use Youkok\Biz\Services\SearchRedirectService;
 use Youkok\Biz\Services\SessionService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
-use Youkok\Biz\Services\Cache\UpdateMostPopularElementRedisService;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Biz\Services\User\UserService;
-use Youkok\CachePopulators\PopulateMostPopularElements;
-use Youkok\Web\Views\Archive;
 
 class Services implements ContainersInterface
 {
@@ -39,32 +36,30 @@ class Services implements ContainersInterface
         $container[CacheService::class] = function (ContainerInterface $container) {
             return new CacheService(
                 $container->get('cache'),
-                $container->get('settings'),
-                $container->get(PopulateMostPopularElements::class)
+                $container->get('settings')
             );
         };
 
         $container[FrontpageService::class] = function (ContainerInterface $container) {
             return new FrontpageService(
                 $container->get(SessionService::class),
-                $container->get(PopularCoursesService::class),
-                $container->get(PopularElementsService::class),
+                $container->get(MostPopularCoursesService::class),
+                $container->get(MostPopularElementsService::class),
                 $container->get(ElementService::class),
-                $container->get(DownloadService::class),
+                $container->get(DownloadFileInfoService::class),
                 $container->get(CourseService::class),
                 $container->get(UserService::class)
             );
         };
 
-        $container[PopularElementsService::class] = function (ContainerInterface $container) {
-            return new PopularElementsService(
-                $container->get(SessionService::class),
+        $container[MostPopularElementsService::class] = function (ContainerInterface $container) {
+            return new MostPopularElementsService(
                 $container->get(CacheService::class)
             );
         };
 
-        $container[PopularCoursesService::class] = function (ContainerInterface $container) {
-            return new PopularCoursesService(
+        $container[MostPopularCoursesService::class] = function (ContainerInterface $container) {
+            return new MostPopularCoursesService(
                 $container->get(SessionService::class),
                 $container->get(CacheService::class)
             );
@@ -79,21 +74,7 @@ class Services implements ContainersInterface
 
         $container[UpdateDownloadsService::class] = function (ContainerInterface $container) {
             return new UpdateDownloadsService(
-                $container->get(SessionService::class),
-                $container->get('cache'),
-                $container->get(UpdateMostPopularElementRedisService::class)
-            );
-        };
-
-        $container[UpdateMostPopularElementRedisService::class] = function (ContainerInterface $container) {
-            return new UpdateMostPopularElementRedisService(
-                $container->get('cache')
-            );
-        };
-
-        $container[PopulateMostPopularElements::class] = function (ContainerInterface $container) {
-            return new PopulateMostPopularElements(
-                $container->get('cache')
+                $container->get(CacheService::class)
             );
         };
 
@@ -101,8 +82,8 @@ class Services implements ContainersInterface
             return new CourseListService();
         };
 
-        $container[DownloadService::class] = function (ContainerInterface $container) {
-            return new DownloadService(
+        $container[DownloadFileInfoService::class] = function (ContainerInterface $container) {
+            return new DownloadFileInfoService(
                 $container->get(UpdateDownloadsService::class)
             );
         };
@@ -171,12 +152,15 @@ class Services implements ContainersInterface
 
         $container[UpdateMostPopularElementsJobService::class] = function (ContainerInterface $container) {
             return new UpdateMostPopularElementsJobService(
-                $container->get('cache'),
-                $container->get(PopulateMostPopularElements::class)
+                $container->get(MostPopularElementsService::class)
             );
         };
 
-
+        $container[UpdateMostPopularCoursesJobService::class] = function (ContainerInterface $container) {
+            return new UpdateMostPopularCoursesJobService(
+                $container->get(MostPopularCoursesService::class)
+            );
+        };
     }
 }
 

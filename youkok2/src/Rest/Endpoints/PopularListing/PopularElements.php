@@ -7,7 +7,7 @@ use Slim\Http\Request;
 use Youkok\Enums\MostPopularElement;
 use Youkok\Mappers\MostPopularElementsMapper;
 use Youkok\Biz\Services\FrontpageService;
-use Youkok\Biz\Services\PopularListing\PopularElementsService;
+use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 use Youkok\Biz\UpdateUserMostPopularProcessor;
 use Youkok\Rest\Endpoints\BaseProcessorView;
 
@@ -20,7 +20,7 @@ class PopularElements extends BaseProcessorView
 
 
         $output = MostPopularElementsMapper::map(
-            $this->container->get(PopularElementsService::class)->run($args['delta'], FrontpageService::PROCESSORS_LIMIT),
+            $this->container->get(MostPopularElementsService::class)->run($args['delta'], FrontpageService::PROCESSORS_LIMIT),
             [
                 'router' => $this->container->get('router')
             ]
@@ -44,7 +44,7 @@ class PopularElements extends BaseProcessorView
             ->run();
 
         $output = MostPopularElementsMapper::map(
-            PopularElementsService::fromDelta(
+            MostPopularElementsService::fromDelta(
                 $delta,
                 $this->container->get('cache'),
                 FrontpageService::PROCESSORS_LIMIT

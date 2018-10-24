@@ -7,12 +7,12 @@ use Psr\Container\ContainerInterface;
 
 use Slim\Http\Stream;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Services\Download\DownloadService;
+use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Element\ElementService;
 
 class Download extends BaseView
 {
-    /** @var \Youkok\Biz\Services\Download\DownloadService */
+    /** @var \Youkok\Biz\Services\Download\DownloadFileInfoService */
     private $downloadService;
 
     /** @var \Youkok\Biz\Services\Element\ElementService */
@@ -23,7 +23,7 @@ class Download extends BaseView
     {
         parent::__construct($container);
 
-        $this->downloadService = $container->get(DownloadService::class);
+        $this->downloadService = $container->get(DownloadFileInfoService::class);
         $this->elementService = $container->get(ElementService::class);
     }
 

@@ -8,6 +8,13 @@ use Youkok\Common\Models\Element;
 
 class DownloadController
 {
+    public static function getDownloadsForId($id)
+    {
+        return Download::select(DB::raw("COUNT(`id`) as `result`"))
+            ->where('resource', $id)
+            ->count();
+    }
+
     public static function getMostPopularElementsFromDelta($delta)
     {
         $query = DB::table('download')

@@ -8,7 +8,7 @@ use Youkok\Enums\MostPopularCourse;
 use Youkok\Mappers\ElementsMapper;
 use Youkok\Mappers\MostPopularCoursesMapper;
 use Youkok\Biz\Services\FrontpageService;
-use Youkok\Biz\Services\PopularListing\PopularCoursesService;
+use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Biz\UpdateUserMostPopularProcessor;
 use Youkok\Rest\Endpoints\BaseProcessorView;
 
@@ -19,7 +19,7 @@ class PopularCourses extends BaseProcessorView
     public function get(Request $request, Response $response, array $args)
     {
         $output = ElementsMapper::map(
-            PopularCoursesService::fromDelta(
+            MostPopularCoursesService::fromDelta(
                 $args['delta'],
                 $this->container->get('cache'),
                 FrontpageService::PROCESSORS_LIMIT,
@@ -48,7 +48,7 @@ class PopularCourses extends BaseProcessorView
             ->run();
 
         $output = MostPopularCoursesMapper::map(
-            PopularCoursesService::fromDelta(
+            MostPopularCoursesService::fromDelta(
                 $delta,
                 $this->container->get('cache'),
                 FrontpageService::PROCESSORS_LIMIT,
