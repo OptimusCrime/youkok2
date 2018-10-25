@@ -12,6 +12,11 @@ const entries = {
 
 module.exports = (env, argv) => {
 
+  // TODO, transform frontpage: 'src.sd.s.dsd.' -> frontpage: ['./src/polyfills.js', '.the file']
+  const applyPolyfills = entryList => entryList.map({
+
+  });
+
   const generateHtmlWebpackPluginInfo = entry => ({
     inject: false,
     template: './src/' + entry + '/' + entry + '.html',
@@ -29,7 +34,9 @@ module.exports = (env, argv) => {
     'less-loader',
   ];
 
-  const htmlPlugin = Object.keys(entries).map(key => new HtmlWebpackPlugin(generateHtmlWebpackPluginInfo(key)));
+  const htmlPlugin = Object
+    .keys(entries)
+    .map(key => new HtmlWebpackPlugin(generateHtmlWebpackPluginInfo(key)));
 
   const plugins = argv.mode === 'development' ? [ ...htmlPlugin ] : [
     ...htmlPlugin,

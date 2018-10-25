@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { BoxWrapper } from "../../components/box-wrapper";
 import { CourseItem } from '../../components/course-item';
-import { EmptyItem } from '../../components/empty-item';
-import { StencilItemList } from '../../components/stencilate/item-list';
+import { ItemTimeAgo } from "../../components/item-time-ago";
+import { fromDatabaseDateToJavaScriptDate } from "../../../common/utils";
 
 class BoxLastVisitedContainer extends Component {
 
@@ -15,16 +16,15 @@ class BoxLastVisitedContainer extends Component {
     } = this.props;
 
     return (
-      <div className="col-xs-12 col-sm-6 frontpage-box">
-        <div className="list-header">
-          <h2>Siste besøkte fag</h2>
-        </div>
-        <ul className="list-group">
-          {isLoading && <StencilItemList size={10} />}
-          {!isLoading && coursesLastVisited.map((course, index) => <CourseItem course={course} key={index} /> )}
-          {!isLoading && coursesLastVisited.length === 0 && <EmptyItem text='Det er ingenting her' />}
-        </ul>
-      </div>
+      <BoxWrapper
+        title="Siste besøkte fag"
+        isLoading={isLoading}
+        isEmpty={!isLoading && coursesLastVisited.length === 0}
+      >
+        {!isLoading && coursesLastVisited.map((course, index) =>
+          <CourseItem course={course} key={index} additional={<ItemTimeAgo datetime={fromDatabaseDateToJavaScriptDate(course.last_visited)} /> } /> )
+        }
+      </BoxWrapper>
     );
   }
 }

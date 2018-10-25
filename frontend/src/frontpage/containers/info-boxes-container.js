@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { InfoBox } from '../components/info-box';
-import { loading } from '../../common/utils';
+import {formatThousandNumber, formatNumber, loading } from '../../common/utils';
 
 class InfoBoxesContainer extends Component {
 
@@ -27,24 +27,28 @@ class InfoBoxesContainer extends Component {
           text="Nedlastninger"
           number={number_downloads}
           isLoading={isLoading}
+          formatter={formatThousandNumber}
         />
         <InfoBox
           icon="fa-star"
           text="Bidrag siste mnd"
           number={number_new_elements}
           isLoading={isLoading}
+          formatter={formatNumber}
         />
         <InfoBox
           icon="fa-archive"
           text="Filer og linker"
           number={number_files}
           isLoading={isLoading}
+          formatter={formatNumber}
         />
         <InfoBox
           icon="fa-graduation-cap"
           text="Fag med innhold"
           number={number_courses_with_content}
           isLoading={isLoading}
+          formatter={formatNumber}
         />
       </div>
     );

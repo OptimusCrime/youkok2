@@ -25,8 +25,6 @@ class SessionService
     public function init($loadSessions = true) {
         // This is the default session data array
         $this->data = [
-            'history' => [],
-            'favorites' => [],
             'frontpage' => [
                 'most_popular_element' => MostPopularElement::MONTH,
                 'most_popular_course' => MostPopularCourse::MONTH,

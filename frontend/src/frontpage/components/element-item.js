@@ -25,6 +25,6 @@ export const ElementItem = ({ element, additional }) => (
     </a>&nbsp;@&nbsp;
     {element.parent.id === element.course.id && <CourseParent course={element.parent} /> }
     {element.parent.id !== element.course.id && <ElementParentPath parent={element.parent} course={element.course} /> }
-    [{additional}]
+    {additional}
   </li>
 );

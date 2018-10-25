@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import BoxUserHistoryContainer from './boxes/user/user-history-container';
-import BoxLastVisitedContainer from './boxes/last-visited-container';
+import BoxMostPopularCourses from './boxes/most-popular/courses';
+import BoxMostPopularElements from './boxes/most-popular/elements';
+
 import BoxLatestElements from './boxes/latest-elements';
+import BoxLastVisitedContainer from './boxes/last-visited-container';
+import BoxLastDownloadedContainer from './boxes/last-downloaded-container';
 
 import { loading } from '../../common/utils';
 
@@ -21,91 +24,15 @@ class InfoBoxesContainer extends Component {
     return (
       <React.Fragment>
         <div className="row">
-          <BoxUserHistoryContainer isLoading={isLoading} />
-          <div className="col-xs-12 col-sm-6 frontpage-box">
-            <div className="list-header">
-              <h2>Favoritter</h2>
-              <a href="#" className="frontpage-box-clear" id="frontpage-empty-favorites">Fjern favoritter</a>
-            </div>
-            <ul className="list-group" id="favorites-list">
-              <li className="list-group-item"><em>Du har ingen favoritter</em></li>
-            </ul>
-          </div>
+          <BoxMostPopularCourses isLoading={isLoading} />
+          <BoxMostPopularElements isLoading={isLoading} />
         </div>
-
         <div className="row">
           <BoxLatestElements isLoading={isLoading} />
-          <div className="col-xs-12 col-sm-6 frontpage-box frontpage-module">
-            <div className="list-header">
-              <h2 className="can-i-be-inline">Mest populære</h2>
-              <div className="btn-group">
-                <button className="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                    <span className="most-popular-label">
-                      I dag
-                    </span>
-                  <span className="caret"/>
-                </button>
-                <ul className="dropdown-menu home-most-popular-dropdown">
-                  <li>
-                    <a data-delta="1" href="#">I dag</a>
-                  </li>
-                  <li className="disabled">
-                    <a data-delta="2" href="#">Denne uka</a>
-                  </li>
-                  <li className="disabled">
-                    <a data-delta="3" href="#">Denne måneden</a>
-                  </li>
-                  <li className="disabled">
-                    <a data-delta="4" href="#">Dette året</a>
-                  </li>
-                  <li className="disabled">
-                    <a data-delta="5" href="#">Alltid</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <ul className="list-group">
-              <li className="list-group-item"><em>Det er ingenting her</em></li>
-            </ul>
-          </div>
+          <BoxLastVisitedContainer isLoading={isLoading} />
         </div>
         <div className="row">
-          <div
-            className="col-xs-12 col-sm-6 frontpage-box frontpage-module"
-          >
-            <div className="list-header">
-              <h2 className="can-i-be-inline">Mest populære fag</h2>
-              <div className="btn-group">
-                <button className="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                    <span className="most-popular-label">
-                      I dag
-                    </span>
-                  <span className="caret"/>
-                </button>
-                <ul className="dropdown-menu home-most-popular-dropdown">
-                  <li>
-                    <a data-delta="1" href="#">I dag</a>
-                  </li>
-                  <li className="disabled">
-                    <a data-delta="2" href="#">Denne uka</a>
-                  </li>
-                  <li className="disabled">
-                    <a data-delta="3" href="#">Denne måneden</a>
-                  </li>
-                  <li className="disabled">
-                    <a data-delta="4" href="#">Dette året</a>
-                  </li>
-                  <li className="disabled">
-                    <a data-delta="5" href="#">Alltid</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <ul className="list-group">
-              <li className="list-group-item"><em>Det er ingenting her</em></li>
-            </ul>
-          </div>
-         <BoxLastVisitedContainer isLoading={isLoading} />
+          <BoxLastDownloadedContainer isLoading={isLoading} />
         </div>
       </React.Fragment>
     );

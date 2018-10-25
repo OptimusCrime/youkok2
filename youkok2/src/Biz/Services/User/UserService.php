@@ -2,7 +2,6 @@
 namespace Youkok\Biz\Services\User;
 
 use Youkok\Biz\Services\SessionService;
-use Youkok\Common\Models\Element;
 use Youkok\Enums\MostPopularElement;
 
 class UserService
@@ -37,24 +36,5 @@ class UserService
         }
 
         return $frontpageSettings[$key];
-    }
-
-    public function getUserListing($type = self::FAVORITES)
-    {
-        $ids = $this->sessionService->getDataWithKey($type);
-        if (!is_array($ids) or count($ids) === 0) {
-            return [];
-        }
-
-        $elements = [];
-        foreach ($ids as $id) {
-            $element = Element::fromIdVisible($id, ['id', 'name', 'parent', 'directory', 'checksum', 'link', 'pending',
-                'deleted', 'uri']);
-            if ($elements !== null) {
-                $elements[] = $element;
-            }
-        }
-
-        return $elements;
     }
 }

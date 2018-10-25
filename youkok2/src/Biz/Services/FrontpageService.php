@@ -61,13 +61,12 @@ class FrontpageService
             'number_new_elements' => $this->elementService->getNumberOfFilesThisMonth(),
             'latest_elements' => $this->elementService->getLatestElements(static::PROCESSORS_LIMIT),
             'courses_last_visited' => $this->getLastVisitedCourses(static::PROCESSORS_LIMIT),
+            'last_downloaded' => $this->downloadService->getLatestDownloads(static::PROCESSORS_LIMIT),
 
             'elements_most_popular' => $this->popularElementsProcessor->fromDelta(MostPopularElement::ALL, static::PROCESSORS_LIMIT),
             'courses_most_popular' => $this->popularCoursesProcessor->fromDelta(MostPopularCourse::ALL, static::PROCESSORS_LIMIT),
 
             'user_preferences' => $this->userService->getUserPreferences(),
-            'user_favorites' => array_reverse($this->userService->getUserListing(UserService::FAVORITES)),
-            'user_history' => $this->userService->getUserListing(UserService::HISTORY),
         ];
     }
 

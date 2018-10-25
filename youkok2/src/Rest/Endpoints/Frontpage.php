@@ -34,14 +34,41 @@ class Frontpage extends BaseProcessorView
     {
         $payload = $this->frontpageService->get();
 
-        $payload['latest_elements'] = $this->elementMapper->map($payload['latest_elements'], [ElementMapper::POSTED_TIME, ElementMapper::PARENT_DIRECT, ElementMapper::PARENT_COURSE]);
-        $payload['courses_last_visited'] = $this->courseMapper->map($payload['courses_last_visited']);
+        $payload['latest_elements'] = $this->elementMapper->map(
+            $payload['latest_elements'], [
+                ElementMapper::POSTED_TIME,
+                ElementMapper::PARENT_DIRECT,
+                ElementMapper::PARENT_COURSE
+            ]
+        );
 
-        $payload['elements_most_popular'] = $payload['elements_most_popular'];
-        $payload['courses_most_popular'] = $this->courseMapper->map($payload['courses_most_popular']);
+        $payload['last_downloaded'] = $this->elementMapper->mapStdClass(
+            $payload['last_downloaded'], [
+                ElementMapper::KEEP_DOWNLOADED_TIME,
+                ElementMapper::PARENT_DIRECT,
+                ElementMapper::PARENT_COURSE
+            ]
+        );
 
-        // $payload['user_favorites'] = $this->courseMapper->map($payload['user_favorites']); TODO, this needs to handle both elements and courses, additional mapper?
-        $payload['user_last_visited_courses'] = $this->courseMapper->map($payload['user_last_visited_courses']);
+        $payload['courses_last_visited'] = $this->courseMapper->map(
+            $payload['courses_last_visited'], [
+                CourseMapper::LAST_VISITED
+            ]
+        );
+
+        $payload['elements_most_popular'] = $this->elementMapper->map(
+            $payload['elements_most_popular'], [
+                ElementMapper::DATASTORE_DOWNLOADS,
+                ElementMapper::PARENT_DIRECT,
+                ElementMapper::PARENT_COURSE
+            ]
+        );
+
+        $payload['courses_most_popular'] = $this->courseMapper->map(
+            $payload['courses_most_popular'], [
+                CourseMapper::DATASTORE_DOWNLOAD_ESTIMATE
+            ]
+        );
 
         return $this->output($response, $payload);
     }
@@ -49,11 +76,7 @@ class Frontpage extends BaseProcessorView
     public function put(Request $request, Response $response)
     {
         try {
-            $requestPayload = $request->getParams();
-
-            $this->frontpageService->resetFrontpageBox(
-                isset($requestPayload[FrontpageService::FRONTPAGE_CHANGE_PARAM]) ? $requestPayload[FrontpageService::FRONTPAGE_CHANGE_PARAM] : null
-            );
+            $this->frontpageService->resetFrontpageBox($request->getParam(FrontpageService::FRONTPAGE_CHANGE_PARAM, null));
 
             return $this->outputEmpty($response);
         }

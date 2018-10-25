@@ -5,9 +5,9 @@ import {
 import {
   FRONTPAGE_FETCH_FAILED,
   FRONTPAGE_FETCH_FINISHED,
-  FRONTPAGE_FETCH_STARTED, FRONTPAGE_RESET_STARTED
+  FRONTPAGE_FETCH_STARTED,
 } from './constants';
-import {FRONTPAGE_RESET_HISTORY_TYPE} from "../../consts";
+import { DELTA_MOST_POPULAR_MONTH } from "../../consts";
 
 const defaultState = {
   started: false,
@@ -23,13 +23,16 @@ const defaultState = {
 
   latest_elements: [],
   courses_last_visited: [],
+  courses_last_downloaded: [],
 
   elements_most_popular: [],
   courses_most_popular: [],
 
-  user_preferences: [],
-  user_favorites: [],
-  user_history: [],
+  user_preferences: {
+    // These have to be strings...
+    DELTA_POST_POPULAR_COURSES: DELTA_MOST_POPULAR_MONTH,
+    DELTA_POST_POPULAR_ELEMENTS: DELTA_MOST_POPULAR_MONTH,
+  },
 };
 
 const frontpage = (state = defaultState, action) => {
@@ -44,9 +47,14 @@ const frontpage = (state = defaultState, action) => {
     case FRONTPAGE_FETCH_FINISHED:
       return {
         ...state,
+
         info: {
           ...state,
           ...mapFrontpageInfo(action.data)
+        },
+
+        user_preferences: {
+          ...action.data.user_preferences
         },
 
         ...mapFrontpage(action.data),
@@ -60,12 +68,6 @@ const frontpage = (state = defaultState, action) => {
         ...state,
         failed: true,
         started: false,
-      };
-
-    case FRONTPAGE_RESET_STARTED:
-      return {
-        ...state,
-        user_history: action.frontpageType === FRONTPAGE_RESET_HISTORY_TYPE ? [] : state.user_history
       };
 
     default:

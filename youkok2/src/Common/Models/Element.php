@@ -327,6 +327,15 @@ class Element extends BaseModel
         return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_DIRECTORIES);
     }
 
+    // https://laracasts.com/discuss/channels/general-discussion/save-updated-model-dosnt-work/replies/32779
+    public static function newFromStd($stdClass)
+    {
+        $instance = new Element();
+        $instance->setRawAttributes(get_object_vars($stdClass), true);
+
+        return $instance;
+    }
+
     private static function fromUriFragments($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'], $type = self::ELEMENT_TYPE_DIRECTORIES)
     {
         $fragments = UriCleaner::cleanFragments(explode('/', $uri));

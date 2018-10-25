@@ -6,23 +6,24 @@ import { ElementItem } from "../../components/element-item";
 import { ItemTimeAgo } from "../../components/item-time-ago";
 import { fromDatabaseDateToJavaScriptDate } from "../../../common/utils";
 
-class BoxLatestElements extends Component {
+
+class BoxLastDownloadedContainer extends Component {
 
   render() {
 
     const {
       isLoading,
-      latestElements,
+      lastDownloaded,
     } = this.props;
 
     return (
       <BoxWrapper
-        title="Nyeste"
+        title="Siste nedlastninger"
         isLoading={isLoading}
-        isEmpty={!isLoading && latestElements.length === 0}
+        isEmpty={!isLoading && lastDownloaded.length === 0}
       >
-        {!isLoading && latestElements.map((element, index) =>
-          <ElementItem element={element} key={index} additional={<ItemTimeAgo datetime={fromDatabaseDateToJavaScriptDate(element.added)} /> } /> )
+        {!isLoading && lastDownloaded.map((element, index) =>
+          <ElementItem element={element} key={index} additional={<ItemTimeAgo datetime={fromDatabaseDateToJavaScriptDate(element.downloaded_time)} /> } /> )
         }
       </BoxWrapper>
     );
@@ -30,10 +31,10 @@ class BoxLatestElements extends Component {
 }
 
 const mapStateToProps = ({ frontpage }) => ({
-  latestElements: frontpage.latest_elements
+  lastDownloaded: frontpage.last_downloaded
 });
 
 const mapDispatchToProps = {
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BoxLatestElements);
+export default connect(mapStateToProps, mapDispatchToProps)(BoxLastDownloadedContainer);
