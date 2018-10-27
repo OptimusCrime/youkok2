@@ -103,16 +103,18 @@ class Frontpage extends BaseProcessorView
 
     private function mapUpdateMostPopular($output, $type, $value)
     {
+        $ret = [
+            'type' => $type,
+            'value' => $value,
+        ];
+
         if ($type === UserService::DELTA_POST_POPULAR_ELEMENTS) {
-            return [
-                'elements_most_popular' => $this->mapElementsMostPopular($output),
-                $type => $value
-            ];
+            $ret['data'] = $this->mapElementsMostPopular($output);
+        }
+        else {
+            $ret['data'] = $this->mapCoursesMostPopular($output);
         }
 
-        return [
-            'courses_most_popular' => $this->mapCoursesMostPopular($output),
-            $type => $value
-        ];
+        return $ret;
     }
 }
