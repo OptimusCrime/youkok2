@@ -2,7 +2,7 @@ import React from "react";
 
 import { userPreferenceDeltaToString } from "../../../utilities/utils";
 
-export const MostPopularDropdowOption = ({ selectedButton, delta }) => (
+export const MostPopularDropdowOption = ({ selectedButton, changeDelta, delta }) => (
   <li
     className={selectedButton === delta ? 'disabled' : ''}
     onClick={e => {
@@ -12,9 +12,9 @@ export const MostPopularDropdowOption = ({ selectedButton, delta }) => (
         return false;
       }
 
-      console.log('Update here')
+      changeDelta(delta);
     }}
   >
-    <a data-delta="3" href="#">{userPreferenceDeltaToString(delta)}</a>
+    <a href="#">{userPreferenceDeltaToString(delta)}</a>
   </li>
 );

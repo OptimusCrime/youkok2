@@ -1,14 +1,11 @@
 <?php
-
 namespace Youkok\Biz\Services\Mappers;
 
-
-use Slim\Interfaces\RouterInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Services\Course\CourseService;
 use Youkok\Biz\Services\Download\DownloadCountService;
-use Youkok\Biz\Services\Element\ElementService;
 use Youkok\Biz\Services\UrlService;
+use Youkok\Common\Controllers\CourseController;
+use Youkok\Common\Controllers\ElementController;
 use Youkok\Common\Models\Element;
 
 class ElementMapper
@@ -23,22 +20,16 @@ class ElementMapper
     const KEEP_DOWNLOADED_TIME = 'KEEP_DOWNLOADED_TIME';
 
     private $urlService;
-    private $elementService;
-    private $courseService;
     private $courseMapper;
     private $downloadCountService;
 
 
     public function __construct(
         UrlService $urlService,
-        ElementService $elementService,
-        CourseService $courseService,
         CourseMapper $courseMapper,
         DownloadCountService $downloadCountService
     ) {
         $this->urlService = $urlService;
-        $this->elementService = $elementService;
-        $this->courseService = $courseService;
         $this->courseMapper = $courseMapper;
         $this->downloadCountService = $downloadCountService;
     }
@@ -84,7 +75,7 @@ class ElementMapper
 
         if (in_array(static::PARENT_DIRECT, $additionalFields)) {
             try {
-                $parent = $this->elementService->getParentForElement($element);
+                $parent = ElementController::getParentForElement($element);
                 $arr['parent'] = $parent->isCourse() ? $this->courseMapper->mapCourse($parent) : $this->mapElement($parent);
             } catch (ElementNotFoundException $e) {
                 // TODO log
@@ -94,7 +85,7 @@ class ElementMapper
 
         if (in_array(static::PARENT_COURSE, $additionalFields)) {
             try {
-                $course = $this->courseService->getCourseFromElement($element);
+                $course = CourseController::getCourseFromElement($element);
                 $arr['course'] = $this->courseMapper->mapCourse($course);
             } catch (ElementNotFoundException $e) {
                 // TODO log

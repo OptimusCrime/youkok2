@@ -5,11 +5,9 @@ use Psr\Container\ContainerInterface;
 
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\CacheService;
-use Youkok\Biz\Services\Course\CourseService;
 use Youkok\Biz\Services\CourseListService;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
-use Youkok\Biz\Services\Element\ElementService;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Jobs\RemoveOldSessionsJobServiceService;
 use Youkok\Biz\Services\Jobs\UpdateMostPopularCoursesJobService;
@@ -48,9 +46,6 @@ class Services implements ContainersInterface
                 $container->get(SessionService::class),
                 $container->get(MostPopularCoursesService::class),
                 $container->get(MostPopularElementsService::class),
-                $container->get(ElementService::class),
-                $container->get(DownloadFileInfoService::class),
-                $container->get(CourseService::class),
                 $container->get(UserService::class)
             );
         };
@@ -84,16 +79,6 @@ class Services implements ContainersInterface
             );
         };
 
-        $container[ElementService::class] = function (ContainerInterface $container) {
-            return new ElementService(
-                $container->get(CacheService::class)
-            );
-        };
-
-        $container[CourseService::class] = function () {
-            return new CourseService();
-        };
-
         $container[UserService::class] = function (ContainerInterface $container) {
             return new UserService(
                 $container->get(SessionService::class)
@@ -109,8 +94,6 @@ class Services implements ContainersInterface
         $container[ElementMapper::class] = function (ContainerInterface $container) {
             return new ElementMapper(
                 $container->get(UrlService::class),
-                $container->get(ElementService::class),
-                $container->get(CourseService::class),
                 $container->get(CourseMapper::class),
                 $container->get(DownloadCountService::class)
             );
@@ -124,8 +107,6 @@ class Services implements ContainersInterface
 
         $container[ArchiveService::class] = function (ContainerInterface $container) {
             return new ArchiveService(
-                $container->get(CourseService::class),
-                $container->get(ElementService::class),
                 $container->get(ElementMapper::class)
             );
         };

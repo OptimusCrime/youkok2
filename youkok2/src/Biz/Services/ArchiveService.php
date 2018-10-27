@@ -1,21 +1,17 @@
 <?php
 namespace Youkok\Biz\Services;
 
-use Youkok\Biz\Services\Course\CourseService;
-use Youkok\Biz\Services\Element\ElementService;
 use Youkok\Biz\Services\Mappers\ElementMapper;
+use Youkok\Common\Controllers\CourseController;
+use Youkok\Common\Controllers\ElementController;
 use Youkok\Common\Models\Element;
 
 class ArchiveService
 {
-    private $courseService;
-    private $elementService;
     private $elementMapper;
 
-    public function __construct(CourseService $courseService, ElementService $elementService, ElementMapper $elementMapper)
+    public function __construct(ElementMapper $elementMapper)
     {
-        $this->courseService = $courseService;
-        $this->elementService = $elementService;
         $this->elementMapper = $elementMapper;
     }
 
@@ -24,7 +20,7 @@ class ArchiveService
         // This method will throw an exception if the course is not found (or invisible)
         $directory = Element::fromIdVisible($id, Element::ATTRIBUTES_ALL);
 
-        $course = $this->courseService->getCourseFromId($id);
+        $course = CourseController::getCourseFromId($id);
         $content = $this->getContentForDirectory($directory);
 
         return [
@@ -37,13 +33,13 @@ class ArchiveService
     {
         $element = null;
         if ($params === null) {
-            $element = $this->courseService->getCourseFromUri($course);
+            $element = CourseController::getCourseFromUri($course);
         }
         else {
-            $element = $this->elementService->getDirectoryFromUri($course . '/' . $params);
+            $element = ElementController::getDirectoryFromUri($course . '/' . $params);
         }
 
-        $this->elementService->updateRootElementVisited($element);
+        ElementController::updateRootElementVisited($element);
 
         return $element;
     }

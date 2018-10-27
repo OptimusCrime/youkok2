@@ -10,7 +10,7 @@ import {
   DELTA_MOST_POPULAR_YEAR
 } from "../../../consts";
 
-export const MostPopularDropdown = ({ selectedButton, toggleDropdown, open }) => {
+export const MostPopularDropdown = ({ selectedButton, toggleDropdown, changeDelta, open }) => {
 
   const dropdownOptionDeltas = [
     DELTA_MOST_POPULAR_TODAY,
@@ -34,6 +34,7 @@ export const MostPopularDropdown = ({ selectedButton, toggleDropdown, open }) =>
             key={delta}
             delta={delta}
             selectedButton={selectedButton}
+            changeDelta={changeDelta}
           />
         )}
       </ul>

@@ -52,7 +52,7 @@ class BaseView
             ],
 
             // Information about the current user
-            'USER' => $this->sessionService->getData(),
+            'USER' => $this->sessionService->getAllData(),
 
             // Other things
             'SITE_TITLE' => 'Den beste kokeboka på nettet',

@@ -15,6 +15,21 @@ class DownloadController
             ->count();
     }
 
+    public static function getNumberOfDownloads()
+    {
+        return Download::count();
+    }
+
+    public static function getLatestDownloads($limit)
+    {
+        return DB::table('download')
+            ->select(['downloaded_time', 'element.*'])
+            ->leftJoin('element as element', 'element.id', '=', 'download.resource')
+            ->orderBy('downloaded_time', 'DESC')
+            ->limit($limit)
+            ->get();
+    }
+
     public static function getMostPopularElementsFromDelta($delta)
     {
         $query = DB::table('download')

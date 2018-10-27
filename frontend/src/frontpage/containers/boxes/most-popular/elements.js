@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { BoxWrapper } from "../../../components/box-wrapper";
-import { CourseItem } from "../../../components/course-item";
+import { ElementItem } from "../../../components/element-item";
 import { MostPopularDropdown } from "../../../components/most-popular/dropdown";
-import {formatNumber, fromDatabaseDateToJavaScriptDate} from "../../../../common/utils";
+import { formatNumber } from "../../../../common/utils";
 import { DELTA_POST_POPULAR_ELEMENTS } from "../../../consts";
-import {ElementItem} from "../../../components/element-item";
-import {ItemTimeAgo} from "../../../components/item-time-ago";
+import { updateFrontpage as updateFrontpageDispatch } from "../../../redux/frontpage/actions";
 
 class BoxMostPopularElements extends Component {
 
@@ -19,12 +18,19 @@ class BoxMostPopularElements extends Component {
     };
 
     this.toggleDropdown = this.toggleDropdown.bind(this);
+    this.changeDelta = this.changeDelta.bind(this);
   }
 
   toggleDropdown() {
     this.setState({
       open: !this.state.open
     });
+  }
+
+  changeDelta(delta) {
+    const { updateFrontpage } = this.props;
+
+    updateFrontpage(DELTA_POST_POPULAR_ELEMENTS, delta);
   }
 
   render() {
@@ -48,6 +54,7 @@ class BoxMostPopularElements extends Component {
             selectedButton={selectedButton}
             open={this.state.open}
             toggleDropdown={this.toggleDropdown}
+            changeDelta={this.changeDelta}
           />
         }
       >
@@ -65,6 +72,7 @@ const mapStateToProps = ({ frontpage }) => ({
 });
 
 const mapDispatchToProps = {
+  updateFrontpage: updateFrontpageDispatch
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(BoxMostPopularElements);

@@ -1,15 +1,12 @@
 <?php
-namespace Youkok\Biz\Services\Course;
+namespace Youkok\Common\Controllers;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 
-// TODO, rename this namespace Controllers, and move the other controllers into there
-// TODO edit: Or, perhaps, if all these methods could be static, move them into the controller instead,
-//      there is no need to make this a Service?
-class CourseService
+class CourseController
 {
-    public function getNumberOfNonVisibleCourses()
+    public static function getNumberOfNonVisibleCourses()
     {
         return Element
             ::where('directory', 1)
@@ -19,7 +16,7 @@ class CourseService
             ->count();
     }
 
-    public function getAllVisibleCourses()
+    public static function getAllVisibleCourses()
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'deleted', 'pending')
             ->where('parent', null)
@@ -30,12 +27,24 @@ class CourseService
             ->get();
     }
 
-    public function getCourseFromId($id)
+    public static function getCourseFromId($id)
     {
-        return  $this->getCourseFromElement(Element::fromIdVisible($id));
+        return static::getCourseFromElement(Element::fromIdVisible($id));
     }
 
-    public function getCourseFromElement(Element $element)
+    public static function getLastVisitedCourses($limit = 10)
+    {
+        return Element::select('id', 'name', 'slug', 'uri', 'last_visited')
+            ->where('parent', null)
+            ->where('directory', 1)
+            ->where('pending', 0)
+            ->where('deleted', 0)
+            ->orderBy('last_visited', 'DESC')
+            ->limit($limit)
+            ->get();
+    }
+
+    public static function getCourseFromElement(Element $element)
     {
         if ($element->parent === 0) {
             // TODO log
@@ -60,7 +69,7 @@ class CourseService
         return Element::fromIdVisible($currentObject->id, ['id', 'name']);
     }
 
-    public function getCourseFromUri($uri)
+    public static function getCourseFromUri($uri)
     {
         $element = Element::where('slug', $uri)
             ->where('parent', null)

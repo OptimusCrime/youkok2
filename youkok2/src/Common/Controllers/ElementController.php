@@ -1,9 +1,9 @@
 <?php
 namespace Youkok\Common\Controllers;
 
-use Illuminate\Database\Capsule\Manager as DB;
+use Carbon\Carbon;
 
-use Youkok\Common\Models\Download;
+use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 
 class ElementController
@@ -11,8 +11,93 @@ class ElementController
     const SORT_TYPE_ORGANIZED = 0;
     const SORT_TYPE_AGE = 1;
 
-    // TODO add parameter to fetch whatever attributes we'd like for all methods
-    // builder pattern?
+    public static function getNonDirectoryFromUri($uri)
+    {
+        return static::getAnyFromUri($uri, Element::NON_DIRECTORY);
+    }
+
+    public static function getDirectoryFromUri($uri)
+    {
+        return static::getAnyFromUri($uri, Element::DIRECTORY);
+    }
+
+    public static function getParentForElement(Element $element)
+    {
+        $parent = Element
+            ::where('id', $element->parent)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->first();
+
+        if (!($parent instanceof Element)) {
+            throw new ElementNotFoundException();
+        }
+
+        return $parent;
+    }
+
+    public static function getNumberOfVisibleFiles()
+    {
+        return Element
+            ::where('directory', 0)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->count();
+    }
+
+    public static function getNumberOfFilesThisMonth()
+    {
+        return Element
+            ::where('directory', 0)
+            ->where('deleted', 0)
+            ->whereDate('added', '>=', Carbon::now()->subMonth())
+            ->count();
+    }
+
+    public static function getLatestElements($limit = 10)
+    {
+        return Element::where('directory', 0)
+            ->where('pending', 0)
+            ->where('deleted', 0)
+            ->orderBy('added', 'DESC')
+            ->orderBy('name', 'DESC')
+            ->limit($limit)
+            ->get();
+    }
+
+    public static function updateRootElementVisited(Element $element)
+    {
+        $rootParent = $element->rootParent;
+        if ($rootParent === null) {
+            return null;
+        }
+
+        $rootParent->last_visited = Carbon::now();
+        $rootParent->save();
+    }
+
+    private static function getAnyFromUri($uri, $type)
+    {
+        $cleanUri = preg_replace("/[^A-Za-z0-9 ]/", '', $uri);
+
+        if ($cleanUri === null || strlen($cleanUri) === 0) {
+            throw new ElementNotFoundException();
+        }
+
+        $element = null;
+        if ($type === Element::DIRECTORY) {
+            $element = Element::fromUriDirectoryVisible($uri);
+        }
+        else {
+            $element = Element::fromUriFileVisible($uri);
+        }
+
+        if ($element === null) {
+            throw new ElementNotFoundException();
+        }
+
+        return $element;
+    }
 
     public static function getAllPending()
     {

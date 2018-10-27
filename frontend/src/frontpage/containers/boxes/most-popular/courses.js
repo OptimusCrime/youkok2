@@ -6,6 +6,7 @@ import { CourseItem } from "../../../components/course-item";
 import { MostPopularDropdown } from "../../../components/most-popular/dropdown";
 import { formatNumber } from "../../../../common/utils";
 import { DELTA_POST_POPULAR_COURSES } from "../../../consts";
+import { updateFrontpage as updateFrontpageDispatch } from "../../../redux/frontpage/actions";
 
 class BoxMostPopularCourses extends Component {
 
@@ -17,12 +18,19 @@ class BoxMostPopularCourses extends Component {
     };
 
     this.toggleDropdown = this.toggleDropdown.bind(this);
+    this.changeDelta = this.changeDelta.bind(this);
   }
 
   toggleDropdown() {
     this.setState({
       open: !this.state.open
     });
+  }
+
+  changeDelta(delta) {
+    const { updateFrontpage } = this.props;
+
+    updateFrontpage(DELTA_POST_POPULAR_COURSES, delta);
   }
 
   render() {
@@ -46,6 +54,7 @@ class BoxMostPopularCourses extends Component {
             selectedButton={selectedButton}
             open={this.state.open}
             toggleDropdown={this.toggleDropdown}
+            changeDelta={this.changeDelta}
           />
         }
       >
@@ -63,6 +72,7 @@ const mapStateToProps = ({ frontpage }) => ({
 });
 
 const mapDispatchToProps = {
+  updateFrontpage: updateFrontpageDispatch
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(BoxMostPopularCourses);

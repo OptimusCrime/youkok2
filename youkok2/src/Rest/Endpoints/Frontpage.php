@@ -9,6 +9,7 @@ use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
+use Youkok\Biz\Services\User\UserService;
 
 class Frontpage extends BaseProcessorView
 {
@@ -56,33 +57,62 @@ class Frontpage extends BaseProcessorView
             ]
         );
 
-        $payload['elements_most_popular'] = $this->elementMapper->map(
-            $payload['elements_most_popular'], [
-                ElementMapper::DATASTORE_DOWNLOADS,
-                ElementMapper::PARENT_DIRECT,
-                ElementMapper::PARENT_COURSE
-            ]
-        );
-
-        $payload['courses_most_popular'] = $this->courseMapper->map(
-            $payload['courses_most_popular'], [
-                CourseMapper::DATASTORE_DOWNLOAD_ESTIMATE
-            ]
-        );
+        $payload['elements_most_popular'] = $this->mapElementsMostPopular($payload['elements_most_popular']);
+        $payload['courses_most_popular'] = $this->mapCoursesMostPopular($payload['courses_most_popular']);
 
         return $this->output($response, $payload);
     }
 
     public function put(Request $request, Response $response)
     {
-        try {
-            $this->frontpageService->resetFrontpageBox($request->getParam(FrontpageService::FRONTPAGE_CHANGE_PARAM, null));
+        $params = json_decode($request->getBody(), true);
 
-            return $this->outputEmpty($response);
+        $type = isset($params[FrontpageService::FRONTPAGE_PUT_TYPE_PARAM]) ? $params[FrontpageService::FRONTPAGE_PUT_TYPE_PARAM] : null;
+        $value = isset($params[FrontpageService::FRONTPAGE_PUT_VALUE_PARAM]) ? $params[FrontpageService::FRONTPAGE_PUT_VALUE_PARAM] : null;
+
+        try {
+            $output = $this->frontpageService->put($type, $value);
+
+            return $this->output($response, $this->mapUpdateMostPopular($output, $type, $value));
         }
         catch (InvalidRequestException $e) {
             // TODO log
             return $response->withStatus(400);
         }
+    }
+
+    private function mapElementsMostPopular($arr)
+    {
+        return $this->elementMapper->map(
+            $arr, [
+                ElementMapper::DATASTORE_DOWNLOADS,
+                ElementMapper::PARENT_DIRECT,
+                ElementMapper::PARENT_COURSE
+            ]
+        );
+    }
+
+    private function mapCoursesMostPopular($arr)
+    {
+        return $this->courseMapper->map(
+            $arr, [
+                CourseMapper::DATASTORE_DOWNLOAD_ESTIMATE
+            ]
+        );
+    }
+
+    private function mapUpdateMostPopular($output, $type, $value)
+    {
+        if ($type === UserService::DELTA_POST_POPULAR_ELEMENTS) {
+            return [
+                'elements_most_popular' => $this->mapElementsMostPopular($output),
+                $type => $value
+            ];
+        }
+
+        return [
+            'courses_most_popular' => $this->mapCoursesMostPopular($output),
+            $type => $value
+        ];
     }
 }

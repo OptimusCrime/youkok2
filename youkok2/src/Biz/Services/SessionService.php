@@ -25,10 +25,8 @@ class SessionService
     public function init($loadSessions = true) {
         // This is the default session data array
         $this->data = [
-            'frontpage' => [
-                'most_popular_element' => MostPopularElement::MONTH,
-                'most_popular_course' => MostPopularCourse::MONTH,
-            ],
+            'most_popular_element' => MostPopularElement::MONTH,
+            'most_popular_course' => MostPopularCourse::MONTH,
             'admin' => false
         ];
 
@@ -76,15 +74,15 @@ class SessionService
         return Session::where('hash', $hash)->first();
     }
 
-    public function getData()
+    public function getAllData()
     {
         return $this->data;
     }
 
-    public function getDataWithKey($key)
+    public function getData($key, $default = null)
     {
         if (!isset($this->data[$key])) {
-            return null;
+            return $default;
         }
 
         return $this->data[$key];
@@ -95,50 +93,12 @@ class SessionService
         return isset($this->data['admin']) and $this->data['admin'];
     }
 
-    public function setData($path, $value, $mode = self::MODE_ADD)
+    public function setData($key, $value)
     {
         // Mark session as dirty
         $this->dirty = true;
 
-        $pathFragments = explode('.', $path);
-        $currentScope =& $this->data;
-
-        // TODO split this method up in multiple smaller once
-        for ($i = 0; $i < count($pathFragments); $i++) {
-            $currentFragment = $pathFragments[$i];
-
-            // If the fragment in the path does not exist, create it
-            if (!isset($currentScope[$currentFragment])) {
-                // Check if we are on the final element or if we should continue iterating
-                if ($i === (count($pathFragments) - 1)) {
-                    $this->insertData($currentScope, $currentFragment, $value, $mode);
-                }
-
-                $currentScope[$currentFragment] = [];
-            }
-
-            if ($i !== (count($pathFragments) - 1)) {
-                $currentScope =& $currentScope[$currentFragment];
-                continue;
-            }
-
-            $this->insertData($currentScope, $currentFragment, $value, $mode);
-        }
-    }
-
-    private function insertData(array &$scope, $fragment, $value, $mode)
-    {
-        if (gettype($scope[$fragment]) === 'array') {
-            if ($mode === static::MODE_OVERWRITE) {
-                $scope[$fragment] = $value;
-                return;
-            }
-
-            $scope[$fragment][] = $value;
-            return;
-        }
-
-        $scope[$fragment] = $value;
+        $this->data[$key] = $value;
     }
 
     public function store($force = false)
@@ -171,9 +131,10 @@ class SessionService
         return $currentSession->save();
     }
 
-    public function forceSetData($path, $value, $mode = self::MODE_ADD)
+    public function forceSetData($key, $value)
     {
-        $this->setData($path, $value, $mode);
+        $this->setData($key, $value);
+
         return $this->store(true);
     }
 
