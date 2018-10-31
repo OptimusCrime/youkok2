@@ -1,0 +1,98 @@
+import React from 'react';
+import { connect } from 'react-redux';
+
+import { updateSearchField as updateSearchFieldDispatch } from '../redux/form/actions';
+import { updateCursorPosition as updateCursorPositionDispatch } from '../redux/form/actions';
+import {
+  ARROW_DOWN,
+  ARROW_UP,
+  KEYCODE_ENTER,
+
+  KEYCODE_ARROW_DOWN,
+  KEYCODE_ARROW_UP,
+} from "../consts";
+
+const MainContainer = ({
+                         input_raw,
+                         input_display,
+                         results,
+                         cursor,
+                         updateCursorPosition,
+                         updateSearchField,
+                         courses
+  }) => {
+
+  return (
+    <React.Fragment>
+      <input
+        type="text"
+        placeholder="Søk etter fag"
+        className="form-control typeahead"
+        onChange={e => {
+          const keyCode = e.keyCode;
+
+          if (keyCode !== KEYCODE_ARROW_UP && keyCode !== KEYCODE_ARROW_DOWN) {
+            updateSearchField(e.target.value, courses)
+          }
+        }}
+        onKeyDown={e => {
+          const keyCode = e.keyCode;
+
+          if (keyCode === KEYCODE_ENTER && cursor !== null) {
+            e.preventDefault();
+
+            // TODO redirect to result page here
+          }
+
+          if (keyCode === KEYCODE_ARROW_UP || keyCode === KEYCODE_ARROW_DOWN) {
+            updateCursorPosition(keyCode === KEYCODE_ARROW_DOWN ? ARROW_DOWN : ARROW_UP, cursor, results);
+          }
+        }}
+        value={input_display}
+      />
+      <button className="btn" type="button" id="nav-search">
+        <i className="fa fa-search" />
+      </button>
+      {results.length > 0 &&
+        <span className="tt-dropdown-menu" style={{
+          position: 'absolute',
+          top: '100%',
+          left: '0px',
+          zIndex: 100,
+          right: 'auto',
+          display: 'block'
+        }}>
+          <div className="tt-dataset-courses">
+            <div className="tt-suggestions" style={{display: 'block'}}>
+              {results.map((result, index) =>
+                <div
+                  key={result.id}
+                  className={`tt-suggestion ${(cursor !== null && cursor === index) ? 'tt-cursor' : ''}`}
+                >
+                  <p style={{whiteSpace: 'normal'}}>
+                    {result.name}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </span>
+      }
+    </React.Fragment>
+  );
+};
+
+const mapStateToProps = ({ form, courses }) => ({
+  input_raw: form.input_raw,
+  input_display: form.input_display,
+  results: form.results,
+  cursor: form.cursor,
+  courses: courses.courses
+});
+
+const mapDispatchToProps = {
+  updateSearchField: updateSearchFieldDispatch,
+  updateCursorPosition: updateCursorPositionDispatch,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainContainer);

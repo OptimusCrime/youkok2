@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/youkok.css" />
+    {% if DEV == '1' %}{% include "react/dev_polyfills.html" %}{% else %}{% include "react/polyfills.html" %}{% endif %}
     <script type="text/javascript">var SITE_DATA = {{ SITE_DATA|json_encode()|raw }};</script>
     {% if SITE_SETTINGS.GOOGLE_SENSE %}
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -47,14 +48,7 @@
                     <li><a href="{{ path_for('admin_home') }}">Admin</a></li>
                 {% endif %}
             </ul>
-            <form class="navbar-form navbar-right" id="search-form" name="search-form" action="{{ path_for('search') }}" method="get">
-            <div class="form-group div-relative" id="prefetch">
-                <input type="text" placeholder="Søk etter fag" class="form-control typeahead" value="{{ SEARCH_QUERY }}" id="s" name="s" />
-                <button class="btn" type="button" id="nav-search">
-                    <i class="fa fa-search"></i>
-                </button>
-            </div>
-            </form>
+            {% if DEV == '1' %}{% include "react/dev_searchBar.html" %}{% else %}{% include "react/searchBar.html" %}{% endif %}
         </div>
     </div>
 </div>
