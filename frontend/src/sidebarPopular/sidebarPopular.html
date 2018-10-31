@@ -1,12 +1,7 @@
-{% extends "base.html" %}
-
-{% block head %}
 <% for (let css in htmlWebpackPlugin.files.css) { %><link rel="stylesheet" type="text/css" href="<%= htmlWebpackPlugin.files.css[css] %>" />
-<% } %>{% endblock %}
+<% } %>
 
-{% block content %}
-<div id="frontpage"></div>{% endblock %}
+<div id="sidebar-popular"></div>
 
-{% block scripts %}
 <% for (let js in htmlWebpackPlugin.files.js) { %><script src="<%= htmlWebpackPlugin.files.js[js] %>"></script>
-<% } %>{% endblock %}
+<% } %>

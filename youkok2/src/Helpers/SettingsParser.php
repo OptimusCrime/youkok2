@@ -25,7 +25,7 @@ class SettingsParser
                 'displayErrorDetails' => getenv('DEV') === '1',
                 'addContentLengthHeader' => false,
 
-                'base_dir' => getenv('BASE_DIR'),
+                'base_dir' => getenv('BASE_DIRECTORY'),
 
                 'logger' => [
                     'name' => getenv('LOGGER_NAME'),

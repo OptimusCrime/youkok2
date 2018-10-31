@@ -59,13 +59,17 @@ class UrlService
 
     private function getFullUri(Element $element)
     {
-        if ($element->uri !== null) {
+        if ($element->uri !== null and strlen($element->uri) > 0) {
             return $element->uri;
         }
-        else {
-            // TODO!
+
+        $parents = $element->parents;
+        $uriFragments = [];
+
+        foreach ($parents as $parent) {
+            $uriFragments[] = $parent->slug;
         }
 
-        return 'foobar';
+        return implode('/', $uriFragments);
     }
 }

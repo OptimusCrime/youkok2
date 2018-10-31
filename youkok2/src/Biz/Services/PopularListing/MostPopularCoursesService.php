@@ -14,7 +14,7 @@ class MostPopularCoursesService implements MostPopularInterface
     // We only display 10 on the actual frontpage, but it does not really make any differece. Good to have?
     const MAX_COURSES_TO_FETCH = 20;
 
-    const CACHE_DIRECTORY_KEY = 'cache_directory';
+    const CACHE_DIRECTORY_KEY = 'CACHE_DIRECTORY';
     const CACHE_DIRECTORY_SUB = 'courses';
 
     private $settings;
@@ -112,8 +112,8 @@ class MostPopularCoursesService implements MostPopularInterface
 
     private function getCacheDirectory()
     {
-        $cacheDirectoryKey = $this->settings->get(MostPopularCoursesService::CACHE_DIRECTORY_KEY);
-        return $cacheDirectoryKey . MostPopularCoursesService::CACHE_DIRECTORY_SUB;
+        $cacheDirectory = getenv(static::CACHE_DIRECTORY_KEY);
+        return $cacheDirectory . static::CACHE_DIRECTORY_SUB;
     }
 
     private static function resultArrayToElements(array $result, $limit = null)

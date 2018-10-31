@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { BoxWrapper } from "../../../components/box-wrapper";
+import { BoxWrapper } from "../../../../common/components/box-wrapper";
 import { CourseItem } from "../../../components/course-item";
 import { MostPopularDropdown } from "../../../components/most-popular/dropdown";
 import { formatNumber } from "../../../../common/utils";
@@ -38,36 +38,40 @@ class BoxMostPopularCourses extends Component {
     const {
       isLoading,
       coursesMostPopular,
+      coursesMostPopularLoading,
       userPreferences,
     } = this.props;
 
     const selectedButton = userPreferences[DELTA_POST_POPULAR_COURSES];
 
     return (
-      <BoxWrapper
-        title="Mest populære fag"
-        titleInline={true}
-        isLoading={isLoading}
-        isEmpty={!isLoading && coursesMostPopular.length === 0}
-        dropdown={
-          <MostPopularDropdown
-            selectedButton={selectedButton}
-            open={this.state.open}
-            toggleDropdown={this.toggleDropdown}
-            changeDelta={this.changeDelta}
-          />
-        }
-      >
-        {!isLoading && coursesMostPopular.map((course, index) =>
-          <CourseItem course={course} key={index} additional={<span>[ca. {formatNumber(course.download_estimate)}]</span>} /> )
-        }
-      </BoxWrapper>
+      <div className="col-xs-12 col-sm-6 frontpage-box">
+        <BoxWrapper
+          title="Mest populære fag"
+          titleInline={true}
+          isLoading={isLoading || coursesMostPopularLoading}
+          isEmpty={!isLoading && coursesMostPopular.length === 0}
+          dropdown={
+            <MostPopularDropdown
+              selectedButton={selectedButton}
+              open={this.state.open}
+              toggleDropdown={this.toggleDropdown}
+              changeDelta={this.changeDelta}
+            />
+          }
+        >
+          {!isLoading && !coursesMostPopularLoading && coursesMostPopular.map((course, index) =>
+            <CourseItem course={course} key={index} additional={<span>[ca. {formatNumber(course.download_estimate)}]</span>} /> )
+          }
+        </BoxWrapper>
+      </div>
     );
   }
 }
 
 const mapStateToProps = ({ frontpage }) => ({
   coursesMostPopular: frontpage.courses_most_popular,
+  coursesMostPopularLoading: frontpage.courses_most_popular_loading,
   userPreferences: frontpage.user_preferences,
 });
 

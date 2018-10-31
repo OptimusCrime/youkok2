@@ -1,43 +1,27 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import InfoBoxesContainer from './info-boxes-container';
 import MainBoxesContainer from './main-boxes-container';
-import { fetchFrontpage } from '../redux/frontpage/actions';
 
-class MainContainer extends Component {
+const MainContainer = ({ failed }) => {
 
-
-  componentDidMount() {
-    this.props.fetchFrontpage();
-  }
-
-  render() {
-
-    const {
-      failed
-    } = this.props;
-
-    if (failed) {
-      return (
-        <p>Vi har visst litt tekniske problemer her...</p>
-      );
-    }
-
+  if (failed) {
     return (
-      <React.Fragment>
-        <InfoBoxesContainer />
-        <MainBoxesContainer />
-      </React.Fragment>
+      <p>Vi har visst litt tekniske problemer her...</p>
     );
   }
-}
 
-const mapStateToProps = ({ }) => ({
-});
-
-const mapDispatchToProps = {
-  fetchFrontpage
+  return (
+    <React.Fragment>
+      <InfoBoxesContainer />
+      <MainBoxesContainer />
+    </React.Fragment>
+  );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainContainer);
+const mapStateToProps = ({ frontpage }) => ({
+  failed: frontpage.failed,
+});
+
+export default connect(mapStateToProps, {})(MainContainer);

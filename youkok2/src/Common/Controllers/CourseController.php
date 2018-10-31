@@ -66,7 +66,7 @@ class CourseController
             }
         }
 
-        return Element::fromIdVisible($currentObject->id, ['id', 'name']);
+        return Element::fromIdVisible($currentObject->id, ['id', 'name', 'slug']);
     }
 
     public static function getCourseFromUri($uri)

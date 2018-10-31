@@ -33,8 +33,7 @@ class BaseView
     private function getDefaultTemplateData()
     {
         return [
-            // Messages to display to the user
-            'SITE_MESSAGES' => [],
+            'DEV' => getenv('DEV'),
 
             'SITE_SETTINGS' => [
                 'VERSION' => getenv('SITE_VERSION'),
@@ -48,7 +47,7 @@ class BaseView
             ],
 
             'SITE_DATA' => [
-                'version' => getenv('SITE_VERSION')
+                'version' => getenv('SITE_VERSION'),
             ],
 
             // Information about the current user
@@ -98,11 +97,21 @@ class BaseView
 
     protected function renderReactApp(Response $response, $template, array $data = [])
     {
+        $reactBaseDir = 'react' . DIRECTORY_SEPARATOR;
+
         if (getenv('DEV') === '0') {
-            return $this->render($response, $template, $data);
+            return $this->render(
+                $response,
+                $reactBaseDir . $template,
+                $data
+            );
         }
 
-        return $this->render($response, 'react' . DIRECTORY_SEPARATOR . 'dev_' . $template, $data);
+        return $this->render(
+            $response,
+            $reactBaseDir . 'dev_' . $template,
+            $data
+        );
     }
 
     protected function fetch($template, array $data = [])

@@ -18,7 +18,7 @@ class UpdateDownloadsService
     public function run(Element $element)
     {
         // Add the download to the database first
-        $element->addDownload();
+        DownloadController::newDownloadForElement($element);
 
         // Update the number of downloads in the cache for this particular element
         $this->addDownloadForElement($element);

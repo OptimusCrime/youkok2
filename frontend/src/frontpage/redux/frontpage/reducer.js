@@ -6,8 +6,15 @@ import {
   FRONTPAGE_FETCH_FAILED,
   FRONTPAGE_FETCH_FINISHED,
   FRONTPAGE_FETCH_STARTED,
+
+  FRONTPAGE_DELTA_CHANGE_FAILED,
+  FRONTPAGE_DELTA_CHANGE_FINISHED,
+  FRONTPAGE_DELTA_CHANGE_STARTED,
 } from './constants';
-import { DELTA_MOST_POPULAR_MONTH } from "../../consts";
+import {
+  DELTA_MOST_POPULAR_MONTH,
+  DELTA_POST_POPULAR_ELEMENTS
+} from "../../consts";
 
 const defaultState = {
   started: false,
@@ -27,6 +34,9 @@ const defaultState = {
 
   elements_most_popular: [],
   courses_most_popular: [],
+
+  elements_most_popular_loading: false,
+  courses_most_popular_loading: false,
 
   user_preferences: {
     // These have to be strings...
@@ -68,6 +78,51 @@ const frontpage = (state = defaultState, action) => {
         ...state,
         failed: true,
         started: false,
+      };
+
+    case FRONTPAGE_DELTA_CHANGE_STARTED:
+      if (action.delta === DELTA_POST_POPULAR_ELEMENTS) {
+        return {
+          ...state,
+          elements_most_popular_loading: true,
+        }
+      }
+
+      return {
+        ...state,
+        courses_most_popular_loading: true,
+      };
+
+    case FRONTPAGE_DELTA_CHANGE_FAILED:
+      return {
+        ...state,
+        elements_most_popular_loading: false,
+        courses_most_popular_loading: false,
+      };
+
+    case FRONTPAGE_DELTA_CHANGE_FINISHED:
+      if (action.delta === DELTA_POST_POPULAR_ELEMENTS) {
+        return {
+          ...state,
+          elements_most_popular: action.data,
+          elements_most_popular_loading: false,
+
+          user_preferences: {
+            ...state.user_preferences,
+            DELTA_POST_POPULAR_ELEMENTS: action.value
+          }
+        };
+      }
+
+      return {
+        ...state,
+        courses_most_popular: action.data,
+        courses_most_popular_loading: false,
+
+        user_preferences: {
+          ...state.user_preferences,
+          DELTA_POST_POPULAR_COURSES: action.value
+        }
       };
 
     default:

@@ -67,13 +67,13 @@ class Frontpage extends BaseProcessorView
     {
         $params = json_decode($request->getBody(), true);
 
-        $type = isset($params[FrontpageService::FRONTPAGE_PUT_TYPE_PARAM]) ? $params[FrontpageService::FRONTPAGE_PUT_TYPE_PARAM] : null;
+        $delta = isset($params[FrontpageService::FRONTPAGE_PUT_DELTA_PARAM]) ? $params[FrontpageService::FRONTPAGE_PUT_DELTA_PARAM] : null;
         $value = isset($params[FrontpageService::FRONTPAGE_PUT_VALUE_PARAM]) ? $params[FrontpageService::FRONTPAGE_PUT_VALUE_PARAM] : null;
 
         try {
-            $output = $this->frontpageService->put($type, $value);
+            $output = $this->frontpageService->put($delta, $value);
 
-            return $this->output($response, $this->mapUpdateMostPopular($output, $type, $value));
+            return $this->output($response, $this->mapUpdateMostPopular($output, $delta, $value));
         }
         catch (InvalidRequestException $e) {
             // TODO log
@@ -101,14 +101,14 @@ class Frontpage extends BaseProcessorView
         );
     }
 
-    private function mapUpdateMostPopular($output, $type, $value)
+    private function mapUpdateMostPopular($output, $delta, $value)
     {
         $ret = [
-            'type' => $type,
+            'delta' => $delta,
             'value' => $value,
         ];
 
-        if ($type === UserService::DELTA_POST_POPULAR_ELEMENTS) {
+        if ($delta === UserService::DELTA_POST_POPULAR_ELEMENTS) {
             $ret['data'] = $this->mapElementsMostPopular($output);
         }
         else {

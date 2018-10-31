@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-<% for (let css in htmlWebpackPlugin.files.css) { %><script src="<%= htmlWebpackPlugin.files.css[css] %>"></script>
+<% for (let css in htmlWebpackPlugin.files.css) { %><link rel="stylesheet" type="text/css" href="<%= htmlWebpackPlugin.files.css[css] %>" />
 <% } %>{% endblock %}
 
 {% block content %}

@@ -1,8 +1,6 @@
 <?php
 namespace Youkok\Common\Models;
 
-use Carbon\Carbon;
-
 use Youkok\Helpers\ElementHelper;
 use Youkok\Helpers\Utilities;
 use Youkok\Common\Utilities\UriCleaner;
@@ -191,15 +189,6 @@ class Element extends BaseModel
     private function getAddedPrettyAll()
     {
         return Utilities::prettifySQLDate($this->added, false);
-    }
-
-    public function addDownload()
-    {
-        $download = new Download();
-        $download->resource = $this->id;
-        $download->ip = $_SERVER['REMOTE_ADDR'];
-        $download->agent = $_SERVER['HTTP_USER_AGENT'];
-        $download->save();
     }
 
     public function getChildrenObjects()

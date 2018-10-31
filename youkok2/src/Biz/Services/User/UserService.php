@@ -25,13 +25,28 @@ class UserService
         $this->sessionService = $sessionService;
     }
 
+    public function getUserPreference($key, $default = null)
+    {
+        return $this->sessionService->getData($key, $default);
+    }
+
+    public function getUserMostPopularPreference($key, $default = null)
+    {
+        return $this->getUserPreference(static::USER_PREFERENCE_LOOKUP[$key], $default);
+    }
+
     public function getUserPreferences()
     {
-        $keyElementsMostPopular = static::USER_PREFERENCE_LOOKUP[static::DELTA_POST_POPULAR_ELEMENTS];
-        $keyCoursesMostPopular = static::USER_PREFERENCE_LOOKUP[static::DELTA_POST_POPULAR_COURSES];
         return [
-            static::DELTA_POST_POPULAR_ELEMENTS => $this->sessionService->getData($keyElementsMostPopular, MostPopularElement::MONTH),
-            static::DELTA_POST_POPULAR_COURSES => $this->sessionService->getData($keyCoursesMostPopular, MostPopularCourse::MONTH),
+            static::DELTA_POST_POPULAR_ELEMENTS => $this->getUserMostPopularPreference(
+                static::DELTA_POST_POPULAR_ELEMENTS,
+                MostPopularElement::MONTH
+            ),
+
+            static::DELTA_POST_POPULAR_COURSES => $this->getUserMostPopularPreference(
+                static::DELTA_POST_POPULAR_COURSES,
+                MostPopularCourse::MONTH
+            ),
         ];
     }
 }

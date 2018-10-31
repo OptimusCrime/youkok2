@@ -8,10 +8,10 @@ use Youkok\Common\Models\Session;
 
 class SessionController
 {
-    public static function getExpiredSessions()
+    public static function deleteExpiredSessions()
     {
         return Session::select('id')
             ->where('expire', '<', Carbon::now())
-            ->get();
+            ->delete();
     }
 }

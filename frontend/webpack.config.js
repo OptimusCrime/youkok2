@@ -8,14 +8,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const entries = {
   frontpage: './src/frontpage/frontpage.js',
   archive: './src/archive/archive.js',
+  sidebarPopular: './src/sidebarPopular/sidebarPopular.js',
 };
 
 module.exports = (env, argv) => {
-
-  // TODO, transform frontpage: 'src.sd.s.dsd.' -> frontpage: ['./src/polyfills.js', '.the file']
-  const applyPolyfills = entryList => entryList.map({
-
-  });
 
   const generateHtmlWebpackPluginInfo = entry => ({
     inject: false,

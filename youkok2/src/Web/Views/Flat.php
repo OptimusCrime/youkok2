@@ -54,7 +54,7 @@ class Flat extends BaseView
         return $this->render(
             $response->withHeader('Content-Type', 'text/plain; charset=utf-8'),
             'flat/changelog.txt', [
-                'CONTENT' => file_get_contents(getenv('BASE_DIR') . 'CHANGELOG.md')
+                'CONTENT' => file_get_contents(getenv('BASE_DIRECTORY') . 'CHANGELOG.md')
             ]
         );
     }

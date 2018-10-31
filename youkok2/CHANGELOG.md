@@ -1,3 +1,15 @@
+Youkok2 - 4.0.0-pl (xx. xxxxxxx 2018)
+=====================================
+
+- [Info] Total omskrivning, igjen.
+- [Technical] Bruker dependency injection fremfor idiotisk builder patterns.
+- [Technical] Drastisk forenklet kodebasen.
+- [Technical] Forsiden, faglisten, arkivet og boksene i sidemenyen er nå skrevet i React.
+- [Technical] Skrevet oss bort fra masse bottlenecks som gjorde siden veldig treg. Spesielt forsiden.
+- [Removed] Favoritter og mine siste besøkte fag på forsiden.
+- [New] Vise siste nedlastninger på forsiden.
+- [Fixed] Forsiden viser nå _faktiske_ nedlastninger for hver dag, uke, måned, år og alltid.
+
 Youkok2 - 3.0.0-pl  (19. november 2017)
 =======================================
 
@@ -34,7 +46,6 @@ Youkok2 - 2.4.0-pl  (29. april 2016)
 - [Fixed] Linker på forsiden til fag åpnet ny fane.
 - [Fixed] Rar spørring på personlige, tidligere nedlastninger som gjorde at enkelte nedlstninger forsvant.
 - [Enhanced] Meldinger kan nå ha wildcards.
-
 
 Youkok2 - 2.3.1-pl  (29. april 2016)
 ====================================

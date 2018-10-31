@@ -1,13 +1,14 @@
 <?php
 namespace Youkok\Web\Views;
 
+use Slim\Http\Stream;
 use Slim\Http\Response;
 use Slim\Http\Request;
 use Psr\Container\ContainerInterface;
 
-use Slim\Http\Stream;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
+use Youkok\Biz\Services\Download\UpdateDownloadsService;
 use Youkok\Common\Controllers\ElementController;
 
 class Download extends BaseView
@@ -15,12 +16,14 @@ class Download extends BaseView
     /** @var \Youkok\Biz\Services\Download\DownloadFileInfoService */
     private $downloadService;
 
+    private $updateDownloadsProcessor;
 
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
         $this->downloadService = $container->get(DownloadFileInfoService::class);
+        $this->updateDownloadsProcessor = $container->get(UpdateDownloadsService::class);
     }
 
     public function view(Request $request, Response $response, array $args)
@@ -33,6 +36,8 @@ class Download extends BaseView
 
                 throw new ElementNotFoundException();
             }
+
+            $this->updateDownloadsProcessor->run($element);
 
             $fileInfo = $this->downloadService->getFileInfo($element);
             $fileSize = $this->downloadService->getFileSize($element);

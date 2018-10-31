@@ -17,8 +17,12 @@ export const fetchFrontpage = () => dispatch => {
 
   fetchFrontPageRest()
     .then(response => response.json())
-    .then(data => dispatch({ type: FRONTPAGE_FETCH_FINISHED, data: data }))
-    .catch(() => dispatch({ type: FRONTPAGE_FETCH_FAILED }));
+    .then(response => dispatch({ type: FRONTPAGE_FETCH_FINISHED, data: response }))
+    .catch(e => {
+      console.error(e);
+
+      dispatch({ type: FRONTPAGE_FETCH_FAILED })
+    });
 };
 
 export const updateFrontpage = (delta, value) => dispatch => {
@@ -26,6 +30,15 @@ export const updateFrontpage = (delta, value) => dispatch => {
 
   updateFrontpageRest(delta, value)
     .then(response => response.json())
-    .then(data => dispatch({ type: FRONTPAGE_DELTA_CHANGE_FINISHED, data: data }))
-    .catch(() => dispatch({ type: FRONTPAGE_DELTA_CHANGE_FAILED }));
+    .then(response => dispatch({
+      type: FRONTPAGE_DELTA_CHANGE_FINISHED,
+      data: response.data,
+      delta: response.delta,
+      value: response.value,
+    }))
+    .catch(e => {
+      console.error('here', e);
+
+      dispatch({ type: FRONTPAGE_DELTA_CHANGE_FAILED })
+    });
 };

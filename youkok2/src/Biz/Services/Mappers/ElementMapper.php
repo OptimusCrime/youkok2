@@ -66,7 +66,8 @@ class ElementMapper
             'id' => $element->id,
             'name' => $element->name,
             'type' => $element->getType(),
-            'url' => $this->urlService->urlForElement($element)
+            'url' => $this->urlService->urlForElement($element),
+            'link' => $element->link,
         ];
 
         if (in_array(static::POSTED_TIME, $additionalFields)) {

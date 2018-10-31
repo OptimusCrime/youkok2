@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Common\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as DB;
 
 use Youkok\Common\Models\Download;
@@ -58,6 +59,16 @@ class DownloadController
         }
 
         return array_slice($result, 0, $limit);
+    }
+
+    public static function newDownloadForElement(Element $element)
+    {
+        $download = new Download();
+        $download->resource = $element->id;
+        $download->ip = $_SERVER['REMOTE_ADDR'];
+        $download->agent = $_SERVER['HTTP_USER_AGENT'];
+        $download->downloaded_time = Carbon::now();
+        $download->save();
     }
 
     private static function summarizeDownloads($downloads)

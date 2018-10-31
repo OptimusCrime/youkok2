@@ -15,6 +15,7 @@ use Youkok\Common\Middlewares\TimingMiddleware;
 use Youkok\Biz\Services\JobService;
 use Youkok\Rest\Endpoints\Archive as ArchiveRest;
 use Youkok\Rest\Endpoints\Frontpage as FrontpageRest;
+use Youkok\Rest\Endpoints\Sidebar\MostPopular;
 use Youkok\Web\Views\Archive;
 use Youkok\Web\Views\Courses;
 use Youkok\Web\Views\Download;
@@ -53,6 +54,8 @@ class App
 
     public function runJobs($mode = JobService::CRON_JOB)
     {
+        $this->dependencies();
+
         $jobRunner = $this->app->getContainer()->get(JobService::class);
         $jobRunner->run($mode);
     }
@@ -92,21 +95,18 @@ class App
             $app->put('/frontpage', FrontpageRest::class . ':put');
 
             $app->get('/archive/{id:[0-9]+}', ArchiveRest::class . ':get');
+
+            $app->group('/sidebar', function () use ($app) {
+               $app->get('/popular', MostPopular::class . ':get');
+            });
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 
         $app->group('/processors', function () use ($app) {
+            // TODO
             $app->get('/history/{id:[0-9]+}', '\Youkok\Views\Processors\ArchiveHistory:view');
+
+            // TODO
             $app->get('/autocomplete', '\Youkok\Views\Processors\Autocomplete:view');
-            $app->post('/favorite', '\Youkok\Views\Processors\ToggleFavorite:view')->setName('toggle_favorite');
-            $app->post('/clear-frontpage-box', '\Youkok\Views\Processors\ClearFrontpageBox:view')->setName('clear_frontpage_box');
-
-            $app->get('/popular-courses/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularListing\PopularCourses:get')->setName('popular_courses_get');
-            $app->post('/popular-courses', '\Youkok\Views\Processors\PopularListing\PopularCourses:update')->setName('popular_courses');
-
-            $app->get('/popular-elements/{delta:[0-9]{1}}', '\Youkok\Views\Processors\PopularListing\PopularElements:get')->setName('popular_elements_get');
-            $app->post('/popular-elements', '\Youkok\Views\Processors\PopularListing\PopularElements:update')->setName('popular_elements');
-            $app->get('/newest-elements', '\Youkok\Views\Processors\PopularListing\NewestElements:view'
-            )->setName('newest_elements');
 
             $app->group('/link', function () use ($app) {
                 $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');

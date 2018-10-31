@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { TYPE_LINK } from "../types";
+
 const CourseParent = ({ course }) => (
   <React.Fragment>
     <a href={course.url} title={course.courseName} data-placement="top" data-toggle="tooltip">
@@ -20,7 +22,7 @@ const ElementParentPath = ({ parent, course }) => (
 
 export const ElementItem = ({ element, additional }) => (
   <li className="list-group-item">
-    <a href={element.url}>
+    <a href={element.url} title={element.type === TYPE_LINK ? element.link : ''}>
       {element.name}
     </a>&nbsp;@&nbsp;
     {element.parent.id === element.course.id && <CourseParent course={element.parent} /> }

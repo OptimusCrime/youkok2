@@ -1,5 +1,5 @@
 import React from 'react';
-import {randomBetween} from "../../../common/utils";
+import {randomBetween} from "../../utils";
 
 export const StencilItemList = ({ size }) => {
   const range = [...Array(size).keys()];

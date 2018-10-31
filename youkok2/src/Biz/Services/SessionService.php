@@ -140,10 +140,7 @@ class SessionService
 
     public function deleteExpiredSessions()
     {
-        $sessions = SessionController::getExpiredSessions();
-        foreach ($sessions as $session) {
-            $session->delete();
-        }
+        return SessionController::deleteExpiredSessions();
     }
 
     private function createSession()

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { BoxWrapper } from "../../../components/box-wrapper";
-import { ElementItem } from "../../../components/element-item";
+import { BoxWrapper } from "../../../../common/components/box-wrapper";
+import { ElementItem } from "../../../../common/components/element-item";
 import { MostPopularDropdown } from "../../../components/most-popular/dropdown";
 import { formatNumber } from "../../../../common/utils";
 import { DELTA_POST_POPULAR_ELEMENTS } from "../../../consts";
@@ -38,36 +38,40 @@ class BoxMostPopularElements extends Component {
     const {
       isLoading,
       elementsMostPopular,
+      elementMostPopularLoading,
       userPreferences,
     } = this.props;
 
     const selectedButton = userPreferences[DELTA_POST_POPULAR_ELEMENTS];
 
     return (
-      <BoxWrapper
-        title="Mest populære fag"
-        titleInline={true}
-        isLoading={isLoading}
-        isEmpty={!isLoading && elementsMostPopular.length === 0}
-        dropdown={
-          <MostPopularDropdown
-            selectedButton={selectedButton}
-            open={this.state.open}
-            toggleDropdown={this.toggleDropdown}
-            changeDelta={this.changeDelta}
-          />
-        }
-      >
-        {!isLoading && elementsMostPopular.map((element, index) =>
-          <ElementItem element={element} key={index} additional={<span>[{formatNumber(element.downloads)}]</span>} /> )
-        }
-      </BoxWrapper>
+      <div className="col-xs-12 col-sm-6 frontpage-box">
+        <BoxWrapper
+          title="Mest populære"
+          titleInline={true}
+          isLoading={isLoading || elementMostPopularLoading}
+          isEmpty={!isLoading && elementsMostPopular.length === 0}
+          dropdown={
+            <MostPopularDropdown
+              selectedButton={selectedButton}
+              open={this.state.open}
+              toggleDropdown={this.toggleDropdown}
+              changeDelta={this.changeDelta}
+            />
+          }
+        >
+          {!isLoading && !elementMostPopularLoading && elementsMostPopular.map((element, index) =>
+            <ElementItem element={element} key={index} additional={<span>[{formatNumber(element.downloads)}]</span>} /> )
+          }
+        </BoxWrapper>
+      </div>
     );
   }
 }
 
 const mapStateToProps = ({ frontpage }) => ({
   elementsMostPopular: frontpage.elements_most_popular,
+  elementMostPopularLoading: frontpage.elements_most_popular_loading,
   userPreferences: frontpage.user_preferences,
 });
 

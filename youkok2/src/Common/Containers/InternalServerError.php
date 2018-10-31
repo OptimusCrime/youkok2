@@ -12,6 +12,7 @@ class InternalServerError implements ContainersInterface
     {
         $container['errorHandler'] = function (ContainerInterface $container) {
             return function (Request $request, Response $response, Exception $exception) use ($container) {
+                // TODO
                 error_log($exception->getMessage(), 0);
                 var_dump($exception->getTraceAsString());
                 die();
