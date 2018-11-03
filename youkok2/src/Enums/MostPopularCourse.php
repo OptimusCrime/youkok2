@@ -3,7 +3,7 @@ namespace Youkok\Enums;
 
 abstract class MostPopularCourse
 {
-    const TODAY = 'TODAY';
+    const DAY = 'DAY';
     const WEEK = 'WEEK';
     const MONTH = 'MONTH';
     const YEAR = 'YEAR';
@@ -12,7 +12,7 @@ abstract class MostPopularCourse
     public static function all()
     {
         return [
-            static::TODAY,
+            static::DAY,
             static::WEEK,
             static::MONTH,
             static::YEAR,

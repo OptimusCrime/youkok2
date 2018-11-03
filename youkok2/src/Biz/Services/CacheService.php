@@ -66,7 +66,7 @@ class CacheService
         $downloads = $this->getDownloadsForId($id);
 
         // This is just a guard, and should never have to happen
-        if ($downloads === null) {
+        if ($downloads === null || $downloads === false) {
             $downloads = 0;
         }
 

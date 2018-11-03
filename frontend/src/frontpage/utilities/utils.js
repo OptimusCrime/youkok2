@@ -8,13 +8,13 @@ import {
 export const userPreferenceDeltaToString = preference => {
   switch (preference) {
     case DELTA_MOST_POPULAR_TODAY:
-      return 'I dag';
+      return 'Siste 24 timer';
     case DELTA_MOST_POPULAR_WEEK:
-      return 'Denne uka';
+      return 'Siste uke';
     case DELTA_MOST_POPULAR_MONTH:
-      return 'Denne måneden';
+      return 'Siste måned';
     case DELTA_MOST_POPULAR_YEAR:
-      return 'Dette året';
+      return 'Siste år';
     default:
       return 'Alltid';
   }

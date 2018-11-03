@@ -13,7 +13,7 @@ class Download extends BaseModel
     public static function getMostPopularElementQueryFromDelta($delta = MostPopularElement::ALL)
     {
         switch ($delta) {
-            case MostPopularElement::TODAY:
+            case MostPopularElement::DAY:
                 return Carbon::now()->subDay();
             case MostPopularElement::WEEK:
                 return Carbon::now()->subWeek();

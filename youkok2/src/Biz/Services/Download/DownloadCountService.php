@@ -22,10 +22,15 @@ class DownloadCountService
 
         $downloads = $this->cacheService->getDownloadsForId($element->id);
 
-        if ($downloads !== null) {
+        // Redis returns false for values that does not exist for some reason
+        if ($downloads !== null && $downloads !== false) {
             return (int) $downloads;
         }
 
-        return (int) DownloadController::getDownloadsForId($element->id);
+        $downloads = (int) DownloadController::getDownloadsForId($element->id);
+
+        $this->cacheService->setDownloadsForId($element->id, $downloads);
+
+        return $downloads;
     }
 }
