@@ -10,10 +10,16 @@ if (!(include __DIR__ . '/../vendor/autoload.php')) {
 }
 
 use Youkok\Common\App;
-use Youkok\Biz\Services\JobService;
+use Youkok\Biz\Services\Job\JobService;
 use Youkok\Helpers\SettingsParser;
 
 $settingsParser = new SettingsParser();
 
 $app = new App($settingsParser->getSlimConfig());
-$app->runJobs(JobService::CRON_JOB);
+
+if (count($argv) > 1) {
+    $app->runJobs(JobService::SPECIFIC_JOB, $argv[1]);
+}
+else {
+    $app->runJobs(JobService::CRON_JOB);
+}

@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/youkok.css" />
+    <script src="assets/data/autocomplete.js"></script>
     {% if DEV == '1' %}{% include "react/dev_polyfills.html" %}{% else %}{% include "react/polyfills.html" %}{% endif %}
     <script type="text/javascript">var SITE_DATA = {{ SITE_DATA|json_encode()|raw }};</script>
     {% if SITE_SETTINGS.GOOGLE_SENSE %}
@@ -41,7 +42,7 @@
             <ul id="main-nav" class="nav navbar-nav">
                 <li{% if HEADER_MENU == 'home' %} class="active"{% endif %}><a href="{{ youkok_url() }}">Hjem</a></li>
                 <li{% if HEADER_MENU == 'courses' %} class="active"{% endif %}><a href="{{ path_for('courses') }}">Emner</a></li>
-                <li class="hidden{% if HEADER_MENU == 'search'%} active{% endif %}"><a href="{{ path_for('search') }}">Søk</a></li>
+                <li class="hidden{% if HEADER_MENU == 'search'%} active{% endif %}"><a href="{{ path_for('courses') }}">Søk</a></li>
                 <li{% if HEADER_MENU == 'about' %} class="active"{% endif %}><a href="{{ path_for('about') }}">Om Youkok2</a></li>
                 <li{% if HEADER_MENU == 'help' %} class="active"{% endif %}><a href="{{ path_for('help') }}">Hjelp</a></li>
                 {% if ADMIN %}

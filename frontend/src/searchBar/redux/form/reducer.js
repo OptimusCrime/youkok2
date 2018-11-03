@@ -1,7 +1,8 @@
 import {
   UPDATE_SEARCH_FIELD,
   UPDATE_SEARCH_RESULTS,
-  UPDATE_CURSOR_POSITION
+  UPDATE_CURSOR_POSITION,
+  CLOSE_SEARCH_RESULTS
 } from "./constants";
 import { resultsAreIdentical } from "./util";
 
@@ -49,6 +50,12 @@ const form = (state = defaultState, action) => {
         ...state,
         cursor: action.value,
         input_display: action.display
+      };
+
+    case CLOSE_SEARCH_RESULTS:
+      return {
+        ...state,
+        results: [],
       };
 
     default:

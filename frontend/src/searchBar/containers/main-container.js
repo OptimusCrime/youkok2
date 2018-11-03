@@ -1,8 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { updateSearchField as updateSearchFieldDispatch } from '../redux/form/actions';
-import { updateCursorPosition as updateCursorPositionDispatch } from '../redux/form/actions';
+import {
+  updateSearchField as updateSearchFieldDispatch,
+  updateCursorPosition as updateCursorPositionDispatch,
+  closeSearchResults as closeSearchResultsDispatch,
+} from '../redux/form/actions';
 import {
   ARROW_DOWN,
   ARROW_UP,
@@ -11,6 +14,9 @@ import {
   KEYCODE_ARROW_DOWN,
   KEYCODE_ARROW_UP,
 } from "../consts";
+import { highlightSearchResult } from "../utils/highlighter";
+
+const MINIMUM_SEARCH_LENGTH = 2;
 
 const MainContainer = ({
                          input_raw,
@@ -19,12 +25,15 @@ const MainContainer = ({
                          cursor,
                          updateCursorPosition,
                          updateSearchField,
-                         courses
+                         closeSearchResults
   }) => {
+
+  const courses = window.AUTOCOMPLETE_DATA || [];
 
   return (
     <React.Fragment>
       <input
+        // TODO handle click outside the searchbar to remove the dropdown or something
         type="text"
         placeholder="Søk etter fag"
         className="form-control typeahead"
@@ -41,7 +50,8 @@ const MainContainer = ({
           if (keyCode === KEYCODE_ENTER && cursor !== null) {
             e.preventDefault();
 
-            // TODO redirect to result page here
+            // Make a direct lookup with the cursor.
+            window.location.replace(`${window.location.origin}${results[cursor].url}`);
           }
 
           if (keyCode === KEYCODE_ARROW_UP || keyCode === KEYCODE_ARROW_DOWN) {
@@ -49,11 +59,12 @@ const MainContainer = ({
           }
         }}
         value={input_display}
+        onBlur={closeSearchResults}
       />
       <button className="btn" type="button" id="nav-search">
         <i className="fa fa-search" />
       </button>
-      {results.length > 0 &&
+      {results.length > 0 && input_display.length > MINIMUM_SEARCH_LENGTH &&
         <span className="tt-dropdown-menu" style={{
           position: 'absolute',
           top: '100%',
@@ -69,9 +80,12 @@ const MainContainer = ({
                   key={result.id}
                   className={`tt-suggestion ${(cursor !== null && cursor === index) ? 'tt-cursor' : ''}`}
                 >
-                  <p style={{whiteSpace: 'normal'}}>
-                    {result.name}
-                  </p>
+                  <p
+                    style={{whiteSpace: 'normal'}}
+                    dangerouslySetInnerHTML={{
+                      __html: highlightSearchResult(input_raw, result)
+                    }}
+                  />
                 </div>
               )}
             </div>
@@ -82,17 +96,17 @@ const MainContainer = ({
   );
 };
 
-const mapStateToProps = ({ form, courses }) => ({
+const mapStateToProps = ({ form }) => ({
   input_raw: form.input_raw,
   input_display: form.input_display,
   results: form.results,
   cursor: form.cursor,
-  courses: courses.courses
 });
 
 const mapDispatchToProps = {
   updateSearchField: updateSearchFieldDispatch,
   updateCursorPosition: updateCursorPositionDispatch,
+  closeSearchResults: closeSearchResultsDispatch,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainContainer);

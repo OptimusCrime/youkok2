@@ -4,3 +4,5 @@ export const resultsAreIdentical = (oldList, newList) => {
 
   return oldIds === newIds;
 };
+
+export const selectedCourseToSearchBarText = course => `${course.code} - ${course.name}`;

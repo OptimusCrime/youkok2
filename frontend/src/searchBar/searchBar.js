@@ -10,8 +10,6 @@ import './searchBar.less';
 const preloadedState = window.__INITIAL_STATE__;
 
 const store = configureStore(preloadedState);
-//store.dispatch(fetchSidebarMostPopular());
-
 
 ReactDOM.render((
     <Provider store={store}>

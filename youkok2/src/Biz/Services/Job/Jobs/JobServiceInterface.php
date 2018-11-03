@@ -1,5 +1,5 @@
 <?php
-namespace Youkok\Biz\Services\Jobs;
+namespace Youkok\Biz\Services\Job\Jobs;
 
 interface JobServiceInterface
 {

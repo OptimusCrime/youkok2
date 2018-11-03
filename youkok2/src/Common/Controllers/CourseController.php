@@ -18,12 +18,10 @@ class CourseController
 
     public static function getAllVisibleCourses()
     {
-        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'deleted', 'pending')
+        return Element::select('id', 'name', 'slug')
             ->where('parent', null)
             ->where('directory', 1)
-            ->where('empty', 0)
             ->orderBy('name')
-            ->limit(24)
             ->get();
     }
 

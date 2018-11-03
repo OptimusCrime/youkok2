@@ -4,15 +4,17 @@ namespace Youkok\Common\Containers;
 use Psr\Container\ContainerInterface;
 
 use Youkok\Biz\Services\ArchiveService;
+use Youkok\Biz\Services\AutocompleteService;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\CourseListService;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\FrontpageService;
-use Youkok\Biz\Services\Jobs\RemoveOldSessionsJobServiceService;
-use Youkok\Biz\Services\Jobs\UpdateMostPopularCoursesJobService;
-use Youkok\Biz\Services\Jobs\UpdateMostPopularElementsJobService;
-use Youkok\Biz\Services\JobService;
+use Youkok\Biz\Services\Job\Jobs\PopulateAutocompleteFileJobService;
+use Youkok\Biz\Services\Job\Jobs\RemoveOldSessionsJobServiceJobService;
+use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
+use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
+use Youkok\Biz\Services\Job\JobService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
@@ -121,8 +123,8 @@ class Services implements ContainersInterface
             return new JobService($container);
         };
 
-        $container[RemoveOldSessionsJobServiceService::class] = function (ContainerInterface $container) {
-            return new RemoveOldSessionsJobServiceService(
+        $container[RemoveOldSessionsJobServiceJobService::class] = function (ContainerInterface $container) {
+            return new RemoveOldSessionsJobServiceJobService(
                 $container->get(SessionService::class)
             );
         };
@@ -136,6 +138,18 @@ class Services implements ContainersInterface
         $container[UpdateMostPopularCoursesJobService::class] = function (ContainerInterface $container) {
             return new UpdateMostPopularCoursesJobService(
                 $container->get(MostPopularCoursesService::class)
+            );
+        };
+
+        $container[PopulateAutocompleteFileJobService::class] = function (ContainerInterface $container) {
+            return new PopulateAutocompleteFileJobService(
+                $container->get(AutocompleteService::class)
+            );
+        };
+
+        $container[AutocompleteService::class] = function (ContainerInterface $container) {
+            return new AutocompleteService(
+                $container->get(UrlService::class)
             );
         };
     }

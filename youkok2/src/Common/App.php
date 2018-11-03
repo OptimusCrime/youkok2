@@ -12,7 +12,7 @@ use Youkok\Common\Containers\View;
 use Youkok\Common\Middlewares\AdminAuthMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Common\Middlewares\TimingMiddleware;
-use Youkok\Biz\Services\JobService;
+use Youkok\Biz\Services\Job\JobService;
 use Youkok\Rest\Endpoints\Archive as ArchiveRest;
 use Youkok\Rest\Endpoints\Frontpage as FrontpageRest;
 use Youkok\Rest\Endpoints\Sidebar\MostPopular;
@@ -22,7 +22,6 @@ use Youkok\Web\Views\Download;
 use Youkok\Web\Views\Flat;
 use Youkok\Web\Views\Frontpage;
 use Youkok\Web\Views\Redirect;
-use Youkok\Web\Views\Search;
 use Youkok\Web\Views\Admin\Diagnostics;
 use Youkok\Web\Views\Admin\Files;
 use Youkok\Web\Views\Admin\Home;
@@ -45,19 +44,30 @@ class App
 
     public function run()
     {
-        $this->dependencies();
-        $this->routes();
+        $this->setup();
 
         // TODO logging here
         $this->app->run();
     }
 
-    public function runJobs($mode = JobService::CRON_JOB)
+    public function runJobs($mode = JobService::CRON_JOB, $code = null)
     {
-        $this->dependencies();
+        $this->setup();
 
         $jobRunner = $this->app->getContainer()->get(JobService::class);
-        $jobRunner->run($mode);
+
+        if ($mode == JobService::SPECIFIC_JOB && $code !== null) {
+            $jobRunner->runCode($code);
+        }
+        else {
+            $jobRunner->run($mode);
+        }
+    }
+
+    private function setup()
+    {
+        $this->dependencies();
+        $this->routes();
     }
 
     private function routes()
@@ -70,7 +80,6 @@ class App
             $app->get('emner/{course:[^/]+}[/{params:.+}]', Archive::class . ':view')->setName('archive');
             $app->get('redirect/{id:[0-9]+}', Redirect::class . ':view')->setName('redirect');
             $app->get('last-ned/{uri:.*}', Download::class . ':view')->setName('download');
-            $app->get('sok', Search::class . ':view')->setName('search');
             $app->get('hjelp', Flat::class . ':help')->setName('help');
             $app->get('om', Flat::class . ':about')->setName('about');
             $app->get('changelog.txt', Flat::class . ':changelog')->setName('changelog');

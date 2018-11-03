@@ -22,7 +22,8 @@ class SessionService
     private $hash;
     private $dirty;
 
-    public function init($loadSessions = true) {
+    public function init($loadSessions = true)
+    {
         // This is the default session data array
         $this->data = [
             'most_popular_element' => MostPopularElement::MONTH,
