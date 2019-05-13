@@ -11,11 +11,7 @@ services:
     image: "mysql:5.7.17"
     ports:
       - "3316:3316"
-    environment:
-    - MYSQL_ROOT_PASSWORD=root
-    - MYSQL_USER=youkok2
-    - MYSQL_PASSWORD=youkok2
-    - MYSQL_DATABASE=youkok2
+    env_file: dev.env
     volumes:
       - /var/lib/mysql
 
@@ -27,7 +23,7 @@ services:
     container_name: "youkok2_cache"
     image: "redis:4.0.2-alpine"
     ports:
-     - "6389:6379"
+      - "6389:6379"
     volumes:
       - /data
 
@@ -41,9 +37,10 @@ services:
       - db
       - cache
     user: "0"
+    env_file: dev.env
     build:
       context: .
-      dockerfile: Dockerfile.server
+      dockerfile: Dockerfile
     ports:
       - "8000:80"
     volumes:

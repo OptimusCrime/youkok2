@@ -9,7 +9,7 @@ abstract class MostPopularCourse
     const YEAR = 'YEAR';
     const ALL = 'ALL';
 
-    public static function all()
+    public static function all(): array
     {
         return [
             static::DAY,

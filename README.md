@@ -7,7 +7,7 @@ Youkok2 is available at [youkok2.com](http://youkok2.com).
 
 ## Run cron jobs
 
-Add the following to the host machine crontab
+Add the following to the host machine crontab:
 
 ```
 0 0 * * * docker-compose run --rm server cron_job 

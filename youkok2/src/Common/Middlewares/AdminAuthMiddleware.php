@@ -12,7 +12,7 @@ class AdminAuthMiddleware
 {
     private $container;
 
-    /** @var \Youkok\Biz\Services\SessionService */
+    /** @var SessionService */
     private $sessionService;
 
     public function __construct(ContainerInterface $container)
@@ -39,7 +39,7 @@ class AdminAuthMiddleware
         return $next($request, $response);
     }
 
-    private static function noAccess($response)
+    private static function noAccess(Response $response)
     {
         return $response->withStatus(403);
     }

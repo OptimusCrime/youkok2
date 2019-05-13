@@ -8,11 +8,8 @@ services:
 
   db:
     restart: always
-    environment:
-    - MYSQL_ROOT_PASSWORD=root_password
-    - MYSQL_USER=mysql_user
-    - MYSQL_PASSWORD=mysql_password
-    - MYSQL_DATABASE=mysql_database
+    env_file:
+      - prod.env
 
   ###############################################
   #                    Cache                    #
@@ -27,3 +24,5 @@ services:
 
   server:
     restart: always
+    env_file:
+      - prod.env

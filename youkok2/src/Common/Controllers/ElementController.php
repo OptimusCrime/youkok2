@@ -50,6 +50,7 @@ class ElementController
         return Element
             ::where('directory', 0)
             ->where('deleted', 0)
+            ->where('pending', 0)
             ->whereDate('added', '>=', Carbon::now()->subMonth())
             ->count();
     }

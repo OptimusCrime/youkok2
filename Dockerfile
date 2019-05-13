@@ -1,4 +1,4 @@
-FROM php:7.1.3-apache
+FROM php:7.3.5-apache
 
 ENV TZ=Europe/Oslo
 ENV PHPREDIS_VERSION 3.1.4
@@ -18,7 +18,13 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
     && a2enmod rewrite \
     && a2enmod headers \
     && a2dissite 000-default \
-    && apt-get update && apt-get install -y zlib1g-dev \
+    && apt-get update \
+    && apt-get install -y --fix-missing apt-utils gnupg \
+    && echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list \
+    && echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list \
+    && curl -sS --insecure https://www.dotdeb.org/dotdeb.gpg | apt-key add - \
+    && apt-get update \
+    && apt-get install -y zlib1g-dev libzip-dev \
     && docker-php-ext-install zip pdo_mysql \
     && mkdir -p /usr/src/php/ext/redis \
     && curl -L https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \

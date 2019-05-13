@@ -5,5 +5,5 @@ use Psr\Container\ContainerInterface;
 
 interface ContainersInterface
 {
-    public static function load(ContainerInterface $container);
+    public static function load(ContainerInterface $container): void;
 }

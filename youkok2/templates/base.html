@@ -54,7 +54,14 @@
     </div>
 </div>
 <div class="container" id="main">
-    <div class="row" id="messages">
+    <noscript>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="alert alert-warning" role="alert">Du må skru på JavaScript for å kunne bruke Youkok2.</div>
+            </div>
+        </div>
+    </noscript>
+    <div class="row">
         <div class="col-xs-12">
             {% block content %}{% endblock %}
         </div>

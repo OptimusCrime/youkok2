@@ -47,7 +47,6 @@ class BaseView
             ],
 
             'SITE_DATA' => [
-                'version' => getenv('SITE_VERSION'),
             ],
 
             // Information about the current user
@@ -78,14 +77,14 @@ class BaseView
         }
     }
 
-    protected function returnResponse(Response $response)
+    protected function returnResponse(Response $response): Response
     {
         $this->cleanUp();
 
         return $response;
     }
 
-    protected function render(Response $response, $template, array $data = [])
+    protected function render(Response $response, $template, array $data = []): Response
     {
         $this->cleanUp();
 
@@ -95,7 +94,7 @@ class BaseView
         ));
     }
 
-    protected function renderReactApp(Response $response, $template, array $data = [])
+    protected function renderReactApp(Response $response, $template, array $data = []): Response
     {
         $reactBaseDir = 'react' . DIRECTORY_SEPARATOR;
 
@@ -114,7 +113,7 @@ class BaseView
         );
     }
 
-    protected function fetch($template, array $data = [])
+    protected function fetch($template, array $data = []): string
     {
         return $this->view->fetch(
             $template,
@@ -125,7 +124,7 @@ class BaseView
         );
     }
 
-    protected function render404(Response $response)
+    protected function render404(Response $response): Response
     {
         return $this->render(
             $response->withStatus(404),

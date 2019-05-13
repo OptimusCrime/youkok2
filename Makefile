@@ -1,52 +1,88 @@
 .PHONY: all bash build clean down logs restart start status stop tail
 
 SERVER_SERVICE_NAME = server
-FRONTEND_SERVICE_NAME = frontend
 
-all: start
+#####################################################################################################
+#                                                DEV                                                #
+#####################################################################################################
 
-bash:
-	@docker-compose run --rm $(SERVER_SERVICE_NAME) bash
-
-build:
+dev-build:
 	@docker-compose build
 
-down:
-	@docker-compose down
-
-logs:
-	@docker-compose logs -f
-
-restart: stop start
-
-reload:
-	@docker-compose restart $(SERVER_SERVICE_NAME)
-
-start:
+dev-start:
 	@docker-compose up -d
 
-up: start
+dev-up: dev-start
 
-status:
-	@docker-compose ps
-
-stop:
+dev-stop:
 	@docker-compose stop
 
-migrate:
+dev-down:
+	@docker-compose down
+
+dev-restart: dev-stop dev-start
+
+dev-status:
+	@docker-compose ps
+
+dev-logs:
+	@docker-compose logs -f
+
+dev-reload:
+	@docker-compose restart $(SERVER_SERVICE_NAME)
+
+dev-bash:
+	@docker-compose run --rm $(SERVER_SERVICE_NAME) bash
+
+dev-migrate:
 	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer migrate
 
-composer:
+dev-composer:
 	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer install
 
-install: composer migrate
+dev-install: dev-composer dev-migrate
 
-upgrade: build restart
+dev-upgrade: dev-build dev-restart
 
-prod-start:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml up -d
+
+#####################################################################################################
+#                                                PROD                                               #
+#####################################################################################################
 
 prod-build:
 	@docker-compose -f docker-compose.yml -f docker-compose-production.yml build
 
-prod-upgrade: stop prod-build composer migrate prod-start
+prod-start:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml up -d
+
+prod-up: prod-start
+
+prod-stop:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml stop
+
+prod-down:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml down
+
+prod-restart: prod-stop prod-start
+
+prod-status:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml ps
+
+prod-logs:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml logs -f
+
+prod-reload:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml restart $(SERVER_SERVICE_NAME)
+
+prod-bash:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) bash
+
+prod-migrate:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) composer migrate
+
+prod-composer:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) composer install
+
+prod-install: prod-composer prod-migrate
+
+prod-upgrade: prod-build prod-composer prod-migrate prod-restart

@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Common\Models;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Helpers\ElementHelper;
 use Youkok\Helpers\Utilities;
 use Youkok\Common\Utilities\UriCleaner;
@@ -20,6 +21,8 @@ class Element extends BaseModel
     const ELEMENT_TYPE_BOTH = 2;
     const ELEMENT_TYPE_FILE_LAST = 3;
 
+    const VALID_FILE_ICONS = ['htm', 'html', 'java', 'pdf', 'py', 'sql', 'txt'];
+
     public $timestamps = false;
 
     protected $table = 'element';
@@ -36,7 +39,7 @@ class Element extends BaseModel
         $this->parents = null;
     }
 
-    public function getType()
+    public function getType(): string
     {
         if ($this->isLink()) {
             return Element::LINK;
@@ -51,13 +54,13 @@ class Element extends BaseModel
         return Element::FILE;
     }
 
-    private function getCourseCode()
+    private function getCourseCode(): string
     {
         $courseArr = $this->getCourseArray();
         return $courseArr[0];
     }
 
-    private function getCourseName()
+    private function getCourseName(): string
     {
         $courseArr = $this->getCourseArray();
 
@@ -68,7 +71,7 @@ class Element extends BaseModel
         return '';
     }
 
-    private function getCourseArray()
+    private function getCourseArray(): array
     {
         if ($this->name == null) {
             return [''];
@@ -77,7 +80,7 @@ class Element extends BaseModel
         return explode('||', $this->name);
     }
 
-    private function getFullUri()
+    private function getFullUri(): ?string
     {
         if ($this->uri !== null and strlen($this->uri) > 0) {
             return $this->uri;
@@ -86,17 +89,17 @@ class Element extends BaseModel
         return ElementHelper::constructUri($this->id);
     }
 
-    public function isLink()
+    public function isLink(): bool
     {
         return $this->link !== null && strlen($this->link) > 0;
     }
 
-    public function isCourse()
+    public function isCourse(): bool
     {
         return $this->parent === null && $this->directory === 1;
     }
 
-    public function isDirectory()
+    public function isDirectory(): bool
     {
         return !$this->isCourse() && $this->directory === 1;
     }
@@ -132,7 +135,7 @@ class Element extends BaseModel
     }
 
     // TODO add parameter to fetch whatever attributes we'd like
-    private function getParentObj()
+    private function getParentObj(): ?Element
     {
         $parents = $this->parents;
         if ($parents === null) {
@@ -151,7 +154,7 @@ class Element extends BaseModel
     }
 
     // TODO add parameter to fetch whatever attributes we'd like
-    private function getRootParent($all = false)
+    private function getRootParent($all = false): ?Element
     {
         $parents = $this->getParents($all);
         if ($parents === null or count($parents) === 0) {
@@ -161,7 +164,7 @@ class Element extends BaseModel
         return $parents[0];
     }
 
-    private function getIcon()
+    private function getIcon(): string
     {
 
         if ($this->directory) {
@@ -178,20 +181,24 @@ class Element extends BaseModel
 
         $ext = pathinfo($this->checksum, \PATHINFO_EXTENSION);
 
-        return $ext . '.png';
+        if (in_array($ext, static::VALID_FILE_ICONS)) {
+            return $ext . '.png';
+        }
+
+        return 'unknown.png';
     }
 
-    private function getAddedPretty()
+    private function getAddedPretty(): string
     {
         return Utilities::prettifySQLDate($this->added);
     }
 
-    private function getAddedPrettyAll()
+    private function getAddedPrettyAll(): string
     {
         return Utilities::prettifySQLDate($this->added, false);
     }
 
-    public function getChildrenObjects()
+    public function getChildrenObjects(): array
     {
         if ($this->childrenObjects === null) {
             return [];
@@ -200,7 +207,7 @@ class Element extends BaseModel
         return $this->childrenObjects;
     }
 
-    public function __set($name, $value)
+    public function __set($name, $value): void
     {
         if ($name === 'childrenObjects') {
             $this->childrenObjects = $value;
@@ -209,7 +216,7 @@ class Element extends BaseModel
         }
     }
 
-    public function __isset($name)
+    public function __isset($name): bool
     {
         if (parent::__isset($name)) {
             return true;
@@ -264,10 +271,10 @@ class Element extends BaseModel
         }
     }
 
-    public static function fromIdVisible($id, $attributes = ['id', 'link', 'checksum'])
+    public static function fromIdVisible($id, $attributes = ['id', 'link', 'checksum']): Element
     {
         if (!isset($id) or !is_numeric($id)) {
-            return null;
+            throw new ElementNotFoundException();
         }
 
         $query = null;
@@ -281,10 +288,16 @@ class Element extends BaseModel
                 ->where('id', $id);
         }
 
-        return $query
+        $element = $query
             ->where('deleted', 0)
             ->where('pending', 0)
             ->first();
+
+        if ($element === null) {
+            throw new ElementNotFoundException();
+        }
+
+        return $element;
     }
 
     public static function fromIdAll($id, $attributes = ['id', 'link', 'checksum'])

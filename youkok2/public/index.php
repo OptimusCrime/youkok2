@@ -8,7 +8,5 @@ if (!(include __DIR__ . '/../vendor/autoload.php')) {
 use Youkok\Common\App;
 use Youkok\Helpers\SettingsParser;
 
-$settingsParser = new SettingsParser();
-
-$app = new App($settingsParser->getSlimConfig());
+$app = new App(SettingsParser::getSlimConfig());
 $app->run();

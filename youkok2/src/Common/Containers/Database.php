@@ -8,14 +8,14 @@ use Illuminate\Database\ConnectionResolver;
 
 class Database implements ContainersInterface
 {
-    public static function load(ContainerInterface $container)
+    public static function load(ContainerInterface $container): void
     {
         $connection = [
             'driver' => 'mysql',
-            'host' => getenv('DATABASE_HOST'),
-            'database' => getenv('DATABASE_TABLE'),
-            'username' => getenv('DATABASE_USER'),
-            'password' => getenv('DATABASE_PASSWORD'),
+            'host' => getenv('MYSQL_HOST'),
+            'database' => getenv('MYSQL_DATABASE'),
+            'username' => getenv('MYSQL_USER'),
+            'password' => getenv('MYSQL_PASSWORD'),
             'port' => getenv('MYSQL_PORT'),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
@@ -35,7 +35,7 @@ class Database implements ContainersInterface
         $resolver->setDefaultConnection('default');
         Model::setConnectionResolver($resolver);
 
-        $container['db'] = function () use ($capsule) {
+        $container['db'] = function () use ($capsule): Manager {
             return $capsule;
         };
     }

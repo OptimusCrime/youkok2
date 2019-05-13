@@ -7,9 +7,9 @@ use Psr\Container\ContainerInterface;
 
 class Cache implements ContainersInterface
 {
-    public static function load(ContainerInterface $container)
+    public static function load(ContainerInterface $container): void
     {
-        $container['cache'] = function (ContainerInterface $container) {
+        $container['cache'] = function (): Redis {
             $cache = null;
 
             try {

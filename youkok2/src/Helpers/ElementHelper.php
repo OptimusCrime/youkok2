@@ -6,12 +6,12 @@ use Youkok\Common\Utilities\UriCleaner;
 
 class ElementHelper
 {
-    public static function fileExists(Element $element, $basePath)
+    public static function fileExists(Element $element, $basePath): bool
     {
         return file_exists(static::getPhysicalFileLocation($element, $basePath));
     }
 
-    public static function getPhysicalFileLocation(Element $element, $basePath)
+    public static function getPhysicalFileLocation(Element $element, $basePath): string
     {
         $checksum = $element->checksum;
         $folder1 = substr($checksum, 0, 1);
@@ -20,7 +20,7 @@ class ElementHelper
         return $basePath . $folder1 . DIRECTORY_SEPARATOR . $folder2 . DIRECTORY_SEPARATOR . $checksum;
     }
 
-    public static function siteTitleFor(Element $element)
+    public static function siteTitleFor(Element $element): string
     {
         if ($element->isCourse()) {
             return 'Bidrag for ' . $element->courseCode . ' - ' . $element->courseName;
@@ -29,7 +29,7 @@ class ElementHelper
         return 'Bidrag i ' . $element->name . ' for ' . $element->rootParent->courseCode . ' - ' . $element->rootParent->courseName;
     }
 
-    public static function siteDescriptionFor(Element $element)
+    public static function siteDescriptionFor(Element $element): string
     {
         if ($element->isCourse()) {
             return 'Bidrag for ' . $element->courseCode . ' - ' . $element->courseName . ' fra Youkok2, den beste kokeboka på nettet.';
@@ -38,7 +38,7 @@ class ElementHelper
         return static::siteDescriptionFor($element->rootParent);
     }
 
-    public static function constructUri($id)
+    public static function constructUri($id): ?string
     {
         $element = Element::fromIdAll($id, ['id', 'link', 'slug', 'parent']);
         if ($element === null) {

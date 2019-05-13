@@ -22,7 +22,7 @@ class SessionService
     private $hash;
     private $dirty;
 
-    public function init($loadSessions = true)
+    public function init($loadSessions = true): bool
     {
         // This is the default session data array
         $this->data = [
@@ -41,7 +41,7 @@ class SessionService
         return true;
     }
 
-    public function loadSession()
+    public function loadSession(): bool
     {
         $cookie = CookieHelper::getCookie('youkok2');
         if ($cookie === null) {
@@ -60,7 +60,7 @@ class SessionService
         return true;
     }
 
-    public function getSessionDataFromHash($hash)
+    public function getSessionDataFromHash($hash): array
     {
         $currentSession = $this->getSession($hash);
         if ($currentSession === null) {
@@ -70,12 +70,12 @@ class SessionService
         return array_replace_recursive($this->data, json_decode($currentSession->data, true));
     }
 
-    private function getSession($hash)
+    private function getSession($hash): ?Session
     {
         return Session::where('hash', $hash)->first();
     }
 
-    public function getAllData()
+    public function getAllData(): array
     {
         return $this->data;
     }
@@ -89,12 +89,12 @@ class SessionService
         return $this->data[$key];
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return isset($this->data['admin']) and $this->data['admin'];
     }
 
-    public function setData($key, $value)
+    public function setData($key, $value): void
     {
         // Mark session as dirty
         $this->dirty = true;
@@ -102,7 +102,7 @@ class SessionService
         $this->data[$key] = $value;
     }
 
-    public function store($force = false)
+    public function store($force = false): bool
     {
         if (!$force and !$this->dirty) {
             return false;
@@ -120,7 +120,7 @@ class SessionService
         return $currentSession->save();
     }
 
-    public function update()
+    public function update(): bool
     {
         $currentSession = $this->getSession($this->hash);
         if ($currentSession === null) {
@@ -132,7 +132,7 @@ class SessionService
         return $currentSession->save();
     }
 
-    public function forceSetData($key, $value)
+    public function forceSetData($key, $value): bool
     {
         $this->setData($key, $value);
 

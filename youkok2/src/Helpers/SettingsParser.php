@@ -2,23 +2,11 @@
 
 namespace Youkok\Helpers;
 
-use Dotenv\Dotenv;
+use Monolog\Logger;
 
 class SettingsParser
 {
-    const DEFAULT_FILE = '.env';
-    const DEV_FILE = '.env-dev';
-
-    public function __construct()
-    {
-        $baseDir = dirname(dirname(__DIR__)) . '/';
-        $dotFile = static::getDotFile($baseDir);
-
-        $dotenv = new Dotenv($baseDir, $dotFile);
-        $dotenv->load();
-    }
-
-    public function getSlimConfig()
+    public static function getSlimConfig(): array
     {
         return [
             'settings' => [
@@ -30,13 +18,13 @@ class SettingsParser
                 'logger' => [
                     'name' => getenv('LOGGER_NAME'),
                     'path' => getenv('LOGGER_PATH'),
-                    'level' => \Monolog\Logger::DEBUG,
+                    'level' => Logger::DEBUG,
                 ],
             ]
         ];
     }
 
-    public function getPhinxConfig()
+    public static function getPhinxConfig(): array
     {
         return [
             'paths' => [
@@ -48,11 +36,11 @@ class SettingsParser
                 'default_database' => 'production',
                 'production' => [
                     'adapter' => 'mysql',
-                    'host' => getenv('DATABASE_HOST'),
-                    'name' => getenv('DATABASE_TABLE'),
-                    'user' => getenv('DATABASE_USER'),
-                    'pass' => getenv('DATABASE_PASSWORD'),
-                    'port' => getenv('DATABASE_PORT'),
+                    'host' => getenv('MYSQL_HOST'),
+                    'name' => getenv('MYSQL_TABLE'),
+                    'user' => getenv('MYSQL_USER'),
+                    'pass' => getenv('MYSQL_PASSWORD'),
+                    'port' => getenv('MYSQL_PORT'),
                     'charset' => 'utf8',
                 ],
                 'test' => [
@@ -61,14 +49,5 @@ class SettingsParser
                 ]
             ]
         ];
-    }
-
-    private static function getDotFile($baseDir)
-    {
-        if (file_exists($baseDir . SettingsParser::DEFAULT_FILE)) {
-            return SettingsParser::DEFAULT_FILE;
-        }
-
-        return SettingsParser::DEV_FILE;
     }
 }

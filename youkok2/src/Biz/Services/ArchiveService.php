@@ -1,4 +1,5 @@
 <?php
+
 namespace Youkok\Biz\Services;
 
 use Youkok\Biz\Services\Mappers\ElementMapper;
@@ -15,7 +16,13 @@ class ArchiveService
         $this->elementMapper = $elementMapper;
     }
 
-    public function get($id)
+    /**
+     * @param string $id
+     * @return array
+     * @throws \Youkok\Biz\Exceptions\ElementNotFoundException
+     */
+
+    public function get(string $id): array
     {
         // This method will throw an exception if the course is not found (or invisible)
         $directory = Element::fromIdVisible($id, Element::ATTRIBUTES_ALL);
@@ -29,13 +36,12 @@ class ArchiveService
         ];
     }
 
-    public function getArchiveElementFromUri($course, $params)
+    public function getArchiveElementFromUri(string $course, ?string $params)
     {
         $element = null;
         if ($params === null) {
             $element = CourseController::getCourseFromUri($course);
-        }
-        else {
+        } else {
             $element = ElementController::getDirectoryFromUri($course . '/' . $params);
         }
 

@@ -9,9 +9,9 @@ use Youkok\Web\TwigPlugins\YoukokTwigExtension;
 
 class View implements ContainersInterface
 {
-    public static function load(ContainerInterface $container)
+    public static function load(ContainerInterface $container): void
     {
-        $container['view'] = function (ContainerInterface $container) {
+        $container['view'] = function (ContainerInterface $container): Twig {
             $request = $container->get('request');
             $router = $container->get('router');
 

@@ -10,7 +10,7 @@ class Download extends BaseModel
     protected $table = 'download';
     public $timestamps = false;
 
-    public static function getMostPopularElementQueryFromDelta($delta = MostPopularElement::ALL)
+    public static function getMostPopularElementQueryFromDelta($delta = MostPopularElement::ALL): ?Carbon
     {
         switch ($delta) {
             case MostPopularElement::DAY:

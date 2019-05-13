@@ -14,7 +14,7 @@ class BaseModel extends Model
         $this->dataStore = [];
     }
 
-    public function __set($name, $value)
+    public function __set($name, $value): void
     {
         if (substr($name, 0, 1) === '_') {
             $this->dataStore[substr($name, 1)] = $value;
@@ -23,12 +23,12 @@ class BaseModel extends Model
         }
     }
 
-    public function getDataStore()
+    public function getDataStore(): array
     {
         return $this->dataStore;
     }
 
-    private function hasDataStoreKey($name)
+    private function hasDataStoreKey($name): bool
     {
         if (substr($name, 0, 1) !== '_') {
             return false;
@@ -38,7 +38,7 @@ class BaseModel extends Model
         return isset($this->dataStore[$dataStoreKey]);
     }
 
-    private function getDataStoreKey($name)
+    private function getDataStoreKey($name): ?string
     {
         if (!$this->hasDataStoreKey($name)) {
             return null;
@@ -52,11 +52,12 @@ class BaseModel extends Model
         return $this->dataStore[$dataStoreKey];
     }
 
-    public function __isset($name)
+    public function __isset($name): bool
     {
         return $this->hasDataStoreKey($name);
     }
 
+    // TODO clean up this stuff right here
     public function __get($key)
     {
         $value = parent::__get($key);

@@ -1,4 +1,4 @@
-Youkok2 - 4.0.0-pl (xx. xxxxxxx 2018)
+Youkok2 - 4.0.0-pl (xx. xxxxxxx 2019)
 =====================================
 
 - [Info] Total omskrivning, igjen.

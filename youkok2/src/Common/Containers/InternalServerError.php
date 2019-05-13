@@ -8,12 +8,13 @@ use Psr\Container\ContainerInterface;
 
 class InternalServerError implements ContainersInterface
 {
-    public static function load(ContainerInterface $container)
+    public static function load(ContainerInterface $container): void
     {
         $container['errorHandler'] = function (ContainerInterface $container) {
             return function (Request $request, Response $response, Exception $exception) use ($container) {
-                // TODO
-                error_log($exception->getMessage(), 0);
+                var_dump(get_class($exception));
+                var_dump($exception->getMessage());
+                var_dump($exception->getCode());
                 var_dump($exception->getTraceAsString());
                 die();
 

@@ -5,6 +5,7 @@ use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 
@@ -26,14 +27,19 @@ class Archive extends BaseProcessorView
 
     public function get(Request $request, Response $response, array $args)
     {
-        $payload = $this->archiveService->get($args['id']);
-        $payload['content'] = $this->elementMapper->map($payload['content'], [
-            ElementMapper::DOWNLOADS,
-            ElementMapper::POSTED_TIME,
-            ElementMapper::DOWNLOADS,
-            ElementMapper::ICON
-        ]);
+        try {
+            $payload = $this->archiveService->get($args['id']);
+            $payload['content'] = $this->elementMapper->map($payload['content'], [
+                ElementMapper::DOWNLOADS,
+                ElementMapper::POSTED_TIME,
+                ElementMapper::DOWNLOADS,
+                ElementMapper::ICON
+            ]);
 
-        return $this->output($response, $payload);
+            return $this->output($response, $payload);
+        }
+        catch (ElementNotFoundException $e) {
+            return $this->returnBadRequest($response);
+        }
     }
 }

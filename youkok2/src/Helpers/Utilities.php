@@ -1,20 +1,21 @@
 <?php
 namespace Youkok\Helpers;
 
+const NORWEGIAN_MONTHS = [
+    'jan', 'feb', 'mar',
+    'apr', 'mai', 'jun',
+    'jul', 'aug', 'sep',
+    'okt', 'nov', 'des'
+];
+
 class Utilities
 {
-    private static $NORWEGIAN_MONTHS = [
-        'jan', 'feb', 'mar',
-        'apr', 'mai', 'jun',
-        'jul', 'aug', 'sep',
-        'okt', 'nov', 'des'];
-
-    public static function numberFormat($num)
+    public static function numberFormat($num): string
     {
         return number_format($num, 0, '.', ' ');
     }
 
-    public static function randomToken($length)
+    public static function randomToken($length): string
     {
         $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $str = '';
@@ -25,12 +26,12 @@ class Utilities
         return $str;
     }
 
-    public static function prettifySQLDate($d, $excludeTime = true)
+    public static function prettifySQLDate($d, $excludeTime = true): string
     {
         $split1 = explode(' ', $d);
         $split2 = explode('-', $split1[0]);
 
-        $returnString = $split2[2] . '. ' . self::$NORWEGIAN_MONTHS[$split2[1] - 1] . ' ' . $split2[0];
+        $returnString = $split2[2] . '. ' . NORWEGIAN_MONTHS[$split2[1] - 1] . ' ' . $split2[0];
 
         if ($excludeTime) {
             return $returnString;
@@ -38,4 +39,22 @@ class Utilities
 
         return $returnString . ' @ ' . $split1[1];
     }
+
+    public static function clean($d, $include_time = true): string
+    {
+        if ($d == 'CURRENT_TIMESTAMP') {
+            $d = date('Y-m-d  G:i:s');
+        }
+
+        $split1 = explode(' ', $d);
+        $split2 = explode('-', $split1[0]);
+
+        return ((int) $split2[2])
+            . '. '
+            . NORWEGIAN_MONTHS[$split2[1] - 1]
+            . ' '
+            . $split2[0]
+            . ($include_time ? (' @ ' . $split1[1]) : '');
+    }
+
 }

@@ -3,7 +3,7 @@ namespace Youkok\Common\Utilities;
 
 class UriTranslator
 {
-    public static function generate($fileName)
+    public static function generate($fileName): string
     {
         // Replace first here to keep "norwegian" names in a way
         $fileName = str_replace(['Æ', 'Ø', 'Å'], ['ae', 'o', 'aa'], $fileName);

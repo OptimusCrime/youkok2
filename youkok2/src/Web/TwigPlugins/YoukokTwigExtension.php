@@ -5,7 +5,7 @@ use Twig_Extension;
 use Twig_SimpleFunction;
 
 use Youkok\Common\Utilities\NumberFormatter;
-use Youkok\Common\Utilities\TimeFormatter;
+use Youkok\Helpers\Utilities;
 
 class YoukokTwigExtension extends Twig_Extension
 {
@@ -18,7 +18,7 @@ class YoukokTwigExtension extends Twig_Extension
         $this->request = $request;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new Twig_SimpleFunction('element_url', [$this, 'elementUrl']),
@@ -28,17 +28,17 @@ class YoukokTwigExtension extends Twig_Extension
         ];
     }
 
-    public function wholeNumberFormat($number)
+    public function wholeNumberFormat($number): string
     {
         return NumberFormatter::format($number);
     }
 
-    public function postedAt($dateTime)
+    public function postedAt($dateTime): string
     {
-        return TimeFormatter::clean($dateTime);
+        return Utilities::clean($dateTime);
     }
 
-    public function elementUrl($element = null)
+    public function elementUrl($element = null): string
     {
         if ($element === null) {
             return '';
@@ -64,7 +64,7 @@ class YoukokTwigExtension extends Twig_Extension
         ]);
     }
 
-    public function youkokUrl()
+    public function youkokUrl(): string
     {
         $scheme = getenv('SSL') === '1' ? 'https' : 'http';
 

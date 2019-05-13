@@ -6,17 +6,19 @@ use Youkok\Common\Models\Element;
 
 class UrlService
 {
+    private $router;
+
     public function __construct(RouterInterface $router)
     {
         $this->router = $router;
     }
 
-    public function urlForCourse(Element $element)
+    public function urlForCourse(Element $element): string
     {
         return $this->router->pathFor('archive', ['course' => $element->slug]);
     }
 
-    public function urlForElement(Element $element)
+    public function urlForElement(Element $element): string
     {
         switch ($element->getType()) {
             case Element::LINK:
@@ -30,17 +32,17 @@ class UrlService
         }
     }
 
-    private function urlForFile(Element $element)
+    private function urlForFile(Element $element): string
     {
         return $this->router->pathFor('download', ['uri' => $this->getFullUri($element)]);
     }
 
-    private function urlForLink(Element $element)
+    private function urlForLink(Element $element): string
     {
         return $this->router->pathFor('redirect', ['id' => $element->id]);
     }
 
-    private function urlForDirectory(Element $element)
+    private function urlForDirectory(Element $element): string
     {
         $uri = $this->getFullUri($element);
 
@@ -57,7 +59,7 @@ class UrlService
         ]);
     }
 
-    private function getFullUri(Element $element)
+    private function getFullUri(Element $element): string
     {
         if ($element->uri !== null and strlen($element->uri) > 0) {
             return $element->uri;

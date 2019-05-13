@@ -25,7 +25,7 @@ class Archive extends BaseView
         $this->router = $container->get('router');
     }
 
-    public function view(Request $request, Response $response, array $args)
+    public function view(Request $request, Response $response): Response
     {
         $course = $request->getAttribute('course');
         $params = $request->getAttribute('params', null);

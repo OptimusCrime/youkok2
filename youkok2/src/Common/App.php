@@ -42,7 +42,7 @@ class App
         $this->app = new Slim($settings);
     }
 
-    public function run()
+    public function run(): void
     {
         $this->setup();
 
@@ -50,7 +50,7 @@ class App
         $this->app->run();
     }
 
-    public function runJobs($mode = JobService::CRON_JOB, $code = null)
+    public function runJobs($mode = JobService::CRON_JOB, $code = null): void
     {
         $this->setup();
 
@@ -64,13 +64,13 @@ class App
         }
     }
 
-    private function setup()
+    private function setup(): void
     {
         $this->dependencies();
         $this->routes();
     }
 
-    private function routes()
+    private function routes(): void
     {
         $app = $this->app;
 
@@ -139,7 +139,7 @@ class App
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
     }
 
-    private function dependencies()
+    private function dependencies(): void
     {
         $containers = [
             Cache::class,

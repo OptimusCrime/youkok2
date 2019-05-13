@@ -1,6 +1,8 @@
 <?php
 namespace Youkok\Biz\Services;
 
+// NOT used anymore?
+// TODO
 class SearchRedirectService
 {
     public function run($query)

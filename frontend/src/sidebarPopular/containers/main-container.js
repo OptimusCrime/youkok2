@@ -17,7 +17,7 @@ const MainContainer = ({ started, finished, failed, data }) => {
 
   return (
     <BoxWrapper
-      title="Mest populære"
+      title="Denne måneden"
       titleInline={false}
       isLoading={isLoading}
       isEmpty={!isLoading && data.length === 0}

@@ -1,13 +1,8 @@
+# The usual suspects
 .DS_Store
 .idea
 vendor
 frontend/node_modules
 
-# For devlopment and testing
-youkok2/public/*.php
-!youkok2/public/index.php
-
-# Slim config file
-youkok2/.env
-
-docker-compose-production.yml
+# Production env file
+prod.env
