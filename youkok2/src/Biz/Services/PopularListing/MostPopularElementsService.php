@@ -29,7 +29,7 @@ class MostPopularElementsService implements MostPopularInterface
         return static::idListToElements($ids);
     }
 
-    public function refresh()
+    public function refresh(): void
     {
         $this->cacheService->clearCacheForKeys(MostPopularElement::all());
 
@@ -38,17 +38,18 @@ class MostPopularElementsService implements MostPopularInterface
         }
     }
 
-    private function refreshForDelta($delta)
+    private function refreshForDelta(string $delta): void
     {
         $elements = DownloadController::getMostPopularElementsFromDelta($delta);
         $setKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($delta);
 
         foreach ($elements as $element) {
+            // TODO: fix casting here. Weird method signature
             $this->cacheService->insertIntoSet($setKey, $element->download_count, $element->id);
         }
     }
 
-    private static function idListToElements(array $ids)
+    private static function idListToElements(array $ids): array
     {
         $elements = [];
         foreach ($ids as $id => $downloads) {

@@ -66,11 +66,11 @@ class ElementController
             ->get();
     }
 
-    public static function updateRootElementVisited(Element $element)
+    public static function updateRootElementVisited(Element $element): void
     {
-        $rootParent = $element->rootParent;
+        $rootParent = $element->getRootParentVisible();
         if ($rootParent === null) {
-            return null;
+            throw new ElementNotFoundException();
         }
 
         $rootParent->last_visited = Carbon::now();

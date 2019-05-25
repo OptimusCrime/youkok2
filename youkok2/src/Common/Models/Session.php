@@ -78,14 +78,14 @@ class Session extends Model
         $this->mostPopularCourse = $delta;
     }
 
-    public function save(): bool
+    public function save(array $options = []): bool
     {
         // Package the fields back into data before saving
         $data = $this->getAllData();
 
         $this->data = json_encode($data);
 
-        return parent::save();
+        return parent::save($options);
     }
 
     public static function get(string $hash): ?Session

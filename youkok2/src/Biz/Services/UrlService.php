@@ -65,7 +65,7 @@ class UrlService
             return $element->uri;
         }
 
-        $parents = $element->parents;
+        $parents = $element->getParentsVisible(['id', 'name', 'slug', 'uri', 'parent']);
         $uriFragments = [];
 
         foreach ($parents as $parent) {

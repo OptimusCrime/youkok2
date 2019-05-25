@@ -20,21 +20,22 @@ class CacheService
         return $this->getSortedRangeByKey($key, $limit);
     }
 
-    public function getMostPopularCoursesFromDelta(string $delta)
+    public function getMostPopularCoursesFromDelta(string $delta): ?string
     {
         $key = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
         return $this->getCacheByKey($key);
     }
 
-    public function setByKey($key, $value)
+    public function setByKey(string $key, string $value): void
     {
         if ($this->cache !== null) {
             $this->cache->set($key, $value);
         }
     }
 
-    public function insertIntoSet($setKey, $value, $id)
+    public function insertIntoSet($setKey, $value, $id): void
     {
+        // TODO: method is complaning?
         $this->cache->zadd($setKey, $value, $id);
     }
 
@@ -62,10 +63,10 @@ class CacheService
     public function setDownloadsForId(int $id, int $downloads): void
     {
         if ($this->cache === null) {
-            return null;
+            return;
         }
 
-        $this->setByKey(CacheKeyGenerator::keyForElementDownloads($id), $downloads);
+        $this->setByKey(CacheKeyGenerator::keyForElementDownloads($id), (string) $downloads);
     }
 
     public function increaseDownloadsForId(int $id): void
@@ -80,10 +81,10 @@ class CacheService
         $this->setDownloadsForId($id, $downloads + 1);
     }
 
-    public function clearCacheForKeys(array $keys)
+    public function clearCacheForKeys(array $keys): void
     {
         if ($this->cache === null) {
-            return null;
+            return;
         }
 
         foreach ($keys as $key) {
@@ -107,13 +108,19 @@ class CacheService
         ]);
     }
 
-    // TODO: WTF, this methods returns string but also array??
-    private function getCacheByKey($key)
+    private function getCacheByKey($key): ?string
     {
         if ($this->cache === null) {
-            return [];
+            return '';
         }
 
-        return $this->cache->get($key);
+        $data = $this->cache->get($key);
+
+        // Redis returns false if no data was found
+        if ($data === false) {
+            return null;
+        }
+
+        return $data;
     }
 }

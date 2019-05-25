@@ -100,7 +100,7 @@ class ElementMapper
 
         // This is stored in the Elements datastore (prefixed with an underscore)
         if (in_array(static::DATASTORE_DOWNLOADS, $additionalFields)) {
-            $arr['downloads'] = (int) $element->downloads;
+            $arr['downloads'] = (int) $element->getDownloads();
         }
 
         if (in_array(static::ICON, $additionalFields)) {

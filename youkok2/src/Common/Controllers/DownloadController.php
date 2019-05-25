@@ -80,7 +80,7 @@ class DownloadController
                 continue;
             }
 
-            $rootParent = $downloadElement->rootParentAll;
+            $rootParent = $downloadElement->getRootParentAll();
             if ($rootParent === null) {
                 continue;
             }

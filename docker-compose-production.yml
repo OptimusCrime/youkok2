@@ -26,3 +26,6 @@ services:
     restart: always
     env_file:
       - prod.env
+    build:
+      args:
+        - WITH_XDEBUG=false

@@ -26,9 +26,11 @@ class Frontpage extends BaseProcessorView
     {
         parent::__construct($container);
 
+
         $this->frontpageService = $container->get(FrontpageService::class);
         $this->courseMapper = $container->get(CourseMapper::class);
         $this->elementMapper = $container->get(ElementMapper::class);
+
     }
 
     public function get(Request $request, Response $response)

@@ -49,7 +49,6 @@ class App
         try {
             $this->app->run();
         } catch (\Exception $e) {
-            die('wtf?');
             // TODO
         }
     }

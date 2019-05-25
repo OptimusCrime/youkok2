@@ -27,7 +27,12 @@ class ElementHelper
             return 'Bidrag for ' . $element->getCourseCode() . ' - ' . $element->getCourseName();
         }
 
-        return 'Bidrag i ' . $element->name . ' for ' . $element->rootParent->getCourseCode() . ' - ' . $element->rootParent->courseName;
+        return 'Bidrag i '
+            . $element->name
+            . ' for '
+            . $element->getRootParentVisible()->getCourseCode()
+            . ' - '
+            . $element->getRootParentVisible()->getCourseName();
     }
 
     public static function siteDescriptionFor(Element $element): string
@@ -36,7 +41,7 @@ class ElementHelper
             return 'Bidrag for ' . $element->getCourseCode() . ' - ' . $element->getCourseName() . ' fra Youkok2, den beste kokeboka på nettet.';
         }
 
-        return static::siteDescriptionFor($element->rootParent);
+        return static::siteDescriptionFor($element->getRootParentVisible());
     }
 
     public static function constructUri($id): string

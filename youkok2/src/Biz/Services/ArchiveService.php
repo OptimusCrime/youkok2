@@ -25,7 +25,6 @@ class ArchiveService
 
     public function get(string $id): array
     {
-        // This method will throw an exception if the course is not found (or invisible)
         $directory = Element::fromIdVisible($id, Element::ATTRIBUTES_ALL);
 
         $course = CourseController::getCourseFromId($id);
@@ -43,7 +42,7 @@ class ArchiveService
      * @return |null
      * @throws ElementNotFoundException
      */
-    public function getArchiveElementFromUri(string $course, ?string $params)
+    public function getArchiveElementFromUri(string $course, ?string $params): Element
     {
         $element = null;
         if ($params === null) {
@@ -59,7 +58,7 @@ class ArchiveService
 
     public function getBreadcrumbsForElement(Element $element)
     {
-        return $this->elementMapper->mapBreadcrumbs($element->parents);
+        return $this->elementMapper->mapBreadcrumbs($element->getParentsVisible());
     }
 
     private function getContentForDirectory(Element $element)

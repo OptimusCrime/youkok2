@@ -50,7 +50,6 @@ class Archive extends BaseView
             ]);
         }
         catch (ElementNotFoundException $exception) {
-            die('in here?');
             // TODO log
             return $this->render404($response);
         }

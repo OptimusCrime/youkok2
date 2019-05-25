@@ -2,6 +2,7 @@
 namespace Youkok\Common\Models;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Helpers\ElementHelper;
 use Youkok\Helpers\Utilities;
 use Youkok\Common\Utilities\UriCleaner;
@@ -14,7 +15,11 @@ class Element extends BaseModel
     const NON_DIRECTORY = 'NON_DIRECTORY';
     const FILE = 'FILE';
 
+    // TODO remove this you lazy slob
     const ATTRIBUTES_ALL = 'all';
+
+    const FETCH_ONLY_VISIBLE = 1;
+    const FETCH_ALL = 2;
 
     const ELEMENT_TYPE_DIRECTORIES = 0;
     const ELEMENT_TYPE_FILES = 1;
@@ -29,15 +34,18 @@ class Element extends BaseModel
     protected $fillable = ['*'];
     protected $guarded = [''];
 
-    private $parents;
+    private $fullUri;
+    private $parentsVisible;
+    private $parentsAll;
     private $downloads;
-    private $childrenObjects;
 
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
-        $this->parents = null;
+        $this->fullUri = null;
+        $this->parentsVisible = null;
+        $this->parentsAll = null;
         $this->downloads = null;
     }
 
@@ -76,7 +84,7 @@ class Element extends BaseModel
     private function getCourseArray(): array
     {
         if ($this->name == null) {
-            return [''];
+            throw new GenericYoukokException('Element does not have a name');
         }
 
         return explode('||', $this->name);
@@ -84,13 +92,20 @@ class Element extends BaseModel
 
     public function getFullUri(): string
     {
-        if ($this->uri !== null and strlen($this->uri) > 0) {
-            return $this->uri;
+        if ($this->fullUri !== null) {
+            return $this->fullUri;
         }
 
-        $this->uri = ElementHelper::constructUri($this->id);
+        // Transfer content of URI to self::fullUri, in case we have to populate it. This way, we avoid polluting the
+        // database columns
+        if ($this->uri !== null and strlen($this->uri) > 0) {
+            $this->fullUri = $this->uri;
+        }
+        else {
+            $this->fullUri = ElementHelper::constructUri($this->id);
+        }
 
-        return $this->uri;
+        return $this->fullUri;
     }
 
     public function isLink(): bool
@@ -108,20 +123,51 @@ class Element extends BaseModel
         return !$this->isCourse() && $this->directory === 1;
     }
 
-    // TODO add parameter to fetch whatever attributes we'd like
-    private function getParents($all = false)
+    public function getParentsVisible(array $columns = ['id', 'name', 'slug', 'uri', 'parent', 'directory']): array
     {
-        if ($this->parents !== null) {
-            return $this->parents;
+        if ($this->parentsVisible !== null) {
+            return $this->parentsVisible;
         }
 
+        $this->parentsVisible = $this->getParents($columns, static::FETCH_ONLY_VISIBLE);
+
+        return $this->parentsVisible;
+    }
+
+    public function getParentsAll(array $columns = ['id', 'parent']): array
+    {
+        if ($this->parentsAll !== null) {
+            return $this->parentsAll;
+        }
+
+        $this->parentsAll = $this->getParents($columns, static::FETCH_ALL);
+
+        return $this->parentsAll;
+    }
+
+    public function getRootParentVisible(array $columns = ['id', 'name', 'slug', 'uri', 'parent', 'directory']): Element
+    {
+        $parents = $this->getParentsVisible($columns);
+
+        return $parents[0];
+    }
+
+    public function getRootParentAll(array $columns = ['id', 'parent']): Element
+    {
+        $parents = $this->getParentsAll($columns);
+
+        return $parents[0];
+    }
+
+    private function getParents(array $columns, int $fetchDeleted): array
+    {
         $parents = [$this];
         $currentObject = $this;
         while ($currentObject->parent !== null and $currentObject->parent !== 0) {
-            $currentObject = Element::select('id', 'name', 'slug', 'uri', 'parent', 'directory')
+            $currentObject = Element::select($columns)
                 ->where('id', $currentObject->parent);
 
-            if (!$all) {
+            if ($fetchDeleted) {
                 $currentObject = $currentObject
                     ->where('deleted', 0)
                     ->where('pending', 0)
@@ -133,20 +179,11 @@ class Element extends BaseModel
             $parents[] = $currentObject;
         }
 
-        $this->parents = array_reverse($parents);
-
-        return $this->parents;
-    }
-
-    // TODO add parameter to fetch whatever attributes we'd like
-    private function getRootParent($all = false): ?Element
-    {
-        $parents = $this->getParents($all);
-        if ($parents === null or count($parents) === 0) {
-            return null;
+        if (count($parents) === 0) {
+            throw new ElementNotFoundException();
         }
 
-        return $parents[0];
+        return array_reverse($parents);
     }
 
     public function getIcon(): string
@@ -172,25 +209,6 @@ class Element extends BaseModel
         return 'unknown.png';
     }
 
-    private function getAddedPretty(): string
-    {
-        return Utilities::prettifySQLDate($this->added);
-    }
-
-    private function getAddedPrettyAll(): string
-    {
-        return Utilities::prettifySQLDateTime($this->added);
-    }
-
-    public function getChildrenObjects(): array
-    {
-        if ($this->childrenObjects === null) {
-            return [];
-        }
-
-        return $this->childrenObjects;
-    }
-
     public function setDownloads(int $downloads): void
     {
         $this->downloads = $downloads;
@@ -199,59 +217,6 @@ class Element extends BaseModel
     public function getDownloads(): int
     {
         return $this->downloads;
-    }
-
-    public function __set($name, $value): void
-    {
-        if ($name === 'childrenObjects') {
-            $this->childrenObjects = $value;
-        } else {
-            parent::__set($name, $value);
-        }
-    }
-
-    public function __isset($name): bool
-    {
-        if (parent::__isset($name)) {
-            return true;
-        }
-
-        return in_array($name, [
-            'fullUri',
-            'icon',
-            'parents',
-            'downloads',
-            'rootParent',
-            'addedPretty',
-            'addedPrettyAll',
-            'childrenObjects'
-        ]);
-    }
-
-
-    // TODO: remove this?
-    public function __get($key)
-    {
-        switch ($key) {
-            case 'icon':
-                return $this->getIcon();
-            case 'parents':
-                return $this->getParents();
-            case 'downloads':
-                return $this->getDownloads();
-            case 'rootParent':
-                return $this->getRootParent();
-            case 'rootParentAll':
-                return $this->getRootParent(true);
-            case 'addedPretty':
-                return $this->getAddedPretty();
-            case 'addedPrettyAll':
-                return $this->getAddedPrettyAll();
-            case 'childrenObjects':
-                return $this->getChildrenObjects();
-        }
-
-        return parent::__get($key);
     }
 
     public static function fromIdVisible($id, $attributes = ['id', 'link', 'checksum']): Element

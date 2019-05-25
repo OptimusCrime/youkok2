@@ -11,7 +11,7 @@ use Youkok\Enums\MostPopularCourse;
 
 class MostPopularCoursesService implements MostPopularInterface
 {
-    // We only display 10 on the actual frontpage, but it does not really make any differece. Good to have?
+    // We only display 10 on the actual frontpage, but it does not really make any difference. Good to have?
     const MAX_COURSES_TO_FETCH = 20;
 
     const CACHE_DIRECTORY_KEY = 'CACHE_DIRECTORY';
@@ -25,7 +25,7 @@ class MostPopularCoursesService implements MostPopularInterface
         $this->cacheService = $cacheService;
     }
 
-    public function fromDelta(string $delta, $limit = null)
+    public function fromDelta(string $delta, int $limit): array
     {
         $result = $this->cacheService->getMostPopularCoursesFromDelta($delta);
         if (empty($result)) {
@@ -45,7 +45,7 @@ class MostPopularCoursesService implements MostPopularInterface
         return static::resultArrayToElements($resultArr, $limit);
     }
 
-    public function refresh()
+    public function refresh(): void
     {
         $this->clearFileCache();
         $this->cacheService->clearCacheForKeys(MostPopularCourse::all());
@@ -55,7 +55,7 @@ class MostPopularCoursesService implements MostPopularInterface
         }
     }
 
-    private function refreshForDelta(string $delta)
+    private function refreshForDelta(string $delta): void
     {
         $courses = DownloadController::getMostPopularCoursesFromDelta($delta, static::MAX_COURSES_TO_FETCH);
         $setKey = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
@@ -65,7 +65,7 @@ class MostPopularCoursesService implements MostPopularInterface
         $this->storeDataInFile($setKey, $courses);
     }
 
-    private function storeDataInFile($setKey, $courses)
+    private function storeDataInFile(string $setKey, array $courses): bool
     {
         // Make sure we have the directory first
         if (!$this->createCacheDirectory()) {
@@ -74,10 +74,18 @@ class MostPopularCoursesService implements MostPopularInterface
         }
 
         $cacheDirectory = static::getCacheDirectory();
-        return file_put_contents($cacheDirectory . DIRECTORY_SEPARATOR . $setKey . '.json', json_encode($courses));
+
+        $write = file_put_contents($cacheDirectory . DIRECTORY_SEPARATOR . $setKey . '.json', json_encode($courses));
+
+        // file_put_contents returns false on error, otherwise the number of bytes written
+        if ($write !== false) {
+            return true;
+        }
+
+        return false;
     }
 
-    private function createCacheDirectory()
+    private function createCacheDirectory(): bool
     {
         $cacheDirectory = $this->getCacheDirectory();
         if (file_exists($cacheDirectory)) {
@@ -87,7 +95,7 @@ class MostPopularCoursesService implements MostPopularInterface
         return mkdir($cacheDirectory, 0777, true);
     }
 
-    private function getMostPopularCoursesFromDisk($delta)
+    private function getMostPopularCoursesFromDisk(string $delta): ?string
     {
         $key = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
 
@@ -97,11 +105,11 @@ class MostPopularCoursesService implements MostPopularInterface
         return file_get_contents($cacheFile);
     }
 
-    private function clearFileCache()
+    private function clearFileCache(): void
     {
         $cacheDirectory = $this->getCacheDirectory();
         if (!file_exists($cacheDirectory)) {
-            return null;
+            return;
         }
 
         $files = glob($cacheDirectory . DIRECTORY_SEPARATOR . '*');
@@ -110,13 +118,13 @@ class MostPopularCoursesService implements MostPopularInterface
         }
     }
 
-    private function getCacheDirectory()
+    private function getCacheDirectory(): string
     {
         $cacheDirectory = getenv(static::CACHE_DIRECTORY_KEY);
         return $cacheDirectory . static::CACHE_DIRECTORY_SUB;
     }
 
-    private static function resultArrayToElements(array $result, $limit = null)
+    private static function resultArrayToElements(array $result, int $limit): array
     {
         $elements = [];
         foreach ($result as $res) {
@@ -133,7 +141,7 @@ class MostPopularCoursesService implements MostPopularInterface
         return static::resultArrayToMaxLimit($elements, $limit);
     }
 
-    private static function resultArrayToMaxLimit(array $elements, $limit)
+    private static function resultArrayToMaxLimit(array $elements, int $limit): array
     {
         $newElements = [];
         foreach ($elements as $element) {

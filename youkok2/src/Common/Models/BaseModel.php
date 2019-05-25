@@ -15,7 +15,7 @@ class BaseModel extends Model
         $value = parent::__get($key);
 
         if ($value === null && $this->columns !== null && !in_array($key, $this->columns)) {
-            throw new ColumnsDoesNotExistException('Tried to fetch column ' + $key + ' which does not exist.');
+            throw new ColumnsDoesNotExistException('Tried to fetch column ' . $key . ' which does not exist.');
         }
 
         return $value;
