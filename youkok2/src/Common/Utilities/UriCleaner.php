@@ -28,6 +28,7 @@ class UriCleaner
         return $clean;
     }
 
+    // TODO ubrukt?
     public static function cleanAll($uri): string
     {
         return preg_replace("/[^A-Za-z]/", '', $uri);

@@ -64,7 +64,7 @@ class LoginProcessor
 
     private static function logAdminIn(SessionService $sessionHandler, Response $response, $router)
     {
-        $sessionHandler->forceSetData('admin', true);
+        $sessionHandler->setData('admin', true);
 
         return $response
             ->withStatus(302)

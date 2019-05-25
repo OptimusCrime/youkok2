@@ -1,6 +1,8 @@
 <?php
 namespace Youkok\Common\Utilities;
 
+use Youkok\Biz\Exceptions\CookieNotFoundException;
+
 class CookieHelper
 {
     // About a month
@@ -11,17 +13,12 @@ class CookieHelper
         return setcookie($name, $value, time() + $lifeTime, '/');
     }
 
-    public static function removeCookie($name): bool
+    public static function getCookie($key): string
     {
-        return setcookie($name, null, time() - static::DEFAULT_COOKIE_LIFE_TIME, '/');
-    }
-
-    public static function getCookie($name): ?string
-    {
-        if (!isset($_COOKIE[$name]) or strlen($_COOKIE[$name]) === 0) {
-            return null;
+        if (!isset($_COOKIE[$key]) or strlen($_COOKIE[$key]) === 0) {
+            throw new CookieNotFoundException();
         }
 
-        return $_COOKIE[$name];
+        return $_COOKIE[$key];
     }
 }

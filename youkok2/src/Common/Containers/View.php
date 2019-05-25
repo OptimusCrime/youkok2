@@ -2,6 +2,8 @@
 namespace Youkok\Common\Containers;
 
 use Psr\Container\ContainerInterface;
+use Slim\Http\Request;
+use Slim\Interfaces\RouterInterface;
 use Slim\Views\TwigExtension;
 use Slim\Views\Twig;
 
@@ -12,7 +14,10 @@ class View implements ContainersInterface
     public static function load(ContainerInterface $container): void
     {
         $container['view'] = function (ContainerInterface $container): Twig {
+            /** @var Request $request */
             $request = $container->get('request');
+
+            /** @var RouterInterface $router */
             $router = $container->get('router');
 
             $templatesDir = getenv('TEMPLATE_DIRECTORY');

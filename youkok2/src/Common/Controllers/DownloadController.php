@@ -6,6 +6,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 use Youkok\Common\Models\Download;
 use Youkok\Common\Models\Element;
+use Youkok\Enums\MostPopularElement;
 
 class DownloadController
 {
@@ -31,7 +32,7 @@ class DownloadController
             ->get();
     }
 
-    public static function getMostPopularElementsFromDelta($delta)
+    public static function getMostPopularElementsFromDelta(int $delta)
     {
         $query = DB::table('download')
             ->select('download.resource as id', DB::raw('COUNT(download.id) as download_count'))
@@ -39,10 +40,11 @@ class DownloadController
             ->where('element.deleted', '=', 0)
             ->where('element.pending', '=', 0);
 
-        $duration = Download::getMostPopularElementQueryFromDelta($delta);
-        if ($duration !== null) {
-            $query = $query->whereDate('download.downloaded_time', '>=', $duration);
-        }
+        $query = $query->whereDate(
+            'download.downloaded_time',
+            '>=',
+            static::getMostPopularElementQueryFromDelta($delta)
+        );
 
         return $query
             ->groupBy('download.resource')
@@ -51,12 +53,9 @@ class DownloadController
             ->get();
     }
 
-    public static function getMostPopularCoursesFromDelta($delta, $limit = null)
+    public static function getMostPopularCoursesFromDelta(int $delta, int $limit)
     {
         $result = static::summarizeDownloads(static::getMostPopularElementsFromDelta($delta));
-        if ($limit === null) {
-            return $result;
-        }
 
         return array_slice($result, 0, $limit);
     }
@@ -135,5 +134,22 @@ class DownloadController
             ];
         }
         return $newResult;
+    }
+
+    private static function getMostPopularElementQueryFromDelta($delta = MostPopularElement::ALL): Carbon
+    {
+        switch ($delta) {
+            case MostPopularElement::DAY:
+                return Carbon::now()->subDay();
+            case MostPopularElement::WEEK:
+                return Carbon::now()->subWeek();
+            case MostPopularElement::MONTH:
+                return Carbon::now()->subMonth();
+            case MostPopularElement::YEAR:
+                return Carbon::now()->subYear();
+            case MostPopularElement::ALL:
+            default:
+                throw new \Exception('Invalid delta');
+        }
     }
 }

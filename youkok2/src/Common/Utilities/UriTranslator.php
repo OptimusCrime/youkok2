@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Common\Utilities;
 
+// TODO ubrukt?
 class UriTranslator
 {
     public static function generate($fileName): string

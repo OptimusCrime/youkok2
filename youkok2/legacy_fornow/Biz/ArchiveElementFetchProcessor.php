@@ -117,7 +117,7 @@ class ArchiveElementFetchProcessor
                     $downloads = static::getDownloadsFromDatabase($newChild, $cache);
                 }
 
-                $newChild->_downloads = $downloads;
+                $newChild->setDownloads($downloads);
             }
 
             $newChildren[] = $newChild;

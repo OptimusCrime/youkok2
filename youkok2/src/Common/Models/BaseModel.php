@@ -2,77 +2,22 @@
 namespace Youkok\Common\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Youkok\Biz\Exceptions\ColumnsDoesNotExistException;
 
 class BaseModel extends Model
 {
-    protected $dataStore;
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        $this->dataStore = [];
-    }
-
-    public function __set($name, $value): void
-    {
-        if (substr($name, 0, 1) === '_') {
-            $this->dataStore[substr($name, 1)] = $value;
-        } else {
-            parent::__set($name, $value);
-        }
-    }
-
-    public function getDataStore(): array
-    {
-        return $this->dataStore;
-    }
-
-    private function hasDataStoreKey($name): bool
-    {
-        if (substr($name, 0, 1) !== '_') {
-            return false;
-        }
-
-        $dataStoreKey = substr($name, 1);
-        return isset($this->dataStore[$dataStoreKey]);
-    }
-
-    private function getDataStoreKey($name): ?string
-    {
-        if (!$this->hasDataStoreKey($name)) {
-            return null;
-        }
-
-        $dataStoreKey = substr($name, 1);
-        if (!isset($this->dataStore[$dataStoreKey])) {
-            return null;
-        }
-
-        return $this->dataStore[$dataStoreKey];
-    }
-
-    public function __isset($name): bool
-    {
-        return $this->hasDataStoreKey($name);
-    }
-
-    // TODO clean up this stuff right here
     public function __get($key)
     {
+        if ($key === 'columns') {
+            return parent::__get($key);
+        }
+
         $value = parent::__get($key);
-        if ($value !== null) {
-            return $value;
+
+        if ($value === null && $this->columns !== null && !in_array($key, $this->columns)) {
+            throw new ColumnsDoesNotExistException('Tried to fetch column ' + $key + ' which does not exist.');
         }
 
-        if ($key === 'dataStore') {
-            return $this->getDataStore();
-        }
-
-        if (!$this->hasDataStoreKey($key)) {
-            return null;
-        }
-
-        return $this->getDataStoreKey($key);
+        return $value;
     }
 }

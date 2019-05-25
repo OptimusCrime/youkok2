@@ -34,7 +34,7 @@ class ElementMapper
         $this->downloadCountService = $downloadCountService;
     }
 
-    public function map($elements, $additionalFields = [])
+    public function map($elements, array $additionalFields = []): array
     {
         $out = [];
         foreach ($elements as $element) {
@@ -100,7 +100,7 @@ class ElementMapper
 
         // This is stored in the Elements datastore (prefixed with an underscore)
         if (in_array(static::DATASTORE_DOWNLOADS, $additionalFields)) {
-            $arr['downloads'] = (int) $element->_downloads;
+            $arr['downloads'] = (int) $element->downloads;
         }
 
         if (in_array(static::ICON, $additionalFields)) {

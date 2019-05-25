@@ -13,13 +13,13 @@ use Youkok\Biz\Services\User\UserService;
 
 class Frontpage extends BaseProcessorView
 {
-    /** @var \Youkok\Biz\Services\FrontpageService */
+    /** @var FrontpageService */
     private $frontpageService;
 
-    /** @var \Youkok\Biz\Services\Mappers\CourseMapper */
+    /** @var CourseMapper */
     private $courseMapper;
 
-    /** @var \Youkok\Biz\Services\Mappers\ElementMapper */
+    /** @var ElementMapper */
     private $elementMapper;
 
     public function __construct(ContainerInterface $container)

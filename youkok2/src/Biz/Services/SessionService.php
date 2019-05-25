@@ -3,6 +3,8 @@ namespace Youkok\Biz\Services;
 
 use Carbon\Carbon;
 
+use Youkok\Biz\Exceptions\CookieNotFoundException;
+use Youkok\Biz\Exceptions\SessionNotFoundException;
 use Youkok\Common\Controllers\SessionController;
 use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
@@ -10,133 +12,75 @@ use Youkok\Common\Models\Session;
 use Youkok\Common\Utilities\CookieHelper;
 use Youkok\Helpers\Utilities;
 
+// TODO: Move attributes into Session itself
 class SessionService
 {
-    const MODE_ADD = 0;
-    const MODE_OVERWRITE = 1;
-
     const SESSION_TOKEN_LENGTH = 100;
-    const SESSION_LIFE_TIME = 60 * 60 * 24 * 120; // 120 days
 
-    private $data;
-    private $hash;
-    private $dirty;
+    private $session;
 
-    public function init($loadSessions = true): bool
+    public function init(): void
     {
         // This is the default session data array
-        $this->data = [
-            'most_popular_element' => MostPopularElement::MONTH,
-            'most_popular_course' => MostPopularCourse::MONTH,
-            'admin' => false
-        ];
 
-        $this->hash = null;
-        $this->dirty = false;
 
-        if ($loadSessions) {
-            return $this->loadSession();
-        }
-
-        return true;
+        $this->session = $this->loadSession();
     }
 
-    public function loadSession(): bool
+    private function loadSession(): Session
     {
-        $cookie = CookieHelper::getCookie('youkok2');
-        if ($cookie === null) {
+        try {
+            $hash = CookieHelper::getCookie('youkok2');
+            return SessionController::load($hash);
+        }
+        catch (CookieNotFoundException $exception) {
             return $this->createSession();
         }
-
-        $currentSession = $this->getSession($cookie);
-
-        if ($currentSession == null) {
+        catch (SessionNotFoundException $exception) {
             return $this->createSession();
         }
-
-        $this->data = array_replace_recursive($this->data, json_decode($currentSession->data, true));
-        $this->hash = $cookie;
-
-        return true;
     }
 
-    public function getSessionDataFromHash($hash): array
-    {
-        $currentSession = $this->getSession($hash);
-        if ($currentSession === null) {
-            return $this->data;
-        }
+    /**
+     * @param $hash
+     * @return array
+     * @throws SessionNotFoundException
+     */
 
-        return array_replace_recursive($this->data, json_decode($currentSession->data, true));
-    }
-
-    private function getSession($hash): ?Session
+    public function getSessionDataFromHash(string $hash): Session
     {
-        return Session::where('hash', $hash)->first();
+        return SessionController::load($hash);
     }
 
     public function getAllData(): array
     {
-        return $this->data;
+        return $this->session->data;
     }
 
     public function getData($key, $default = null)
     {
-        if (!isset($this->data[$key])) {
+        if (!isset($this->session->data[$key])) {
             return $default;
         }
 
-        return $this->data[$key];
+        return $this->session->data[$key];
     }
 
     public function isAdmin(): bool
     {
-        return isset($this->data['admin']) and $this->data['admin'];
+        return isset($this->session->data['admin']) and $this->session->data['admin'];
     }
 
     public function setData($key, $value): void
     {
-        // Mark session as dirty
-        $this->dirty = true;
-
         $this->data[$key] = $value;
     }
 
-    public function store($force = false): bool
+    public function store(): bool
     {
-        if (!$force and !$this->dirty) {
-            return false;
-        }
-
-        $currentSession = $this->getSession($this->hash);
-        if ($currentSession === null) {
-            // This should never happen, log error
-            $this->createSession();
-            return false;
-        }
-
         $currentSession->data = json_encode($this->data);
         $currentSession->last_updated = Carbon::now();
         return $currentSession->save();
-    }
-
-    public function update(): bool
-    {
-        $currentSession = $this->getSession($this->hash);
-        if ($currentSession === null) {
-            // It is more or less impossible that this happens...
-            return false;
-        }
-
-        $currentSession->last_updated = Carbon::now();
-        return $currentSession->save();
-    }
-
-    public function forceSetData($key, $value): bool
-    {
-        $this->setData($key, $value);
-
-        return $this->store(true);
     }
 
     public function deleteExpiredSessions()
@@ -144,17 +88,12 @@ class SessionService
         return SessionController::deleteExpiredSessions();
     }
 
-    private function createSession()
+    private function createSession(): Session
     {
-        $this->hash = Utilities::randomToken(self::SESSION_TOKEN_LENGTH);
+        $hash = Utilities::randomToken(self::SESSION_TOKEN_LENGTH);
 
-        CookieHelper::setCookie('youkok2', $this->hash, static::SESSION_LIFE_TIME);
+        CookieHelper::setCookie('youkok2', $hash, SessionController::SESSION_LIFE_TIME);
 
-        $session = new Session();
-        $session->hash = $this->hash;
-        $session->data = json_encode($this->data);
-        $session->last_updated = Carbon::now();
-        $session->expire = Carbon::createFromTimestamp(time() + static::SESSION_LIFE_TIME);
-        return $session->save();
+        return SessionController::create($hash);
     }
 }

@@ -4,19 +4,21 @@ namespace Youkok\Web\Views;
 use PHP_Timer;
 use Slim\Http\Response;
 use Psr\Container\ContainerInterface;
+use Slim\Views\Twig;
 use Youkok\Biz\Services\SessionService;
 
 class BaseView
 {
     protected $container;
 
-    /** @var \Slim\Views\Twig */
+    /** @var Twig */
     protected $view;
 
-    /** @var \Youkok\Biz\Services\SessionService */
+    /** @var SessionService */
     protected $sessionService;
 
-    protected $templateData;
+    /** @var array */
+    protected $templateData = [];
 
     public function __construct(ContainerInterface $container)
     {
@@ -57,6 +59,8 @@ class BaseView
             'HEADER_MENU' => 'home',
             'VIEW_NAME' => 'frontpage',
             'SEARCH_QUERY' => '',
+
+            'ADMIN' => $this->sessionService->isAdmin(),
         ];
     }
 
@@ -65,32 +69,13 @@ class BaseView
         $this->templateData['SITE_DATA'][$key] = $value;
     }
 
-    private function cleanUp()
-    {
-        $this->templateData['ADMIN'] = $this->sessionService->isAdmin();
-        $this->templateData['EXECUTION_TIME'] = PHP_Timer::secondsToTimeString(PHP_Timer::stop());
-
-        $stored = $this->sessionService->store();
-        if (!$stored) {
-            // Make sure we update the last_updated field in the database
-            $this->sessionService->update();
-        }
-    }
-
-    protected function returnResponse(Response $response): Response
-    {
-        $this->cleanUp();
-
-        return $response;
-    }
-
     protected function render(Response $response, $template, array $data = []): Response
     {
-        $this->cleanUp();
-
         return $this->view->render($response, $template, array_merge(
             $this->templateData,
-            $data
+            $data, [
+                'EXECUTION_TIME' => PHP_Timer::secondsToTimeString(PHP_Timer::stop())
+            ]
         ));
     }
 
@@ -132,7 +117,7 @@ class BaseView
                 'HEADER_MENU' => '',
                 'VIEW_NAME' => '404',
                 'SITE_DESCRIPTION' => 'Siden ble ikke funnet.',
-                'SITE_TITLE' => 'Siden ble ikke funnet'
+                'SITE_TITLE' => 'Siden ble ikke funnet',
             ]
         );
     }

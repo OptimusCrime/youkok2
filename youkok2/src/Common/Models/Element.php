@@ -30,6 +30,7 @@ class Element extends BaseModel
     protected $guarded = [''];
 
     private $parents;
+    private $downloads;
     private $childrenObjects;
 
     public function __construct(array $attributes = [])
@@ -37,6 +38,7 @@ class Element extends BaseModel
         parent::__construct($attributes);
 
         $this->parents = null;
+        $this->downloads = null;
     }
 
     public function getType(): string
@@ -135,25 +137,6 @@ class Element extends BaseModel
     }
 
     // TODO add parameter to fetch whatever attributes we'd like
-    private function getParentObj(): ?Element
-    {
-        $parents = $this->parents;
-        if ($parents === null) {
-            $parents = $this->getParents();
-        }
-
-        if ($parents === null or count($parents) === 0) {
-            return null;
-        }
-
-        if (count($parents) === 1) {
-            return $parents[0];
-        }
-
-        return $parents[count($parents) - 2];
-    }
-
-    // TODO add parameter to fetch whatever attributes we'd like
     private function getRootParent($all = false): ?Element
     {
         $parents = $this->getParents($all);
@@ -207,6 +190,16 @@ class Element extends BaseModel
         return $this->childrenObjects;
     }
 
+    public function setDownloads(int $downloads): void
+    {
+        $this->downloads = $downloads;
+    }
+
+    public function getDownloads(): int
+    {
+        return $this->downloads;
+    }
+
     public function __set($name, $value): void
     {
         if ($name === 'childrenObjects') {
@@ -228,7 +221,7 @@ class Element extends BaseModel
             'fullUri',
             'icon',
             'parents',
-            'parentObj',
+            'downloads',
             'rootParent',
             'addedPretty',
             'addedPrettyAll',
@@ -238,11 +231,6 @@ class Element extends BaseModel
 
     public function __get($key)
     {
-        $value = parent::__get($key);
-        if ($value !== null) {
-            return $value;
-        }
-
         switch ($key) {
             case 'courseCode':
                 return $this->getCourseCode();
@@ -254,8 +242,8 @@ class Element extends BaseModel
                 return $this->getIcon();
             case 'parents':
                 return $this->getParents();
-            case 'parentObj':
-                return $this->getParentObj();
+            case 'downloads':
+                return $this->getDownloads();
             case 'rootParent':
                 return $this->getRootParent();
             case 'rootParentAll':
@@ -266,9 +254,9 @@ class Element extends BaseModel
                 return $this->getAddedPrettyAll();
             case 'childrenObjects':
                 return $this->getChildrenObjects();
-            default:
-                return null;
         }
+
+        return parent::__get($key);
     }
 
     public static function fromIdVisible($id, $attributes = ['id', 'link', 'checksum']): Element
@@ -300,23 +288,35 @@ class Element extends BaseModel
         return $element;
     }
 
-    public static function fromIdAll($id, $attributes = ['id', 'link', 'checksum'])
+    public static function fromIdAll($id, $attributes = ['id', 'link', 'checksum']): Element
     {
         if (!isset($id) or !is_numeric($id)) {
-            return null;
+            throw new ElementNotFoundException();
         }
 
         $query = null;
         if ($attributes == Element::ATTRIBUTES_ALL) {
-            return Element
+            $element = Element
                 ::where('id', $id)
                 ->first();
+
+            if ($element === null) {
+                throw new ElementNotFoundException();
+            }
+
+            return $element;
         }
 
-        return Element
+        $element = Element
             ::select($attributes)
             ->where('id', $id)
             ->first();
+
+        if ($element === null) {
+            throw new ElementNotFoundException();
+        }
+
+        return $element;
     }
 
     public static function fromUriFileVisible($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'])

@@ -42,7 +42,7 @@ class CourseMapper
 
         // This is stored in the Elements datastore (prefixed with an underscore)
         if (in_array(static::DATASTORE_DOWNLOAD_ESTIMATE, $additionalFields)) {
-            $arr['download_estimate'] = (int) $element->_downloads;
+            $arr['download_estimate'] = $element->downloads;
         }
 
         return $arr;

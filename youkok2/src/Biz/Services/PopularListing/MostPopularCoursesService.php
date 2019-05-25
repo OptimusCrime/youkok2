@@ -121,7 +121,7 @@ class MostPopularCoursesService implements MostPopularInterface
         $elements = [];
         foreach ($result as $res) {
             $element = Element::fromIdVisible($res['id'], ['id', 'name', 'slug', 'uri', 'link', 'empty', 'parent']);
-            $element->_downloads = $res['downloads'];
+            $element->setDownloads($res['downloads']);
 
             $elements[] = $element;
         }

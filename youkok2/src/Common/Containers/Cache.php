@@ -9,7 +9,7 @@ class Cache implements ContainersInterface
 {
     public static function load(ContainerInterface $container): void
     {
-        $container['cache'] = function (): Redis {
+        $container['cache'] = function (): ?Redis {
             $cache = null;
 
             try {
@@ -18,6 +18,7 @@ class Cache implements ContainersInterface
 
                 return $cache;
             } catch (RedisException $e) {
+                // TODO
             }
 
             return $cache;

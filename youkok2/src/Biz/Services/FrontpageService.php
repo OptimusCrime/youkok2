@@ -92,7 +92,7 @@ class FrontpageService
         }
 
         // Update user preferences
-        $this->sessionService->forceSetData(UserService::USER_PREFERENCE_LOOKUP[$delta], $value);
+        $this->sessionService->setData(UserService::USER_PREFERENCE_LOOKUP[$delta], $value);
 
         // Return the new value
         if ($delta === UserService::DELTA_POST_POPULAR_ELEMENTS) {

@@ -5,6 +5,7 @@ use Psr\Container\ContainerInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use Youkok\Biz\Exceptions\SessionNotFoundException;
 use Youkok\Biz\Services\SessionService;
 use Youkok\Common\Utilities\CookieHelper;
 
@@ -29,9 +30,13 @@ class AdminAuthMiddleware
             return static::noAccess($response);
         }
 
-        $this->sessionService->init(false);
+        try {
+            $data = $this->sessionService->getSessionDataFromHash($hash);
+        }
+        catch (SessionNotFoundException $exception) {
+            return static::noAccess($response);
+        }
 
-        $data = $this->sessionService->getSessionDataFromHash($hash);
         if (!isset($data['admin']) or !$data['admin']) {
             return static::noAccess($response);
         }

@@ -1,9 +1,12 @@
 <?php
 namespace Youkok\Web\TwigPlugins;
 
+use Slim\Interfaces\RouterInterface;
+use Slim\Http\Request;
 use Twig_Extension;
 use Twig_SimpleFunction;
 
+use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\NumberFormatter;
 use Youkok\Helpers\Utilities;
 
@@ -12,7 +15,7 @@ class YoukokTwigExtension extends Twig_Extension
     private $router;
     private $request;
 
-    public function __construct($router, $request)
+    public function __construct(RouterInterface $router, Request $request)
     {
         $this->router = $router;
         $this->request = $request;
@@ -28,22 +31,18 @@ class YoukokTwigExtension extends Twig_Extension
         ];
     }
 
-    public function wholeNumberFormat($number): string
+    public function wholeNumberFormat(string $number): string
     {
         return NumberFormatter::format($number);
     }
 
-    public function postedAt($dateTime): string
+    public function postedAt(string $dateTime): string
     {
         return Utilities::clean($dateTime);
     }
 
-    public function elementUrl($element = null): string
+    public function elementUrl(Element $element): string
     {
-        if ($element === null) {
-            return '';
-        }
-
         if ($element->link !== null) {
             return $this->router->pathFor('redirect', [
                 'id' => $element->id

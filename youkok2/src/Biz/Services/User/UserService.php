@@ -7,9 +7,6 @@ use Youkok\Enums\MostPopularElement;
 
 class UserService
 {
-    const FAVORITES = 'favorites';
-    const HISTORY = 'history';
-
     const DELTA_POST_POPULAR_ELEMENTS = 'DELTA_POST_POPULAR_ELEMENTS';
     const DELTA_POST_POPULAR_COURSES = 'DELTA_POST_POPULAR_COURSES';
 

@@ -9,7 +9,7 @@ class BaseProcessorView extends BaseView
 {
     protected function output(Response $response, array $object)
     {
-        $this->sessionService->store(true);
+        $this->sessionService->store();
 
         return $response->withHeader('Content-Type', 'application/json')->withJson($object);
     }

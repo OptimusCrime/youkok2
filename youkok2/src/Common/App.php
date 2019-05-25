@@ -3,6 +3,8 @@ namespace Youkok\Common;
 
 use Slim\App as Slim;
 
+use Slim\Exception\MethodNotAllowedException;
+use Slim\Exception\NotFoundException;
 use Youkok\Common\Containers\Cache;
 use Youkok\Common\Containers\Database;
 use Youkok\Common\Containers\InternalServerError;
@@ -46,8 +48,11 @@ class App
     {
         $this->setup();
 
-        // TODO logging here
-        $this->app->run();
+        try {
+            $this->app->run();
+        } catch (\Exception $e) {
+            // TODO
+        }
     }
 
     public function runJobs($mode = JobService::CRON_JOB, $code = null): void
