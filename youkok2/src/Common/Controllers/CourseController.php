@@ -67,7 +67,7 @@ class CourseController
         return Element::fromIdVisible($currentObject->id, ['id', 'name', 'slug']);
     }
 
-    public static function getCourseFromUri($uri)
+    public static function getCourseFromUri($uri): Element
     {
         $element = Element::where('slug', $uri)
             ->where('parent', null)

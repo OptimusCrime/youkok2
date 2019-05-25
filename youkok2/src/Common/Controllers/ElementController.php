@@ -11,12 +11,12 @@ class ElementController
     const SORT_TYPE_ORGANIZED = 0;
     const SORT_TYPE_AGE = 1;
 
-    public static function getNonDirectoryFromUri($uri)
+    public static function getNonDirectoryFromUri(string $uri)
     {
         return static::getAnyFromUri($uri, Element::NON_DIRECTORY);
     }
 
-    public static function getDirectoryFromUri($uri)
+    public static function getDirectoryFromUri(string $uri): Element
     {
         return static::getAnyFromUri($uri, Element::DIRECTORY);
     }
@@ -77,7 +77,7 @@ class ElementController
         $rootParent->save();
     }
 
-    private static function getAnyFromUri($uri, $type)
+    private static function getAnyFromUri(string $uri, string $type): Element
     {
         $cleanUri = preg_replace("/[^A-Za-z0-9 ]/", '', $uri);
 

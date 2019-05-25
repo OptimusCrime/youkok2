@@ -6,7 +6,7 @@ use Slim\Http\Request;
 
 class Flat extends BaseView
 {
-    public function help(Request $request, Response $response)
+    public function help(Request $request, Response $response): Response
     {
         return $this->render(
             $response,
@@ -20,7 +20,7 @@ class Flat extends BaseView
         );
     }
 
-    public function about(Request $request, Response $response)
+    public function about(Request $request, Response $response): Response
     {
         return $this->render(
             $response,
@@ -34,7 +34,7 @@ class Flat extends BaseView
         );
     }
 
-    public function terms(Request $request, Response $response)
+    public function terms(Request $request, Response $response): Response
     {
         return $this->render(
             $response,
@@ -49,7 +49,7 @@ class Flat extends BaseView
         );
     }
 
-    public function changelog(Request $request, Response $response)
+    public function changelog(Request $request, Response $response): Response
     {
         return $this->render(
             $response->withHeader('Content-Type', 'text/plain; charset=utf-8'),

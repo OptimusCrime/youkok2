@@ -13,6 +13,7 @@ import {
 } from './constants';
 import {
   DELTA_MOST_POPULAR_MONTH,
+  DELTA_POST_POPULAR_COURSES,
   DELTA_POST_POPULAR_ELEMENTS
 } from "../../consts";
 
@@ -39,9 +40,8 @@ const defaultState = {
   courses_most_popular_loading: false,
 
   user_preferences: {
-    // These have to be strings...
-    DELTA_POST_POPULAR_COURSES: DELTA_MOST_POPULAR_MONTH,
-    DELTA_POST_POPULAR_ELEMENTS: DELTA_MOST_POPULAR_MONTH,
+    [DELTA_POST_POPULAR_COURSES]: DELTA_MOST_POPULAR_MONTH,
+    [DELTA_POST_POPULAR_ELEMENTS]: DELTA_MOST_POPULAR_MONTH,
   },
 };
 
@@ -109,7 +109,7 @@ const frontpage = (state = defaultState, action) => {
 
           user_preferences: {
             ...state.user_preferences,
-            DELTA_POST_POPULAR_ELEMENTS: action.value
+            [DELTA_POST_POPULAR_ELEMENTS]: action.value
           }
         };
       }
@@ -121,7 +121,7 @@ const frontpage = (state = defaultState, action) => {
 
         user_preferences: {
           ...state.user_preferences,
-          DELTA_POST_POPULAR_COURSES: action.value
+          [DELTA_POST_POPULAR_COURSES]: action.value
         }
       };
 

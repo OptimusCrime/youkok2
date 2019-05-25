@@ -1,5 +1,4 @@
 <?php
-
 namespace Youkok\Helpers;
 
 use Monolog\Logger;
@@ -15,6 +14,7 @@ class SettingsParser
 
                 'base_dir' => getenv('BASE_DIRECTORY'),
 
+                // TODO handle dev/prod
                 'logger' => [
                     'name' => getenv('LOGGER_NAME'),
                     'path' => getenv('LOGGER_PATH'),

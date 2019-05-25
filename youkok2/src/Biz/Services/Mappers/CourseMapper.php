@@ -30,8 +30,8 @@ class CourseMapper
     {
         $arr = [
             'id' => $element->id,
-            'courseCode' => $element->courseCode,
-            'courseName' => $element->courseName,
+            'courseCode' => $element->getCourseCode(),
+            'courseName' => $element->getCourseName(),
             'url' => $this->urlService->urlForCourse($element),
             'type' => Element::COURSE
         ];

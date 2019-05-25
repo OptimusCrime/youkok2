@@ -2,6 +2,7 @@
 
 namespace Youkok\Biz\Services;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Common\Controllers\CourseController;
 use Youkok\Common\Controllers\ElementController;
@@ -19,7 +20,7 @@ class ArchiveService
     /**
      * @param string $id
      * @return array
-     * @throws \Youkok\Biz\Exceptions\ElementNotFoundException
+     * @throws ElementNotFoundException
      */
 
     public function get(string $id): array
@@ -36,6 +37,12 @@ class ArchiveService
         ];
     }
 
+    /**
+     * @param string $course
+     * @param string|null $params
+     * @return |null
+     * @throws ElementNotFoundException
+     */
     public function getArchiveElementFromUri(string $course, ?string $params)
     {
         $element = null;

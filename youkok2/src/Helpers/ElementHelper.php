@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Helpers;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\UriCleaner;
 
@@ -23,26 +24,26 @@ class ElementHelper
     public static function siteTitleFor(Element $element): string
     {
         if ($element->isCourse()) {
-            return 'Bidrag for ' . $element->courseCode . ' - ' . $element->courseName;
+            return 'Bidrag for ' . $element->getCourseCode() . ' - ' . $element->getCourseName();
         }
 
-        return 'Bidrag i ' . $element->name . ' for ' . $element->rootParent->courseCode . ' - ' . $element->rootParent->courseName;
+        return 'Bidrag i ' . $element->name . ' for ' . $element->rootParent->getCourseCode() . ' - ' . $element->rootParent->courseName;
     }
 
     public static function siteDescriptionFor(Element $element): string
     {
         if ($element->isCourse()) {
-            return 'Bidrag for ' . $element->courseCode . ' - ' . $element->courseName . ' fra Youkok2, den beste kokeboka på nettet.';
+            return 'Bidrag for ' . $element->getCourseCode() . ' - ' . $element->getCourseName() . ' fra Youkok2, den beste kokeboka på nettet.';
         }
 
         return static::siteDescriptionFor($element->rootParent);
     }
 
-    public static function constructUri($id): ?string
+    public static function constructUri($id): string
     {
         $element = Element::fromIdAll($id, ['id', 'link', 'slug', 'parent']);
         if ($element === null) {
-            return null;
+            throw new ElementNotFoundException();
         }
 
         if ($element->isLink()) {
@@ -74,6 +75,10 @@ class ElementHelper
 
         // Filter the fragments
         $cleanFragments = UriCleaner::cleanFragments($fragments);
+
+        if (count($cleanFragments) === 0) {
+            throw new ElementNotFoundException();
+        }
 
         return implode('/', array_reverse($cleanFragments));
     }

@@ -36,8 +36,8 @@ class Archive extends BaseView
 
             $this->setSiteData('archive_id', $element->id);
             $this->setSiteData('archive_parents', $parents);
-            $this->setSiteData('archive_title', $element->isCourse() ? $element->courseCode : $element->name);
-            $this->setSiteData('archive_sub_title', $element->isCourse() ? $element->courseName : null);
+            $this->setSiteData('archive_title', $element->isCourse() ? $element->getCourseCode() : $element->name);
+            $this->setSiteData('archive_sub_title', $element->isCourse() ? $element->getCourseName() : null);
             $this->setSiteData('archive_url_frontpage', $this->router->pathFor('home'));
             $this->setSiteData('archive_url_courses', $this->router->pathFor('courses'));
 
@@ -50,6 +50,7 @@ class Archive extends BaseView
             ]);
         }
         catch (ElementNotFoundException $exception) {
+            die('in here?');
             // TODO log
             return $this->render404($response);
         }

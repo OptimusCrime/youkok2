@@ -104,7 +104,7 @@ class ElementMapper
         }
 
         if (in_array(static::ICON, $additionalFields)) {
-            $arr['icon'] = $element->icon;
+            $arr['icon'] = $element->getIcon();
         }
 
         if (in_array(static::KEEP_DOWNLOADED_TIME, $additionalFields)) {

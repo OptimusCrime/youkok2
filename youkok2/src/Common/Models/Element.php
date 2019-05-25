@@ -56,13 +56,13 @@ class Element extends BaseModel
         return Element::FILE;
     }
 
-    private function getCourseCode(): string
+    public function getCourseCode(): string
     {
         $courseArr = $this->getCourseArray();
         return $courseArr[0];
     }
 
-    private function getCourseName(): string
+    public function getCourseName(): string
     {
         $courseArr = $this->getCourseArray();
 
@@ -82,13 +82,15 @@ class Element extends BaseModel
         return explode('||', $this->name);
     }
 
-    private function getFullUri(): ?string
+    public function getFullUri(): string
     {
         if ($this->uri !== null and strlen($this->uri) > 0) {
             return $this->uri;
         }
 
-        return ElementHelper::constructUri($this->id);
+        $this->uri = ElementHelper::constructUri($this->id);
+
+        return $this->uri;
     }
 
     public function isLink(): bool
@@ -147,9 +149,8 @@ class Element extends BaseModel
         return $parents[0];
     }
 
-    private function getIcon(): string
+    public function getIcon(): string
     {
-
         if ($this->directory) {
             return 'folder.png';
         }
@@ -178,7 +179,7 @@ class Element extends BaseModel
 
     private function getAddedPrettyAll(): string
     {
-        return Utilities::prettifySQLDate($this->added, false);
+        return Utilities::prettifySQLDateTime($this->added);
     }
 
     public function getChildrenObjects(): array
@@ -216,8 +217,6 @@ class Element extends BaseModel
         }
 
         return in_array($name, [
-            'courseCode',
-            'courseName',
             'fullUri',
             'icon',
             'parents',
@@ -229,15 +228,11 @@ class Element extends BaseModel
         ]);
     }
 
+
+    // TODO: remove this?
     public function __get($key)
     {
         switch ($key) {
-            case 'courseCode':
-                return $this->getCourseCode();
-            case 'courseName':
-                return $this->getCourseName();
-            case 'fullUri':
-                return $this->getFullUri();
             case 'icon':
                 return $this->getIcon();
             case 'parents':

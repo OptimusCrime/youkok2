@@ -9,7 +9,7 @@ use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
-use Youkok\Biz\Services\User\UserService;
+use Youkok\Common\Models\Session;
 
 class Frontpage extends BaseProcessorView
 {
@@ -67,13 +67,20 @@ class Frontpage extends BaseProcessorView
     {
         $params = json_decode($request->getBody(), true);
 
-        $delta = isset($params[FrontpageService::FRONTPAGE_PUT_DELTA_PARAM]) ? $params[FrontpageService::FRONTPAGE_PUT_DELTA_PARAM] : null;
-        $value = isset($params[FrontpageService::FRONTPAGE_PUT_VALUE_PARAM]) ? $params[FrontpageService::FRONTPAGE_PUT_VALUE_PARAM] : null;
+        $delta = $params[FrontpageService::FRONTPAGE_PUT_DELTA_PARAM] ?? null;
+        $value = $params[FrontpageService::FRONTPAGE_PUT_VALUE_PARAM] ?? null;
+
+        if (!is_string($delta) || !is_string($value)) {
+            return $response->withStatus(400);
+        }
 
         try {
             $output = $this->frontpageService->put($delta, $value);
 
-            return $this->output($response, $this->mapUpdateMostPopular($output, $delta, $value));
+            return $this->output(
+                $response,
+                $this->mapUpdateMostPopular($output, $delta, $value)
+            );
         }
         catch (InvalidRequestException $e) {
             // TODO log
@@ -108,7 +115,7 @@ class Frontpage extends BaseProcessorView
             'value' => $value,
         ];
 
-        if ($delta === UserService::DELTA_POST_POPULAR_ELEMENTS) {
+        if ($delta === Session::KEY_MOST_POPULAR_ELEMENT) {
             $ret['data'] = $this->mapElementsMostPopular($output);
         }
         else {

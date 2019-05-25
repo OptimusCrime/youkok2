@@ -19,7 +19,7 @@ class CourseListService
             ->get();
 
         foreach ($courses as $course) {
-            $letter = substr($course->courseCode, 0, 1);
+            $letter = substr($course->getCourseCode(), 0, 1);
 
             if (!isset($collection[$letter])) {
                 $collection[$letter] = [];

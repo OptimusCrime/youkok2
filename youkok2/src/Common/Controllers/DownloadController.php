@@ -4,25 +4,26 @@ namespace Youkok\Common\Controllers;
 use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as DB;
 
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Common\Models\Download;
 use Youkok\Common\Models\Element;
 use Youkok\Enums\MostPopularElement;
 
 class DownloadController
 {
-    public static function getDownloadsForId($id)
+    public static function getDownloadsForId(int $id): int
     {
         return Download::select(DB::raw("COUNT(`id`) as `result`"))
             ->where('resource', $id)
             ->count();
     }
 
-    public static function getNumberOfDownloads()
+    public static function getNumberOfDownloads(): int
     {
         return Download::count();
     }
 
-    public static function getLatestDownloads($limit)
+    public static function getLatestDownloads(int $limit)
     {
         return DB::table('download')
             ->select(['downloaded_time', 'element.*'])
@@ -32,7 +33,7 @@ class DownloadController
             ->get();
     }
 
-    public static function getMostPopularElementsFromDelta(int $delta)
+    public static function getMostPopularElementsFromDelta(string $delta)
     {
         $query = DB::table('download')
             ->select('download.resource as id', DB::raw('COUNT(download.id) as download_count'))
@@ -53,7 +54,7 @@ class DownloadController
             ->get();
     }
 
-    public static function getMostPopularCoursesFromDelta(int $delta, int $limit)
+    public static function getMostPopularCoursesFromDelta(string $delta, int $limit)
     {
         $result = static::summarizeDownloads(static::getMostPopularElementsFromDelta($delta));
 
@@ -136,7 +137,7 @@ class DownloadController
         return $newResult;
     }
 
-    private static function getMostPopularElementQueryFromDelta($delta = MostPopularElement::ALL): Carbon
+    private static function getMostPopularElementQueryFromDelta(string $delta): Carbon
     {
         switch ($delta) {
             case MostPopularElement::DAY:
@@ -149,7 +150,7 @@ class DownloadController
                 return Carbon::now()->subYear();
             case MostPopularElement::ALL:
             default:
-                throw new \Exception('Invalid delta');
+                throw new GenericYoukokException('Invalid delta');
         }
     }
 }

@@ -8,6 +8,8 @@ const NORWEGIAN_MONTHS = [
     'okt', 'nov', 'des'
 ];
 
+const KEYSPACE = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 class Utilities
 {
     public static function numberFormat($num): string
@@ -17,44 +19,41 @@ class Utilities
 
     public static function randomToken($length): string
     {
-        $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
         $str = '';
-        $max = mb_strlen($keyspace, '8bit') - 1;
+        $max = mb_strlen(KEYSPACE, '8bit') - 1;
         for ($i = 0; $i < $length; ++$i) {
-            $str .= $keyspace[random_int(0, $max)];
+            $str .= KEYSPACE[random_int(0, $max)];
         }
         return $str;
     }
 
-    public static function prettifySQLDate($d, $excludeTime = true): string
+    public static function prettifySQLDate(string $input): string
     {
-        $split1 = explode(' ', $d);
-        $split2 = explode('-', $split1[0]);
+        $date = explode(' ', $input)[0];
+        list($year, $month, $day) = array_map('intval', explode('-', $date));
 
-        $returnString = $split2[2] . '. ' . NORWEGIAN_MONTHS[$split2[1] - 1] . ' ' . $split2[0];
+        $returnString = $day . '. ' . NORWEGIAN_MONTHS[$month - 1] . ' ' . $year;
 
-        if ($excludeTime) {
-            return $returnString;
-        }
-
-        return $returnString . ' @ ' . $split1[1];
+        return $returnString;
     }
 
-    public static function clean($d, $include_time = true): string
+    public static function prettifySQLDateTime(string $input): string
     {
-        if ($d == 'CURRENT_TIMESTAMP') {
-            $d = date('Y-m-d  G:i:s');
+        list($date, $time) = explode(' ', $input);
+
+        $prettyDate = static::prettifySQLDate($date);
+
+        return $prettyDate . ' @ ' . $time;
+    }
+
+    public static function clean(string $input): string
+    {
+        if ($input === 'CURRENT_TIMESTAMP') {
+            $input = date('Y-m-d G:i:s');
         }
 
-        $split1 = explode(' ', $d);
-        $split2 = explode('-', $split1[0]);
-
-        return ((int) $split2[2])
-            . '. '
-            . NORWEGIAN_MONTHS[$split2[1] - 1]
-            . ' '
-            . $split2[0]
-            . ($include_time ? (' @ ' . $split1[1]) : '');
+        return static::prettifySQLDateTime($input);
     }
 
 }

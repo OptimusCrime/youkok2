@@ -66,8 +66,8 @@ class AutocompleteService
     {
         return [
             'id' => $course->id,
-            'name' => $course->courseName,
-            'code' => $course->courseCode,
+            'name' => $course->getCourseName(),
+            'code' => $course->getCourseCode(),
             'url' => $this->urlService->urlForCourse($course)
         ];
     }

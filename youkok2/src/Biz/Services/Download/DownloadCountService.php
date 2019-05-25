@@ -14,7 +14,7 @@ class DownloadCountService
         $this->cacheService = $cacheService;
     }
 
-    public function getDownloadsForElement(Element $element)
+    public function getDownloadsForElement(Element $element): int
     {
         if ($element->getType() === Element::DIRECTORY) {
             return 0;
@@ -27,7 +27,7 @@ class DownloadCountService
             return (int) $downloads;
         }
 
-        $downloads = (int) DownloadController::getDownloadsForId($element->id);
+        $downloads = DownloadController::getDownloadsForId($element->id);
 
         $this->cacheService->setDownloadsForId($element->id, $downloads);
 

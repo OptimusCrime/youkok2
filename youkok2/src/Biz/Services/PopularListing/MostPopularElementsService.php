@@ -15,7 +15,7 @@ class MostPopularElementsService implements MostPopularInterface
         $this->cacheService = $cacheService;
     }
 
-    public function fromDelta($delta, $limit)
+    public function fromDelta(string $delta, int $limit)
     {
         $ids = $this->cacheService->getMostPopularElementsFromDelta($delta, $limit);
         if (empty($ids)) {

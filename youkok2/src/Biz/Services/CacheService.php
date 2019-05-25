@@ -13,14 +13,14 @@ class CacheService
         $this->cache = $cache;
     }
 
-    public function getMostPopularElementsFromDelta($delta, $limit)
+    public function getMostPopularElementsFromDelta(string $delta, int $limit)
     {
         $key = CacheKeyGenerator::keyForMostPopularElementsForDelta($delta);
 
         return $this->getSortedRangeByKey($key, $limit);
     }
 
-    public function getMostPopularCoursesFromDelta($delta)
+    public function getMostPopularCoursesFromDelta(string $delta)
     {
         $key = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
         return $this->getCacheByKey($key);
@@ -43,16 +43,23 @@ class CacheService
         $this->cache->zIncrBy($setKey, $increase, $id);
     }
 
-    public function getDownloadsForId($id)
+    public function getDownloadsForId(int $id): ?int
     {
         if ($this->cache === null) {
             return null;
         }
 
-        return $this->cache->get(CacheKeyGenerator::keyForElementDownloads($id));
+        $downloads = $this->cache->get(CacheKeyGenerator::keyForElementDownloads($id));
+
+        // Redis returns false for null values for unknown reasons
+        if ($downloads === false) {
+            return null;
+        }
+
+        return (int) $downloads;
     }
 
-    public function setDownloadsForId($id, $downloads)
+    public function setDownloadsForId(int $id, int $downloads): void
     {
         if ($this->cache === null) {
             return null;
@@ -61,12 +68,12 @@ class CacheService
         $this->setByKey(CacheKeyGenerator::keyForElementDownloads($id), $downloads);
     }
 
-    public function increaseDownloadsForId($id)
+    public function increaseDownloadsForId(int $id): void
     {
         $downloads = $this->getDownloadsForId($id);
 
         // This is just a guard, and should never have to happen
-        if ($downloads === null || $downloads === false) {
+        if ($downloads === null) {
             $downloads = 0;
         }
 
@@ -85,7 +92,7 @@ class CacheService
         }
     }
 
-    private function getSortedRangeByKey($key, $limit, $offset = 0)
+    private function getSortedRangeByKey(string $key, int $limit, int $offset = 0): array
     {
         if ($this->cache === null) {
             return [];
@@ -100,6 +107,7 @@ class CacheService
         ]);
     }
 
+    // TODO: WTF, this methods returns string but also array??
     private function getCacheByKey($key)
     {
         if ($this->cache === null) {

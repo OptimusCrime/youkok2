@@ -25,7 +25,7 @@ class MostPopularCoursesService implements MostPopularInterface
         $this->cacheService = $cacheService;
     }
 
-    public function fromDelta($delta, $limit = null)
+    public function fromDelta(string $delta, $limit = null)
     {
         $result = $this->cacheService->getMostPopularCoursesFromDelta($delta);
         if (empty($result)) {
@@ -55,7 +55,7 @@ class MostPopularCoursesService implements MostPopularInterface
         }
     }
 
-    private function refreshForDelta($delta)
+    private function refreshForDelta(string $delta)
     {
         $courses = DownloadController::getMostPopularCoursesFromDelta($delta, static::MAX_COURSES_TO_FETCH);
         $setKey = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);

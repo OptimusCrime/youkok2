@@ -3,12 +3,12 @@
 namespace Youkok\Biz\Services;
 
 use Youkok\Biz\Exceptions\InvalidRequestException;
-use Youkok\Biz\Services\User\UserService;
 use Youkok\Common\Controllers\CourseController;
 use Youkok\Common\Controllers\DownloadController;
 use Youkok\Common\Controllers\ElementController;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
+use Youkok\Common\Models\Session;
 use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
 
@@ -24,35 +24,20 @@ class FrontpageService
     private $popularCoursesProcessor;
     private $popularElementsProcessor;
 
-    private $userService;
-
     public function __construct(
         SessionService $sessionService,
-
         MostPopularCoursesService $popularCoursesProcessor,
-        MostPopularElementsService $popularElementsProcessor,
-
-        UserService $userService
+        MostPopularElementsService $popularElementsProcessor
     ) {
         $this->sessionService = $sessionService;
 
         $this->popularCoursesProcessor = $popularCoursesProcessor;
         $this->popularElementsProcessor = $popularElementsProcessor;
-
-        $this->userService = $userService;
     }
 
     public function get()
     {
-        $userPreferenceMostPopularElement = $this->userService->getUserMostPopularPreference(
-            UserService::DELTA_POST_POPULAR_ELEMENTS,
-            MostPopularElement::ALL
-        );
-
-        $userPreferenceMostPopularCourse = $this->userService->getUserMostPopularPreference(
-            UserService::DELTA_POST_POPULAR_COURSES,
-            MostPopularCourse::ALL
-        );
+        $session = $this->sessionService->getSession();
 
         return [
             'number_files' => ElementController::getNumberOfVisibleFiles(),
@@ -64,40 +49,42 @@ class FrontpageService
             'last_downloaded' => DownloadController::getLatestDownloads(static::SERVICE_LIMIT),
 
             'elements_most_popular' => $this->popularElementsProcessor->fromDelta(
-                $userPreferenceMostPopularElement,
+                $session->getMostPopularElement(),
                 static::SERVICE_LIMIT
             ),
 
             'courses_most_popular' => $this->popularCoursesProcessor->fromDelta(
-                $userPreferenceMostPopularCourse,
+                $session->getMostPopularCourse(),
                 static::SERVICE_LIMIT
             ),
 
-            'user_preferences' => $this->userService->getUserPreferences(),
+            'user_preferences' => $session->getUserPreferences(),
         ];
     }
 
-    public function put($delta, $value)
+    public function put(string $delta, string $value)
     {
-        if (!in_array($delta, [UserService::DELTA_POST_POPULAR_ELEMENTS, UserService::DELTA_POST_POPULAR_COURSES])) {
+        if (!in_array($delta, [Session::KEY_MOST_POPULAR_ELEMENT, Session::KEY_MOST_POPULAR_COURSE])) {
             throw new InvalidRequestException();
         }
 
-        if ($delta === UserService::DELTA_POST_POPULAR_ELEMENTS && !in_array($value, MostPopularElement::all())) {
+        if ($delta === Session::KEY_MOST_POPULAR_ELEMENT && !in_array($value, MostPopularElement::all())) {
             throw new InvalidRequestException();
         }
 
-        if ($delta === UserService::DELTA_POST_POPULAR_COURSES && !in_array($value, MostPopularCourse::all())) {
+        if ($delta === Session::KEY_MOST_POPULAR_COURSE && !in_array($value, MostPopularCourse::all())) {
             throw new InvalidRequestException();
         }
 
-        // Update user preferences
-        $this->sessionService->setData(UserService::USER_PREFERENCE_LOOKUP[$delta], $value);
+        $session = $this->sessionService->getSession();
 
-        // Return the new value
-        if ($delta === UserService::DELTA_POST_POPULAR_ELEMENTS) {
+        if ($delta === Session::KEY_MOST_POPULAR_ELEMENT) {
+            $session->setMostPopularElement($value);
+
             return $this->popularElementsProcessor->fromDelta($value, static::SERVICE_LIMIT);
         }
+
+        $session->setMostPopularCourse($value);
 
         return $this->popularCoursesProcessor->fromDelta($value, static::SERVICE_LIMIT);
     }

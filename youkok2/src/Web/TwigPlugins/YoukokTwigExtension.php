@@ -51,7 +51,7 @@ class YoukokTwigExtension extends Twig_Extension
 
         if ($element->checksum !== null) {
             return $this->router->pathFor('download', [
-                'params' => $element->fullUri
+                'params' => $element->getFullUri()
             ]);
         }
 
@@ -59,7 +59,7 @@ class YoukokTwigExtension extends Twig_Extension
 
         return $this->router->pathFor('archive', [
             'course' => $element->id, // TODO
-            'params' => $element->fullUri
+            'params' => $element->getFullUri()
         ]);
     }
 

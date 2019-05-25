@@ -23,7 +23,6 @@ use Youkok\Biz\Services\SearchRedirectService;
 use Youkok\Biz\Services\SessionService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
 use Youkok\Biz\Services\UrlService;
-use Youkok\Biz\Services\User\UserService;
 
 class Services implements ContainersInterface
 {
@@ -47,8 +46,7 @@ class Services implements ContainersInterface
             return new FrontpageService(
                 $container->get(SessionService::class),
                 $container->get(MostPopularCoursesService::class),
-                $container->get(MostPopularElementsService::class),
-                $container->get(UserService::class)
+                $container->get(MostPopularElementsService::class)
             );
         };
 
@@ -78,12 +76,6 @@ class Services implements ContainersInterface
         $container[DownloadFileInfoService::class] = function (ContainerInterface $container): DownloadFileInfoService {
             return new DownloadFileInfoService(
                 $container->get(UpdateDownloadsService::class)
-            );
-        };
-
-        $container[UserService::class] = function (ContainerInterface $container): UserService {
-            return new UserService(
-                $container->get(SessionService::class)
             );
         };
 

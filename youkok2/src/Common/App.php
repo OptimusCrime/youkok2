@@ -3,8 +3,6 @@ namespace Youkok\Common;
 
 use Slim\App as Slim;
 
-use Slim\Exception\MethodNotAllowedException;
-use Slim\Exception\NotFoundException;
 use Youkok\Common\Containers\Cache;
 use Youkok\Common\Containers\Database;
 use Youkok\Common\Containers\InternalServerError;
@@ -51,6 +49,7 @@ class App
         try {
             $this->app->run();
         } catch (\Exception $e) {
+            die('wtf?');
             // TODO
         }
     }

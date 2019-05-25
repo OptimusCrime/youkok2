@@ -12,6 +12,7 @@ class InternalServerError implements ContainersInterface
     {
         $container['errorHandler'] = function (ContainerInterface $container) {
             return function (Request $request, Response $response, Exception $exception) use ($container) {
+                die('in here?');
                 if (getenv('DEV') === '1') {
                     var_dump(get_class($exception));
                     var_dump($exception->getMessage());

@@ -14,10 +14,10 @@ class MostPopular extends BaseProcessorView
 {
     const SERVICE_LIMIT = 10;
 
-    /** @var \Youkok\Biz\Services\PopularListing\MostPopularElementsService */
+    /** @var MostPopularElementsService */
     private $mostPopularElementsService;
 
-    /** @var \Youkok\Biz\Services\Mappers\ElementMapper */
+    /** @var ElementMapper */
     private $elementMapper;
 
     public function __construct(ContainerInterface $container)
@@ -28,14 +28,14 @@ class MostPopular extends BaseProcessorView
         $this->elementMapper = $container->get(ElementMapper::class);
     }
 
-    public function get(Request $request, Response $response)
+    public function get(Request $request, Response $response): Response
     {
         return $this->output($response, [
             'data' => $this->getMostPopularElements()
         ]);
     }
 
-    private function getMostPopularElements()
+    private function getMostPopularElements(): array
     {
         $mostPopular = $this->mostPopularElementsService->fromDelta(MostPopularElement::MONTH, static::SERVICE_LIMIT);
 

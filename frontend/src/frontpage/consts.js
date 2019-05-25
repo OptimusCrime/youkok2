@@ -1,5 +1,5 @@
-export const DELTA_POST_POPULAR_COURSES = 'DELTA_POST_POPULAR_COURSES';
-export const DELTA_POST_POPULAR_ELEMENTS = 'DELTA_POST_POPULAR_ELEMENTS';
+export const DELTA_POST_POPULAR_COURSES = 'most_popular_course';
+export const DELTA_POST_POPULAR_ELEMENTS = 'most_popular_element';
 
 export const DELTA_MOST_POPULAR_TODAY = 'DAY';
 export const DELTA_MOST_POPULAR_WEEK = 'WEEK';

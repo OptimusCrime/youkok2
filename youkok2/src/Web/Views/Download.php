@@ -13,9 +13,10 @@ use Youkok\Common\Controllers\ElementController;
 
 class Download extends BaseView
 {
-    /** @var \Youkok\Biz\Services\Download\DownloadFileInfoService */
+    /** @var DownloadFileInfoService */
     private $downloadService;
 
+    /** @var UpdateDownloadsService */
     private $updateDownloadsProcessor;
 
     public function __construct(ContainerInterface $container)

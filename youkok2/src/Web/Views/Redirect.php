@@ -5,12 +5,13 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 use Psr\Container\ContainerInterface;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
 
 class Redirect extends BaseView
 {
-    /** @var \Youkok\Biz\Services\Download\UpdateDownloadsService */
+    /** @var UpdateDownloadsService */
     private $updateDownloadsProcessor;
 
     public function __construct(ContainerInterface $container)
@@ -20,16 +21,22 @@ class Redirect extends BaseView
         $this->updateDownloadsProcessor = $container->get(UpdateDownloadsService::class);
     }
 
-    public function view(Request $request, Response $response, array $args)
+    public function view(Request $request, Response $response, array $args): Response
     {
-        $element = Element::fromIdVisible($args['id']);
-        if ($element === null or $element->link === null) {
+        try {
+            $element = Element::fromIdVisible($args['id']);
+
+            if ($element->link === null) {
+                return $this->render404($response);
+            }
+        } catch (ElementNotFoundException $e) {
             return $this->render404($response);
         }
 
         $this->updateDownloadsProcessor->run($element);
 
-        return $response->withStatus(302)
+        return $response
+            ->withStatus(302)
             ->withHeader('Location', $element->link);
     }
 }

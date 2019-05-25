@@ -6,24 +6,19 @@ use Carbon\Carbon;
 use Youkok\Biz\Exceptions\CookieNotFoundException;
 use Youkok\Biz\Exceptions\SessionNotFoundException;
 use Youkok\Common\Controllers\SessionController;
-use Youkok\Enums\MostPopularCourse;
-use Youkok\Enums\MostPopularElement;
 use Youkok\Common\Models\Session;
 use Youkok\Common\Utilities\CookieHelper;
 use Youkok\Helpers\Utilities;
 
-// TODO: Move attributes into Session itself
 class SessionService
 {
     const SESSION_TOKEN_LENGTH = 100;
 
+    /** @var Session */
     private $session;
 
-    public function init(): void
+    public function __construct()
     {
-        // This is the default session data array
-
-
         $this->session = $this->loadSession();
     }
 
@@ -31,7 +26,7 @@ class SessionService
     {
         try {
             $hash = CookieHelper::getCookie('youkok2');
-            return SessionController::load($hash);
+            return SessionController::get($hash);
         }
         catch (CookieNotFoundException $exception) {
             return $this->createSession();
@@ -41,20 +36,9 @@ class SessionService
         }
     }
 
-    /**
-     * @param $hash
-     * @return array
-     * @throws SessionNotFoundException
-     */
-
-    public function getSessionDataFromHash(string $hash): Session
+    public function getSession(): Session
     {
-        return SessionController::load($hash);
-    }
-
-    public function getAllData(): array
-    {
-        return $this->session->data;
+        return $this->session;
     }
 
     public function getData($key, $default = null)
@@ -68,7 +52,7 @@ class SessionService
 
     public function isAdmin(): bool
     {
-        return isset($this->session->data['admin']) and $this->session->data['admin'];
+        return $this->session->isAdmin();
     }
 
     public function setData($key, $value): void
@@ -78,9 +62,8 @@ class SessionService
 
     public function store(): bool
     {
-        $currentSession->data = json_encode($this->data);
-        $currentSession->last_updated = Carbon::now();
-        return $currentSession->save();
+        $this->session->last_updated = Carbon::now();
+        return $this->session->save();
     }
 
     public function deleteExpiredSessions()

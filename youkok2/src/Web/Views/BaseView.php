@@ -27,8 +27,6 @@ class BaseView
         $this->view = $container->get('view');
         $this->sessionService = $container->get(SessionService::class);
 
-        $this->sessionService->init();
-
         $this->templateData = $this->getDefaultTemplateData();
     }
 
@@ -52,7 +50,7 @@ class BaseView
             ],
 
             // Information about the current user
-            'USER' => $this->sessionService->getAllData(),
+            'USER' => $this->sessionService->getSession()->getAllData(),
 
             // Other things
             'SITE_TITLE' => 'Den beste kokeboka på nettet',

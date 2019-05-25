@@ -7,7 +7,7 @@ use Slim\Http\Request;
 use Youkok\Mappers\HistoryMapper;
 use Youkok\Biz\ArchiveHistoryProcessor;
 
-// TODO
+// TODO: Legacy
 class ArchiveHistory extends BaseProcessorView
 {
     public function view(Request $request, Response $response, array $args)
