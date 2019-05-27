@@ -21,9 +21,9 @@ export const courses = (state = defaultState, action) => {
 
         sortColumn: action.sortColumn,
         sortOrder: action.sortOrder,
-        page: 0,
+        page: DEFAULT_PAGE,
 
-        courses: sortCourses(action.sortColumn, action.sortOrder, 0),
+        courses: sortCourses(action.sortColumn, action.sortOrder, DEFAULT_PAGE),
       };
 
     case COURSES_CHANGE_PAGE:
