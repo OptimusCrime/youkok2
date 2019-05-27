@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Web\Views;
 
+use Slim\Interfaces\RouterInterface;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
@@ -11,10 +12,10 @@ use Youkok\Helpers\ElementHelper;
 
 class Archive extends BaseView
 {
-    /** @var \Youkok\Biz\Services\ArchiveService */
+    /** @var ArchiveService */
     private $archiveService;
 
-    /** \Slim\Interfaces\RouterInterface */
+    /** @var RouterInterface */
     private $router;
 
     public function __construct(ContainerInterface $container)

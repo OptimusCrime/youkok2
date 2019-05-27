@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import configureStore from "./redux/configureStore";
 import { fetchArchive } from "./redux/archive/actions";
 
-import MainContainer from './containers/main-container';
+import { MainContainer } from './containers/main-container';
 
 import './archive.less';
 

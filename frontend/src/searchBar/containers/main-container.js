@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import {
   updateSearchField as updateSearchFieldDispatch,
@@ -13,22 +13,29 @@ import {
 
   KEYCODE_ARROW_DOWN,
   KEYCODE_ARROW_UP,
-} from "../consts";
-import { highlightSearchResult } from "../utils/highlighter";
+} from "../constants";
+import {highlightSearchResult} from "../utils/highlighter";
+import {CLOSE_SEARCH_RESULTS} from "../redux/form/constants";
 
 const MINIMUM_SEARCH_LENGTH = 2;
 
-const MainContainer = ({
-                         input_raw,
-                         input_display,
-                         results,
-                         cursor,
-                         updateCursorPosition,
-                         updateSearchField,
-                         closeSearchResults
-  }) => {
+const MainContainer = props => {
 
-  const courses = window.AUTOCOMPLETE_DATA || [];
+  const {
+    input_raw,
+    input_display,
+    results,
+    cursor,
+    updateCursorPosition,
+    updateSearchField,
+    closeSearchResults
+  } = props;
+
+  if (!window.COURSES_LOOKUP) {
+    return null;
+  }
+
+  const courses = window.COURSES_LOOKUP;
 
   return (
     <React.Fragment>
@@ -62,17 +69,17 @@ const MainContainer = ({
         onBlur={closeSearchResults}
       />
       <button className="btn" type="button" id="nav-search">
-        <i className="fa fa-search" />
+        <i className="fa fa-search"/>
       </button>
       {results.length > 0 && input_display.length > MINIMUM_SEARCH_LENGTH &&
-        <span className="tt-dropdown-menu" style={{
-          position: 'absolute',
-          top: '100%',
-          left: '0px',
-          zIndex: 100,
-          right: 'auto',
-          display: 'block'
-        }}>
+      <span className="tt-dropdown-menu" style={{
+        position: 'absolute',
+        top: '100%',
+        left: '0px',
+        zIndex: 100,
+        right: 'auto',
+        display: 'block'
+      }}>
           <div className="tt-dataset-courses">
             <div className="tt-suggestions" style={{display: 'block'}}>
               {results.map((result, index) =>
@@ -96,7 +103,7 @@ const MainContainer = ({
   );
 };
 
-const mapStateToProps = ({ form }) => ({
+const mapStateToProps = ({form}) => ({
   input_raw: form.input_raw,
   input_display: form.input_display,
   results: form.results,
@@ -106,7 +113,7 @@ const mapStateToProps = ({ form }) => ({
 const mapDispatchToProps = {
   updateSearchField: updateSearchFieldDispatch,
   updateCursorPosition: updateCursorPositionDispatch,
-  closeSearchResults: closeSearchResultsDispatch,
+  closeSearchResults: ({ type: CLOSE_SEARCH_RESULTS }),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainContainer);

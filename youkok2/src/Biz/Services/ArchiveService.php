@@ -18,14 +18,17 @@ class ArchiveService
     }
 
     /**
-     * @param string $id
+     * @param int $id
      * @return array
      * @throws ElementNotFoundException
      */
 
-    public function get(string $id): array
+    public function get(int $id): array
     {
-        $directory = Element::fromIdVisible($id, Element::ATTRIBUTES_ALL);
+        $directory = Element::fromIdVisible(
+            $id,
+            ['id', 'name', 'slug', 'uri', 'parent', 'directory']
+        );
 
         $course = CourseController::getCourseFromId($id);
         $content = $this->getContentForDirectory($directory);
@@ -61,6 +64,7 @@ class ArchiveService
         return $this->elementMapper->mapBreadcrumbs($element->getParentsVisible());
     }
 
+    // TODO: Place in ElementController?
     private function getContentForDirectory(Element $element)
     {
         return Element

@@ -36,7 +36,7 @@ class SessionController
         $session->last_updated = Carbon::now();
         $session->expire = Carbon::createFromTimestamp(time() + static::SESSION_LIFE_TIME);
 
-        if ($session->save()) {
+        if (!$session->save()) {
             throw new GenericYoukokException('Failed to create session');
         }
 

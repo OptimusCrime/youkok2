@@ -1,8 +1,10 @@
 <?php
+
 namespace Youkok\Common;
 
 use Slim\App as Slim;
 
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Common\Containers\Cache;
 use Youkok\Common\Containers\Database;
 use Youkok\Common\Containers\InternalServerError;
@@ -15,6 +17,7 @@ use Youkok\Common\Middlewares\TimingMiddleware;
 use Youkok\Biz\Services\Job\JobService;
 use Youkok\Rest\Endpoints\Archive as ArchiveRest;
 use Youkok\Rest\Endpoints\Frontpage as FrontpageRest;
+use Youkok\Rest\Endpoints\Sidebar\ArchiveHistory;
 use Youkok\Rest\Endpoints\Sidebar\MostPopular;
 use Youkok\Web\Views\Archive;
 use Youkok\Web\Views\Courses;
@@ -49,7 +52,10 @@ class App
         try {
             $this->app->run();
         } catch (\Exception $e) {
-            // TODO
+            // TODO: LOgging
+
+            // Rethrow exception to the outer exception handler
+            throw $e;
         }
     }
 
@@ -57,12 +63,12 @@ class App
     {
         $this->setup();
 
+        /** @var JobService $jobRunner */
         $jobRunner = $this->app->getContainer()->get(JobService::class);
 
         if ($mode == JobService::SPECIFIC_JOB && $code !== null) {
             $jobRunner->runCode($code);
-        }
-        else {
+        } else {
             $jobRunner->run($mode);
         }
     }
@@ -88,8 +94,8 @@ class App
             $app->get('changelog.txt', Flat::class . ':changelog')->setName('changelog');
             $app->get('retningslinjer', Flat::class . ':terms')->setName('terms');
 
-            $app->get('lorem', Login::class . ':display')->setName('admin_login');
-            $app->post('lorem', Login::class . ':submit')->setName('admin_login_submit');
+            $app->get('lorem', Login::class . ':view')->setName('admin_login');
+            $app->post('lorem', Login::class . ':post')->setName('admin_login_submit');
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 
         $app->group('/admin', function () use ($app) {
@@ -109,17 +115,12 @@ class App
             $app->get('/archive/{id:[0-9]+}', ArchiveRest::class . ':get');
 
             $app->group('/sidebar', function () use ($app) {
-               $app->get('/popular', MostPopular::class . ':get');
+                $app->get('/popular', MostPopular::class . ':get');
+                $app->get('/history/{id:[0-9]+}', ArchiveHistory::class . ':get');
             });
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 
         $app->group('/processors', function () use ($app) {
-            // TODO
-            $app->get('/history/{id:[0-9]+}', '\Youkok\Views\Processors\ArchiveHistory:view');
-
-            // TODO
-            $app->get('/autocomplete', '\Youkok\Views\Processors\Autocomplete:view');
-
             $app->group('/link', function () use ($app) {
                 $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');
                 $app->post('/create', '\Youkok\Views\Processors\Create\CreateLink:view')->setName('link_submit');
@@ -130,6 +131,8 @@ class App
             });
 
             $app->group('/admin', function () use ($app) {
+
+                // TODO
                 $app->get('/homeboxes', '\Youkok\Views\Processors\Admin\Homeboxes:view')->setName('admin_processor_homeboxes');
                 $app->get('/homegraph', '\Youkok\Views\Processors\Admin\HomeGraph:view')->setName('admin_processor_homegraph');
                 $app->get('/element-details/{id:[0-9]+}', '\Youkok\Views\Processors\Admin\ElementDetails:get')->setName('admin_processor_element_details_fetch');

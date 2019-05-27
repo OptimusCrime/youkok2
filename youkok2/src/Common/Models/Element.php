@@ -1,10 +1,10 @@
 <?php
 namespace Youkok\Common\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Helpers\ElementHelper;
-use Youkok\Helpers\Utilities;
 use Youkok\Common\Utilities\UriCleaner;
 
 class Element extends BaseModel
@@ -35,8 +35,6 @@ class Element extends BaseModel
     protected $guarded = [''];
 
     private $fullUri;
-    private $parentsVisible;
-    private $parentsAll;
     private $downloads;
 
     public function __construct(array $attributes = [])
@@ -44,8 +42,6 @@ class Element extends BaseModel
         parent::__construct($attributes);
 
         $this->fullUri = null;
-        $this->parentsVisible = null;
-        $this->parentsAll = null;
         $this->downloads = null;
     }
 
@@ -113,6 +109,11 @@ class Element extends BaseModel
         return $this->link !== null && strlen($this->link) > 0;
     }
 
+    public function isFile(): bool
+    {
+        return $this->checksum !== null;
+    }
+
     public function isCourse(): bool
     {
         return $this->parent === null && $this->directory === 1;
@@ -123,26 +124,14 @@ class Element extends BaseModel
         return !$this->isCourse() && $this->directory === 1;
     }
 
-    public function getParentsVisible(array $columns = ['id', 'name', 'slug', 'uri', 'parent', 'directory']): array
+    public function getParentsVisible(array $columns = ['id', 'name', 'slug', 'uri', 'link', 'parent', 'directory']): array
     {
-        if ($this->parentsVisible !== null) {
-            return $this->parentsVisible;
-        }
-
-        $this->parentsVisible = $this->getParents($columns, static::FETCH_ONLY_VISIBLE);
-
-        return $this->parentsVisible;
+        return $this->getParents($columns, static::FETCH_ONLY_VISIBLE);
     }
 
     public function getParentsAll(array $columns = ['id', 'parent']): array
     {
-        if ($this->parentsAll !== null) {
-            return $this->parentsAll;
-        }
-
-        $this->parentsAll = $this->getParents($columns, static::FETCH_ALL);
-
-        return $this->parentsAll;
+        return $this->getParents($columns, static::FETCH_ALL);
     }
 
     public function getRootParentVisible(array $columns = ['id', 'name', 'slug', 'uri', 'parent', 'directory']): Element
@@ -175,6 +164,10 @@ class Element extends BaseModel
             }
 
             $currentObject = $currentObject->first();
+
+            if ($currentObject === null) {
+                break;
+            }
 
             $parents[] = $currentObject;
         }
@@ -219,8 +212,12 @@ class Element extends BaseModel
         return $this->downloads;
     }
 
-    public static function fromIdVisible($id, $attributes = ['id', 'link', 'checksum']): Element
-    {
+    // TODO: This needs to check that parents are also visible!
+    // automatically add parent to the list of attributes if it is missing
+    public static function fromIdVisible(
+        int $id,
+        array $attributes = ['id', 'link', 'checksum', 'parent']
+    ): Element {
         if (!isset($id) or !is_numeric($id)) {
             throw new ElementNotFoundException();
         }
@@ -248,8 +245,10 @@ class Element extends BaseModel
         return $element;
     }
 
-    public static function fromIdAll($id, $attributes = ['id', 'link', 'checksum']): Element
-    {
+    public static function fromIdAll(
+        int $id,
+        array $attributes = ['id', 'link', 'checksum']
+    ): Element {
         if (!isset($id) or !is_numeric($id)) {
             throw new ElementNotFoundException();
         }
@@ -279,13 +278,17 @@ class Element extends BaseModel
         return $element;
     }
 
-    public static function fromUriFileVisible($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'])
-    {
+    public static function fromUriFileVisible(
+        string $uri,
+        array $attributes = ['id', 'parent', 'name', 'uri', 'checksum', 'link', 'directory']
+    ): Element {
         return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_FILE_LAST);
     }
 
-    public static function fromUriDirectoryVisible($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'])
-    {
+    public static function fromUriDirectoryVisible(
+        string $uri,
+        array $attributes = ['id', 'parent', 'name', 'uri', 'checksum', 'link', 'directory']
+    ): Element {
         return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_DIRECTORIES);
     }
 
@@ -298,8 +301,11 @@ class Element extends BaseModel
         return $instance;
     }
 
-    private static function fromUriFragments($uri, $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'], $type = self::ELEMENT_TYPE_DIRECTORIES)
-    {
+    private static function fromUriFragments(
+        string $uri,
+        array $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'],
+        int $type = self::ELEMENT_TYPE_DIRECTORIES
+    ) : Element {
         $fragments = UriCleaner::cleanFragments(explode('/', $uri));
         $parent = null;
         $element = null;
@@ -326,7 +332,7 @@ class Element extends BaseModel
             $element = $query->first();
 
             if ($element === null) {
-                return null;
+                throw new ElementNotFoundException();
             }
 
             $parent = $element->id;
@@ -335,7 +341,7 @@ class Element extends BaseModel
         return $element;
     }
 
-    private static function handleElementType($element, $type)
+    private static function handleElementType(Builder $element, string $type): Builder
     {
         switch ($type) {
             case self::ELEMENT_TYPE_DIRECTORIES:
@@ -345,7 +351,7 @@ class Element extends BaseModel
                 $element->where('directory', 0);
                 break;
             default:
-                break;
+                throw new GenericYoukokException('Invalid value passed to method');
         }
 
         return $element;

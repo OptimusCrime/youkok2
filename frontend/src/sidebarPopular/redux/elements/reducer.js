@@ -12,7 +12,7 @@ const defaultState = {
   data: []
 };
 
-const elements = (state = defaultState, action) => {
+export const elements = (state = defaultState, action) => {
   switch (action.type) {
 
     case SIDEBAR_MOST_POPULAR_FETCH_STARTED:
@@ -40,5 +40,3 @@ const elements = (state = defaultState, action) => {
       return state
   }
 };
-
-export default elements;

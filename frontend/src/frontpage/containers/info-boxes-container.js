@@ -9,6 +9,7 @@ class InfoBoxesContainer extends Component {
   render() {
 
     const {
+      failed,
       started,
       finished,
 
@@ -23,31 +24,39 @@ class InfoBoxesContainer extends Component {
     return (
       <div className="row">
         <InfoBox
+          name="downloads"
           icon="fa-download"
           text="Nedlastninger"
           number={number_downloads}
           isLoading={isLoading}
+          failed={failed}
           formatter={formatThousandNumber}
         />
         <InfoBox
+          name="last-month"
           icon="fa-star"
           text="Bidrag siste mnd"
           number={number_new_elements}
           isLoading={isLoading}
+          failed={failed}
           formatter={formatNumber}
         />
         <InfoBox
+          name="files"
           icon="fa-archive"
           text="Filer og linker"
           number={number_files}
           isLoading={isLoading}
+          failed={failed}
           formatter={formatNumber}
         />
         <InfoBox
+          name="courses"
           icon="fa-graduation-cap"
           text="Fag med innhold"
           number={number_courses_with_content}
           isLoading={isLoading}
+          failed={failed}
           formatter={formatNumber}
         />
       </div>
@@ -56,6 +65,7 @@ class InfoBoxesContainer extends Component {
 }
 
 const mapStateToProps = ({ frontpage }) => ({
+  failed: frontpage.failed,
   started: frontpage.started,
   finished: frontpage.finished,
 

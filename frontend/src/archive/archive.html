@@ -13,9 +13,10 @@
         <p>Upload</p>
         {% include "sidebar/archive/report.html" %}
         {% include "sidebar/archive/help.html" %}
-        <p>History</p>
+        {% if DEV == '1' %}{% include "react/dev_sidebarHistory.html" %}{% else %}{% include "react/sidebarHistory.html" %}{% endif %}
     </div>
-</div>{% endblock %}
+</div>
+{% endblock %}
 
 {% block scripts %}
 <% for (let js in htmlWebpackPlugin.files.js) { %><script src="<%= htmlWebpackPlugin.files.js[js] %>"></script>

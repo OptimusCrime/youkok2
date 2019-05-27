@@ -14,7 +14,7 @@ const defaultState = {
   cursor: null,
 };
 
-const form = (state = defaultState, action) => {
+export const form = (state = defaultState, action) => {
   switch (action.type) {
 
     case UPDATE_SEARCH_FIELD:
@@ -62,5 +62,3 @@ const form = (state = defaultState, action) => {
       return state
   }
 };
-
-export default form;

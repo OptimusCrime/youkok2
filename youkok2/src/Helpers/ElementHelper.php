@@ -44,7 +44,7 @@ class ElementHelper
         return static::siteDescriptionFor($element->getRootParentVisible());
     }
 
-    public static function constructUri($id): string
+    public static function constructUri(int $id): string
     {
         $element = Element::fromIdAll($id, ['id', 'link', 'slug', 'parent']);
         if ($element === null) {

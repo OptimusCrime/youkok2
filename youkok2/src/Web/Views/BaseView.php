@@ -62,13 +62,22 @@ class BaseView
         ];
     }
 
-    protected function setSiteData($key, $value)
+    protected function setSiteData(string $key, $value)
     {
         $this->templateData['SITE_DATA'][$key] = $value;
     }
 
-    protected function render(Response $response, $template, array $data = []): Response
+    protected function output(Response $response): Response
     {
+        $this->sessionService->store();
+
+        return $response;
+    }
+
+    protected function render(Response $response, string $template, array $data = []): Response
+    {
+        $this->sessionService->store();
+
         return $this->view->render($response, $template, array_merge(
             $this->templateData,
             $data, [
@@ -77,7 +86,7 @@ class BaseView
         ));
     }
 
-    protected function renderReactApp(Response $response, $template, array $data = []): Response
+    protected function renderReactApp(Response $response, string $template, array $data = []): Response
     {
         $reactBaseDir = 'react' . DIRECTORY_SEPARATOR;
 
@@ -96,7 +105,7 @@ class BaseView
         );
     }
 
-    protected function fetch($template, array $data = []): string
+    protected function fetch(string $template, array $data = []): string
     {
         return $this->view->fetch(
             $template,

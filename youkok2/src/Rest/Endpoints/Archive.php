@@ -1,4 +1,5 @@
 <?php
+
 namespace Youkok\Rest\Endpoints;
 
 use Psr\Container\ContainerInterface;
@@ -28,18 +29,23 @@ class Archive extends BaseProcessorView
     public function get(Request $request, Response $response, array $args): Response
     {
         try {
-            $payload = $this->archiveService->get($args['id']);
+            if (!isset($args['id']) || !is_numeric($args['id'])) {
+                return $this->returnBadRequest($response);
+            }
 
-            $payload['content'] = $this->elementMapper->map($payload['content'], [
-                ElementMapper::DOWNLOADS,
-                ElementMapper::POSTED_TIME,
-                ElementMapper::DOWNLOADS,
-                ElementMapper::ICON
-            ]);
+            $payload = $this->archiveService->get((int) $args['id']);
 
-            return $this->output($response, $payload);
-        }
-        catch (ElementNotFoundException $e) {
+            $payload['content'] = $this->elementMapper->map(
+                $payload['content'], [
+                    ElementMapper::DOWNLOADS,
+                    ElementMapper::POSTED_TIME,
+                    ElementMapper::DOWNLOADS,
+                    ElementMapper::ICON
+                ]
+            );
+
+            return $this->outputJson($response, $payload);
+        } catch (ElementNotFoundException $e) {
             return $this->returnBadRequest($response);
         }
     }

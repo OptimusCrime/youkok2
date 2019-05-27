@@ -1,0 +1,62 @@
+.course-list {
+    border-width: 1px;
+    border-color: #dddddd;
+    background-color: #fff;
+    border-style: solid;
+    border-radius: 4px;
+}
+.course-row {
+    border-top: 1px solid #ddd;
+    color: #333333;
+    display: flex;
+
+    &:hover {
+        background-color: #eee;
+        color: #333333;
+        text-decoration: none;
+    }
+
+    &__header {
+        cursor: pointer;
+        border-top: none;
+
+        &:hover {
+            background-color: #fff;
+        }
+        &--code, &--name {
+            display: flex;
+            justify-content: space-between;
+
+            &:hover {
+                background-color: #eee;
+                color: #333333;
+            }
+            strong, .fa {
+                display: block;
+            }
+            .inactive {
+                color: #ddd;
+            }
+        }
+    }
+    &__code, &__name {
+        padding: 10px 15px;
+    }
+    &__code {
+        width: 25%;
+        border-right: 1px solid #ddd;
+    }
+    &__name {
+        width: 75%;
+    }
+}
+a.course-row {
+    color: #3498DB;
+    &__empty {
+        color: #99c1dc;
+        font-weight: normal;
+    }
+    &:hover {
+        color: #3498DB;
+    }
+}

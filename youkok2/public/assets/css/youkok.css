@@ -785,25 +785,6 @@ a:visited {
 }
 
 /*
- * Alerts
- */
-
-.alert {
-    position: relative;
-    margin-left: 15px;
-    margin-right: 15px;
-}
-.alert-close {
-    position: absolute;
-    right: 15px;
-    top: 13px;
-    cursor: pointer;
-}
-.alert.no-close .alert-close {
-    display: none;
-}
-
-/*
  * Misc
  */
 
@@ -1138,6 +1119,7 @@ a:visited {
     border-color: #dddddd;
     background-color: #fff;
     border-style: solid;
+    border-radius: 4px;
 }
 a.archive-row, .archive-row {
     border-top: 1px solid #ddd;

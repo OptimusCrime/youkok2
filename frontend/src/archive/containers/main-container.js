@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import ArchiveContainer from './archive-container';
 
@@ -11,13 +10,7 @@ const BreadcrumbElement = ({ parent, index, numParents }) => {
   return <li><a href={parent.url}>{parent.name || parent.courseCode}</a></li>;
 };
 
-const MainContainer = ({ failed }) => {
-
-  if (failed) {
-    return (
-      <p>Vi har visst litt tekniske problemer her...</p>
-    );
-  }
+export const MainContainer = () => {
 
   const numParents = SITE_DATA.archive_parents.length;
 
@@ -60,9 +53,3 @@ const MainContainer = ({ failed }) => {
     </React.Fragment>
   );
 };
-
-const mapStateToProps = ({ archive }) => ({
-  failed: archive.failed,
-});
-
-export default connect(mapStateToProps, {})(MainContainer);

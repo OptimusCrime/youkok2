@@ -53,7 +53,7 @@ class MostPopularElementsService implements MostPopularInterface
     {
         $elements = [];
         foreach ($ids as $id => $downloads) {
-            $element = Element::fromIdVisible($id, ['id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'checksum']);
+            $element = Element::fromIdVisible($id, ['id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'checksum', 'directory']);
             $element->setDownloads($downloads);
 
             $elements[] = $element;

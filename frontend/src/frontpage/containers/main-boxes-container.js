@@ -15,6 +15,7 @@ class InfoBoxesContainer extends Component {
   render() {
 
     const {
+      failed,
       started,
       finished,
     } = this.props;
@@ -24,15 +25,15 @@ class InfoBoxesContainer extends Component {
     return (
       <React.Fragment>
         <div className="row">
-          <BoxMostPopularCourses isLoading={isLoading} />
-          <BoxMostPopularElements isLoading={isLoading} />
+          <BoxMostPopularCourses failed={failed} isLoading={isLoading} />
+          <BoxMostPopularElements failed={failed} isLoading={isLoading} />
         </div>
         <div className="row">
-          <BoxLatestElements isLoading={isLoading} />
-          <BoxLastVisitedContainer isLoading={isLoading} />
+          <BoxLatestElements failed={failed} isLoading={isLoading} />
+          <BoxLastVisitedContainer failed={failed} isLoading={isLoading} />
         </div>
         <div className="row">
-          <BoxLastDownloadedContainer isLoading={isLoading} />
+          <BoxLastDownloadedContainer failed={failed} isLoading={isLoading} />
         </div>
       </React.Fragment>
     );
@@ -40,6 +41,7 @@ class InfoBoxesContainer extends Component {
 }
 
 const mapStateToProps = ({ frontpage }) => ({
+  failed: frontpage.failed,
   started: frontpage.started,
   finished: frontpage.finished,
 

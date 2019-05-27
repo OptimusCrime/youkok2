@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-import frontpage from './frontpage/reducer';
+import { frontpage } from './frontpage/reducer';
 
 const rootReducer = combineReducers({
   frontpage

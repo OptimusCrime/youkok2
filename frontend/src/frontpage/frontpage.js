@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import MainContainer from './containers/main-container';
+import { MainContainer } from './containers/main-container';
 import configureStore from './redux/configureStore';
 import { fetchFrontpage } from './redux/frontpage/actions';
 

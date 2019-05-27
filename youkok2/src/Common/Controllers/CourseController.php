@@ -1,12 +1,13 @@
 <?php
 namespace Youkok\Common\Controllers;
 
+use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 
 class CourseController
 {
-    public static function getNumberOfNonVisibleCourses()
+    public static function getNumberOfNonVisibleCourses(): int
     {
         return Element
             ::where('directory', 1)
@@ -16,16 +17,16 @@ class CourseController
             ->count();
     }
 
-    public static function getAllVisibleCourses()
+    public static function getAllVisibleCourses(): Collection
     {
-        return Element::select('id', 'name', 'slug')
+        return Element::select('id', 'name', 'slug', 'empty')
             ->where('parent', null)
             ->where('directory', 1)
             ->orderBy('name')
             ->get();
     }
 
-    public static function getCourseFromId($id)
+    public static function getCourseFromId(int $id)
     {
         return static::getCourseFromElement(Element::fromIdVisible($id));
     }

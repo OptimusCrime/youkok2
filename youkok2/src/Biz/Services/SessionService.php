@@ -22,13 +22,18 @@ class SessionService
         $this->session = $this->loadSession();
     }
 
-    private function loadSession(): Session
+    private function loadSession(): ?Session
     {
         try {
             $hash = CookieHelper::getCookie('youkok2');
             return SessionController::get($hash);
         }
         catch (CookieNotFoundException $exception) {
+            // There is no need for a session if the script is called from the command line
+            if (php_sapi_name() === 'cli') {
+                return null;
+            }
+
             return $this->createSession();
         }
         catch (SessionNotFoundException $exception) {
@@ -41,23 +46,9 @@ class SessionService
         return $this->session;
     }
 
-    public function getData($key, $default = null)
-    {
-        if (!isset($this->session->data[$key])) {
-            return $default;
-        }
-
-        return $this->session->data[$key];
-    }
-
     public function isAdmin(): bool
     {
         return $this->session->isAdmin();
-    }
-
-    public function setData($key, $value): void
-    {
-        $this->data[$key] = $value;
     }
 
     public function store(): bool

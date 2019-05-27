@@ -4,38 +4,36 @@ import { connect } from "react-redux";
 import { ArchiveRow } from "../components/archive-row";
 import {loading} from "../../common/utils";
 import {StencilArchiveList} from "../components/stencil/archive-list";
+import {ArchiveWrapper} from "../components/archive-wrapper";
+import {ArchiveError} from "../components/archive-error";
 
 class ArchiveContainer extends Component {
 
   render() {
 
     const {
+      failed,
       started,
       finished,
       archive
     } = this.props;
 
+    if (failed) {
+      return (
+        <ArchiveWrapper>
+          <ArchiveError />
+        </ArchiveWrapper>
+      );
+    }
+
     const isLoading = loading(started, finished);
 
     if (isLoading || (archive.content && archive.content.length > 0)) {
       return (
-        <div className="archive-list">
-          <div className="archive-row archive-row--header">
-            <div className="archive-row-icon">
-            </div>
-            <div className="archive-row-name">
-              <strong>Navn</strong>
-            </div>
-            <div className="archive-row-downloads">
-              <strong>Nedlastninger</strong>
-            </div>
-            <div className="archive-row-age">
-              <strong>Postet</strong>
-            </div>
-          </div>
+        <ArchiveWrapper>
           {isLoading && <StencilArchiveList size={10} />}
           {!isLoading && archive.content.map((item, key) => <ArchiveRow key={key} item={item} /> )}
-        </div>
+        </ArchiveWrapper>
       );
     }
 
@@ -50,6 +48,7 @@ class ArchiveContainer extends Component {
 }
 
 const mapStateToProps = ({ archive }) => ({
+  failed: archive.failed,
   started: archive.started,
   finished: archive.finished,
   archive: archive.archive

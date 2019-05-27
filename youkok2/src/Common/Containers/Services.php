@@ -3,14 +3,16 @@ namespace Youkok\Common\Containers;
 
 use Psr\Container\ContainerInterface;
 
+use Youkok\Biz\Services\ArchiveHistoryService;
 use Youkok\Biz\Services\ArchiveService;
-use Youkok\Biz\Services\AutocompleteService;
+use Youkok\Biz\Services\CoursesLookupService;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\CourseListService;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
+use Youkok\Biz\Services\Admin\LoginService;
 use Youkok\Biz\Services\FrontpageService;
-use Youkok\Biz\Services\Job\Jobs\PopulateAutocompleteFileJobService;
+use Youkok\Biz\Services\Job\Jobs\PopulateCoursesLookupFileJobService;
 use Youkok\Biz\Services\Job\Jobs\RemoveOldSessionsJobServiceJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
@@ -19,7 +21,6 @@ use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
-use Youkok\Biz\Services\SearchRedirectService;
 use Youkok\Biz\Services\SessionService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
 use Youkok\Biz\Services\UrlService;
@@ -32,8 +33,8 @@ class Services implements ContainersInterface
             return new SessionService();
         };
 
-        $container[SearchRedirectService::class] = function (): SearchRedirectService {
-            return new SearchRedirectService();
+        $container[LoginService::class] = function (): LoginService {
+            return new LoginService();
         };
 
         $container[CacheService::class] = function (ContainerInterface $container): CacheService {
@@ -105,6 +106,12 @@ class Services implements ContainersInterface
             );
         };
 
+        $container[ArchiveHistoryService::class] = function (ContainerInterface $container): ArchiveHistoryService {
+            return new ArchiveHistoryService(
+                $container->get(ElementMapper::class)
+            );
+        };
+
         $container[DownloadCountService::class] = function (ContainerInterface $container): DownloadCountService {
             return new DownloadCountService(
                 $container->get(CacheService::class)
@@ -133,14 +140,14 @@ class Services implements ContainersInterface
             );
         };
 
-        $container[PopulateAutocompleteFileJobService::class] = function (ContainerInterface $container): PopulateAutocompleteFileJobService {
-            return new PopulateAutocompleteFileJobService(
-                $container->get(AutocompleteService::class)
+        $container[PopulateCoursesLookupFileJobService::class] = function (ContainerInterface $container): PopulateCoursesLookupFileJobService {
+            return new PopulateCoursesLookupFileJobService(
+                $container->get(CoursesLookupService::class)
             );
         };
 
-        $container[AutocompleteService::class] = function (ContainerInterface $container): AutocompleteService {
-            return new AutocompleteService(
+        $container[CoursesLookupService::class] = function (ContainerInterface $container): CoursesLookupService {
+            return new CoursesLookupService(
                 $container->get(UrlService::class)
             );
         };

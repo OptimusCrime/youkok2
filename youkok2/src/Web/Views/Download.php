@@ -1,4 +1,5 @@
 <?php
+
 namespace Youkok\Web\Views;
 
 use Slim\Http\Stream;
@@ -42,19 +43,22 @@ class Download extends BaseView
 
             $fileInfo = $this->downloadService->getFileInfo($element);
             $fileSize = $this->downloadService->getFileSize($element);
-            $fileContents = $this->downloadService->getFileContents($element);
+            $filePath = $this->downloadService->getFilePath($element);
 
-            return $response
-                ->withHeader('Content-Description', 'File Transfer')
-                ->withHeader('Content-Type', $fileInfo)
-                ->withHeader('Content-Disposition', 'inline; filename="' . $element->name . '"')
-                ->withHeader('Expires', '0')
-                ->withHeader('Cache-Control', 'must-revalidate')
-                ->withHeader('Pragm', 'public')
-                ->withHeader('Content-Length', $fileSize)
-                ->withBody(new Stream($fileContents));
-        }
-        catch (ElementNotFoundException $e) {
+            return $this->output(
+                $response
+                    ->withHeader('Content-Description', 'File Transfer')
+                    ->withHeader('Content-Type', $fileInfo)
+                    ->withHeader('Content-Disposition', 'inline; filename="' . $element->name . '"')
+                    ->withHeader('Expires', '0')
+                    ->withHeader('Cache-Control', 'must-revalidate')
+                    ->withHeader('Pragm', 'public')
+                    ->withHeader('Content-Length', $fileSize)
+                    ->withBody(new Stream(fopen($filePath, 'r')))
+            );
+        } catch (ElementNotFoundException $e) {
+            return $this->render404($response);
+        } catch (\Exception $e) {
             return $this->render404($response);
         }
     }

@@ -41,11 +41,13 @@ class DownloadController
             ->where('element.deleted', '=', 0)
             ->where('element.pending', '=', 0);
 
-        $query = $query->whereDate(
-            'download.downloaded_time',
-            '>=',
-            static::getMostPopularElementQueryFromDelta($delta)
-        );
+        if ($delta !== MostPopularElement::ALL) {
+            $query = $query->whereDate(
+                'download.downloaded_time',
+                '>=',
+                static::getMostPopularElementQueryFromDelta($delta)
+            );
+        }
 
         return $query
             ->groupBy('download.resource')
@@ -100,7 +102,7 @@ class DownloadController
         return static::transformResultArray($courses);
     }
 
-    private static function filterRemovedCourses($courses)
+    private static function filterRemovedCourses(array $courses): array
     {
         $filteredCourses = [];
         foreach ($courses as $courseId => $downloads) {
@@ -112,7 +114,7 @@ class DownloadController
         return $filteredCourses;
     }
 
-    private static function isValidCourseId($courseId)
+    private static function isValidCourseId(int $courseId): bool
     {
         $element = Element
             ::select('id')
@@ -125,7 +127,7 @@ class DownloadController
         return count($element) !== 0;
     }
 
-    private static function transformResultArray($courses)
+    private static function transformResultArray(array $courses): array
     {
         $newResult = [];
         foreach ($courses as $courseId => $courseDownloads) {
@@ -137,7 +139,7 @@ class DownloadController
         return $newResult;
     }
 
-    private static function getMostPopularElementQueryFromDelta(string $delta): Carbon
+    private static function getMostPopularElementQueryFromDelta(string $delta): ?Carbon
     {
         switch ($delta) {
             case MostPopularElement::DAY:
@@ -148,7 +150,6 @@ class DownloadController
                 return Carbon::now()->subMonth();
             case MostPopularElement::YEAR:
                 return Carbon::now()->subYear();
-            case MostPopularElement::ALL:
             default:
                 throw new GenericYoukokException('Invalid delta');
         }

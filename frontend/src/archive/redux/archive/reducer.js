@@ -7,7 +7,7 @@ const defaultState = {
   failed: false,
 };
 
-const archive = (state = defaultState, action) => {
+export const archive = (state = defaultState, action) => {
   switch (action.type) {
 
     case ARCHIVE_FETCH_STARTED:
@@ -35,5 +35,3 @@ const archive = (state = defaultState, action) => {
       return state
   }
 };
-
-export default archive;

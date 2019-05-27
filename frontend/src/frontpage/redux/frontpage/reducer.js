@@ -45,7 +45,7 @@ const defaultState = {
   },
 };
 
-const frontpage = (state = defaultState, action) => {
+export const frontpage = (state = defaultState, action) => {
   switch (action.type) {
 
     case FRONTPAGE_FETCH_STARTED:
@@ -129,5 +129,3 @@ const frontpage = (state = defaultState, action) => {
       return state
   }
 };
-
-export default frontpage;

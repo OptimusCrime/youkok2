@@ -3,6 +3,7 @@ namespace Youkok\Common\Controllers;
 
 use Carbon\Carbon;
 
+use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 
@@ -11,7 +12,7 @@ class ElementController
     const SORT_TYPE_ORGANIZED = 0;
     const SORT_TYPE_AGE = 1;
 
-    public static function getNonDirectoryFromUri(string $uri)
+    public static function getNonDirectoryFromUri(string $uri): Element
     {
         return static::getAnyFromUri($uri, Element::NON_DIRECTORY);
     }
@@ -21,7 +22,7 @@ class ElementController
         return static::getAnyFromUri($uri, Element::DIRECTORY);
     }
 
-    public static function getParentForElement(Element $element)
+    public static function getParentForElement(Element $element): Element
     {
         $parent = Element
             ::where('id', $element->parent)
@@ -36,7 +37,7 @@ class ElementController
         return $parent;
     }
 
-    public static function getNumberOfVisibleFiles()
+    public static function getNumberOfVisibleFiles(): int
     {
         return Element
             ::where('directory', 0)
@@ -45,7 +46,7 @@ class ElementController
             ->count();
     }
 
-    public static function getNumberOfFilesThisMonth()
+    public static function getNumberOfFilesThisMonth(): int
     {
         return Element
             ::where('directory', 0)
@@ -55,7 +56,7 @@ class ElementController
             ->count();
     }
 
-    public static function getLatestElements($limit = 10)
+    public static function getLatestElements(int $limit = 10): Collection
     {
         return Element::where('directory', 0)
             ->where('pending', 0)
@@ -100,7 +101,7 @@ class ElementController
         return $element;
     }
 
-    public static function getAllPending()
+    public static function getAllPending(): Collection
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'deleted', 'directory')
             ->where('pending', 1)
@@ -110,31 +111,7 @@ class ElementController
             ->get();
     }
 
-    public static function getElementsFromSearch($search = null)
-    {
-        if ($search === null or count($search) === 0) {
-            return [];
-        }
-
-        $query = Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')
-            ->where('parent', null)
-            ->where('directory', 1)
-            ->where('pending', 0)
-            ->where('deleted', 0);
-
-        $query->where(function ($query) use ($search) {
-            foreach ($search as $v) {
-                $query->orWhere('name', 'LIKE', $v);
-            }
-        });
-
-        $query->orderBy('empty');
-        $query->orderBy('name');
-
-        return $query->get();
-    }
-
-    public static function getAllCourses()
+    public static function getAllCourses(): Collection
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')
             ->where('parent', null)
@@ -145,7 +122,7 @@ class ElementController
             ->get();
     }
 
-    public static function getAllNoneEmptyCourses()
+    public static function getAllNoneEmptyCourses(): Collection
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'deleted', 'pending')
             ->where('parent', null)
@@ -155,7 +132,7 @@ class ElementController
             ->get();
     }
 
-    public static function getLatest($limit = 10)
+    public static function getLatest(int $limit = 10): Collection
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'added', 'checksum')
             ->where('directory', 0)
@@ -167,12 +144,8 @@ class ElementController
             ->get();
     }
 
-    public static function getAllElements($columns = ['id', 'parent'])
-    {
-        return Element::select($columns)->get();
-    }
-
-    public static function getAllChildren($id)
+    // TODO: used by admin stuff
+    public static function getAllChildren(int $id): Collection
     {
         return Element::select([
             'id', 'name', 'slug', 'uri', 'parent', 'empty',
@@ -187,14 +160,9 @@ class ElementController
             ->get();
     }
 
-    public static function getVisibleChildren($id, $order = self::SORT_TYPE_ORGANIZED)
+    public static function getVisibleChildren(int $id, int $order = self::SORT_TYPE_ORGANIZED): Collection
     {
-        $query = Element::select([
-            'id', 'name', 'slug', 'uri', 'parent', 'empty',
-            'directory', 'link',
-            'checksum', 'added'
-        ])
-            ->where('parent', $id)
+        $query = Element::where('parent', $id)
             ->where('deleted', 0)
             ->where('pending', 0);
 

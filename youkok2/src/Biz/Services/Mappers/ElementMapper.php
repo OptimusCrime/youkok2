@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Biz\Services\Mappers;
 
+use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\UrlService;
@@ -34,7 +35,7 @@ class ElementMapper
         $this->downloadCountService = $downloadCountService;
     }
 
-    public function map($elements, array $additionalFields = []): array
+    public function map(Collection $elements, array $additionalFields = []): array
     {
         $out = [];
         foreach ($elements as $element) {
@@ -47,7 +48,21 @@ class ElementMapper
         return $out;
     }
 
-    public function mapStdClass($elements, $additionalFields = [])
+    public function mapFromArray(array $elements, array $additionalFields = []): array
+    {
+        $out = [];
+        foreach ($elements as $element) {
+            $mappedElement = $this->mapElement($element, $additionalFields);
+            if ($mappedElement !== null) {
+                $out[] = $mappedElement;
+            }
+        }
+
+        return $out;
+    }
+
+    // TODO: type hinting here
+    public function mapStdClass($elements, array $additionalFields = []): array
     {
         $out = [];
         foreach ($elements as $element) {
@@ -60,7 +75,7 @@ class ElementMapper
         return $out;
     }
 
-    public function mapElement(Element $element, $additionalFields = [])
+    public function mapElement(Element $element, array $additionalFields = []): ?array
     {
         $arr = [
             'id' => $element->id,
@@ -124,6 +139,27 @@ class ElementMapper
             }
 
             $out[] = $this->mapElement($element);
+        }
+
+        return $out;
+    }
+
+    public function mapHistory(Collection $elements): array
+    {
+        $out = [];
+        foreach ($elements as $element) {
+            if ($element->isLink()) {
+                $out[] = $element->name . ' ble postet.';
+                continue;
+            }
+
+            if ($element->isFile()) {
+                $out[] = $element->name . ' ble lastet opp.';
+                continue;
+            }
+
+            // Default text
+            $out[] = $element->name . ' ble opprettet.';
         }
 
         return $out;

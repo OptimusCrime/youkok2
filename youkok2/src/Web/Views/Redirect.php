@@ -1,4 +1,5 @@
 <?php
+
 namespace Youkok\Web\Views;
 
 use Slim\Http\Response;
@@ -35,8 +36,10 @@ class Redirect extends BaseView
 
         $this->updateDownloadsProcessor->run($element);
 
-        return $response
-            ->withStatus(302)
-            ->withHeader('Location', $element->link);
+        return $this->output(
+            $response
+                ->withStatus(302)
+                ->withHeader('Location', $element->link)
+        );
     }
 }

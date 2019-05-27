@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block head %}
+<% for (let css in htmlWebpackPlugin.files.css) { %><link rel="stylesheet" type="text/css" href="<%= htmlWebpackPlugin.files.css[css] %>" />
+<% } %>{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xs-12 col-md-8">
+        <div class="row">
+            <div class="col-xs-12">
+                <ol class="breadcrumb" id="archive-breadcrumbs">
+                    <li><a href={{ youkok_url() }}>Hjem</a></li>
+                    <li>Emner</li>
+                </ol>
+            </div>
+        </div>
+        <div id="courses"></div>
+    </div>
+    <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">
+        {% include "sidebar/courses.html" %}
+        {% if DEV == '1' %}{% include "react/dev_sidebarPopular.html" %}{% else %}{% include "react/sidebarPopular.html" %}{% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<% for (let js in htmlWebpackPlugin.files.js) { %><script src="<%= htmlWebpackPlugin.files.js[js] %>"></script>
+<% } %>{% endblock %}

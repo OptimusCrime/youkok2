@@ -30,16 +30,16 @@ class MostPopular extends BaseProcessorView
 
     public function get(Request $request, Response $response): Response
     {
-        return $this->output($response, [
+        return $this->outputJson($response, [
             'data' => $this->getMostPopularElements()
         ]);
     }
 
     private function getMostPopularElements(): array
     {
-        $mostPopular = $this->mostPopularElementsService->fromDelta(MostPopularElement::MONTH, static::SERVICE_LIMIT);
+        $mostPopular = $this->mostPopularElementsService->fromDelta(MostPopularElement::WEEK, static::SERVICE_LIMIT);
 
-        return $this->elementMapper->map(
+        return $this->elementMapper->mapFromArray(
             $mostPopular, [
                 ElementMapper::DATASTORE_DOWNLOADS,
                 ElementMapper::PARENT_DIRECT,

@@ -7,7 +7,7 @@ use Youkok\Web\Views\BaseView;
 
 class BaseProcessorView extends BaseView
 {
-    protected function output(Response $response, array $object): Response
+    protected function outputJson(Response $response, array $object): Response
     {
         $this->sessionService->store();
 

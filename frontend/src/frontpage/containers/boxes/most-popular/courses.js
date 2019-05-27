@@ -7,6 +7,7 @@ import { MostPopularDropdown } from "../../../components/most-popular/dropdown";
 import { formatNumber } from "../../../../common/utils";
 import { DELTA_POST_POPULAR_COURSES } from "../../../consts";
 import { updateFrontpage as updateFrontpageDispatch } from "../../../redux/frontpage/actions";
+import {EmptyItem} from "../../../../common/components/empty-item";
 
 class BoxMostPopularCourses extends Component {
 
@@ -36,11 +37,28 @@ class BoxMostPopularCourses extends Component {
   render() {
 
     const {
+      failed,
       isLoading,
       coursesMostPopular,
       coursesMostPopularLoading,
       userPreferences,
     } = this.props;
+
+    if (failed) {
+      return (
+        <div className="col-xs-12 col-sm-6 frontpage-box">
+          <BoxWrapper
+            title="Mest populære fag"
+            titleInline={false}
+            isLoading={false}
+            isEmpty={false}
+
+          >
+            <EmptyItem text="Kunne ikke hente mest populære fag" />
+          </BoxWrapper>
+        </div>
+      );
+    }
 
     const selectedButton = userPreferences[DELTA_POST_POPULAR_COURSES];
 

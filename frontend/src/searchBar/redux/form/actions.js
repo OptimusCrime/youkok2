@@ -8,7 +8,7 @@ import {
   ARROW_DOWN,
   ARROW_UP,
   MAX_RESULTS
-} from "../../consts";
+} from "../../constants";
 import { selectedCourseToSearchBarText } from "./util";
 
 export const updateSearchField = (search, courses) => dispatch => {
@@ -38,9 +38,7 @@ export const updateSearchField = (search, courses) => dispatch => {
   return dispatch({ type: UPDATE_SEARCH_RESULTS, results: results.slice(0, MAX_RESULTS) });
 };
 
-export const closeSearchResults = () => dispatch => dispatch({ type: CLOSE_SEARCH_RESULTS });
-
-export const updateCursorPosition = (direction, cursorPosition, results) => dispatch => {
+export const updateCursorPosition = (direction, cursorPosition, results) => {
   if (results.length === 0) {
     return null;
   }
@@ -50,14 +48,14 @@ export const updateCursorPosition = (direction, cursorPosition, results) => disp
   // Handle set initial value
   if (cursorPosition === null) {
     if (direction === ARROW_DOWN) {
-      return dispatch({
+      return ({
         type: UPDATE_CURSOR_POSITION,
         value: 0,
         display: selectedCourseToSearchBarText(results[0])
       });
     }
 
-    return dispatch({
+    return ({
       type: UPDATE_CURSOR_POSITION,
       value: lastResultIndex,
       display: selectedCourseToSearchBarText(results[lastResultIndex])
@@ -66,14 +64,14 @@ export const updateCursorPosition = (direction, cursorPosition, results) => disp
 
   // Handle regular increases
   if (direction === ARROW_DOWN && cursorPosition !== lastResultIndex) {
-    return dispatch({
+    return ({
       type: UPDATE_CURSOR_POSITION,
       value: cursorPosition + 1,
       display: selectedCourseToSearchBarText(results[cursorPosition + 1])
     });
   }
   if (direction === ARROW_UP && cursorPosition !== 0) {
-    return dispatch({
+    return ({
       type: UPDATE_CURSOR_POSITION,
       value: cursorPosition - 1,
       display: selectedCourseToSearchBarText(results[cursorPosition - 1])
@@ -81,7 +79,7 @@ export const updateCursorPosition = (direction, cursorPosition, results) => disp
   }
 
   // Otherwise, reset the cursor, off the grid
-  return dispatch({
+  return ({
     type: UPDATE_CURSOR_POSITION,
     value: null,
   });

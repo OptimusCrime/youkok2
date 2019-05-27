@@ -26,11 +26,9 @@ class Frontpage extends BaseProcessorView
     {
         parent::__construct($container);
 
-
         $this->frontpageService = $container->get(FrontpageService::class);
         $this->courseMapper = $container->get(CourseMapper::class);
         $this->elementMapper = $container->get(ElementMapper::class);
-
     }
 
     public function get(Request $request, Response $response)
@@ -62,7 +60,7 @@ class Frontpage extends BaseProcessorView
         $payload['elements_most_popular'] = $this->mapElementsMostPopular($payload['elements_most_popular']);
         $payload['courses_most_popular'] = $this->mapCoursesMostPopular($payload['courses_most_popular']);
 
-        return $this->output($response, $payload);
+        return $this->outputJson($response, $payload);
     }
 
     public function put(Request $request, Response $response)
@@ -79,7 +77,7 @@ class Frontpage extends BaseProcessorView
         try {
             $output = $this->frontpageService->put($delta, $value);
 
-            return $this->output(
+            return $this->outputJson(
                 $response,
                 $this->mapUpdateMostPopular($output, $delta, $value)
             );
@@ -92,7 +90,7 @@ class Frontpage extends BaseProcessorView
 
     private function mapElementsMostPopular($arr)
     {
-        return $this->elementMapper->map(
+        return $this->elementMapper->mapFromArray(
             $arr, [
                 ElementMapper::DATASTORE_DOWNLOADS,
                 ElementMapper::PARENT_DIRECT,

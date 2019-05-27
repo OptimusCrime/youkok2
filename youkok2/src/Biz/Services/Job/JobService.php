@@ -2,7 +2,7 @@
 namespace Youkok\Biz\Services\Job;
 
 use Psr\Container\ContainerInterface;
-use Youkok\Biz\Services\Job\Jobs\PopulateAutocompleteFileJobService;
+use Youkok\Biz\Services\Job\Jobs\PopulateCoursesLookupFileJobService;
 use Youkok\Biz\Services\Job\Jobs\RemoveOldSessionsJobServiceJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
@@ -17,18 +17,18 @@ class JobService
         RemoveOldSessionsJobServiceJobService::class,
         UpdateMostPopularCoursesJobService::class,
         UpdateMostPopularElementsJobService::class,
-        PopulateAutocompleteFileJobService::class,
+        PopulateCoursesLookupFileJobService::class,
     ];
 
     private static $upgrade = [
         RemoveOldSessionsJobServiceJobService::class,
         UpdateMostPopularCoursesJobService::class,
         UpdateMostPopularElementsJobService::class,
-        PopulateAutocompleteFileJobService::class,
+        PopulateCoursesLookupFileJobService::class,
     ];
 
     private static $codeMapping = [
-        'autocomplete' => PopulateAutocompleteFileJobService::class
+        'lookup' => PopulateCoursesLookupFileJobService::class
     ];
 
     private $container;
@@ -63,11 +63,7 @@ class JobService
 
     private function runJob($jobClass)
     {
-        try {
-            $job = $this->container->get($jobClass);
-            $job->run();
-        } catch (\Exception $e) {
-            // TODO
-        }
+        $job = $this->container->get($jobClass);
+        $job->run();
     }
 }

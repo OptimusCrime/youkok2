@@ -6,11 +6,13 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const entries = {
-  polyfills: './src/polyfills/polyfills.js',
-  frontpage: './src/frontpage/frontpage.js',
   archive: './src/archive/archive.js',
-  sidebarPopular: './src/sidebarPopular/sidebarPopular.js',
+  courses: './src/courses/courses.js',
+  frontpage: './src/frontpage/frontpage.js',
+  polyfills: './src/polyfills/polyfills.js',
   searchBar: './src/searchBar/searchBar.js',
+  sidebarHistory: './src/sidebarHistory/sidebarHistory.js',
+  sidebarPopular: './src/sidebarPopular/sidebarPopular.js',
 };
 
 module.exports = (env, argv) => {
