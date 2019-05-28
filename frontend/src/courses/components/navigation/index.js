@@ -16,14 +16,16 @@ export const Navigation = ({page, numberOfPages, changePage}) => (
       </NavigationButton>
     </div>
     <div className="courses-navigation__group courses-navigation__group--center" role="group">
+      {numberOfPages > 0 &&
       <NavigationRelativeButtons
         page={page}
         numberOfPages={numberOfPages}
         changePage={changePage}
       />
+      }
     </div>
     <div
-      className={`courses-navigation__group courses-navigation__group--right ${page === numberOfPages ? 'courses-navigation__group--hidden' : ''}`}
+      className={`courses-navigation__group courses-navigation__group--right ${(page === numberOfPages || page === 0) ? 'courses-navigation__group--hidden' : ''}`}
       role="group"
     >
       <NavigationButton page={page + 1} changePage={changePage}>

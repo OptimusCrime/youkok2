@@ -1,15 +1,30 @@
 import {
-  COURSES_CHANGE_ORDER, COURSES_CHANGE_PAGE,
+  COURSE_CHANGE_CHECKBOX,
+  COURSES_CHANGE_ORDER, COURSES_CHANGE_PAGE, COURSES_UPDATE_SEARCH,
 } from "./constants";
-import {DEFAULT_PAGE, DEFAULT_SORT_COLUMN, DEFAULT_SORT_ORDER} from "../../constants";
-import {sortCourses} from "./utilities";
+import {
+  DEFAULT_PAGE,
+  DEFAULT_COLUMN,
+  DEFAULT_ORDER,
+  DEFAULT_SHOW_ONLY_NOT_EMPTY,
+  DEFAULT_SEARCH
+} from "../../constants";
+import {updateCourses} from "./utilities";
 
 const defaultState = {
-  sortColumn: DEFAULT_SORT_COLUMN,
-  sortOrder: DEFAULT_SORT_ORDER,
+  column: DEFAULT_COLUMN,
+  order: DEFAULT_ORDER,
   page: DEFAULT_PAGE,
 
-  courses: sortCourses(DEFAULT_SORT_COLUMN, DEFAULT_SORT_ORDER, DEFAULT_PAGE),
+  courses: updateCourses({
+    column: DEFAULT_COLUMN,
+    order: DEFAULT_ORDER,
+    search: DEFAULT_SEARCH,
+    showOnlyNotEmpty: DEFAULT_SHOW_ONLY_NOT_EMPTY,
+  }),
+
+  search: '',
+  showOnlyNotEmpty: false,
 };
 
 export const courses = (state = defaultState, action) => {
@@ -19,11 +34,16 @@ export const courses = (state = defaultState, action) => {
       return {
         ...state,
 
-        sortColumn: action.sortColumn,
-        sortOrder: action.sortOrder,
+        column: action.column,
+        order: action.order,
         page: DEFAULT_PAGE,
 
-        courses: sortCourses(action.sortColumn, action.sortOrder, DEFAULT_PAGE),
+        courses: updateCourses({
+          column: action.column,
+          order: action.order,
+          search: state.search,
+          showOnlyNotEmpty: state.showOnlyNotEmpty,
+        }),
       };
 
     case COURSES_CHANGE_PAGE:
@@ -32,7 +52,41 @@ export const courses = (state = defaultState, action) => {
 
         page: action.page,
 
-        courses: sortCourses(state.sortColumn, state.sortOrder, action.page),
+        courses: updateCourses({
+          column: state.column,
+          order: state.order,
+          search: state.search,
+          showOnlyNotEmpty: state.showOnlyNotEmpty,
+        }),
+      };
+
+    case COURSES_UPDATE_SEARCH:
+      return {
+        ...state,
+
+        search: action.value,
+
+        courses: updateCourses({
+          column: state.column,
+          order: state.order,
+          search: action.value,
+          showOnlyNotEmpty: state.showOnlyNotEmpty,
+        }),
+      };
+
+    case COURSE_CHANGE_CHECKBOX:
+      return {
+        ...state,
+
+        page: DEFAULT_PAGE,
+        showOnlyNotEmpty: !state.showOnlyNotEmpty,
+
+        courses: updateCourses({
+          column: state.column,
+          order: state.order,
+          search: state.search,
+          showOnlyNotEmpty: !state.showOnlyNotEmpty,
+        }),
       };
 
     default:

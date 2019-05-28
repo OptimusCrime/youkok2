@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import CoursesContainer from './containers/main-container';
+import CourseMain from './containers/course-main';
 import configureStore from './redux/configureStore';
 
 import './courses.less';
@@ -13,7 +13,7 @@ const store = configureStore(preloadedState);
 
 ReactDOM.render((
     <Provider store={store}>
-      <CoursesContainer />
+      <CourseMain />
     </Provider>
   ), document.getElementById('courses')
 );

@@ -1,32 +1,48 @@
-import {COLUMN_CODE, COURSES_PER_PAGE, ORDER_DESC} from "../../constants";
+import {COLUMN_CODE, DEFAULT_SEARCH, ORDER_DESC} from "../../constants";
 
-export const sortCourses = (column, order, page) => {
+export const updateCourses = ({ column, order, search, showOnlyNotEmpty}) => {
   if (!window.COURSES_LOOKUP) {
-    // This should have thrown an error earlier, but just to be on the safe side
     return [];
   }
 
-  const sorted = window.COURSES_LOOKUP
-    .slice()
-    .sort((a, b) => sortCoursesKey(column, order, a, b));
-
-  return sorted.slice(page * COURSES_PER_PAGE, (page + 1) * COURSES_PER_PAGE);
+  return sortCoursesList(filterSearch(search, showOnlyNotEmpty), column, order);
 };
 
-const sortCoursesKey = (column, order, a, b) => {
-  if (column === COLUMN_CODE) {
-    if (order === ORDER_DESC) {
-      return sortCoursesKeyValue(a.code, b.code);
+const filterSearch = (search, showOnlyNotEmpty) => window.COURSES_LOOKUP.filter(course => {
+    if (showOnlyNotEmpty && course.empty) {
+      return false;
     }
 
-    return sortCoursesKeyValue(a.code, b.code) * -1;
-  }
+    // No need to filter empty search
+    if (search === DEFAULT_SEARCH) {
+      return true;
+    }
+
+    return search
+      .split(' ')
+      .filter(word => /\w+/.test(word))
+      .map(word => word.toLowerCase())
+      .every(word => course.name.toLowerCase().includes(word) || course.code.toLowerCase().includes(word));
+  });
+
+const sortCoursesList = (courses, column, order) => {
+  const sorted = courses
+    .slice()
+    .sort((a, b) => sortCoursesKey(column, a, b));
 
   if (order === ORDER_DESC) {
-    return sortCoursesKeyValue(a.name, b.name);
+    return sorted;
   }
 
-  return sortCoursesKeyValue(a.name, b.name) * -1;
+  return sorted.reverse();
+};
+
+const sortCoursesKey = (column, a, b) => {
+  if (column === COLUMN_CODE) {
+    return sortCoursesKeyValue(a.code, b.code);
+  }
+
+  return sortCoursesKeyValue(a.name.trim(), b.name.trim());
 };
 
 const sortCoursesKeyValue = (a, b) => {

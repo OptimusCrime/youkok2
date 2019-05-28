@@ -1,14 +1,14 @@
 import React from 'react';
 import {ORDER_ASC, ORDER_DESC} from "../constants";
 
-export const HeaderColumn = ({id, text, sortColumn, sortOrder, changeOrder }) => (
+export const HeaderColumn = ({id, text, column, order, changeOrder }) => (
   <div
     className={`course-row__${id} course-row__header--${id}`}
     onClick={() => {
-      if (sortColumn === id) {
+      if (column === id) {
         changeOrder(
           id,
-          sortOrder === ORDER_DESC ? ORDER_ASC : ORDER_DESC
+          order === ORDER_DESC ? ORDER_ASC : ORDER_DESC
         );
       }
       else {
@@ -17,8 +17,8 @@ export const HeaderColumn = ({id, text, sortColumn, sortOrder, changeOrder }) =>
     }}
   >
     <strong>{text}</strong>
-    {sortColumn === id
-      ? <i className={`fa fa-sort-${sortOrder}`} aria-hidden="true"/>
+    {column === id
+      ? <i className={`fa fa-sort-${order}`} aria-hidden="true"/>
       : <i className="fa fa-sort inactive" aria-hidden="true"/>
     }
   </div>

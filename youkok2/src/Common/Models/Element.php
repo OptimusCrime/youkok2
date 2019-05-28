@@ -280,14 +280,14 @@ class Element extends BaseModel
 
     public static function fromUriFileVisible(
         string $uri,
-        array $attributes = ['id', 'parent', 'name', 'uri', 'checksum', 'link', 'directory']
+        array $attributes = ['id', 'parent', 'name', 'slug', 'uri', 'checksum', 'link', 'directory']
     ): Element {
         return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_FILE_LAST);
     }
 
     public static function fromUriDirectoryVisible(
         string $uri,
-        array $attributes = ['id', 'parent', 'name', 'uri', 'checksum', 'link', 'directory']
+        array $attributes = ['id', 'parent', 'name', 'slug', 'uri', 'checksum', 'link', 'directory']
     ): Element {
         return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_DIRECTORIES);
     }
