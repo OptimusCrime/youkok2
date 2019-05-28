@@ -1,5 +1,5 @@
 import {
-  fetchFrontPageRest,
+  fetchFrontPageBoxesRest,
   updateFrontpageRest
 } from '../../api';
 import {
@@ -7,21 +7,21 @@ import {
   FRONTPAGE_DELTA_CHANGE_FINISHED,
   FRONTPAGE_DELTA_CHANGE_STARTED,
 
-  FRONTPAGE_FETCH_FAILED,
-  FRONTPAGE_FETCH_FINISHED,
-  FRONTPAGE_FETCH_STARTED,
+  FRONTPAGE_BOXES_FETCH_FAILED,
+  FRONTPAGE_BOXES_FETCH_FINISHED,
+  FRONTPAGE_BOXES_FETCH_STARTED,
 } from './constants';
 
-export const fetchFrontpage = () => dispatch => {
-  dispatch({ type: FRONTPAGE_FETCH_STARTED });
+export const fetchFrontpageBoxes = () => dispatch => {
+  dispatch({ type: FRONTPAGE_BOXES_FETCH_STARTED });
 
-  fetchFrontPageRest()
+  fetchFrontPageBoxesRest()
     .then(response => response.json())
-    .then(response => dispatch({ type: FRONTPAGE_FETCH_FINISHED, data: response }))
+    .then(response => dispatch({ type: FRONTPAGE_BOXES_FETCH_FINISHED, data: response }))
     .catch(e => {
       console.error(e);
 
-      dispatch({ type: FRONTPAGE_FETCH_FAILED })
+      dispatch({ type: FRONTPAGE_BOXES_FETCH_FAILED })
     });
 };
 

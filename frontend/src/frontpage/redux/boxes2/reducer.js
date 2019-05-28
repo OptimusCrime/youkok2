@@ -1,11 +1,10 @@
 import {
-  mapFrontpage,
-  mapFrontpageInfo
+  mapFrontpageBoxes
 } from './mappers';
 import {
-  FRONTPAGE_FETCH_FAILED,
-  FRONTPAGE_FETCH_FINISHED,
-  FRONTPAGE_FETCH_STARTED,
+  FRONTPAGE_BOXES_FETCH_FAILED,
+  FRONTPAGE_BOXES_FETCH_FINISHED,
+  FRONTPAGE_BOXES_FETCH_STARTED,
 
   FRONTPAGE_DELTA_CHANGE_FAILED,
   FRONTPAGE_DELTA_CHANGE_FINISHED,
@@ -21,13 +20,10 @@ const defaultState = {
   started: false,
   finished: false,
   failed: false,
-
-  info: {
-    number_files: null,
-    number_downloads: null,
-    number_courses_with_content: null,
-    number_new_elements: null,
-  },
+  number_files: null,
+  number_downloads: null,
+  number_courses_with_content: null,
+  number_new_elements: null,
 
   latest_elements: [],
   courses_last_visited: [],
@@ -45,39 +41,39 @@ const defaultState = {
   },
 };
 
-export const frontpage = (state = defaultState, action) => {
+export const boxes = (state = defaultState, action) => {
   switch (action.type) {
 
-    case FRONTPAGE_FETCH_STARTED:
+    case FRONTPAGE_BOXES_FETCH_STARTED:
       return {
         ...state,
-        started: true,
+        boxes: {
+          ...state.boxes,
+          started: true,
+        }
       };
 
-    case FRONTPAGE_FETCH_FINISHED:
+    case FRONTPAGE_BOXES_FETCH_FINISHED:
       return {
         ...state,
 
-        info: {
-          ...state,
-          ...mapFrontpageInfo(action.data)
+        boxes: {
+          ...state.boxes,
+          started: false,
+          finished: true,
+          ...mapFrontpageBoxes(action.data)
         },
-
-        user_preferences: {
-          ...action.data.user_preferences
-        },
-
-        ...mapFrontpage(action.data),
-
-        finished: true,
-        started: false,
       };
 
-    case FRONTPAGE_FETCH_FAILED:
+    case FRONTPAGE_BOXES_FETCH_FAILED:
       return {
         ...state,
-        failed: true,
-        started: false,
+
+        boxes: {
+          ...state.boxes,
+          failed: true,
+          started: false,
+        },
       };
 
     case FRONTPAGE_DELTA_CHANGE_STARTED:

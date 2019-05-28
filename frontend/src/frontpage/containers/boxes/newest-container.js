@@ -4,18 +4,21 @@ import { connect } from 'react-redux';
 import { BoxWrapper } from "../../../common/components/box-wrapper";
 import { ElementItem } from "../../../common/components/element-item";
 import { ItemTimeAgo } from "../../components/item-time-ago";
-import { fromDatabaseDateToJavaScriptDate } from "../../../common/utils";
+import {fromDatabaseDateToJavaScriptDate, loading} from "../../../common/utils";
 import {EmptyItem} from "../../../common/components/empty-item";
 
-class BoxLatestElements extends Component {
+class BoxNewestElements extends Component {
 
   render() {
 
     const {
+      started,
+      finished,
       failed,
-      isLoading,
-      latestElements,
+      elements,
     } = this.props;
+
+    const isLoading = loading(started, finished);
 
     if (failed) {
       return (
@@ -49,11 +52,11 @@ class BoxLatestElements extends Component {
   }
 }
 
-const mapStateToProps = ({ frontpage }) => ({
-  latestElements: frontpage.latest_elements
+const mapStateToProps = ({ newest }) => ({
+  started: newest.started,
+  finished: newest.finished,
+  failed: newest.failed,
+  elements: newest.elements,
 });
 
-const mapDispatchToProps = {
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BoxLatestElements);
+export default connect(mapStateToProps, {})(BoxNewestElements);
