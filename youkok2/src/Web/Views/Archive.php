@@ -50,8 +50,7 @@ class Archive extends BaseView
                 'SITE_TITLE' => ElementHelper::siteTitleFor($element), // TODO
                 'SITE_DESCRIPTION' => ElementHelper::siteDescriptionFor($element) // TODO
             ]);
-        }
-        catch (ElementNotFoundException $exception) {
+        } catch (ElementNotFoundException $exception) {
             // TODO log
             return $this->render404($response);
         }

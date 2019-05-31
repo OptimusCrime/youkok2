@@ -55,5 +55,4 @@ class Utilities
 
         return static::prettifySQLDateTime($input);
     }
-
 }

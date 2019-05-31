@@ -47,8 +47,7 @@ class JobService
     {
         if (isset(static::$codeMapping[$code])) {
             $this->runJob(static::$codeMapping[$code]);
-        }
-        else {
+        } else {
             echo 'No job with code: ' . $code . '.' . PHP_EOL;
             die();
         }

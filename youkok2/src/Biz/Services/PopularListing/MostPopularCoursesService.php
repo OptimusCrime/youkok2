@@ -20,7 +20,8 @@ class MostPopularCoursesService implements MostPopularInterface
     private $settings;
     private $cacheService;
 
-    public function __construct(Collection $settings, CacheService $cacheService) {
+    public function __construct(Collection $settings, CacheService $cacheService)
+    {
         $this->settings = $settings;
         $this->cacheService = $cacheService;
     }

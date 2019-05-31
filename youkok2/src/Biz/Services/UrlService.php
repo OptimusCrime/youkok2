@@ -28,7 +28,6 @@ class UrlService
             default:
             case Element::DIRECTORY:
                 return $this->urlForDirectory($element);
-
         }
     }
 

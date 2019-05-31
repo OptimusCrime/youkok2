@@ -11,7 +11,8 @@ class UpdateDownloadsService
 {
     private $cacheService;
 
-    public function __construct(CacheService $cacheService) {
+    public function __construct(CacheService $cacheService)
+    {
         $this->cacheService = $cacheService;
     }
 
@@ -37,8 +38,7 @@ class UpdateDownloadsService
             if ($databaseDownloads !== null) {
                 // This element has downloads, but the cache was empty, update the cache
                 $this->cacheService->setDownloadsForId($element->id, $databaseDownloads);
-            }
-            else {
+            } else {
                 // This means that the number of downloads is in fact zero, set zero to the cache. This could
                 // also be caught by the guard in CacheService::increaseDownloadsForId, but I think this is
                 // cleaner.

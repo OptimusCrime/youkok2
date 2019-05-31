@@ -10,7 +10,8 @@ class Flat extends BaseView
     {
         return $this->render(
             $response,
-            'flat/help.html', [
+            'flat/help.html',
+            [
                 'SITE_TITLE' => 'Hjelp',
                 'HEADER_MENU' => 'help',
                 'VIEW_NAME' => 'help',
@@ -24,7 +25,8 @@ class Flat extends BaseView
     {
         return $this->render(
             $response,
-            'flat/about.html', [
+            'flat/about.html',
+            [
                 'SITE_TITLE' => 'Om Youkok2',
                 'HEADER_MENU' => 'about',
                 'VIEW_NAME' => 'about',
@@ -38,7 +40,8 @@ class Flat extends BaseView
     {
         return $this->render(
             $response,
-            'flat/terms.html', [
+            'flat/terms.html',
+            [
                 'SITE_TITLE' => 'Retningslinjer',
                 'HEADER_MENU' => '',
                 'VIEW_NAME' => 'terms',
@@ -53,7 +56,8 @@ class Flat extends BaseView
     {
         return $this->render(
             $response->withHeader('Content-Type', 'text/plain; charset=utf-8'),
-            'flat/changelog.txt', [
+            'flat/changelog.txt',
+            [
                 'CONTENT' => file_get_contents(getenv('BASE_DIRECTORY') . 'CHANGELOG.md')
             ]
         );

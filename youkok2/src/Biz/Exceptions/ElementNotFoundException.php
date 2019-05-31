@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Biz\Exceptions;
 
-class ElementNotFoundException extends YoukokException {
+class ElementNotFoundException extends YoukokException
+{
 
 }

@@ -30,8 +30,7 @@ class AdminAuthMiddleware
             if ($session->isAdmin()) {
                 return $next($request, $response);
             }
-        }
-        catch (SessionNotFoundException $e) {
+        } catch (SessionNotFoundException $e) {
             return static::noAccess($response);
         } catch (CookieNotFoundException $e) {
             return static::noAccess($response);

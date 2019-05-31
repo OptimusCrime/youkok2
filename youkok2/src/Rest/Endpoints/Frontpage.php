@@ -68,11 +68,13 @@ class Frontpage extends BaseProcessorView
         $payload = $this->frontpageService->newest();
 
         $data = $this->elementMapper->map(
-            $payload, [
+            $payload,
+            [
             ElementMapper::POSTED_TIME,
             ElementMapper::PARENT_DIRECT,
             ElementMapper::PARENT_COURSE
-        ]);
+            ]
+        );
 
         return $this->outputJson($response, [
             'data' => $data
@@ -84,7 +86,8 @@ class Frontpage extends BaseProcessorView
         $payload = $this->frontpageService->lastVisited();
 
         $data = $this->courseMapper->map(
-            $payload, [
+            $payload,
+            [
                 CourseMapper::LAST_VISITED
             ]
         );
@@ -99,7 +102,8 @@ class Frontpage extends BaseProcessorView
         $payload = $this->frontpageService->lastDownloaded();
 
         $data = $this->elementMapper->mapStdClass(
-            $payload, [
+            $payload,
+            [
                 ElementMapper::KEEP_DOWNLOADED_TIME,
                 ElementMapper::PARENT_DIRECT,
                 ElementMapper::PARENT_COURSE
@@ -131,8 +135,7 @@ class Frontpage extends BaseProcessorView
                 $response,
                 $this->mapUpdateMostPopular($output, $delta, $value)
             );
-        }
-        catch (InvalidRequestException $e) {
+        } catch (InvalidRequestException $e) {
             // TODO log
             return $response->withStatus(400);
         }
@@ -141,7 +144,8 @@ class Frontpage extends BaseProcessorView
     private function mapElementsMostPopular($arr)
     {
         return $this->elementMapper->mapFromArray(
-            $arr, [
+            $arr,
+            [
                 ElementMapper::DATASTORE_DOWNLOADS,
                 ElementMapper::PARENT_DIRECT,
                 ElementMapper::PARENT_COURSE
@@ -152,7 +156,8 @@ class Frontpage extends BaseProcessorView
     private function mapCoursesMostPopular($arr)
     {
         return $this->courseMapper->map(
-            $arr, [
+            $arr,
+            [
                 CourseMapper::DATASTORE_DOWNLOAD_ESTIMATE
             ]
         );
@@ -167,8 +172,7 @@ class Frontpage extends BaseProcessorView
 
         if ($delta === Session::KEY_MOST_POPULAR_ELEMENT) {
             $ret['data'] = $this->mapElementsMostPopular($output);
-        }
-        else {
+        } else {
             $ret['data'] = $this->mapCoursesMostPopular($output);
         }
 

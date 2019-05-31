@@ -40,7 +40,8 @@ class MostPopular extends BaseProcessorView
         $mostPopular = $this->mostPopularElementsService->fromDelta(MostPopularElement::WEEK, static::SERVICE_LIMIT);
 
         return $this->elementMapper->mapFromArray(
-            $mostPopular, [
+            $mostPopular,
+            [
                 ElementMapper::DATASTORE_DOWNLOADS,
                 ElementMapper::PARENT_DIRECT,
                 ElementMapper::PARENT_COURSE

@@ -89,8 +89,7 @@ class ElementController
         $element = null;
         if ($type === Element::DIRECTORY) {
             $element = Element::fromUriDirectoryVisible($uri);
-        }
-        else {
+        } else {
             $element = Element::fromUriFileVisible($uri);
         }
 

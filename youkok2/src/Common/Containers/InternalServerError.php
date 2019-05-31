@@ -28,5 +28,3 @@ class InternalServerError implements ContainersInterface
         };
     }
 }
-
-

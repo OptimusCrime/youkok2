@@ -80,7 +80,8 @@ class BaseView
 
         return $this->view->render($response, $template, array_merge(
             $this->templateData,
-            $data, [
+            $data,
+            [
                 'EXECUTION_TIME' => Timer::secondsToTimeString(Timer::stop())
             ]
         ));
@@ -120,7 +121,8 @@ class BaseView
     {
         return $this->render(
             $response->withStatus(404),
-            'errors/404.html', [
+            'errors/404.html',
+            [
                 'HEADER_MENU' => '',
                 'VIEW_NAME' => '404',
                 'SITE_DESCRIPTION' => 'Siden ble ikke funnet.',

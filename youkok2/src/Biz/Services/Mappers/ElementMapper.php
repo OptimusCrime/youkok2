@@ -164,5 +164,4 @@ class ElementMapper
 
         return $out;
     }
-
 }

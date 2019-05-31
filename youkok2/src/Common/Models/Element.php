@@ -96,8 +96,7 @@ class Element extends BaseModel
         // database columns
         if ($this->uri !== null and strlen($this->uri) > 0) {
             $this->fullUri = $this->uri;
-        }
-        else {
+        } else {
             $this->fullUri = ElementHelper::constructUri($this->id);
         }
 
@@ -226,8 +225,7 @@ class Element extends BaseModel
         if ($attributes == Element::ATTRIBUTES_ALL) {
             $query = Element
                 ::where('id', $id);
-        }
-        else {
+        } else {
             $query = Element
                 ::select($attributes)
                 ->where('id', $id);
@@ -320,12 +318,10 @@ class Element extends BaseModel
             if ($type === static::ELEMENT_TYPE_FILE_LAST) {
                 if ($index === count($fragments) - 1) {
                     $query = static::handleElementType($query, Element::ELEMENT_TYPE_FILES);
-                }
-                else {
+                } else {
                     $query = static::handleElementType($query, Element::ELEMENT_TYPE_DIRECTORIES);
                 }
-            }
-            else {
+            } else {
                 $query = static::handleElementType($query, $type);
             }
 

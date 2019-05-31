@@ -9,7 +9,8 @@ class CacheService
 {
     private $cache;
 
-    public function __construct(Redis $cache) {
+    public function __construct(Redis $cache)
+    {
         $this->cache = $cache;
     }
 

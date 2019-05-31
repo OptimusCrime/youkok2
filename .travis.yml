@@ -13,9 +13,8 @@ install:
   composer install --no-interaction
 
 script:
-  - composer phpcs
-  - php composer.phar phpunit --coverage-clover clover.xml
-  - php composer.phar phpunit
+  - ./vendor/bin/phpcs
+  - ./vendor/bin/phpunit --coverage-clover clover.xml
 
 after_script:
-  - php composer.phar coveralls --coverage_clover=clover.xml -v
+  - ./vendor/bin/coveralls --coverage_clover=clover.xml -v

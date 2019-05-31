@@ -27,16 +27,14 @@ class SessionService
         try {
             $hash = CookieHelper::getCookie('youkok2');
             return SessionController::get($hash);
-        }
-        catch (CookieNotFoundException $exception) {
+        } catch (CookieNotFoundException $exception) {
             // There is no need for a session if the script is called from the command line
             if (php_sapi_name() === 'cli') {
                 return null;
             }
 
             return $this->createSession();
-        }
-        catch (SessionNotFoundException $exception) {
+        } catch (SessionNotFoundException $exception) {
             return $this->createSession();
         }
     }

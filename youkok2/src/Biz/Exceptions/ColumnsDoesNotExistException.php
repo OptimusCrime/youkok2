@@ -1,5 +1,6 @@
 <?php
 namespace Youkok\Biz\Exceptions;
 
-class ColumnsDoesNotExistException extends YoukokException {
+class ColumnsDoesNotExistException extends YoukokException
+{
 }

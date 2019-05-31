@@ -11,7 +11,8 @@ class MostPopularElementsService implements MostPopularInterface
 {
     private $cacheService;
 
-    public function __construct(CacheService $cacheService) {
+    public function __construct(CacheService $cacheService)
+    {
         $this->cacheService = $cacheService;
     }
 
