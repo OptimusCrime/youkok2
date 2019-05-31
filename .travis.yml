@@ -5,7 +5,7 @@ php:
 notifications:
   email: false
 
-before_script: cd youkok2
+before_install: cd youkok2
 
 install:
   composer install --no-interaction
