@@ -1,7 +1,7 @@
 import {
-  FRONTPAGE_LAST_VISITED_FETCH_FAILED,
-  FRONTPAGE_LAST_VISITED_FETCH_FINISHED,
-  FRONTPAGE_LAST_VISITED_FETCH_STARTED,
+  FRONTPAGE_NEWEST_FETCH_FAILED,
+  FRONTPAGE_NEWEST_FETCH_FINISHED,
+  FRONTPAGE_NEWEST_FETCH_STARTED,
 } from './constants';
 
 const defaultState = {
@@ -11,16 +11,16 @@ const defaultState = {
   elements: []
 };
 
-export const lastVisited = (state = defaultState, action) => {
+export const newest = (state = defaultState, action) => {
   switch (action.type) {
 
-    case FRONTPAGE_LAST_VISITED_FETCH_STARTED:
+    case FRONTPAGE_NEWEST_FETCH_STARTED:
       return {
         ...state,
         started: true,
       };
 
-    case FRONTPAGE_LAST_VISITED_FETCH_FINISHED:
+    case FRONTPAGE_NEWEST_FETCH_FINISHED:
       return {
         ...state,
 
@@ -29,7 +29,7 @@ export const lastVisited = (state = defaultState, action) => {
         elements: action.data
       };
 
-    case FRONTPAGE_LAST_VISITED_FETCH_FAILED:
+    case FRONTPAGE_NEWEST_FETCH_FAILED:
       return {
         ...state,
 

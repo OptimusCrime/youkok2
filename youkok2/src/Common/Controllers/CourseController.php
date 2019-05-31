@@ -31,7 +31,7 @@ class CourseController
         return static::getCourseFromElement(Element::fromIdVisible($id));
     }
 
-    public static function getLastVisitedCourses($limit = 10)
+    public static function getLastVisitedCourses($limit = 10): Collection
     {
         return Element::select('id', 'name', 'slug', 'uri', 'last_visited')
             ->where('parent', null)

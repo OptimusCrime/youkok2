@@ -42,7 +42,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - WITH_XDEBUG=true
+        - YOUKOK_ENV=dev
     ports:
       - "8000:80"
     volumes:
@@ -50,6 +50,7 @@ services:
       - ./youkok2:/var/www/html
       - ./docker/files:/var/www/files
       - ./docker/cache:/var/www/cache
+      - ./docker/xdebug:/tmp/xdebug
     links:
       - db
       - cache

@@ -1,42 +1,35 @@
 import {
-  mapFrontPageBoxes
-} from './mappers';
-import {
-  FRONTPAGE_BOXES_FETCH_FAILED,
-  FRONTPAGE_BOXES_FETCH_FINISHED,
-  FRONTPAGE_BOXES_FETCH_STARTED,
+  FRONTPAGE_LAST_DOWNLOADED_FETCH_FAILED,
+  FRONTPAGE_LAST_DOWNLOADED_FETCH_FINISHED,
+  FRONTPAGE_LAST_DOWNLOADED_FETCH_STARTED,
 } from './constants';
 
 const defaultState = {
   started: false,
   finished: false,
   failed: false,
-  number_files: null,
-  number_downloads: null,
-  number_courses_with_content: null,
-  number_new_elements: null,
+  elements: []
 };
 
-export const boxes = (state = defaultState, action) => {
+export const lastDownloaded = (state = defaultState, action) => {
   switch (action.type) {
 
-    case FRONTPAGE_BOXES_FETCH_STARTED:
+    case FRONTPAGE_LAST_DOWNLOADED_FETCH_STARTED:
       return {
         ...state,
         started: true,
       };
 
-    case FRONTPAGE_BOXES_FETCH_FINISHED:
-      console.log(action.data);
+    case FRONTPAGE_LAST_DOWNLOADED_FETCH_FINISHED:
       return {
         ...state,
 
         started: false,
         finished: true,
-        ...mapFrontPageBoxes(action.data)
+        elements: action.data
       };
 
-    case FRONTPAGE_BOXES_FETCH_FAILED:
+    case FRONTPAGE_LAST_DOWNLOADED_FETCH_FAILED:
       return {
         ...state,
 

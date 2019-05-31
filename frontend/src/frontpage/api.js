@@ -1,4 +1,7 @@
-export const fetchFrontPageRest = () => fetch('/rest/frontpage');
+export const fetchFrontPageBoxesRest = () => fetch('/rest/frontpage/boxes');
+export const fetchFrontPageLastDownloadedRest = () => fetch('/rest/frontpage/last/downloaded');
+export const fetchFrontPageLastVisitedRest = () => fetch('/rest/frontpage/last/visited');
+export const fetchFrontPageNewestRest = () => fetch('/rest/frontpage/newest');
 
 export const updateFrontpageRest = (delta, value) => fetch('/rest/frontpage', {
   method: 'put',

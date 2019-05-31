@@ -6,21 +6,15 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="true"
          verbose="true"
          bootstrap="tests/bootstrap.php"
-         strict="true"
          colors="true"
 >
-
-    <!--
     <testsuites>
         <testsuite name="Youkok2">
             <directory>./tests/</directory>
-            <exclude>./tests/Tests/Views/</exclude>
         </testsuite>
     </testsuites>
-    -->
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">

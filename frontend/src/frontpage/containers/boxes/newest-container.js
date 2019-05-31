@@ -7,7 +7,7 @@ import { ItemTimeAgo } from "../../components/item-time-ago";
 import {fromDatabaseDateToJavaScriptDate, loading} from "../../../common/utils";
 import {EmptyItem} from "../../../common/components/empty-item";
 
-class BoxNewestElements extends Component {
+class BoxNewestContainer extends Component {
 
   render() {
 
@@ -28,7 +28,6 @@ class BoxNewestElements extends Component {
             titleInline={false}
             isLoading={false}
             isEmpty={false}
-
           >
             <EmptyItem text="Kunne ikke hente neste" />
           </BoxWrapper>
@@ -41,9 +40,9 @@ class BoxNewestElements extends Component {
         <BoxWrapper
           title="Nyeste"
           isLoading={isLoading}
-          isEmpty={!isLoading && latestElements.length === 0}
+          isEmpty={!isLoading && elements.length === 0}
         >
-          {!isLoading && latestElements.map((element, index) =>
+          {!isLoading && elements.map((element, index) =>
             <ElementItem element={element} key={index} additional={<ItemTimeAgo datetime={fromDatabaseDateToJavaScriptDate(element.added)} /> } /> )
           }
         </BoxWrapper>
@@ -59,4 +58,4 @@ const mapStateToProps = ({ newest }) => ({
   elements: newest.elements,
 });
 
-export default connect(mapStateToProps, {})(BoxNewestElements);
+export default connect(mapStateToProps, {})(BoxNewestContainer);

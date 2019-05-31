@@ -1,20 +1,20 @@
-import {fetchFrontPageLastVisitedRest} from '../../api';
+import {fetchFrontPageNewestRest} from '../../api';
 import {
-  FRONTPAGE_LAST_VISITED_FETCH_FAILED,
-  FRONTPAGE_LAST_VISITED_FETCH_FINISHED,
-  FRONTPAGE_LAST_VISITED_FETCH_STARTED,
+  FRONTPAGE_NEWEST_FETCH_FAILED,
+  FRONTPAGE_NEWEST_FETCH_FINISHED,
+  FRONTPAGE_NEWEST_FETCH_STARTED,
 } from './constants';
 
-export const fetchFrontPageLastVisited = () => dispatch => {
-  dispatch({ type: FRONTPAGE_LAST_VISITED_FETCH_STARTED });
+export const fetchFrontPageNewest = () => dispatch => {
+  dispatch({ type: FRONTPAGE_NEWEST_FETCH_STARTED });
 
-  fetchFrontPageLastVisitedRest()
+  fetchFrontPageNewestRest()
     .then(response => response.json())
-    .then(response => dispatch({ type: FRONTPAGE_LAST_VISITED_FETCH_FINISHED, data: response.data }))
+    .then(response => dispatch({ type: FRONTPAGE_NEWEST_FETCH_FINISHED, data: response.data }))
     .catch(e => {
       console.error(e);
 
-      dispatch({ type: FRONTPAGE_LAST_VISITED_FETCH_FAILED })
+      dispatch({ type: FRONTPAGE_NEWEST_FETCH_FAILED })
     });
 };
 

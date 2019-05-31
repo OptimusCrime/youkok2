@@ -26,7 +26,13 @@ class CacheService
         return $this->getCacheByKey($key);
     }
 
-    public function setByKey(string $key, string $value): void
+    public function get(string $key): ?string
+    {
+        // TODO ?
+        return $this->getCacheByKey($key);
+    }
+
+    public function set(string $key, string $value): void
     {
         if ($this->cache !== null) {
             $this->cache->set($key, $value);
@@ -66,7 +72,7 @@ class CacheService
             return;
         }
 
-        $this->setByKey(CacheKeyGenerator::keyForElementDownloads($id), (string) $downloads);
+        $this->set(CacheKeyGenerator::keyForElementDownloads($id), (string) $downloads);
     }
 
     public function increaseDownloadsForId(int $id): void

@@ -36,6 +36,7 @@ class Archive extends BaseView
             $parents = $this->archiveService->getBreadcrumbsForElement($element);
 
             $this->setSiteData('archive_id', $element->id);
+            $this->setSiteData('archive_empty', $element->empty === 1);
             $this->setSiteData('archive_parents', $parents);
             $this->setSiteData('archive_title', $element->isCourse() ? $element->getCourseCode() : $element->name);
             $this->setSiteData('archive_sub_title', $element->isCourse() ? $element->getCourseName() : null);

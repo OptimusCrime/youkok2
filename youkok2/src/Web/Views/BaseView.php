@@ -1,7 +1,7 @@
 <?php
 namespace Youkok\Web\Views;
 
-use PHP_Timer;
+use SebastianBergmann\Timer\Timer;
 use Slim\Http\Response;
 use Psr\Container\ContainerInterface;
 use Slim\Views\Twig;
@@ -81,7 +81,7 @@ class BaseView
         return $this->view->render($response, $template, array_merge(
             $this->templateData,
             $data, [
-                'EXECUTION_TIME' => PHP_Timer::secondsToTimeString(PHP_Timer::stop())
+                'EXECUTION_TIME' => Timer::secondsToTimeString(Timer::stop())
             ]
         ));
     }

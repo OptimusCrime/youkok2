@@ -60,7 +60,7 @@ class MostPopularCoursesService implements MostPopularInterface
         $courses = DownloadController::getMostPopularCoursesFromDelta($delta, static::MAX_COURSES_TO_FETCH);
         $setKey = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
 
-        $this->cacheService->setByKey($setKey, json_encode($courses));
+        $this->cacheService->set($setKey, json_encode($courses));
 
         $this->storeDataInFile($setKey, $courses);
     }

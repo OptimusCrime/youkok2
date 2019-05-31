@@ -40,6 +40,12 @@ dev-migrate:
 dev-composer:
 	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer install
 
+dev-phpunit:
+	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer phpunit
+
+dev-phpcs:
+	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer phpcs
+
 dev-install: dev-composer dev-migrate
 
 dev-upgrade: dev-build dev-restart

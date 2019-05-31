@@ -23,6 +23,7 @@ class DownloadController
         return Download::count();
     }
 
+    // TODO type hinting
     public static function getLatestDownloads(int $limit)
     {
         return DB::table('download')

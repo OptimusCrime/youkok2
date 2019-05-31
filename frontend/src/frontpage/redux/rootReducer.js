@@ -1,9 +1,15 @@
 import { combineReducers } from 'redux';
 
-import { frontpage } from './frontpage/reducer';
+import { boxes } from './boxes/reducer';
+import {lastDownloaded} from "./last_downloaded/reducer";
+import {lastVisited} from "./last_visited/reducer";
+import {newest} from "./newest/reducer";
 
 const rootReducer = combineReducers({
-  frontpage
+  boxes,
+  lastDownloaded,
+  lastVisited,
+  newest,
 });
 
 export default rootReducer;

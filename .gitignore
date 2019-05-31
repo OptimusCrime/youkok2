@@ -6,3 +6,6 @@ frontend/node_modules
 
 # Production env file
 prod.env
+
+# PHPUnit
+.phpunit.result.cache

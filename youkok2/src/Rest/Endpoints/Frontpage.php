@@ -9,6 +9,7 @@ use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
+use Youkok\Biz\Services\SessionService;
 use Youkok\Common\Models\Session;
 
 class Frontpage extends BaseProcessorView
@@ -31,36 +32,85 @@ class Frontpage extends BaseProcessorView
         $this->elementMapper = $container->get(ElementMapper::class);
     }
 
-    public function get(Request $request, Response $response)
+    public function boxes(Request $request, Response $response)
     {
-        $payload = $this->frontpageService->get();
+        $payload = $this->frontpageService->boxes();
 
-        $payload['latest_elements'] = $this->elementMapper->map(
-            $payload['latest_elements'], [
-                ElementMapper::POSTED_TIME,
-                ElementMapper::PARENT_DIRECT,
-                ElementMapper::PARENT_COURSE
+        return $this->outputJson($response, [
+            'data' => $payload
+        ]);
+    }
+
+    public function popularElements(Request $request, Response $response)
+    {
+        $session = $this->sessionService->getSession();
+        $payload = $this->frontpageService->popularElements();
+
+        return $this->outputJson($response, [
+            'data' => $this->mapElementsMostPopular($payload),
+            'preference' => $session->getMostPopularElement()
+        ]);
+    }
+
+    public function popularCourses(Request $request, Response $response)
+    {
+        $session = $this->sessionService->getSession();
+        $payload = $this->frontpageService->popularCourses();
+
+        return $this->outputJson($response, [
+            'data' => $this->mapCoursesMostPopular($payload),
+            'preference' => $session->getMostPopularCourse()
+        ]);
+    }
+
+    public function newest(Request $request, Response $response)
+    {
+        $payload = $this->frontpageService->newest();
+
+        $data = $this->elementMapper->map(
+            $payload, [
+            ElementMapper::POSTED_TIME,
+            ElementMapper::PARENT_DIRECT,
+            ElementMapper::PARENT_COURSE
+        ]);
+
+        return $this->outputJson($response, [
+            'data' => $data
+        ]);
+    }
+
+    public function lastVisited(Request $request, Response $response)
+    {
+        $payload = $this->frontpageService->lastVisited();
+
+        $data = $this->courseMapper->map(
+            $payload, [
+                CourseMapper::LAST_VISITED
             ]
         );
 
-        $payload['last_downloaded'] = $this->elementMapper->mapStdClass(
-            $payload['last_downloaded'], [
+        return $this->outputJson($response, [
+            'data' => $data
+        ]);
+    }
+
+    public function lastDownloaded(Request $request, Response $response)
+    {
+        $payload = $this->frontpageService->lastDownloaded();
+
+        $data = $this->elementMapper->mapStdClass(
+            $payload, [
                 ElementMapper::KEEP_DOWNLOADED_TIME,
                 ElementMapper::PARENT_DIRECT,
                 ElementMapper::PARENT_COURSE
             ]
         );
 
-        $payload['courses_last_visited'] = $this->courseMapper->map(
-            $payload['courses_last_visited'], [
-                CourseMapper::LAST_VISITED
-            ]
-        );
 
-        $payload['elements_most_popular'] = $this->mapElementsMostPopular($payload['elements_most_popular']);
-        $payload['courses_most_popular'] = $this->mapCoursesMostPopular($payload['courses_most_popular']);
 
-        return $this->outputJson($response, $payload);
+        return $this->outputJson($response, [
+            'data' => $data
+        ]);
     }
 
     public function put(Request $request, Response $response)

@@ -64,15 +64,15 @@ class InfoBoxesContainer extends Component {
   }
 }
 
-const mapStateToProps = ({ frontpage }) => ({
-  failed: frontpage.failed,
-  started: frontpage.started,
-  finished: frontpage.finished,
+const mapStateToProps = ({ boxes }) => ({
+  failed: boxes.failed,
+  started: boxes.started,
+  finished: boxes.finished,
 
-  number_files: frontpage.info.number_files,
-  number_downloads: frontpage.info.number_downloads,
-  number_courses_with_content: frontpage.info.number_courses_with_content,
-  number_new_elements: frontpage.info.number_new_elements,
+  number_files: boxes.number_files,
+  number_downloads: boxes.number_downloads,
+  number_courses_with_content: boxes.number_courses_with_content,
+  number_new_elements: boxes.number_new_elements,
 });
 
 const mapDispatchToProps = {

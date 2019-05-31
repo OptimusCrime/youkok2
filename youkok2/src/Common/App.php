@@ -109,7 +109,12 @@ class App
         })->add(new ReverseProxyMiddleware())->add(new AdminAuthMiddleware($app->getContainer()));
 
         $app->group('/rest', function () use ($app) {
-            $app->get('/frontpage', FrontpageRest::class . ':get');
+            $app->get('/frontpage/boxes', FrontpageRest::class . ':boxes');
+            $app->get('/frontpage/popular/elements', FrontpageRest::class . ':popularElements');
+            $app->get('/frontpage/popular/courses', FrontpageRest::class . ':popularCourses');
+            $app->get('/frontpage/newest', FrontpageRest::class . ':newest');
+            $app->get('/frontpage/last/visited', FrontpageRest::class . ':lastVisited');
+            $app->get('/frontpage/last/downloaded', FrontpageRest::class . ':lastDownloaded');
             $app->put('/frontpage', FrontpageRest::class . ':put');
 
             $app->get('/archive/{id:[0-9]+}', ArchiveRest::class . ':get');

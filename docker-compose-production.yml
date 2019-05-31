@@ -26,6 +26,11 @@ services:
     restart: always
     env_file:
       - prod.env
+    volumes:
+      - ./docker/logs:/var/log/youkok2
+      - ./youkok2:/var/www/html
+      - ./docker/files:/var/www/files
+      - ./docker/cache:/var/www/cache
     build:
       args:
-        - WITH_XDEBUG=false
+        - YOUKOK_ENV=prod

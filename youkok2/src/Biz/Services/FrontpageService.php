@@ -2,6 +2,7 @@
 
 namespace Youkok\Biz\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Common\Controllers\CourseController;
 use Youkok\Common\Controllers\DownloadController;
@@ -9,6 +10,7 @@ use Youkok\Common\Controllers\ElementController;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 use Youkok\Common\Models\Session;
+use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
 
@@ -23,43 +25,96 @@ class FrontpageService
 
     private $popularCoursesProcessor;
     private $popularElementsProcessor;
+    private $cacheService;
 
     public function __construct(
         SessionService $sessionService,
         MostPopularCoursesService $popularCoursesProcessor,
-        MostPopularElementsService $popularElementsProcessor
+        MostPopularElementsService $popularElementsProcessor,
+        CacheService $cacheService
     ) {
         $this->sessionService = $sessionService;
-
         $this->popularCoursesProcessor = $popularCoursesProcessor;
         $this->popularElementsProcessor = $popularElementsProcessor;
+        $this->popularElementsProcessor = $popularElementsProcessor;
+        $this->cacheService = $cacheService;
     }
 
-    public function get()
+    public function boxes(): array
+    {
+        // TODO move this into another service
+        $numberFiles = $this->cacheService->get(CacheKeyGenerator::keyForBoxesNumberOfFiles());
+        if ($numberFiles === null) {
+            $numberFiles = ElementController::getNumberOfVisibleFiles();
+
+            $this->cacheService->set(CacheKeyGenerator::keyForBoxesNumberOfFiles(), (string) $numberFiles);
+        }
+
+        // TODO !!!!!!!! increase this at download
+        $numberOfDownloads = $this->cacheService->get(CacheKeyGenerator::keyForBoxesNumberOfDownloads());
+        if ($numberOfDownloads === null) {
+            $numberOfDownloads = DownloadController::getNumberOfDownloads();
+
+            $this->cacheService->set(CacheKeyGenerator::keyForBoxesNumberOfDownloads(), (string) $numberOfDownloads);
+        }
+
+        $numberOfCoursesWithContent = $this->cacheService->get(CacheKeyGenerator::keyForBoxesNumberOfCoursesWithContent());
+        if ($numberOfCoursesWithContent === null) {
+            $numberOfCoursesWithContent = CourseController::getNumberOfNonVisibleCourses();
+
+            $this->cacheService->set(CacheKeyGenerator::keyForBoxesNumberOfCoursesWithContent(), (string) $numberOfCoursesWithContent);
+        }
+
+        $numberOfFilesThisMonth = $this->cacheService->get(CacheKeyGenerator::keyForBoxesNumberOfFilesThisMonth());
+        if ($numberOfFilesThisMonth === null) {
+            $numberOfFilesThisMonth = ElementController::getNumberOfFilesThisMonth();
+
+            $this->cacheService->set(CacheKeyGenerator::keyForBoxesNumberOfFilesThisMonth(), (string) $numberOfFilesThisMonth);
+        }
+
+        return [
+            'number_files' => (int) $numberFiles,
+            'number_downloads' => (int) $numberOfDownloads,
+            'number_courses_with_content' => (int) $numberOfCoursesWithContent,
+            'number_new_elements' => (int) $numberOfFilesThisMonth,
+        ];
+    }
+
+    public function popularElements(): array
     {
         $session = $this->sessionService->getSession();
 
-        return [
-            'number_files' => ElementController::getNumberOfVisibleFiles(),
-            'number_downloads' => DownloadController::getNumberOfDownloads(),
-            'number_courses_with_content' => CourseController::getNumberOfNonVisibleCourses(),
-            'number_new_elements' => ElementController::getNumberOfFilesThisMonth(),
-            'latest_elements' => ElementController::getLatestElements(static::SERVICE_LIMIT),
-            'courses_last_visited' => CourseController::getLastVisitedCourses(static::SERVICE_LIMIT),
-            'last_downloaded' => DownloadController::getLatestDownloads(static::SERVICE_LIMIT),
+        return $this->popularElementsProcessor->fromDelta(
+            $session->getMostPopularElement(),
+            static::SERVICE_LIMIT
+        );
+    }
 
-            'elements_most_popular' => $this->popularElementsProcessor->fromDelta(
-                $session->getMostPopularElement(),
-                static::SERVICE_LIMIT
-            ),
+    public function popularCourses(): array
+    {
+        $session = $this->sessionService->getSession();
 
-            'courses_most_popular' => $this->popularCoursesProcessor->fromDelta(
-                $session->getMostPopularCourse(),
-                static::SERVICE_LIMIT
-            ),
+        return $this->popularCoursesProcessor->fromDelta(
+            $session->getMostPopularCourse(),
+            static::SERVICE_LIMIT
+        );
+    }
 
-            'user_preferences' => $session->getUserPreferences(),
-        ];
+    public function newest(): Collection
+    {
+        return ElementController::getLatestElements(static::SERVICE_LIMIT);
+    }
+
+    // TODO type hinting
+    public function lastVisited()
+    {
+        return CourseController::getLastVisitedCourses(static::SERVICE_LIMIT);
+    }
+
+    // TODO type hinting
+    public function lastDownloaded()
+    {
+        return DownloadController::getLatestDownloads(static::SERVICE_LIMIT);
     }
 
     public function put(string $delta, string $value)

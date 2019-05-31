@@ -47,7 +47,8 @@ class Services implements ContainersInterface
             return new FrontpageService(
                 $container->get(SessionService::class),
                 $container->get(MostPopularCoursesService::class),
-                $container->get(MostPopularElementsService::class)
+                $container->get(MostPopularElementsService::class),
+                $container->get(CacheService::class)
             );
         };
 

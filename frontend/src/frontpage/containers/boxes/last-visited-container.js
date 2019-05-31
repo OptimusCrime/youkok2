@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { BoxWrapper } from "../../../common/components/box-wrapper";
 import { CourseItem } from '../../components/course-item';
 import { ItemTimeAgo } from "../../components/item-time-ago";
-import { fromDatabaseDateToJavaScriptDate } from "../../../common/utils";
+import {fromDatabaseDateToJavaScriptDate, loading} from "../../../common/utils";
 import {EmptyItem} from "../../../common/components/empty-item";
 
 class BoxLastVisitedContainer extends Component {
@@ -12,10 +12,13 @@ class BoxLastVisitedContainer extends Component {
   render() {
 
     const {
+      started,
+      finished,
       failed,
-      isLoading,
-      coursesLastVisited,
+      elements,
     } = this.props;
+
+    const isLoading = loading(started, finished);
 
     if (failed) {
       return (
@@ -38,9 +41,9 @@ class BoxLastVisitedContainer extends Component {
         <BoxWrapper
           title="Siste besøkte fag"
           isLoading={isLoading}
-          isEmpty={!isLoading && coursesLastVisited.length === 0}
+          isEmpty={!isLoading && elements.length === 0}
         >
-          {!isLoading && coursesLastVisited.map((course, index) =>
+          {!isLoading && elements.map((course, index) =>
             <CourseItem course={course} key={index} additional={<ItemTimeAgo datetime={fromDatabaseDateToJavaScriptDate(course.last_visited)} /> } /> )
           }
         </BoxWrapper>
@@ -49,11 +52,11 @@ class BoxLastVisitedContainer extends Component {
   }
 }
 
-const mapStateToProps = ({ frontpage }) => ({
-  coursesLastVisited: frontpage.courses_last_visited
+const mapStateToProps = ({ lastVisited }) => ({
+  started: lastVisited.started,
+  finished: lastVisited.finished,
+  failed: lastVisited.failed,
+  elements: lastVisited.elements,
 });
 
-const mapDispatchToProps = {
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BoxLastVisitedContainer);
+export default connect(mapStateToProps, {})(BoxLastVisitedContainer);
