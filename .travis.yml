@@ -5,7 +5,9 @@ php:
 notifications:
   email: false
 
-before_install: cd youkok2
+before_install:
+  - cd youkok2
+  - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
   composer install --no-interaction
