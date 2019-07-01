@@ -13,13 +13,6 @@ class SettingsParser
                 'addContentLengthHeader' => false,
 
                 'base_dir' => getenv('BASE_DIRECTORY'),
-
-                // TODO handle dev/prod
-                'logger' => [
-                    'name' => getenv('LOGGER_NAME'),
-                    'path' => getenv('LOGGER_PATH'),
-                    'level' => Logger::DEBUG,
-                ],
             ]
         ];
     }

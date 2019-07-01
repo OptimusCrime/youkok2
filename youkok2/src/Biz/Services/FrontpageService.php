@@ -2,10 +2,10 @@
 
 namespace Youkok\Biz\Services;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Youkok\Biz\Exceptions\InvalidRequestException;
-use Youkok\Common\Controllers\CourseController;
-use Youkok\Common\Controllers\DownloadController;
+use Youkok\Biz\Services\Models\CourseService;
+use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
@@ -29,7 +29,7 @@ class FrontpageService
     private $elementService;
 
     public function __construct(
-        SessionService $sessionService,
+        UserSessionService $sessionService,
         MostPopularCoursesService $popularCoursesProcessor,
         MostPopularElementsService $popularElementsProcessor,
         CacheService $cacheService,
@@ -53,10 +53,9 @@ class FrontpageService
             $this->cacheService->set(CacheKeyGenerator::keyForBoxesNumberOfFiles(), (string) $numberFiles);
         }
 
-        // TODO !!!!!!!! increase this at download
         $numberOfDownloads = $this->cacheService->get(CacheKeyGenerator::keyForTotalNumberOfDownloads());
         if ($numberOfDownloads === null) {
-            $numberOfDownloads = DownloadController::getNumberOfDownloads();
+            $numberOfDownloads = DownloadService::getNumberOfDownloads();
 
             $this->cacheService->set(CacheKeyGenerator::keyForTotalNumberOfDownloads(), (string) $numberOfDownloads);
         }
@@ -66,7 +65,7 @@ class FrontpageService
         );
 
         if ($numberOfCoursesWithContent === null) {
-            $numberOfCoursesWithContent = CourseController::getNumberOfNonVisibleCourses();
+            $numberOfCoursesWithContent = CourseService::getNumberOfNonVisibleCourses();
 
             $this->cacheService->set(
                 CacheKeyGenerator::keyForBoxesNumberOfCoursesWithContent(),
@@ -117,19 +116,17 @@ class FrontpageService
         return $this->elementService->getLatestElements(static::SERVICE_LIMIT);
     }
 
-    // TODO type hinting
-    public function lastVisited()
+    public function lastVisited(): Collection
     {
-        return CourseController::getLastVisitedCourses(static::SERVICE_LIMIT);
+        return CourseService::getLastVisitedCourses(static::SERVICE_LIMIT);
     }
 
-    // TODO type hinting
-    public function lastDownloaded()
+    public function lastDownloaded(): Collection
     {
-        return DownloadController::getLatestDownloads(static::SERVICE_LIMIT);
+        return DownloadService::getLatestDownloads(static::SERVICE_LIMIT);
     }
 
-    public function put(string $delta, string $value)
+    public function put(string $delta, string $value): array
     {
         if (!in_array($delta, [Session::KEY_MOST_POPULAR_ELEMENT, Session::KEY_MOST_POPULAR_COURSE])) {
             throw new InvalidRequestException();

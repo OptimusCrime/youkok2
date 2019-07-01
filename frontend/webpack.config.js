@@ -14,6 +14,7 @@ const entries = {
   sidebarHistory: './src/sidebarHistory/sidebarHistory.js',
   sidebarPopular: './src/sidebarPopular/sidebarPopular.js',
   sidebarPost: './src/sidebarPost/sidebarPost.js',
+  youkok2: './src/youkok2/youkok2.js',
 };
 
 module.exports = (env, argv) => {
@@ -24,26 +25,6 @@ module.exports = (env, argv) => {
     filename: path.resolve(__dirname, '..', 'youkok2', 'templates', 'react', (argv.mode === 'development' ? 'dev_' : '') + entry + '.html'),
     chunks: (entry === 'polyfills') ? [entry, 'vendors'] : [entry]
   });
-
-  const cssLoaders = argv.mode === 'development' ? [
-    'style-loader',
-    'css-loader',
-    'less-loader',
-  ] : [
-    MiniCssExtractPlugin.loader,
-    'css-loader',
-    'less-loader',
-  ];
-
-  const htmlPlugin = Object
-    .keys(entries)
-    .map(key => new HtmlWebpackPlugin(generateHtmlWebpackPluginInfo(key)));
-
-  const plugins = argv.mode === 'development' ? [ ...htmlPlugin ] : [
-    ...htmlPlugin,
-    new MiniCssExtractPlugin(),
-    new OptimizeCSSAssetsPlugin(),
-  ];
 
   return {
     entry: entries,
@@ -70,25 +51,16 @@ module.exports = (env, argv) => {
           loader: "babel-loader"
         }, {
           test: /\.(less|css)$/,
-          resolve: {
-            extensions: [
-              '.less',
-              '.css'
-            ],
-          },
-          use: cssLoaders,
-        }, {
-          test: /\.(png|gif|jpe?|eot|svg|ttf|woff|woff2)(\?[a-z0-9=&.]+)?$/,
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-            outputPath: 'fonts/'
-          }
-        },
+          use: [
+            MiniCssExtractPlugin.loader,
+            'css-loader',
+            'less-loader',
+          ],
+        }
       ]
     },
     optimization: {
-      minimizer: argv.mode === 'development' ? [] : [ new UglifyJsPlugin() ],
+      minimizer: argv.mode === 'development' ? [] : [ new UglifyJsPlugin(), new OptimizeCSSAssetsPlugin() ],
       splitChunks: {
         cacheGroups: {
           vendors: {
@@ -100,6 +72,13 @@ module.exports = (env, argv) => {
         }
       },
     },
-    plugins: plugins
+    plugins: [
+      ...Object
+        .keys(entries)
+        .map(key => new HtmlWebpackPlugin(generateHtmlWebpackPluginInfo(key))),
+      new MiniCssExtractPlugin({
+        filename: argv.mode === 'development' ? 'dev.[name].css' : '[name].css?[contenthash]'
+      })
+    ]
   }
 };

@@ -9,8 +9,6 @@ import {fetchFrontPageLastDownloaded} from "./redux/last_downloaded/actions";
 import {fetchFrontPageLastVisited} from "./redux/last_visited/actions";
 import {fetchFrontPageNewest} from "./redux/newest/actions";
 
-import './frontpage.less';
-
 const preloadedState = window.__INITIAL_STATE__;
 
 const store = configureStore(preloadedState);

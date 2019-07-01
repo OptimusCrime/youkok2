@@ -1,13 +1,13 @@
 <?php
 namespace Youkok\Biz\Services\Job\Jobs;
 
-use Youkok\Biz\Services\SessionService;
+use Youkok\Biz\Services\UserSessionService;
 
 class RemoveOldSessionsJobServiceJobService implements JobServiceInterface
 {
     private $sessionService;
 
-    public function __construct(SessionService $sessionService)
+    public function __construct(UserSessionService $sessionService)
     {
         $this->sessionService = $sessionService;
     }

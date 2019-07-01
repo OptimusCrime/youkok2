@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\UrlService;
-use Youkok\Common\Controllers\CourseController;
+use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 
@@ -107,7 +107,7 @@ class ElementMapper
 
         if (in_array(static::PARENT_COURSE, $additionalFields)) {
             try {
-                $course = CourseController::getCourseFromElement($element);
+                $course = CourseService::getCourseFromElement($element);
                 $arr['course'] = $this->courseMapper->mapCourse($course);
             } catch (ElementNotFoundException $e) {
                 // TODO log

@@ -2,7 +2,7 @@
 namespace Youkok\Biz\Services;
 
 use Illuminate\Database\Eloquent\Collection;
-use Youkok\Common\Controllers\CourseController;
+use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Common\Models\Element;
 
 class CoursesLookupService
@@ -45,7 +45,7 @@ class CoursesLookupService
 
     private function populateCacheFile(): void
     {
-        $data = $this->coursesToJsonData(CourseController::getAllVisibleCourses());
+        $data = $this->coursesToJsonData(CourseService::getAllVisibleCourses());
         $content = str_replace('%s', $data, static::JS_TEMPLATE);
 
         // TODO error logging?

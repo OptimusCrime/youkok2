@@ -87,38 +87,4 @@ class Session extends Model
 
         return parent::save($options);
     }
-
-    public static function get(string $hash): ?Session
-    {
-        /** @var Session $session */
-        $session = Session::where('hash', $hash)->first();
-
-        if ($session === null) {
-            return null;
-        }
-
-        if ($session->data === null) {
-            // Use the default values, which is set via the constructor
-            return $session;
-        }
-
-        $data = json_decode($session->data, true);
-        if (!is_array($data)) {
-            return $session;
-        }
-
-        if (isset($data[static::KEY_ADMIN]) and is_bool($data[static::KEY_ADMIN])) {
-            $session->setAdmin($data[static::KEY_ADMIN]);
-        }
-
-        if (isset($data[static::KEY_MOST_POPULAR_ELEMENT]) and is_String($data[static::KEY_MOST_POPULAR_ELEMENT])) {
-            $session->setMostPopularElement($data[static::KEY_MOST_POPULAR_ELEMENT]);
-        }
-
-        if (isset($data[static::KEY_MOST_POPULAR_COURSE]) and is_String($data[static::KEY_MOST_POPULAR_COURSE])) {
-            $session->setMostPopularCourse($data[static::KEY_MOST_POPULAR_COURSE]);
-        }
-
-        return $session;
-    }
 }

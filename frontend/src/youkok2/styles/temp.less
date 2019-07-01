@@ -1,0 +1,459 @@
+@import "../variables.less";
+
+/*
+ * Typeahead
+ */
+
+.tt-query, .tt-hint {
+  width: 396px;
+  padding: 8px 12px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+}
+.tt-query {
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.tt-hint {
+  color: #999
+}
+.tt-dropdown-menu {
+  width: 422px;
+  margin-top: 12px;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+  cursor: pointer;
+}
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 13px;
+  line-height: 24px;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+.twitter-typeahead {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 4px;
+}
+.navbar-form .form-control {
+  width: 100%;
+}
+
+/*
+ * Archive
+ */
+
+.archive-course ul {
+  background-color: #ededed;
+  border-radius: 4px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 25px;
+  padding-right: 10px;
+}
+#archive-list {
+  list-style: none;
+  list-style-position: inside;
+  background-color: @white;
+  border: 1px solid @gray;
+  border-radius: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 3px;
+  position: relative;
+}
+#archive-list > li {
+  height: 106px;
+  width: 102px;
+  display: inline-block;
+  cursor: pointer;
+  margin: 6px;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  position: relative;
+}
+#archive-list > li:hover {
+  border-color: #375a7f;
+}
+#archive-list > li:hover .archive-item-dropdown-arrow {
+  display: block;
+}
+#archive-list a {
+  text-decoration: none;
+}
+.archive-item {
+  width: 100px;
+  height: 100px;
+  position: relative;
+}
+.archive-item a {
+  z-index: 1;
+}
+.archive-item-dropdown {
+  position: absolute;
+  right: -1px;
+  top: -1px;
+}
+.archive-item-dropdown-arrow {
+  border-top-right-radius: 3px;
+  border-bottom-left-radius: 4px;
+  z-index: 9000;
+  background-color: #375a7f;
+  color: #fff;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  text-align: center;
+  display: none;
+}
+.archive-item-dropdown i {
+  z-index: 10000;
+  position: relative;
+}
+.archive-dropdown-content {
+  left: -102px;
+  top: 0px;
+  position: absolute;
+  text-align: left;
+  width: 102px;
+  background-color: #375a7f;
+  border-radius: 4px;
+  height: 106px;
+  z-index: 8000;
+  display: none;
+}
+.archive-dropdown-content p {
+  color: #fff;
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  font-size: 11.5px;
+  padding: 0px;
+  margin: 0px;
+  font-weight: bold;
+}
+.archive-dropdown-content ul {
+  padding: 0px;
+  padding-top: 20px;
+  padding-bottom: 5px;
+}
+.archive-dropdown-content li {
+  list-style: none;
+  font-size: 11.5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.archive-dropdown-content li a {
+  color: #fff;
+  display: block;
+}
+.archive-dropdown-content li a:hover {
+  text-decoration: none;
+}
+.archive-dropdown-content li.sep {
+  margin-top: 3px;
+  height: 1px;
+  background-color: #28415b;
+  margin-bottom: 3px;
+}
+.archive-dropdown-content li:hover {
+  background-color: #28415b;
+}
+.archive-item-icon {
+  height: 70px;
+  margin-left: 13px;
+  margin-top: 4px;
+  width: 75px;
+  background-position: top left;
+  background-repeat: no-repeat;
+  z-index: 100;
+}
+.archive-item-label {
+  width: 100px;
+  text-align: center;
+  overflow: hidden;
+  z-index: 100;
+}
+.archive-item-label h4 {
+  font-size: 11.5px;
+  color: #375a7f;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.archive-badge {
+  background-color: #d9534f;
+  border-radius: 10px;
+  color: #fff;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 10px;
+  padding: 3px 7px;
+  text-align: center;
+  vertical-align: baseline;
+  white-space: nowrap;
+  position: absolute;
+  left: 5px;
+  top: 0px;
+  z-index: 1000;
+}
+.archive-badge-right {
+  right: 16px;
+  left: auto;
+}
+.archive-sidebar {
+  background-color: #ededed;
+  border-radius: 4px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+.archive-sidebar h3 {
+  padding-top: 8px;
+  margin-top: 0px;
+  padding-bottom: 8px;
+}
+#archive-history-inside {
+  max-height: 500px;
+  overflow-y: scroll;
+}
+#archive-context-menu {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  display: none;
+  z-index: 99999;
+}
+#archive-heading-star {
+  cursor: pointer;
+  user-select: none;
+}
+.archive-title-smaller {
+  font-size: 22px;
+}
+#archive-create-terms {
+  margin-bottom: 10px;
+}
+#archive-create-folder-div,
+#archive-create-file-div,
+#archive-create-link-div {
+  display: none;
+  border-top: 1px solid @gray;
+  padding-top: 5px;
+  margin-top: 10px;
+  padding-bottom: 15px;
+}
+#archive-title h1,
+#archive-title h2 {
+  display: inline-block;
+}
+#archive-title h1 {
+  margin: 0px;
+  margin-bottom: 10px;
+}
+#archive-title h2 {
+  font-size: 22px;
+  margin: 0px;
+}
+#archive-title i {
+  font-size: 24px;
+  margin: 0px;
+  padding-left: 5px;
+}
+#archive-title span {
+  font-size: 36px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+#archive-warning {
+  padding-bottom: 15px;
+}
+#archive-controlls.archive-controlls-offline #archive-create-file-div,
+#archive-controlls.archive-controlls-offline #archive-create-link-div {
+  border-bottom: 1px solid @gray;
+  padding-bottom: 10px;
+  margin-bottom: 5px;
+}
+.sidebar-controlls .sidebar-element-inner {
+  padding-bottom: 0px;
+}
+#archive-create-controlls button {
+  margin-bottom: 15px;
+}
+#archive-create-link-name-holder {
+  display: none;
+}
+
+/*
+ * Fileupload
+ */
+
+.fileinput-button {
+  position: relative;
+  overflow: hidden;
+}
+.fileinput-button input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  opacity: 0;
+  -ms-filter: 'alpha(opacity=0)';
+  font-size: 200px;
+  direction: ltr;
+  cursor: pointer;
+}
+@media screen {
+  .fileinput-button input {
+    filter: alpha(opacity=0);
+    font-size: 100%;
+    height: 100%;
+  }
+}
+.bar {
+  height: 18px;
+  background: #28415b;
+}
+.fileupload-file {
+  width: 100%;
+  background-color: #375a7f;
+  position: relative;
+  color: #fff;
+}
+.fileupload-file {
+  border-bottom: 1px solid #2b4764;
+  padding: 5px;
+}
+.fileupload-add {
+  text-align: right;
+  border-bottom: none;
+}
+.fileupload-add p {
+  font-weight: bold;
+  position: absolute;
+  left: 5px;
+  top: 13px;
+  display: none;
+}
+.fileupload-file-remove {
+  position: absolute;
+  right: 5px;
+  top: 17px;
+  cursor: pointer;
+  font-weight: bold;
+}
+#fileupload-files {
+  border-radius: 4px;
+}
+
+/*
+ * 3.x
+ */
+
+.archive-title h1,
+.archive-title h2 {
+  display: inline-block;
+}
+.archive-title h2::before {
+  content: "\2014";
+}
+
+.archive-list {
+  border-width: 1px;
+  border-color: @gray;
+  background-color: #fff;
+  border-style: solid;
+  border-radius: 4px;
+}
+a.archive-row, .archive-row {
+  border-top: 1px solid #ddd;
+  padding: 10px 15px;
+  display: block;
+  color: @default-font-color;
+}
+.archive-row::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+a.archive-row .archive-row-name {
+  color: @blue;
+}
+.archive-row.archive-row--header:hover {
+  background-color: #fff;
+}
+.archive-list>*:first-child {
+  border: none;
+}
+.archive-row div {
+  float: left;
+}
+.archive-row:hover {
+  background-color: @gray-light;
+  color: @default-font-color;
+}
+.archive-row:hover .archive-row-name span {
+  color: @blue;
+}
+.archive-row a {
+  display: block;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  height: 20px;
+}
+.archive-row-icon {
+  width: 35px;
+  display: block;
+  height: 20px;
+}
+.archive-row-icon div {
+  background-size: cover;
+  height: 20px;
+  width: 20px;
+  background-position: top left;
+  background-repeat: no-repeat;
+  z-index: 100;
+  display: block;
+}
+.archive-row-name {
+  width: calc(45% - 35px);
+  display: block;
+  min-height: 1px;
+}
+.archive-row-downloads {
+  width: 25%;
+  text-align: right;
+  display: block;
+  min-height: 1px;
+}
+.archive-row-age {
+  width: 30%;
+  text-align: right;
+  display: block;
+}
+
+/*
+ * "New frontpage"
+ */
+
+
+

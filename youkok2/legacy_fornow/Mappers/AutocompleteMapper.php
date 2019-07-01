@@ -39,7 +39,7 @@ class AutocompleteMapper implements Mapper
     {
         return $this->router->pathFor('archive', [
             'course' => 'dero',
-            'params' => $element->fullUri
+            'path' => $element->fullUri
         ]);
     }
 }

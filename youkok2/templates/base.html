@@ -11,7 +11,7 @@
     <meta name="keywords" content="ntnu, kok, youkok, kokebok, øvinger, lekser, eksamen, oppgaver, fasit, trondheim" />
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/youkok.css" />
+    {% if DEV == '1' %}{% include "react/dev_youkok2.html" %}{% else %}{% include "react/youkok2.html" %}{% endif %}
     {% include "dynamic/courses_lookup.html" ignore missing %}
     {% if DEV == '1' %}{% include "react/dev_polyfills.html" %}{% else %}{% include "react/polyfills.html" %}{% endif %}
     <script type="text/javascript">var SITE_DATA = {{ SITE_DATA|json_encode()|raw }};</script>
@@ -53,7 +53,7 @@
         </div>
     </div>
 </div>
-<div class="container" id="main">
+<main class="container">
     <noscript>
         <div class="row">
             <div class="col-xs-12">
@@ -66,21 +66,21 @@
             {% block content %}{% endblock %}
         </div>
     </div>
-</div>
+</main>
 <div class="container">
     <div class="row">
-        <div class="col-xs-12" id="footer">
-            <p>
-                <span><a href="{{ path_for('changelog') }}">Youkok2 v{{ SITE_SETTINGS.VERSION }}</a></span>
-                <span><a href="{{ path_for('about') }}">Om Youkok2</a></span>
-                <span><a href="{{ path_for('terms') }}">Retningslinjer</a></span>
-                <span><a href="{{ path_for('help') }}">Hjelp</a></span>
-                <span><a href="{{ path_for('terms') }}#cookies">Om informasjonskapsler (cookies)</a></span>
-                <span><a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">{{ SITE_SETTINGS.EMAIL_CONTACT }}</a></span>
-                <span>{{ EXECUTION_TIME }}</span>
-                <span><a href="https://github.com/OptimusCrime/youkok2" target="_blank">GitHub</a></span>
-            </p>
-        </div>
+        <footer class="col-xs-12 footer">
+            <ul>
+                <li><a href="{{ path_for('changelog') }}">Youkok2 v{{ SITE_SETTINGS.VERSION }}</a></li>
+                <li><a href="{{ path_for('about') }}">Om Youkok2</a></li>
+                <li><a href="{{ path_for('terms') }}">Retningslinjer</a></li>
+                <li><a href="{{ path_for('help') }}">Hjelp</a></li>
+                <li><a href="{{ path_for('terms') }}#cookies">Om informasjonskapsler (cookies)</a></li>
+                <li><a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">{{ SITE_SETTINGS.EMAIL_CONTACT }}</a></li>
+                <li>{{ EXECUTION_TIME }}</li>
+                <li><a href="https://github.com/OptimusCrime/youkok2" target="_blank">GitHub</a></li>
+            </ul>
+        </footer>
     </div>
 </div>
 {% block scripts %}{% endblock %}

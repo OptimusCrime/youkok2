@@ -1,15 +1,16 @@
 <?php
-namespace Youkok\Common\Controllers;
+namespace Youkok\Biz\Services\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as DB;
 
+use Illuminate\Support\Collection;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Common\Models\Download;
 use Youkok\Common\Models\Element;
 use Youkok\Enums\MostPopularElement;
 
-class DownloadController
+class DownloadService
 {
     public static function getDownloadsForId(int $id): int
     {
@@ -24,7 +25,7 @@ class DownloadController
     }
 
     // TODO type hinting
-    public static function getLatestDownloads(int $limit)
+    public static function getLatestDownloads(int $limit): Collection
     {
         return DB::table('download')
             ->select(['downloaded_time', 'element.*'])
@@ -34,7 +35,7 @@ class DownloadController
             ->get();
     }
 
-    public static function getMostPopularElementsFromDelta(string $delta)
+    public static function getMostPopularElementsFromDelta(string $delta): Collection
     {
         $query = DB::table('download')
             ->select('download.resource as id', DB::raw('COUNT(download.id) as download_count'))
@@ -140,7 +141,7 @@ class DownloadController
         return $newResult;
     }
 
-    private static function getMostPopularElementQueryFromDelta(string $delta): ?Carbon
+    private static function getMostPopularElementQueryFromDelta(string $delta): Carbon
     {
         switch ($delta) {
             case MostPopularElement::DAY:

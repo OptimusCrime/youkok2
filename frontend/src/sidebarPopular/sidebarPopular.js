@@ -6,7 +6,7 @@ import SidebarMostPopularContainer from './containers/main-container';
 import configureStore from './redux/configureStore';
 import {fetchSidebarMostPopular} from "./redux/elements/actions";
 
-import './sidebarPopular.less';
+
 
 const preloadedState = window.__INITIAL_STATE__;
 

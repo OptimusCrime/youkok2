@@ -7,8 +7,7 @@ use Slim\Http\Response;
 
 use Youkok\Biz\Exceptions\CookieNotFoundException;
 use Youkok\Biz\Exceptions\SessionNotFoundException;
-use Youkok\Biz\Services\SessionService;
-use Youkok\Common\Controllers\SessionController;
+use Youkok\Biz\Services\Models\SessionService;
 use Youkok\Common\Utilities\CookieHelper;
 
 class AdminAuthMiddleware
@@ -25,7 +24,7 @@ class AdminAuthMiddleware
     {
         try {
             $hash = CookieHelper::getCookie('youkok2');
-            $session = SessionController::get($hash);
+            $session = SessionService::get($hash);
 
             if ($session->isAdmin()) {
                 return $next($request, $response);

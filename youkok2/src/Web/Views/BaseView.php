@@ -5,7 +5,7 @@ use SebastianBergmann\Timer\Timer;
 use Slim\Http\Response;
 use Psr\Container\ContainerInterface;
 use Slim\Views\Twig;
-use Youkok\Biz\Services\SessionService;
+use Youkok\Biz\Services\UserSessionService;
 
 class BaseView
 {
@@ -14,7 +14,7 @@ class BaseView
     /** @var Twig */
     protected $view;
 
-    /** @var SessionService */
+    /** @var UserSessionService */
     protected $sessionService;
 
     /** @var array */
@@ -25,7 +25,7 @@ class BaseView
         $this->container = $container;
 
         $this->view = $container->get('view');
-        $this->sessionService = $container->get(SessionService::class);
+        $this->sessionService = $container->get(UserSessionService::class);
 
         $this->templateData = $this->getDefaultTemplateData();
     }

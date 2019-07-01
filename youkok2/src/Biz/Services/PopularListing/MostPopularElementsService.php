@@ -2,7 +2,7 @@
 namespace Youkok\Biz\Services\PopularListing;
 
 use Youkok\Biz\Services\CacheService;
-use Youkok\Common\Controllers\DownloadController;
+use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Enums\MostPopularElement;
@@ -16,7 +16,7 @@ class MostPopularElementsService implements MostPopularInterface
         $this->cacheService = $cacheService;
     }
 
-    public function fromDelta(string $delta, int $limit)
+    public function fromDelta(string $delta, int $limit): array
     {
         $ids = $this->cacheService->getMostPopularElementsFromDelta($delta, $limit);
         if (empty($ids)) {
@@ -41,7 +41,7 @@ class MostPopularElementsService implements MostPopularInterface
 
     private function refreshForDelta(string $delta): void
     {
-        $elements = DownloadController::getMostPopularElementsFromDelta($delta);
+        $elements = DownloadService::getMostPopularElementsFromDelta($delta);
         $setKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($delta);
 
         foreach ($elements as $element) {

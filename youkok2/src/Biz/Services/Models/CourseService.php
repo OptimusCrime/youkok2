@@ -1,11 +1,11 @@
 <?php
-namespace Youkok\Common\Controllers;
+namespace Youkok\Biz\Services\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 
-class CourseController
+class CourseService
 {
     public static function getNumberOfNonVisibleCourses(): int
     {

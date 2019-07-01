@@ -1,18 +1,20 @@
+@import "../../../youkok2/variables.less";
+
 .course-list {
     border-width: 1px;
-    border-color: #dddddd;
-    background-color: #fff;
+    border-color: @gray;
+    background-color: @white;
     border-style: solid;
     border-radius: 4px;
 }
 .course-row {
-    border-top: 1px solid #ddd;
-    color: #333333;
+    border-top: 1px solid @gray;
+    color: @default-font-color;
     display: flex;
 
     &:hover {
-        background-color: #eee;
-        color: #333333;
+        background-color: @gray-light;
+        color: @default-font-color;
         text-decoration: none;
     }
 
@@ -21,21 +23,21 @@
         border-top: none;
 
         &:hover {
-            background-color: #fff;
+            background-color: @white;
         }
         &--code, &--name {
             display: flex;
             justify-content: space-between;
 
             &:hover {
-                background-color: #eee;
-                color: #333333;
+                background-color: @gray-light;
+                color: @default-font-color;
             }
             strong, .fa {
                 display: block;
             }
             .inactive {
-                color: #ddd;
+                color: @gray;
             }
         }
     }
@@ -44,19 +46,19 @@
     }
     &__code {
         width: 25%;
-        border-right: 1px solid #ddd;
+        border-right: 1px solid @gray;
     }
     &__name {
         width: 75%;
     }
 }
 a.course-row {
-    color: #3498DB;
+    color: @blue;
     &__empty {
-        color: #99c1dc;
+        color: @blue-light;
         font-weight: normal;
     }
     &:hover {
-        color: #3498DB;
+        color: @blue;
     }
 }

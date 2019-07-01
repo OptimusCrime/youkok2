@@ -54,7 +54,7 @@ class UrlService
 
         return $this->router->pathFor('archive', [
             'course' => $course,
-            'params' => $params
+            'path' => $params
         ]);
     }
 

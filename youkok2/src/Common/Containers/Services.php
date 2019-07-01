@@ -2,6 +2,7 @@
 namespace Youkok\Common\Containers;
 
 use Psr\Container\ContainerInterface;
+use Monolog\Logger as MonoLogger;
 
 use Youkok\Biz\Services\ArchiveHistoryService;
 use Youkok\Biz\Services\ArchiveService;
@@ -19,10 +20,13 @@ use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
 use Youkok\Biz\Services\Job\JobService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
+use Youkok\Biz\Services\Models\CourseService;
+use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Biz\Services\Models\ElementService;
+use Youkok\Biz\Services\Models\SessionService;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
-use Youkok\Biz\Services\SessionService;
+use Youkok\Biz\Services\UserSessionService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
 use Youkok\Biz\Services\SystemLogService;
 use Youkok\Biz\Services\UrlService;
@@ -31,8 +35,8 @@ class Services implements ContainersInterface
 {
     public static function load(ContainerInterface $container): void
     {
-        $container[SessionService::class] = function (): SessionService {
-            return new SessionService();
+        $container[UserSessionService::class] = function (): UserSessionService {
+            return new UserSessionService();
         };
 
         $container[LoginService::class] = function (): LoginService {
@@ -47,7 +51,7 @@ class Services implements ContainersInterface
 
         $container[FrontpageService::class] = function (ContainerInterface $container): FrontpageService {
             return new FrontpageService(
-                $container->get(SessionService::class),
+                $container->get(UserSessionService::class),
                 $container->get(MostPopularCoursesService::class),
                 $container->get(MostPopularElementsService::class),
                 $container->get(CacheService::class),
@@ -64,7 +68,8 @@ class Services implements ContainersInterface
         $container[MostPopularCoursesService::class] = function (ContainerInterface $container): MostPopularCoursesService {
             return new MostPopularCoursesService(
                 $container->get('settings'),
-                $container->get(CacheService::class)
+                $container->get(CacheService::class),
+                $container->get(MonoLogger::class)
             );
         };
 
@@ -131,7 +136,7 @@ class Services implements ContainersInterface
 
         $container[RemoveOldSessionsJobServiceJobService::class] = function (ContainerInterface $container): RemoveOldSessionsJobServiceJobService {
             return new RemoveOldSessionsJobServiceJobService(
-                $container->get(SessionService::class)
+                $container->get(UserSessionService::class)
             );
         };
 
@@ -163,10 +168,22 @@ class Services implements ContainersInterface
             return new SystemLogService();
         };
 
+        $container[CourseService::class] = function (): CourseService {
+            return new CourseService();
+        };
+
+        $container[DownloadService::class] = function (): DownloadService {
+            return new DownloadService();
+        };
+
         $container[ElementService::class] = function (ContainerInterface $container): ElementService {
             return new ElementService(
                 $container->get(CacheService::class)
             );
+        };
+
+        $container[SessionService::class] = function (): SessionService {
+            return new SessionService();
         };
     }
 }

@@ -4,10 +4,10 @@ namespace Youkok\Common;
 
 use Slim\App as Slim;
 
-use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Common\Containers\Cache;
 use Youkok\Common\Containers\Database;
 use Youkok\Common\Containers\InternalServerError;
+use Youkok\Common\Containers\Logger;
 use Youkok\Common\Containers\PageNotFound;
 use Youkok\Common\Containers\Services;
 use Youkok\Common\Containers\View;
@@ -184,6 +184,7 @@ class App
             PageNotFound::class,
             Services::class,
             View::class,
+            Logger::class,
         ];
 
         foreach ($containers as $container) {

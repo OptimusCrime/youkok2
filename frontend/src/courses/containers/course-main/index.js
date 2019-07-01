@@ -29,6 +29,7 @@ const CourseMain = ({column, order, courses, page, changeOrder, changePage}) => 
         changePage={changePage}
         page={page}
         numberOfPages={NUMBER_OF_PAGES}
+        position="top"
       />
       <div className="course-list">
         <Header
@@ -51,6 +52,7 @@ const CourseMain = ({column, order, courses, page, changeOrder, changePage}) => 
         changePage={changePage}
         page={page}
         numberOfPages={NUMBER_OF_PAGES}
+        position="bottom"
       />
     </div>
   );

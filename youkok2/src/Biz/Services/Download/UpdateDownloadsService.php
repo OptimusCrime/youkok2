@@ -2,7 +2,7 @@
 namespace Youkok\Biz\Services\Download;
 
 use Youkok\Biz\Services\CacheService;
-use Youkok\Common\Controllers\DownloadController;
+use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Enums\MostPopularElement;
@@ -19,7 +19,7 @@ class UpdateDownloadsService
     public function run(Element $element)
     {
         // Add the download to the database first
-        DownloadController::newDownloadForElement($element);
+        DownloadService::newDownloadForElement($element);
 
         // Update the number of downloads in the cache for this particular element
         $this->addDownloadForElement($element);
@@ -37,7 +37,7 @@ class UpdateDownloadsService
 
         if ($downloads === null) {
             // Unable to find number of downloads from the cache (it could be zero), so fetch it from the DB
-            $databaseDownloads = DownloadController::getDownloadsForId($element->id);
+            $databaseDownloads = DownloadService::getDownloadsForId($element->id);
             if ($databaseDownloads !== null) {
                 // This element has downloads, but the cache was empty, update the cache
                 $this->cacheService->setDownloadsForId($element->id, $databaseDownloads);

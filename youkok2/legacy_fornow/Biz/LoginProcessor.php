@@ -3,7 +3,7 @@ namespace Youkok\Biz;
 
 use \Psr\Http\Message\Response as Response;
 
-use Youkok\Biz\Services\SessionService;
+use Youkok\Biz\Services\UserSessionService;
 
 // TODO make middleware
 class LoginProcessor
@@ -25,7 +25,7 @@ class LoginProcessor
         return new LoginProcessor($params);
     }
 
-    public function withSessionHandler(SessionService $sessionHandler)
+    public function withSessionHandler(UserSessionService $sessionHandler)
     {
         $this->sessionHandler = $sessionHandler;
         return $this;
@@ -62,7 +62,7 @@ class LoginProcessor
         return static::logAdminIn($this->sessionHandler, $this->response, $this->router);
     }
 
-    private static function logAdminIn(SessionService $sessionHandler, Response $response, $router)
+    private static function logAdminIn(UserSessionService $sessionHandler, Response $response, $router)
     {
         $sessionHandler->setData('admin', true);
 

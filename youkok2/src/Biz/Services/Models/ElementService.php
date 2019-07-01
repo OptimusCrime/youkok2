@@ -1,5 +1,4 @@
 <?php
-
 namespace Youkok\Biz\Services\Models;
 
 use Carbon\Carbon;
@@ -10,7 +9,6 @@ use Youkok\Biz\Services\CacheService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 
-// TODO: rydd i rekkefølge
 class ElementService
 {
     const SORT_TYPE_ORGANIZED = 0;
@@ -19,7 +17,7 @@ class ElementService
     /** @var CacheService */
     private $cacheService;
 
-    public function __construct($cacheService)
+    public function __construct(CacheService $cacheService)
     {
         $this->cacheService = $cacheService;
     }
@@ -102,21 +100,6 @@ class ElementService
         $rootParent->save();
     }
 
-    private static function getAnyFromUri(string $uri, string $type): Element
-    {
-        $cleanUri = preg_replace("/[^A-Za-z0-9 ]/", '', $uri);
-
-        if ($cleanUri === null || strlen($cleanUri) === 0) {
-            throw new ElementNotFoundException();
-        }
-
-        if ($type === Element::DIRECTORY) {
-            return Element::fromUriDirectoryVisible($uri);
-        }
-
-        return Element::fromUriFileVisible($uri);
-    }
-
     public static function getAllPending(): int
     {
         return Element::where('pending', 1)
@@ -188,5 +171,20 @@ class ElementService
         }
 
         return $query->get();
+    }
+
+    private static function getAnyFromUri(string $uri, string $type): Element
+    {
+        $cleanUri = preg_replace("/[^A-Za-z0-9 ]/", '', $uri);
+
+        if ($cleanUri === null || strlen($cleanUri) === 0) {
+            throw new ElementNotFoundException();
+        }
+
+        if ($type === Element::DIRECTORY) {
+            return Element::fromUriDirectoryVisible($uri);
+        }
+
+        return Element::fromUriFileVisible($uri);
     }
 }

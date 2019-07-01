@@ -2,7 +2,7 @@
 namespace Youkok\Biz\Services\Download;
 
 use Youkok\Biz\Services\CacheService;
-use Youkok\Common\Controllers\DownloadController;
+use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Common\Models\Element;
 
 class DownloadCountService
@@ -27,7 +27,7 @@ class DownloadCountService
             return (int) $downloads;
         }
 
-        $downloads = DownloadController::getDownloadsForId($element->id);
+        $downloads = DownloadService::getDownloadsForId($element->id);
 
         $this->cacheService->setDownloadsForId($element->id, $downloads);
 

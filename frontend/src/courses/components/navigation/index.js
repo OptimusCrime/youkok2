@@ -2,8 +2,8 @@ import React from 'react';
 import {calculateRelativeButtons} from "../../utilities";
 import {RELATIVE_BUTTONS_LEFT, RELATIVE_BUTTONS_RIGHT} from "../../constants";
 
-export const Navigation = ({page, numberOfPages, changePage}) => (
-  <div className="courses-navigation" role="toolbar">
+export const Navigation = ({position, page, numberOfPages, changePage}) => (
+  <div className={`courses-navigation courses-navigation-${position}`} role="toolbar">
     <div
       className={`courses-navigation__group courses-navigation__group--left ${page === 0 ? 'courses-navigation__group--hidden' : ''}`}
       role="group"

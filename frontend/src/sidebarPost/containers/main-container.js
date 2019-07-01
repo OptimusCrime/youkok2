@@ -25,7 +25,7 @@ export class MainPostContainer extends Component {
   render() {
     return (
       <div className="sidebar-element">
-        <div className="sidebar-element-inner">
+        <div className="sidebar-post">
           <div className="sidebar-create-controlls">
             <button
               type="button"

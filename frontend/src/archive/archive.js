@@ -7,13 +7,13 @@ import { fetchArchive } from "./redux/archive/actions";
 
 import { MainContainer } from './containers/main-container';
 
-import './archive.less';
-
-
 const preloadedState = window.__INITIAL_STATE__;
 
 const store = configureStore(preloadedState);
-store.dispatch(fetchArchive());
+
+if (!window.SITE_DATA.archive_empty) {
+  store.dispatch(fetchArchive());
+}
 
 ReactDOM.render((
     <Provider store={store}>

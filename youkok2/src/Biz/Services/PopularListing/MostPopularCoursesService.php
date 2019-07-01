@@ -1,10 +1,12 @@
 <?php
+
 namespace Youkok\Biz\Services\PopularListing;
 
+use Monolog\Logger;
 use Slim\Collection;
 
 use Youkok\Biz\Services\CacheService;
-use Youkok\Common\Controllers\DownloadController;
+use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Enums\MostPopularCourse;
@@ -19,11 +21,17 @@ class MostPopularCoursesService implements MostPopularInterface
 
     private $settings;
     private $cacheService;
+    private $logger;
 
-    public function __construct(Collection $settings, CacheService $cacheService)
+    public function __construct(
+        Collection $settings,
+        CacheService $cacheService,
+        Logger $logger
+    )
     {
         $this->settings = $settings;
         $this->cacheService = $cacheService;
+        $this->logger = $logger;
     }
 
     public function fromDelta(string $delta, int $limit): array
@@ -58,7 +66,7 @@ class MostPopularCoursesService implements MostPopularInterface
 
     private function refreshForDelta(string $delta): void
     {
-        $courses = DownloadController::getMostPopularCoursesFromDelta($delta, static::MAX_COURSES_TO_FETCH);
+        $courses = DownloadService::getMostPopularCoursesFromDelta($delta, static::MAX_COURSES_TO_FETCH);
         $setKey = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
 
         $this->cacheService->set($setKey, json_encode($courses));
@@ -70,7 +78,8 @@ class MostPopularCoursesService implements MostPopularInterface
     {
         // Make sure we have the directory first
         if (!$this->createCacheDirectory()) {
-            // TODO error log here
+            $this->logger->error('Failed to create cache directory');
+
             return false;
         }
 

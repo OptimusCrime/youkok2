@@ -18,6 +18,16 @@ class ArchiveContainer extends Component {
       archive
     } = this.props;
 
+    if (window.SITE_DATA.archive_empty) {
+      return (
+        <div id="archive-empty" className="well">
+          <p>Ingen filer eller linker!</p>
+          <p>Det er visst ingen filer eller linker her. Du kan bidra ved å laste opp filer eller poste linker i panelet til høyre. Pass på at du leser våre <a href="#">retningslinjer</a> før du eventuelt gjør dette.</p>
+          <p>- YouKok2</p>
+        </div>
+      );
+    }
+
     if (failed) {
       return (
         <ArchiveWrapper>
@@ -28,21 +38,18 @@ class ArchiveContainer extends Component {
 
     const isLoading = loading(started, finished);
 
-    if (isLoading || (archive.content && archive.content.length > 0)) {
+    if (isLoading) {
       return (
         <ArchiveWrapper>
-          {isLoading && <StencilArchiveList size={10} />}
-          {!isLoading && archive.content.map((item, key) => <ArchiveRow key={key} item={item} /> )}
+          <StencilArchiveList size={10} />
         </ArchiveWrapper>
       );
     }
 
     return (
-      <div id="archive-empty" className="well">
-        <p>Ingen filer eller linker!</p>
-        <p>Det er visst ingen filer eller linker her. Du kan bidra ved å laste opp filer eller poste linker i panelet til høyre. Pass på at du leser våre <a href="#">retningslinjer</a> før du eventuelt gjør dette.</p>
-        <p>- YouKok2</p>
-      </div>
+      <ArchiveWrapper>
+        {archive.content.map((item, key) => <ArchiveRow key={key} item={item} /> )}
+      </ArchiveWrapper>
     );
   }
 }

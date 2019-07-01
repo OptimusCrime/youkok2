@@ -1,21 +1,69 @@
-.info-box-number-stencil {
-    display: block;
-    height: 32px;
-    max-width: 70%;
-    margin-top: 15px;
-    background-color: #e8e8e8;
-    border-radius: 4px;
+@import "../../youkok2/variables.less";
 
-    &__downloads {
-        width: 130px;
+.frontpage-info-box {
+  display: flex;
+  min-height: 90px;
+  background: @white;
+  width: 100%;
+  border: 1px solid @gray;
+  border-radius: 4px 4px;
+  box-sizing: content-box;
+
+  &__icon {
+    border-radius: 2px 0 0 2px;
+    height: 90px;
+    width: 90px;
+    text-align: center;
+    font-size: 45px;
+    line-height: 90px;
+    background: @blue-dark;
+
+    i {
+      color: @white;
     }
-    &__last-month {
-        width: 50px;
+  }
+
+  &__content {
+    padding: 5px 10px;
+
+    &--text {
+      display: block;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
     }
-    &__files {
-        width: 86px;
+
+    &--number {
+      display: block;
+      font-weight: bold;
+      font-size: 39px;
     }
-    &__courses {
-        width: 77px;
-    }
+  }
+}
+
+.info-box-number-stencil {
+  display: block;
+  height: 32px;
+  max-width: 70%;
+  margin-top: 15px;
+  background-color: @gray-stencil;
+  border-radius: 4px;
+
+  &__downloads {
+    width: 130px;
+  }
+
+  &__last-month {
+    width: 50px;
+  }
+
+  &__files {
+    width: 86px;
+  }
+
+  &__courses {
+    width: 77px;
+  }
 }

@@ -1,21 +1,27 @@
 .courses-navigation {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
 
-    &__group {
-        &--left button {
-            margin-right: 10px;
-        }
-        &--center button {
-            margin-left: 5px;
-            margin-right: 5px;
-        }
-        &--right button {
-            margin-left: 10px;
-        }
-        &--hidden button {
-            visibility: hidden;
-        }
+  &-top {
+    padding-bottom: 15px;
+  }
+  &-bottom {
+    padding: 15px 0 5px;
+  }
+
+  &__group {
+    &--left button {
+      margin-right: 10px;
     }
+    &--center button {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+    &--right button {
+      margin-left: 10px;
+    }
+    &--hidden button {
+      visibility: hidden;
+    }
+  }
 }

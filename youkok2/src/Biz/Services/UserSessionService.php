@@ -5,12 +5,12 @@ use Carbon\Carbon;
 
 use Youkok\Biz\Exceptions\CookieNotFoundException;
 use Youkok\Biz\Exceptions\SessionNotFoundException;
-use Youkok\Common\Controllers\SessionController;
+use Youkok\Biz\Services\Models\SessionService;
 use Youkok\Common\Models\Session;
 use Youkok\Common\Utilities\CookieHelper;
 use Youkok\Helpers\Utilities;
 
-class SessionService
+class UserSessionService
 {
     const SESSION_TOKEN_LENGTH = 100;
 
@@ -26,7 +26,7 @@ class SessionService
     {
         try {
             $hash = CookieHelper::getCookie('youkok2');
-            return SessionController::get($hash);
+            return SessionService::get($hash);
         } catch (CookieNotFoundException $exception) {
             // There is no need for a session if the script is called from the command line
             if (php_sapi_name() === 'cli') {
@@ -57,15 +57,15 @@ class SessionService
 
     public function deleteExpiredSessions()
     {
-        return SessionController::deleteExpiredSessions();
+        return UserSessionService::deleteExpiredSessions();
     }
 
     private function createSession(): Session
     {
         $hash = Utilities::randomToken(self::SESSION_TOKEN_LENGTH);
 
-        CookieHelper::setCookie('youkok2', $hash, SessionController::SESSION_LIFE_TIME);
+        CookieHelper::setCookie('youkok2', $hash, SessionService::SESSION_LIFE_TIME);
 
-        return SessionController::create($hash);
+        return SessionService::create($hash);
     }
 }

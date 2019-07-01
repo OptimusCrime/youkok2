@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Rest\Endpoints;
 
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
@@ -9,7 +10,7 @@ use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
-use Youkok\Biz\Services\SessionService;
+use Youkok\Biz\Services\UserSessionService;
 use Youkok\Common\Models\Session;
 
 class Frontpage extends BaseProcessorView
@@ -23,6 +24,9 @@ class Frontpage extends BaseProcessorView
     /** @var ElementMapper */
     private $elementMapper;
 
+    /** @var Logger */
+    private $logger;
+
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
@@ -30,6 +34,7 @@ class Frontpage extends BaseProcessorView
         $this->frontpageService = $container->get(FrontpageService::class);
         $this->courseMapper = $container->get(CourseMapper::class);
         $this->elementMapper = $container->get(ElementMapper::class);
+        $this->logger = $container->get(Logger::class);
     }
 
     public function boxes(Request $request, Response $response)
@@ -110,8 +115,6 @@ class Frontpage extends BaseProcessorView
             ]
         );
 
-
-
         return $this->outputJson($response, [
             'data' => $data
         ]);
@@ -136,7 +139,8 @@ class Frontpage extends BaseProcessorView
                 $this->mapUpdateMostPopular($output, $delta, $value)
             );
         } catch (InvalidRequestException $e) {
-            // TODO log
+            $this->logger->info('Got invalid frontpage put request. Delta: ' . $delta . '. Value: ' . $value);
+
             return $response->withStatus(400);
         }
     }

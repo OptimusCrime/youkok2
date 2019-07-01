@@ -5,7 +5,7 @@ use Youkok\Biz\Exceptions\GenericYoukokException;
 
 class SystemLogService
 {
-    const PHP_LOG = '/var/log/youkok2/php.log';
+    const PHP_LOG = '/var/log/youkok2/youkok2.log';
     const ERROR_LOG = '/var/log/youkok2/error.log';
 
     public function fetch($log): string

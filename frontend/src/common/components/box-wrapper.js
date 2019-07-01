@@ -11,8 +11,8 @@ export const TITLE_SIZE_H3 = 'h3';
 export const BoxWrapper = ({ title, titleSize = TITLE_SIZE_H2, titleInline, isLoading, isEmpty, dropdown, children, stencil_size = DEFAULT_STENCIL_SIZE }) => (
   <React.Fragment>
     <div className="list-header">
-      {titleSize === TITLE_SIZE_H2 && <h2 className={titleInline ? 'can-i-be-inline' : ''}>{title}</h2>}
-      {titleSize === TITLE_SIZE_H3 && <h3 className={titleInline ? 'can-i-be-inline' : ''}>{title}</h3>}
+      {titleSize === TITLE_SIZE_H2 && <h2 className={titleInline ? 'inline-title' : ''}>{title}</h2>}
+      {titleSize === TITLE_SIZE_H3 && <h3 className={titleInline ? 'inline-title' : ''}>{title}</h3>}
 
       {!isLoading && dropdown}
     </div>

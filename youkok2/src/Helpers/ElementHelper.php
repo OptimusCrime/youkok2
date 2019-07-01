@@ -5,6 +5,7 @@ use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\UriCleaner;
 
+// TODO remove
 class ElementHelper
 {
     public static function fileExists(Element $element, $basePath): bool

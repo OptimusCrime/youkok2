@@ -4,7 +4,7 @@ namespace Youkok\Biz\Services;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Mappers\ElementMapper;
-use Youkok\Common\Controllers\CourseController;
+use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 
@@ -34,7 +34,7 @@ class ArchiveService
             ['id', 'name', 'slug', 'uri', 'parent', 'directory']
         );
 
-        $course = CourseController::getCourseFromId($id);
+        $course = CourseService::getCourseFromId($id);
         $content = $this->getContentForDirectory($directory);
 
         return [

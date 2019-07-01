@@ -65,6 +65,7 @@ export const courses = (state = defaultState, action) => {
         ...state,
 
         search: action.value,
+        page: DEFAULT_PAGE,
 
         courses: updateCourses({
           column: state.column,
