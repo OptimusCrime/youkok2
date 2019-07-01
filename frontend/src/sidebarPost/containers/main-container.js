@@ -1,50 +1,78 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {TYPE_LINK, TYPE_NONE, TYPE_UPLOAD} from "../constants";
 
-import {BoxWrapper, TITLE_SIZE_H3} from "../../common/components/box-wrapper";
-import { EmptyItem } from "../../common/components/empty-item";
-import {formatNumber, loading} from "../../common/utils";
-import { ElementItem } from "../../common/components/element-item";
+export class MainPostContainer extends Component {
 
-const MainContainer = ({ started, finished, failed, data }) => {
+  constructor(props) {
+    super(props);
 
-  if (failed) {
-    return (
-      <BoxWrapper
-        title="Populære denne uka"
-        titleInline={false}
-        isLoading={false}
-        isEmpty={false}
-      >
-        <EmptyItem
-          text="Vi har visst litt tekniske problemer her..."
-        />
-      </BoxWrapper>
-    );
+    this.state = {
+      open: TYPE_NONE
+    };
+
+    this.changeType.bind = this.changeType;
   }
 
-  const isLoading = loading(started, finished);
+  changeType(control) {
+    if (control === TYPE_NONE || this.state.open === control) {
+      return this.setState({ open: TYPE_NONE });
+    }
 
-  return (
-    <BoxWrapper
-      title="Populære denne uka"
-      titleInline={false}
-      isLoading={isLoading}
-      isEmpty={!isLoading && data.length === 0}
-      titleSize={TITLE_SIZE_H3}
-    >
-      {!isLoading && data.map((element, index) =>
-        <ElementItem element={element} key={index} additional={<span>[{formatNumber(element.downloads)}]</span>} /> )
-      }
-    </BoxWrapper>
-  );
-};
+    this.setState({ open: control });
+  }
 
-const mapStateToProps = ({ elements }) => ({
-  started: elements.started,
-  finished: elements.finished,
-  failed: elements.failed,
-  data: elements.data,
-});
+  render() {
+    return (
+      <div className="sidebar-element">
+        <div className="sidebar-element-inner">
+          <div className="sidebar-create-controlls">
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={() => this.changeType(TYPE_UPLOAD)}
+            >
+              Last opp fil
+            </button>
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={() => this.changeType(TYPE_LINK)}
+            >
+              Post link
+            </button>
+          </div>
+          <div className="sidebar-create-type">
+            {this.state.open === TYPE_UPLOAD &&
+              <p>Upload</p>
+            }
+            {this.state.open === TYPE_LINK &&
+            <div className="sidebar-create-link">
+              <div className="form-group">
+                <label htmlFor="sidebar-create-link-url">URL</label>
+                <input type="text" className="form-control" id="sidebar-create-link-url" placeholder="https://www.vg.no"/>
+              </div>
+              <div className="sidebar-create-submit">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                >
+                  Post link
+                </button>&nbsp;
+                eller <a href="#" onClick={e => {
+                e.preventDefault();
 
-export default connect(mapStateToProps, {})(MainContainer);
+                this.changeType(TYPE_NONE)
+              }}>avbryt</a>.
+              </div>
+            </div>
+            }
+          </div>
+          <div className="sidebar-create-terms">
+            <p>Ved å poste linker eller laste opp filer godtar du våre <a href={SITE_DATA.archive_url_terms}>retningslinjer</a>.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}

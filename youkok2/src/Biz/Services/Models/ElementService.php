@@ -1,25 +1,49 @@
 <?php
-namespace Youkok\Common\Controllers;
+
+namespace Youkok\Biz\Services\Models;
 
 use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Services\CacheService;
 use Youkok\Common\Models\Element;
+use Youkok\Common\Utilities\CacheKeyGenerator;
 
-class ElementController
+// TODO: rydd i rekkefølge
+class ElementService
 {
     const SORT_TYPE_ORGANIZED = 0;
     const SORT_TYPE_AGE = 1;
 
-    public static function getNonDirectoryFromUri(string $uri): Element
+    /** @var CacheService */
+    private $cacheService;
+
+    public function __construct($cacheService)
     {
+        $this->cacheService = $cacheService;
+    }
+
+    public function getNonDirectoryFromUri(string $uri): Element
+    {
+
         return static::getAnyFromUri($uri, Element::NON_DIRECTORY);
     }
 
-    public static function getDirectoryFromUri(string $uri): Element
+    public function getDirectoryFromUri(string $uri): Element
     {
-        return static::getAnyFromUri($uri, Element::DIRECTORY);
+        $key = CacheKeyGenerator::keyForVisibleUriDirectory($uri);
+        $value = $this->cacheService->get($key);
+
+        if ($value === null) {
+            $element = static::getAnyFromUri($uri, Element::DIRECTORY);
+
+            $this->cacheService->set($key, $element->id);
+
+            return $element;
+        }
+
+        return Element::fromIdDirectoryVisible((int) $value, Element::DEFAULT_DIRECTORY_ATTRIBUTES);
     }
 
     public static function getParentForElement(Element $element): Element

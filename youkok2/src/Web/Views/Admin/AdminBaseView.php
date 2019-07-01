@@ -1,17 +1,41 @@
 <?php
 namespace Youkok\Web\Views\Admin;
 
+use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 
-use Youkok\Common\Controllers\ElementController;
+use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Web\Views\BaseView;
 
 class AdminBaseView extends BaseView
 {
-    protected function render(Response $response, $template, array $data = [])
-    {
-        $this->templateData['NUM_PENDING'] = count(ElementController::getAllPending());
+    /** @var ElementService */
+    private $elementService;
 
-        return parent::render($response, $template, $data);
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct($container);
+
+        $this->elementService = $container->get(ElementService::class);
+    }
+
+    protected function render(Response $response, string $template, array $data = []): Response
+    {
+        return parent::render($response, $template, array_merge(
+            $data,
+            [
+                'NUM_PENDING' => $this->elementService->getAllPending()
+            ]
+        ));
+    }
+
+    protected function renderReactApp(Response $response, string $template, array $data = []): Response
+    {
+        return parent::renderReactApp($response, $template, array_merge(
+            $data,
+            [
+                'NUM_PENDING' => $this->elementService->getAllPending()
+            ]
+        ));
     }
 }

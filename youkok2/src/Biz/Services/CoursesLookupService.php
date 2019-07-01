@@ -13,7 +13,10 @@ class CoursesLookupService
 
     const CACHE_BUSTING_PATH = 'dynamic/';
     const CACHE_BUSTING_FILE_NAME = 'courses_lookup.html';
-    const CACHE_BUSTING_TEMPLATE = '<script src="' . CoursesLookupService::JS_DIRECTORY . CoursesLookupService::JS_FILE_NAME . '?hash=%s"></script>';
+    const CACHE_BUSTING_TEMPLATE = '<script src="'
+                                  . CoursesLookupService::JS_DIRECTORY
+                                  . CoursesLookupService::JS_FILE_NAME
+                                  . '?hash=%s"></script>';
 
     private $urlService;
 

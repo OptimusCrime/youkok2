@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
-use Youkok\Common\Controllers\ElementController;
+use Youkok\Biz\Services\Models\ElementService;
 
 class Download extends BaseView
 {
@@ -20,18 +20,22 @@ class Download extends BaseView
     /** @var UpdateDownloadsService */
     private $updateDownloadsProcessor;
 
+    /** @var ElementService */
+    private $elementService;
+
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
         $this->downloadService = $container->get(DownloadFileInfoService::class);
         $this->updateDownloadsProcessor = $container->get(UpdateDownloadsService::class);
+        $this->elementService = $container->get(ElementService::class);
     }
 
     public function view(Request $request, Response $response, array $args)
     {
         try {
-            $element = ElementController::getNonDirectoryFromUri($args['uri']);
+            $element = $this->elementService->getNonDirectoryFromUri($args['uri']);
 
             if (!$this->downloadService->fileExists($element)) {
                 // TODO logging

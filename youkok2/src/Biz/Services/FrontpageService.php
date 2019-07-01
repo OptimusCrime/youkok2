@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Common\Controllers\CourseController;
 use Youkok\Common\Controllers\DownloadController;
-use Youkok\Common\Controllers\ElementController;
+use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 use Youkok\Common\Models\Session;
@@ -26,18 +26,21 @@ class FrontpageService
     private $popularCoursesProcessor;
     private $popularElementsProcessor;
     private $cacheService;
+    private $elementService;
 
     public function __construct(
         SessionService $sessionService,
         MostPopularCoursesService $popularCoursesProcessor,
         MostPopularElementsService $popularElementsProcessor,
-        CacheService $cacheService
+        CacheService $cacheService,
+        ElementService $elementService
     ) {
         $this->sessionService = $sessionService;
         $this->popularCoursesProcessor = $popularCoursesProcessor;
         $this->popularElementsProcessor = $popularElementsProcessor;
         $this->popularElementsProcessor = $popularElementsProcessor;
         $this->cacheService = $cacheService;
+        $this->elementService = $elementService;
     }
 
     public function boxes(): array
@@ -45,31 +48,40 @@ class FrontpageService
         // TODO move this into another service
         $numberFiles = $this->cacheService->get(CacheKeyGenerator::keyForBoxesNumberOfFiles());
         if ($numberFiles === null) {
-            $numberFiles = ElementController::getNumberOfVisibleFiles();
+            $numberFiles = $this->elementService->getNumberOfVisibleFiles();
 
             $this->cacheService->set(CacheKeyGenerator::keyForBoxesNumberOfFiles(), (string) $numberFiles);
         }
 
         // TODO !!!!!!!! increase this at download
-        $numberOfDownloads = $this->cacheService->get(CacheKeyGenerator::keyForBoxesNumberOfDownloads());
+        $numberOfDownloads = $this->cacheService->get(CacheKeyGenerator::keyForTotalNumberOfDownloads());
         if ($numberOfDownloads === null) {
             $numberOfDownloads = DownloadController::getNumberOfDownloads();
 
-            $this->cacheService->set(CacheKeyGenerator::keyForBoxesNumberOfDownloads(), (string) $numberOfDownloads);
+            $this->cacheService->set(CacheKeyGenerator::keyForTotalNumberOfDownloads(), (string) $numberOfDownloads);
         }
 
-        $numberOfCoursesWithContent = $this->cacheService->get(CacheKeyGenerator::keyForBoxesNumberOfCoursesWithContent());
+        $numberOfCoursesWithContent = $this->cacheService->get(
+            CacheKeyGenerator::keyForBoxesNumberOfCoursesWithContent()
+        );
+
         if ($numberOfCoursesWithContent === null) {
             $numberOfCoursesWithContent = CourseController::getNumberOfNonVisibleCourses();
 
-            $this->cacheService->set(CacheKeyGenerator::keyForBoxesNumberOfCoursesWithContent(), (string) $numberOfCoursesWithContent);
+            $this->cacheService->set(
+                CacheKeyGenerator::keyForBoxesNumberOfCoursesWithContent(),
+                (string) $numberOfCoursesWithContent
+            );
         }
 
         $numberOfFilesThisMonth = $this->cacheService->get(CacheKeyGenerator::keyForBoxesNumberOfFilesThisMonth());
         if ($numberOfFilesThisMonth === null) {
-            $numberOfFilesThisMonth = ElementController::getNumberOfFilesThisMonth();
+            $numberOfFilesThisMonth = $this->elementService->getNumberOfFilesThisMonth();
 
-            $this->cacheService->set(CacheKeyGenerator::keyForBoxesNumberOfFilesThisMonth(), (string) $numberOfFilesThisMonth);
+            $this->cacheService->set(
+                CacheKeyGenerator::keyForBoxesNumberOfFilesThisMonth(),
+                (string) $numberOfFilesThisMonth
+            );
         }
 
         return [
@@ -102,7 +114,7 @@ class FrontpageService
 
     public function newest(): Collection
     {
-        return ElementController::getLatestElements(static::SERVICE_LIMIT);
+        return $this->elementService->getLatestElements(static::SERVICE_LIMIT);
     }
 
     // TODO type hinting

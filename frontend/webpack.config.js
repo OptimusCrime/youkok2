@@ -13,6 +13,7 @@ const entries = {
   searchBar: './src/searchBar/searchBar.js',
   sidebarHistory: './src/sidebarHistory/sidebarHistory.js',
   sidebarPopular: './src/sidebarPopular/sidebarPopular.js',
+  sidebarPost: './src/sidebarPost/sidebarPost.js',
 };
 
 module.exports = (env, argv) => {

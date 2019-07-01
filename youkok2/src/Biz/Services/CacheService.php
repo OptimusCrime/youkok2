@@ -118,7 +118,7 @@ class CacheService
     private function getCacheByKey($key): ?string
     {
         if ($this->cache === null) {
-            return '';
+            return null;
         }
 
         $data = $this->cache->get($key);

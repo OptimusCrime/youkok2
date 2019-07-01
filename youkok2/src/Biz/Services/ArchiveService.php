@@ -5,16 +5,20 @@ namespace Youkok\Biz\Services;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Common\Controllers\CourseController;
-use Youkok\Common\Controllers\ElementController;
+use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 
 class ArchiveService
 {
     private $elementMapper;
+    private $elementService;
 
-    public function __construct(ElementMapper $elementMapper)
-    {
+    public function __construct(
+        ElementMapper $elementMapper,
+        ElementService $elementService
+    ) {
         $this->elementMapper = $elementMapper;
+        $this->elementService = $elementService;
     }
 
     /**
@@ -39,22 +43,11 @@ class ArchiveService
         ];
     }
 
-    /**
-     * @param string $course
-     * @param string|null $params
-     * @return |null
-     * @throws ElementNotFoundException
-     */
-    public function getArchiveElementFromUri(string $course, ?string $params): Element
+    public function getArchiveElementFromUri(string $uri): Element
     {
-        $element = null;
-        if ($params === null) {
-            $element = CourseController::getCourseFromUri($course);
-        } else {
-            $element = ElementController::getDirectoryFromUri($course . '/' . $params);
-        }
+        $element = $this->elementService->getDirectoryFromUri($uri);
 
-        ElementController::updateRootElementVisited($element);
+        $this->elementService->updateRootElementVisited($element);
 
         return $element;
     }
@@ -64,7 +57,7 @@ class ArchiveService
         return $this->elementMapper->mapBreadcrumbs($element->getParentsVisible());
     }
 
-    // TODO: Place in ElementController?
+    // TODO: Place in ElementService?
     private function getContentForDirectory(Element $element)
     {
         return Element

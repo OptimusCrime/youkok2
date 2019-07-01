@@ -25,14 +25,14 @@ use Youkok\Web\Views\Download;
 use Youkok\Web\Views\Flat;
 use Youkok\Web\Views\Frontpage;
 use Youkok\Web\Views\Redirect;
-use Youkok\Web\Views\Admin\Diagnostics;
+use Youkok\Web\Views\Admin\AdminDiagnostics;
 use Youkok\Web\Views\Admin\Files;
-use Youkok\Web\Views\Admin\Home;
+use Youkok\Web\Views\Admin\AdminHome;
 use Youkok\Web\Views\Admin\Login;
-use Youkok\Web\Views\Admin\Logs;
+use Youkok\Web\Views\Admin\AdminLogs;
 use Youkok\Web\Views\Admin\Pending;
-use Youkok\Web\Views\Admin\Scripts;
-use Youkok\Web\Views\Admin\Statistics;
+use Youkok\Web\Views\Admin\AdminScripts;
+use Youkok\Web\Views\Admin\AdminStatistics;
 
 class App
 {
@@ -86,7 +86,7 @@ class App
         $app->group('/', function () use ($app) {
             $app->get('', Frontpage::class . ':view')->setName('home');
             $app->get('emner', Courses::class . ':view')->setName('courses');
-            $app->get('emner/{course:[^/]+}[/{params:.+}]', Archive::class . ':view')->setName('archive');
+            $app->get('emner/{course:[^/]+}[/{path:.+}]', Archive::class . ':view')->setName('archive');
             $app->get('redirect/{id:[0-9]+}', Redirect::class . ':view')->setName('redirect');
             $app->get('last-ned/{uri:.*}', Download::class . ':view')->setName('download');
             $app->get('hjelp', Flat::class . ':help')->setName('help');
@@ -99,13 +99,13 @@ class App
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 
         $app->group('/admin', function () use ($app) {
-            $app->get('', Home::class . ':view')->setName('admin_home');
+            $app->get('', AdminHome::class . ':view')->setName('admin_home');
             $app->get('/ventende', Pending::class . ':view')->setName('admin_pending');
             $app->get('/filer', Files::class . ':view')->setName('admin_files');
-            $app->get('/statistikk', Statistics::class . ':view')->setName('admin_statistics');
-            $app->get('/diagnostikk', Diagnostics::class . ':view')->setName('admin_diagnostics');
-            $app->get('/logger', Logs::class . ':view')->setName('admin_logs');
-            $app->get('/scripts', Scripts::class . ':view')->setName('admin_scripts');
+            $app->get('/statistikk', AdminStatistics::class . ':view')->setName('admin_statistics');
+            $app->get('/diagnostikk', AdminDiagnostics::class . ':view')->setName('admin_diagnostics');
+            $app->get('/logger', AdminLogs::class . ':view')->setName('admin_logs');
+            $app->get('/scripts', AdminScripts::class . ':view')->setName('admin_scripts');
         })->add(new ReverseProxyMiddleware())->add(new AdminAuthMiddleware($app->getContainer()));
 
         $app->group('/rest', function () use ($app) {
@@ -125,6 +125,7 @@ class App
             });
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 
+        // TODO remove
         $app->group('/processors', function () use ($app) {
             $app->group('/link', function () use ($app) {
                 $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');
@@ -138,14 +139,38 @@ class App
             $app->group('/admin', function () use ($app) {
 
                 // TODO
-                $app->get('/homeboxes', '\Youkok\Views\Processors\Admin\Homeboxes:view')->setName('admin_processor_homeboxes');
-                $app->get('/homegraph', '\Youkok\Views\Processors\Admin\HomeGraph:view')->setName('admin_processor_homegraph');
-                $app->get('/element-details/{id:[0-9]+}', '\Youkok\Views\Processors\Admin\ElementDetails:get')->setName('admin_processor_element_details_fetch');
-                $app->put('/element-details', '\Youkok\Views\Processors\Admin\ElementDetails:update')->setName('admin_processor_element_details_update');
-                $app->get('/element-markup/{id:[0-9]+}', '\Youkok\Views\Processors\Admin\ElementListMarkup:get')->setName('admin_processor_element_list_markup_fetch');
-                $app->get('/element-markup-pending/{id:[0-9]+}', '\Youkok\Views\Processors\Admin\ElementListPendingMarkup:get')->setName('admin_processor_element_list_pending_markup_fetch');
-                $app->post('/element-create', '\Youkok\Views\Processors\Admin\ElementCreate:run')->setName('admin_processor_element_create');
-                $app->put('/element-regenerate/uri', '\Youkok\Views\Processors\Admin\ElementRegenerate:uri')->setName('admin_processor_element_regenerate_uri');
+                $app->get(
+                    '/homeboxes',
+                    '\Youkok\Views\Processors\Admin\Homeboxes:view'
+                )->setName('admin_processor_homeboxes');
+                $app->get(
+                    '/homegraph',
+                    '\Youkok\Views\Processors\Admin\HomeGraph:view'
+                )->setName('admin_processor_homegraph');
+                $app->get(
+                    '/element-details/{id:[0-9]+}',
+                    '\Youkok\Views\Processors\Admin\ElementDetails:get'
+                )->setName('admin_processor_element_details_fetch');
+                $app->put(
+                    '/element-details',
+                    '\Youkok\Views\Processors\Admin\ElementDetails:update'
+                )->setName('admin_processor_element_details_update');
+                $app->get(
+                    '/element-markup/{id:[0-9]+}',
+                    '\Youkok\Views\Processors\Admin\ElementListMarkup:get'
+                )->setName('admin_processor_element_list_markup_fetch');
+                $app->get(
+                    '/element-markup-pending/{id:[0-9]+}',
+                    '\Youkok\Views\Processors\Admin\ElementListPendingMarkup:get'
+                )->setName('admin_processor_element_list_pending_markup_fetch');
+                $app->post(
+                    '/element-create',
+                    '\Youkok\Views\Processors\Admin\ElementCreate:run'
+                )->setName('admin_processor_element_create');
+                $app->put(
+                    '/element-regenerate/uri',
+                    '\Youkok\Views\Processors\Admin\ElementRegenerate:uri'
+                )->setName('admin_processor_element_regenerate_uri');
             })->add(new AdminAuthMiddleware($app->getContainer()));
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
     }

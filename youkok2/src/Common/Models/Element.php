@@ -1,4 +1,5 @@
 <?php
+
 namespace Youkok\Common\Models;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -15,9 +16,6 @@ class Element extends BaseModel
     const NON_DIRECTORY = 'NON_DIRECTORY';
     const FILE = 'FILE';
 
-    // TODO remove this you lazy slob
-    const ATTRIBUTES_ALL = 'all';
-
     const FETCH_ONLY_VISIBLE = 1;
     const FETCH_ALL = 2;
 
@@ -25,6 +23,10 @@ class Element extends BaseModel
     const ELEMENT_TYPE_FILES = 1;
     const ELEMENT_TYPE_BOTH = 2;
     const ELEMENT_TYPE_FILE_LAST = 3;
+
+    const DEFAULT_DIRECTORY_ATTRIBUTES =
+        ['id', 'parent', 'name', 'slug', 'uri', 'empty', 'checksum', 'link', 'directory'];
+    const DEFAULT_FILE_ATTRIBUTES = ['id', 'parent', 'name', 'slug', 'uri', 'checksum', 'link', 'directory'];
 
     const VALID_FILE_ICONS = ['htm', 'html', 'java', 'pdf', 'py', 'sql', 'txt'];
 
@@ -123,8 +125,9 @@ class Element extends BaseModel
         return !$this->isCourse() && $this->directory === 1;
     }
 
-    public function getParentsVisible(array $columns = ['id', 'name', 'slug', 'uri', 'link', 'parent', 'directory']): array
-    {
+    public function getParentsVisible(
+        array $columns = ['id', 'name', 'slug', 'uri', 'link', 'parent', 'directory']
+    ): array {
         return $this->getParents($columns, static::FETCH_ONLY_VISIBLE);
     }
 
@@ -221,15 +224,9 @@ class Element extends BaseModel
             throw new ElementNotFoundException();
         }
 
-        $query = null;
-        if ($attributes == Element::ATTRIBUTES_ALL) {
-            $query = Element
-                ::where('id', $id);
-        } else {
-            $query = Element
-                ::select($attributes)
-                ->where('id', $id);
-        }
+        $query = Element
+            ::select($attributes)
+            ->where('id', $id);
 
         $element = $query
             ->where('deleted', 0)
@@ -243,25 +240,10 @@ class Element extends BaseModel
         return $element;
     }
 
-    public static function fromIdAll(
-        int $id,
-        array $attributes = ['id', 'link', 'checksum']
-    ): Element {
+    public static function fromIdAll(int $id, array $attributes = ['id', 'link', 'checksum']): Element
+    {
         if (!isset($id) or !is_numeric($id)) {
             throw new ElementNotFoundException();
-        }
-
-        $query = null;
-        if ($attributes == Element::ATTRIBUTES_ALL) {
-            $element = Element
-                ::where('id', $id)
-                ->first();
-
-            if ($element === null) {
-                throw new ElementNotFoundException();
-            }
-
-            return $element;
         }
 
         $element = Element
@@ -276,21 +258,43 @@ class Element extends BaseModel
         return $element;
     }
 
+    public static function fromIdDirectoryVisible(int $id, array $attributes = ['id', 'link', 'checksum']): Element
+    {
+        if (!isset($id) or !is_numeric($id)) {
+            throw new ElementNotFoundException();
+        }
+
+        $element = Element
+            ::select($attributes)
+            ->where('id', $id)
+            ->where('directory', 1)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->first();
+
+        if ($element === null) {
+            throw new ElementNotFoundException();
+        }
+
+        return $element;
+    }
+
     public static function fromUriFileVisible(
         string $uri,
-        array $attributes = ['id', 'parent', 'name', 'slug', 'uri', 'checksum', 'link', 'directory']
+        array $attributes = Element::DEFAULT_FILE_ATTRIBUTES
     ): Element {
         return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_FILE_LAST);
     }
 
     public static function fromUriDirectoryVisible(
         string $uri,
-        array $attributes = ['id', 'parent', 'name', 'slug', 'uri', 'empty', 'checksum', 'link', 'directory']
+        array $attributes = Element::DEFAULT_DIRECTORY_ATTRIBUTES
     ): Element {
         return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_DIRECTORIES);
     }
 
     // https://laracasts.com/discuss/channels/general-discussion/save-updated-model-dosnt-work/replies/32779
+    // TODO this is stupid
     public static function newFromStd($stdClass)
     {
         $instance = new Element();
@@ -303,7 +307,7 @@ class Element extends BaseModel
         string $uri,
         array $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'],
         int $type = self::ELEMENT_TYPE_DIRECTORIES
-    ) : Element {
+    ): Element {
         $fragments = UriCleaner::cleanFragments(explode('/', $uri));
         $parent = null;
         $element = null;

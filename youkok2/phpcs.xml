@@ -7,6 +7,9 @@
 
     <rule ref="PSR2" />
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="Generic.Files.LineLength">
+        <exclude-pattern>src/Common/Containers/Services\.php</exclude-pattern>
+    </rule>
 
     <file>src</file>
 </ruleset>

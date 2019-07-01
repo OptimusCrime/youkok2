@@ -78,7 +78,7 @@
                 <li>
                     <a href="{{ youkok_url() }}">Youkok2</a>
                 </li>
-                <li class="active">Forside</li>
+                <li class="active">{% block admin_page %}{% endblock %}</li>
             </ol>
         </section>
         {% block content %}{% endblock %}

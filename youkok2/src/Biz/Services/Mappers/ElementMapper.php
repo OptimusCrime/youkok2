@@ -1,4 +1,5 @@
 <?php
+
 namespace Youkok\Biz\Services\Mappers;
 
 use Illuminate\Database\Eloquent\Collection;
@@ -6,7 +7,7 @@ use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Controllers\CourseController;
-use Youkok\Common\Controllers\ElementController;
+use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 
 class ElementMapper
@@ -23,16 +24,18 @@ class ElementMapper
     private $urlService;
     private $courseMapper;
     private $downloadCountService;
-
+    private $elementService;
 
     public function __construct(
         UrlService $urlService,
         CourseMapper $courseMapper,
-        DownloadCountService $downloadCountService
+        DownloadCountService $downloadCountService,
+        ElementService $elementService
     ) {
         $this->urlService = $urlService;
         $this->courseMapper = $courseMapper;
         $this->downloadCountService = $downloadCountService;
+        $this->elementService = $elementService;
     }
 
     public function map(Collection $elements, array $additionalFields = []): array
@@ -91,8 +94,11 @@ class ElementMapper
 
         if (in_array(static::PARENT_DIRECT, $additionalFields)) {
             try {
-                $parent = ElementController::getParentForElement($element);
-                $arr['parent'] = $parent->isCourse() ? $this->courseMapper->mapCourse($parent) : $this->mapElement($parent);
+                $parent = $this->elementService->getParentForElement($element);
+
+                $arr['parent'] = $parent->isCourse()
+                               ? $this->courseMapper->mapCourse($parent)
+                               : $this->mapElement($parent);
             } catch (ElementNotFoundException $e) {
                 // TODO log
                 return null;
@@ -115,7 +121,7 @@ class ElementMapper
 
         // This is stored in the Elements datastore (prefixed with an underscore)
         if (in_array(static::DATASTORE_DOWNLOADS, $additionalFields)) {
-            $arr['downloads'] = (int) $element->getDownloads();
+            $arr['downloads'] = (int)$element->getDownloads();
         }
 
         if (in_array(static::ICON, $additionalFields)) {

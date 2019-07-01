@@ -1,14 +1,25 @@
 <?php
 namespace Youkok\Web\Views\Admin;
 
+use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
 
-use Youkok\Biz\Admin\SystemLogProcessor;
+use Youkok\Biz\Services\SystemLogService;
 
-class Logs extends AdminBaseView
+class AdminLogs extends AdminBaseView
 {
-    public function view(Request $request, Response $response)
+    /** @var SystemLogService */
+    private $systemLogService;
+
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct($container);
+
+        $this->systemLogService = $container->get(SystemLogService::class);
+    }
+
+    public function view(Request $request, Response $response): Response
     {
         $this->setSiteData('view', 'admin_logs');
 
@@ -18,8 +29,8 @@ class Logs extends AdminBaseView
             'HEADER_MENU' => 'admin_logs',
             'VIEW_NAME' => 'admin_logs',
             'BODY_CLASS' => 'admin',
-            'PHP_LOG_CONTENT' => SystemLogProcessor::fetch(SystemLogProcessor::PHP_LOG),
-            'ERROR_LOG_CONTENT' => SystemLogProcessor::fetch(SystemLogProcessor::ERROR_LOG),
+            'PHP_LOG_CONTENT' => $this->systemLogService->fetch(SystemLogService::PHP_LOG),
+            'ERROR_LOG_CONTENT' => $this->systemLogService->fetch(SystemLogService::ERROR_LOG),
         ]);
     }
 }

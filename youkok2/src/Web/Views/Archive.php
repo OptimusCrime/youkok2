@@ -28,11 +28,10 @@ class Archive extends BaseView
 
     public function view(Request $request, Response $response): Response
     {
-        $course = $request->getAttribute('course');
-        $params = $request->getAttribute('params', null);
+         $uri = $request->getAttribute('course') . '/' . $request->getAttribute('path', '');
 
         try {
-            $element = $this->archiveService->getArchiveElementFromUri($course, $params);
+            $element = $this->archiveService->getArchiveElementFromUri($uri);
             $parents = $this->archiveService->getBreadcrumbsForElement($element);
 
             $this->setSiteData('archive_id', $element->id);
@@ -42,6 +41,7 @@ class Archive extends BaseView
             $this->setSiteData('archive_sub_title', $element->isCourse() ? $element->getCourseName() : null);
             $this->setSiteData('archive_url_frontpage', $this->router->pathFor('home'));
             $this->setSiteData('archive_url_courses', $this->router->pathFor('courses'));
+            $this->setSiteData('archive_url_terms', $this->router->pathFor('terms'));
 
             return $this->renderReactApp($response, 'archive.html', [
                 'HEADER_MENU' => 'courses',

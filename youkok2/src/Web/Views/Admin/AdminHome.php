@@ -4,9 +4,9 @@ namespace Youkok\Web\Views\Admin;
 use Slim\Http\Response;
 use Slim\Http\Request;
 
-class Home extends AdminBaseView
+class AdminHome extends AdminBaseView
 {
-    public function view(Request $request, Response $response)
+    public function view(Request $request, Response $response): Response
     {
         $this->setSiteData('view', 'admin_home');
 

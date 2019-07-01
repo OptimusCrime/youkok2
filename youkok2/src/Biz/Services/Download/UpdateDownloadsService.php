@@ -24,8 +24,11 @@ class UpdateDownloadsService
         // Update the number of downloads in the cache for this particular element
         $this->addDownloadForElement($element);
 
-        // Finally, update this elements downloads in the most popular sets
+        // Update this elements downloads in the most popular sets
         $this->addDownloadForElementInMostPopularSets($element);
+
+        // Finally, update the total number of downloads
+        $this->updateTotalNumberOfDownloads();
     }
 
     private function addDownloadForElement(Element $element)
@@ -55,6 +58,20 @@ class UpdateDownloadsService
             $setKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($delta);
 
             $this->cacheService->updateValueInSet($setKey, 1, $element->id);
+        }
+    }
+
+    private function updateTotalNumberOfDownloads(): void
+    {
+        $numberOfDownloads = $this->cacheService->get(CacheKeyGenerator::keyForTotalNumberOfDownloads());
+
+        if ($numberOfDownloads !== null) {
+            $newTotalNumberOfDownloads = ((int) $numberOfDownloads) + 1;
+
+            $this->cacheService->set(
+                CacheKeyGenerator::keyForTotalNumberOfDownloads(),
+                (string) $newTotalNumberOfDownloads
+            );
         }
     }
 }

@@ -38,7 +38,11 @@ class ElementHelper
     public static function siteDescriptionFor(Element $element): string
     {
         if ($element->isCourse()) {
-            return 'Bidrag for ' . $element->getCourseCode() . ' - ' . $element->getCourseName() . ' fra Youkok2, den beste kokeboka på nettet.';
+            return 'Bidrag for '
+                . $element->getCourseCode()
+                . ' - '
+                . $element->getCourseName()
+                . ' fra Youkok2, den beste kokeboka på nettet.';
         }
 
         return static::siteDescriptionFor($element->getRootParentVisible());

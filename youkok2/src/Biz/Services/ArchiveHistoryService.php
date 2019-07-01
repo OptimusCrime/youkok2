@@ -1,18 +1,23 @@
 <?php
+
 namespace Youkok\Biz\Services;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Mappers\ElementMapper;
-use Youkok\Common\Controllers\ElementController;
+use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 
 class ArchiveHistoryService
 {
     private $elementMapper;
+    private $elementService;
 
-    public function __construct(ElementMapper $elementMapper)
-    {
+    public function __construct(
+        ElementMapper $elementMapper,
+        ElementService $elementService
+    ) {
         $this->elementMapper = $elementMapper;
+        $this->elementService = $elementService;
     }
 
     /**
@@ -27,7 +32,7 @@ class ArchiveHistoryService
         Element::fromIdVisible($id, ['id']);
 
         return $this->elementMapper->mapHistory(
-            ElementController::getVisibleChildren($id, ElementController::SORT_TYPE_AGE)
+            $this->elementService->getVisibleChildren($id, ElementService::SORT_TYPE_AGE)
         );
     }
 }

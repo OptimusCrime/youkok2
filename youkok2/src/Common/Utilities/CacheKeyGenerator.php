@@ -18,14 +18,14 @@ class CacheKeyGenerator
         return 'most_popular_courses_' . $delta;
     }
 
+    public static function keyForTotalNumberOfDownloads(): string
+    {
+        return 'total_number_of_downloads';
+    }
+
     public static function keyForBoxesNumberOfFiles(): string
     {
         return 'boxes_number_of_files';
-    }
-
-    public static function keyForBoxesNumberOfDownloads(): string
-    {
-        return 'boxes_number_of_downloads';
     }
 
     public static function keyForBoxesNumberOfCoursesWithContent(): string
@@ -36,5 +36,15 @@ class CacheKeyGenerator
     public static function keyForBoxesNumberOfFilesThisMonth(): string
     {
         return 'boxes_number_new_elements';
+    }
+
+    public static function keyForVisibleUriDirectory(string $uri): string
+    {
+        return 'uri_visible_directory_' . $uri;
+    }
+
+    public static function keyForVisibleUriFile(string $uri): string
+    {
+        return 'uri_visible_file_' . $uri;
     }
 }

@@ -19,10 +19,12 @@ use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
 use Youkok\Biz\Services\Job\JobService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
+use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 use Youkok\Biz\Services\SessionService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
+use Youkok\Biz\Services\SystemLogService;
 use Youkok\Biz\Services\UrlService;
 
 class Services implements ContainersInterface
@@ -48,7 +50,8 @@ class Services implements ContainersInterface
                 $container->get(SessionService::class),
                 $container->get(MostPopularCoursesService::class),
                 $container->get(MostPopularElementsService::class),
-                $container->get(CacheService::class)
+                $container->get(CacheService::class),
+                $container->get(ElementService::class)
             );
         };
 
@@ -91,7 +94,8 @@ class Services implements ContainersInterface
             return new ElementMapper(
                 $container->get(UrlService::class),
                 $container->get(CourseMapper::class),
-                $container->get(DownloadCountService::class)
+                $container->get(DownloadCountService::class),
+                $container->get(ElementService::class)
             );
         };
 
@@ -103,13 +107,15 @@ class Services implements ContainersInterface
 
         $container[ArchiveService::class] = function (ContainerInterface $container): ArchiveService {
             return new ArchiveService(
-                $container->get(ElementMapper::class)
+                $container->get(ElementMapper::class),
+                $container->get(ElementService::class)
             );
         };
 
         $container[ArchiveHistoryService::class] = function (ContainerInterface $container): ArchiveHistoryService {
             return new ArchiveHistoryService(
-                $container->get(ElementMapper::class)
+                $container->get(ElementMapper::class),
+                $container->get(ElementService::class)
             );
         };
 
@@ -150,6 +156,16 @@ class Services implements ContainersInterface
         $container[CoursesLookupService::class] = function (ContainerInterface $container): CoursesLookupService {
             return new CoursesLookupService(
                 $container->get(UrlService::class)
+            );
+        };
+
+        $container[SystemLogService::class] = function (): SystemLogService {
+            return new SystemLogService();
+        };
+
+        $container[ElementService::class] = function (ContainerInterface $container): ElementService {
+            return new ElementService(
+                $container->get(CacheService::class)
             );
         };
     }

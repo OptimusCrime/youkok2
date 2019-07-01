@@ -10,7 +10,7 @@
         <div id="archive"></div>
     </div>
     <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">
-        <p>Upload</p>
+        {% if DEV == '1' %}{% include "react/dev_sidebarPost.html" %}{% else %}{% include "react/sidebarPost.html" %}{% endif %}
         {% include "sidebar/archive/report.html" %}
         {% include "sidebar/archive/help.html" %}
         {% if DEV == '1' %}{% include "react/dev_sidebarHistory.html" %}{% else %}{% include "react/sidebarHistory.html" %}{% endif %}
