@@ -86,28 +86,20 @@ class ElementController
             throw new ElementNotFoundException();
         }
 
-        $element = null;
         if ($type === Element::DIRECTORY) {
-            $element = Element::fromUriDirectoryVisible($uri);
-        } else {
-            $element = Element::fromUriFileVisible($uri);
+            return Element::fromUriDirectoryVisible($uri);
         }
 
-        if ($element === null) {
-            throw new ElementNotFoundException();
-        }
-
-        return $element;
+        return Element::fromUriFileVisible($uri);
     }
 
-    public static function getAllPending(): Collection
+    public static function getAllPending(): int
     {
-        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'deleted', 'directory')
-            ->where('pending', 1)
+        return Element::where('pending', 1)
             ->where('deleted', 0)
             ->whereNotNull('parent')
             ->orderBy('name')
-            ->get();
+            ->count();
     }
 
     public static function getAllCourses(): Collection
