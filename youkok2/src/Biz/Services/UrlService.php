@@ -33,7 +33,7 @@ class UrlService
 
     private function urlForFile(Element $element): string
     {
-        return $this->router->pathFor('download', ['uri' => $this->getFullUri($element)]);
+        return $this->router->pathFor('download', ['uri' => $element->uri]);
     }
 
     private function urlForLink(Element $element): string
@@ -41,9 +41,10 @@ class UrlService
         return $this->router->pathFor('redirect', ['id' => $element->id]);
     }
 
+    // TODO ensure this is actually set
     private function urlForDirectory(Element $element): string
     {
-        $uri = $this->getFullUri($element);
+        $uri = $element->uri;
 
         $uriFragments = explode('/', $uri);
         $course = $uriFragments[0];
@@ -56,21 +57,5 @@ class UrlService
             'course' => $course,
             'path' => $params
         ]);
-    }
-
-    private function getFullUri(Element $element): string
-    {
-        if ($element->uri !== null and strlen($element->uri) > 0) {
-            return $element->uri;
-        }
-
-        $parents = $element->getParentsVisible(['id', 'name', 'slug', 'uri', 'parent']);
-        $uriFragments = [];
-
-        foreach ($parents as $parent) {
-            $uriFragments[] = $parent->slug;
-        }
-
-        return implode('/', $uriFragments);
     }
 }

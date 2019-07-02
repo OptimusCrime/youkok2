@@ -3,16 +3,34 @@ namespace Youkok\Biz\Services\Models;
 
 use Carbon\Carbon;
 
+use Guzzle\Http\Exception\CouldNotRewindStreamException;
 use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
+use Youkok\Common\Utilities\SelectStatements;
+use Youkok\Common\Utilities\UriCleaner;
 
 class ElementService
 {
     const SORT_TYPE_ORGANIZED = 0;
     const SORT_TYPE_AGE = 1;
+
+    const FLAG_FETCH_PARENTS = 'FLAG_FETCH_PARENTS';
+    const FLAG_FETCH_COURSE = 'FLAG_FETCH_COURSE';
+    const FLAG_FETCH_URI = 'FLAG_FETCH_URI';
+
+    // This flag will force visible check on all parents, even if FLAG_FETCH_PARENTS is not used
+    const FLAG_ENSURE_VISIBLE = 'FLAG_ENSURE_VISIBLE';
+
+    // This flag will force check to ensure that all the parents are directories, and current element is file
+    const FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE =
+        'FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE';
+
+    const FLAG_ONLY_DIRECTORIES = 'FLAG_ONLY_DIRECTORIES';
 
     /** @var CacheService */
     private $cacheService;
@@ -22,29 +40,103 @@ class ElementService
         $this->cacheService = $cacheService;
     }
 
-    public function getNonDirectoryFromUri(string $uri): Element
+    public function getElement(SelectStatements $selectStatements, array $attributes = [], array $flags = []): Element
     {
+        $this->validateFlags($flags);
+        $attributes = static::supplementAttributesBasedOnFlags($attributes, $flags);
 
-        return static::getAnyFromUri($uri, Element::NON_DIRECTORY);
-    }
+        $element = $this->buildQuery($selectStatements, $attributes, $flags);
 
-    public function getDirectoryFromUri(string $uri): Element
-    {
-        $key = CacheKeyGenerator::keyForVisibleUriDirectory($uri);
-        $value = $this->cacheService->get($key);
+        if ($element->parent === null) {
+            // .parent was fetched, but was `null` indicating that the current Element is a course
+            $element->setParents([]);
+        }
+        else {
+            // If any of these flags are sat, fetch parents
+            $fetchParentsFlags = [
+                static::FLAG_FETCH_PARENTS,
+                static::FLAG_ENSURE_VISIBLE,
+                static::FLAG_FETCH_COURSE,
+                static::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE
+            ];
+            if (static::anyFlags($fetchParentsFlags, $flags)) {
+                $parents = $this->fetchParents($element, $attributes, $flags);
 
-        if ($value === null) {
-            $element = static::getAnyFromUri($uri, Element::DIRECTORY);
+                // Note: We need to change the order of the parents
+                $parentsReversed = array_reverse($parents);
 
-            $this->cacheService->set($key, $element->id);
-
-            return $element;
+                $element->setParents($parentsReversed);
+            }
         }
 
-        return Element::fromIdDirectoryVisible((int) $value, Element::DEFAULT_DIRECTORY_ATTRIBUTES);
+        if (in_array(static::FLAG_FETCH_URI, $flags) && $element->uri === null && $element->getType() !== Element::LINK) {
+            // If the current type is course, we can just use the slug
+            if ($element->getType() === Element::COURSE) {
+                $element->uri = $element->slug;
+            }
+            else {
+                // polyfill
+                // TODO
+                die('nope');
+            }
+        }
+
+        if (in_array(static::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE, $flags)) {
+            if (count($element->getParents()) === 0) {
+                throw new GenericYoukokException('No parents loaded for verification.');
+            }
+
+            foreach ($element->getParents() as $index => $parent) {
+                // First child will be identified as a COURSE
+                if ($index > 0 && !$parent->isDirectory()) {
+                    throw new GenericYoukokException(
+                        'Parent of ' . $element->id . ' should be all directories, but is ' . $parent->getType() . '.'
+                    );
+                }
+
+                if ($index === 0 && !$parent->isCourse()) {
+                    throw new GenericYoukokException(
+                        'First parent of ' . $element->id . ' should be COURSE, but is ' . $parent->getType() . '.'
+                    );
+                }
+            }
+
+            if ($element->getType() !== Element::FILE) {
+                throw new GenericYoukokException(
+                    'Element ' . $element->id . ' should be FILE, but is ' . $element->getType()
+                );
+            }
+        }
+
+        return $element;
     }
 
-    public static function getParentForElement(Element $element): Element
+    public function getElementFromUri(string $uri, array $attributes = [], array $flags = []): Element
+    {
+        $this->validateFlags($flags);
+        $attributes = static::supplementAttributesBasedOnFlags($attributes, $flags);
+
+        // First, try to fetch using cache
+        try {
+            return $this->getElementFromUriCache($uri, $attributes, $flags);
+        }
+        catch (ElementNotFoundException $ex) {
+            // To be expected
+        }
+
+        // Secondly, try to fetch, using the entire uri
+        try {
+            return $this->getElementFromOriginalUri($uri, $attributes, $flags);
+        }
+        catch (ElementNotFoundException $ex) {
+            // To be expected
+        }
+
+        // Looks like we have to do this the hard way, e.i. looking up each fragment
+        return $this->getElementFromUriFragments($uri, $attributes, $flags);
+    }
+
+    public function getVisibleParentForElement(Element $element): Element
     {
         $parent = Element
             ::where('id', $element->parent)
@@ -52,14 +144,14 @@ class ElementService
             ->where('pending', 0)
             ->first();
 
-        if (!($parent instanceof Element)) {
+        if ($parent === null) {
             throw new ElementNotFoundException();
         }
 
         return $parent;
     }
 
-    public static function getNumberOfVisibleFiles(): int
+    public function getNumberOfVisibleFiles(): int
     {
         return Element
             ::where('directory', 0)
@@ -68,7 +160,7 @@ class ElementService
             ->count();
     }
 
-    public static function getNumberOfFilesThisMonth(): int
+    public function getNumberOfFilesThisMonth(): int
     {
         return Element
             ::where('directory', 0)
@@ -78,29 +170,34 @@ class ElementService
             ->count();
     }
 
-    public static function getLatestElements(int $limit = 10): Collection
+    public function getNewestElements(int $limit = 10): array
     {
-        return Element::where('directory', 0)
+        $elements = Element::select('id')
+            ->where('directory', 0)
             ->where('pending', 0)
             ->where('deleted', 0)
             ->orderBy('added', 'DESC')
             ->orderBy('name', 'DESC')
             ->limit($limit)
             ->get();
-    }
 
-    public static function updateRootElementVisited(Element $element): void
-    {
-        $rootParent = $element->getRootParentVisible();
-        if ($rootParent === null) {
-            throw new ElementNotFoundException();
+        $newest = [];
+        foreach ($elements as $element) {
+            $newest[] = $this->getElement(
+                new SelectStatements('id', $element->id),
+                ['id', 'name', 'slug', 'uri', 'parent', 'checksum', 'link', 'added', 'directory'],
+                [
+                    static::FLAG_ENSURE_VISIBLE,
+                    static::FLAG_FETCH_URI,
+                    static::FLAG_FETCH_PARENTS
+                ]
+            );
         }
 
-        $rootParent->last_visited = Carbon::now();
-        $rootParent->save();
+        return $newest;
     }
 
-    public static function getAllPending(): int
+    public function getAllPending(): int
     {
         return Element::where('pending', 1)
             ->where('deleted', 0)
@@ -109,6 +206,251 @@ class ElementService
             ->count();
     }
 
+    public function getVisibleChildren(Element $element, int $order = self::SORT_TYPE_ORGANIZED): Collection
+    {
+        $query = Element::where('parent', $element->id)
+            ->where('deleted', 0)
+            ->where('pending', 0);
+
+        if ($order === static::SORT_TYPE_ORGANIZED) {
+            $query = $query->orderBy('directory', 'DESC')->orderBy('name', 'ASC');
+        } else {
+            $query = $query->orderBy('added', 'DESC');
+        }
+
+        return $query->get();
+    }
+
+    public function getDirectChildren(Element $element): Collection
+    {
+        return Element
+            ::where('parent', $element->id)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->orderBy('directory', 'DESC')
+            ->orderBy('name', 'ASC')
+            ->get();
+    }
+
+    private function getElementFromUriCache(string $uri, array $attributes, array $flags): Element
+    {
+        $key = static::generateUriCacheKey($uri, $flags);
+
+        $elementId = $this->cacheService->get($key);
+
+        if ($elementId === null) {
+            throw new ElementNotFoundException('No cache found for key ' . $key);
+        }
+
+        return $this->getElement(
+            new SelectStatements('id', (int) $elementId),
+            $attributes,
+            $flags
+        );
+    }
+
+    private function getElementFromOriginalUri(string $uri, array $attributes, array $flags): Element
+    {
+         // We only need to fetch the id there, the rest of the information is fetched in the second call
+        $elementFromUri = $this->buildQuery(
+            new SelectStatements('uri', UriCleaner::cleanUri($uri)),
+            ['id'],
+            $flags
+        );
+
+        if ($elementFromUri === null) {
+            throw new ElementNotFoundException('No element found with uri ' . $uri);
+        }
+
+        $element = $this->getElement(
+            new SelectStatements('id', $elementFromUri->id),
+            $attributes,
+            $flags
+        );
+
+        // Store the uri lookup in the cache for later, important to do this _after_ all the security checks
+        $key = static::generateUriCacheKey($uri, $flags);
+        $this->cacheService->set($key, $element->id);
+
+        return $element;
+    }
+
+    private function getElementFromUriFragments(string $uri, array $attributes, array $flags): Element
+    {
+        $fragments = UriCleaner::cleanFragments(explode('/', $uri));
+        $currentParentId = null;
+        $fragmentElement = null;
+
+        foreach ($fragments as $fragment) {
+            $selectStatements = new SelectStatements();
+            $selectStatements->addStatement('slug', $fragment);
+            $selectStatements->addStatement('parent', $currentParentId);
+
+            $fragmentElement = $this->buildQuery($selectStatements, ['id'], $flags);
+
+            $currentParentId = $fragmentElement->id;
+        }
+
+        // Generate the cache key before messing with the list of flags
+        $key = static::generateUriCacheKey($uri, $flags);
+
+        // We can remove the flag FLAG_ENSURE_VISIBLE, because this is already checked. No point in validating this
+        // twice
+        if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
+            unset($flags[static::FLAG_ENSURE_VISIBLE]);
+        }
+
+        $element = $this->getElement(
+            new SelectStatements('id', $fragmentElement->id),
+            $attributes,
+            $flags
+        );
+
+        // Store the uri lookup in the cache for later, important to do this _after_ all the security checks
+        $this->cacheService->set($key, $element->id);
+
+        return $element;
+    }
+
+    private function fetchParents(Element $element, array $attributes, array $flags): array
+    {
+        $currentParentId = $element->parent;
+        $parents = [];
+
+        while (true) {
+            $query = Element
+                ::select($attributes)
+                ->where('id', $currentParentId)
+                ->where('directory', 1); // All parents should be directories
+
+            if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
+                $query = $query
+                    ->where('deleted', 0)
+                    ->where('pending', 0);
+            }
+
+            $parent = $query->first();
+
+            if ($parent === null) {
+                throw new ElementNotFoundException(
+                    'Could not find parent for Element id' . $element->id . ', parent id ' . $element->parent
+                );
+            }
+
+            $parents[] = $parent;
+            $currentParentId = $parent->parent;
+
+            if ($currentParentId === null) {
+                break;
+            }
+        }
+
+        return $parents;
+    }
+
+    private function buildQuery(SelectStatements $selectStatements, array $attributes, array $flags): ?Element
+    {
+        $query = Element::select($attributes);
+
+        foreach ($selectStatements as $key => $value) {
+            $query = $query->where($key, $value);
+        }
+
+        // Can not fetch both visible and/or specific
+        if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
+            $query = $query
+                ->where('deleted', 0)
+                ->where('pending', 0);
+        }
+        else {
+            // Fetch specific
+            // TODO
+        }
+
+        if (in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {
+            $query = $query
+                ->where('directory', 1);
+        }
+
+        $element = $query->first();
+
+        if ($element === null) {
+            // Todo, better message here?
+            throw new ElementNotFoundException();
+        }
+
+        return $element;
+    }
+
+    private function validateFlags(array $flags): void
+    {
+        if (in_array(static::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE, $flags)
+            && in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {
+            throw new InvalidFlagCombination('Can not fetch only files AND directories at the same time.');
+        }
+
+        // TODO validate more
+    }
+
+    private static function anyFlags(array $any, array $flags): bool
+    {
+        if (count($flags) === 0) {
+            return false;
+        }
+
+        foreach ($any as $anyFlag) {
+            if (in_array($anyFlag, $flags)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function supplementAttributesBasedOnFlags(array $attributes, array $flags): array
+    {
+        if (!in_array('uri', $attributes) && in_array(static::FLAG_FETCH_URI, $flags)) {
+            $attributes[] = 'uri';
+        }
+
+        $flagsRequireParent = [
+            static::FLAG_FETCH_PARENTS,
+            static::FLAG_FETCH_URI,
+            static::FLAG_ENSURE_VISIBLE,
+            static::FLAG_FETCH_COURSE
+        ];
+
+        if (static::anyFlags($flagsRequireParent, $flags)) {
+            if (!in_array('parent', $attributes)) {
+                $attributes[] = 'parent';
+            }
+
+            if (!in_array('link', $attributes)) {
+                $attributes[] = 'link';
+            }
+
+            if (!in_array('parents', $attributes)) {
+                $attributes[] = 'directory';
+            }
+        }
+
+        return $attributes;
+    }
+
+    private static function generateUriCacheKey(string $uri, array $flags): string
+    {
+        if (in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {
+            return CacheKeyGenerator::keyForVisibleUriDirectory($uri);
+        }
+
+        if (in_array(static::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE, $flags)) {
+            return CacheKeyGenerator::keyForAllParentsAreDirectoriesExceptCurrentIsFile($uri);
+        }
+
+        throw new GenericYoukokException('Not implemented yet, sry');
+    }
+
+    // TODO: used by admin stuff
     public static function getAllCourses(): Collection
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')
@@ -120,6 +462,7 @@ class ElementService
             ->get();
     }
 
+    // TODO: used by admin stuff
     public static function getAllNoneEmptyCourses(): Collection
     {
         return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'deleted', 'pending')
@@ -127,18 +470,6 @@ class ElementService
             ->where('directory', 1)
             ->where('empty', 0)
             ->orderBy('name')
-            ->get();
-    }
-
-    public static function getLatest(int $limit = 10): Collection
-    {
-        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'added', 'checksum')
-            ->where('directory', 0)
-            ->where('pending', 0)
-            ->where('deleted', 0)
-            ->orderBy('added', 'DESC')
-            ->orderBy('name', 'DESC')
-            ->limit($limit)
             ->get();
     }
 
@@ -156,35 +487,5 @@ class ElementService
             ->orderBy('directory', 'DESC')
             ->orderBy('name', 'ASC')
             ->get();
-    }
-
-    public static function getVisibleChildren(int $id, int $order = self::SORT_TYPE_ORGANIZED): Collection
-    {
-        $query = Element::where('parent', $id)
-            ->where('deleted', 0)
-            ->where('pending', 0);
-
-        if ($order === static::SORT_TYPE_ORGANIZED) {
-            $query = $query->orderBy('directory', 'DESC')->orderBy('name', 'ASC');
-        } else {
-            $query = $query->orderBy('added', 'DESC');
-        }
-
-        return $query->get();
-    }
-
-    private static function getAnyFromUri(string $uri, string $type): Element
-    {
-        $cleanUri = preg_replace("/[^A-Za-z0-9 ]/", '', $uri);
-
-        if ($cleanUri === null || strlen($cleanUri) === 0) {
-            throw new ElementNotFoundException();
-        }
-
-        if ($type === Element::DIRECTORY) {
-            return Element::fromUriDirectoryVisible($uri);
-        }
-
-        return Element::fromUriFileVisible($uri);
     }
 }

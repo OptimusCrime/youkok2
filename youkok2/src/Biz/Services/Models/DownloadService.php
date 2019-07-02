@@ -8,34 +8,58 @@ use Illuminate\Support\Collection;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Common\Models\Download;
 use Youkok\Common\Models\Element;
+use Youkok\Common\Utilities\SelectStatements;
 use Youkok\Enums\MostPopularElement;
 
 class DownloadService
 {
-    public static function getDownloadsForId(int $id): int
+    private $elementService;
+
+    public function __construct(ElementService $elementService)
+    {
+        $this->elementService = $elementService;
+    }
+
+    public function getDownloadsForId(int $id): int
     {
         return Download::select(DB::raw("COUNT(`id`) as `result`"))
             ->where('resource', $id)
             ->count();
     }
 
-    public static function getNumberOfDownloads(): int
+    public function getNumberOfDownloads(): int
     {
         return Download::count();
     }
 
-    // TODO type hinting
-    public static function getLatestDownloads(int $limit): Collection
+    public function getLatestDownloads(int $limit): array
     {
-        return DB::table('download')
-            ->select(['downloaded_time', 'element.*'])
+        $downloads = DB::table('download')
+            ->select(['downloaded_time', 'element.id'])
             ->leftJoin('element as element', 'element.id', '=', 'download.resource')
             ->orderBy('downloaded_time', 'DESC')
             ->limit($limit)
             ->get();
+
+        $response = [];
+        foreach ($downloads as $download) {
+            $element = $this->elementService->getElement(
+                new SelectStatements('id', $download->id),
+                ['id', 'name', 'slug', 'uri'],
+                [
+                    ElementService::FLAG_FETCH_COURSE
+                ]
+            );
+
+            $element->setDownloadedTime($download->downloaded_time);
+
+            $response[] = $element;
+        }
+
+        return $response;
     }
 
-    public static function getMostPopularElementsFromDelta(string $delta): Collection
+    public function getMostPopularElementsFromDelta(string $delta): Collection
     {
         $query = DB::table('download')
             ->select('download.resource as id', DB::raw('COUNT(download.id) as download_count'))
@@ -47,7 +71,7 @@ class DownloadService
             $query = $query->whereDate(
                 'download.downloaded_time',
                 '>=',
-                static::getMostPopularElementQueryFromDelta($delta)
+                $this->getMostPopularElementQueryFromDelta($delta)
             );
         }
 
@@ -58,14 +82,14 @@ class DownloadService
             ->get();
     }
 
-    public static function getMostPopularCoursesFromDelta(string $delta, int $limit)
+    public function getMostPopularCoursesFromDelta(string $delta, int $limit)
     {
-        $result = static::summarizeDownloads(static::getMostPopularElementsFromDelta($delta));
+        $result = $this->summarizeDownloads($this->getMostPopularElementsFromDelta($delta));
 
         return array_slice($result, 0, $limit);
     }
 
-    public static function newDownloadForElement(Element $element)
+    public function newDownloadForElement(Element $element)
     {
         $download = new Download();
         $download->resource = $element->id;
@@ -75,40 +99,41 @@ class DownloadService
         $download->save();
     }
 
-    private static function summarizeDownloads($downloads)
+    private function summarizeDownloads(Collection $downloads)
     {
         $courses = [];
         foreach ($downloads as $download) {
-            $downloadElement = Element::fromIdAll($download->id, ['id', 'parent']);
-            if ($downloadElement === null) {
-                continue;
+            $downloadElement = $this->elementService->getElement(
+                new SelectStatements('id', $downloads->id),
+                ['id', 'parent'],
+                [
+                    ElementService::FLAG_FETCH_PARENTS,
+                    ElementService::FLAG_FETCH_COURSE
+                ]
+            );
+
+            $downloadElementCourse = $downloadElement->getCourse();
+
+            if (!isset($courses[$downloadElementCourse->id])) {
+                $courses[$downloadElementCourse->id] = 0;
             }
 
-            $rootParent = $downloadElement->getRootParentAll();
-            if ($rootParent === null) {
-                continue;
-            }
-
-            if (!isset($courses[$rootParent->id])) {
-                $courses[$rootParent->id] = 0;
-            }
-
-            $courses[$rootParent->id] += $download->download_count;
+            $courses[$downloadElementCourse->id] += $download->download_count;
         }
 
         // Make sure to filter out all courses that are either deleted or filtered away
-        $courses = static::filterRemovedCourses($courses);
+        $courses = $this->filterRemovedCourses($courses);
 
         arsort($courses);
 
         return static::transformResultArray($courses);
     }
 
-    private static function filterRemovedCourses(array $courses): array
+    private function filterRemovedCourses(array $courses): array
     {
         $filteredCourses = [];
         foreach ($courses as $courseId => $downloads) {
-            if (static::isValidCourseId($courseId)) {
+            if ($this->isValidCourseId($courseId)) {
                 $filteredCourses[$courseId] = $downloads;
             }
         }
@@ -116,7 +141,7 @@ class DownloadService
         return $filteredCourses;
     }
 
-    private static function isValidCourseId(int $courseId): bool
+    private function isValidCourseId(int $courseId): bool
     {
         $element = Element
             ::select('id')

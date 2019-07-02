@@ -10,7 +10,7 @@ services:
     container_name: "youkok2_db"
     image: "mysql:5.7.17"
     ports:
-      - "3316:3316"
+      - "3306:3306"
     env_file: dev.env
     volumes:
       - /var/lib/mysql

@@ -1,24 +1,27 @@
 <?php
 namespace Youkok\Biz\Services;
 
-use Carbon\Carbon;
-
+use Monolog\Logger;
 use Youkok\Biz\Exceptions\CookieNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Exceptions\SessionNotFoundException;
 use Youkok\Biz\Services\Models\SessionService;
 use Youkok\Common\Models\Session;
 use Youkok\Common\Utilities\CookieHelper;
-use Youkok\Helpers\Utilities;
 
 class UserSessionService
 {
-    const SESSION_TOKEN_LENGTH = 100;
+    private $sessionService;
+    private $logger;
 
     /** @var Session */
     private $session;
 
-    public function __construct()
+    public function __construct(SessionService $sessionService, Logger $logger)
     {
+        $this->sessionService = $sessionService;
+        $this->logger = $logger;
+
         $this->session = $this->loadSession();
     }
 
@@ -26,7 +29,7 @@ class UserSessionService
     {
         try {
             $hash = CookieHelper::getCookie('youkok2');
-            return SessionService::get($hash);
+            return $this->sessionService->get($hash);
         } catch (CookieNotFoundException $exception) {
             // There is no need for a session if the script is called from the command line
             if (php_sapi_name() === 'cli') {
@@ -51,21 +54,19 @@ class UserSessionService
 
     public function store(): bool
     {
-        $this->session->last_updated = Carbon::now();
         return $this->session->save();
-    }
-
-    public function deleteExpiredSessions()
-    {
-        return UserSessionService::deleteExpiredSessions();
     }
 
     private function createSession(): Session
     {
-        $hash = Utilities::randomToken(self::SESSION_TOKEN_LENGTH);
+        try {
+            return $this->sessionService->create();
+        }
+        catch (GenericYoukokException $ex) {
+            $this->logger->warning('Failed to create session.', $ex->getTrace());
 
-        CookieHelper::setCookie('youkok2', $hash, SessionService::SESSION_LIFE_TIME);
-
-        return SessionService::create($hash);
+            // Use a dummy session
+            return new Session();
+        }
     }
 }

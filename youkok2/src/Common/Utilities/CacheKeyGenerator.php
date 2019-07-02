@@ -43,6 +43,11 @@ class CacheKeyGenerator
         return 'uri_visible_directory_' . $uri;
     }
 
+    public static function keyForAllParentsAreDirectoriesExceptCurrentIsFile(string $uri): string
+    {
+        return 'uri_visible_parents_directory_current_file_' . $uri;
+    }
+
     public static function keyForVisibleUriFile(string $uri): string
     {
         return 'uri_visible_file_' . $uri;

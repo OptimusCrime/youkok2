@@ -48,7 +48,7 @@ class ArchiveContainer extends Component {
 
     return (
       <ArchiveWrapper>
-        {archive.content.map((item, key) => <ArchiveRow key={key} item={item} /> )}
+        {archive.map((item, key) => <ArchiveRow key={key} item={item} /> )}
       </ArchiveWrapper>
     );
   }

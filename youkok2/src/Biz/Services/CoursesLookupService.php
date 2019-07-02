@@ -19,10 +19,12 @@ class CoursesLookupService
                                   . '?hash=%s"></script>';
 
     private $urlService;
+    private $courseService;
 
-    public function __construct(UrlService $urlService)
+    public function __construct(UrlService $urlService, CourseService $courseService)
     {
         $this->urlService = $urlService;
+        $this->courseService = $courseService;
     }
 
     public function refresh(): void
@@ -45,7 +47,7 @@ class CoursesLookupService
 
     private function populateCacheFile(): void
     {
-        $data = $this->coursesToJsonData(CourseService::getAllVisibleCourses());
+        $data = $this->coursesToJsonData($this->courseService->getAllVisibleCourses());
         $content = str_replace('%s', $data, static::JS_TEMPLATE);
 
         // TODO error logging?

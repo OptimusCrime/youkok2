@@ -5,10 +5,10 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 use Youkok\Biz\Admin\HomeboxProcessor;
-use Youkok\Rest\Endpoints\BaseProcessorView;
+use Youkok\Rest\Endpoints\BaseRestEndpoint;
 use Youkok\Mappers\Admin\HomeboxMapper;
 
-class Homeboxes extends BaseProcessorView
+class Homeboxes extends BaseRestEndpoint
 {
     public function view(Request $request, Response $response)
     {

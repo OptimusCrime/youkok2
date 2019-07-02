@@ -5,9 +5,9 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 use Youkok\Biz\Admin\ElementListProcessor;
-use Youkok\Rest\Endpoints\BaseProcessorView;
+use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
-class ElementListMarkup extends BaseProcessorView
+class ElementListMarkup extends BaseRestEndpoint
 {
     public function get(Request $request, Response $response, array $args)
     {

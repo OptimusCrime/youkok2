@@ -6,6 +6,7 @@ use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
+use Youkok\Common\Utilities\SelectStatements;
 
 class ArchiveHistoryService
 {
@@ -29,10 +30,16 @@ class ArchiveHistoryService
     public function get(int $id): array
     {
         // This throws an exception if the element is hidden
-        Element::fromIdVisible($id, ['id']);
+         $element = $this->elementService->getElement(
+            new SelectStatements('id', $id),
+            ['id'],
+            [
+                ElementService::FLAG_ENSURE_VISIBLE
+            ]
+        );
 
         return $this->elementMapper->mapHistory(
-            $this->elementService->getVisibleChildren($id, ElementService::SORT_TYPE_AGE)
+            $this->elementService->getVisibleChildren($element, ElementService::SORT_TYPE_AGE)
         );
     }
 }

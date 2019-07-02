@@ -8,12 +8,16 @@ use Slim\Http\Request;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\ArchiveService;
+use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Helpers\ElementHelper;
 
 class Archive extends BaseView
 {
     /** @var ArchiveService */
     private $archiveService;
+
+    /** @var CourseService */
+    private $courseService;
 
     /** @var RouterInterface */
     private $router;
@@ -23,6 +27,7 @@ class Archive extends BaseView
         parent::__construct($container);
 
         $this->archiveService = $container->get(ArchiveService::class);
+        $this->courseService = $container->get(CourseService::class);
         $this->router = $container->get('router');
     }
 
@@ -33,6 +38,13 @@ class Archive extends BaseView
         try {
             $element = $this->archiveService->getArchiveElementFromUri($uri);
             $parents = $this->archiveService->getBreadcrumbsForElement($element);
+
+            if ($element->isCourse()) {
+                $this->courseService->updateLastVisible($element);
+            }
+            else {
+                $this->courseService->updateLastVisible($element->getCourse());
+            }
 
             $this->setSiteData('archive_id', $element->id);
             $this->setSiteData('archive_empty', $element->empty === 1);

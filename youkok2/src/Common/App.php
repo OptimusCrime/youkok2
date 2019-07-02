@@ -15,10 +15,10 @@ use Youkok\Common\Middlewares\AdminAuthMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Common\Middlewares\TimingMiddleware;
 use Youkok\Biz\Services\Job\JobService;
-use Youkok\Rest\Endpoints\Archive as ArchiveRest;
-use Youkok\Rest\Endpoints\Frontpage as FrontpageRest;
-use Youkok\Rest\Endpoints\Sidebar\ArchiveHistory;
-use Youkok\Rest\Endpoints\Sidebar\MostPopular;
+use Youkok\Rest\Endpoints\ArchiveEndpoint;
+use Youkok\Rest\Endpoints\FrontpageEndpoint;
+use Youkok\Rest\Endpoints\Sidebar\ArchiveHistoryEndpoint;
+use Youkok\Rest\Endpoints\Sidebar\MostPopularEndpoint;
 use Youkok\Web\Views\Archive;
 use Youkok\Web\Views\Courses;
 use Youkok\Web\Views\Download;
@@ -109,19 +109,19 @@ class App
         })->add(new ReverseProxyMiddleware())->add(new AdminAuthMiddleware($app->getContainer()));
 
         $app->group('/rest', function () use ($app) {
-            $app->get('/frontpage/boxes', FrontpageRest::class . ':boxes');
-            $app->get('/frontpage/popular/elements', FrontpageRest::class . ':popularElements');
-            $app->get('/frontpage/popular/courses', FrontpageRest::class . ':popularCourses');
-            $app->get('/frontpage/newest', FrontpageRest::class . ':newest');
-            $app->get('/frontpage/last/visited', FrontpageRest::class . ':lastVisited');
-            $app->get('/frontpage/last/downloaded', FrontpageRest::class . ':lastDownloaded');
-            $app->put('/frontpage', FrontpageRest::class . ':put');
+            $app->get('/frontpage/boxes', FrontpageEndpoint::class . ':boxes');
+            $app->get('/frontpage/popular/elements', FrontpageEndpoint::class . ':popularElements');
+            $app->get('/frontpage/popular/courses', FrontpageEndpoint::class . ':popularCourses');
+            $app->get('/frontpage/newest', FrontpageEndpoint::class . ':newest');
+            $app->get('/frontpage/last/visited', FrontpageEndpoint::class . ':lastVisited');
+            $app->get('/frontpage/last/downloaded', FrontpageEndpoint::class . ':lastDownloaded');
+            $app->put('/frontpage', FrontpageEndpoint::class . ':put');
 
-            $app->get('/archive/{id:[0-9]+}', ArchiveRest::class . ':get');
+            $app->get('/archive/{id:[0-9]+}', ArchiveEndpoint::class . ':get');
 
             $app->group('/sidebar', function () use ($app) {
-                $app->get('/popular', MostPopular::class . ':get');
-                $app->get('/history/{id:[0-9]+}', ArchiveHistory::class . ':get');
+                $app->get('/popular', MostPopularEndpoint::class . ':get');
+                $app->get('/history/{id:[0-9]+}', ArchiveHistoryEndpoint::class . ':get');
             });
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
 

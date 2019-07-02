@@ -1,6 +1,8 @@
 <?php
 namespace Youkok\Common\Containers;
 
+use Illuminate\Container\Container;
+use Illuminate\Events\Dispatcher;
 use Psr\Container\ContainerInterface;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +26,8 @@ class Database implements ContainersInterface
 
         $capsule = new Manager;
         $capsule->addConnection($connection);
+
+        $capsule->setEventDispatcher(new Dispatcher(new Container()));
 
         // Make it possible to use $app->get('db') -> whatever
         $capsule->setAsGlobal();

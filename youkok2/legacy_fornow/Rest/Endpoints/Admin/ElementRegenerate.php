@@ -5,9 +5,9 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 use Youkok\Biz\Admin\ElementUriProcessor;
-use Youkok\Rest\Endpoints\BaseProcessorView;
+use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
-class ElementRegenerate extends BaseProcessorView
+class ElementRegenerate extends BaseRestEndpoint
 {
     public function uri(Request $request, Response $response, array $args)
     {

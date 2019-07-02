@@ -16,7 +16,7 @@ class CourseMapper
         $this->urlService = $urlService;
     }
 
-    public function map($courses, $additionalFields = [])
+    public function map($courses, $additionalFields = []): array
     {
         $out = [];
         foreach ($courses as $course) {
@@ -26,7 +26,7 @@ class CourseMapper
         return $out;
     }
 
-    public function mapCourse(Element $element, $additionalFields = [])
+    public function mapCourse(Element $element, $additionalFields = []): array
     {
         $arr = [
             'id' => $element->id,

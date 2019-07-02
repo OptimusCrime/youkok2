@@ -24,7 +24,7 @@ class AdminAuthMiddleware
     {
         try {
             $hash = CookieHelper::getCookie('youkok2');
-            $session = SessionService::get($hash);
+            $session = $this->sessionService->get($hash);
 
             if ($session->isAdmin()) {
                 return $next($request, $response);

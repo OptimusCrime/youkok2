@@ -6,7 +6,7 @@ use Slim\Http\Request;
 
 use Youkok\Biz\Create\UploadFileProcessor;
 
-class UploadFile extends BaseCreateProcessorView
+class UploadFile extends BaseCreateRestEndpoint
 {
     public function view(Request $request, Response $response, array $args)
     {

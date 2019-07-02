@@ -5,9 +5,9 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 use Youkok\Biz\Admin\ElementDetailsProcessor;
-use Youkok\Rest\Endpoints\BaseProcessorView;
+use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
-class ElementDetails extends BaseProcessorView
+class ElementDetails extends BaseRestEndpoint
 {
     const ELEMENT_UPDATE_PARAMETER = 'element-id';
 

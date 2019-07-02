@@ -27,13 +27,17 @@ class FrontpageService
     private $popularElementsProcessor;
     private $cacheService;
     private $elementService;
+    private $courseService;
+    private $downloadService;
 
     public function __construct(
         UserSessionService $sessionService,
         MostPopularCoursesService $popularCoursesProcessor,
         MostPopularElementsService $popularElementsProcessor,
         CacheService $cacheService,
-        ElementService $elementService
+        ElementService $elementService,
+        CourseService $courseService,
+        DownloadService $downloadService
     ) {
         $this->sessionService = $sessionService;
         $this->popularCoursesProcessor = $popularCoursesProcessor;
@@ -41,6 +45,8 @@ class FrontpageService
         $this->popularElementsProcessor = $popularElementsProcessor;
         $this->cacheService = $cacheService;
         $this->elementService = $elementService;
+        $this->courseService = $courseService;
+        $this->downloadService = $downloadService;
     }
 
     public function boxes(): array
@@ -55,7 +61,7 @@ class FrontpageService
 
         $numberOfDownloads = $this->cacheService->get(CacheKeyGenerator::keyForTotalNumberOfDownloads());
         if ($numberOfDownloads === null) {
-            $numberOfDownloads = DownloadService::getNumberOfDownloads();
+            $numberOfDownloads = $this->downloadService->getNumberOfDownloads();
 
             $this->cacheService->set(CacheKeyGenerator::keyForTotalNumberOfDownloads(), (string) $numberOfDownloads);
         }
@@ -65,7 +71,7 @@ class FrontpageService
         );
 
         if ($numberOfCoursesWithContent === null) {
-            $numberOfCoursesWithContent = CourseService::getNumberOfNonVisibleCourses();
+            $numberOfCoursesWithContent = $this->courseService->getNumberOfNonVisibleCourses();
 
             $this->cacheService->set(
                 CacheKeyGenerator::keyForBoxesNumberOfCoursesWithContent(),
@@ -111,19 +117,19 @@ class FrontpageService
         );
     }
 
-    public function newest(): Collection
+    public function newest(): array
     {
-        return $this->elementService->getLatestElements(static::SERVICE_LIMIT);
+        return $this->elementService->getNewestElements(static::SERVICE_LIMIT);
     }
 
     public function lastVisited(): Collection
     {
-        return CourseService::getLastVisitedCourses(static::SERVICE_LIMIT);
+        return $this->courseService->getLastVisitedCourses(static::SERVICE_LIMIT);
     }
 
-    public function lastDownloaded(): Collection
+    public function lastDownloaded(): array
     {
-        return DownloadService::getLatestDownloads(static::SERVICE_LIMIT);
+        return $this->downloadService->getLatestDownloads(static::SERVICE_LIMIT);
     }
 
     public function put(string $delta, string $value): array

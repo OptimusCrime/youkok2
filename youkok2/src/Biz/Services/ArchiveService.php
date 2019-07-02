@@ -2,70 +2,67 @@
 
 namespace Youkok\Biz\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
+use Youkok\Common\Utilities\SelectStatements;
 
 class ArchiveService
 {
     private $elementMapper;
     private $elementService;
+    private $courseService;
 
     public function __construct(
         ElementMapper $elementMapper,
-        ElementService $elementService
+        ElementService $elementService,
+        CourseService $courseService
     ) {
         $this->elementMapper = $elementMapper;
         $this->elementService = $elementService;
+        $this->courseService = $courseService;
     }
 
-    /**
-     * @param int $id
-     * @return array
-     * @throws ElementNotFoundException
-     */
-
-    public function get(int $id): array
+    public function get(int $id): Collection
     {
-        $directory = Element::fromIdVisible(
-            $id,
-            ['id', 'name', 'slug', 'uri', 'parent', 'directory']
-        );
+        $directory = $this->elementService->getElement(
+            new SelectStatements('id', $id),
+            ['id', 'name', 'slug', 'uri', 'parent', 'directory'],
+            [
+                ElementService::FLAG_ENSURE_VISIBLE,
+                ElementService::FLAG_FETCH_PARENTS,
+                ElementService::FLAG_FETCH_COURSE,
+                ElementService::FLAG_FETCH_URI,
+            ]
+         );
 
-        $course = CourseService::getCourseFromId($id);
-        $content = $this->getContentForDirectory($directory);
-
-        return [
-            'course' => $course,
-            'content' => $content,
-        ];
+        return $this->elementService->getDirectChildren($directory);
     }
 
     public function getArchiveElementFromUri(string $uri): Element
     {
-        $element = $this->elementService->getDirectoryFromUri($uri);
-
-        $this->elementService->updateRootElementVisited($element);
+        $element = $this->elementService->getElementFromUri(
+            $uri,
+            ['id', 'parent', 'name', 'slug', 'uri', 'empty', 'checksum', 'link', 'directory'],
+            [
+                ElementService::FLAG_ENSURE_VISIBLE,
+                ElementService::FLAG_ONLY_DIRECTORIES,
+                ElementService::FLAG_FETCH_PARENTS
+            ]
+        );
 
         return $element;
     }
 
     public function getBreadcrumbsForElement(Element $element)
     {
-        return $this->elementMapper->mapBreadcrumbs($element->getParentsVisible());
-    }
+        // The list of parents does not include the current element, add it
+        $breadcrumbs = $element->getParents();
+        $breadcrumbs[] = $element;
 
-    // TODO: Place in ElementService?
-    private function getContentForDirectory(Element $element)
-    {
-        return Element
-            ::where('parent', $element->id)
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->orderBy('directory', 'DESC')
-            ->orderBy('name', 'ASC')
-            ->get();
+        return $this->elementMapper->mapBreadcrumbs($breadcrumbs);
     }
 }

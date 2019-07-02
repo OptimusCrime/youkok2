@@ -2,11 +2,7 @@
 
 namespace Youkok\Common\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Helpers\ElementHelper;
-use Youkok\Common\Utilities\UriCleaner;
 
 class Element extends BaseModel
 {
@@ -16,18 +12,6 @@ class Element extends BaseModel
     const NON_DIRECTORY = 'NON_DIRECTORY';
     const FILE = 'FILE';
 
-    const FETCH_ONLY_VISIBLE = 1;
-    const FETCH_ALL = 2;
-
-    const ELEMENT_TYPE_DIRECTORIES = 0;
-    const ELEMENT_TYPE_FILES = 1;
-    const ELEMENT_TYPE_BOTH = 2;
-    const ELEMENT_TYPE_FILE_LAST = 3;
-
-    const DEFAULT_DIRECTORY_ATTRIBUTES =
-        ['id', 'parent', 'name', 'slug', 'uri', 'empty', 'checksum', 'link', 'directory'];
-    const DEFAULT_FILE_ATTRIBUTES = ['id', 'parent', 'name', 'slug', 'uri', 'checksum', 'link', 'directory'];
-
     const VALID_FILE_ICONS = ['htm', 'html', 'java', 'pdf', 'py', 'sql', 'txt'];
 
     public $timestamps = false;
@@ -36,8 +20,9 @@ class Element extends BaseModel
     protected $fillable = ['*'];
     protected $guarded = [''];
 
-    private $fullUri;
     private $downloads;
+    private $parents;
+    private $downloadedTime;
 
     public function __construct(array $attributes = [])
     {
@@ -45,6 +30,8 @@ class Element extends BaseModel
 
         $this->fullUri = null;
         $this->downloads = null;
+        $this->parents = [];
+        $this->downloadedTime = null;
     }
 
     public function getType(): string
@@ -72,37 +59,22 @@ class Element extends BaseModel
     {
         $courseArr = $this->getCourseArray();
 
-        if (count($courseArr) > 1) {
-            return $courseArr[1];
-        }
-
-        return '';
+        return $courseArr[1];
     }
 
     private function getCourseArray(): array
     {
-        if ($this->name == null) {
+        if ($this->name === null) {
             throw new GenericYoukokException('Element does not have a name');
         }
 
-        return explode('||', $this->name);
-    }
+        $split = explode('||', $this->name);
 
-    public function getFullUri(): string
-    {
-        if ($this->fullUri !== null) {
-            return $this->fullUri;
+        if (count($split) !== 2) {
+            throw new GenericYoukokException('Element does not have valid course name: ' . $this->name);
         }
 
-        // Transfer content of URI to self::fullUri, in case we have to populate it. This way, we avoid polluting the
-        // database columns
-        if ($this->uri !== null and strlen($this->uri) > 0) {
-            $this->fullUri = $this->uri;
-        } else {
-            $this->fullUri = ElementHelper::constructUri($this->id);
-        }
-
-        return $this->fullUri;
+        return $split;
     }
 
     public function isLink(): bool
@@ -123,62 +95,6 @@ class Element extends BaseModel
     public function isDirectory(): bool
     {
         return !$this->isCourse() && $this->directory === 1;
-    }
-
-    public function getParentsVisible(
-        array $columns = ['id', 'name', 'slug', 'uri', 'link', 'parent', 'directory']
-    ): array {
-        return $this->getParents($columns, static::FETCH_ONLY_VISIBLE);
-    }
-
-    public function getParentsAll(array $columns = ['id', 'parent']): array
-    {
-        return $this->getParents($columns, static::FETCH_ALL);
-    }
-
-    public function getRootParentVisible(array $columns = ['id', 'name', 'slug', 'uri', 'parent', 'directory']): Element
-    {
-        $parents = $this->getParentsVisible($columns);
-
-        return $parents[0];
-    }
-
-    public function getRootParentAll(array $columns = ['id', 'parent']): Element
-    {
-        $parents = $this->getParentsAll($columns);
-
-        return $parents[0];
-    }
-
-    private function getParents(array $columns, int $fetchDeleted): array
-    {
-        $parents = [$this];
-        $currentObject = $this;
-        while ($currentObject->parent !== null and $currentObject->parent !== 0) {
-            $currentObject = Element::select($columns)
-                ->where('id', $currentObject->parent);
-
-            if ($fetchDeleted) {
-                $currentObject = $currentObject
-                    ->where('deleted', 0)
-                    ->where('pending', 0)
-                    ->where('directory', 1);
-            }
-
-            $currentObject = $currentObject->first();
-
-            if ($currentObject === null) {
-                break;
-            }
-
-            $parents[] = $currentObject;
-        }
-
-        if (count($parents) === 0) {
-            throw new ElementNotFoundException();
-        }
-
-        return array_reverse($parents);
     }
 
     public function getIcon(): string
@@ -214,146 +130,32 @@ class Element extends BaseModel
         return $this->downloads;
     }
 
-    // TODO: This needs to check that parents are also visible!
-    // automatically add parent to the list of attributes if it is missing
-    public static function fromIdVisible(
-        int $id,
-        array $attributes = ['id', 'link', 'checksum', 'parent']
-    ): Element {
-        if (!isset($id) or !is_numeric($id)) {
-            throw new ElementNotFoundException();
-        }
-
-        $query = Element
-            ::select($attributes)
-            ->where('id', $id);
-
-        $element = $query
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->first();
-
-        if ($element === null) {
-            throw new ElementNotFoundException();
-        }
-
-        return $element;
-    }
-
-    public static function fromIdAll(int $id, array $attributes = ['id', 'link', 'checksum']): Element
+    public function setParents(array $parents): void
     {
-        if (!isset($id) or !is_numeric($id)) {
-            throw new ElementNotFoundException();
-        }
-
-        $element = Element
-            ::select($attributes)
-            ->where('id', $id)
-            ->first();
-
-        if ($element === null) {
-            throw new ElementNotFoundException();
-        }
-
-        return $element;
+        $this->parents = $parents;
     }
 
-    public static function fromIdDirectoryVisible(int $id, array $attributes = ['id', 'link', 'checksum']): Element
+    public function getParents(): array
     {
-        if (!isset($id) or !is_numeric($id)) {
-            throw new ElementNotFoundException();
-        }
-
-        $element = Element
-            ::select($attributes)
-            ->where('id', $id)
-            ->where('directory', 1)
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->first();
-
-        if ($element === null) {
-            throw new ElementNotFoundException();
-        }
-
-        return $element;
+        return $this->parents;
     }
 
-    public static function fromUriFileVisible(
-        string $uri,
-        array $attributes = Element::DEFAULT_FILE_ATTRIBUTES
-    ): Element {
-        return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_FILE_LAST);
-    }
-
-    public static function fromUriDirectoryVisible(
-        string $uri,
-        array $attributes = Element::DEFAULT_DIRECTORY_ATTRIBUTES
-    ): Element {
-        return self::fromUriFragments($uri, $attributes, self::ELEMENT_TYPE_DIRECTORIES);
-    }
-
-    // https://laracasts.com/discuss/channels/general-discussion/save-updated-model-dosnt-work/replies/32779
-    // TODO this is stupid
-    public static function newFromStd($stdClass)
+    public function getCourse(): ?Element
     {
-        $instance = new Element();
-        $instance->setRawAttributes(get_object_vars($stdClass), true);
-
-        return $instance;
-    }
-
-    private static function fromUriFragments(
-        string $uri,
-        array $attributes = ['id', 'parent', 'name', 'checksum', 'link', 'directory'],
-        int $type = self::ELEMENT_TYPE_DIRECTORIES
-    ): Element {
-        $fragments = UriCleaner::cleanFragments(explode('/', $uri));
-        $parent = null;
-        $element = null;
-
-        foreach ($fragments as $index => $fragment) {
-            $query = Element::select($attributes)
-                ->where('slug', $fragment)
-                ->where('parent', $parent)
-                ->where('deleted', 0)
-                ->where('pending', 0);
-
-            if ($type === static::ELEMENT_TYPE_FILE_LAST) {
-                if ($index === count($fragments) - 1) {
-                    $query = static::handleElementType($query, Element::ELEMENT_TYPE_FILES);
-                } else {
-                    $query = static::handleElementType($query, Element::ELEMENT_TYPE_DIRECTORIES);
-                }
-            } else {
-                $query = static::handleElementType($query, $type);
-            }
-
-            $element = $query->first();
-
-            if ($element === null) {
-                throw new ElementNotFoundException();
-            }
-
-            $parent = $element->id;
+        if (count($this->parents) === 0) {
+            return null;
         }
 
-        return $element;
+        return $this->parents[0];
     }
 
-    private static function handleElementType(Builder $element, string $type): Builder
+    public function setDownloadedTime(string $downloadedTime): void
     {
-        switch ($type) {
-            case self::ELEMENT_TYPE_DIRECTORIES:
-                $element->where('directory', 1);
-                break;
-            case self::ELEMENT_TYPE_FILES:
-                $element->where('directory', 0);
-                break;
-            default:
-                throw new GenericYoukokException('Invalid value passed to method');
-        }
+        $this->downloadedTime = $downloadedTime;
+    }
 
-        return $element;
+    public function getDownloadedTime(): string
+    {
+        return $this->downloadedTime;
     }
 }

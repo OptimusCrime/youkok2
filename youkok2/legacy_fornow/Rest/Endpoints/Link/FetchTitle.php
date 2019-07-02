@@ -5,9 +5,9 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 use Youkok\Biz\FetchTitleProcessor;
-use Youkok\Rest\Endpoints\BaseProcessorView;
+use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
-class FetchTitle extends BaseProcessorView
+class FetchTitle extends BaseRestEndpoint
 {
     public function view(Request $request, Response $response, array $args)
     {

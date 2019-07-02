@@ -3,34 +3,20 @@ namespace Youkok\Common\Utilities;
 
 class UriCleaner
 {
-    public static function clean($uri): string
-    {
-        $fragments = [];
-        $uriSplit = explode('/', $uri);
-        foreach ($uriSplit as $item) {
-            if (strlen($item) > 0) {
-                $fragments[] = $item;
-            }
-        }
-
-        return implode('/', $fragments);
-    }
-
     public static function cleanFragments(array $fragments): array
     {
         $clean = [];
         foreach ($fragments as $fragment) {
             if ($fragment !== null and strlen($fragment) > 0) {
-                $clean[] = $fragment;
+                $clean[] = preg_replace("/[^A-Za-z0-9-.]/", '', $fragment);
             }
         }
 
         return $clean;
     }
 
-    // TODO ubrukt?
-    public static function cleanAll($uri): string
+    public static function cleanUri(string $uri): string
     {
-        return preg_replace("/[^A-Za-z]/", '', $uri);
+        return implode('/', static::cleanFragments(explode('/', $uri)));
     }
 }

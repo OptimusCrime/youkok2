@@ -7,10 +7,11 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 
-class Archive extends BaseProcessorView
+class ArchiveEndpoint extends BaseRestEndpoint
 {
     /** @var ArchiveService */
     private $archiveService;
@@ -30,24 +31,23 @@ class Archive extends BaseProcessorView
     {
         try {
             if (!isset($args['id']) || !is_numeric($args['id'])) {
-                return $this->returnBadRequest($response);
+                return $this->returnBadRequest($response, new InvalidRequestException('Malformed id: ' . $args['id']));
             }
 
-            $payload = $this->archiveService->get((int) $args['id']);
-
-            $payload['content'] = $this->elementMapper->map(
-                $payload['content'],
-                [
-                    ElementMapper::DOWNLOADS,
-                    ElementMapper::POSTED_TIME,
-                    ElementMapper::DOWNLOADS,
-                    ElementMapper::ICON
-                ]
+            return $this->outputJson(
+                $response,
+                $this->elementMapper->map(
+                    $this->archiveService->get((int) $args['id']),
+                    [
+                        ElementMapper::DOWNLOADS,
+                        ElementMapper::POSTED_TIME,
+                        ElementMapper::DOWNLOADS,
+                        ElementMapper::ICON
+                    ]
+                )
             );
-
-            return $this->outputJson($response, $payload);
-        } catch (ElementNotFoundException $e) {
-            return $this->returnBadRequest($response);
+        } catch (ElementNotFoundException $ex) {
+            return $this->returnBadRequest($response, $ex);
         }
     }
 }

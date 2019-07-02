@@ -1,13 +1,21 @@
 <?php
 namespace Youkok\Biz\Services\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 
 class CourseService
 {
-    public static function getNumberOfNonVisibleCourses(): int
+    private $elementService;
+
+    public function __construct(ElementService $elementService)
+    {
+        $this->elementService = $elementService;
+    }
+
+    public function getNumberOfNonVisibleCourses(): int
     {
         return Element
             ::where('directory', 1)
@@ -17,7 +25,7 @@ class CourseService
             ->count();
     }
 
-    public static function getAllVisibleCourses(): Collection
+    public function getAllVisibleCourses(): Collection
     {
         return Element::select('id', 'name', 'slug', 'empty')
             ->where('parent', null)
@@ -26,12 +34,7 @@ class CourseService
             ->get();
     }
 
-    public static function getCourseFromId(int $id)
-    {
-        return static::getCourseFromElement(Element::fromIdVisible($id));
-    }
-
-    public static function getLastVisitedCourses($limit = 10): Collection
+    public function getLastVisitedCourses($limit = 10): Collection
     {
         return Element::select('id', 'name', 'slug', 'uri', 'last_visited')
             ->where('parent', null)
@@ -43,43 +46,9 @@ class CourseService
             ->get();
     }
 
-    public static function getCourseFromElement(Element $element)
+    public function updateLastVisible(Element $element): void
     {
-        if ($element->parent === 0) {
-            // TODO log
-            throw new ElementNotFoundException();
-        }
-
-        $currentObject = $element;
-        while ($currentObject->parent !== 0 && $currentObject->parent !== null) {
-            $currentObject = Element::select('id', 'parent')
-                ->where('id', $currentObject->parent)
-                ->where('deleted', 0)
-                ->where('pending', 0)
-                ->where('directory', 1)
-                ->first();
-
-            if ($currentObject === null) {
-                // TODO log
-                throw new ElementNotFoundException();
-            }
-        }
-
-        return Element::fromIdVisible($currentObject->id, ['id', 'name', 'slug']);
-    }
-
-    public static function getCourseFromUri($uri): Element
-    {
-        $element = Element::where('slug', $uri)
-            ->where('parent', null)
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->first();
-
-        if ($element === null) {
-            throw new ElementNotFoundException();
-        }
-
-        return $element;
+        $element->last_visited = Carbon::now();
+        $element->save();
     }
 }

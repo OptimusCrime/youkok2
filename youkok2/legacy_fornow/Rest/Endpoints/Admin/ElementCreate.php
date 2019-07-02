@@ -5,9 +5,9 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 use Youkok\Biz\Admin\ElementCreateProcessor;
-use Youkok\Rest\Endpoints\BaseProcessorView;
+use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
-class ElementCreate extends BaseProcessorView
+class ElementCreate extends BaseRestEndpoint
 {
     const ELEMENT_CREATE_PARAMETER = 'directory-parent';
 

@@ -6,11 +6,11 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\ArchiveHistoryService;
-use Youkok\Biz\Services\Mappers\ElementMapper;
-use Youkok\Rest\Endpoints\BaseProcessorView;
+use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
-class ArchiveHistory extends BaseProcessorView
+class ArchiveHistoryEndpoint extends BaseRestEndpoint
 {
     /** @var ArchiveHistoryService */
     private $archiveHistoryService;
@@ -26,14 +26,14 @@ class ArchiveHistory extends BaseProcessorView
     {
         try {
             if (!isset($args['id']) || !is_numeric($args['id'])) {
-                return $this->returnBadRequest($response);
+                return $this->returnBadRequest($response, new InvalidRequestException('Malformed id: ' . $args['id']));
             }
 
             return $this->outputJson($response, [
                 'data' => $this->archiveHistoryService->get((int) $args['id'])
             ]);
-        } catch (ElementNotFoundException $e) {
-            return $this->returnBadRequest($response);
+        } catch (ElementNotFoundException $ex) {
+            return $this->returnBadRequest($response, $ex);
         }
     }
 }

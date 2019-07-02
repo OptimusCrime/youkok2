@@ -10,10 +10,9 @@ use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
-use Youkok\Biz\Services\UserSessionService;
 use Youkok\Common\Models\Session;
 
-class Frontpage extends BaseProcessorView
+class FrontpageEndpoint extends BaseRestEndpoint
 {
     /** @var FrontpageService */
     private $frontpageService;
@@ -72,7 +71,7 @@ class Frontpage extends BaseProcessorView
     {
         $payload = $this->frontpageService->newest();
 
-        $data = $this->elementMapper->map(
+        $data = $this->elementMapper->mapFromArray(
             $payload,
             [
             ElementMapper::POSTED_TIME,
@@ -106,10 +105,10 @@ class Frontpage extends BaseProcessorView
     {
         $payload = $this->frontpageService->lastDownloaded();
 
-        $data = $this->elementMapper->mapStdClass(
+        $data = $this->elementMapper->mapFromArray(
             $payload,
             [
-                ElementMapper::KEEP_DOWNLOADED_TIME,
+                ElementMapper::DOWNLOADED_TIME,
                 ElementMapper::PARENT_DIRECT,
                 ElementMapper::PARENT_COURSE
             ]

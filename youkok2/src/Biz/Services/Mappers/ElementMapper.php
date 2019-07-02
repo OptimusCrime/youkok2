@@ -3,6 +3,7 @@
 namespace Youkok\Biz\Services\Mappers;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\UrlService;
@@ -19,23 +20,26 @@ class ElementMapper
     const ICON = 'ICON';
     const DATASTORE_DOWNLOADS = 'KEEP_DOWNLOADS';
 
-    const KEEP_DOWNLOADED_TIME = 'KEEP_DOWNLOADED_TIME';
+    const DOWNLOADED_TIME = 'KEEP_DOWNLOADED_TIME';
 
     private $urlService;
     private $courseMapper;
     private $downloadCountService;
     private $elementService;
+    private $courseService;
 
     public function __construct(
         UrlService $urlService,
         CourseMapper $courseMapper,
         DownloadCountService $downloadCountService,
-        ElementService $elementService
+        ElementService $elementService,
+        CourseService $courseService
     ) {
         $this->urlService = $urlService;
         $this->courseMapper = $courseMapper;
         $this->downloadCountService = $downloadCountService;
         $this->elementService = $elementService;
+        $this->courseService = $courseService;
     }
 
     public function map(Collection $elements, array $additionalFields = []): array
@@ -64,20 +68,6 @@ class ElementMapper
         return $out;
     }
 
-    // TODO: type hinting here
-    public function mapStdClass($elements, array $additionalFields = []): array
-    {
-        $out = [];
-        foreach ($elements as $element) {
-            $mappedElement = $this->mapElement(Element::newFromStd($element), $additionalFields);
-            if ($mappedElement !== null) {
-                $out[] = $mappedElement;
-            }
-        }
-
-        return $out;
-    }
-
     public function mapElement(Element $element, array $additionalFields = []): ?array
     {
         $arr = [
@@ -94,7 +84,7 @@ class ElementMapper
 
         if (in_array(static::PARENT_DIRECT, $additionalFields)) {
             try {
-                $parent = $this->elementService->getParentForElement($element);
+                $parent = $this->elementService->getVisibleParentForElement($element);
 
                 $arr['parent'] = $parent->isCourse()
                                ? $this->courseMapper->mapCourse($parent)
@@ -107,8 +97,7 @@ class ElementMapper
 
         if (in_array(static::PARENT_COURSE, $additionalFields)) {
             try {
-                $course = CourseService::getCourseFromElement($element);
-                $arr['course'] = $this->courseMapper->mapCourse($course);
+                $arr['course'] = $this->courseMapper->mapCourse($element->getCourse());
             } catch (ElementNotFoundException $e) {
                 // TODO log
                 return null;
@@ -128,14 +117,14 @@ class ElementMapper
             $arr['icon'] = $element->getIcon();
         }
 
-        if (in_array(static::KEEP_DOWNLOADED_TIME, $additionalFields)) {
-            $arr['downloaded_time'] = $element->downloaded_time;
+        if (in_array(static::DOWNLOADED_TIME, $additionalFields)) {
+            $arr['downloaded_time'] = $element->getDownloadedTime();
         }
 
         return $arr;
     }
 
-    public function mapBreadcrumbs(array $elements)
+    public function mapBreadcrumbs(array $elements): array
     {
         $out = [];
         foreach ($elements as $key => $element) {

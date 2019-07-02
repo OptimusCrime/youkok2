@@ -35,7 +35,16 @@ class Download extends BaseView
     public function view(Request $request, Response $response, array $args)
     {
         try {
-            $element = $this->elementService->getNonDirectoryFromUri($args['uri']);
+            // TODO this is not working
+            $element = $this->elementService->getElementFromUri(
+                $args['uri'],
+                ['id', 'checksum', 'directory', 'name'],
+                [
+                    ElementService::FLAG_FETCH_PARENTS,
+                    ElementService::FLAG_ENSURE_VISIBLE,
+                    ElementService::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE
+                ]
+            );
 
             if (!$this->downloadService->fileExists($element)) {
                 // TODO logging

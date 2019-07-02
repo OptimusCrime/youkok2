@@ -7,10 +7,10 @@ use Slim\Http\Request;
 
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 use Youkok\Enums\MostPopularElement;
-use Youkok\Rest\Endpoints\BaseProcessorView;
+use Youkok\Rest\Endpoints\BaseRestEndpoint;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 
-class MostPopular extends BaseProcessorView
+class MostPopularEndpoint extends BaseRestEndpoint
 {
     const SERVICE_LIMIT = 10;
 

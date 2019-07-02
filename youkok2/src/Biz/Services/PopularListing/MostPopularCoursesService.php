@@ -7,8 +7,10 @@ use Slim\Collection;
 
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Models\DownloadService;
+use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
+use Youkok\Common\Utilities\SelectStatements;
 use Youkok\Enums\MostPopularCourse;
 
 class MostPopularCoursesService implements MostPopularInterface
@@ -22,16 +24,21 @@ class MostPopularCoursesService implements MostPopularInterface
     private $settings;
     private $cacheService;
     private $logger;
+    private $downloadService;
+    private $elementService;
 
     public function __construct(
         Collection $settings,
         CacheService $cacheService,
-        Logger $logger
-    )
-    {
+        Logger $logger,
+        DownloadService $downloadService,
+        ElementService $elementService
+    ) {
         $this->settings = $settings;
         $this->cacheService = $cacheService;
         $this->logger = $logger;
+        $this->downloadService = $downloadService;
+        $this->elementService = $elementService;
     }
 
     public function fromDelta(string $delta, int $limit): array
@@ -51,7 +58,7 @@ class MostPopularCoursesService implements MostPopularInterface
             return [];
         }
 
-        return static::resultArrayToElements($resultArr, $limit);
+        return $this->resultArrayToElements($resultArr, $limit);
     }
 
     public function refresh(): void
@@ -66,7 +73,7 @@ class MostPopularCoursesService implements MostPopularInterface
 
     private function refreshForDelta(string $delta): void
     {
-        $courses = DownloadService::getMostPopularCoursesFromDelta($delta, static::MAX_COURSES_TO_FETCH);
+        $courses = $this->downloadService->getMostPopularCoursesFromDelta($delta, static::MAX_COURSES_TO_FETCH);
         $setKey = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
 
         $this->cacheService->set($setKey, json_encode($courses));
@@ -134,11 +141,17 @@ class MostPopularCoursesService implements MostPopularInterface
         return $cacheDirectory . static::CACHE_DIRECTORY_SUB;
     }
 
-    private static function resultArrayToElements(array $result, int $limit): array
+    private function resultArrayToElements(array $result, int $limit): array
     {
         $elements = [];
         foreach ($result as $res) {
-            $element = Element::fromIdVisible($res['id'], ['id', 'name', 'slug', 'uri', 'link', 'empty', 'parent']);
+            $element = $this->elementService->getElement(
+                new SelectStatements('id', $res['id']),
+                ['id', 'name', 'slug', 'uri', 'link', 'empty', 'parent'],
+                [
+                    ElementService::FLAG_ENSURE_VISIBLE
+                ]
+            );
             $element->setDownloads($res['downloads']);
 
             $elements[] = $element;

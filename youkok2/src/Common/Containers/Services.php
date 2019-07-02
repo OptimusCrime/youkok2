@@ -35,8 +35,11 @@ class Services implements ContainersInterface
 {
     public static function load(ContainerInterface $container): void
     {
-        $container[UserSessionService::class] = function (): UserSessionService {
-            return new UserSessionService();
+        $container[UserSessionService::class] = function (ContainerInterface $container): UserSessionService {
+            return new UserSessionService(
+                $container->get(SessionService::class),
+                $container->get(MonoLogger::class),
+            );
         };
 
         $container[LoginService::class] = function (): LoginService {
@@ -55,13 +58,17 @@ class Services implements ContainersInterface
                 $container->get(MostPopularCoursesService::class),
                 $container->get(MostPopularElementsService::class),
                 $container->get(CacheService::class),
-                $container->get(ElementService::class)
+                $container->get(ElementService::class),
+                $container->get(CourseService::class),
+                $container->get(DownloadService::class),
             );
         };
 
         $container[MostPopularElementsService::class] = function (ContainerInterface $container): MostPopularElementsService {
             return new MostPopularElementsService(
-                $container->get(CacheService::class)
+                $container->get(CacheService::class),
+                $container->get(DownloadService::class),
+                $container->get(ElementService::class)
             );
         };
 
@@ -69,13 +76,16 @@ class Services implements ContainersInterface
             return new MostPopularCoursesService(
                 $container->get('settings'),
                 $container->get(CacheService::class),
-                $container->get(MonoLogger::class)
+                $container->get(MonoLogger::class),
+                $container->get(DownloadService::class),
+                $container->get(ElementService::class)
             );
         };
 
         $container[UpdateDownloadsService::class] = function (ContainerInterface $container): UpdateDownloadsService {
             return new UpdateDownloadsService(
-                $container->get(CacheService::class)
+                $container->get(CacheService::class),
+                $container->get(DownloadService::class)
             );
         };
 
@@ -100,7 +110,8 @@ class Services implements ContainersInterface
                 $container->get(UrlService::class),
                 $container->get(CourseMapper::class),
                 $container->get(DownloadCountService::class),
-                $container->get(ElementService::class)
+                $container->get(ElementService::class),
+                $container->get(CourseService::class)
             );
         };
 
@@ -113,7 +124,8 @@ class Services implements ContainersInterface
         $container[ArchiveService::class] = function (ContainerInterface $container): ArchiveService {
             return new ArchiveService(
                 $container->get(ElementMapper::class),
-                $container->get(ElementService::class)
+                $container->get(ElementService::class),
+                $container->get(CourseService::class)
             );
         };
 
@@ -126,7 +138,8 @@ class Services implements ContainersInterface
 
         $container[DownloadCountService::class] = function (ContainerInterface $container): DownloadCountService {
             return new DownloadCountService(
-                $container->get(CacheService::class)
+                $container->get(CacheService::class),
+                $container->get(DownloadService::class)
             );
         };
 
@@ -160,7 +173,8 @@ class Services implements ContainersInterface
 
         $container[CoursesLookupService::class] = function (ContainerInterface $container): CoursesLookupService {
             return new CoursesLookupService(
-                $container->get(UrlService::class)
+                $container->get(UrlService::class),
+                $container->get(CourseService::class)
             );
         };
 
@@ -168,12 +182,16 @@ class Services implements ContainersInterface
             return new SystemLogService();
         };
 
-        $container[CourseService::class] = function (): CourseService {
-            return new CourseService();
+        $container[CourseService::class] = function (ContainerInterface $container): CourseService {
+            return new CourseService(
+                $container->get(ElementService::class)
+            );
         };
 
-        $container[DownloadService::class] = function (): DownloadService {
-            return new DownloadService();
+        $container[DownloadService::class] = function (ContainerInterface $container): DownloadService {
+            return new DownloadService(
+                $container->get(ElementService::class)
+            );
         };
 
         $container[ElementService::class] = function (ContainerInterface $container): ElementService {

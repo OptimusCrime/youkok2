@@ -1,11 +1,12 @@
 <?php
 namespace Youkok\Common\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+
 use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
 
-class Session extends Model
+class Session extends BaseModel
 {
     const DEFAULT_ADMIN = false;
     const DEFAULT_MOST_POPULAR_ELEMENT = MostPopularElement::MONTH;
@@ -55,14 +56,6 @@ class Session extends Model
         ];
     }
 
-    public function getUserPreferences(): array
-    {
-        return [
-            static::KEY_MOST_POPULAR_ELEMENT => $this->mostPopularElement,
-            static::KEY_MOST_POPULAR_COURSE => $this->mostPopularCourse,
-        ];
-    }
-
     public function setAdmin(bool $flag): void
     {
         $this->admin = $flag;
@@ -84,7 +77,34 @@ class Session extends Model
         $data = $this->getAllData();
 
         $this->data = json_encode($data);
+        $this->last_updated = Carbon::now();
 
         return parent::save($options);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        Session::retrieved(function (Session $session) {
+            $data = json_decode($session->data, true);
+            if (!is_array($data)) {
+                return $session;
+            }
+
+            if (isset($data[Session::KEY_ADMIN]) and is_bool($data[Session::KEY_ADMIN])) {
+                $session->setAdmin($data[Session::KEY_ADMIN]);
+            }
+
+            if (isset($data[Session::KEY_MOST_POPULAR_ELEMENT]) and is_String($data[Session::KEY_MOST_POPULAR_ELEMENT])) {
+                $session->setMostPopularElement($data[Session::KEY_MOST_POPULAR_ELEMENT]);
+            }
+
+            if (isset($data[Session::KEY_MOST_POPULAR_COURSE]) and is_String($data[Session::KEY_MOST_POPULAR_COURSE])) {
+                $session->setMostPopularCourse($data[Session::KEY_MOST_POPULAR_COURSE]);
+            }
+
+            return $session;
+        });
     }
 }

@@ -10,16 +10,18 @@ use Youkok\Enums\MostPopularElement;
 class UpdateDownloadsService
 {
     private $cacheService;
+    private $downloadService;
 
-    public function __construct(CacheService $cacheService)
+    public function __construct(CacheService $cacheService, DownloadService $downloadService)
     {
         $this->cacheService = $cacheService;
+        $this->downloadService = $downloadService;
     }
 
     public function run(Element $element)
     {
         // Add the download to the database first
-        DownloadService::newDownloadForElement($element);
+        $this->downloadService->newDownloadForElement($element);
 
         // Update the number of downloads in the cache for this particular element
         $this->addDownloadForElement($element);
@@ -37,7 +39,7 @@ class UpdateDownloadsService
 
         if ($downloads === null) {
             // Unable to find number of downloads from the cache (it could be zero), so fetch it from the DB
-            $databaseDownloads = DownloadService::getDownloadsForId($element->id);
+            $databaseDownloads = $this->downloadService->getDownloadsForId($element->id);
             if ($databaseDownloads !== null) {
                 // This element has downloads, but the cache was empty, update the cache
                 $this->cacheService->setDownloadsForId($element->id, $databaseDownloads);

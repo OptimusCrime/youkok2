@@ -6,7 +6,7 @@ use Slim\Http\Request;
 
 use Youkok\Biz\Create\CreateLinkProcessor;
 
-class CreateLink extends BaseCreateProcessorView
+class CreateLink extends BaseCreateRestEndpoint
 {
     public function view(Request $request, Response $response, array $args)
     {

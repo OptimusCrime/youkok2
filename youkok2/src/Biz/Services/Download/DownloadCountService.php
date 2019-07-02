@@ -2,16 +2,19 @@
 namespace Youkok\Biz\Services\Download;
 
 use Youkok\Biz\Services\CacheService;
+use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Common\Models\Element;
 
 class DownloadCountService
 {
     private $cacheService;
+    private $downloadService;
 
-    public function __construct(CacheService $cacheService)
+    public function __construct(CacheService $cacheService, DownloadService $downloadService)
     {
         $this->cacheService = $cacheService;
+        $this->downloadService = $downloadService;
     }
 
     public function getDownloadsForElement(Element $element): int
@@ -27,7 +30,7 @@ class DownloadCountService
             return (int) $downloads;
         }
 
-        $downloads = DownloadService::getDownloadsForId($element->id);
+        $downloads = $this->downloadService->getDownloadsForId($element->id);
 
         $this->cacheService->setDownloadsForId($element->id, $downloads);
 
