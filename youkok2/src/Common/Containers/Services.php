@@ -149,7 +149,7 @@ class Services implements ContainersInterface
 
         $container[RemoveOldSessionsJobServiceJobService::class] = function (ContainerInterface $container): RemoveOldSessionsJobServiceJobService {
             return new RemoveOldSessionsJobServiceJobService(
-                $container->get(UserSessionService::class)
+                $container->get(SessionService::class)
             );
         };
 

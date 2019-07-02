@@ -89,22 +89,22 @@ class DownloadService
         return array_slice($result, 0, $limit);
     }
 
-    public function newDownloadForElement(Element $element)
+    public function newDownloadForElement(Element $element): bool
     {
         $download = new Download();
         $download->resource = $element->id;
         $download->ip = $_SERVER['REMOTE_ADDR'];
         $download->agent = $_SERVER['HTTP_USER_AGENT'];
         $download->downloaded_time = Carbon::now();
-        $download->save();
+        return $download->save();
     }
 
-    private function summarizeDownloads(Collection $downloads)
+    private function summarizeDownloads(Collection $downloads): array
     {
         $courses = [];
         foreach ($downloads as $download) {
             $downloadElement = $this->elementService->getElement(
-                new SelectStatements('id', $downloads->id),
+                new SelectStatements('id', $download->id),
                 ['id', 'parent'],
                 [
                     ElementService::FLAG_FETCH_PARENTS,
@@ -113,6 +113,12 @@ class DownloadService
             );
 
             $downloadElementCourse = $downloadElement->getCourse();
+
+            // Weird guard, I do not know why, but it might seem like some courses have downloads on them? No idea
+            // how that happened, but this guard should take care of it. Might be an artifact from ages ago.
+            if ($downloadElementCourse === null) {
+                continue;
+            }
 
             if (!isset($courses[$downloadElementCourse->id])) {
                 $courses[$downloadElementCourse->id] = 0;
@@ -133,7 +139,7 @@ class DownloadService
     {
         $filteredCourses = [];
         foreach ($courses as $courseId => $downloads) {
-            if ($this->isValidCourseId($courseId)) {
+            if ($this->isValidCourseId((int) $courseId)) {
                 $filteredCourses[$courseId] = $downloads;
             }
         }
@@ -157,12 +163,14 @@ class DownloadService
     private static function transformResultArray(array $courses): array
     {
         $newResult = [];
+
         foreach ($courses as $courseId => $courseDownloads) {
             $newResult[] = [
                 'id' => $courseId,
                 'downloads' => $courseDownloads
             ];
         }
+
         return $newResult;
     }
 
