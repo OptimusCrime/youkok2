@@ -4,6 +4,7 @@ namespace Youkok\Web\Views;
 use SebastianBergmann\Timer\Timer;
 use Slim\Http\Response;
 use Psr\Container\ContainerInterface;
+use Slim\Interfaces\RouterInterface;
 use Slim\Views\Twig;
 use Youkok\Biz\Services\UserSessionService;
 
@@ -17,6 +18,9 @@ class BaseView
     /** @var UserSessionService */
     protected $sessionService;
 
+    /** @var RouterInterface */
+    protected $router;
+
     /** @var array */
     protected $templateData = [];
 
@@ -26,6 +30,7 @@ class BaseView
 
         $this->view = $container->get('view');
         $this->sessionService = $container->get(UserSessionService::class);
+        $this->router = $container->get('router');
 
         $this->templateData = $this->getDefaultTemplateData();
     }
@@ -47,6 +52,7 @@ class BaseView
             ],
 
             'SITE_DATA' => [
+                'courses_url' => $this->router->pathFor('courses')
             ],
 
             // Information about the current user

@@ -10,14 +10,14 @@ const BreadcrumbElement = ({ parent, index, numParents }) => {
 
 export const Breadcrumbs = () => (
   <ol className="breadcrumb">
-    <li><a href={SITE_DATA.archive_url_frontpage}>Hjem</a></li>
-    <li><a href={SITE_DATA.archive_url_courses}>Emner</a></li>
-    {SITE_DATA.archive_parents.map((parent, index) =>
+    <li><a href={window.SITE_DATA.archive_url_frontpage}>Hjem</a></li>
+    <li><a href={window.SITE_DATA.archive_url_courses}>Emner</a></li>
+    {window.SITE_DATA.archive_parents.map((parent, index) =>
       <BreadcrumbElement
         key={index}
         parent={parent}
         index={index}
-        numParents={SITE_DATA.archive_parents.length}
+        numParents={window.SITE_DATA.archive_parents.length}
       />
     )}
   </ol>

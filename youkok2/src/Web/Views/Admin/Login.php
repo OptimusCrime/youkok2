@@ -13,9 +13,6 @@ use Youkok\Web\Views\BaseView;
 
 class Login extends BaseView
 {
-    /** @var RouterInterface */
-    private $router;
-
     /** @var LoginService */
     private $loginService;
 
@@ -23,7 +20,6 @@ class Login extends BaseView
     {
         parent::__construct($container);
 
-        $this->router = $container->get('router');
         $this->loginService = $container->get(LoginService::class);
     }
 

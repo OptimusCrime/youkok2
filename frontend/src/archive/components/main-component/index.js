@@ -12,13 +12,13 @@ export const MainComponent = () => (
     </div>
     <div className="row">
       <div className="col-xs-12 archive-title">
-        <h1>{SITE_DATA.archive_title}</h1>
-        {SITE_DATA.archive_sub_title === null ? '' :
+        <h1>{window.SITE_DATA.archive_title}</h1>
+        {window.SITE_DATA.archive_sub_title === null ? '' :
           <React.Fragment>
             &nbsp;
             <span>&ndash;</span>
             &nbsp;
-            <h2>{SITE_DATA.archive_sub_title}</h2>
+            <h2>{window.SITE_DATA.archive_sub_title}</h2>
           </React.Fragment>
         }
       </div>

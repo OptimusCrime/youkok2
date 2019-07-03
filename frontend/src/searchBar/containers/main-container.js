@@ -15,6 +15,7 @@ import {
 } from "../constants";
 import {highlightSearchResult} from "../utils/highlighter";
 import {CLOSE_SEARCH_RESULTS} from "../redux/form/constants";
+import {SEARCH_QUERY_IDENTIFIER} from "../../courses/constants";
 
 const MINIMUM_SEARCH_LENGTH = 2;
 
@@ -52,11 +53,16 @@ const MainContainer = props => {
         onKeyDown={e => {
           const keyCode = e.keyCode;
 
-          if (keyCode === KEYCODE_ENTER && cursor !== null) {
+          if (keyCode === KEYCODE_ENTER) {
             e.preventDefault();
 
-            // Make a direct lookup with the cursor.
-            window.location.replace(`${window.location.origin}${results[cursor].url}`);
+            if (cursor !== null) {
+              // Make a direct lookup with the cursor.
+              window.location.replace(`${window.location.origin}${results[cursor].url}`);
+            }
+            else {
+              window.location.replace(`${window.SITE_DATA.courses_url}?${SEARCH_QUERY_IDENTIFIER}=${encodeURI(input_raw)}`);
+            }
           }
 
           if (keyCode === KEYCODE_ARROW_UP || keyCode === KEYCODE_ARROW_DOWN) {

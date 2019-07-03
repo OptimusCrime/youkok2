@@ -69,7 +69,7 @@ export class MainPostContainer extends Component {
             }
           </div>
           <div className="sidebar-create-terms">
-            <p>Ved å poste linker eller laste opp filer godtar du våre <a href={SITE_DATA.archive_url_terms}>retningslinjer</a>.</p>
+            <p>Ved å poste linker eller laste opp filer godtar du våre <a href={window.SITE_DATA.archive_url_terms}>retningslinjer</a>.</p>
           </div>
         </div>
       </div>

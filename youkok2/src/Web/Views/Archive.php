@@ -19,16 +19,12 @@ class Archive extends BaseView
     /** @var CourseService */
     private $courseService;
 
-    /** @var RouterInterface */
-    private $router;
-
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
         $this->archiveService = $container->get(ArchiveService::class);
         $this->courseService = $container->get(CourseService::class);
-        $this->router = $container->get('router');
     }
 
     public function view(Request $request, Response $response): Response

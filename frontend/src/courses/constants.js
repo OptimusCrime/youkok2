@@ -15,3 +15,5 @@ export const TOTAL_NUMBER_OF_RELATIVE_BUTTONS = 7;
 
 export const RELATIVE_BUTTONS_LEFT = 1;
 export const RELATIVE_BUTTONS_RIGHT = 2;
+
+export const SEARCH_QUERY_IDENTIFIER = 's';

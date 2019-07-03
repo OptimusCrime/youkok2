@@ -15,6 +15,8 @@ const defaultState = {
   column: DEFAULT_COLUMN,
   order: DEFAULT_ORDER,
   page: DEFAULT_PAGE,
+  search: DEFAULT_SEARCH,
+  showOnlyNotEmpty: DEFAULT_SHOW_ONLY_NOT_EMPTY,
 
   courses: updateCourses({
     column: DEFAULT_COLUMN,
@@ -22,9 +24,6 @@ const defaultState = {
     search: DEFAULT_SEARCH,
     showOnlyNotEmpty: DEFAULT_SHOW_ONLY_NOT_EMPTY,
   }),
-
-  search: '',
-  showOnlyNotEmpty: false,
 };
 
 export const courses = (state = defaultState, action) => {
