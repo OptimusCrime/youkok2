@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {
   updateSearchField as updateSearchFieldDispatch,
   updateCursorPosition as updateCursorPositionDispatch,
-  closeSearchResults as closeSearchResultsDispatch,
 } from '../redux/form/actions';
 import {
   ARROW_DOWN,
@@ -40,10 +39,9 @@ const MainContainer = props => {
   return (
     <React.Fragment>
       <input
-        // TODO handle click outside the searchbar to remove the dropdown or something
         type="text"
         placeholder="Søk etter fag"
-        className="form-control typeahead"
+        className="form-control search-bar"
         onChange={e => {
           const keyCode = e.keyCode;
 
@@ -71,34 +69,24 @@ const MainContainer = props => {
       <button className="btn" type="button" id="nav-search">
         <i className="fa fa-search"/>
       </button>
-      {results.length > 0 && input_display.length > MINIMUM_SEARCH_LENGTH &&
-      <span className="tt-dropdown-menu" style={{
-        position: 'absolute',
-        top: '100%',
-        left: '0px',
-        zIndex: 100,
-        right: 'auto',
-        display: 'block'
-      }}>
-          <div className="tt-dataset-courses">
-            <div className="tt-suggestions" style={{display: 'block'}}>
-              {results.map((result, index) =>
-                <div
-                  key={result.id}
-                  className={`tt-suggestion ${(cursor !== null && cursor === index) ? 'tt-cursor' : ''}`}
-                >
-                  <p
-                    style={{whiteSpace: 'normal'}}
-                    dangerouslySetInnerHTML={{
-                      __html: highlightSearchResult(input_raw, result)
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        </span>
-      }
+      {results.length > 0 && input_display.length > MINIMUM_SEARCH_LENGTH && (
+        <div className="search-bar__dropdown">
+          {results.map((result, index) => (
+              <a
+                key={result.id}
+                className={`search-bar__suggestion ${(cursor !== null && cursor === index) ? 'search-bar__cursor' : ''}`}
+                href={result.url}
+              >
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: highlightSearchResult(input_raw, result)
+                  }}
+                />
+              </a>
+            )
+          )}
+        </div>
+      )}
     </React.Fragment>
   );
 };

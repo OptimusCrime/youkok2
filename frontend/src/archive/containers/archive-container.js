@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 
 import { ArchiveRow } from "../components/archive-row";
 import {loading} from "../../common/utils";
-import {StencilArchiveList} from "../components/stencil/archive-list";
-import {ArchiveWrapper} from "../components/archive-wrapper";
+import {StencilArchiveList} from "../components/stencil-archive-list";
+import {ArchiveList} from "../components/archive-list";
 import {ArchiveError} from "../components/archive-error";
 
 class ArchiveContainer extends Component {
@@ -30,9 +30,9 @@ class ArchiveContainer extends Component {
 
     if (failed) {
       return (
-        <ArchiveWrapper>
+        <ArchiveList>
           <ArchiveError />
-        </ArchiveWrapper>
+        </ArchiveList>
       );
     }
 
@@ -40,16 +40,16 @@ class ArchiveContainer extends Component {
 
     if (isLoading) {
       return (
-        <ArchiveWrapper>
+        <ArchiveList>
           <StencilArchiveList size={10} />
-        </ArchiveWrapper>
+        </ArchiveList>
       );
     }
 
     return (
-      <ArchiveWrapper>
+      <ArchiveList>
         {archive.map((item, key) => <ArchiveRow key={key} item={item} /> )}
-      </ArchiveWrapper>
+      </ArchiveList>
     );
   }
 }

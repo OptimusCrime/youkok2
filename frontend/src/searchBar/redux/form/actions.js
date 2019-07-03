@@ -2,7 +2,6 @@ import {
   UPDATE_SEARCH_FIELD,
   UPDATE_SEARCH_RESULTS,
   UPDATE_CURSOR_POSITION,
-  CLOSE_SEARCH_RESULTS
 } from "./constants";
 import {
   ARROW_DOWN,

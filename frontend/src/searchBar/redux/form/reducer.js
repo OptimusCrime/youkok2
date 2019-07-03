@@ -56,6 +56,7 @@ export const form = (state = defaultState, action) => {
       return {
         ...state,
         results: [],
+        input_display: state.input_raw
       };
 
     default:

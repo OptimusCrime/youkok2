@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import configureStore from "./redux/configureStore";
 import { fetchArchive } from "./redux/archive/actions";
 
-import { MainContainer } from './containers/main-container';
+import { MainComponent } from './components/main-component';
 
 const preloadedState = window.__INITIAL_STATE__;
 
@@ -17,7 +17,7 @@ if (!window.SITE_DATA.archive_empty) {
 
 ReactDOM.render((
     <Provider store={store}>
-      <MainContainer />
+      <MainComponent />
     </Provider>
   ), document.getElementById('archive')
 );
