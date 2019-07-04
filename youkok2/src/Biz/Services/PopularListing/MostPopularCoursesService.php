@@ -21,20 +21,17 @@ class MostPopularCoursesService implements MostPopularInterface
     const CACHE_DIRECTORY_KEY = 'CACHE_DIRECTORY';
     const CACHE_DIRECTORY_SUB = 'courses';
 
-    private $settings;
     private $cacheService;
     private $logger;
     private $downloadService;
     private $elementService;
 
     public function __construct(
-        Collection $settings,
         CacheService $cacheService,
         Logger $logger,
         DownloadService $downloadService,
         ElementService $elementService
     ) {
-        $this->settings = $settings;
         $this->cacheService = $cacheService;
         $this->logger = $logger;
         $this->downloadService = $downloadService;

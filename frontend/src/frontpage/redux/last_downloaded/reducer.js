@@ -23,7 +23,6 @@ export const lastDownloaded = (state = defaultState, action) => {
     case FRONTPAGE_LAST_DOWNLOADED_FETCH_FINISHED:
       return {
         ...state,
-
         started: false,
         finished: true,
         elements: action.data
@@ -32,8 +31,6 @@ export const lastDownloaded = (state = defaultState, action) => {
     case FRONTPAGE_LAST_DOWNLOADED_FETCH_FAILED:
       return {
         ...state,
-
-        ...state.boxes,
         failed: true,
         started: false,
       };

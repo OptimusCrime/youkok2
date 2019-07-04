@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { BoxWrapper } from "../../../../common/components/box-wrapper";
 import { CourseItem } from "../../../components/course-item";
 import { MostPopularDropdown } from "../../../components/most-popular/dropdown";
-import { formatNumber } from "../../../../common/utils";
-import { DELTA_POST_POPULAR_COURSES } from "../../../consts";
-import { updateFrontpage as updateFrontpageDispatch } from "../../../redux/frontpage/actions";
+import {formatNumber, loading} from "../../../../common/utils";
+import {DELTA_POST_POPULAR_COURSES} from "../../../consts";
+import {updateFrontpagePopularCourses as updateFrontpagePopularCoursesDispatch } from "../../../redux/popular_courses/actions";
 import {EmptyItem} from "../../../../common/components/empty-item";
 
 class BoxMostPopularCourses extends Component {
@@ -29,20 +29,22 @@ class BoxMostPopularCourses extends Component {
   }
 
   changeDelta(delta) {
-    const { updateFrontpage } = this.props;
+    const { updateFrontpagePopularCourses } = this.props;
 
-    updateFrontpage(DELTA_POST_POPULAR_COURSES, delta);
+    updateFrontpagePopularCourses(DELTA_POST_POPULAR_COURSES, delta);
   }
 
   render() {
 
     const {
+      started,
+      finished,
       failed,
-      isLoading,
-      coursesMostPopular,
-      coursesMostPopularLoading,
-      userPreferences,
+      courses,
+      preference
     } = this.props;
+
+    const isLoading = loading(started, finished);
 
     if (failed) {
       return (
@@ -60,25 +62,23 @@ class BoxMostPopularCourses extends Component {
       );
     }
 
-    const selectedButton = userPreferences[DELTA_POST_POPULAR_COURSES];
-
     return (
       <div className="col-xs-12 col-sm-6 frontpage-box">
         <BoxWrapper
           title="Mest populære fag"
           titleInline={true}
-          isLoading={isLoading || coursesMostPopularLoading}
-          isEmpty={!isLoading && coursesMostPopular.length === 0}
+          isLoading={isLoading}
+          isEmpty={!isLoading && courses.length === 0}
           dropdown={
             <MostPopularDropdown
-              selectedButton={selectedButton}
+              selectedButton={preference}
               open={this.state.open}
               toggleDropdown={this.toggleDropdown}
               changeDelta={this.changeDelta}
             />
           }
         >
-          {!isLoading && !coursesMostPopularLoading && coursesMostPopular.map((course, index) =>
+          {!isLoading && courses.map((course, index) =>
             <CourseItem course={course} key={index} additional={<span>[ca. {formatNumber(course.download_estimate)}]</span>} /> )
           }
         </BoxWrapper>
@@ -87,14 +87,16 @@ class BoxMostPopularCourses extends Component {
   }
 }
 
-const mapStateToProps = ({ frontpage }) => ({
-  coursesMostPopular: frontpage.courses_most_popular,
-  coursesMostPopularLoading: frontpage.courses_most_popular_loading,
-  userPreferences: frontpage.user_preferences,
+const mapStateToProps = ({ popularCourses }) => ({
+  started: popularCourses.started,
+  finished: popularCourses.finished,
+  failed: popularCourses.failed,
+  courses: popularCourses.courses,
+  preference: popularCourses.preference,
 });
 
 const mapDispatchToProps = {
-  updateFrontpage: updateFrontpageDispatch
+  updateFrontpagePopularCourses: updateFrontpagePopularCoursesDispatch
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(BoxMostPopularCourses);

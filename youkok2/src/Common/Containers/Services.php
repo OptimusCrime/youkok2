@@ -74,7 +74,6 @@ class Services implements ContainersInterface
 
         $container[MostPopularCoursesService::class] = function (ContainerInterface $container): MostPopularCoursesService {
             return new MostPopularCoursesService(
-                $container->get('settings'),
                 $container->get(CacheService::class),
                 $container->get(MonoLogger::class),
                 $container->get(DownloadService::class),

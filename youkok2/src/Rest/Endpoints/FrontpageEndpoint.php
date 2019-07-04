@@ -51,7 +51,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
         $payload = $this->frontpageService->popularElements();
 
         return $this->outputJson($response, [
-            'data' => $this->mapElementsMostPopular($payload),
+            'elements' => $this->mapElementsMostPopular($payload),
             'preference' => $session->getMostPopularElement()
         ]);
     }
@@ -62,7 +62,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
         $payload = $this->frontpageService->popularCourses();
 
         return $this->outputJson($response, [
-            'data' => $this->mapCoursesMostPopular($payload),
+            'courses' => $this->mapCoursesMostPopular($payload),
             'preference' => $session->getMostPopularCourse()
         ]);
     }
@@ -169,14 +169,13 @@ class FrontpageEndpoint extends BaseRestEndpoint
     private function mapUpdateMostPopular($output, $delta, $value)
     {
         $ret = [
-            'delta' => $delta,
-            'value' => $value,
+            'preference' => $value,
         ];
 
         if ($delta === Session::KEY_MOST_POPULAR_ELEMENT) {
-            $ret['data'] = $this->mapElementsMostPopular($output);
+            $ret['elements'] = $this->mapElementsMostPopular($output);
         } else {
-            $ret['data'] = $this->mapCoursesMostPopular($output);
+            $ret['courses'] = $this->mapCoursesMostPopular($output);
         }
 
         return $ret;

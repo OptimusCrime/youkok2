@@ -11,10 +11,6 @@ export const fetchFrontPageNewest = () => dispatch => {
   fetchFrontPageNewestRest()
     .then(response => response.json())
     .then(response => dispatch({ type: FRONTPAGE_NEWEST_FETCH_FINISHED, data: response.data }))
-    .catch(e => {
-      console.error(e);
-
-      dispatch({ type: FRONTPAGE_NEWEST_FETCH_FAILED })
-    });
+    .catch(() => dispatch({ type: FRONTPAGE_NEWEST_FETCH_FAILED }));
 };
 

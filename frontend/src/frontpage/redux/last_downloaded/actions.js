@@ -11,10 +11,6 @@ export const fetchFrontPageLastDownloaded = () => dispatch => {
   fetchFrontPageLastDownloadedRest()
     .then(response => response.json())
     .then(response => dispatch({ type: FRONTPAGE_LAST_DOWNLOADED_FETCH_FINISHED, data: response.data }))
-    .catch(e => {
-      console.error(e);
-
-      dispatch({ type: FRONTPAGE_LAST_DOWNLOADED_FETCH_FAILED })
-    });
+    .catch(() => dispatch({ type: FRONTPAGE_LAST_DOWNLOADED_FETCH_FAILED }));
 };
 

@@ -11,10 +11,6 @@ export const fetchFrontPageBoxes = () => dispatch => {
   fetchFrontPageBoxesRest()
     .then(response => response.json())
     .then(response => dispatch({ type: FRONTPAGE_BOXES_FETCH_FINISHED, data: response.data }))
-    .catch(e => {
-      console.error(e);
-
-      dispatch({ type: FRONTPAGE_BOXES_FETCH_FAILED })
-    });
+    .catch(() => dispatch({ type: FRONTPAGE_BOXES_FETCH_FAILED }));
 };
 

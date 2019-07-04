@@ -13,9 +13,5 @@ export const fetchSidebarMostPopular = () => dispatch => {
   fetchSidebarMostPopularRest()
     .then(response => response.json())
     .then(response => dispatch({ type: SIDEBAR_MOST_POPULAR_FETCH_FINISHED, data: response.data }))
-    .catch(e => {
-      console.error(e);
-
-      dispatch({ type: SIDEBAR_MOST_POPULAR_FETCH_FAILED })
-    });
+    .catch(() => dispatch({ type: SIDEBAR_MOST_POPULAR_FETCH_FAILED }));
 };

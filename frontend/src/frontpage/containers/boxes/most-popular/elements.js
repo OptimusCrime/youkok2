@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { BoxWrapper } from "../../../../common/components/box-wrapper";
 import { ElementItem } from "../../../../common/components/element-item";
 import { MostPopularDropdown } from "../../../components/most-popular/dropdown";
-import { formatNumber } from "../../../../common/utils";
+import {formatNumber, loading} from "../../../../common/utils";
 import { DELTA_POST_POPULAR_ELEMENTS } from "../../../consts";
-import { updateFrontpage as updateFrontpageDispatch } from "../../../redux/frontpage/actions";
 import {EmptyItem} from "../../../../common/components/empty-item";
+import {updateFrontpagePopularElements as updateFrontpagePopularElementsDispatch } from "../../../redux/popular_elements/actions";
 
 class BoxMostPopularElements extends Component {
 
@@ -29,20 +29,22 @@ class BoxMostPopularElements extends Component {
   }
 
   changeDelta(delta) {
-    const { updateFrontpage } = this.props;
+    const { updateFrontpagePopularElements } = this.props;
 
-    updateFrontpage(DELTA_POST_POPULAR_ELEMENTS, delta);
+    updateFrontpagePopularElements(DELTA_POST_POPULAR_ELEMENTS, delta);
   }
 
   render() {
 
     const {
+      started,
+      finished,
       failed,
-      isLoading,
-      elementsMostPopular,
-      elementMostPopularLoading,
-      userPreferences,
+      elements,
+      preference
     } = this.props;
+
+    const isLoading = loading(started, finished);
 
     if (failed) {
       return (
@@ -60,25 +62,23 @@ class BoxMostPopularElements extends Component {
       );
     }
 
-    const selectedButton = userPreferences[DELTA_POST_POPULAR_ELEMENTS];
-
     return (
       <div className="col-xs-12 col-sm-6 frontpage-box">
         <BoxWrapper
           title="Mest populære"
           titleInline={true}
-          isLoading={isLoading || elementMostPopularLoading}
-          isEmpty={!isLoading && elementsMostPopular.length === 0}
+          isLoading={isLoading}
+          isEmpty={!isLoading && elements.length === 0}
           dropdown={
             <MostPopularDropdown
-              selectedButton={selectedButton}
+              selectedButton={preference}
               open={this.state.open}
               toggleDropdown={this.toggleDropdown}
               changeDelta={this.changeDelta}
             />
           }
         >
-          {!isLoading && !elementMostPopularLoading && elementsMostPopular.map((element, index) =>
+          {!isLoading && elements.map((element, index) =>
             <ElementItem element={element} key={index} additional={<span>[{formatNumber(element.downloads)}]</span>} /> )
           }
         </BoxWrapper>
@@ -87,14 +87,16 @@ class BoxMostPopularElements extends Component {
   }
 }
 
-const mapStateToProps = ({ frontpage }) => ({
-  elementsMostPopular: frontpage.elements_most_popular,
-  elementMostPopularLoading: frontpage.elements_most_popular_loading,
-  userPreferences: frontpage.user_preferences,
+const mapStateToProps = ({ popularElements }) => ({
+  started: popularElements.started,
+  finished: popularElements.finished,
+  failed: popularElements.failed,
+  elements: popularElements.elements,
+  preference: popularElements.preference,
 });
 
 const mapDispatchToProps = {
-  updateFrontpage: updateFrontpageDispatch
+  updateFrontpagePopularElements: updateFrontpagePopularElementsDispatch
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(BoxMostPopularElements);
