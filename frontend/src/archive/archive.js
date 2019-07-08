@@ -6,14 +6,17 @@ import configureStore from "./redux/configureStore";
 import { fetchArchive } from "./redux/archive/actions";
 
 import { MainComponent } from './components/main-component';
+import {getLocalStorageKeyForCurrentUri, removeExpiredCache} from "./utilities";
+import {getItem, keyExists} from "../common/local-storage";
+import {initArchive} from "./init";
 
 const preloadedState = window.__INITIAL_STATE__;
 
 const store = configureStore(preloadedState);
 
-if (!window.SITE_DATA.archive_empty) {
-  store.dispatch(fetchArchive());
-}
+removeExpiredCache();
+
+initArchive(store);
 
 ReactDOM.render((
     <Provider store={store}>

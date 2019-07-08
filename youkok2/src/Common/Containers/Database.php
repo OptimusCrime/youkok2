@@ -3,6 +3,7 @@ namespace Youkok\Common\Containers;
 
 use Illuminate\Container\Container;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Database\Capsule\Manager as DB;
 use Psr\Container\ContainerInterface;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Eloquent\Model;
@@ -38,6 +39,10 @@ class Database implements ContainersInterface
         $resolver->addConnection('default', $capsule->getConnection());
         $resolver->setDefaultConnection('default');
         Model::setConnectionResolver($resolver);
+
+        if (getenv('DEV') === '1') {
+            DB::connection()->enableQueryLog();
+        }
 
         $container['db'] = function () use ($capsule): Manager {
             return $capsule;

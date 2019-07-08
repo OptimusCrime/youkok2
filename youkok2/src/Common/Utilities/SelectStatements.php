@@ -3,6 +3,7 @@ namespace Youkok\Common\Utilities;
 
 class SelectStatements implements \Iterator
 {
+    /** @var array */
     private $statements;
     private $position;
 
@@ -48,5 +49,28 @@ class SelectStatements implements \Iterator
     public function rewind(): void
     {
         $this->position = 0;
+    }
+
+    public function getStatements(): array
+    {
+        return $this->statements;
+    }
+
+    public function equals(SelectStatements $other): bool
+    {
+        $otherStatements = $other->getStatements();
+        if ($this->statements === $otherStatements) {
+            // Select statements are exactly the same
+            return true;
+        }
+
+        foreach ($this->statements as $key => $value) {
+            if (!isset($otherStatements[$key]) || $otherStatements[$key] !== $value) {
+                return false;
+            }
+        }
+
+        // All of the selects in other is also found in `this`
+        return true;
     }
 }

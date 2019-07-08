@@ -3,11 +3,12 @@ namespace Youkok\Biz\Services\Models;
 
 use Carbon\Carbon;
 
-use Guzzle\Http\Exception\CouldNotRewindStreamException;
 use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Exceptions\InvalidFlagCombination;
+use Youkok\Biz\Pools\Containers\ElementPoolContainer;
+use Youkok\Biz\Pools\ElementPool;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
@@ -251,10 +252,12 @@ class ElementService
 
     private function getElementFromOriginalUri(string $uri, array $attributes, array $flags): Element
     {
-         // We only need to fetch the id there, the rest of the information is fetched in the second call
+        // We only need to fetch the id there, the rest of the information is fetched in the second call
+        $elementFromUriAttributes = static::supplementAttributesBasedOnFlags(['id'], $flags);
+
         $elementFromUri = $this->buildQuery(
             new SelectStatements('uri', UriCleaner::cleanUri($uri)),
-            ['id'],
+            $elementFromUriAttributes,
             $flags
         );
 
@@ -286,7 +289,8 @@ class ElementService
             $selectStatements->addStatement('slug', $fragment);
             $selectStatements->addStatement('parent', $currentParentId);
 
-            $fragmentElement = $this->buildQuery($selectStatements, ['id'], $flags);
+            $fragmentElementAttributes = static::supplementAttributesBasedOnFlags(['id'], $flags);
+            $fragmentElement = $this->buildQuery($selectStatements, $fragmentElementAttributes, $flags);
 
             $currentParentId = $fragmentElement->id;
         }
@@ -318,23 +322,27 @@ class ElementService
         $parents = [];
 
         while (true) {
-            $query = Element
-                ::select($attributes)
-                ->where('id', $currentParentId)
-                ->where('directory', 1); // All parents should be directories
+            $selectStatements = new SelectStatements('id', $currentParentId);
 
-            if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
-                $query = $query
-                    ->where('deleted', 0)
-                    ->where('pending', 0);
+            $parent = null;
+            try {
+                $parent = $this->fetchElement($attributes, $selectStatements);
             }
-
-            $parent = $query->first();
-
-            if ($parent === null) {
+            catch (ElementNotFoundException $ex) {
+                // Rethrow exception
                 throw new ElementNotFoundException(
                     'Could not find parent for Element id' . $element->id . ', parent id ' . $element->parent
                 );
+            }
+
+            if ($parent->directory !== 1) {
+                throw new ElementNotFoundException();
+            }
+
+            if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
+                if ($parent->deleted !== 0 && $parent->pending !== 0) {
+                    throw new ElementNotFoundException();
+                }
             }
 
             $parents[] = $parent;
@@ -350,17 +358,13 @@ class ElementService
 
     private function buildQuery(SelectStatements $selectStatements, array $attributes, array $flags): ?Element
     {
-        $query = Element::select($attributes);
-
-        foreach ($selectStatements as $key => $value) {
-            $query = $query->where($key, $value);
-        }
+        $element = $this->fetchElement($attributes, $selectStatements);
 
         // Can not fetch both visible and/or specific
         if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
-            $query = $query
-                ->where('deleted', 0)
-                ->where('pending', 0);
+            if ($element->deleted !== 0 && $element->pending !== 0) {
+                throw new ElementNotFoundException();
+            }
         }
         else {
             // Fetch specific
@@ -368,11 +372,41 @@ class ElementService
         }
 
         if (in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {
-            $query = $query
-                ->where('directory', 1);
+            if ($element->directory !== 1) {
+                throw new ElementNotFoundException();
+            }
         }
 
-        $element = $query->first();
+        return $element;
+    }
+
+    private function fetchElement(array $attributes, SelectStatements $selectStatements): Element
+    {
+        $element = null;
+        if (ElementPool::contains($attributes, $selectStatements)) {
+            $element = ElementPool::get($attributes, $selectStatements);
+        }
+        else {
+            $query = Element::select($attributes);
+
+            foreach ($selectStatements as $key => $value) {
+                $query = $query->where($key, $value);
+            }
+
+            $element = $query->first();
+
+            // Add to pool here, no need to do that later in this methdo, as it would re-add already existing
+            // pool elements.
+            if ($element !== null) {
+                ElementPool::add(
+                    new ElementPoolContainer(
+                        $attributes,
+                        $selectStatements,
+                        $element
+                    )
+                );
+            }
+        }
 
         if ($element === null) {
             // Todo, better message here?
@@ -429,7 +463,23 @@ class ElementService
                 $attributes[] = 'link';
             }
 
-            if (!in_array('parents', $attributes)) {
+            if (!in_array('directory', $attributes)) {
+                $attributes[] = 'directory';
+            }
+        }
+
+        if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
+            if (!in_array('deleted', $attributes)) {
+                $attributes[] = 'deleted';
+            }
+
+            if (!in_array('pending', $attributes)) {
+                $attributes[] = 'pending';
+            }
+        }
+
+        if (in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {
+            if (!in_array('directory', $attributes)) {
                 $attributes[] = 'directory';
             }
         }

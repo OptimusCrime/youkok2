@@ -17,7 +17,10 @@ class SessionService
 
     public function get(string $hash): Session
     {
-        $session = Session::where('hash', $hash)->first();
+        $session = Session
+            ::select('id', 'hash', 'data', 'last_updated', 'expire')
+            ->where('hash', $hash)
+            ->first();
 
         if ($session === null) {
             throw new SessionNotFoundException();

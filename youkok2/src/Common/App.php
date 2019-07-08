@@ -4,6 +4,7 @@ namespace Youkok\Common;
 
 use Slim\App as Slim;
 
+use Youkok\Biz\Pools\ElementPool;
 use Youkok\Common\Containers\Cache;
 use Youkok\Common\Containers\Database;
 use Youkok\Common\Containers\InternalServerError;
@@ -12,6 +13,7 @@ use Youkok\Common\Containers\PageNotFound;
 use Youkok\Common\Containers\Services;
 use Youkok\Common\Containers\View;
 use Youkok\Common\Middlewares\AdminAuthMiddleware;
+use Youkok\Common\Middlewares\DumpSqlLogMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Common\Middlewares\TimingMiddleware;
 use Youkok\Biz\Services\Job\JobService;
@@ -48,6 +50,7 @@ class App
     public function run(): void
     {
         $this->setup();
+        $this->startPools();
 
         try {
             $this->app->run();
@@ -79,6 +82,11 @@ class App
         $this->routes();
     }
 
+    private function startPools(): void
+    {
+        ElementPool::init();
+    }
+
     private function routes(): void
     {
         $app = $this->app;
@@ -96,7 +104,7 @@ class App
 
             $app->get('lorem', Login::class . ':view')->setName('admin_login');
             $app->post('lorem', Login::class . ':post')->setName('admin_login_submit');
-        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
+        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware())->add(new DumpSqlLogMiddleware());
 
         $app->group('/admin', function () use ($app) {
             $app->get('', AdminHome::class . ':view')->setName('admin_home');
@@ -123,7 +131,7 @@ class App
                 $app->get('/popular', MostPopularEndpoint::class . ':get');
                 $app->get('/history/{id:[0-9]+}', ArchiveHistoryEndpoint::class . ':get');
             });
-        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
+        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware())->add(new DumpSqlLogMiddleware());
 
         // TODO remove
         $app->group('/processors', function () use ($app) {
