@@ -1,8 +1,10 @@
 <?php
 namespace Youkok\Rest\Endpoints;
 
+use Slim\Http\Request;
 use Slim\Http\Response;
 
+use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Web\Views\BaseView;
 
 class BaseRestEndpoint extends BaseView
@@ -16,11 +18,39 @@ class BaseRestEndpoint extends BaseView
             ->withJson($object);
     }
 
+    protected function getJsonArrayFromBody(Request $request, array $ensureKeysExists = []): array
+    {
+        $body = (string) $request->getBody();
+        if ($body === null || mb_strlen($body) === 0) {
+            throw new InvalidRequestException('Malformed request');
+        }
+
+        $data = json_decode($body, true);
+        if (!is_array($data)) {
+            throw new InvalidRequestException('Malformed request');
+        }
+
+        foreach ($ensureKeysExists as $key) {
+            if (!isset($data[$key])) {
+                throw new InvalidRequestException('Malformed request');
+            }
+        }
+
+        return $data;
+    }
+
+    protected function outputSuccess(Response $response): Response
+    {
+        return $this->outputJson($response, ['state' => 'OK']);
+    }
+
     protected function returnBadRequest(Response $response, \Exception $ex): Response
     {
         if (getenv('DEV') === '1') {
             return $response->write($ex->getTraceAsString());
         }
+
+        // TODO log here
 
         return $response
             ->withStatus(400)

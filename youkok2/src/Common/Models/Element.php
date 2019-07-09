@@ -28,7 +28,6 @@ class Element extends BaseModel
     {
         parent::__construct($attributes);
 
-        $this->fullUri = null;
         $this->downloads = null;
         $this->parents = [];
         $this->downloadedTime = null;
@@ -79,7 +78,7 @@ class Element extends BaseModel
 
     public function isLink(): bool
     {
-        return $this->link !== null && strlen($this->link) > 0;
+        return $this->link !== null && mb_strlen($this->link) > 0;
     }
 
     public function isFile(): bool

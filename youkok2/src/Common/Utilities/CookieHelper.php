@@ -15,7 +15,7 @@ class CookieHelper
 
     public static function getCookie($key): string
     {
-        if (!isset($_COOKIE[$key]) or strlen($_COOKIE[$key]) === 0) {
+        if (!isset($_COOKIE[$key]) or mb_strlen($_COOKIE[$key]) === 0) {
             throw new CookieNotFoundException();
         }
 

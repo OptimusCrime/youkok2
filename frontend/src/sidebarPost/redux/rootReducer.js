@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux';
 
-import { elements } from './elements/reducer';
+import { main } from './main/reducer';
+import { link } from './link/reducer';
 
 const rootReducer = combineReducers({
-  elements
+  main,
+  link,
 });
 
 export default rootReducer;

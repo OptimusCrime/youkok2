@@ -7,7 +7,7 @@ class UriCleaner
     {
         $clean = [];
         foreach ($fragments as $fragment) {
-            if ($fragment !== null and strlen($fragment) > 0) {
+            if ($fragment !== null and mb_strlen($fragment) > 0) {
                 $clean[] = preg_replace("/[^A-Za-z0-9-.]/", '', $fragment);
             }
         }

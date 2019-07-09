@@ -31,6 +31,8 @@ class ElementService
     const FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE =
         'FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE';
 
+    const FLAG_ENSURE_IS_COURSE = 'FLAG_ENSURE_IS_COURSE';
+
     const FLAG_ONLY_DIRECTORIES = 'FLAG_ONLY_DIRECTORIES';
 
     /** @var CacheService */
@@ -105,6 +107,14 @@ class ElementService
             if ($element->getType() !== Element::FILE) {
                 throw new GenericYoukokException(
                     'Element ' . $element->id . ' should be FILE, but is ' . $element->getType()
+                );
+            }
+        }
+
+        if (in_array(static::FLAG_ENSURE_IS_COURSE, $flags)) {
+            if (!$element->isCourse()) {
+                throw new GenericYoukokException(
+                    'Element ' . $element->id . ' should be COURSE, but is ' . $element->getType()
                 );
             }
         }
@@ -481,6 +491,16 @@ class ElementService
         if (in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {
             if (!in_array('directory', $attributes)) {
                 $attributes[] = 'directory';
+            }
+        }
+
+        if (in_array(static::FLAG_ENSURE_IS_COURSE, $flags)) {
+            if (!in_array('directory', $attributes)) {
+                $attributes[] = 'directory';
+            }
+
+            if (!in_array('parent', $attributes)) {
+                $attributes[] = 'parent';
             }
         }
 

@@ -26,6 +26,8 @@ use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Biz\Services\Models\SessionService;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
+use Youkok\Biz\Services\Post\Create\CreateLinkService;
+use Youkok\Biz\Services\Post\TitleFetchService;
 use Youkok\Biz\Services\UserSessionService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
 use Youkok\Biz\Services\SystemLogService;
@@ -201,6 +203,16 @@ class Services implements ContainersInterface
 
         $container[SessionService::class] = function (): SessionService {
             return new SessionService();
+        };
+
+        $container[TitleFetchService::class] = function (): TitleFetchService {
+            return new TitleFetchService();
+        };
+
+        $container[CreateLinkService::class] = function (ContainerInterface $container): CreateLinkService {
+            return new CreateLinkService(
+                $container->get(ElementService::class)
+            );
         };
     }
 }

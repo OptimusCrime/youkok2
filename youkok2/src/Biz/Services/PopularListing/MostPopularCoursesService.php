@@ -46,7 +46,7 @@ class MostPopularCoursesService implements MostPopularInterface
             $result = $this->getMostPopularCoursesFromDisk($delta);
         }
 
-        if ($result === null or strlen($result) === 0) {
+        if ($result === null or mb_strlen($result) === 0) {
             return [];
         }
 

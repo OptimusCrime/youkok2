@@ -21,6 +21,8 @@ use Youkok\Rest\Endpoints\ArchiveEndpoint;
 use Youkok\Rest\Endpoints\FrontpageEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\ArchiveHistoryEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\MostPopularEndpoint;
+use Youkok\Rest\Endpoints\Sidebar\Post\Create\CreateLinkEndpoint;
+use Youkok\Rest\Endpoints\Sidebar\Post\TitleFetchEndpoint;
 use Youkok\Web\Views\Archive;
 use Youkok\Web\Views\Courses;
 use Youkok\Web\Views\Download;
@@ -91,49 +93,74 @@ class App
     {
         $app = $this->app;
 
-        $app->group('/', function () use ($app) {
-            $app->get('', Frontpage::class . ':view')->setName('home');
-            $app->get('emner', Courses::class . ':view')->setName('courses');
-            $app->get('emner/{course:[^/]+}[/{path:.+}]', Archive::class . ':view')->setName('archive');
-            $app->get('redirect/{id:[0-9]+}', Redirect::class . ':view')->setName('redirect');
-            $app->get('last-ned/{uri:.*}', Download::class . ':view')->setName('download');
-            $app->get('hjelp', Flat::class . ':help')->setName('help');
-            $app->get('om', Flat::class . ':about')->setName('about');
-            $app->get('changelog.txt', Flat::class . ':changelog')->setName('changelog');
-            $app->get('retningslinjer', Flat::class . ':terms')->setName('terms');
+        $app->group('', function () use ($app) {
+            $app->get('/', Frontpage::class . ':view')->setName('home');
+            $app->get('/emner', Courses::class . ':view')->setName('courses');
+            $app->get('/emner/{course:[^/]+}[/{path:.+}]', Archive::class . ':view')->setName('archive');
+            $app->get('/redirect/{id:[0-9]+}', Redirect::class . ':view')->setName('redirect');
+            $app->get('/last-ned/{uri:.*}', Download::class . ':view')->setName('download');
+            $app->get('/hjelp', Flat::class . ':help')->setName('help');
+            $app->get('/om', Flat::class . ':about')->setName('about');
+            $app->get('/changelog.txt', Flat::class . ':changelog')->setName('changelog');
+            $app->get('/retningslinjer', Flat::class . ':terms')->setName('terms');
 
             $app->get('lorem', Login::class . ':view')->setName('admin_login');
             $app->post('lorem', Login::class . ':post')->setName('admin_login_submit');
-        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware())->add(new DumpSqlLogMiddleware());
+        })->add(new TimingMiddleware())
+            ->add(new ReverseProxyMiddleware())
+            ->add(new DumpSqlLogMiddleware());
 
         $app->group('/admin', function () use ($app) {
             $app->get('', AdminHome::class . ':view')->setName('admin_home');
-            $app->get('/ventende', Pending::class . ':view')->setName('admin_pending');
-            $app->get('/filer', Files::class . ':view')->setName('admin_files');
+            //$app->get('/ventende', Pending::class . ':view')->setName('admin_pending');
+            //$app->get('/filer', Files::class . ':view')->setName('admin_files');
             $app->get('/statistikk', AdminStatistics::class . ':view')->setName('admin_statistics');
             $app->get('/diagnostikk', AdminDiagnostics::class . ':view')->setName('admin_diagnostics');
             $app->get('/logger', AdminLogs::class . ':view')->setName('admin_logs');
             $app->get('/scripts', AdminScripts::class . ':view')->setName('admin_scripts');
-        })->add(new ReverseProxyMiddleware())->add(new AdminAuthMiddleware($app->getContainer()));
+        })->add(new ReverseProxyMiddleware())
+            ->add(new AdminAuthMiddleware($app->getContainer()))
+            ->add(new DumpSqlLogMiddleware());
 
         $app->group('/rest', function () use ($app) {
-            $app->get('/frontpage/boxes', FrontpageEndpoint::class . ':boxes');
-            $app->get('/frontpage/popular/elements', FrontpageEndpoint::class . ':popularElements');
-            $app->get('/frontpage/popular/courses', FrontpageEndpoint::class . ':popularCourses');
-            $app->get('/frontpage/newest', FrontpageEndpoint::class . ':newest');
-            $app->get('/frontpage/last/visited', FrontpageEndpoint::class . ':lastVisited');
-            $app->get('/frontpage/last/downloaded', FrontpageEndpoint::class . ':lastDownloaded');
-            $app->put('/frontpage', FrontpageEndpoint::class . ':put');
+            $app->group('/frontpage', function () use ($app) {
+                $app->group('/popular', function () use ($app) {
+                    $app->get('/elements', FrontpageEndpoint::class . ':popularElements');
+                    $app->get('/courses', FrontpageEndpoint::class . ':popularCourses');
+                });
+                $app->group('/last', function () use ($app) {
+                    $app->get('/visited', FrontpageEndpoint::class . ':lastVisited');
+                    $app->get('/downloaded', FrontpageEndpoint::class . ':lastDownloaded');
+                });
+
+                $app->put('/', FrontpageEndpoint::class . ':put');
+
+                $app->get('/boxes', FrontpageEndpoint::class . ':boxes');
+                $app->get('/newest', FrontpageEndpoint::class . ':newest');
+            });
+
 
             $app->get('/archive/{id:[0-9]+}', ArchiveEndpoint::class . ':get');
 
             $app->group('/sidebar', function () use ($app) {
+                $app->group('/post', function () use ($app) {
+                    $app->group('/create', function () use ($app) {
+                        $app->put('/link', CreateLinkEndpoint::class . ':put');
+                        //$app->put('/file', CreateFileEndpoint::class . ':put');
+                    });
+
+                    $app->put('/title', TitleFetchEndpoint::class . ':put');
+
+                });
+
                 $app->get('/popular', MostPopularEndpoint::class . ':get');
                 $app->get('/history/{id:[0-9]+}', ArchiveHistoryEndpoint::class . ':get');
             });
-        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware())->add(new DumpSqlLogMiddleware());
+        })->add(new ReverseProxyMiddleware())
+            ->add(new DumpSqlLogMiddleware());
 
         // TODO remove
+        /*
         $app->group('/processors', function () use ($app) {
             $app->group('/link', function () use ($app) {
                 $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');
@@ -181,6 +208,7 @@ class App
                 )->setName('admin_processor_element_regenerate_uri');
             })->add(new AdminAuthMiddleware($app->getContainer()));
         })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
+        */
     }
 
     private function dependencies(): void
