@@ -37,3 +37,7 @@ export const postLinkRest = (url, title) =>  fetch('/rest/sidebar/post/create/li
     method: 'PUT',
   });
 
+export const uploadFileRest = file =>  fetch('/rest/sidebar/post/create/file', {
+  method: 'PUT',
+  body: file
+});

@@ -9,6 +9,7 @@ use Slim\Http\Request;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\Models\CourseService;
+use Youkok\Common\Utilities\FileTypesHelper;
 use Youkok\Helpers\ElementHelper;
 
 class Archive extends BaseView
@@ -50,6 +51,8 @@ class Archive extends BaseView
             $this->setSiteData('archive_url_frontpage', $this->router->pathFor('home'));
             $this->setSiteData('archive_url_courses', $this->router->pathFor('courses'));
             $this->setSiteData('archive_url_terms', $this->router->pathFor('terms'));
+            $this->setSiteData('archive_valid_file_types', FileTypesHelper::getValidFileTypes());
+            $this->setSiteData('archive_max_file_size_bytes', (int) getenv('FILE_MAX_SIZE_IN_BYTES'));
 
             return $this->renderReactApp($response, 'archive.html', [
                 'HEADER_MENU' => 'courses',

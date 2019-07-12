@@ -1,6 +1,7 @@
 import React from 'react';
 import {TYPE_LINK, TYPE_UPLOAD} from "../../constants";
-import  LinkContainer from "../link-container";
+import LinkContainer from "../link-container";
+import FileContainer from "../file-container";
 import {connect} from "react-redux";
 import {changeOpen as changeOpenDispatch} from "../../redux/main/actions";
 
@@ -24,9 +25,7 @@ const MainContainer = ({ open, changeOpen }) => (
         </button>
       </div>
       <div className="sidebar-create-type">
-        {open === TYPE_UPLOAD &&
-        <p>Upload</p>
-        }
+        {open === TYPE_UPLOAD && <FileContainer />}
         {open === TYPE_LINK && <LinkContainer />}
         <div className="sidebar-create-terms">
           <p>Ved å poste linker eller laste opp filer godtar du våre <a href={window.SITE_DATA.archive_url_terms}>retningslinjer</a>.</p>

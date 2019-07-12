@@ -21,6 +21,7 @@ use Youkok\Rest\Endpoints\ArchiveEndpoint;
 use Youkok\Rest\Endpoints\FrontpageEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\ArchiveHistoryEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\MostPopularEndpoint;
+use Youkok\Rest\Endpoints\Sidebar\Post\Create\CreateFileEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\Post\Create\CreateLinkEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\Post\TitleFetchEndpoint;
 use Youkok\Web\Views\Archive;
@@ -146,7 +147,7 @@ class App
                 $app->group('/post', function () use ($app) {
                     $app->group('/create', function () use ($app) {
                         $app->put('/link', CreateLinkEndpoint::class . ':put');
-                        //$app->put('/file', CreateFileEndpoint::class . ':put');
+                        $app->put('/file', CreateFileEndpoint::class . ':put');
                     });
 
                     $app->put('/title', TitleFetchEndpoint::class . ':put');
