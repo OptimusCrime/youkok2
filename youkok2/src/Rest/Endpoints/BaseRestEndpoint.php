@@ -50,8 +50,6 @@ class BaseRestEndpoint extends BaseView
             return $response->write($ex->getTraceAsString());
         }
 
-        // TODO log here
-
         return $response
             ->withStatus(400)
             ->withHeader('Content-Type', 'application/json');

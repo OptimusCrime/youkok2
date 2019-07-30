@@ -15,7 +15,9 @@ class Logger
 
             $stream = new StreamHandler(
                 getenv('LOGGER_PATH'),
-                getenv('DEV') === '1' ? MonologLogger::DEBUG : MonologLogger::INFO
+                getenv('DEV') === '1' ? MonologLogger::DEBUG : MonologLogger::INFO,
+                true,
+                0775
             );
 
             $logger->pushHandler($stream);

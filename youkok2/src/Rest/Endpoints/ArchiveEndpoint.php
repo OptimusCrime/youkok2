@@ -2,6 +2,7 @@
 
 namespace Youkok\Rest\Endpoints;
 
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
@@ -19,19 +20,23 @@ class ArchiveEndpoint extends BaseRestEndpoint
     /** @var ElementMapper */
     private $elementMapper;
 
+    /** @var Logger */
+    private $logger;
+
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
         $this->archiveService = $container->get(ArchiveService::class);
         $this->elementMapper = $container->get(ElementMapper::class);
+        $this->logger = $container->get(Logger::class);
     }
 
     public function get(Request $request, Response $response, array $args): Response
     {
         try {
             if (!isset($args['id']) || !is_numeric($args['id'])) {
-                return $this->returnBadRequest($response, new InvalidRequestException('Malformed id: ' . $args['id']));
+                throw new InvalidRequestException('Malformed id: ' . $args['id']);
             }
 
             return $this->outputJson(
@@ -47,6 +52,10 @@ class ArchiveEndpoint extends BaseRestEndpoint
                 )
             );
         } catch (ElementNotFoundException $ex) {
+            $this->logger->error($ex);
+            return $this->returnBadRequest($response, $ex);
+        } catch (InvalidRequestException $ex) {
+            $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }
     }

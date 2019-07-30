@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Web\Views;
 
+use Monolog\Logger;
 use Slim\Interfaces\RouterInterface;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
@@ -20,12 +21,16 @@ class Archive extends BaseView
     /** @var CourseService */
     private $courseService;
 
+    /** @var Logger */
+    private $logger;
+
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
         $this->archiveService = $container->get(ArchiveService::class);
         $this->courseService = $container->get(CourseService::class);
+        $this->logger = $container->get(Logger::class);
     }
 
     public function view(Request $request, Response $response): Response
@@ -62,7 +67,7 @@ class Archive extends BaseView
                 'SITE_DESCRIPTION' => ElementHelper::siteDescriptionFor($element) // TODO
             ]);
         } catch (ElementNotFoundException $exception) {
-            // TODO log
+            $this->logger->error($ex);
             return $this->render404($response);
         }
     }

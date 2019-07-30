@@ -2,6 +2,7 @@
 
 namespace Youkok\Web\Views;
 
+use Exception;
 use Slim\Http\Stream;
 use Slim\Http\Response;
 use Slim\Http\Request;
@@ -71,7 +72,8 @@ class Download extends BaseView
             );
         } catch (ElementNotFoundException $e) {
             return $this->render404($response);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            // TODO log with existing exception
             return $this->render404($response);
         }
     }

@@ -26,6 +26,7 @@ use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Biz\Services\Models\SessionService;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
+use Youkok\Biz\Services\Post\Create\CreateFileService;
 use Youkok\Biz\Services\Post\Create\CreateLinkService;
 use Youkok\Biz\Services\Post\TitleFetchService;
 use Youkok\Biz\Services\UserSessionService;
@@ -112,7 +113,8 @@ class Services implements ContainersInterface
                 $container->get(CourseMapper::class),
                 $container->get(DownloadCountService::class),
                 $container->get(ElementService::class),
-                $container->get(CourseService::class)
+                $container->get(CourseService::class),
+                $container->get(MonoLogger::class)
             );
         };
 
@@ -175,7 +177,8 @@ class Services implements ContainersInterface
         $container[CoursesLookupService::class] = function (ContainerInterface $container): CoursesLookupService {
             return new CoursesLookupService(
                 $container->get(UrlService::class),
-                $container->get(CourseService::class)
+                $container->get(CourseService::class),
+                $container->get(MonoLogger::class)
             );
         };
 
@@ -211,6 +214,12 @@ class Services implements ContainersInterface
 
         $container[CreateLinkService::class] = function (ContainerInterface $container): CreateLinkService {
             return new CreateLinkService(
+                $container->get(ElementService::class)
+            );
+        };
+
+        $container[CreateFileService::class] = function (ContainerInterface $container): CreateFileService {
+            return new CreateFileService(
                 $container->get(ElementService::class)
             );
         };

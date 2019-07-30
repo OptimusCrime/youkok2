@@ -19,14 +19,14 @@ class CreateLinkService
         $this->elementService = $elementService;
     }
 
-    public function run(int $id, string $url, string $title): void
+    public function run(int $parent, string $url, string $title): void
     {
         if (mb_strlen($url) < static::MIN_VALID_URL_LENGTH || mb_strlen($title) < static::MIN_VALID_TITLE_LENGTH) {
             throw new CreateException('Url or title is too short. Url: ' . $url . ', title: ' . $title);
         }
 
         $course = $this->elementService->getElement(
-            new SelectStatements('id', $id),
+            new SelectStatements('id', $parent),
             ['id'],
             [
                 ElementService::FLAG_ENSURE_VISIBLE,

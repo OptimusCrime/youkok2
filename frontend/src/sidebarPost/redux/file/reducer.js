@@ -7,7 +7,7 @@ import {
   SIDEBAR_POST_FILE_UPLOAD_STARTED,
   SIDEBAR_POST_FILE_UPLOAD_FINISHED, SIDEBAR_POST_FILE_UPLOAD_FAILED,
 } from "./constants";
-import {mapFile, mapFileUploadFinished, mapFileUploadStarted} from "./mappers";
+import {mapFile, mapFileUploadFailed, mapFileUploadFinished, mapFileUploadStarted} from "./mappers";
 
 const defaultState = {
   files: [],

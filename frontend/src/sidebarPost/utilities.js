@@ -31,4 +31,5 @@ export const humanReadableFileSize = size => {
   return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 };
 
-export const calculateProgress = files => (files.filter(file => file.finished).length / files.length) * 100;
+export const calculateProgress = files =>
+  ((files.filter(file => file.finished).length + files.filter(file => file.failed).length) / files.length) * 100;

@@ -4,6 +4,7 @@ namespace Youkok\Biz\Services\Mappers;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
+use Monolog\Logger;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\UrlService;
@@ -27,19 +28,22 @@ class ElementMapper
     private $downloadCountService;
     private $elementService;
     private $courseService;
+    private $logger;
 
     public function __construct(
         UrlService $urlService,
         CourseMapper $courseMapper,
         DownloadCountService $downloadCountService,
         ElementService $elementService,
-        CourseService $courseService
+        CourseService $courseService,
+        Logger $logger
     ) {
         $this->urlService = $urlService;
         $this->courseMapper = $courseMapper;
         $this->downloadCountService = $downloadCountService;
         $this->elementService = $elementService;
         $this->courseService = $courseService;
+        $this->logger = $logger;
     }
 
     public function map(Collection $elements, array $additionalFields = []): array
@@ -90,7 +94,7 @@ class ElementMapper
                                ? $this->courseMapper->mapCourse($parent)
                                : $this->mapElement($parent);
             } catch (ElementNotFoundException $e) {
-                // TODO log
+                $this->logger->error('Failed to find parent for element: ' . $element->id);
                 return null;
             }
         }
@@ -99,7 +103,7 @@ class ElementMapper
             try {
                 $arr['course'] = $this->courseMapper->mapCourse($element->getCourse());
             } catch (ElementNotFoundException $e) {
-                // TODO log
+                $this->logger->error('Failed to find course for element: ' . $element->id);
                 return null;
             }
         }

@@ -14,7 +14,7 @@ import {isValidFile} from "../../utilities";
 export const addFiles = files => dispatch => {
   files.forEach(file => {
     if (!isValidFile(file)) {
-      // TODO warning here
+      alert(`${file.name} er ikke av godkjent type.`);
     }
     else {
       dispatch({ type: SIDEBAR_POST_FILE_ADD_FILE, file: file});

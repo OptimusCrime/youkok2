@@ -12,6 +12,7 @@ import {
 import {connect} from "react-redux";
 import {SIDEBAR_POST_FILE_REMOVE_FILE, SIDEBAR_POST_FILE_RESET} from "../../redux/file/constants";
 import {calculateProgress, humanReadableFileSize} from "../../utilities";
+import {FileUploadMessage} from "../../components/upload-message";
 
 const FileContainer = props => {
 
@@ -26,10 +27,6 @@ const FileContainer = props => {
     upload_started,
     upload_finished
   } = props;
-
-  console.log(files);
-  console.log();
-  console.log('');
 
   const progress = Math.floor(calculateProgress(files));
 
@@ -59,6 +56,11 @@ const FileContainer = props => {
                   &nbsp;
                   <i className="fa fa-times"/>
                 </a>
+              </div>
+              }
+              {file.failed &&
+              <div className="sidebar-create__file--dropzone-file__fail">
+                <em>Kunne ikke laste opp fil</em>
               </div>
               }
             </div>
@@ -101,36 +103,22 @@ const FileContainer = props => {
         <p>{`Godkjente  filtyper: ${window.SITE_DATA.archive_valid_file_types.join(', ')}.`}</p>
       </div>
       <div className="sidebar-create-submit">
-        {upload_finished
-          ? (
-            <button
-              type="button"
-              className="btn btn-default"
-              onClick={() => {
-                reset();
-              }}
-            >
-              Last opp flere filer
-            </button>
-          )
-          : (
-            <button
-              type="button"
-              className="btn btn-default"
-              onClick={() => {
-                if (!upload_started && files.length > 0) {
-                  uploadFiles(files);
-                }
-              }}
-              disabled={upload_started || files.length === 0}
-            >
-              {upload_started
-                ? 'Vent litt'
-                : 'Last opp'
+        <button
+          type="button"
+          className="btn btn-default"
+          onClick={() => {
+            if (upload_finished) {
+              reset();
+            } else {
+              if (!upload_started && files.length > 0) {
+                uploadFiles(files);
               }
-            </button>
-          )
-        }
+            }
+          }}
+          disabled={!upload_finished && (upload_started || files.length === 0)}
+        >
+          {upload_finished ? 'Last opp flere filer' : (upload_started ? 'Vent litt' : 'Last opp')}
+        </button>
         &nbsp;
         eller
         &nbsp;
@@ -146,11 +134,7 @@ const FileContainer = props => {
           }
         </a>.
       </div>
-      {upload_finished && files.filter(file => file.finished).length > 0 &&
-      <div className="alert alert-success sidebar-create__link--warning" role="alert">
-        Takk for ditt bidrag. Bidraget vil bli behandlet og blir synlig på nettside når den er godkjent.
-      </div>
-      }
+      {upload_finished && <FileUploadMessage files={files}/>}
     </div>
   );
 };

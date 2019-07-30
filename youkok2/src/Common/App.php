@@ -2,6 +2,7 @@
 
 namespace Youkok\Common;
 
+use Exception;
 use Slim\App as Slim;
 
 use Youkok\Biz\Pools\ElementPool;
@@ -57,11 +58,14 @@ class App
 
         try {
             $this->app->run();
-        } catch (\Exception $e) {
-            // TODO: LOgging
+        } catch (Exception $ex) {
+            /** @var Logger $logger */
+            $logger = $this->app->getContainer()->get(Logger::class);
+
+            $logger->error($ex);
 
             // Rethrow exception to the outer exception handler
-            throw $e;
+            throw $ex;
         }
     }
 
@@ -147,7 +151,7 @@ class App
                 $app->group('/post', function () use ($app) {
                     $app->group('/create', function () use ($app) {
                         $app->put('/link', CreateLinkEndpoint::class . ':put');
-                        $app->put('/file', CreateFileEndpoint::class . ':put');
+                        $app->post('/file/{id:[0-9]+}', CreateFileEndpoint::class . ':post');
                     });
 
                     $app->put('/title', TitleFetchEndpoint::class . ':put');
@@ -163,18 +167,7 @@ class App
         // TODO remove
         /*
         $app->group('/processors', function () use ($app) {
-            $app->group('/link', function () use ($app) {
-                $app->post('/title', '\Youkok\Views\Processors\Link\FetchTitle:view');
-                $app->post('/create', '\Youkok\Views\Processors\Create\CreateLink:view')->setName('link_submit');
-            });
-
-            $app->group('file', function () use ($app) {
-                $app->post('/upload', '\Youkok\Views\Processors\Create\UploadFile:view')->setName('upload_file');
-            });
-
             $app->group('/admin', function () use ($app) {
-
-                // TODO
                 $app->get(
                     '/homeboxes',
                     '\Youkok\Views\Processors\Admin\Homeboxes:view'

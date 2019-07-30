@@ -33,7 +33,8 @@ RUN cd /usr/src \
     && curl -L https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
     && echo 'redis' >> /usr/src/php-available-exts \
     && docker-php-ext-install redis \
-    && service apache2 restart
+    && service apache2 restart \
+    && usermod -a -G staff www-data
 
 RUN if [ $YOUKOK_ENV = "dev" ] ; then \
     pecl install xdebug; \

@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Rest\Endpoints\Sidebar\Post;
 
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
@@ -14,14 +15,18 @@ class TitleFetchEndpoint extends BaseRestEndpoint
     /** @var TitleFetchService */
     private $titleFetchService;
 
+    /** @var Logger */
+    private $logger;
+
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
         $this->titleFetchService = $container->get(TitleFetchService::class);
+        $this->logger = $container->get(Logger::class);
     }
 
-    public function put(Request $request, Response $response)
+    public function put(Request $request, Response $response): Response
     {
         try {
             $data = $this->getJsonArrayFromBody($request, ['url']);
@@ -30,6 +35,7 @@ class TitleFetchEndpoint extends BaseRestEndpoint
             ]);
         }
         catch (InvalidRequestException $ex) {
+            $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }
     }

@@ -2,6 +2,7 @@
 namespace Youkok\Biz\Services;
 
 use Illuminate\Database\Eloquent\Collection;
+use Monolog\Logger;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Common\Models\Element;
 
@@ -20,11 +21,13 @@ class CoursesLookupService
 
     private $urlService;
     private $courseService;
+    private $logger;
 
-    public function __construct(UrlService $urlService, CourseService $courseService)
+    public function __construct(UrlService $urlService, CourseService $courseService, Logger $logger)
     {
         $this->urlService = $urlService;
         $this->courseService = $courseService;
+        $this->logger = $logger;
     }
 
     public function refresh(): void
@@ -41,8 +44,9 @@ class CoursesLookupService
             return;
         }
 
-        // TODO error handling
-        unlink($coursesLookupFile);
+        if (!unlink($coursesLookupFile)) {
+            $this->logger->error('Failed to delete cache file in location: ' . $coursesLookupFile);
+        }
     }
 
     private function populateCacheFile(): void
@@ -50,8 +54,10 @@ class CoursesLookupService
         $data = $this->coursesToJsonData($this->courseService->getAllVisibleCourses());
         $content = str_replace('%s', $data, static::JS_TEMPLATE);
 
-        // TODO error logging?
-        file_put_contents(static::getJsFileLocation(), $content);
+        $response = file_put_contents(static::getJsFileLocation(), $content);
+        if ($response === false) {
+            $this->logger->error('Failed to populate cache file in location: ' . static::getJsFileLocation());
+        }
     }
 
     private function coursesToJsonData(Collection $courses): string
@@ -80,8 +86,11 @@ class CoursesLookupService
         $lookupChecksum = sha1_file(static::getJsFileLocation());
         $content = str_replace('%s', $lookupChecksum, static::CACHE_BUSTING_TEMPLATE);
 
-        // TODO error logging?
-        file_put_contents(static::getTemplateFileLocation(), $content);
+        $response = file_put_contents(static::getTemplateFileLocation(), $content);
+
+        if ($response === false) {
+            $this->logger->error('Failed to store content in cache busting template in location: ' . static::getTemplateFileLocation());
+        }
     }
 
     private static function getTemplateFileLocation(): string

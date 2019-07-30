@@ -36,7 +36,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
         $this->logger = $container->get(Logger::class);
     }
 
-    public function boxes(Request $request, Response $response)
+    public function boxes(Request $request, Response $response): Response
     {
         $payload = $this->frontpageService->boxes();
 
@@ -45,7 +45,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
         ]);
     }
 
-    public function popularElements(Request $request, Response $response)
+    public function popularElements(Request $request, Response $response): Response
     {
         $session = $this->sessionService->getSession();
         $payload = $this->frontpageService->popularElements();
@@ -56,7 +56,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
         ]);
     }
 
-    public function popularCourses(Request $request, Response $response)
+    public function popularCourses(Request $request, Response $response): Response
     {
         $session = $this->sessionService->getSession();
         $payload = $this->frontpageService->popularCourses();
@@ -67,7 +67,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
         ]);
     }
 
-    public function newest(Request $request, Response $response)
+    public function newest(Request $request, Response $response): Response
     {
         $payload = $this->frontpageService->newest();
 
@@ -85,7 +85,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
         ]);
     }
 
-    public function lastVisited(Request $request, Response $response)
+    public function lastVisited(Request $request, Response $response): Response
     {
         $payload = $this->frontpageService->lastVisited();
 
@@ -101,7 +101,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
         ]);
     }
 
-    public function lastDownloaded(Request $request, Response $response)
+    public function lastDownloaded(Request $request, Response $response): Response
     {
         $payload = $this->frontpageService->lastDownloaded();
 
@@ -119,7 +119,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
         ]);
     }
 
-    public function put(Request $request, Response $response)
+    public function put(Request $request, Response $response): Response
     {
         $params = json_decode($request->getBody(), true);
 
@@ -144,7 +144,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
         }
     }
 
-    private function mapElementsMostPopular($arr)
+    private function mapElementsMostPopular($arr): array
     {
         return $this->elementMapper->mapFromArray(
             $arr,
