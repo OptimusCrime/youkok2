@@ -71,7 +71,7 @@ class FrontpageService
         );
 
         if ($numberOfCoursesWithContent === null) {
-            $numberOfCoursesWithContent = $this->courseService->getNumberOfNonVisibleCourses();
+            $numberOfCoursesWithContent = $this->courseService->getNumberOfVisibleCourses();
 
             $this->cacheService->set(
                 CacheKeyGenerator::keyForBoxesNumberOfCoursesWithContent(),

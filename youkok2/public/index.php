@@ -19,6 +19,6 @@ catch (\Exception $ex) {
         die();
     }
 
-    echo file_get_contents(getenv('TEMPLATE_DIRECTORY') . 'errors/500.html');
+    echo @file_get_contents(getenv('TEMPLATE_DIRECTORY') . 'errors/500.html');
 }
 

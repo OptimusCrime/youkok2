@@ -29,6 +29,13 @@ class SessionService
         return $session;
     }
 
+    public function getNumberOfSessionsThisWeek(): int
+    {
+        return Session
+            ::where('last_updated', '>=', Carbon::now()->subDay())
+            ->count();
+    }
+
     public function deleteExpiredSessions(): bool
     {
         return Session::select('id')

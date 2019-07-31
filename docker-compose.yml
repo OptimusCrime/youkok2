@@ -46,7 +46,7 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ./docker/logs:/var/log/youkok2
+      - ./docker/logs:/var/www/logs
       - ./youkok2:/var/www/html
       - ./docker/files:/var/www/files
       - ./docker/cache:/var/www/cache

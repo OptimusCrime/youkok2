@@ -38,7 +38,7 @@ class Login extends BaseView
             // The validate method throws exceptions for all invalid login attempts
             $this->loginService->validateLogin($request->getParams());
 
-            $session = $this->sessionService->getSession();
+            $session = $this->userSessionService->getSession();
             $session->setAdmin(true);
 
             return $this->output(

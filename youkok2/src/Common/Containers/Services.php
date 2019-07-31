@@ -4,6 +4,7 @@ namespace Youkok\Common\Containers;
 use Psr\Container\ContainerInterface;
 use Monolog\Logger as MonoLogger;
 
+use Youkok\Biz\Services\Admin\HomeGraphService;
 use Youkok\Biz\Services\ArchiveHistoryService;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\CoursesLookupService;
@@ -20,6 +21,8 @@ use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
 use Youkok\Biz\Services\Job\JobService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
+use Youkok\Biz\Services\Models\Admin\AdminDownloadService;
+use Youkok\Biz\Services\Models\Admin\AdminElementService;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Biz\Services\Models\ElementService;
@@ -221,6 +224,22 @@ class Services implements ContainersInterface
         $container[CreateFileService::class] = function (ContainerInterface $container): CreateFileService {
             return new CreateFileService(
                 $container->get(ElementService::class)
+            );
+        };
+
+        $container[HomeGraphService::class] = function (ContainerInterface $container): HomeGraphService {
+            return new HomeGraphService(
+                $container->get(AdminDownloadService::class)
+            );
+        };
+
+        $container[AdminElementService::class] = function (ContainerInterface $container): AdminElementService {
+            return new AdminElementService(
+            );
+        };
+
+        $container[AdminDownloadService::class] = function (ContainerInterface $container): AdminDownloadService {
+            return new AdminDownloadService(
             );
         };
     }

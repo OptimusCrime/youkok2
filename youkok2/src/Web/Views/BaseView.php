@@ -16,7 +16,7 @@ class BaseView
     protected $view;
 
     /** @var UserSessionService */
-    protected $sessionService;
+    protected $userSessionService;
 
     /** @var RouterInterface */
     protected $router;
@@ -29,7 +29,7 @@ class BaseView
         $this->container = $container;
 
         $this->view = $container->get('view');
-        $this->sessionService = $container->get(UserSessionService::class);
+        $this->userSessionService = $container->get(UserSessionService::class);
         $this->router = $container->get('router');
 
         $this->templateData = $this->getDefaultTemplateData();
@@ -56,7 +56,7 @@ class BaseView
             ],
 
             // Information about the current user
-            'USER' => $this->sessionService->getSession()->getAllData(),
+            'USER' => $this->userSessionService->getSession()->getAllData(),
 
             // Other things
             'SITE_TITLE' => 'Den beste kokeboka på nettet',
@@ -64,7 +64,7 @@ class BaseView
             'VIEW_NAME' => 'frontpage',
             'SEARCH_QUERY' => '',
 
-            'ADMIN' => $this->sessionService->isAdmin(),
+            'ADMIN' => $this->userSessionService->isAdmin(),
         ];
     }
 
@@ -75,14 +75,14 @@ class BaseView
 
     protected function output(Response $response): Response
     {
-        $this->sessionService->store();
+        $this->userSessionService->store();
 
         return $response;
     }
 
     protected function render(Response $response, string $template, array $data = []): Response
     {
-        $this->sessionService->store();
+        $this->userSessionService->store();
 
         return $this->view->render($response, $template, array_merge(
             $this->templateData,

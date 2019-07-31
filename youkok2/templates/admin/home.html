@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %}
 {% block admin_page %}Forside{% endblock %}
 {% block content %}
-<section class="content" id="admin-homeboxes" data-url="{{ path_for('admin_processor_homeboxes') }}">
+<section class="content" id="admin-homeboxes">
     <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="info-box">
@@ -54,7 +54,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <p class="text-center" id="admin-home-graph-delta">Laster...</p>
-                            <div class="chart" id="admin-home-graph" data-url="{{ path_for('admin_processor_homegraph') }}">
+                            <div class="chart" id="admin-home-graph">
                             </div>
                         </div>
                     </div>

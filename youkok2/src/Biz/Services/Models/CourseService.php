@@ -3,7 +3,6 @@ namespace Youkok\Biz\Services\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 
 class CourseService
@@ -15,7 +14,7 @@ class CourseService
         $this->elementService = $elementService;
     }
 
-    public function getNumberOfNonVisibleCourses(): int
+    public function getNumberOfVisibleCourses(): int
     {
         return Element
             ::where('directory', 1)

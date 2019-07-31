@@ -47,7 +47,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
     public function popularElements(Request $request, Response $response): Response
     {
-        $session = $this->sessionService->getSession();
+        $session = $this->userSessionService->getSession();
         $payload = $this->frontpageService->popularElements();
 
         return $this->outputJson($response, [
@@ -58,7 +58,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
     public function popularCourses(Request $request, Response $response): Response
     {
-        $session = $this->sessionService->getSession();
+        $session = $this->userSessionService->getSession();
         $payload = $this->frontpageService->popularCourses();
 
         return $this->outputJson($response, [

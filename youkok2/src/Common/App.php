@@ -18,6 +18,8 @@ use Youkok\Common\Middlewares\DumpSqlLogMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Common\Middlewares\TimingMiddleware;
 use Youkok\Biz\Services\Job\JobService;
+use Youkok\Rest\Endpoints\Admin\Home\AdminHomeBoxesEndpoint;
+use Youkok\Rest\Endpoints\Admin\Home\AdminHomeGraphEndpoint;
 use Youkok\Rest\Endpoints\ArchiveEndpoint;
 use Youkok\Rest\Endpoints\FrontpageEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\ArchiveHistoryEndpoint;
@@ -31,14 +33,14 @@ use Youkok\Web\Views\Download;
 use Youkok\Web\Views\Flat;
 use Youkok\Web\Views\Frontpage;
 use Youkok\Web\Views\Redirect;
-use Youkok\Web\Views\Admin\AdminDiagnostics;
-use Youkok\Web\Views\Admin\Files;
-use Youkok\Web\Views\Admin\AdminHome;
 use Youkok\Web\Views\Admin\Login;
+use Youkok\Web\Views\Admin\AdminDiagnostics;
+use Youkok\Web\Views\Admin\AdminHome;
 use Youkok\Web\Views\Admin\AdminLogs;
-use Youkok\Web\Views\Admin\Pending;
 use Youkok\Web\Views\Admin\AdminScripts;
 use Youkok\Web\Views\Admin\AdminStatistics;
+use Youkok\Web\Views\Admin\AdminFiles;
+use Youkok\Web\Views\Admin\AdminPending;
 
 class App
 {
@@ -97,6 +99,9 @@ class App
     private function routes(): void
     {
         $app = $this->app;
+        $app->add(new ReverseProxyMiddleware());
+        $app->add(new DumpSqlLogMiddleware());
+        $app->add(new TimingMiddleware());
 
         $app->group('', function () use ($app) {
             $app->get('/', Frontpage::class . ':view')->setName('home');
@@ -109,23 +114,19 @@ class App
             $app->get('/changelog.txt', Flat::class . ':changelog')->setName('changelog');
             $app->get('/retningslinjer', Flat::class . ':terms')->setName('terms');
 
-            $app->get('lorem', Login::class . ':view')->setName('admin_login');
-            $app->post('lorem', Login::class . ':post')->setName('admin_login_submit');
-        })->add(new TimingMiddleware())
-            ->add(new ReverseProxyMiddleware())
-            ->add(new DumpSqlLogMiddleware());
+            $app->get('/lorem', Login::class . ':view')->setName('admin_login');
+            $app->post('/lorem', Login::class . ':post')->setName('admin_login_submit');
+        });
 
         $app->group('/admin', function () use ($app) {
             $app->get('', AdminHome::class . ':view')->setName('admin_home');
-            //$app->get('/ventende', Pending::class . ':view')->setName('admin_pending');
-            //$app->get('/filer', Files::class . ':view')->setName('admin_files');
+            $app->get('/ventende', AdminPending::class . ':view')->setName('admin_pending');
+            $app->get('/filer', AdminFiles::class . ':view')->setName('admin_files');
             $app->get('/statistikk', AdminStatistics::class . ':view')->setName('admin_statistics');
             $app->get('/diagnostikk', AdminDiagnostics::class . ':view')->setName('admin_diagnostics');
             $app->get('/logger', AdminLogs::class . ':view')->setName('admin_logs');
             $app->get('/scripts', AdminScripts::class . ':view')->setName('admin_scripts');
-        })->add(new ReverseProxyMiddleware())
-            ->add(new AdminAuthMiddleware($app->getContainer()))
-            ->add(new DumpSqlLogMiddleware());
+        })->add(new AdminAuthMiddleware($app->getContainer()));
 
         $app->group('/rest', function () use ($app) {
             $app->group('/frontpage', function () use ($app) {
@@ -144,7 +145,6 @@ class App
                 $app->get('/newest', FrontpageEndpoint::class . ':newest');
             });
 
-
             $app->get('/archive/{id:[0-9]+}', ArchiveEndpoint::class . ':get');
 
             $app->group('/sidebar', function () use ($app) {
@@ -161,8 +161,14 @@ class App
                 $app->get('/popular', MostPopularEndpoint::class . ':get');
                 $app->get('/history/{id:[0-9]+}', ArchiveHistoryEndpoint::class . ':get');
             });
-        })->add(new ReverseProxyMiddleware())
-            ->add(new DumpSqlLogMiddleware());
+
+            $app->group('/admin', function () use ($app) {
+                $app->group('/home', function () use ($app) {
+                    $app->get('/boxes', AdminHomeBoxesEndpoint::class . ':get');
+                    $app->get('/graph', AdminHomeGraphEndpoint::class . ':get');
+                });
+            })->add(new AdminAuthMiddleware($app->getContainer()));
+        });
 
         // TODO remove
         /*

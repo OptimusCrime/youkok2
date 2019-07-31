@@ -116,7 +116,7 @@ class MostPopularCoursesService implements MostPopularInterface
         $cacheDirectory = $this->getCacheDirectory();
         $cacheFile = $cacheDirectory . DIRECTORY_SEPARATOR . $key . '.json';
 
-        return file_get_contents($cacheFile);
+        return @file_get_contents($cacheFile);
     }
 
     private function clearFileCache(): void

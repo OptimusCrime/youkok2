@@ -23,7 +23,7 @@ class InternalServerError implements ContainersInterface
 
                 return $response->withStatus(500)
                     ->withHeader('Content-Type', 'text/html')
-                    ->write(file_get_contents(getenv('TEMPLATE_DIRECTORY') . 'errors/500.html'));
+                    ->write(@file_get_contents(getenv('TEMPLATE_DIRECTORY') . 'errors/500.html'));
             };
         };
     }
