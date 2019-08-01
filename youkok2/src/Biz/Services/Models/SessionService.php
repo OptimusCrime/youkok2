@@ -32,7 +32,7 @@ class SessionService
     public function getNumberOfSessionsThisWeek(): int
     {
         return Session
-            ::where('last_updated', '>=', Carbon::now()->subDay())
+            ::where('last_updated', '>=', Carbon::now()->subWeek())
             ->count();
     }
 

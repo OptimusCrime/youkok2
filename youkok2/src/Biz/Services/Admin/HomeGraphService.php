@@ -29,7 +29,7 @@ class HomeGraphService
             }
         }
 
-        return $range;
+        return static::mapGraph($range);
     }
 
     private static function createRange(): array
@@ -46,5 +46,18 @@ class HomeGraphService
         }
 
         return $range;
+    }
+
+    private static function mapGraph(array $data): array
+    {
+        $output = [];
+        foreach ($data as $date => $value) {
+            $output[] = [
+                'date' => $date,
+                'value' => $value
+            ];
+        }
+
+        return $output;
     }
 }

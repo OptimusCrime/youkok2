@@ -99,9 +99,9 @@ class App
     private function routes(): void
     {
         $app = $this->app;
+        $app->add(new TimingMiddleware());
         $app->add(new ReverseProxyMiddleware());
         $app->add(new DumpSqlLogMiddleware());
-        $app->add(new TimingMiddleware());
 
         $app->group('', function () use ($app) {
             $app->get('/', Frontpage::class . ':view')->setName('home');
@@ -139,7 +139,7 @@ class App
                     $app->get('/downloaded', FrontpageEndpoint::class . ':lastDownloaded');
                 });
 
-                $app->put('/', FrontpageEndpoint::class . ':put');
+                $app->put('', FrontpageEndpoint::class . ':put');
 
                 $app->get('/boxes', FrontpageEndpoint::class . ':boxes');
                 $app->get('/newest', FrontpageEndpoint::class . ':newest');
@@ -174,14 +174,6 @@ class App
         /*
         $app->group('/processors', function () use ($app) {
             $app->group('/admin', function () use ($app) {
-                $app->get(
-                    '/homeboxes',
-                    '\Youkok\Views\Processors\Admin\Homeboxes:view'
-                )->setName('admin_processor_homeboxes');
-                $app->get(
-                    '/homegraph',
-                    '\Youkok\Views\Processors\Admin\HomeGraph:view'
-                )->setName('admin_processor_homegraph');
                 $app->get(
                     '/element-details/{id:[0-9]+}',
                     '\Youkok\Views\Processors\Admin\ElementDetails:get'

@@ -38,10 +38,12 @@ class AdminHomeBoxesEndpoint extends BaseRestEndpoint
     public function get(Request $request, Response $response): Response
     {
         return $this->outputJson($response, [
-            'sessions_week_num' => $this->sessionService->getNumberOfSessionsThisWeek(),
-            'files_num' => $this->elementService->getNumberOfVisibleFiles(),
-            'downloads_num' => $this->downloadService->getNumberOfDownloads(),
-            'courses_num' => $this->courseService->getNumberOfVisibleCourses()
+            'data' => [
+                'sessions_week_num' => $this->sessionService->getNumberOfSessionsThisWeek(),
+                'files_num' => $this->elementService->getNumberOfVisibleFiles(),
+                'downloads_num' => $this->downloadService->getNumberOfDownloads(),
+                'courses_num' => $this->courseService->getNumberOfVisibleCourses()
+            ]
         ]);
     }
 }

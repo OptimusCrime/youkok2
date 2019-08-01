@@ -10,9 +10,9 @@
     <meta name="description" content="{% if SITE_DESCRIPTION %}{{ SITE_DESCRIPTION }}{% else %}Velkommen til Youkok2, den beste kokeboka på nettet.{% endif %}" />
     <meta name="keywords" content="ntnu, kok, youkok, kokebok, øvinger, lekser, eksamen, oppgaver, fasit, trondheim" />
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
-    {% if DEV == '1' %}{% include "react/dev_youkok2.html" %}{% else %}{% include "react/youkok2.html" %}{% endif %}
+    <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.3.3.1+2.min.css" />
     {% include "dynamic/courses_lookup.html" ignore missing %}
+    {% if DEV == '1' %}{% include "react/dev_youkok2.html" %}{% else %}{% include "react/youkok2.html" %}{% endif %}
     {% if DEV == '1' %}{% include "react/dev_polyfills.html" %}{% else %}{% include "react/polyfills.html" %}{% endif %}
     <script type="text/javascript">var SITE_DATA = {{ SITE_DATA|json_encode()|raw }};</script>
     {% if SITE_SETTINGS.GOOGLE_SENSE %}
