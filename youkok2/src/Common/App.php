@@ -71,6 +71,11 @@ class App
         }
     }
 
+    public function startPools(): void
+    {
+        ElementPool::init();
+    }
+
     public function runJobs($mode = JobService::CRON_JOB, $code = null): void
     {
         $this->setup();
@@ -89,11 +94,6 @@ class App
     {
         $this->dependencies();
         $this->routes();
-    }
-
-    private function startPools(): void
-    {
-        ElementPool::init();
     }
 
     private function routes(): void

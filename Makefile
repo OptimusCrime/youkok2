@@ -34,6 +34,9 @@ dev-reload:
 dev-bash:
 	@docker-compose run --rm $(SERVER_SERVICE_NAME) bash
 
+dev-cron:
+	@docker-compose run --rm $(SERVER_SERVICE_NAME) cron_job
+
 dev-migrate:
 	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer migrate
 
@@ -82,6 +85,9 @@ prod-reload:
 
 prod-bash:
 	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) bash
+
+prod-cron:
+	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) cron_job
 
 prod-migrate:
 	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) composer migrate

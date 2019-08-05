@@ -123,7 +123,8 @@ class Services implements ContainersInterface
 
         $container[UrlService::class] = function (ContainerInterface $container): UrlService {
             return new UrlService(
-                $container->get('router')
+                $container->get('router'),
+                $container->get(ElementService::class)
             );
         };
 

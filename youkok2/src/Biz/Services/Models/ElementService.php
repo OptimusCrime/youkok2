@@ -65,10 +65,7 @@ class ElementService
             if (static::anyFlags($fetchParentsFlags, $flags)) {
                 $parents = $this->fetchParents($element, $attributes, $flags);
 
-                // Note: We need to change the order of the parents
-                $parentsReversed = array_reverse($parents);
-
-                $element->setParents($parentsReversed);
+                $element->setParents($parents);
             }
         }
 
@@ -78,9 +75,7 @@ class ElementService
                 $element->uri = $element->slug;
             }
             else {
-                // polyfill
-                // TODO
-                die('nope');
+                $element->uri = $this->getUriForElement($element);
             }
         }
 
@@ -120,6 +115,34 @@ class ElementService
         }
 
         return $element;
+    }
+
+    public function getUriForElement(Element $element): string
+    {
+        if ($element->uri !== null) {
+            return $element->uri;
+        }
+
+        if ($element->getType() === Element::COURSE && $element->slug !== null) {
+            return $element->slug;
+        }
+
+        if (count($element->getParents()) == 0) {
+            $element->setParents(
+                    $this->fetchParents(
+                    $element,
+                    ['id', 'slug', 'parent', 'directory'],
+                    []
+                )
+            );
+        }
+
+        $fragments = [];
+        foreach ($element->getParents() as $parent) {
+            $fragments[] = $parent->slug;
+        }
+
+        return implode('/', $fragments) . '/' . $element->slug;
     }
 
     public function getElementFromUri(string $uri, array $attributes = [], array $flags = []): Element
@@ -363,7 +386,8 @@ class ElementService
             }
         }
 
-        return $parents;
+        // Note: We need to change the order of the parents
+        return array_reverse($parents);
     }
 
     private function buildQuery(SelectStatements $selectStatements, array $attributes, array $flags): ?Element
@@ -375,10 +399,6 @@ class ElementService
             if ($element->deleted !== 0 && $element->pending !== 0) {
                 throw new ElementNotFoundException();
             }
-        }
-        else {
-            // Fetch specific
-            // TODO
         }
 
         if (in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {

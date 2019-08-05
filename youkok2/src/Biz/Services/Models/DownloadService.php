@@ -108,7 +108,8 @@ class DownloadService
                 ['id', 'parent'],
                 [
                     ElementService::FLAG_FETCH_PARENTS,
-                    ElementService::FLAG_FETCH_COURSE
+                    ElementService::FLAG_FETCH_COURSE,
+                    ElementService::FLAG_ENSURE_VISIBLE,
                 ]
             );
 

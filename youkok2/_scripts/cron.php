@@ -16,6 +16,7 @@ use Youkok\Helpers\SettingsParser;
 $settingsParser = new SettingsParser();
 
 $app = new App($settingsParser->getSlimConfig());
+$app->startPools();
 
 if (count($argv) > 1) {
     $app->runJobs(JobService::SPECIFIC_JOB, $argv[1]);

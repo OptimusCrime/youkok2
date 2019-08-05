@@ -2,15 +2,18 @@
 namespace Youkok\Biz\Services;
 
 use Slim\Interfaces\RouterInterface;
+use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 
 class UrlService
 {
     private $router;
+    private $elementService;
 
-    public function __construct(RouterInterface $router)
+    public function __construct(RouterInterface $router, ElementService $elementService)
     {
         $this->router = $router;
+        $this->elementService = $elementService;
     }
 
     public function urlForCourse(Element $element): string
@@ -33,7 +36,11 @@ class UrlService
 
     private function urlForFile(Element $element): string
     {
-        return $this->router->pathFor('download', ['uri' => $element->uri]);
+        if ($element->uri !== null) {
+            return $this->router->pathFor('download', ['uri' => $element->uri]);
+        }
+
+        return $this->router->pathFor('download', ['uri' => $this->elementService->getUriForElement($element)]);
     }
 
     private function urlForLink(Element $element): string
@@ -41,10 +48,9 @@ class UrlService
         return $this->router->pathFor('redirect', ['id' => $element->id]);
     }
 
-    // TODO ensure this is actually set
     private function urlForDirectory(Element $element): string
     {
-        $uri = $element->uri;
+        $uri = $this->getUriForDirectory($element);
 
         $uriFragments = explode('/', $uri);
         $course = $uriFragments[0];
@@ -57,5 +63,14 @@ class UrlService
             'course' => $course,
             'path' => $params
         ]);
+    }
+
+    private function getUriForDirectory(Element $element): string
+    {
+        if ($element->uri !== null) {
+            return $element->uri;
+        }
+
+        return $this->elementService->getUriForElement($element);
     }
 }
