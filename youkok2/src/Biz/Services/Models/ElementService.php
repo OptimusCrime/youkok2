@@ -562,20 +562,4 @@ class ElementService
             ->orderBy('name')
             ->get();
     }
-
-    // TODO: used by admin stuff
-    public static function getAllChildren(int $id): Collection
-    {
-        return Element::select([
-            'id', 'name', 'slug', 'uri', 'parent', 'empty',
-            'directory', 'link', 'checksum',
-            'added', 'deleted'
-        ])
-            ->where('parent', $id)
-            ->where('pending', 0)
-            ->orderBy('deleted', 'ASC')
-            ->orderBy('directory', 'DESC')
-            ->orderBy('name', 'ASC')
-            ->get();
-    }
 }

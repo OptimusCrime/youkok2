@@ -4,7 +4,9 @@ namespace Youkok\Common\Containers;
 use Psr\Container\ContainerInterface;
 use Monolog\Logger as MonoLogger;
 
+use Youkok\Biz\Services\Admin\AdminFilesService;
 use Youkok\Biz\Services\Admin\HomeGraphService;
+use Youkok\Biz\Services\Admin\HomePendingService;
 use Youkok\Biz\Services\ArchiveHistoryService;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\CoursesLookupService;
@@ -19,8 +21,10 @@ use Youkok\Biz\Services\Job\Jobs\RemoveOldSessionsJobServiceJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
 use Youkok\Biz\Services\Job\JobService;
+use Youkok\Biz\Services\Mappers\Admin\AdminElementMapper;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
+use Youkok\Biz\Services\Models\Admin\AdminCourseService;
 use Youkok\Biz\Services\Models\Admin\AdminDownloadService;
 use Youkok\Biz\Services\Models\Admin\AdminElementService;
 use Youkok\Biz\Services\Models\CourseService;
@@ -234,6 +238,26 @@ class Services implements ContainersInterface
             );
         };
 
+        $container[HomePendingService::class] = function (ContainerInterface $container): HomePendingService {
+            return new HomePendingService(
+                $container->get(AdminCourseService::class),
+                $container->get(AdminFilesService::class),
+            );
+        };
+
+        $container[AdminFilesService::class] = function (ContainerInterface $container): AdminFilesService {
+            return new AdminFilesService(
+                $container->get(ElementService::class),
+                $container->get(AdminElementMapper::class),
+            );
+        };
+
+        $container[AdminElementMapper::class] = function (ContainerInterface $container): AdminElementMapper {
+            return new AdminElementMapper(
+                $container->get(ElementMapper::class),
+            );
+        };
+
         $container[AdminElementService::class] = function (ContainerInterface $container): AdminElementService {
             return new AdminElementService(
             );
@@ -241,6 +265,11 @@ class Services implements ContainersInterface
 
         $container[AdminDownloadService::class] = function (ContainerInterface $container): AdminDownloadService {
             return new AdminDownloadService(
+            );
+        };
+
+        $container[AdminCourseService::class] = function (ContainerInterface $container): AdminCourseService {
+            return new AdminCourseService(
             );
         };
     }

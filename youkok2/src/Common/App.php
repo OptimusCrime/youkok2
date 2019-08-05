@@ -18,6 +18,7 @@ use Youkok\Common\Middlewares\DumpSqlLogMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Common\Middlewares\TimingMiddleware;
 use Youkok\Biz\Services\Job\JobService;
+use Youkok\Rest\Endpoints\Admin\Home\AdminFilesPendingEndpoint;
 use Youkok\Rest\Endpoints\Admin\Home\AdminHomeBoxesEndpoint;
 use Youkok\Rest\Endpoints\Admin\Home\AdminHomeGraphEndpoint;
 use Youkok\Rest\Endpoints\ArchiveEndpoint;
@@ -166,6 +167,10 @@ class App
                 $app->group('/home', function () use ($app) {
                     $app->get('/boxes', AdminHomeBoxesEndpoint::class . ':get');
                     $app->get('/graph', AdminHomeGraphEndpoint::class . ':get');
+                });
+
+                $app->group('/files', function () use ($app) {
+                    $app->get('/pending', AdminFilesPendingEndpoint::class . ':get');
                 });
             })->add(new AdminAuthMiddleware($app->getContainer()));
         });
