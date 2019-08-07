@@ -55,8 +55,7 @@ class MostPopularElementsService implements MostPopularInterface
         $setKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($delta);
 
         foreach ($elements as $element) {
-            // TODO: fix casting here. Weird method signature
-            $this->cacheService->insertIntoSet($setKey, $element->download_count, $element->id);
+            $this->cacheService->insertIntoSet($setKey, (int) $element->download_count, (string) $element->id);
         }
     }
 

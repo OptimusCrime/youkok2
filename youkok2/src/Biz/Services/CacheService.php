@@ -29,7 +29,6 @@ class CacheService
 
     public function get(string $key): ?string
     {
-        // TODO ?
         return $this->getCacheByKey($key);
     }
 
@@ -40,9 +39,9 @@ class CacheService
         }
     }
 
-    public function insertIntoSet($setKey, $value, $id): void
+    public function insertIntoSet(string $setKey, int $value, string $id): void
     {
-        // TODO: method is complaning?
+        // PHPStorm is complaining for no reason
         $this->cache->zadd($setKey, $value, $id);
     }
 

@@ -2,7 +2,6 @@
 
 namespace Youkok\Common\Models;
 
-use phpDocumentor\Reflection\Types\Boolean;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 
 class Element extends BaseModel

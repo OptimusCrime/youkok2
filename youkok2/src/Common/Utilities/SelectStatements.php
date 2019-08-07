@@ -73,4 +73,14 @@ class SelectStatements implements \Iterator
         // All of the selects in other is also found in `this`
         return true;
     }
+
+    public function __toString(): string
+    {
+        $output = '';
+        foreach ($this->statements as $key => $value) {
+            $output .= '`' . $key . '`' . ' = "' . $value . '". ';
+        }
+
+        return $output;
+    }
 }

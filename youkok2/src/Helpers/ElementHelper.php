@@ -4,7 +4,7 @@ namespace Youkok\Helpers;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
 
-// TODO remove
+// TODO Move into service
 class ElementHelper
 {
     public static function getPhysicalFileLocation(Element $element, $basePath): string

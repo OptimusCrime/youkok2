@@ -11,7 +11,6 @@ use Youkok\Biz\Services\ArchiveHistoryService;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\CoursesLookupService;
 use Youkok\Biz\Services\CacheService;
-use Youkok\Biz\Services\CourseListService;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Admin\LoginService;
@@ -96,10 +95,6 @@ class Services implements ContainersInterface
                 $container->get(CacheService::class),
                 $container->get(DownloadService::class)
             );
-        };
-
-        $container[CourseListService::class] = function (): CourseListService {
-            return new CourseListService();
         };
 
         $container[DownloadFileInfoService::class] = function (ContainerInterface $container): DownloadFileInfoService {

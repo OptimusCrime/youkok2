@@ -428,8 +428,9 @@ class ElementService
         }
 
         if ($element === null) {
-            // Todo, better message here?
-            throw new ElementNotFoundException();
+            throw new ElementNotFoundException(
+                'Could not fetch element. SelectStatements: ' . $selectStatements->toString()
+            );
         }
 
         return $element;
