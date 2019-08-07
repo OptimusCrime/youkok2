@@ -22,9 +22,7 @@ class AdminFilesPendingEndpoint extends BaseRestEndpoint
     public function get(Request $request, Response $response): Response
     {
         return $this->outputJson($response, [
-            'data' => [
-                $this->adminHomePendingService->get()
-            ]
+            'data' => $this->adminHomePendingService->get()
         ]);
     }
 }

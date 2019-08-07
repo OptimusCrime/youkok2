@@ -35,13 +35,19 @@ class Redirect extends BaseView
             return $this->render404($response);
         }
 
+        $flags = [];
+
+        // If we are not currently logged in as admin, also make sure that the file is visible
+        if (!$this->userSessionService->isAdmin()) {
+            $flags[] = ElementService::FLAG_ENSURE_VISIBLE;
+        }
+
+
         try {
             $element = $this->elementService->getElement(
                 new SelectStatements('id', $args['id']),
-                ['id', 'link'],
-                [
-                    ElementService::FLAG_ENSURE_VISIBLE
-                ]
+                ['id', 'link', 'parent'],
+                $flags
             );
 
             if ($element->link === null) {

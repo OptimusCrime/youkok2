@@ -3,21 +3,7 @@
 {% block content %}
 <section class="content">
     <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group div-relative" id="admin-filter">
-                <input type="text" placeholder="Filtrer" class="form-control typeahead" id="s2" name="s" />
-                <button class="btn" type="button" id="reset-filter">
-                    <i class="fa fa-close"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        {% for COURSE in FILES %}
-            <div class="col-md-6 youkok-file-box" id="element-container-{{ COURSE.id }}" data-identifier="{{ COURSE.courseCode }} - {{ COURSE.courseName }}">
-                {% include "admin/includes/files_markup.html" with {'COURSE': COURSE} %}
-            </div>
-        {% endfor %}
+        TODO
     </div>
 </section>
 {% include "admin/includes/files_modals.html" %}

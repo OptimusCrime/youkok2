@@ -2,10 +2,8 @@
 
 namespace Youkok\Biz\Services;
 
-use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\Models\ElementService;
-use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\SelectStatements;
 
 class ArchiveHistoryService
@@ -20,12 +18,6 @@ class ArchiveHistoryService
         $this->elementMapper = $elementMapper;
         $this->elementService = $elementService;
     }
-
-    /**
-     * @param int $id
-     * @return array
-     * @throws ElementNotFoundException
-     */
 
     public function get(int $id): array
     {

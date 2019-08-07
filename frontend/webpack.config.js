@@ -19,6 +19,7 @@ const entries = {
   admin: './src/admin/admin.js',
   adminHomeBoxes: './src/adminHomeBoxes/adminHomeBoxes.js',
   adminHomeGraph: './src/adminHomeGraph/adminHomeGraph.js',
+  adminFilesPending: './src/adminFilesPending/adminFilesPending.js',
 };
 
 const filterHtmlWebpackPluginChunks = entry => {

@@ -2,6 +2,7 @@
 
 namespace Youkok\Common\Models;
 
+use phpDocumentor\Reflection\Types\Boolean;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 
 class Element extends BaseModel
@@ -168,5 +169,10 @@ class Element extends BaseModel
     public function getDownloadedTime(): string
     {
         return $this->downloadedTime;
+    }
+
+    public function isVisible(): bool
+    {
+        return $this->deleted === 0 && $this->pending === 0;
     }
 }

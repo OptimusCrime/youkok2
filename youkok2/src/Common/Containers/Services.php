@@ -255,6 +255,7 @@ class Services implements ContainersInterface
         $container[AdminElementMapper::class] = function (ContainerInterface $container): AdminElementMapper {
             return new AdminElementMapper(
                 $container->get(ElementMapper::class),
+                $container->get(UrlService::class),
             );
         };
 

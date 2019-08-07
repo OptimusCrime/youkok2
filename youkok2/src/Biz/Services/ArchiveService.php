@@ -39,7 +39,7 @@ class ArchiveService
             ]
          );
 
-        return $this->elementService->getDirectChildren($directory);
+        return $this->elementService->getVisibleChildren($directory);
     }
 
     public function getArchiveElementFromUri(string $uri): Element

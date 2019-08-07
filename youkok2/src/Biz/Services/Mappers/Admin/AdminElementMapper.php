@@ -3,15 +3,18 @@
 namespace Youkok\Biz\Services\Mappers\Admin;
 
 use Youkok\Biz\Services\Mappers\ElementMapper;
+use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
 
 class AdminElementMapper
 {
     private $elementMapper;
+    private $urlService;
 
-    public function __construct(ElementMapper $elementMapper)
+    public function __construct(ElementMapper $elementMapper, UrlService $urlService)
     {
         $this->elementMapper = $elementMapper;
+        $this->urlService = $urlService;
     }
 
     public function map(Element $element): array
@@ -21,6 +24,13 @@ class AdminElementMapper
                 ElementMapper::ICON
             ]
         );
+
+        if ($element->getType() === Element::COURSE) {
+            $arr['courseCode'] = $element->getCourseCode();
+            $arr['courseName'] = $element->getCourseName();
+            $arr['url'] = $this->urlService->urlForCourse($element);
+            unset($arr['name']);
+        }
 
         $arr['deleted'] = $element->deleted;
         $arr['pending'] = $element->pending;

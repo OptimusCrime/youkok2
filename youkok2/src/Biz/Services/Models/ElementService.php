@@ -219,7 +219,7 @@ class ElementService
         foreach ($elements as $element) {
             $newest[] = $this->getElement(
                 new SelectStatements('id', $element->id),
-                ['id', 'name', 'slug', 'uri', 'parent', 'checksum', 'link', 'added', 'directory'],
+                ['id', 'name', 'slug', 'uri', 'parent', 'checksum', 'link', 'added', 'directory', 'deleted'],
                 [
                     static::FLAG_ENSURE_VISIBLE,
                     static::FLAG_FETCH_URI,
@@ -253,17 +253,6 @@ class ElementService
         }
 
         return $query->get();
-    }
-
-    public function getDirectChildren(Element $element): Collection
-    {
-        return Element
-            ::where('parent', $element->id)
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->orderBy('directory', 'DESC')
-            ->orderBy('name', 'ASC')
-            ->get();
     }
 
     private function getElementFromUriCache(string $uri, array $attributes, array $flags): Element
@@ -373,7 +362,7 @@ class ElementService
             }
 
             if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
-                if ($parent->deleted !== 0 && $parent->pending !== 0) {
+                if (!$parent->isVisible()) {
                     throw new ElementNotFoundException();
                 }
             }
@@ -396,7 +385,7 @@ class ElementService
 
         // Can not fetch both visible and/or specific
         if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
-            if ($element->deleted !== 0 && $element->pending !== 0) {
+            if (!$element->isVisible()) {
                 throw new ElementNotFoundException();
             }
         }

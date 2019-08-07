@@ -3,6 +3,7 @@
 namespace Youkok\Web\Views;
 
 use Exception;
+use Monolog\Logger;
 use Slim\Http\Stream;
 use Slim\Http\Response;
 use Slim\Http\Request;
@@ -24,6 +25,9 @@ class Download extends BaseView
     /** @var ElementService */
     private $elementService;
 
+    /** @var Logger */
+    private $logger;
+
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
@@ -31,24 +35,30 @@ class Download extends BaseView
         $this->downloadService = $container->get(DownloadFileInfoService::class);
         $this->updateDownloadsProcessor = $container->get(UpdateDownloadsService::class);
         $this->elementService = $container->get(ElementService::class);
+        $this->logger = $container->get(Logger::class);
     }
 
     public function view(Request $request, Response $response, array $args)
     {
+        $flags = [
+            ElementService::FLAG_FETCH_PARENTS,
+            ElementService::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE
+        ];
+
+        // If we are not currently logged in as admin, also make sure that the file is visible
+        if (!$this->userSessionService->isAdmin()) {
+            $flags[] = ElementService::FLAG_ENSURE_VISIBLE;
+        }
+
         try {
-            // TODO this is not working
             $element = $this->elementService->getElementFromUri(
                 $args['uri'],
                 ['id', 'checksum', 'directory', 'name'],
-                [
-                    ElementService::FLAG_FETCH_PARENTS,
-                    ElementService::FLAG_ENSURE_VISIBLE,
-                    ElementService::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE
-                ]
+                $flags
             );
 
             if (!$this->downloadService->fileExists($element)) {
-                // TODO logging
+                $this->logger->error('Tried to download file which does not exist. Id: ' . $element->id);
 
                 throw new ElementNotFoundException();
             }
@@ -70,10 +80,10 @@ class Download extends BaseView
                     ->withHeader('Content-Length', $fileSize)
                     ->withBody(new Stream(fopen($filePath, 'r')))
             );
-        } catch (ElementNotFoundException $e) {
+        } catch (ElementNotFoundException $ex) {
             return $this->render404($response);
-        } catch (Exception $e) {
-            // TODO log with existing exception
+        } catch (Exception $ex) {
+            $this->logger->error($ex);
             return $this->render404($response);
         }
     }

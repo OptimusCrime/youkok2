@@ -29,8 +29,7 @@ class AdminFilesService
         $collection = Element
             ::select(static::LISTING_SELECT_ATTRIBUTES)
             ->where('parent', $id)
-            ->orderBy('directory', 'ASC')
-            ->orderBy('pending', 'DESC')
+            ->orderBy('directory', 'DESC')
             ->orderBy('name', 'ASC')
             ->get();
 

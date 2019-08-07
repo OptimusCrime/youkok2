@@ -10,7 +10,7 @@ class AdminPending extends AdminBaseView
     {
         $this->setSiteData('view', 'admin_pending');
 
-        return $this->render($response, 'admin/todo.html', [
+        return $this->render($response, 'admin/pending.html', [
             'SITE_TITLE' => 'Admin',
             'ADMIN_TITLE' => 'Ventende',
             'HEADER_MENU' => 'admin_pending',
