@@ -45,7 +45,7 @@ class CreateFileService
         $newElement = new Element();
         $newElement->parent = $course->id;
         $newElement->name = $file->getClientFilename();
-        $newElement->slug = static::createSlug($fileName);
+        $newElement->slug = ElementService::createSlug($fileName);
         $newElement->pending = 1;
         $newElement->deleted = 0;
         $newElement->empty = 1;
@@ -73,25 +73,6 @@ class CreateFileService
         }
 
         return $extension;
-    }
-
-    private static function createSlug(string $fileName): string
-    {
-        // Replace first here to keep "norwegian" names in a way
-        $fileName = str_replace(['Æ', 'Ø', 'Å'], ['ae', 'o', 'aa'], $fileName);
-        $fileName = str_replace(['æ', 'ø', 'å'], ['ae', 'o', 'aa'], $fileName);
-
-        // Replace multiple spaces to dashes and remove special chars
-        $fileName = preg_replace('!\s+!', '-', $fileName);
-
-        // Remove all but last dot
-        $fileName = preg_replace('/\.(?![^.]+$)|[^-_a-zA-Z0-9\s]$/', '-', $fileName);
-
-        // Remove multiple dashes in a row
-        $fileName = preg_replace('!-+!', '-', $fileName);
-
-        // Remove all but these characters
-        return preg_replace('![^-_a-zA-Z0-9\s.]+!', '', $fileName);
     }
 
     private static function generateChecksum(string $extension): string

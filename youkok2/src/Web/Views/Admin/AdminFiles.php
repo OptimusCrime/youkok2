@@ -10,7 +10,7 @@ class AdminFiles extends AdminBaseView
     {
         $this->setSiteData('view', 'admin_files');
 
-        return $this->render($response, 'admin/todo.html', [
+        return $this->render($response, 'admin/files.html', [
             'SITE_TITLE' => 'Admin',
             'ADMIN_TITLE' => 'Filer',
             'HEADER_MENU' => 'admin_files',

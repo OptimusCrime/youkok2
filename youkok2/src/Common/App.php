@@ -18,6 +18,8 @@ use Youkok\Common\Middlewares\DumpSqlLogMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Common\Middlewares\TimingMiddleware;
 use Youkok\Biz\Services\Job\JobService;
+use Youkok\Rest\Endpoints\Admin\Home\AdminFilesDirectoryEndpoint;
+use Youkok\Rest\Endpoints\Admin\Home\AdminFilesEndpoint;
 use Youkok\Rest\Endpoints\Admin\Home\AdminFilesPendingEndpoint;
 use Youkok\Rest\Endpoints\Admin\Home\AdminHomeBoxesEndpoint;
 use Youkok\Rest\Endpoints\Admin\Home\AdminHomeGraphEndpoint;
@@ -170,7 +172,9 @@ class App
                 });
 
                 $app->group('/files', function () use ($app) {
+                    $app->get('', AdminFilesEndpoint::class . ':get');
                     $app->get('/pending', AdminFilesPendingEndpoint::class . ':get');
+                    $app->put('/directory', AdminFilesDirectoryEndpoint::class . ':get');
                 });
             })->add(new AdminAuthMiddleware($app->getContainer()));
         });
@@ -187,14 +191,6 @@ class App
                     '/element-details',
                     '\Youkok\Views\Processors\Admin\ElementDetails:update'
                 )->setName('admin_processor_element_details_update');
-                $app->get(
-                    '/element-markup/{id:[0-9]+}',
-                    '\Youkok\Views\Processors\Admin\ElementListMarkup:get'
-                )->setName('admin_processor_element_list_markup_fetch');
-                $app->get(
-                    '/element-markup-pending/{id:[0-9]+}',
-                    '\Youkok\Views\Processors\Admin\ElementListPendingMarkup:get'
-                )->setName('admin_processor_element_list_pending_markup_fetch');
                 $app->post(
                     '/element-create',
                     '\Youkok\Views\Processors\Admin\ElementCreate:run'

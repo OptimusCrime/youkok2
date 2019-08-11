@@ -6,7 +6,7 @@ use Monolog\Logger as MonoLogger;
 
 use Youkok\Biz\Services\Admin\AdminFilesService;
 use Youkok\Biz\Services\Admin\HomeGraphService;
-use Youkok\Biz\Services\Admin\HomePendingService;
+use Youkok\Biz\Services\Admin\FileListingService;
 use Youkok\Biz\Services\ArchiveHistoryService;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\CoursesLookupService;
@@ -233,10 +233,11 @@ class Services implements ContainersInterface
             );
         };
 
-        $container[HomePendingService::class] = function (ContainerInterface $container): HomePendingService {
-            return new HomePendingService(
+        $container[FileListingService::class] = function (ContainerInterface $container): FileListingService {
+            return new FileListingService(
                 $container->get(AdminCourseService::class),
                 $container->get(AdminFilesService::class),
+                $container->get(ElementService::class),
             );
         };
 

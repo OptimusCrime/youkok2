@@ -77,8 +77,8 @@ class SelectStatements implements \Iterator
     public function __toString(): string
     {
         $output = '';
-        foreach ($this->statements as $key => $value) {
-            $output .= '`' . $key . '`' . ' = "' . $value . '". ';
+        foreach ($this->statements as $statement) {
+            $output .= '`' . $statement['key'] . '`' . ' = "' . $statement['value'] . '". ';
         }
 
         return $output;

@@ -8,14 +8,13 @@ import {
 import {
   ARROW_DOWN,
   ARROW_UP,
-  KEYCODE_ENTER,
-
   KEYCODE_ARROW_DOWN,
   KEYCODE_ARROW_UP,
 } from "../constants";
 import {highlightSearchResult} from "../utils/highlighter";
 import {CLOSE_SEARCH_RESULTS} from "../redux/form/constants";
 import {SEARCH_QUERY_IDENTIFIER} from "../../courses/constants";
+import {KEYCODE_ENTER} from "../../common/constants";
 
 const MINIMUM_SEARCH_LENGTH = 2;
 

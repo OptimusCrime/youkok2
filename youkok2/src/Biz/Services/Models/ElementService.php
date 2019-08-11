@@ -429,7 +429,7 @@ class ElementService
 
         if ($element === null) {
             throw new ElementNotFoundException(
-                'Could not fetch element. SelectStatements: ' . $selectStatements->toString()
+                'Could not fetch element. SelectStatements: ' . $selectStatements->__toString()
             );
         }
 
@@ -444,6 +444,25 @@ class ElementService
         }
 
         // TODO validate more
+    }
+
+    public static function createSlug(string $fileName): string
+    {
+        // Replace first here to keep "norwegian" names in a way
+        $fileName = str_replace(['Æ', 'Ø', 'Å'], ['ae', 'o', 'aa'], $fileName);
+        $fileName = str_replace(['æ', 'ø', 'å'], ['ae', 'o', 'aa'], $fileName);
+
+        // Replace multiple spaces to dashes and remove special chars
+        $fileName = preg_replace('!\s+!', '-', $fileName);
+
+        // Remove all but last dot
+        $fileName = preg_replace('/\.(?![^.]+$)|[^-_a-zA-Z0-9\s]$/', '-', $fileName);
+
+        // Remove multiple dashes in a row
+        $fileName = preg_replace('!-+!', '-', $fileName);
+
+        // Remove all but these characters
+        return strtolower(preg_replace('![^-_a-zA-Z0-9\s.]+!', '', $fileName));
     }
 
     private static function anyFlags(array $any, array $flags): bool
@@ -485,6 +504,14 @@ class ElementService
 
             if (!in_array('directory', $attributes)) {
                 $attributes[] = 'directory';
+            }
+
+            if (!in_array('slug', $attributes)) {
+                $attributes[] = 'slug';
+            }
+
+            if (!in_array('uri', $attributes)) {
+                $attributes[] = 'uri';
             }
         }
 
@@ -528,28 +555,5 @@ class ElementService
         }
 
         throw new GenericYoukokException('Not implemented yet, sry');
-    }
-
-    // TODO: used by admin stuff
-    public static function getAllCourses(): Collection
-    {
-        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent')
-            ->where('parent', null)
-            ->where('directory', 1)
-            ->where('pending', 0)
-            ->where('deleted', 0)
-            ->orderBy('name')
-            ->get();
-    }
-
-    // TODO: used by admin stuff
-    public static function getAllNoneEmptyCourses(): Collection
-    {
-        return Element::select('id', 'name', 'slug', 'uri', 'link', 'empty', 'parent', 'deleted', 'pending')
-            ->where('parent', null)
-            ->where('directory', 1)
-            ->where('empty', 0)
-            ->orderBy('name')
-            ->get();
     }
 }

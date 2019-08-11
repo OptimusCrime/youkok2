@@ -1,37 +1,24 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import {loading} from "../../common/utils";
-import {Content} from "../components/content";
+import {PendingFileListingRow} from "../components/pending-file-listing-row";
+import FileListingWrapper from "../../adminCommon/containers/fileListingWrapper";
 
-const AdminFilesPendingMainContainer = ({started, finished, failed, data}) => {
+const AdminFilesPendingMainContainer = ({data}) => (
+  <FileListingWrapper>
+    {data.map(entry => (
+      <PendingFileListingRow
+        key={entry.content.id}
+        content={entry.content}
+        pending={entry.pending}
+        disabled={entry.disabled}
+      />
+    ))}
+  </FileListingWrapper>
+);
 
-  if (failed) {
-    return (
-      <p>Her gikk visst noe galt...</p>
-    );
-  }
-
-  const isLoading = loading(started, finished);
-
-  if (isLoading) {
-    return null;
-  }
-
-  return data.map(entry => (
-   <Content
-     key={entry.content.id}
-     content={entry.content}
-     pending={entry.pending}
-   />
-  ));
-};
-
-const mapStateToProps = ({pending}) => ({
-  started: pending.started,
-  finished: pending.finished,
-  failed: pending.failed,
-  data: pending.data,
+const mapStateToProps = ({files}) => ({
+  data: files.data,
 });
 
 export default connect(mapStateToProps, {})(AdminFilesPendingMainContainer);

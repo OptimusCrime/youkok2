@@ -3,7 +3,7 @@
 {% block content %}
 <section class="content">
     <div class="row">
-        TODO
+        {% if DEV == '1' %}{% include "react/dev_adminFiles.html" %}{% else %}{% include "react/adminFiles.html" %}{% endif %}
     </div>
 </section>
 {% include "admin/includes/files_modals.html" %}

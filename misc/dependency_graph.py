@@ -13,6 +13,8 @@ import re
 
 
 FILE_TEMPLATE = """
+Use this at: http://www.webgraphviz.com
+
 digraph G {
 <CONTENT>
 }
