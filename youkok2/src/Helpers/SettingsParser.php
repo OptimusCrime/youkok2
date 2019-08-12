@@ -1,8 +1,6 @@
 <?php
 namespace Youkok\Helpers;
 
-use Monolog\Logger;
-
 class SettingsParser
 {
     public static function getSlimConfig(): array

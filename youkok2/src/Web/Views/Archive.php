@@ -2,7 +2,6 @@
 namespace Youkok\Web\Views;
 
 use Monolog\Logger;
-use Slim\Interfaces\RouterInterface;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
@@ -11,7 +10,6 @@ use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Common\Utilities\FileTypesHelper;
-use Youkok\Helpers\ElementHelper;
 
 class Archive extends BaseView
 {
@@ -63,10 +61,10 @@ class Archive extends BaseView
                 'HEADER_MENU' => 'courses',
                 'VIEW_NAME' => 'archive',
                 'BODY_CLASS' => 'archive',
-                'SITE_TITLE' => ElementHelper::siteTitleFor($element), // TODO
-                'SITE_DESCRIPTION' => ElementHelper::siteDescriptionFor($element) // TODO
+                'SITE_TITLE' => $this->archiveService->getSiteTitle($element),
+                'SITE_DESCRIPTION' => $this->archiveService->getSiteDescription($element)
             ]);
-        } catch (ElementNotFoundException $exception) {
+        } catch (ElementNotFoundException $ex) {
             $this->logger->error($ex);
             return $this->render404($response);
         }

@@ -7,13 +7,12 @@ use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Exceptions\SessionNotFoundException;
 use Youkok\Common\Models\Session;
 use Youkok\Common\Utilities\CookieHelper;
-use Youkok\Helpers\Utilities;
 
 class SessionService
 {
     const SESSION_TOKEN_LENGTH = 100;
-
     const SESSION_LIFE_TIME = 60 * 60 * 24 * 120; // 120 days
+    const KEYSPACE = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     public function get(string $hash): Session
     {
@@ -45,7 +44,7 @@ class SessionService
 
     public function create(): Session
     {
-        $hash = Utilities::randomToken(self::SESSION_TOKEN_LENGTH);
+        $hash = static::createRandomToken(self::SESSION_TOKEN_LENGTH);
 
         CookieHelper::setCookie('youkok2', $hash, SessionService::SESSION_LIFE_TIME);
 
@@ -59,5 +58,15 @@ class SessionService
         }
 
         return $session;
+    }
+
+    private function createRandomToken(int $length): string
+    {
+        $str = '';
+        $max = mb_strlen(static::KEYSPACE, '8bit') - 1;
+        for ($i = 0; $i < $length; ++$i) {
+            $str .= static::KEYSPACE[random_int(0, $max)];
+        }
+        return $str;
     }
 }

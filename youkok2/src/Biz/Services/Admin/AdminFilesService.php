@@ -2,9 +2,7 @@
 
 namespace Youkok\Biz\Services\Admin;
 
-use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Services\Mappers\Admin\AdminElementMapper;
-use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\SelectStatements;

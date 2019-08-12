@@ -37,4 +37,32 @@ class AdminCourseService
 
         return $ids;
     }
+
+    public function getCourseDirectoriesTree(Element $element): Element
+    {
+        $childrenCollection = Element
+            ::select('id', 'name', 'parent', 'link', 'directory')
+            ->where('parent', $element->id)
+            ->where('directory', 1)
+            ->where('deleted', 0)
+            ->where('pending', 0)
+            ->get();
+
+        if (count($childrenCollection) === 0) {
+            $element->setChildren([]);
+            return $element;
+        }
+
+        $children = [];
+        foreach ($childrenCollection as $child) {
+            $children[] = $child;
+        }
+        $element->setChildren($children);
+
+        foreach ($element->getChildren() as $child) {
+            $this->getCourseDirectoriesTree($child);
+        }
+
+        return $element;
+    }
 }

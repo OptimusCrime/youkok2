@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 
 import {loading} from "../../../common/utils";
 import CreateDirectoryModal from "../createDirectory";
+import EditFileModal from "../editFile";
 
 const FileListingWrapper = ({ started, finished, failed, children, showCreateDirectoryModal, showEditFileModal }) => {
 
@@ -26,7 +27,7 @@ const FileListingWrapper = ({ started, finished, failed, children, showCreateDir
   return (
     <React.Fragment>
       {showCreateDirectoryModal && <CreateDirectoryModal/>}
-      {showEditFileModal && <p>Lol</p>}
+      {showEditFileModal && <EditFileModal/>}
       {children}
     </React.Fragment>
   );

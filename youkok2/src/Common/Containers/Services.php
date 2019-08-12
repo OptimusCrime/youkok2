@@ -5,6 +5,7 @@ use Psr\Container\ContainerInterface;
 use Monolog\Logger as MonoLogger;
 
 use Youkok\Biz\Services\Admin\AdminFilesService;
+use Youkok\Biz\Services\Admin\FileDetailsService;
 use Youkok\Biz\Services\Admin\HomeGraphService;
 use Youkok\Biz\Services\Admin\FileListingService;
 use Youkok\Biz\Services\ArchiveHistoryService;
@@ -238,6 +239,15 @@ class Services implements ContainersInterface
                 $container->get(AdminCourseService::class),
                 $container->get(AdminFilesService::class),
                 $container->get(ElementService::class),
+            );
+        };
+
+        $container[FileDetailsService::class] = function (ContainerInterface $container): FileDetailsService {
+            return new FileDetailsService(
+                $container->get(AdminCourseService::class),
+                $container->get(AdminFilesService::class),
+                $container->get(ElementService::class),
+                $container->get(DownloadFileInfoService::class),
             );
         };
 

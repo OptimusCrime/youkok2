@@ -3,7 +3,6 @@ namespace Youkok\Biz\Services\Download;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
-use Youkok\Helpers\ElementHelper;
 
 class DownloadFileInfoService
 {
@@ -46,6 +45,10 @@ class DownloadFileInfoService
 
     public function getFilePath(Element $element): string
     {
-        return ElementHelper::getPhysicalFileLocation($element, getenv('FILE_DIRECTORY'));
+        $checksum = $element->checksum;
+        $folder1 = substr($checksum, 0, 1);
+        $folder2 = substr($checksum, 1, 1);
+
+        return getenv('FILE_DIRECTORY') . $folder1 . DIRECTORY_SEPARATOR . $folder2 . DIRECTORY_SEPARATOR . $checksum;
     }
 }

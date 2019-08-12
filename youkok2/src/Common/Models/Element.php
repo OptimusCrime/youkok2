@@ -23,6 +23,7 @@ class Element extends BaseModel
     private $downloads;
     private $parents;
     private $children;
+    private $course;
     private $downloadedTime;
 
     public function __construct(array $attributes = [])
@@ -32,6 +33,7 @@ class Element extends BaseModel
         $this->downloads = null;
         $this->parents = [];
         $this->children = [];
+        $this->course = null;
         $this->downloadedTime = null;
     }
 

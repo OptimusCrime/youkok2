@@ -65,4 +65,43 @@ class ArchiveService
 
         return $this->elementMapper->mapBreadcrumbs($breadcrumbs);
     }
+
+    public function getSiteTitle(Element $element): string
+    {
+        if ($element->isCourse()) {
+            return 'Bidrag for ' . $element->getCourseCode() . ' - ' . $element->getCourseName();
+        }
+
+        $course = $element->getCourse();
+
+        if ($course === null) {
+            throw new ElementNotFoundException('No course loaded for element ' . $element->id);
+        }
+
+        return 'Bidrag i '
+            . $element->name
+            . ' for '
+            . $course->getCourseCode()
+            . ' - '
+            . $course->getCourseName();
+    }
+
+    public function getSiteDescription(Element $element): string
+    {
+        if ($element->isCourse()) {
+            return 'Bidrag for '
+                . $element->getCourseCode()
+                . ' - '
+                . $element->getCourseName()
+                . ' fra Youkok2, den beste kokeboka på nettet.';
+        }
+
+        $course = $element->getCourse();
+
+        if ($course === null) {
+            throw new ElementNotFoundException('No course loaded for element ' . $element->id);
+        }
+
+        return $this->getSiteTitle($course);
+    }
 }
