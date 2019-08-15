@@ -174,6 +174,7 @@ class App
                 $app->group('/files', function () use ($app) {
                     $app->get('', AdminFilesEndpoint::class . ':list');
                     $app->get('/{id:[0-9]+}', AdminFilesEndpoint::class . ':get');
+                    $app->put('/{id:[0-9]+}', AdminFilesEndpoint::class . ':put');
                     $app->get('/pending', AdminFilesPendingEndpoint::class . ':get');
                     $app->put('/directory', AdminFilesDirectoryEndpoint::class . ':get');
                 });

@@ -5,6 +5,7 @@ import {
 } from "./constants";
 import {mapData, mapDisabled, mapUpdated} from "./mappers";
 import {ADMIN_CREATE_DIRECTORY_POST_FINISHED, ADMIN_CREATE_DIRECTORY_POST_STARTED} from "../createDirectory/constants";
+import {ADMIN_EDIT_FILE_PUT_FINISHED, ADMIN_EDIT_FILE_PUT_STARTED} from "../editFile/constants";
 
 const defaultState = {
   started: false,
@@ -39,12 +40,14 @@ export const files = (state = defaultState, action) => {
       };
 
     case ADMIN_CREATE_DIRECTORY_POST_STARTED:
+    case ADMIN_EDIT_FILE_PUT_STARTED:
       return {
         ...state,
         data: mapDisabled(action.course, state.data)
       };
 
     case ADMIN_CREATE_DIRECTORY_POST_FINISHED:
+    case ADMIN_EDIT_FILE_PUT_FINISHED:
       return {
         ...state,
         data: mapUpdated(action.data, state.data)

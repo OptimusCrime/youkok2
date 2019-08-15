@@ -59,4 +59,4 @@ const mapStateToProps = ({ lastVisited }) => ({
   elements: lastVisited.elements,
 });
 
-export default connect(mapStateToProps, {})(BoxLastVisitedContainer);
+export default connect(mapStateToProps)(BoxLastVisitedContainer);

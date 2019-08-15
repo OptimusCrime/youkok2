@@ -59,7 +59,7 @@ class FileListingContainer extends Component {
                   this.props.showEditFileModal(
                     course,
                     file.id
-                  )
+                  );
                 }}
                 className={`${file.deleted ? 'file-listing--deleted' : ''} ${file.pending ? 'file-listing--pending' : ''}`}
               >
@@ -90,6 +90,7 @@ class FileListingContainer extends Component {
                 files={file.children}
                 course={course}
                 showCreateDirectoryModal={this.props.showCreateDirectoryModal}
+                showEditFileModal={this.props.showEditFileModal}
               />
             </div>
             }

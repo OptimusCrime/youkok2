@@ -58,4 +58,4 @@ const mapStateToProps = ({ newest }) => ({
   elements: newest.elements,
 });
 
-export default connect(mapStateToProps, {})(BoxNewestContainer);
+export default connect(mapStateToProps)(BoxNewestContainer);

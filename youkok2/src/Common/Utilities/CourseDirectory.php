@@ -7,34 +7,29 @@ class CourseDirectory
 {
     private $id;
     private $name;
-    private $selected;
 
-    public function __construct(Element $currentElement, Element $directory, int $depth)
+    public function __construct(Element $directory, int $depth)
     {
         $this->id = $directory->id;
-        $this->selected = $currentElement->parent === $directory->id;
-        $this->name = static::getCourseDirectoryName($currentElement, $directory, $depth);
+        $this->name = static::getCourseDirectoryName($directory, $depth);
     }
 
     public function getOutput(): array
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'selected' => $this->selected,
+            'name' => $this->name
         ];
     }
 
-    private static function getCourseDirectoryName(Element $currentElement, Element $directory, int $depth): string
+    private static function getCourseDirectoryName(Element $directory, int $depth): string
     {
-        $prefix = str_repeat('-', $depth + 1);
+        $prefix = str_repeat('-', $depth);
         $displayName = static::getCourseDirectoryDisplayName($directory);
-        $suffix = $currentElement->id === $directory->id ? ' (Gjeldene element)' : '';
 
         return $prefix
             . ' '
-            . $displayName
-            . $suffix;
+            . $displayName;
     }
 
     private static function getCourseDirectoryDisplayName(Element $directory): string

@@ -7,4 +7,9 @@ export const postAdminCreateDirectoryRest = (directory, course, value) => fetch(
   method: 'PUT',
 });
 
-export const fetchAdminFileDetailsRest = (id) => fetch(`/rest/admin/files/${id}`);
+export const putAdminEditFileRest = (id, data) => fetch(`/rest/admin/files/${id}`, {
+  body: JSON.stringify(data),
+  method: 'PUT',
+});
+
+export const fetchAdminFileDetailsRest = id => fetch(`/rest/admin/files/${id}`);

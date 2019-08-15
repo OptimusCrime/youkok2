@@ -1,21 +1,24 @@
 import {
-  ADMIN_EDIT_FILE_POST_STARTED,
-  ADMIN_EDIT_FILE_POST_FINISHED,
-  ADMIN_EDIT_FILE_POST_FAILED,
+  ADMIN_EDIT_FILE_PUT_STARTED,
+  ADMIN_EDIT_FILE_PUT_FINISHED,
+  ADMIN_EDIT_FILE_PUT_FAILED,
   ADMIN_EDIT_FILE_SHOW_MODAL,
   ADMIN_EDIT_FILE_HIDE_MODAL,
   ADMIN_EDIT_FILE_FETCH_STARTED,
   ADMIN_EDIT_FILE_FETCH_FAILED,
   ADMIN_EDIT_FILE_FETCH_FINISHED,
+  ADMIN_EDIT_FILE_TOGGLE_CHECKBOX,
+  ADMIN_EDIT_FILE_CHANGE_PARENT,
+  ADMIN_EDIT_FILE_CHANGE_VALUE,
 } from "./constants";
 
 const defaultState = {
   fetchStarted: false,
   fetchFinished: false,
   fetchFailed: false,
-  postStarted: false,
-  postFinished: false,
-  postFailed: false,
+  putStarted: false,
+  putFinished: false,
+  putFailed: false,
   showModal: false,
   courseId: null,
   fileId: null,
@@ -24,7 +27,6 @@ const defaultState = {
 
 export const editFile = (state = defaultState, action) => {
   switch (action.type) {
-
     case ADMIN_EDIT_FILE_SHOW_MODAL:
       return {
         ...state,
@@ -61,26 +63,51 @@ export const editFile = (state = defaultState, action) => {
         fetchFailed: true,
       };
 
-    case ADMIN_EDIT_FILE_POST_STARTED:
+    case ADMIN_EDIT_FILE_PUT_STARTED:
       return {
         ...state,
-        value: '',
-        postStarted: true,
-        showModal: false,
+        putStarted: true,
       };
 
-    case ADMIN_EDIT_FILE_POST_FINISHED:
+    case ADMIN_EDIT_FILE_PUT_FINISHED:
       return {
         ...state,
-        postFinished: true,
-        postStarted: false,
+        putFinished: true,
+        putStarted: false,
       };
 
-    case ADMIN_EDIT_FILE_POST_FAILED:
+    case ADMIN_EDIT_FILE_PUT_FAILED:
       return {
         ...state,
-        postFailed: true,
-        postStarted: false,
+        putFailed: true,
+        putStarted: false,
+      };
+
+    case ADMIN_EDIT_FILE_TOGGLE_CHECKBOX:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [action.id]: state.data[action.id] === 1 ? 0 : 1
+        }
+      };
+
+    case ADMIN_EDIT_FILE_CHANGE_PARENT:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          parent: action.parent,
+        }
+      };
+
+    case ADMIN_EDIT_FILE_CHANGE_VALUE:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [action.id]: action.value,
+        }
       };
 
     default:

@@ -42,4 +42,4 @@ const mapStateToProps = ({graph}) => ({
   data: graph.data,
 });
 
-export default connect(mapStateToProps, {})(AdminHomeGraph);
+export default connect(mapStateToProps)(AdminHomeGraph);

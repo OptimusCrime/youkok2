@@ -18,7 +18,6 @@ const FileListingWrapper = ({ started, finished, failed, children, showCreateDir
   if (isLoading) {
     return (
       <div className="admin-files-loading">
-        <i className="fa fa-cog fa-spin fa-3x fa-fw"/>
         <p>Laster...</p>
       </div>
     );
@@ -41,4 +40,4 @@ const mapStateToProps = ({files, createDirectory, editFile}) => ({
   showEditFileModal: editFile.showModal
 });
 
-export default connect(mapStateToProps, {})(FileListingWrapper);
+export default connect(mapStateToProps)(FileListingWrapper);

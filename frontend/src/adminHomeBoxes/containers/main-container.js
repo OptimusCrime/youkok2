@@ -61,4 +61,4 @@ const mapStateToProps = ({boxes}) => ({
   data: boxes.data,
 });
 
-export default connect(mapStateToProps, {})(AdminHomeBoxes);
+export default connect(mapStateToProps)(AdminHomeBoxes);

@@ -17,7 +17,9 @@ const CreateDirectoryModal = props => {
   } = props;
 
   return (
-    <Modal>
+    <Modal
+      onClose={props.hideCreateDirectoryModal}
+    >
       <ModalTitle
         onClose={props.hideCreateDirectoryModal}
         title={title}

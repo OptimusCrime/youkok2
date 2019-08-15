@@ -4,8 +4,9 @@ namespace Youkok\Common\Containers;
 use Psr\Container\ContainerInterface;
 use Monolog\Logger as MonoLogger;
 
-use Youkok\Biz\Services\Admin\AdminFilesService;
+use Youkok\Biz\Services\Admin\FilesService;
 use Youkok\Biz\Services\Admin\FileDetailsService;
+use Youkok\Biz\Services\Admin\FileUpdateService;
 use Youkok\Biz\Services\Admin\HomeGraphService;
 use Youkok\Biz\Services\Admin\FileListingService;
 use Youkok\Biz\Services\ArchiveHistoryService;
@@ -237,22 +238,28 @@ class Services implements ContainersInterface
         $container[FileListingService::class] = function (ContainerInterface $container): FileListingService {
             return new FileListingService(
                 $container->get(AdminCourseService::class),
-                $container->get(AdminFilesService::class),
-                $container->get(ElementService::class),
+                $container->get(FilesService::class)
             );
         };
 
         $container[FileDetailsService::class] = function (ContainerInterface $container): FileDetailsService {
             return new FileDetailsService(
                 $container->get(AdminCourseService::class),
-                $container->get(AdminFilesService::class),
+                $container->get(FilesService::class),
                 $container->get(ElementService::class),
                 $container->get(DownloadFileInfoService::class),
             );
         };
 
-        $container[AdminFilesService::class] = function (ContainerInterface $container): AdminFilesService {
-            return new AdminFilesService(
+        $container[FileUpdateService::class] = function (ContainerInterface $container): FileUpdateService {
+            return new FileUpdateService(
+                $container->get(FilesService::class),
+                $container->get(ElementService::class),
+            );
+        };
+
+        $container[FilesService::class] = function (ContainerInterface $container): FilesService {
+            return new FilesService(
                 $container->get(ElementService::class),
                 $container->get(AdminElementMapper::class),
             );

@@ -2,8 +2,6 @@
 
 namespace Youkok\Biz\Services\Admin;
 
-use RecursiveArrayIterator;
-use RecursiveIteratorIterator;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Models\Admin\AdminCourseService;
 use Youkok\Biz\Services\Models\ElementService;
@@ -20,7 +18,7 @@ class FileDetailsService
 
     public function __construct(
         AdminCourseService $adminCourseService,
-        AdminFilesService $adminFilesService,
+        FilesService $adminFilesService,
         ElementService $elementService,
         DownloadFileInfoService $downloadFileInfoService
     )
@@ -67,6 +65,10 @@ class FileDetailsService
         }
 
         $arr['course_tree'] = $this->mapCourseDirectoriesTree($element);
+        $arr['type'] = $element->getType();
+        $arr['title'] = $element->getType() === Element::COURSE
+            ? $element->getCourseName() . ': ' . $element->getCourseName()
+            : $element->name;
 
         return $arr;
     }
@@ -74,8 +76,9 @@ class FileDetailsService
     private function mapCourseDirectoriesTree(Element $element): array
     {
         $list = $this->mapCourseDirectories(
-            $element,
-            $this->adminCourseService->getCourseDirectoriesTree($element->getCourse())
+            $this->adminCourseService->getCourseDirectoriesTree(
+                $element->getType() === Element::COURSE ? $element : $element->getCourse()
+            )
         );
 
         $output = [];
@@ -88,11 +91,10 @@ class FileDetailsService
         return $output;
     }
 
-    private function mapCourseDirectories(Element $currentElement, Element $directory, int $depth = 0): array
+    private function mapCourseDirectories(Element $directory, int $depth = 0): array
     {
         $output = [
             new CourseDirectory(
-                $currentElement,
                 $directory,
                 $depth
             )
@@ -106,7 +108,6 @@ class FileDetailsService
             $output = array_merge(
                 $output,
                 $this->mapCourseDirectories(
-                    $currentElement,
                     $child,
                     $depth + 1
                 )

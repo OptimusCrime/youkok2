@@ -1,17 +1,18 @@
 import {
   fetchAdminFileDetailsRest,
-  postAdminCreateDirectoryRest,
+  putAdminEditFileRest,
 } from '../../api';
 import {
-  ADMIN_EDIT_FILE_POST_STARTED,
-  ADMIN_EDIT_FILE_POST_FINISHED,
-  ADMIN_EDIT_FILE_POST_FAILED,
+  ADMIN_EDIT_FILE_PUT_STARTED,
+  ADMIN_EDIT_FILE_PUT_FINISHED,
+  ADMIN_EDIT_FILE_PUT_FAILED,
   ADMIN_EDIT_FILE_SHOW_MODAL,
   ADMIN_EDIT_FILE_HIDE_MODAL,
   ADMIN_EDIT_FILE_FETCH_STARTED,
   ADMIN_EDIT_FILE_FETCH_FINISHED,
   ADMIN_EDIT_FILE_FETCH_FAILED,
 } from './constants';
+import {mapUpdateFile} from "./mappers";
 
 export const hideEditFileModal = () => ({type: ADMIN_EDIT_FILE_HIDE_MODAL});
 
@@ -29,17 +30,19 @@ export const showEditFileModal = (courseId, fileId) => dispatch => {
     });
 };
 
-/*
-export const postAdminCreateDirectory = (directory, course, value) => dispatch => {
-  dispatch({ type: ADMIN_EDIT_FILE_POST_STARTED, course });
+export const putAdminEditFile = (file, course, data, closeModal) => dispatch => {
+  dispatch({ type: ADMIN_EDIT_FILE_PUT_STARTED, course });
 
-  postAdminCreateDirectoryRest(directory, course, value)
+  if (closeModal) {
+    dispatch({ type: ADMIN_EDIT_FILE_HIDE_MODAL });
+  }
+
+  putAdminEditFileRest(file, mapUpdateFile(course, data))
     .then(response => response.json())
-    .then(response => dispatch({ type: ADMIN_EDIT_FILE_POST_FINISHED, data: response.data }))
+    .then(response => dispatch({ type: ADMIN_EDIT_FILE_PUT_FINISHED, data: response.data }))
     .catch(e => {
       console.error(e);
       alert('Her gikk visst noe galt!');
-      dispatch({ type: ADMIN_EDIT_FILE_POST_FAILED })
+      dispatch({ type: ADMIN_EDIT_FILE_PUT_FAILED })
     });
 };
- */

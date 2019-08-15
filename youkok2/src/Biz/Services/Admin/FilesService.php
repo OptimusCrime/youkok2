@@ -2,12 +2,13 @@
 
 namespace Youkok\Biz\Services\Admin;
 
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Services\Mappers\Admin\AdminElementMapper;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\SelectStatements;
 
-class AdminFilesService
+class FilesService
 {
     const LISTING_SELECT_ATTRIBUTES = [
         'id', 'name', 'link', 'pending', 'deleted', 'parent', 'directory', 'checksum', 'uri', 'slug'
@@ -22,24 +23,21 @@ class AdminFilesService
         $this->adminElementMapper = $adminElementMapper;
     }
 
-    public function getAllChildrenFromParent(int $id): array
+    public function buildTree(array $courses): array
     {
-        $collection = Element
-            ::select(static::LISTING_SELECT_ATTRIBUTES)
-            ->where('parent', $id)
-            ->orderBy('directory', 'DESC')
-            ->orderBy('name', 'ASC')
-            ->get();
-
-        $children = [];
-        foreach ($collection as $element) {
-            $children[] = $element;
+        $content = [];
+        foreach ($courses as $course) {
+            try {
+                $content[] = $this->buildTreeFromId($course);
+            } catch (GenericYoukokException $ex) {
+                // Some legacy file is not added directory on parent, keep going, this is handled in the frontend
+            }
         }
 
-        return $children;
+        return $content;
     }
 
-    public function buildTreeFromId(int $id): array
+    private function buildTreeFromId(int $id): array
     {
         $course = $this->elementService->getElement(
             new SelectStatements('id', $id),
@@ -54,6 +52,23 @@ class AdminFilesService
         $this->fetchDirectoryContentRecursively($course);
 
         return $this->adminElementMapper->map($course);
+    }
+
+    private function getAllChildrenFromParent(int $id): array
+    {
+        $collection = Element
+            ::select(static::LISTING_SELECT_ATTRIBUTES)
+            ->where('parent', $id)
+            ->orderBy('directory', 'DESC')
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        $children = [];
+        foreach ($collection as $element) {
+            $children[] = $element;
+        }
+
+        return $children;
     }
 
     private function fetchDirectoryContentRecursively(Element $element): void

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Modal = ({children}) => (
+export const Modal = ({children, onClose}) => (
   <div
     className="modal fade in"
     tabIndex="-1"
@@ -8,6 +8,11 @@ export const Modal = ({children}) => (
     style={{
       display: 'block',
       paddingRight: '15px'
+    }}
+    onClick={e => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
     }}
   >
     <div className="modal-dialog" role="document">

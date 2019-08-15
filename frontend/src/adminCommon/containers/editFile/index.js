@@ -2,48 +2,54 @@ import React from 'react';
 import {Modal} from "../../components/modal";
 import {ModalTitle} from "../../components/modal/modal-title";
 import {ModalBody} from "../../components/modal/modal-body";
-import {ModalFooter} from "../../components/modal/modal-footer";
+import EditFileData from './edit-file-data';
 import {connect} from "react-redux";
 import {hideEditFileModal} from "../../redux/editFile/actions";
 
 const EditFileModal = props => {
 
   const {
-    title,
+    fetchStarted,
+    fetchFailed,
   } = props;
 
-  return (
-    <Modal>
-      <ModalTitle
+  if (fetchStarted) {
+    return (
+      <Modal
         onClose={props.hideEditFileModal}
-        title={title}
-      />
-      <ModalBody>
-        <div className="form-group">
-          <p>Her kommer det masse greier</p>
-        </div>
-      </ModalBody>
-      <ModalFooter>
-        <button
-          type="button"
-          className="btn btn-default"
-          onClick={props.hideEditFileModal}
-        >
-          Lukk
-        </button>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => console.log('Click på knapp')}
-        >
-          Lagre
-        </button>
-      </ModalFooter>
-    </Modal>
-  );
+      >
+        <ModalTitle
+          onClose={props.hideEditFileModal}
+          title="Laster..."
+        />
+        <ModalBody>
+          <p>Vennligst vent...</p>
+        </ModalBody>
+      </Modal>
+    );
+  }
+
+  if (fetchFailed) {
+    return (
+      <Modal
+        onClose={props.hideEditFileModal}
+      >
+        <ModalTitle
+          onClose={props.hideEditFileModal}
+          title="Noe gikk galt"
+        />
+        <ModalBody>
+          <p>Kunne ikke laste element fra databasen.</p>
+        </ModalBody>
+      </Modal>
+    );
+  }
+
+  return <EditFileData/>;
 };
 
 const mapStateToProps = ({editFile}) => ({
+  fetchStarted: editFile.fetchStarted,
 });
 
 const mapDispatchToProps = {

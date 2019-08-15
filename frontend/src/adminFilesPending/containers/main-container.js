@@ -21,4 +21,4 @@ const mapStateToProps = ({files}) => ({
   data: files.data,
 });
 
-export default connect(mapStateToProps, {})(AdminFilesPendingMainContainer);
+export default connect(mapStateToProps)(AdminFilesPendingMainContainer);

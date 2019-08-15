@@ -8,13 +8,14 @@ use Slim\Http\Response;
 use Youkok\Biz\Exceptions\CreateException;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Exceptions\InvalidRequestException;
+use Youkok\Biz\Services\Admin\FileCreateDirectoryService;
 use Youkok\Biz\Services\Admin\FileListingService;
 use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
 {
-    /** @var FileListingService */
-    private $adminFileListingService;
+    /** @var FileCreateDirectoryService */
+    private $adminFileCreateDirectoryService;
 
     /** @var Logger */
     private $logger;
@@ -23,7 +24,7 @@ class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
     {
         parent::__construct($container);
 
-        $this->adminFileListingService = $container->get(FileListingService::class);
+        $this->adminFileCreateDirectoryService = $container->get(FileCreateDirectoryService::class);
         $this->logger = $container->get(Logger::class);
     }
 
@@ -39,7 +40,7 @@ class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
             );
 
             return $this->outputJson($response, [
-                'data' => $this->adminFileListingService->createDirectory(
+                'data' => $this->adminFileCreateDirectoryService->createDirectory(
                     (int) $data['course'],
                     (int) $data['directory'],
                     (string) $data['value'],

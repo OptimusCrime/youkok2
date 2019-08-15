@@ -53,4 +53,4 @@ const mapStateToProps = ({elements}) => ({
   data: elements.data,
 });
 
-export default connect(mapStateToProps, {})(MainContainer);
+export default connect(mapStateToProps)(MainContainer);
