@@ -48,11 +48,7 @@ class CreateFileEndpoint extends BaseRestEndpoint
 
             return $this->outputSuccess($response);
         }
-        catch (CreateException $ex) {
-            $this->logger->error($ex);
-            return $this->returnBadRequest($response, $ex);
-        }
-        catch (GenericYoukokException $ex) {
+        catch (CreateException | GenericYoukokException $ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }

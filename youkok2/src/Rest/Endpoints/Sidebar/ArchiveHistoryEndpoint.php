@@ -37,10 +37,7 @@ class ArchiveHistoryEndpoint extends BaseRestEndpoint
             return $this->outputJson($response, [
                 'data' => $this->archiveHistoryService->get((int) $args['id'])
             ]);
-        } catch (ElementNotFoundException $ex) {
-            $this->logger->error($ex);
-            return $this->returnBadRequest($response, $ex);
-        } catch (InvalidRequestException $ex) {
+        } catch (ElementNotFoundException | InvalidRequestException $ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }

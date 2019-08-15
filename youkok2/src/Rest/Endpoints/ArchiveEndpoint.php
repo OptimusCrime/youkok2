@@ -51,10 +51,7 @@ class ArchiveEndpoint extends BaseRestEndpoint
                     ]
                 )
             );
-        } catch (ElementNotFoundException $ex) {
-            $this->logger->error($ex);
-            return $this->returnBadRequest($response, $ex);
-        } catch (InvalidRequestException $ex) {
+        } catch (ElementNotFoundException | InvalidRequestException $ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }

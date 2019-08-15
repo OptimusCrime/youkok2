@@ -80,10 +80,7 @@ class Download extends BaseView
                     ->withHeader('Content-Length', $fileSize)
                     ->withBody(new Stream(fopen($filePath, 'r')))
             );
-        } catch (ElementNotFoundException $ex) {
-            return $this->render404($response);
-        } catch (Exception $ex) {
-            $this->logger->error($ex);
+        } catch (ElementNotFoundException | Exception $ex) {
             return $this->render404($response);
         }
     }

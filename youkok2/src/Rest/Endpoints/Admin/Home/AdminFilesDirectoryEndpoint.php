@@ -47,15 +47,7 @@ class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
                 )[0]
             ]);
         }
-        catch (InvalidRequestException $ex) {
-            $this->logger->error($ex);
-            return $this->returnBadRequest($response, $ex);
-        }
-        catch (CreateException $ex) {
-            $this->logger->error($ex);
-            return $this->returnBadRequest($response, $ex);
-        }
-        catch (GenericYoukokException $ex) {
+        catch (InvalidRequestException | CreateException | GenericYoukokException$ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }
