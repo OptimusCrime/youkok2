@@ -117,9 +117,9 @@ class ElementService
         return $element;
     }
 
-    public function getUriForElement(Element $element): string
+    public function getUriForElement(Element $element, bool $forceFetchFromParentSlugFragments = false): string
     {
-        if ($element->uri !== null) {
+        if ($element->uri !== null && !$forceFetchFromParentSlugFragments) {
             return $element->uri;
         }
 

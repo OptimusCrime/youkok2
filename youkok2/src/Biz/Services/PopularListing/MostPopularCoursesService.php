@@ -61,7 +61,7 @@ class MostPopularCoursesService implements MostPopularInterface
     public function refresh(): void
     {
         $this->clearFileCache();
-        $this->cacheService->clearCacheForKeys(MostPopularCourse::all());
+        $this->cacheService->clearCacheForMostPopularKeys(MostPopularCourse::all());
 
         foreach (MostPopularCourse::all() as $key) {
             $this->refreshForDelta($key);

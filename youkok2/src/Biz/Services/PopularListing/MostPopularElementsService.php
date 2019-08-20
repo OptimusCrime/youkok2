@@ -42,7 +42,7 @@ class MostPopularElementsService implements MostPopularInterface
 
     public function refresh(): void
     {
-        $this->cacheService->clearCacheForKeys(MostPopularElement::all());
+        $this->cacheService->clearCacheForMostPopularKeys(MostPopularElement::all());
 
         foreach (MostPopularElement::all() as $key) {
             $this->refreshForDelta($key);

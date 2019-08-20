@@ -39,6 +39,13 @@ class CacheService
         }
     }
 
+    public function delete(string $key): void
+    {
+        if ($this->cache !== null) {
+            $this->cache->delete($key);
+        }
+    }
+
     public function insertIntoSet(string $setKey, int $value, string $id): void
     {
         // PHPStorm is complaining for no reason
@@ -87,7 +94,7 @@ class CacheService
         $this->setDownloadsForId($id, $downloads + 1);
     }
 
-    public function clearCacheForKeys(array $keys): void
+    public function clearCacheForMostPopularKeys(array $keys): void
     {
         if ($this->cache === null) {
             return;

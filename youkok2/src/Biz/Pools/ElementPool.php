@@ -9,6 +9,7 @@ use Youkok\Common\Utilities\SelectStatements;
 
 class ElementPool
 {
+    private static $DISABLED = false;
     private static $POOL;
 
     public static function init()
@@ -16,16 +17,27 @@ class ElementPool
         static::$POOL = [];
     }
 
+    public static function disable(): void
+    {
+        static::$DISABLED = true;
+    }
+
     public static function add(ElementPoolContainer $elementPoolContainer): void
     {
         static::ensurePoolInitiated();
 
-        static::$POOL[] = $elementPoolContainer;
+        if (!static::$DISABLED) {
+            static::$POOL[] = $elementPoolContainer;
+        }
     }
 
     public static function contains(array $attributes, SelectStatements $selectStatements): bool
     {
         static::ensurePoolInitiated();
+
+        if (static::$DISABLED) {
+            return false;
+        }
 
         /** @var ElementPoolContainer $poolContainer */
         foreach (static::$POOL as $poolContainer) {
@@ -40,6 +52,10 @@ class ElementPool
     public static function get(array $attributes, SelectStatements $selectStatements): Element
     {
         static::ensurePoolInitiated();
+
+        if (static::$DISABLED) {
+            throw new PoolException('Not found in pool');
+        }
 
         /** @var ElementPoolContainer $poolContainer */
         foreach (static::$POOL as $poolContainer) {

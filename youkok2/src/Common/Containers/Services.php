@@ -255,7 +255,9 @@ class Services implements ContainersInterface
         $container[FileUpdateService::class] = function (ContainerInterface $container): FileUpdateService {
             return new FileUpdateService(
                 $container->get(FilesService::class),
+                $container->get(AdminElementService::class),
                 $container->get(ElementService::class),
+                $container->get(CacheService::class),
             );
         };
 
