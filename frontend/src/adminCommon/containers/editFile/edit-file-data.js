@@ -75,7 +75,8 @@ class EditFileData extends React.Component {
               id="element-type"
               disabled={true}
               value={type || ''}
-              onChange={() => {}}
+              onChange={() => {
+              }}
             />
           </div>
           <div className="form-group">
@@ -107,15 +108,6 @@ class EditFileData extends React.Component {
             <label htmlFor="element-uri">
               URI
             </label>
-            {type !== TYPE_LINK &&
-            <a
-              href="#"
-              className="element-uri-regenerate"
-              onClick={() => console.log('Foo')}
-            >
-              Generer
-            </a>
-            }
             <input
               type="text"
               className="form-control"
@@ -125,6 +117,7 @@ class EditFileData extends React.Component {
               onChange={e => this.props.editFileChangeValue('uri', e.target.value)}
             />
           </div>
+          {parent &&
           <div className="form-group">
             <label htmlFor="element-parent">
               Forelder
@@ -144,6 +137,7 @@ class EditFileData extends React.Component {
               )}
             </select>
           </div>
+          }
           <div
             className={`form-group ${type !== TYPE_FILE ? '' : (file_exists ? 'has-success' : 'has-error')}`}
           >

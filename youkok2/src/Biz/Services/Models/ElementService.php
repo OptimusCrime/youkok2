@@ -358,12 +358,14 @@ class ElementService
             }
 
             if ($parent->directory !== 1) {
-                throw new ElementNotFoundException();
+                throw new ElementNotFoundException(
+                    'Expected to find directory for parent, was: ' . $parent->getType() . ' for ID: ' . $parent->id
+                );
             }
 
             if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
                 if (!$parent->isVisible()) {
-                    throw new ElementNotFoundException();
+                    throw new ElementNotFoundException('Expected to find visible for parent for ID: ' . $parent->id);
                 }
             }
 
@@ -386,13 +388,15 @@ class ElementService
         // Can not fetch both visible and/or specific
         if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
             if (!$element->isVisible()) {
-                throw new ElementNotFoundException();
+                throw new ElementNotFoundException('Expected to find visible for element for ID: ' . $element->id);
             }
         }
 
         if (in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {
             if ($element->directory !== 1) {
-                throw new ElementNotFoundException();
+                throw new ElementNotFoundException(
+                    'Expected to find directory for element, was: ' . $element->getType() . ' for ID: ' . $element->id
+                );
             }
         }
 

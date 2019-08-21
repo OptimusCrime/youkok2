@@ -2,7 +2,7 @@ Youkok2 - 4.0.0-pl (xx. xxxxxxx 2019)
 =====================================
 
 - [Info] Total omskrivning, igjen.
-- [Technical] Bruker dependency injection fremfor idiotisk builder patterns.
+- [Technical] Bruker dependency injection fremfor builder patterns.
 - [Technical] Drastisk forenklet kodebasen.
 - [Technical] Forsiden, faglisten, arkivet og boksene i sidemenyen er nå skrevet i React.
 - [Technical] Skrevet oss bort fra masse bottlenecks som gjorde siden veldig treg. Spesielt forsiden.

@@ -47,10 +47,15 @@ export const files = (state = defaultState, action) => {
       };
 
     case ADMIN_CREATE_DIRECTORY_POST_FINISHED:
-    case ADMIN_EDIT_FILE_PUT_FINISHED:
       return {
         ...state,
         data: mapUpdated(action.data, state.data)
+      };
+
+    case ADMIN_EDIT_FILE_PUT_FINISHED:
+      return {
+        ...state,
+        data: mapUpdated(action.data.course, state.data)
       };
 
     default:

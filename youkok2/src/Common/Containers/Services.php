@@ -80,7 +80,8 @@ class Services implements ContainersInterface
             return new MostPopularElementsService(
                 $container->get(CacheService::class),
                 $container->get(DownloadService::class),
-                $container->get(ElementService::class)
+                $container->get(ElementService::class),
+                $container->get(MonoLogger::class)
             );
         };
 

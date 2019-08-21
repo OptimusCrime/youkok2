@@ -60,9 +60,7 @@ class FileCreateDirectoryService
             throw new CreateException('Failed to create directory of ' . $directoryId . ' with name "' . $value . '".');
         }
 
-        return $this->adminFilesService->buildTree([
-            $course->id
-        ]);
+        return $this->adminFilesService->buildTreeFromId($course->id);
     }
 
 

@@ -12,6 +12,7 @@ const AdminFilesPendingMainContainer = ({data}) => (
         content={entry.content}
         pending={entry.pending}
         disabled={entry.disabled}
+        course={entry.course}
       />
     ))}
   </FileListingWrapper>

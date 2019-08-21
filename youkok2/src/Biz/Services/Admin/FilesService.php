@@ -37,7 +37,7 @@ class FilesService
         return $content;
     }
 
-    private function buildTreeFromId(int $id): array
+    public function buildTreeFromId(int $id): array
     {
         $course = $this->elementService->getElement(
             new SelectStatements('id', $id),

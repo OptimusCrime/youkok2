@@ -74,6 +74,7 @@ export const editFile = (state = defaultState, action) => {
         ...state,
         putFinished: true,
         putStarted: false,
+        data: action.data.element
       };
 
     case ADMIN_EDIT_FILE_PUT_FAILED:

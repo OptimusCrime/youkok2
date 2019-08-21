@@ -5,10 +5,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as DB;
 
 use Illuminate\Support\Collection;
+use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Common\Models\Download;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\SelectStatements;
+use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
 
 class DownloadService
@@ -59,20 +61,28 @@ class DownloadService
         return $response;
     }
 
-    public function getMostPopularElementsFromDelta(string $delta): Collection
+    public function getMostPopularElementsFromDelta(string $delta, ?int $limit = null): Collection
     {
         $query = DB::table('download')
-            ->select('download.resource as id', DB::raw('COUNT(download.id) as download_count'))
-            ->leftJoin('element as element', 'element.id', '=', 'download.resource')
-            ->where('element.deleted', '=', 0)
-            ->where('element.pending', '=', 0);
+            ->select(
+                'download.resource AS id',
+                'element.parent AS parent',
+                'element.pending AS pending',
+                'element.deleted AS deleted',
+                DB::raw('COUNT(download.id) AS download_count')
+            )
+            ->leftJoin('element AS element', 'element.id', '=', 'download.resource');
 
-        if ($delta !== MostPopularElement::ALL) {
+        if ($delta !== MostPopularElement::ALL && $delta !== MostPopularCourse::ALL) {
             $query = $query->whereDate(
                 'download.downloaded_time',
                 '>=',
                 $this->getMostPopularElementQueryFromDelta($delta)
             );
+        }
+
+        if ($limit !== null) {
+            $query = $query->limit($limit);
         }
 
         return $query
@@ -101,31 +111,66 @@ class DownloadService
 
     private function summarizeDownloads(Collection $downloads): array
     {
+        $parentToCourse = [];
         $courses = [];
+
         foreach ($downloads as $download) {
-            $downloadElement = $this->elementService->getElement(
-                new SelectStatements('id', $download->id),
-                ['id', 'parent'],
-                [
-                    ElementService::FLAG_FETCH_PARENTS,
-                    ElementService::FLAG_FETCH_COURSE,
-                    ElementService::FLAG_ENSURE_VISIBLE,
-                ]
-            );
+            $downloadElement = null;
+            $currentCourse = null;
 
-            $downloadElementCourse = $downloadElement->getCourse();
+            try {
+                if (isset($parentToCourse[$download->parent])) {
+                    // We can completely avoid fetching all parents for the Element if we already have etablished
+                    // the relationship between the parent -> course.
+                    $selectStatements = new SelectStatements();
+                    $selectStatements->addStatement('id', $download->id);
+                    $selectStatements->addStatement('deleted', 0);
+                    $selectStatements->addStatement('pending', 0);
 
-            // Weird guard, I do not know why, but it might seem like some courses have downloads on them? No idea
-            // how that happened, but this guard should take care of it. Might be an artifact from ages ago.
-            if ($downloadElementCourse === null) {
+                    // Ensure the element is visible
+                    $this->elementService->getElement(
+                        $selectStatements,
+                        ['id', 'parent'],
+                        []
+                    );
+
+                    $currentCourse = $parentToCourse[$download->parent];
+                }
+                else {
+                    $downloadElement = $this->elementService->getElement(
+                        new SelectStatements('id', $download->id),
+                        ['id', 'parent'],
+                        [
+                            ElementService::FLAG_FETCH_PARENTS,
+                            ElementService::FLAG_FETCH_COURSE,
+                            ElementService::FLAG_ENSURE_VISIBLE,
+                        ]
+                    );
+
+                    $currentCourseObject = $downloadElement->getCourse();
+
+                    // Weird guard, I do not know why, but it might seem like some courses have downloads on them? No idea
+                    // how that happened, but this guard should take care of it. Might be an artifact from ages ago.
+                    if ($currentCourseObject === null) {
+                        continue;
+                    }
+
+                    $parentToCourse[$download->parent] = $currentCourseObject->id;
+
+                    $currentCourse = $currentCourseObject->id;
+                }
+            }
+            catch (ElementNotFoundException $ex) {
+                // This is to be expected, if we found a popular download, that is later deleted (or their parents are)
+                // we should just ignore this and keep going.
                 continue;
             }
 
-            if (!isset($courses[$downloadElementCourse->id])) {
-                $courses[$downloadElementCourse->id] = 0;
+            if (!isset($courses[$currentCourse])) {
+                $courses[$currentCourse] = 0;
             }
 
-            $courses[$downloadElementCourse->id] += $download->download_count;
+            $courses[$currentCourse] += $download->download_count;
         }
 
         // Make sure to filter out all courses that are either deleted or filtered away
@@ -138,10 +183,16 @@ class DownloadService
 
     private function filterRemovedCourses(array $courses): array
     {
+        $validCourseIds = [];
         $filteredCourses = [];
         foreach ($courses as $courseId => $downloads) {
-            if ($this->isValidCourseId((int) $courseId)) {
+            $inValidCoursesIds = in_array($courseId, $validCourseIds);
+            if ($inValidCoursesIds || $this->isValidCourseId((int) $courseId)) {
                 $filteredCourses[$courseId] = $downloads;
+
+                if (!$inValidCoursesIds) {
+                    $validCourseIds[] = $courseId;
+                }
             }
         }
 

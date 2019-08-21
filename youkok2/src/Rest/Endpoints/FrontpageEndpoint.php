@@ -1,4 +1,5 @@
 <?php
+
 namespace Youkok\Rest\Endpoints;
 
 use Monolog\Logger;
@@ -6,6 +7,8 @@ use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
@@ -48,23 +51,37 @@ class FrontpageEndpoint extends BaseRestEndpoint
     public function popularElements(Request $request, Response $response): Response
     {
         $session = $this->userSessionService->getSession();
-        $payload = $this->frontpageService->popularElements();
 
-        return $this->outputJson($response, [
-            'elements' => $this->mapElementsMostPopular($payload),
-            'preference' => $session->getMostPopularElement()
-        ]);
+        try {
+            $payload = $this->frontpageService->popularElements();
+
+            return $this->outputJson($response, [
+                'elements' => $this->mapElementsMostPopular($payload),
+                'preference' => $session->getMostPopularElement()
+            ]);
+        } catch (ElementNotFoundException | GenericYoukokException $ex) {
+            $this->logger->error($ex);
+
+            return $response->withStatus(400);
+        }
     }
 
     public function popularCourses(Request $request, Response $response): Response
     {
         $session = $this->userSessionService->getSession();
-        $payload = $this->frontpageService->popularCourses();
 
-        return $this->outputJson($response, [
-            'courses' => $this->mapCoursesMostPopular($payload),
-            'preference' => $session->getMostPopularCourse()
-        ]);
+        try {
+            $payload = $this->frontpageService->popularCourses();
+
+            return $this->outputJson($response, [
+                'courses' => $this->mapCoursesMostPopular($payload),
+                'preference' => $session->getMostPopularCourse()
+            ]);
+        } catch (ElementNotFoundException | GenericYoukokException $ex) {
+            $this->logger->error($ex);
+
+            return $response->withStatus(400);
+        }
     }
 
     public function newest(Request $request, Response $response): Response
@@ -74,9 +91,9 @@ class FrontpageEndpoint extends BaseRestEndpoint
         $data = $this->elementMapper->mapFromArray(
             $payload,
             [
-            ElementMapper::POSTED_TIME,
-            ElementMapper::PARENT_DIRECT,
-            ElementMapper::PARENT_COURSE
+                ElementMapper::POSTED_TIME,
+                ElementMapper::PARENT_DIRECT,
+                ElementMapper::PARENT_COURSE
             ]
         );
 

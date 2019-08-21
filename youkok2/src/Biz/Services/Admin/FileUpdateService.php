@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Biz\Services\Admin;
 
+use Carbon\Carbon;
 use Youkok\Biz\Exceptions\UpdateException;
 use Youkok\Biz\Pools\ElementPool;
 use Youkok\Biz\Services\CacheService;
@@ -33,9 +34,6 @@ class FileUpdateService
 
     public function put(int $courseId, int $elementId, array $data): array
     {
-        // Ensure that we disable the ElementPool to ensure that all elements are fetched from the DB
-        ElementPool::disable();
-
         $course = $this->elementService->getElement(
             new SelectStatements('id', $courseId),
             ['id', 'empty', 'parent'],
@@ -79,6 +77,10 @@ class FileUpdateService
         $element->size = static::evaluateAndSetNullSafeString('size', $data);
         $element->link = static::evaluateAndSetNullSafeString('link', $data);
 
+        if ($oldElement->pending === 1 && $element->pending === 0) {
+            $element->added = Carbon::now();
+        }
+
         if ($element->getType() === Element::LINK) {
             // If the type is link, update the name and ignore slug and URI
             if ($data['name'] !== $oldElement->name) {
@@ -97,16 +99,14 @@ class FileUpdateService
         // All other changes are applied to parents and/or children, which depends on us saving this element right here
         $element->save();
 
-        if ($newParent) {
+        if ($newParent || $oldElement->pending !== $element->pending || $oldElement->deleted !== $element->deleted) {
             $this->updateParentAndChildren($oldElement, $element);
             $this->deleteUriCacheForElement($oldElement->uri);
         }
 
         $this->deleteOutdatedCaches($oldElement, $element);
 
-        return $this->adminFilesService->buildTree([
-            $course->id
-        ]);
+        return $this->adminFilesService->buildTreeFromId($course->id);
     }
 
     private function deleteOutdatedCaches(Element $oldElement, Element $updatedElement): void
@@ -118,8 +118,12 @@ class FileUpdateService
         }
     }
 
-    private function deleteUriCacheForElement(string $uri): void
+    private function deleteUriCacheForElement(?string $uri): void
     {
+        if ($uri === null) {
+            return;
+        }
+
         $this->cacheService->delete(CacheKeyGenerator::keyForVisibleUriDirectory($uri));
         $this->cacheService->delete(CacheKeyGenerator::keyForAllParentsAreDirectoriesExceptCurrentIsFile($uri));
         $this->cacheService->delete(CacheKeyGenerator::keyForVisibleUriFile($uri));
@@ -141,9 +145,17 @@ class FileUpdateService
         $oldParent = $this->getElementWithUri($oldElement->parent);
 
         // If old parent is now empty, update that flag
-        if ($this->oldParentIsNowEmpty($oldParent->id, $newElement->id)) {
-            $oldParent->empty = 1;
-            $oldParent->save();
+        if ($this->oldParentIsNowEmpty($oldParent->id, $newElement)) {
+            if ($oldParent->empty === 0) {
+                $oldParent->empty = 1;
+                $oldParent->save();
+            }
+        }
+        else {
+            if ($oldParent->empty === 1) {
+                $oldParent->empty = 0;
+                $oldParent->save();
+            }
         }
 
         if ($newElement->getType() !== Element::COURSE && $newElement->getType() !== Element::DIRECTORY) {
@@ -251,13 +263,13 @@ class FileUpdateService
         return $parent->id;
     }
 
-    private function oldParentIsNowEmpty(int $parentId, int $currentElement): bool
+    private function oldParentIsNowEmpty(int $parentId, Element $updatedElement): bool
     {
         $oldParentChildren = $this->adminElementService->getAllChildren($parentId);
         $visibleOrEmptyCounter = 0;
 
         foreach ($oldParentChildren as $oldParentChild) {
-            if ($oldParentChild->id === $currentElement) {
+            if ($oldParentChild->id === $updatedElement->id && !$updatedElement->isVisible()) {
                 continue;
             }
 

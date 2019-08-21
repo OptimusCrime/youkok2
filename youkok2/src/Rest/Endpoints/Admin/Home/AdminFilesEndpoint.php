@@ -53,18 +53,24 @@ class AdminFilesEndpoint extends BaseRestEndpoint
 
     public function put(Request $request, Response $response, array $args): Response
     {
-        // TODO move into own endpoint
         try {
             $data = $this->getJsonArrayFromBody(
                 $request,
                 ['course']
             );
+
+            // Remember to run the update service before fetching the updated information below
+            $course = $this->adminFileUpdateService->put(
+                (int) $data['course'],
+                (int) $args['id'],
+                $data
+            );
+
             return $this->outputJson($response, [
-                'data' => $this->adminFileUpdateService->put(
-                    (int) $data['course'],
-                    (int) $args['id'],
-                    $data
-                )[0]
+                'data' => [
+                    'element' => $this->adminFileDetailsService->get((int) $args['id']),
+                    'course' => $course
+                ]
             ]);
         }
         catch (InvalidRequestException | UpdateException | GenericYoukokException $ex) {

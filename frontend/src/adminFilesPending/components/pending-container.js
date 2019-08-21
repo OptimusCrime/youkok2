@@ -1,15 +1,17 @@
 import React from 'react';
 
-import FilesListingContainer from "../../adminCommon/containers/fileListingContent";
+import FileListingContainer from "../../adminCommon/containers/fileListingContent";
 import {FileListingBox} from "../../adminCommon/containers/fileListingBox";
 
-export const PendingContainer = ({pending}) => {
+export const PendingContainer = ({pending, disabled, course}) => {
 
   return (
     <FileListingBox
       content={
-        <FilesListingContainer
+        <FileListingContainer
           files={pending}
+          disabled={disabled}
+          course={course}
         />
       }
     >

@@ -28,7 +28,10 @@ class JobService
     ];
 
     private static $codeMapping = [
-        'lookup' => PopulateCoursesLookupFileJobService::class
+        'lookup' => PopulateCoursesLookupFileJobService::class,
+        'popular_courses' => UpdateMostPopularCoursesJobService::class,
+        'popular_elements' => UpdateMostPopularElementsJobService::class,
+        'remove_old_session' => RemoveOldSessionsJobServiceJobService::class,
     ];
 
     private $container;

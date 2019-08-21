@@ -44,7 +44,7 @@ class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
                     (int) $data['course'],
                     (int) $data['directory'],
                     (string) $data['value'],
-                )[0]
+                )
             ]);
         }
         catch (InvalidRequestException | CreateException | GenericYoukokException$ex) {
