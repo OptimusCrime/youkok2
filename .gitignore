@@ -9,3 +9,6 @@ prod.env
 
 # PHPUnit
 .phpunit.result.cache
+
+# Coveralls
+clover.xml
