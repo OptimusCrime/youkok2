@@ -158,7 +158,6 @@ class App
                     });
 
                     $app->put('/title', TitleFetchEndpoint::class . ':put');
-
                 });
 
                 $app->get('/popular', MostPopularEndpoint::class . ':get');

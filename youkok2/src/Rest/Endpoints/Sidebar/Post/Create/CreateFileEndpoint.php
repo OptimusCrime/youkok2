@@ -37,7 +37,10 @@ class CreateFileEndpoint extends BaseRestEndpoint
 
             $files = $request->getUploadedFiles();
 
-            if (count($files) !== 1 || !isset($files[static::FILE_ARRAY_KEY]) || $files[static::FILE_ARRAY_KEY] === null) {
+            if (count($files) !== 1
+                || !isset($files[static::FILE_ARRAY_KEY])
+                || $files[static::FILE_ARRAY_KEY] === null
+            ) {
                 throw new CreateException('Did not get uploaded files');
             }
 
@@ -47,8 +50,7 @@ class CreateFileEndpoint extends BaseRestEndpoint
             );
 
             return $this->outputSuccess($response);
-        }
-        catch (CreateException | GenericYoukokException $ex) {
+        } catch (CreateException | GenericYoukokException $ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }

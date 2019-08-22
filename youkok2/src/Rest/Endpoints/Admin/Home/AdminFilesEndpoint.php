@@ -72,8 +72,7 @@ class AdminFilesEndpoint extends BaseRestEndpoint
                     'course' => $course
                 ]
             ]);
-        }
-        catch (InvalidRequestException | UpdateException | GenericYoukokException $ex) {
+        } catch (InvalidRequestException | UpdateException | GenericYoukokException $ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }

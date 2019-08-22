@@ -61,8 +61,7 @@ class UserSessionService
     {
         try {
             return $this->sessionService->create();
-        }
-        catch (GenericYoukokException $ex) {
+        } catch (GenericYoukokException $ex) {
             $this->logger->warning('Failed to create session.', $ex->getTrace());
 
             // Use a dummy session

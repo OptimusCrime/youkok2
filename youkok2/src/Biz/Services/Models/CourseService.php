@@ -1,9 +1,11 @@
 <?php
+
 namespace Youkok\Biz\Services\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Youkok\Common\Models\Element;
+use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class CourseService
 {
@@ -45,7 +47,7 @@ class CourseService
             ->get();
     }
 
-    public function updateLastVisible(Element $element): void
+    public function updateLastVisited(Element $element): void
     {
         $element->last_visited = Carbon::now();
         $element->save();

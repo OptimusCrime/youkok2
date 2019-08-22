@@ -8,7 +8,9 @@ use Slim\Http\Request;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\ArchiveService;
+use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Models\CourseService;
+use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Common\Utilities\FileTypesHelper;
 
 class Archive extends BaseView
@@ -22,6 +24,9 @@ class Archive extends BaseView
     /** @var Logger */
     private $logger;
 
+    /** @var CacheService */
+    private $cacheService;
+
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
@@ -29,6 +34,7 @@ class Archive extends BaseView
         $this->archiveService = $container->get(ArchiveService::class);
         $this->courseService = $container->get(CourseService::class);
         $this->logger = $container->get(Logger::class);
+        $this->cacheService = $container->get(CacheService::class);
     }
 
     public function view(Request $request, Response $response): Response
@@ -40,11 +46,13 @@ class Archive extends BaseView
             $parents = $this->archiveService->getBreadcrumbsForElement($element);
 
             if ($element->isCourse()) {
-                $this->courseService->updateLastVisible($element);
+                $this->courseService->updateLastVisited($element);
+            } else {
+                $this->courseService->updateLastVisited($element->getCourse());
             }
-            else {
-                $this->courseService->updateLastVisible($element->getCourse());
-            }
+
+            // Flush cache
+            $this->cacheService->delete(CacheKeyGenerator::keyForLastVisitedCoursesPayload());
 
             $this->setSiteData('archive_id', $element->id);
             $this->setSiteData('archive_empty', $element->empty === 1);

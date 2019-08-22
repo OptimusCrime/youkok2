@@ -135,8 +135,7 @@ class DownloadService
                     );
 
                     $currentCourse = $parentToCourse[$download->parent];
-                }
-                else {
+                } else {
                     $downloadElement = $this->elementService->getElement(
                         new SelectStatements('id', $download->id),
                         ['id', 'parent'],
@@ -149,8 +148,9 @@ class DownloadService
 
                     $currentCourseObject = $downloadElement->getCourse();
 
-                    // Weird guard, I do not know why, but it might seem like some courses have downloads on them? No idea
-                    // how that happened, but this guard should take care of it. Might be an artifact from ages ago.
+                    // Weird guard, I do not know why, but it might seem like some courses have downloads on them?
+                    // No idea how that happened, but this guard should take care of it. Might be an artifact
+                    // from ages ago.
                     if ($currentCourseObject === null) {
                         continue;
                     }
@@ -159,8 +159,7 @@ class DownloadService
 
                     $currentCourse = $currentCourseObject->id;
                 }
-            }
-            catch (ElementNotFoundException $ex) {
+            } catch (ElementNotFoundException $ex) {
                 // This is to be expected, if we found a popular download, that is later deleted (or their parents are)
                 // we should just ignore this and keep going.
                 continue;

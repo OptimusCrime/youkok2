@@ -10,10 +10,12 @@ use Slim\Http\Request;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Exceptions\InvalidRequestException;
+use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Common\Models\Session;
+use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class FrontpageEndpoint extends BaseRestEndpoint
 {
@@ -29,6 +31,9 @@ class FrontpageEndpoint extends BaseRestEndpoint
     /** @var Logger */
     private $logger;
 
+    /** @var CacheService */
+    private $cacheService;
+
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
@@ -37,6 +42,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
         $this->courseMapper = $container->get(CourseMapper::class);
         $this->elementMapper = $container->get(ElementMapper::class);
         $this->logger = $container->get(Logger::class);
+        $this->cacheService = $container->get(CacheService::class);
     }
 
     public function boxes(Request $request, Response $response): Response
@@ -50,17 +56,17 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
     public function popularElements(Request $request, Response $response): Response
     {
-        $session = $this->userSessionService->getSession();
+        $delta = $this->userSessionService->getSession()->getMostPopularElement();
 
         try {
-            $payload = $this->frontpageService->popularElements();
+            $payload = $this->frontpageService->popularElements($delta);
 
             return $this->outputJson($response, [
                 'elements' => $this->mapElementsMostPopular($payload),
-                'preference' => $session->getMostPopularElement()
+                'preference' => $delta
             ]);
         } catch (ElementNotFoundException | GenericYoukokException $ex) {
-            $this->logger->error($ex);
+            $this->logger->warning($ex);
 
             return $response->withStatus(400);
         }
@@ -68,14 +74,14 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
     public function popularCourses(Request $request, Response $response): Response
     {
-        $session = $this->userSessionService->getSession();
+        $delta = $this->userSessionService->getSession()->getMostPopularCourse();
 
         try {
-            $payload = $this->frontpageService->popularCourses();
+            $payload = $this->frontpageService->popularCourses($delta);
 
             return $this->outputJson($response, [
                 'courses' => $this->mapCoursesMostPopular($payload),
-                'preference' => $session->getMostPopularCourse()
+                'preference' => $delta
             ]);
         } catch (ElementNotFoundException | GenericYoukokException $ex) {
             $this->logger->error($ex);
@@ -86,8 +92,15 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
     public function newest(Request $request, Response $response): Response
     {
-        $payload = $this->frontpageService->newest();
+        $cacheKey = CacheKeyGenerator::keyForNewestElementsPayload();
+        $cache = $this->fetchFromRedisCache($cacheKey);
+        if ($cache !== null) {
+            return $this->outputJson($response, [
+                'data' => $cache
+            ]);
+        }
 
+        $payload = $this->frontpageService->newest();
         $data = $this->elementMapper->mapFromArray(
             $payload,
             [
@@ -97,6 +110,11 @@ class FrontpageEndpoint extends BaseRestEndpoint
             ]
         );
 
+        $this->cacheService->set(
+            $cacheKey,
+            json_encode($data)
+        );
+
         return $this->outputJson($response, [
             'data' => $data
         ]);
@@ -104,6 +122,14 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
     public function lastVisited(Request $request, Response $response): Response
     {
+        $cacheKey = CacheKeyGenerator::keyForLastVisitedCoursesPayload();
+        $cache = $this->fetchFromRedisCache($cacheKey);
+        if ($cache !== null) {
+            return $this->outputJson($response, [
+                'data' => $cache
+            ]);
+        }
+
         $payload = $this->frontpageService->lastVisited();
 
         $data = $this->courseMapper->map(
@@ -113,6 +139,11 @@ class FrontpageEndpoint extends BaseRestEndpoint
             ]
         );
 
+        $this->cacheService->set(
+            $cacheKey,
+            json_encode($data)
+        );
+
         return $this->outputJson($response, [
             'data' => $data
         ]);
@@ -120,6 +151,14 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
     public function lastDownloaded(Request $request, Response $response): Response
     {
+        $cacheKey = CacheKeyGenerator::keyForLastDownloadedPayload();
+        $cache = $this->fetchFromRedisCache($cacheKey);
+        if ($cache !== null) {
+            return $this->outputJson($response, [
+                'data' => $cache
+            ]);
+        }
+
         $payload = $this->frontpageService->lastDownloaded();
 
         $data = $this->elementMapper->mapFromArray(
@@ -129,6 +168,11 @@ class FrontpageEndpoint extends BaseRestEndpoint
                 ElementMapper::PARENT_DIRECT,
                 ElementMapper::PARENT_COURSE
             ]
+        );
+
+        $this->cacheService->set(
+            $cacheKey,
+            json_encode($data)
         );
 
         return $this->outputJson($response, [
@@ -196,5 +240,20 @@ class FrontpageEndpoint extends BaseRestEndpoint
         }
 
         return $ret;
+    }
+
+    private function fetchFromRedisCache(string $key): ?array
+    {
+        $cache = $this->cacheService->get($key);
+        if ($cache === null) {
+            return null;
+        }
+
+        $data = json_decode($cache, true);
+        if (!is_array($data) || empty($data)) {
+            return null;
+        }
+
+        return $data;
     }
 }

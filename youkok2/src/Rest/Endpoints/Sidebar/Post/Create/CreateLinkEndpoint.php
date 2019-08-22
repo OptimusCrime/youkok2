@@ -31,7 +31,8 @@ class CreateLinkEndpoint extends BaseRestEndpoint
     {
         try {
             $data = $this->getJsonArrayFromBody(
-                $request, [
+                $request,
+                [
                     'url',
                     'title',
                     'id'
@@ -45,8 +46,7 @@ class CreateLinkEndpoint extends BaseRestEndpoint
             );
 
             return $this->outputSuccess($response);
-        }
-        catch (InvalidRequestException | CreateException | GenericYoukokException $ex) {
+        } catch (InvalidRequestException | CreateException | GenericYoukokException $ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }

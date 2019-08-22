@@ -16,7 +16,8 @@ class FileCreateDirectoryService
     private $adminFilesService;
     private $elementService;
 
-    public function __construct(FilesService $adminFilesService, ElementService $elementService) {
+    public function __construct(FilesService $adminFilesService, ElementService $elementService)
+    {
         $this->adminFilesService = $adminFilesService;
         $this->elementService = $elementService;
     }

@@ -33,8 +33,7 @@ class TitleFetchEndpoint extends BaseRestEndpoint
             return $this->outputJson($response, [
                 'title' => $this->titleFetchService->run($data['url'])
             ]);
-        }
-        catch (InvalidRequestException $ex) {
+        } catch (InvalidRequestException $ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }

@@ -9,7 +9,6 @@ use Youkok\Biz\Exceptions\CreateException;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\Admin\FileCreateDirectoryService;
-use Youkok\Biz\Services\Admin\FileListingService;
 use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
@@ -32,7 +31,8 @@ class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
     {
         try {
             $data = $this->getJsonArrayFromBody(
-                $request, [
+                $request,
+                [
                     'course',
                     'directory',
                     'value'
@@ -46,8 +46,7 @@ class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
                     (string) $data['value'],
                 )
             ]);
-        }
-        catch (InvalidRequestException | CreateException | GenericYoukokException$ex) {
+        } catch (InvalidRequestException | CreateException | GenericYoukokException$ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }

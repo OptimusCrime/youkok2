@@ -5,7 +5,12 @@ import { ELEMENT_TYPE_DIRECTORY } from "../../consts";
 import { TYPE_LINK } from "../../../common/types";
 
 export const ArchiveRow = ({ item }) => (
-  <a className="archive-row" href={item.url} title={item.type === TYPE_LINK ? item.link : ''}>
+  <a
+    className="archive-row"
+    href={item.url}
+    title={item.type === TYPE_LINK ? item.link : ''}
+    target={item.type === TYPE_LINK ? '_blank' : '_self'}
+  >
     <div className="archive-row__icon">
       <div style={{ backgroundImage: `url('assets/images/icons/${item.icon}')`}} />
     </div>

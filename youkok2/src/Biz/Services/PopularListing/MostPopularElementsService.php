@@ -22,8 +22,7 @@ class MostPopularElementsService implements MostPopularInterface
         DownloadService $downloadService,
         ElementService $elementService,
         Logger $logger
-    )
-    {
+    ) {
         $this->cacheService = $cacheService;
         $this->downloadService = $downloadService;
         $this->elementService = $elementService;
@@ -83,11 +82,9 @@ class MostPopularElementsService implements MostPopularInterface
                 $element->setDownloads($downloads);
 
                 $elements[] = $element;
+            } catch (ElementNotFoundException $ex) {
+                $this->logger->warning($ex);
             }
-            catch (ElementNotFoundException $ex) {
-                $this->logger->error($ex);
-            }
-
         }
         return $elements;
     }

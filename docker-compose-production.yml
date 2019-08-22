@@ -7,28 +7,30 @@ services:
   ###############################################
 
   db:
+    container_name: "youkok2_db_prod"
     restart: always
-    env_file:
-      - prod.env
+    env_file: prod.env
 
   ###############################################
   #                    Cache                    #
   ###############################################
 
   cache:
+    container_name: "youkok2_cache_prod"
     restart: always
+    expose:
+      - "6379"
 
   ###############################################
   #                  Webserver                  #
   ###############################################
 
   server:
+    container_name: "youkok2_web_prod"
     restart: always
-    env_file:
-      - prod.env
+    env_file: prod.env
     volumes:
-      - ./docker/logs:/var/log/youkok2
-      - ./youkok2:/var/www/html
+      - ./docker/logs:/var/www/logs
       - ./docker/files:/var/www/files
       - ./docker/cache:/var/www/cache
     build:

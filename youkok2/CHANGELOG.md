@@ -1,6 +1,7 @@
-Youkok2 - 4.0.0-pl (xx. xxxxxxx 2019)
-=====================================
+Youkok2 - 4.0.0-alpha (22. august 2019)
+=======================================
 
+- [Info] Alpha for testing.
 - [Info] Total omskrivning, igjen.
 - [Technical] Bruker dependency injection fremfor builder patterns.
 - [Technical] Drastisk forenklet kodebasen.
@@ -8,7 +9,7 @@ Youkok2 - 4.0.0-pl (xx. xxxxxxx 2019)
 - [Technical] Skrevet oss bort fra masse bottlenecks som gjorde siden veldig treg. Spesielt forsiden.
 - [Removed] Favoritter og mine siste besøkte fag på forsiden.
 - [New] Vise siste nedlastninger på forsiden.
-- [Fixed] Forsiden viser nå _faktiske_ nedlastninger for hver dag, uke, måned, år og alltid.
+- [Fixed] Forsiden viser nå faktiske nedlastninger for hver dag, uke, måned, år og alltid.
 
 Youkok2 - 3.0.0-pl  (19. november 2017)
 =======================================

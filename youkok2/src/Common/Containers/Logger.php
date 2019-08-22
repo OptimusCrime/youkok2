@@ -19,7 +19,7 @@ class Logger
 
             $stream = new StreamHandler(
                 getenv('LOGS_DIRECTORY') . getenv('LOGGER_FILE'),
-                getenv('DEV') === '1' ? MonologLogger::WARNING : MonologLogger::INFO,
+                getenv('DEV') === '1' ? MonologLogger::ERROR : MonologLogger::INFO,
                 true,
                 0775
             );

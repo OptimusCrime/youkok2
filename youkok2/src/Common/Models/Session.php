@@ -92,15 +92,17 @@ class Session extends BaseModel
                 return $session;
             }
 
-            if (isset($data[Session::KEY_ADMIN]) and is_bool($data[Session::KEY_ADMIN])) {
+            if (isset($data[Session::KEY_ADMIN]) && is_bool($data[Session::KEY_ADMIN])) {
                 $session->setAdmin($data[Session::KEY_ADMIN]);
             }
 
-            if (isset($data[Session::KEY_MOST_POPULAR_ELEMENT]) and is_String($data[Session::KEY_MOST_POPULAR_ELEMENT])) {
+            if (isset($data[Session::KEY_MOST_POPULAR_ELEMENT])
+                && is_String($data[Session::KEY_MOST_POPULAR_ELEMENT])
+            ) {
                 $session->setMostPopularElement($data[Session::KEY_MOST_POPULAR_ELEMENT]);
             }
 
-            if (isset($data[Session::KEY_MOST_POPULAR_COURSE]) and is_String($data[Session::KEY_MOST_POPULAR_COURSE])) {
+            if (isset($data[Session::KEY_MOST_POPULAR_COURSE]) && is_String($data[Session::KEY_MOST_POPULAR_COURSE])) {
                 $session->setMostPopularCourse($data[Session::KEY_MOST_POPULAR_COURSE]);
             }
 

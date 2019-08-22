@@ -38,6 +38,21 @@ class CacheKeyGenerator
         return 'boxes_number_new_elements';
     }
 
+    public static function keyForNewestElementsPayload(): string
+    {
+        return 'payload_newest_elements';
+    }
+
+    public static function keyForLastVisitedCoursesPayload(): string
+    {
+        return 'payload_last_visited_courses';
+    }
+
+    public static function keyForLastDownloadedPayload(): string
+    {
+        return 'payload_last_downloaded';
+    }
+
     public static function keyForVisibleUriDirectory(string $uri): string
     {
         return 'uri_visible_directory_' . $uri;

@@ -5,8 +5,12 @@ ENV PHPREDIS_VERSION 3.1.4
 
 ARG YOUKOK_ENV=dev
 
-COPY docker/config/${YOUKOK_ENV}/default.conf /etc/apache2/sites-enabled/default.conf
-COPY docker/cron_job /usr/local/bin/cron_job
+COPY ./docker/config/${YOUKOK_ENV}/default.conf /etc/apache2/sites-enabled/default.conf
+COPY ./docker/cron_job /usr/local/bin/cron_job
+
+COPY ./youkok2 /var/www/html/
+
+RUN chown -R www-data:www-data /var/www/html/
 
 RUN if [ $YOUKOK_ENV = "prod" ] ; then \
     mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" ; \
@@ -34,7 +38,8 @@ RUN cd /usr/src \
     && echo 'redis' >> /usr/src/php-available-exts \
     && docker-php-ext-install redis \
     && service apache2 restart \
-    && usermod -a -G staff www-data
+    && usermod -a -G staff www-data \
+    && chmod u+x /usr/local/bin/cron_job
 
 RUN if [ $YOUKOK_ENV = "dev" ] ; then \
     pecl install xdebug; \
@@ -44,5 +49,3 @@ RUN if [ $YOUKOK_ENV = "dev" ] ; then \
     echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
     echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 fi ;
-
-RUN chmod u+x /usr/local/bin/cron_job

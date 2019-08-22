@@ -37,7 +37,7 @@ class ArchiveService
                 ElementService::FLAG_FETCH_COURSE,
                 ElementService::FLAG_FETCH_URI,
             ]
-         );
+        );
 
         return $this->elementService->getVisibleChildren($directory);
     }

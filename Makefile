@@ -7,47 +7,47 @@ SERVER_SERVICE_NAME = server
 #####################################################################################################
 
 dev-build:
-	@docker-compose build
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml build
 
 dev-start:
-	@docker-compose up -d
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d
 
 dev-up: dev-start
 
 dev-stop:
-	@docker-compose stop
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml stop
 
 dev-down:
-	@docker-compose down
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml down
 
 dev-restart: dev-stop dev-start
 
 dev-status:
-	@docker-compose ps
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml ps
 
 dev-logs:
-	@docker-compose logs -f
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml logs -f
 
 dev-reload:
-	@docker-compose restart $(SERVER_SERVICE_NAME)
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml restart $(SERVER_SERVICE_NAME)
 
 dev-bash:
-	@docker-compose run --rm $(SERVER_SERVICE_NAME) bash
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) bash
 
 dev-cron:
-	@docker-compose run --rm $(SERVER_SERVICE_NAME) cron_job
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) cron_job
 
 dev-migrate:
-	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer migrate
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) composer migrate
 
 dev-composer:
-	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer install
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) composer install
 
 dev-phpunit:
-	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer phpunit
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) composer phpunit
 
 dev-phpcs:
-	@docker-compose run --rm $(SERVER_SERVICE_NAME) composer phpcs
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) composer phpcs
 
 dev-install: dev-composer dev-migrate
 

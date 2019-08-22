@@ -24,8 +24,7 @@ class FileUpdateService
         AdminElementService $adminElementService,
         ElementService $elementService,
         CacheService $cacheService
-    )
-    {
+    ) {
         $this->adminElementService = $adminElementService;
         $this->adminFilesService = $adminFilesService;
         $this->elementService = $elementService;
@@ -87,7 +86,11 @@ class FileUpdateService
                 $element->name = $data['name'];
             }
         } else {
-            if ($newParent || $element->name !== $data['name'] || $element->slug !== $data['slug'] || $element->uri !== $data['uri']) {
+            if ($newParent
+                || $element->name !== $data['name']
+                || $element->slug !== $data['slug']
+                || $element->uri !== $data['uri']
+            ) {
                 $updatedData = $this->regenerateNameSlugAndURI($data, $element);
 
                 $element->name = $updatedData['name'];
@@ -115,6 +118,7 @@ class FileUpdateService
             $this->cacheService->delete(CacheKeyGenerator::keyForBoxesNumberOfFiles());
             $this->cacheService->delete(CacheKeyGenerator::keyForBoxesNumberOfCoursesWithContent());
             $this->cacheService->delete(CacheKeyGenerator::keyForBoxesNumberOfFilesThisMonth());
+            $this->cacheService->delete(CacheKeyGenerator::keyForNewestElementsPayload());
         }
     }
 
@@ -150,8 +154,7 @@ class FileUpdateService
                 $oldParent->empty = 1;
                 $oldParent->save();
             }
-        }
-        else {
+        } else {
             if ($oldParent->empty === 1) {
                 $oldParent->empty = 0;
                 $oldParent->save();
@@ -208,7 +211,8 @@ class FileUpdateService
                 'pending',
                 'deleted',
                 'link',
-            ], [
+            ],
+            [
                 ElementService::FLAG_FETCH_URI
             ]
         );

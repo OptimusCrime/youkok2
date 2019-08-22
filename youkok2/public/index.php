@@ -21,4 +21,3 @@ catch (\Exception $ex) {
 
     echo @file_get_contents(getenv('TEMPLATE_DIRECTORY') . 'errors/500.html');
 }
-

@@ -17,7 +17,8 @@ class CreateFileService
 
     private $elementService;
 
-    public function __construct(ElementService $elementService) {
+    public function __construct(ElementService $elementService)
+    {
         $this->elementService = $elementService;
     }
 
@@ -91,8 +92,7 @@ class CreateFileService
                     return $checksum;
                 }
             }
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw new CreateException('Failed to create a checksum for file.', $ex->getCode(), $ex);
         }
 
@@ -111,8 +111,7 @@ class CreateFileService
 
         try {
             $file->moveTo($targetDir . $checksum);
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw new CreateException('Failed to move uploaded file with exception', $ex->getCode(), $ex);
         }
     }

@@ -28,7 +28,7 @@ class SettingsParser
                 'production' => [
                     'adapter' => 'mysql',
                     'host' => getenv('MYSQL_HOST'),
-                    'name' => getenv('MYSQL_TABLE'),
+                    'name' => getenv('MYSQL_DATABASE'),
                     'user' => getenv('MYSQL_USER'),
                     'pass' => getenv('MYSQL_PASSWORD'),
                     'port' => getenv('MYSQL_PORT'),

@@ -12,8 +12,7 @@ class FileListingService
     public function __construct(
         AdminCourseService $adminCourseService,
         FilesService $adminFilesService
-    )
-    {
+    ) {
         $this->adminCourseService = $adminCourseService;
         $this->adminFilesService = $adminFilesService;
     }

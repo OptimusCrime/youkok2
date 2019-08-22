@@ -15,7 +15,8 @@ class CreateLinkService
 
     private $elementService;
 
-    public function __construct(ElementService $elementService) {
+    public function __construct(ElementService $elementService)
+    {
         $this->elementService = $elementService;
     }
 

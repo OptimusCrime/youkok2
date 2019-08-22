@@ -29,8 +29,11 @@ class UpdateDownloadsService
         // Update this elements downloads in the most popular sets
         $this->addDownloadForElementInMostPopularSets($element);
 
-        // Finally, update the total number of downloads
+        // Update the total number of downloads
         $this->updateTotalNumberOfDownloads();
+
+        // Flush the payload cache
+        $this->cacheService->delete(CacheKeyGenerator::keyForLastDownloadedPayload());
     }
 
     private function addDownloadForElement(Element $element)

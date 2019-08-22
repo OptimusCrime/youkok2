@@ -7,11 +7,9 @@ services:
   ###############################################
 
   db:
-    container_name: "youkok2_db"
     image: "mysql:5.7.17"
     ports:
       - "3306:3306"
-    env_file: dev.env
     volumes:
       - /var/lib/mysql
 
@@ -20,10 +18,7 @@ services:
   ###############################################
 
   cache:
-    container_name: "youkok2_cache"
-    image: "redis:4.0.2-alpine"
-    ports:
-      - "6389:6379"
+    image: "redis:4.0.14-alpine"
     volumes:
       - /data
 
@@ -32,7 +27,6 @@ services:
   ###############################################
 
   server:
-    container_name: "youkok2_web"
     depends_on:
       - db
       - cache
@@ -41,16 +35,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - YOUKOK_ENV=dev
     ports:
       - "8000:80"
-    volumes:
-      - ./docker/logs:/var/www/logs
-      - ./youkok2:/var/www/html
-      - ./docker/files:/var/www/files
-      - ./docker/cache:/var/www/cache
-      - ./docker/xdebug:/tmp/xdebug
     links:
       - db
       - cache

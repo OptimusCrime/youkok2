@@ -94,7 +94,7 @@ class ElementMapper
                                ? $this->courseMapper->mapCourse($parent)
                                : $this->mapElement($parent);
             } catch (ElementNotFoundException $e) {
-                $this->logger->error('Failed to find parent for element: ' . $element->id);
+                $this->logger->warning('Failed to find parent for element: ' . $element->id);
                 return null;
             }
         }
@@ -103,7 +103,7 @@ class ElementMapper
             try {
                 $arr['course'] = $this->courseMapper->mapCourse($element->getCourse());
             } catch (ElementNotFoundException $e) {
-                $this->logger->error('Failed to find course for element: ' . $element->id);
+                $this->logger->warning('Failed to find course for element: ' . $element->id);
                 return null;
             }
         }

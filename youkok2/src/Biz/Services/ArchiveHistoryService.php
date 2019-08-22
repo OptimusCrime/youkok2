@@ -23,12 +23,12 @@ class ArchiveHistoryService
     {
         // This throws an exception if the element is hidden
          $element = $this->elementService->getElement(
-            new SelectStatements('id', $id),
-            ['id'],
-            [
+             new SelectStatements('id', $id),
+             ['id'],
+             [
                 ElementService::FLAG_ENSURE_VISIBLE
-            ]
-        );
+             ]
+         );
 
         return $this->elementMapper->mapHistory(
             $this->elementService->getVisibleChildren($element, ElementService::SORT_TYPE_AGE)

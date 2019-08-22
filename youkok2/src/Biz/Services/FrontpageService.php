@@ -51,7 +51,6 @@ class FrontpageService
 
     public function boxes(): array
     {
-        // TODO move this into another service
         $numberFiles = $this->cacheService->get(CacheKeyGenerator::keyForBoxesNumberOfFiles());
         if ($numberFiles === null) {
             $numberFiles = $this->elementService->getNumberOfVisibleFiles();
@@ -97,22 +96,18 @@ class FrontpageService
         ];
     }
 
-    public function popularElements(): array
+    public function popularElements(string $delta): array
     {
-        $session = $this->sessionService->getSession();
-
         return $this->popularElementsProcessor->fromDelta(
-            $session->getMostPopularElement(),
+            $delta,
             static::SERVICE_LIMIT
         );
     }
 
-    public function popularCourses(): array
+    public function popularCourses(string $delta): array
     {
-        $session = $this->sessionService->getSession();
-
         return $this->popularCoursesProcessor->fromDelta(
-            $session->getMostPopularCourse(),
+            $delta,
             static::SERVICE_LIMIT
         );
     }

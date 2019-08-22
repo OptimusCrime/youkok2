@@ -53,8 +53,7 @@ class ElementService
         if ($element->parent === null) {
             // .parent was fetched, but was `null` indicating that the current Element is a course
             $element->setParents([]);
-        }
-        else {
+        } else {
             // If any of these flags are sat, fetch parents
             $fetchParentsFlags = [
                 static::FLAG_FETCH_PARENTS,
@@ -69,12 +68,14 @@ class ElementService
             }
         }
 
-        if (in_array(static::FLAG_FETCH_URI, $flags) && $element->uri === null && $element->getType() !== Element::LINK) {
+        if (in_array(static::FLAG_FETCH_URI, $flags)
+            && $element->uri === null
+            && $element->getType() !== Element::LINK
+        ) {
             // If the current type is course, we can just use the slug
             if ($element->getType() === Element::COURSE) {
                 $element->uri = $element->slug;
-            }
-            else {
+            } else {
                 $element->uri = $this->getUriForElement($element);
             }
         }
@@ -129,7 +130,7 @@ class ElementService
 
         if (count($element->getParents()) == 0) {
             $element->setParents(
-                    $this->fetchParents(
+                $this->fetchParents(
                     $element,
                     ['id', 'slug', 'parent', 'directory'],
                     []
@@ -153,16 +154,14 @@ class ElementService
         // First, try to fetch using cache
         try {
             return $this->getElementFromUriCache($uri, $attributes, $flags);
-        }
-        catch (ElementNotFoundException $ex) {
+        } catch (ElementNotFoundException $ex) {
             // To be expected
         }
 
         // Secondly, try to fetch, using the entire uri
         try {
             return $this->getElementFromOriginalUri($uri, $attributes, $flags);
-        }
-        catch (ElementNotFoundException $ex) {
+        } catch (ElementNotFoundException $ex) {
             // To be expected
         }
 
@@ -349,8 +348,7 @@ class ElementService
             $parent = null;
             try {
                 $parent = $this->fetchElement($attributes, $selectStatements);
-            }
-            catch (ElementNotFoundException $ex) {
+            } catch (ElementNotFoundException $ex) {
                 // Rethrow exception
                 throw new ElementNotFoundException(
                     'Could not find parent for Element id' . $element->id . ', parent id ' . $element->parent
@@ -408,8 +406,7 @@ class ElementService
         $element = null;
         if (ElementPool::contains($attributes, $selectStatements)) {
             $element = ElementPool::get($attributes, $selectStatements);
-        }
-        else {
+        } else {
             $query = Element::select($attributes);
 
             foreach ($selectStatements as $key => $value) {

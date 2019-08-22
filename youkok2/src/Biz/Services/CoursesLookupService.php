@@ -89,7 +89,9 @@ class CoursesLookupService
         $response = file_put_contents(static::getTemplateFileLocation(), $content);
 
         if ($response === false) {
-            $this->logger->error('Failed to store content in cache busting template in location: ' . static::getTemplateFileLocation());
+            $this->logger->error(
+                'Failed to store content in cache busting template in location: ' . static::getTemplateFileLocation()
+            );
         }
     }
 

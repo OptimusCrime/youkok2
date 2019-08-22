@@ -20,7 +20,8 @@ class AdminElementMapper
     public function map(Element $element): array
     {
         $arr = $this->elementMapper->mapElement(
-            $element, [
+            $element,
+            [
                 ElementMapper::ICON
             ]
         );

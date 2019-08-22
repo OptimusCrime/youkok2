@@ -21,8 +21,7 @@ class FileDetailsService
         FilesService $adminFilesService,
         ElementService $elementService,
         DownloadFileInfoService $downloadFileInfoService
-    )
-    {
+    ) {
         $this->adminCourseService = $adminCourseService;
         $this->adminFilesService = $adminFilesService;
         $this->elementService = $elementService;
@@ -48,7 +47,8 @@ class FileDetailsService
                 'link',
                 'added',
                 'last_visited',
-            ], [
+            ],
+            [
                 ElementService::FLAG_FETCH_COURSE
             ]
         );
