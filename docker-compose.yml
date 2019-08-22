@@ -3,34 +3,13 @@ version: '2'
 services:
 
   ###############################################
-  #                    Files                    #
-  ###############################################
-
-  appdata:
-    container_name: "youkok2_files"
-    image: "alpine:3.5"
-    command: tail -f /dev/null
-    user: "1000"
-    network_mode: "none"
-    volumes:
-      - ./youkok2:/var/www/html:z
-      - ./docker/files:/var/www/files:z
-      - ./docker/cache:/var/www/cache
-
-  ###############################################
   #                   Database                  #
   ###############################################
 
   db:
-    container_name: "youkok2_db"
     image: "mysql:5.7.17"
     ports:
-      - "3316:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=youkok2
-      - MYSQL_PASSWORD=youkok2
-      - MYSQL_DATABASE=youkok2
+      - "3306:3306"
     volumes:
       - /var/lib/mysql
 
@@ -39,10 +18,7 @@ services:
   ###############################################
 
   cache:
-    container_name: "youkok2_cache"
-    image: "redis:4.0.2-alpine"
-    ports:
-     - "6389:6379"
+    image: "redis:4.0.14-alpine"
     volumes:
       - /data
 
@@ -51,21 +27,16 @@ services:
   ###############################################
 
   server:
-    container_name: "youkok2_web"
     depends_on:
       - db
-      - appdata
       - cache
+    user: "0"
+    env_file: dev.env
     build:
       context: .
-      dockerfile: Dockerfile.server
+      dockerfile: Dockerfile
     ports:
       - "8000:80"
-    volumes:
-      - ./docker/config/apache2:/etc/apache2/sites-enabled
-      - ./docker/logs:/var/log/youkok2
     links:
       - db
       - cache
-    volumes_from:
-      - appdata

@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+
+  ###############################################
+  #                   Database                  #
+  ###############################################
+
+  db:
+    container_name: "youkok2_db_dev"
+    env_file: dev.env
+
+  ###############################################
+  #                    Cache                    #
+  ###############################################
+
+  cache:
+    container_name: "youkok2_cache_dev"
+    ports:
+      - "6379:6379"
+
+  ###############################################
+  #                  Webserver                  #
+  ###############################################
+
+  server:
+    container_name: "youkok2_web_dev"
+    env_file: dev.env
+    volumes:
+      - ./docker/logs:/var/www/logs
+      - ./youkok2:/var/www/html
+      - ./docker/files:/var/www/files
+      - ./docker/cache:/var/www/cache
+      - ./docker/xdebug:/tmp/xdebug
+    build:
+      args:
+        - YOUKOK_ENV=dev

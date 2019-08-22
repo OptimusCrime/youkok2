@@ -8,10 +8,11 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/admin/AdminLTE.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/youkok.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/admin/youkok2.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.3.3.1+2.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/admin/AdminLTE.2.3.0.min.css" />
+    {% if DEV == '1' %}{% include "react/dev_youkok2.html" %}{% else %}{% include "react/youkok2.html" %}{% endif %}
+    {% if DEV == '1' %}{% include "react/dev_admin.html" %}{% else %}{% include "react/admin.html" %}{% endif %}
+    {% if DEV == '1' %}{% include "react/dev_polyfills.html" %}{% else %}{% include "react/polyfills.html" %}{% endif %}
     <script type="text/javascript">var SITE_DATA = {{ SITE_DATA|json_encode()|raw }};</script>
 </head>
 <body class="skin-blue sidebar-mini{% if BODY_CLASS != null %} {{ BODY_CLASS }}{% endif %}">
@@ -78,13 +79,11 @@
                 <li>
                     <a href="{{ youkok_url() }}">Youkok2</a>
                 </li>
-                <li class="active">Forside</li>
+                <li class="active">{% block admin_page %}{% endblock %}</li>
             </ol>
         </section>
         {% block content %}{% endblock %}
     </div>
 </div>
-{% include "javascripts.html" %}
-{% include "javascripts_admin.html" %}
 </body>
 </html>

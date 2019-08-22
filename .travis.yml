@@ -1,24 +1,20 @@
 language: php
 php:
-  - 7.0
-  - 7.1
-  - 7.2
-
-matrix:
-  allow_failures:
-    - php: 7.2
+  - '7.3.5'
 
 notifications:
   email: false
+
+before_install:
+  - cd youkok2
+  - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
   composer install --no-interaction
 
 script:
-  - composer phpcs
-  - composer phpmd ./src text phpmd
-#  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then php composer.phar phpunit --coverage-clover clover.xml ; fi
-#  - if [[ "$TRAVIS_PHP_VERSION" != '7.0' ]]; then php composer.phar phpunit ; fi
+  - ./vendor/bin/phpcs
+  - ./vendor/bin/phpunit --coverage-clover clover.xml
 
-#after_script:
-#  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then php composer.phar coveralls --coverage_clover=clover.xml -v ; fi
+after_script:
+  - ./vendor/bin/coveralls --coverage_clover=clover.xml -v

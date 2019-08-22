@@ -3,41 +3,42 @@ namespace Youkok\Helpers;
 
 class SettingsParser
 {
-    private $settings;
-
-    public function __construct()
+    public static function getSlimConfig(): array
     {
-        $this->settings = [];
+        return [
+            'settings' => [
+                'displayErrorDetails' => getenv('DEV') === '1',
+                'addContentLengthHeader' => false,
+
+                'base_dir' => getenv('BASE_DIRECTORY'),
+            ]
+        ];
     }
 
-    public function parse(array $files)
+    public static function getPhinxConfig(): array
     {
-        foreach ($files as $file) {
-            $this->handleFile($file);
-        }
-    }
-
-    private function handleFile($file)
-    {
-        if (file_exists($file) and is_readable($file)) {
-            try {
-                $newSettings = require $file;
-
-                if ($newSettings === null or gettype($newSettings) !== 'array') {
-                    return;
-                }
-
-                $this->settings = array_replace_recursive($this->settings, $newSettings);
-            } catch (\Exception $e) {
-                // Log error here
-            }
-        }
-
-        // Log error here
-    }
-
-    public function getSettings()
-    {
-        return $this->settings;
+        return [
+            'paths' => [
+                'migrations' => '%%PHINX_CONFIG_DIR%%/../phinx/migrations',
+                'seeds' => '%%PHINX_CONFIG_DIR%%/../phinx/seeds',
+            ],
+            'environments' => [
+                'default_migration_table' => 'phinxlog',
+                'default_database' => 'production',
+                'production' => [
+                    'adapter' => 'mysql',
+                    'host' => getenv('MYSQL_HOST'),
+                    'name' => getenv('MYSQL_DATABASE'),
+                    'user' => getenv('MYSQL_USER'),
+                    'pass' => getenv('MYSQL_PASSWORD'),
+                    'port' => getenv('MYSQL_PORT'),
+                    'charset' => 'utf8',
+                ],
+                'test' => [
+                    'adapter' => 'sqlite',
+                    'name' => './tests/files/db.sqlite3',
+                ]
+            ]
+        ];
     }
 }

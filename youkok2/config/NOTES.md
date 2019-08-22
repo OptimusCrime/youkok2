@@ -1,5 +1,0 @@
-## For MySQL 5.7
-
-```
-ALTER TABLE `phinxlog` CHANGE `end_time` `end_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
-```

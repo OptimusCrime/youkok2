@@ -9,9 +9,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="description" content="{% if SITE_DESCRIPTION %}{{ SITE_DESCRIPTION }}{% else %}Velkommen til Youkok2, den beste kokeboka på nettet.{% endif %}" />
     <meta name="keywords" content="ntnu, kok, youkok, kokebok, øvinger, lekser, eksamen, oppgaver, fasit, trondheim" />
-    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/youkok.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.3.3.1+2.min.css" />
+    {% include "dynamic/courses_lookup.html" ignore missing %}
+    {% if DEV == '1' %}{% include "react/dev_youkok2.html" %}{% else %}{% include "react/youkok2.html" %}{% endif %}
+    {% if DEV == '1' %}{% include "react/dev_polyfills.html" %}{% else %}{% include "react/polyfills.html" %}{% endif %}
     <script type="text/javascript">var SITE_DATA = {{ SITE_DATA|json_encode()|raw }};</script>
     {% if SITE_SETTINGS.GOOGLE_SENSE %}
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -22,6 +24,7 @@
         });
     </script>
     {% endif %}
+    {% block head %}{% endblock %}
 </head>
 <body{% if BODY_CLASS != null %} class="{{ BODY_CLASS }}"{% endif %}>
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -38,48 +41,48 @@
         <div class="navbar-collapse collapse">
             <ul id="main-nav" class="nav navbar-nav">
                 <li{% if HEADER_MENU == 'home' %} class="active"{% endif %}><a href="{{ youkok_url() }}">Hjem</a></li>
-                <li{% if HEADER_MENU == 'courses' %} class="active"{% endif %}><a href="{{ path_for('archive') }}">Emner</a></li>
-                <li class="hidden{% if HEADER_MENU == 'search'%} active{% endif %}"><a href="{{ path_for('search') }}">Søk</a></li>
+                <li{% if HEADER_MENU == 'courses' %} class="active"{% endif %}><a href="{{ path_for('courses') }}">Emner</a></li>
+                <li class="hidden{% if HEADER_MENU == 'search'%} active{% endif %}"><a href="{{ path_for('courses') }}">Søk</a></li>
                 <li{% if HEADER_MENU == 'about' %} class="active"{% endif %}><a href="{{ path_for('about') }}">Om Youkok2</a></li>
                 <li{% if HEADER_MENU == 'help' %} class="active"{% endif %}><a href="{{ path_for('help') }}">Hjelp</a></li>
                 {% if ADMIN %}
                     <li><a href="{{ path_for('admin_home') }}">Admin</a></li>
                 {% endif %}
             </ul>
-            <form class="navbar-form navbar-right" id="search-form" name="search-form" action="{{ path_for('search') }}" method="get">
-            <div class="form-group div-relative" id="prefetch">
-                <input type="text" placeholder="Søk etter fag" class="form-control typeahead" value="{{ SEARCH_QUERY }}" id="s" name="s" />
-                <button class="btn" type="button" id="nav-search">
-                    <i class="fa fa-search"></i>
-                </button>
-            </div>
-            </form>
+            {% if DEV == '1' %}{% include "react/dev_searchBar.html" %}{% else %}{% include "react/searchBar.html" %}{% endif %}
         </div>
     </div>
 </div>
-<div class="container" id="main">
-    <div class="row" id="messages">
+<main class="container">
+    <noscript>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="alert alert-warning" role="alert">Du må skru på JavaScript for å kunne bruke Youkok2.</div>
+            </div>
+        </div>
+    </noscript>
+    <div class="row">
         <div class="col-xs-12">
             {% block content %}{% endblock %}
         </div>
     </div>
-</div>
+</main>
 <div class="container">
     <div class="row">
-        <div class="col-xs-12" id="footer">
-            <p>
-                <span><a href="{{ path_for('changelog') }}">Youkok2 v{{ SITE_SETTINGS.VERSION }}</a></span>
-                <span><a href="{{ path_for('about') }}">Om Youkok2</a></span>
-                <span><a href="{{ path_for('terms') }}">Retningslinjer</a></span>
-                <span><a href="{{ path_for('help') }}">Hjelp</a></span>
-                <span><a href="{{ path_for('terms') }}#cookies">Om informasjonskapsler (cookies)</a></span>
-                <span><a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">{{ SITE_SETTINGS.EMAIL_CONTACT }}</a></span>
-                <span>{{ EXECUTION_TIME }}</span>
-                <span><a href="https://github.com/OptimusCrime/youkok2" target="_blank">GitHub</a></span>
-            </p>
-        </div>
+        <footer class="col-xs-12 footer">
+            <ul>
+                <li><a href="{{ path_for('changelog') }}">Youkok2 v{{ SITE_SETTINGS.VERSION }}</a></li>
+                <li><a href="{{ path_for('about') }}">Om Youkok2</a></li>
+                <li><a href="{{ path_for('terms') }}">Retningslinjer</a></li>
+                <li><a href="{{ path_for('help') }}">Hjelp</a></li>
+                <li><a href="{{ path_for('terms') }}#cookies">Om informasjonskapsler (cookies)</a></li>
+                <li><a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">{{ SITE_SETTINGS.EMAIL_CONTACT }}</a></li>
+                <li>{{ EXECUTION_TIME }}</li>
+                <li><a href="https://github.com/OptimusCrime/youkok2" target="_blank">GitHub</a></li>
+            </ul>
+        </footer>
     </div>
 </div>
-{% include "javascripts.html" %}
+{% block scripts %}{% endblock %}
 </body>
 </html>

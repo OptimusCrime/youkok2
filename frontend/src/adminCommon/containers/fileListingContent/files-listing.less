@@ -1,0 +1,45 @@
+@import "../../../youkok2/variables.less";
+
+.files-listing {
+  padding: 10px;
+}
+.file-listing {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+
+  &--inner {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    &:hover {
+      background-color: @gray-light;
+    }
+  }
+  &--type {
+    margin-right: 10px;
+  }
+  &--collapse {
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  &--external {
+    margin-left: 10px;
+  }
+  &--subdir {
+    margin-left: 10px;
+    color: @blue;
+    cursor: pointer;
+  }
+  &--children {
+    padding-left: 20px;
+  }
+}
+a.file-listing--deleted {
+  color: @red;
+  text-decoration: line-through;
+}
+a.file-listing--pending {
+  color: @blue-light;
+  font-style: italic;
+}

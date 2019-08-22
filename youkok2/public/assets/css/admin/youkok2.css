@@ -2,6 +2,22 @@ body {
     background-color: #ecf0f5;
 }
 
+/*
+ * Admin
+ */
+
+.admin-graph-hidden {
+    display: none;
+}
+#modal-admin-script .modal-body{
+    padding-top: 20px;
+}
+#modal-admin-iframe {
+    width: 558px;
+    min-height: 200px;
+}
+
+
 .admin-file-tree ul {
     list-style: none;
     margin: 0;

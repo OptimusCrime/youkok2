@@ -21,7 +21,7 @@
                     </div>
                     <div class="form-group">
                         <label for="element-uri">URI</label>
-                        <a href="#" id="element-modal-uri-regenerate" data-url="{{ path_for('admin_processor_element_regenerate_uri') }}">Generer</a>
+                        <a href="#" id="element-modal-uri-regenerate">Generer</a>
                         <input type="text" class="form-control" name="element-uri" id="element-uri">
                     </div>
                     <div class="form-group">
@@ -60,8 +60,8 @@
             <div class="modal-footer">
                 <p class="modal-saved-inline" id="element-modal-save-message">Lagret</p>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
-                <button type="button" class="btn btn-default" id="element-modal-save" data-url="{{ path_for('admin_processor_element_details_update') }}">Lagre</button>
-                <button type="button" class="btn btn-primary" id="element-modal-save-close" data-url="{{ path_for('admin_processor_element_details_update') }}">Lagre og lukk</button>
+                <button type="button" class="btn btn-default" id="element-modal-save">Lagre</button>
+                <button type="button" class="btn btn-primary" id="element-modal-save-close">Lagre og lukk</button>
             </div>
         </div>
     </div>
@@ -84,7 +84,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Lukk</button>
-                <button type="button" class="btn btn-primary" id="directory-modal-save-close" data-url="{{ path_for('admin_processor_element_create') }}">Lagre</button>
+                <button type="button" class="btn btn-primary" id="directory-modal-save-close">Lagre</button>
             </div>
         </div>
     </div>

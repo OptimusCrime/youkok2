@@ -1,0 +1,58 @@
+@import "../../../youkok2/variables.less";
+
+.sidebar-create__file {
+  &--wrapper {
+    margin: 10px 0;
+    background-color: @blue-dark;
+  }
+  &--dropzone {
+    padding: 5px;
+
+    &--button {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+  &--list {
+    display: flex;
+    flex-direction: column;
+  }
+  &--element {
+    display: flex;
+    color: @white;
+    border-bottom: 1px solid @blue-darkest;
+    padding: 5px;
+    justify-content: space-between;
+
+    a {
+      color: @white;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+    &--name {
+      font-weight: bold;
+    }
+  }
+  &--progress {
+    display: block;
+    background-color: @blue-dark;
+    text-align: center;
+    color: @white;
+    position: relative;
+
+    span {
+      z-index: 999;
+      position: relative;
+    }
+    &--inner {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: block;
+      background-color: @blue-darkest;
+      height: 100%;
+      width: 0;
+    }
+  }
+}

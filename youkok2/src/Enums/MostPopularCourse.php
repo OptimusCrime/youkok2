@@ -3,16 +3,16 @@ namespace Youkok\Enums;
 
 abstract class MostPopularCourse
 {
-    const TODAY = 0;
-    const WEEK = 1;
-    const MONTH = 2;
-    const YEAR = 3;
-    const ALL = 4;
+    const DAY = 'DAY';
+    const WEEK = 'WEEK';
+    const MONTH = 'MONTH';
+    const YEAR = 'YEAR';
+    const ALL = 'ALL';
 
-    public static function all()
+    public static function all(): array
     {
         return [
-            static::TODAY,
+            static::DAY,
             static::WEEK,
             static::MONTH,
             static::YEAR,

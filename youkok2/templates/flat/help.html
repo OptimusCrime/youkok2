@@ -9,8 +9,7 @@
     </div>
     <div class="col-xs-12 col-md-4" id="sidebar">
         {% include "sidebar/flat.html" %}
-        {% include "sidebar/popular_elements.html" %}
+        {% if DEV == '1' %}{% include "react/dev_sidebarPopular.html" %}{% else %}{% include "react/sidebarPopular.html" %}{% endif %}
     </div>
 </div>
-{% include "jstemplates/popular_elements.html" %}
 {% endblock %}
