@@ -9,6 +9,14 @@ Youkok2 is available at [youkok2.com](http://youkok2.com).
 
 Add the following to the host machine crontab:
 
+**For dev:**
+
 ```
 30 1 * * * docker-compose run --rm server cron_job 
+```
+
+**For production:**
+
+```
+30 1 * * * docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm server cron_job 
 ```

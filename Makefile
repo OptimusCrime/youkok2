@@ -92,8 +92,7 @@ prod-cron:
 prod-migrate:
 	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) composer migrate
 
-prod-composer:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) composer install
+prod-composer: dev-composer
 
 prod-install: prod-composer prod-migrate
 

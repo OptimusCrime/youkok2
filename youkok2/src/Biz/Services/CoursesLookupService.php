@@ -12,7 +12,6 @@ class CoursesLookupService
     const JS_FILE_NAME = 'courses_lookup.js';
     const JS_TEMPLATE = 'var COURSES_LOOKUP = %s;';
 
-    const CACHE_BUSTING_PATH = 'dynamic/';
     const CACHE_BUSTING_FILE_NAME = 'courses_lookup.html';
     const CACHE_BUSTING_TEMPLATE = '<script src="'
                                   . CoursesLookupService::JS_DIRECTORY
@@ -97,7 +96,7 @@ class CoursesLookupService
 
     private static function getTemplateFileLocation(): string
     {
-        return getenv('TEMPLATE_DIRECTORY') . static::CACHE_BUSTING_PATH . static::CACHE_BUSTING_FILE_NAME;
+        return getenv('CACHE_DIRECTORY') . static::CACHE_BUSTING_FILE_NAME;
     }
 
     private static function getJsFileLocation(): string
