@@ -1,10 +1,4 @@
-Youkok2 - 4.0.3-pl (27. august 2019)
-====================================
-
-- [Info] Bugfix...
-- [Fixed] Hva med denne gangen?
-
-Youkok2 - 4.0.1-pl (27. august 2019)
+Youkok2 - 4.0.1-pl - 4.0.3 (27. august 2019)
 ====================================
 
 - [Info] Bugfix.
