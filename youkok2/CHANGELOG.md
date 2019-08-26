@@ -1,3 +1,9 @@
+Youkok2 - 4.0.0-pl (26. august 2019)
+====================================
+
+- [Info] Release.
+- [Changed] Endret versjonsnummeret.
+
 Youkok2 - 4.0.0-alpha (22. august 2019)
 =======================================
 
