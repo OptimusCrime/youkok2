@@ -101,6 +101,6 @@ class CoursesLookupService
 
     private static function getJsFileLocation(): string
     {
-        return getenv('PUBLIC_DIRECTORY') . static::JS_DIRECTORY . static::JS_FILE_NAME;
+        return getenv('CACHE_DIRECTORY') . static::JS_FILE_NAME;
     }
 }

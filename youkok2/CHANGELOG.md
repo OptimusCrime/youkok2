@@ -1,8 +1,14 @@
+Youkok2 - 4.0.3-pl (27. august 2019)
+====================================
+
+- [Info] Bugfix...
+- [Fixed] Hva med denne gangen?
+
 Youkok2 - 4.0.1-pl (27. august 2019)
 ====================================
 
 - [Info] Bugfix.
-- [Changed] Gjorde listen av fag tilgjengelig. En liten logisk brist der.
+- [Fixed] Gjorde listen av fag tilgjengelig. En liten logisk brist der.
 
 Youkok2 - 4.0.0-pl (26. august 2019)
 ====================================
