@@ -31,7 +31,6 @@ services:
       - db
       - cache
     user: "0"
-    env_file: dev.env
     build:
       context: .
       dockerfile: Dockerfile

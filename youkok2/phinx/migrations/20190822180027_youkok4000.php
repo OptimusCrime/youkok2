@@ -35,7 +35,7 @@ class Youkok4000 extends AbstractMigration
         $session->addIndex(['hash'])->save();
 
         $download = $this->table('download');
-        $download->addIndex(['download'])->save();
+        $download->addIndex(['resource'])->save();
 
         $element = $this->table('element');
         $element->addIndex(['parent'])->save();

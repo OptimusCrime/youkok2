@@ -8,6 +8,8 @@ use Youkok\Common\Models\Element;
 
 class CoursesLookupService
 {
+    const DYNAMIC_SUB_DIRECTORY = 'dynamic/';
+
     const JS_DIRECTORY = 'assets/data/';
     const JS_FILE_NAME = 'courses_lookup.js';
     const JS_TEMPLATE = 'var COURSES_LOOKUP = %s;';
@@ -34,6 +36,7 @@ class CoursesLookupService
         $this->deleteCacheFile();
         $this->populateCacheFile();
         $this->createCacheBustingTemplate();
+        $this->changeOwnership();
     }
 
     private function deleteCacheFile(): void
@@ -96,11 +99,22 @@ class CoursesLookupService
 
     private static function getTemplateFileLocation(): string
     {
-        return getenv('CACHE_DIRECTORY') . static::CACHE_BUSTING_FILE_NAME;
+        return getenv('CACHE_DIRECTORY') . static::DYNAMIC_SUB_DIRECTORY . static::CACHE_BUSTING_FILE_NAME;
     }
 
     private static function getJsFileLocation(): string
     {
-        return getenv('CACHE_DIRECTORY') . static::JS_FILE_NAME;
+        return getenv('CACHE_DIRECTORY') . static::DYNAMIC_SUB_DIRECTORY . static::JS_FILE_NAME;
+    }
+
+    private function changeOwnership(): void
+    {
+        if (exec('whoami') === 'root') {
+            chown(static::getTemplateFileLocation(), 'www-data');
+            chgrp(static::getTemplateFileLocation(), 'www-data');
+
+            chown(static::getJsFileLocation(), 'www-data');
+            chgrp(static::getJsFileLocation(), 'www-data');
+        }
     }
 }

@@ -1,8 +1,19 @@
-Youkok2 - 4.0.1-pl - 4.0.3 (27. august 2019)
+Youkok2 - 4.0.2-pl (28. august 2019)
 ====================================
 
 - [Info] Bugfix.
-- [Fixed] Gjorde listen av fag tilgjengelig. En liten logisk brist der.
+- [Fixed] Fikset faktisk opplisting av fag.
+- [Fixed] Ikke legg til nedlastninger gjort av admin.
+- [Fixed] Endre rettigheter på cache-filer slik at ikke root eier disse.
+- [Fixed] Migrasjon for å legge til nye indexes.
+- [Technical] Endret hvordan mounting av filer gjøres på systemet.
+- [Technical] Splittet opp env-filene i common, dev og prod.
+
+Youkok2 - 4.0.1-pl (27. august 2019)
+====================================
+
+- [Info] Bugfix.
+- [Fixed] Forsøk på å fikse opplisting av fag.
 
 Youkok2 - 4.0.0-pl (26. august 2019)
 ====================================

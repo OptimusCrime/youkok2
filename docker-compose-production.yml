@@ -9,7 +9,9 @@ services:
   db:
     container_name: "youkok2_db_prod"
     restart: always
-    env_file: prod.env
+    env_file:
+      - common.env
+      - prod.env
 
   ###############################################
   #                    Cache                    #
@@ -28,11 +30,13 @@ services:
   server:
     container_name: "youkok2_web_prod"
     restart: always
-    env_file: prod.env
+    env_file:
+      - common.env
+      - prod.env
     volumes:
-      - ./docker/logs:/var/www/logs
-      - ./docker/files:/var/www/files
-      - ./docker/cache:/var/www/cache
+      - ./docker/logs:/volume_data/logs
+      - ./docker/files:/volume_data/files
+      - ./docker/cache:/volume_data/cache
     build:
       args:
         - YOUKOK_ENV=prod

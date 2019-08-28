@@ -18,5 +18,5 @@ Add the following to the host machine crontab:
 **For production:**
 
 ```
-30 1 * * * docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm server cron_job 
+30 1 * * * docker-compose -f /absolute/path/to/docker-compose.yml -f /absolute/path/to/docker-compose-production.yml run --rm server cron_job 
 ```

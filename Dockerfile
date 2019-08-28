@@ -8,9 +8,17 @@ ARG YOUKOK_ENV=dev
 COPY ./docker/config/${YOUKOK_ENV}/default.conf /etc/apache2/sites-enabled/default.conf
 COPY ./docker/cron_job /usr/local/bin/cron_job
 
-COPY ./youkok2 /var/www/html/
+RUN mkdir /volume_data \
+    && usermod -u 1000 www-data \
+    && groupmod -g 1000 www-data \
+    && usermod -a -G www-data root \
+    && usermod -a -G root www-data \
+    && usermod -a -G staff www-data \
+    && usermod -a -G staff root \
+    && chown -R www-data:www-data /volume_data \
+    && chown -R www-data:www-data /var/www/html
 
-RUN chown -R www-data:www-data /var/www/html/
+COPY ./youkok2 /var/www/html
 
 RUN if [ $YOUKOK_ENV = "prod" ] ; then \
     mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" ; \
@@ -20,7 +28,6 @@ RUN cd /usr/src \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
     && echo $TZ > /etc/timezone \
-    && mkdir /var/log/youkok2 \
     && a2enmod rewrite \
     && a2enmod headers \
     && a2enmod expires \
@@ -38,7 +45,6 @@ RUN cd /usr/src \
     && echo 'redis' >> /usr/src/php-available-exts \
     && docker-php-ext-install redis \
     && service apache2 restart \
-    && usermod -a -G staff www-data \
     && chmod u+x /usr/local/bin/cron_job
 
 RUN if [ $YOUKOK_ENV = "dev" ] ; then \

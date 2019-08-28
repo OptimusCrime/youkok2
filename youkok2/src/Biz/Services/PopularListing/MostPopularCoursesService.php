@@ -66,6 +66,8 @@ class MostPopularCoursesService implements MostPopularInterface
         foreach (MostPopularCourse::all() as $key) {
             $this->refreshForDelta($key);
         }
+
+        $this->changeOwnership();
     }
 
     private function refreshForDelta(string $delta): void
@@ -159,6 +161,14 @@ class MostPopularCoursesService implements MostPopularInterface
         }
 
         return static::resultArrayToMaxLimit($elements, $limit);
+    }
+
+    private function changeOwnership(): void
+    {
+        if (exec('whoami') === 'root') {
+            chown($this->getCacheDirectory(), 'www-data');
+            chgrp($this->getCacheDirectory(), 'www-data');
+        }
     }
 
     private static function resultArrayToMaxLimit(array $elements, int $limit): array

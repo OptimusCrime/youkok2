@@ -37,6 +37,11 @@ class BaseView
 
     private function getDefaultTemplateData()
     {
+        $course_lookup = @file_get_contents('/volume_data/cache/dynamic/courses_lookup.html');
+        if ($course_lookup === false) {
+            $course_lookup = '';
+        }
+
         return [
             'DEV' => getenv('DEV'),
 
@@ -65,6 +70,7 @@ class BaseView
             'SEARCH_QUERY' => '',
 
             'ADMIN' => $this->userSessionService->isAdmin(),
+            'COURSE_LOOKUP' => $course_lookup
         ];
     }
 

@@ -63,7 +63,9 @@ class Download extends BaseView
                 throw new ElementNotFoundException();
             }
 
-            $this->updateDownloadsProcessor->run($element);
+            if (!$this->userSessionService->isAdmin()) {
+                $this->updateDownloadsProcessor->run($element);
+            }
 
             $fileInfo = $this->downloadService->getFileInfo($element);
             $fileSize = $this->downloadService->getFileSize($element);

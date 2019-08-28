@@ -57,7 +57,9 @@ class Redirect extends BaseView
             return $this->render404($response);
         }
 
-        $this->updateDownloadsProcessor->run($element);
+        if (!$this->userSessionService->isAdmin()) {
+            $this->updateDownloadsProcessor->run($element);
+        }
 
         return $this->output(
             $response

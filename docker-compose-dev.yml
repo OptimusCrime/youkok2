@@ -8,7 +8,9 @@ services:
 
   db:
     container_name: "youkok2_db_dev"
-    env_file: dev.env
+    env_file:
+      - common.env
+      - dev.env
 
   ###############################################
   #                    Cache                    #
@@ -25,12 +27,14 @@ services:
 
   server:
     container_name: "youkok2_web_dev"
-    env_file: dev.env
+    env_file:
+      - common.env
+      - dev.env
     volumes:
-      - ./docker/logs:/var/www/logs
       - ./youkok2:/var/www/html
-      - ./docker/files:/var/www/files
-      - ./docker/cache:/var/www/cache
+      - ./docker/logs:/volume_data/logs
+      - ./docker/files:/volume_data/files
+      - ./docker/cache:/volume_data/cache
       - ./docker/xdebug:/tmp/xdebug
     build:
       args:
