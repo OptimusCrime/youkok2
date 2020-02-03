@@ -1,3 +1,9 @@
+Youkok2 - 4.0.5-pl (4. februar 2020)
+====================================
+
+- [Info] Improvements.
+- [Improved] Bedre håndtering og redirecting av gamle linker som støyer veldig i loggene.
+
 Youkok2 - 4.0.4-pl (3. februar 2020)
 ====================================
 

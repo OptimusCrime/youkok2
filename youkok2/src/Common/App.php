@@ -35,6 +35,7 @@ use Youkok\Web\Views\Courses;
 use Youkok\Web\Views\Download;
 use Youkok\Web\Views\Flat;
 use Youkok\Web\Views\Frontpage;
+use Youkok\Web\Views\KokebokaLegacyRedirect;
 use Youkok\Web\Views\Redirect;
 use Youkok\Web\Views\Admin\Login;
 use Youkok\Web\Views\Admin\AdminDiagnostics;
@@ -119,6 +120,8 @@ class App
 
             $app->get('/lorem', Login::class . ':view')->setName('admin_login');
             $app->post('/lorem', Login::class . ':post')->setName('admin_login_submit');
+
+            $app->get('/kokeboka/[{path:.*}]', KokebokaLegacyRedirect::class . ':view');
         });
 
         $app->group('/admin', function () use ($app) {

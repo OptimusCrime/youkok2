@@ -39,7 +39,26 @@ class Archive extends BaseView
 
     public function view(Request $request, Response $response): Response
     {
-         $uri = $request->getAttribute('course') . '/' . $request->getAttribute('path', '');
+        $course = $request->getAttribute('course');
+        $path = $request->getAttribute('path', '');
+
+        // Handle old legacy URLs
+        if ($course === 'kokeboka') {
+            return $this->output(
+                $response
+                    ->withStatus(301)
+                    ->withHeader(
+                        'Location',
+                        $this->router->pathFor(
+                            'archive', [
+                                'course' => $path
+                            ]
+                        )
+                    )
+            );
+        }
+
+        $uri = $course . '/' . $path;
 
         try {
             $element = $this->archiveService->getArchiveElementFromUri($uri);
