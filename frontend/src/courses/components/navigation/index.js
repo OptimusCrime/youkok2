@@ -25,7 +25,7 @@ export const Navigation = ({position, page, numberOfPages, changePage}) => (
       }
     </div>
     <div
-      className={`courses-navigation__group courses-navigation__group--right ${(page === numberOfPages || page === 0) ? 'courses-navigation__group--hidden' : ''}`}
+      className={`courses-navigation__group courses-navigation__group--right ${(page === numberOfPages) ? 'courses-navigation__group--hidden' : ''}`}
       role="group"
     >
       <NavigationButton page={page + 1} changePage={changePage}>

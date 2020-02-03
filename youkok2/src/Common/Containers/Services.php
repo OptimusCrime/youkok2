@@ -18,6 +18,7 @@ use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Admin\LoginService;
 use Youkok\Biz\Services\FrontpageService;
+use Youkok\Biz\Services\Job\Jobs\ClearReddisCachePartitionsService;
 use Youkok\Biz\Services\Job\Jobs\PopulateCoursesLookupFileJobService;
 use Youkok\Biz\Services\Job\Jobs\RemoveOldSessionsJobServiceJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
@@ -178,6 +179,12 @@ class Services implements ContainersInterface
         $container[PopulateCoursesLookupFileJobService::class] = function (ContainerInterface $container): PopulateCoursesLookupFileJobService {
             return new PopulateCoursesLookupFileJobService(
                 $container->get(CoursesLookupService::class)
+            );
+        };
+
+        $container[ClearReddisCachePartitionsService::class] = function (ContainerInterface $container): ClearReddisCachePartitionsService {
+            return new ClearReddisCachePartitionsService(
+                $container->get(CacheService::class)
             );
         };
 

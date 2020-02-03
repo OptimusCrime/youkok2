@@ -9,6 +9,17 @@ import {COURSES_PER_PAGE} from "../../constants";
 import {Navigation} from "../../components/navigation";
 import {CourseItemEmpty} from "../../components/course-item-empty";
 
+const calculateNumberOfPages = numberOfCourses => {
+  const pages = Math.ceil(numberOfCourses / COURSES_PER_PAGE);
+
+  if (pages === 0) {
+    return 0;
+  }
+
+  // Pages are 0 indexed...
+  return pages - 1;
+};
+
 const CourseMain = ({column, order, courses, page, changeOrder, changePage}) => {
 
   if (!window.COURSES_LOOKUP) {
@@ -17,8 +28,7 @@ const CourseMain = ({column, order, courses, page, changeOrder, changePage}) => 
     );
   }
 
-  // Pages are 0 indexed...
-  const NUMBER_OF_PAGES = Math.ceil(courses.length / COURSES_PER_PAGE) - 1;
+  const NUMBER_OF_PAGES = calculateNumberOfPages(courses.length);
 
   const coursesCurrentPage = courses.slice(page * COURSES_PER_PAGE, (page + 1) * COURSES_PER_PAGE);
 

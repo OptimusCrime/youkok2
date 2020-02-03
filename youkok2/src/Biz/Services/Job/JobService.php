@@ -2,6 +2,7 @@
 namespace Youkok\Biz\Services\Job;
 
 use Psr\Container\ContainerInterface;
+use Youkok\Biz\Services\Job\Jobs\ClearReddisCachePartitionsService;
 use Youkok\Biz\Services\Job\Jobs\PopulateCoursesLookupFileJobService;
 use Youkok\Biz\Services\Job\Jobs\RemoveOldSessionsJobServiceJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
@@ -18,6 +19,7 @@ class JobService
         UpdateMostPopularCoursesJobService::class,
         UpdateMostPopularElementsJobService::class,
         PopulateCoursesLookupFileJobService::class,
+        ClearReddisCachePartitionsService::class,
     ];
 
     private static $upgrade = [
@@ -25,6 +27,7 @@ class JobService
         UpdateMostPopularCoursesJobService::class,
         UpdateMostPopularElementsJobService::class,
         PopulateCoursesLookupFileJobService::class,
+        ClearReddisCachePartitionsService::class,
     ];
 
     private static $codeMapping = [
@@ -32,6 +35,7 @@ class JobService
         'popular_courses' => UpdateMostPopularCoursesJobService::class,
         'popular_elements' => UpdateMostPopularElementsJobService::class,
         'remove_old_session' => RemoveOldSessionsJobServiceJobService::class,
+        'clear_cache_partitions' => ClearReddisCachePartitionsService::class,
     ];
 
     private $container;

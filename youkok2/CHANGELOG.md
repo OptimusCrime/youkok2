@@ -1,3 +1,11 @@
+Youkok2 - 4.0.3-pl (3. februar 2020)
+====================================
+
+- [Info] Bugfix.
+- [Fixed] Nye fag er ikke lenger cachet. Antallet blir resatt og telt på nytt hver natt.
+- [Fixed] Oversikten over fag viser nå piler til neste sider hvis man står på side en og det er
+          flere fag på neste side.
+
 Youkok2 - 4.0.2-pl (28. august 2019)
 ====================================
 
@@ -181,7 +189,7 @@ Youkok2 - 1.2.2-pl  (11. april 2015)
         som ble fjernet ved overgangen til 1.0.0 vil legges til her igjen.
 
 Youkok2 - 1.2.1-pl  (25. februar 2015)
-====================================== 
+======================================
 
 - [Info] Minor og bugfixes
 - [New] Når man poster en link hentes automatisk tittelen til siden og foreslår denne som navn. Man står fremdeles
@@ -191,7 +199,7 @@ Youkok2 - 1.2.1-pl  (25. februar 2015)
 - [Enhanced] Fjernet flere legacy ting i databasen.
 
 Youkok2 - 1.2.0-pl  (25. februar 2015)
-====================================== 
+======================================
 
 - [Info] Bugfixes og reimplementering
 - [New] Man kan laste opp filer på siden igjen!
@@ -341,10 +349,10 @@ Youkok2 - 0.0.1-c (2. mai, 2014)
 - [New] Google Analytics!
 - [Fixed] Flere feil tilknyttet filer og url-encoding.
 - [Fixed] Understeker og bindestreker i filnavn blir nå bevart korrekt.
-- [Fixed] Dersom fagnavn og fagkoder blir lastet på nytt blir localStoreage tømt, slik at man ikke har mellomlagret 
+- [Fixed] Dersom fagnavn og fagkoder blir lastet på nytt blir localStoreage tømt, slik at man ikke har mellomlagret
           gamle verdier.
 - [Fixed] Fikset feil hvor nettleseren ville oppdatere siden før alle filene var ferdige med å bli lastet opp.
-- [Fixed] Dersom en fil hadde null som mimetype ble opplastningen avsluttet. Nå sjekkes filtyper før feilmelding 
+- [Fixed] Dersom en fil hadde null som mimetype ble opplastningen avsluttet. Nå sjekkes filtyper før feilmelding
           returneres.
 - [Fixed] Unicode-problemer i denne fila.
 - [Fixed] Unicode-problemer i e-poster.

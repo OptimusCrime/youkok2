@@ -42,7 +42,7 @@ class CacheService
     public function delete(string $key): void
     {
         if ($this->cache !== null) {
-            $this->cache->delete($key);
+            $this->cache->del($key);
         }
     }
 
