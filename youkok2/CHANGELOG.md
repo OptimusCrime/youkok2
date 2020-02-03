@@ -1,3 +1,10 @@
+Youkok2 - 4.0.4-pl (3. februar 2020)
+====================================
+
+- [Info] Improvements.
+- [Improved] Siden ser og fungerer bedre på mobile enheter nå. Perfekt er det ikke, men det
+             er en liten forbedring fra tidligere.
+
 Youkok2 - 4.0.3-pl (3. februar 2020)
 ====================================
 

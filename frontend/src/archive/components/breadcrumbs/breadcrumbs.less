@@ -5,7 +5,10 @@
   border-color: @gray;
   background-color: @white;
   padding: 10px 15px;
-  margin-bottom: 22px;
+  margin-bottom: 0;
+  @media (min-width: @breakpoint-sx) {
+    margin-bottom: 22px;
+  }
 }
 .breadcrumb > li + li:before {
   font-family: FontAwesome;
