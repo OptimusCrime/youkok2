@@ -73,7 +73,6 @@ class Archive extends BaseView
                 'SITE_DESCRIPTION' => $this->archiveService->getSiteDescription($element)
             ]);
         } catch (ElementNotFoundException $ex) {
-            $this->logger->error($ex);
             return $this->render404($response);
         }
     }
