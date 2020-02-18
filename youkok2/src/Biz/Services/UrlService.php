@@ -21,6 +21,11 @@ class UrlService
         return $this->router->pathFor('archive', ['course' => $element->slug]);
     }
 
+    public function urlForAdminFiles(Element $element): string
+    {
+        return $this->router->pathFor('admin_file', ['id' => $element->id]);
+    }
+
     public function urlForElement(Element $element): string
     {
         switch ($element->getType()) {

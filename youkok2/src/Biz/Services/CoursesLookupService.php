@@ -5,20 +5,57 @@ use Illuminate\Database\Eloquent\Collection;
 use Monolog\Logger;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Common\Models\Element;
+use Youkok\Common\Utilities\CoursesCacheConstants;
+
+class CacheCollection {
+
+    const REGULAR = "REGULAR";
+    const ADMIN = "ADMIN";
+
+    private $type;
+    private $jsFile;
+    private $templateFile;
+    private $templateContent;
+
+    public function __construct(string $type, string $jsFile, string $templateFile)
+    {
+        $this->type = $type;
+        $this->jsFile = CoursesLookupService::getJsFileLocation($jsFile);
+        $this->templateFile = CoursesLookupService::getTemplateFileLocation($templateFile);
+
+        $this->templateContent = '<script src="'
+            . CoursesLookupService::JS_DIRECTORY
+            . $jsFile
+            . '?hash=%s"></script>';
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function getJsFile(): string
+    {
+        return $this->jsFile;
+    }
+
+    public function getTemplateFile(): string
+    {
+        return $this->templateFile;
+    }
+
+    public function getTemplateContent(): string
+    {
+        return $this->templateContent;
+    }
+}
 
 class CoursesLookupService
 {
-    const DYNAMIC_SUB_DIRECTORY = 'dynamic/';
-
     const JS_DIRECTORY = 'assets/data/';
     const JS_FILE_NAME = 'courses_lookup.js';
+    const ADMIN_JS_FILE_NAME = 'courses_lookup_admin.js';
     const JS_TEMPLATE = 'var COURSES_LOOKUP = %s;';
-
-    const CACHE_BUSTING_FILE_NAME = 'courses_lookup.html';
-    const CACHE_BUSTING_TEMPLATE = '<script src="'
-                                  . CoursesLookupService::JS_DIRECTORY
-                                  . CoursesLookupService::JS_FILE_NAME
-                                  . '?hash=%s"></script>';
 
     private $urlService;
     private $courseService;
@@ -33,88 +70,122 @@ class CoursesLookupService
 
     public function refresh(): void
     {
-        $this->deleteCacheFile();
-        $this->populateCacheFile();
-        $this->createCacheBustingTemplate();
-        $this->changeOwnership();
+        $files = static::getFilesInformation();
+        $data = $this->courseService->getAllVisibleCourses();
+
+        foreach ($files as $file) {
+            $this->deleteCacheFile($file->getJsFile());
+            $this->deleteCacheFile($file->getTemplateFile());
+
+            $this->populateCacheFile($data, $file);
+            $this->createCacheBustingTemplate($file);
+            $this->changeOwnership($file);
+        }
     }
 
-    private function deleteCacheFile(): void
+    private static function getFilesInformation(): array
     {
-        $coursesLookupFile = static::getJsFileLocation();
-        if (!file_exists($coursesLookupFile) || !is_file($coursesLookupFile)) {
+        return [
+            static::getFileInformation(
+                CacheCollection::REGULAR,
+                static::JS_FILE_NAME,
+                CoursesCacheConstants::CACHE_BUSTING_FILE_NAME
+            ),
+            static::getFileInformation(
+                CacheCollection::ADMIN,
+                static::ADMIN_JS_FILE_NAME,
+                CoursesCacheConstants::ADMIN_CACHE_BUSTING_FILE_NAME
+            ),
+        ];
+    }
+
+    private static function getFileInformation(string $type, string $jsFile, string $templateFile): CacheCollection
+    {
+        return new CacheCollection(
+            $type,
+            $jsFile,
+            $templateFile
+        );
+    }
+
+    static function getTemplateFileLocation(string $fileName): string
+    {
+        return getenv('CACHE_DIRECTORY') . CoursesCacheConstants::DYNAMIC_SUB_DIRECTORY . $fileName;
+    }
+
+    static function getJsFileLocation(string $fileName): string
+    {
+        return getenv('CACHE_DIRECTORY') . CoursesCacheConstants::DYNAMIC_SUB_DIRECTORY . $fileName;
+    }
+
+    private function deleteCacheFile(string $file): void
+    {
+        if (!file_exists($file) || !is_file($file)) {
             return;
         }
 
-        if (!unlink($coursesLookupFile)) {
-            $this->logger->error('Failed to delete cache file in location: ' . $coursesLookupFile);
+        if (!unlink($file)) {
+            $this->logger->error('Failed to delete cache file in location: ' . $file);
         }
     }
 
-    private function populateCacheFile(): void
+    private function populateCacheFile(Collection $data, CacheCollection $file): void
     {
-        $data = $this->coursesToJsonData($this->courseService->getAllVisibleCourses());
-        $content = str_replace('%s', $data, static::JS_TEMPLATE);
+        $dataAsJson = $this->coursesToJsonData($data, $file->getType());
+        $content = str_replace('%s', $dataAsJson, static::JS_TEMPLATE);
 
-        $response = file_put_contents(static::getJsFileLocation(), $content);
+        $response = file_put_contents($file->getJsFile(), $content);
         if ($response === false) {
-            $this->logger->error('Failed to populate cache file in location: ' . static::getJsFileLocation());
+            $this->logger->error('Failed to populate cache file in location: ' . $file->getJsFile());
         }
     }
 
-    private function coursesToJsonData(Collection $courses): string
+    private function coursesToJsonData(Collection $courses, string $type): string
     {
         $output = [];
         foreach ($courses as $course) {
-            $output[] = $this->mapCourse($course);
+            $output[] = $this->mapCourse($course, $type);
         }
 
         return json_encode($output);
     }
 
-    private function mapCourse(Element $course): array
+    private function mapCourse(Element $course, string $type): array
     {
         return [
             'id' => $course->id,
             'name' => $course->getCourseName(),
             'code' => $course->getCourseCode(),
-            'url' => $this->urlService->urlForCourse($course),
+            'url' => $type === CacheCollection::REGULAR
+                ? $this->urlService->urlForCourse($course)
+                : $this->urlService->urlForAdminFiles($course),
             'empty' => $course->empty === 1,
         ];
     }
 
-    private function createCacheBustingTemplate(): void
-    {
-        $lookupChecksum = sha1_file(static::getJsFileLocation());
-        $content = str_replace('%s', $lookupChecksum, static::CACHE_BUSTING_TEMPLATE);
 
-        $response = file_put_contents(static::getTemplateFileLocation(), $content);
+    private function createCacheBustingTemplate(CacheCollection $file): void
+    {
+        $lookupChecksum = sha1_file($file->getJsFile());
+        $content = str_replace('%s', $lookupChecksum, $file->getTemplateContent());
+
+        $response = file_put_contents($file->getTemplateFile(), $content);
 
         if ($response === false) {
             $this->logger->error(
-                'Failed to store content in cache busting template in location: ' . static::getTemplateFileLocation()
+                'Failed to store content in cache busting template in location: ' . $file->getTemplateFile()
             );
         }
     }
 
-    private static function getTemplateFileLocation(): string
-    {
-        return getenv('CACHE_DIRECTORY') . static::DYNAMIC_SUB_DIRECTORY . static::CACHE_BUSTING_FILE_NAME;
-    }
-
-    private static function getJsFileLocation(): string
-    {
-        return getenv('CACHE_DIRECTORY') . static::DYNAMIC_SUB_DIRECTORY . static::JS_FILE_NAME;
-    }
-
-    private function changeOwnership(): void
+    private function changeOwnership(CacheCollection $file): void
     {
         if (exec('whoami') === 'root') {
-            chown(static::getTemplateFileLocation(), 'www-data');
-            chgrp(static::getTemplateFileLocation(), 'www-data');
+            chown($file->getTemplateFile(), 'www-data');
+            chgrp($file->getTemplateFile(), 'www-data');
 
-            chown(static::getJsFileLocation(), 'www-data');
-            chgrp(static::getJsFileLocation(), 'www-data');
+            chown($file->getJsFile(), 'www-data');
+            chgrp($file->getJsFile(), 'www-data');
         }
     }
 }

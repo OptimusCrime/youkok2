@@ -16,10 +16,15 @@ export const mapUpdated = (updated, data) => data.map(entry => {
 });
 
 const mapEntry = entry => ({
-  content: entry,
+  content: mapContent(entry),
   pending: mapPendingData(entry),
   disabled: false,
   course: entry.id,
+});
+
+const mapContent = entry => ({
+  ...entry,
+  children: entry.children || []
 });
 
 const mapPendingData = data =>
@@ -28,7 +33,7 @@ const mapPendingData = data =>
 
 const mapPendingDataChildren = data => {
   if (!data.children) {
-    return data;
+    return [];
   }
 
   const childrenPending = data.children

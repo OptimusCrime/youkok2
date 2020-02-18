@@ -24,6 +24,13 @@ class FileListingService
         );
     }
 
+    public function get(int $id): array
+    {
+        return $this->adminFilesService->buildTree(
+            $this->adminCourseService->getCourse($id)
+        );
+    }
+
     public function getPending(): array
     {
         return $this->adminFilesService->buildTree(

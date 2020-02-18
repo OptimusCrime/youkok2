@@ -4,6 +4,7 @@ namespace Youkok\Common\Containers;
 use Psr\Container\ContainerInterface;
 use Monolog\Logger as MonoLogger;
 
+use Youkok\Biz\Services\Admin\CacheContentService;
 use Youkok\Biz\Services\Admin\FileCreateDirectoryService;
 use Youkok\Biz\Services\Admin\FilesService;
 use Youkok\Biz\Services\Admin\FileDetailsService;
@@ -273,6 +274,12 @@ class Services implements ContainersInterface
             return new FileCreateDirectoryService(
                 $container->get(FilesService::class),
                 $container->get(ElementService::class),
+            );
+        };
+
+        $container[CacheContentService::class] = function (ContainerInterface $container): CacheContentService {
+            return new CacheContentService(
+                $container->get(CacheService::class)
             );
         };
 

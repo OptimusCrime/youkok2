@@ -1,5 +1,5 @@
 <?php
-namespace Youkok\Rest\Endpoints\Admin\Home;
+namespace Youkok\Rest\Endpoints\Admin\Files;
 
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
@@ -48,6 +48,13 @@ class AdminFilesEndpoint extends BaseRestEndpoint
     {
         return $this->outputJson($response, [
             'data' => $this->adminFileListingService->getAll()
+        ]);
+    }
+
+    public function listSingle(Request $request, Response $response, array $args): Response
+    {
+        return $this->outputJson($response, [
+            'data' => $this->adminFileListingService->get((int) $args['id'])
         ]);
     }
 

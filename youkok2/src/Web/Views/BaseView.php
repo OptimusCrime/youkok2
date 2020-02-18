@@ -7,6 +7,7 @@ use Psr\Container\ContainerInterface;
 use Slim\Interfaces\RouterInterface;
 use Slim\Views\Twig;
 use Youkok\Biz\Services\UserSessionService;
+use Youkok\Common\Utilities\CoursesCacheConstants;
 
 class BaseView
 {
@@ -37,7 +38,12 @@ class BaseView
 
     private function getDefaultTemplateData()
     {
-        $course_lookup = @file_get_contents('/volume_data/cache/dynamic/courses_lookup.html');
+        $course_lookup = @file_get_contents(
+            '/volume_data/cache/'
+            . CoursesCacheConstants::DYNAMIC_SUB_DIRECTORY
+            .  CoursesCacheConstants::CACHE_BUSTING_FILE_NAME
+        );
+
         if ($course_lookup === false) {
             $course_lookup = '';
         }
@@ -77,6 +83,11 @@ class BaseView
     protected function setSiteData(string $key, $value)
     {
         $this->templateData['SITE_DATA'][$key] = $value;
+    }
+
+    protected function overrideTemplateData(string $key, $value)
+    {
+        $this->templateData[$key] = $value;
     }
 
     protected function output(Response $response): Response

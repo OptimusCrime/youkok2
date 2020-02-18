@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Biz\Services\Models\Admin;
 
+use Illuminate\Support\Collection;
 use Youkok\Common\Models\Element;
 
 class AdminCourseService
@@ -14,12 +15,19 @@ class AdminCourseService
             ->where('parent', null)
             ->get();
 
-        $ids = [];
-        foreach ($courses as $course) {
-            $ids[] = $course->id;
-        }
+        return $this->mapCollectionToIdArray($courses);
+    }
 
-        return $ids;
+    public function getCourse(int $id): array
+    {
+        $courses = Element
+            ::select('id')
+            ->where('id', $id)
+            ->where('directory', 1)
+            ->where('parent', null)
+            ->get();
+
+        return $this->mapCollectionToIdArray($courses);
     }
 
     public function getAllCoursesWithPendingContent(): array
@@ -64,5 +72,15 @@ class AdminCourseService
         }
 
         return $element;
+    }
+
+    private function mapCollectionToIdArray(Collection $collection): array
+    {
+        $ids = [];
+        foreach ($collection as $course) {
+            $ids[] = $course->id;
+        }
+
+        return $ids;
     }
 }

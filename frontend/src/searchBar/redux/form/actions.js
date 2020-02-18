@@ -11,7 +11,7 @@ import {
 import { selectedCourseToSearchBarText } from "./util";
 
 export const updateSearchField = (search, courses) => dispatch => {
-  const searchWords = search.split(' ');
+  const searchWords = search.toLowerCase().split(' ');
 
   // First, update the search cursor
   dispatch({ type: UPDATE_SEARCH_FIELD, value: search });
@@ -27,7 +27,6 @@ export const updateSearchField = (search, courses) => dispatch => {
 
     // Search consists of multiple words, we need to match all
     return searchWords.every(searchWord => wholeName.includes(searchWord));
-
   });
 
   if (results.length <= MAX_RESULTS) {

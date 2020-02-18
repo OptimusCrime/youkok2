@@ -1,7 +1,15 @@
 {% extends "admin/base.html" %}
 {% block admin_page %}Filer{% endblock %}
+{% block admin_head %}
+    {{ COURSE_LOOKUP|raw }}
+{% endblock %}
 {% block content %}
 <section class="content">
+    <div class="row">
+        <div class="col-xs-12 admin-search">
+            {% if DEV == '1' %}{% include "react/dev_searchBar.html" %}{% else %}{% include "react/searchBar.html" %}{% endif %}
+        </div>
+    </div>
     <div class="row">
         {% if DEV == '1' %}{% include "react/dev_adminFiles.html" %}{% else %}{% include "react/adminFiles.html" %}{% endif %}
     </div>

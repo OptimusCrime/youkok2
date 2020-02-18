@@ -1,4 +1,14 @@
-Youkok2 - 4.1.0-pl (xx. xxxxxx 2020)
+Youkok2 - 4.2.0-pl (18. februar 2020)
+====================================
+
+- [Info] Features og bugfixes.
+- [Fixed] Søkefeltet viser resultater etter søk på bare to bokstaver i stede for tre.
+- [Fixed] Man kan nå søke med STORE bokstaver.
+- [Stuff] Opprydd i ymse sloppy kode.
+- [Admin] Opplistning av Redis-cache.
+- [Admin] Mulighet til å søke opp og redigere enkeltfag, selv de uten innhold.
+
+Youkok2 - 4.1.0-pl (17. februar 2020)
 ====================================
 
 - [Info] Features.

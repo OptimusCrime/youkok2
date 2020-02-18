@@ -1,0 +1,35 @@
+<?php
+
+namespace Youkok\Biz\Services\Admin;
+
+use Youkok\Biz\Services\CacheService;
+
+class CacheContentService
+{
+    private $cacheService;
+
+    public function __construct(CacheService $cacheService)
+    {
+        $this->cacheService = $cacheService;
+    }
+
+    public function getAllCacheContent(): array
+    {
+        $keys = $this->cacheService->getAllKeys();
+
+        $output = [];
+        foreach ($keys as $key) {
+            $output[] = [
+                'key' => $key,
+                'value' => $this->cacheService->get($key)
+            ];
+        }
+
+        // Sort by key low to high
+        usort($output, function (array $first, array $second) {
+            return strcmp($first['key'], $second['key']);
+        });
+
+        return $output;
+    }
+}

@@ -23,8 +23,6 @@ class EditFileData extends React.Component {
       putStarted
     } = this.props;
 
-    console.log(data);
-
     const {
       title,
       id,

@@ -10,7 +10,7 @@ class AdminDiagnostics extends AdminBaseView
     {
         $this->setSiteData('view', 'admin_diagnostics');
 
-        return $this->render($response, 'admin/todo.html', [
+        return $this->render($response, 'admin/diagnostics.html', [
             'SITE_TITLE' => 'Admin',
             'ADMIN_TITLE' => 'Diagnostikk',
             'HEADER_MENU' => 'admin_diagnostics',

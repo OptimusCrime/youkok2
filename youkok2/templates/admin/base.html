@@ -14,6 +14,7 @@
     {% if DEV == '1' %}{% include "react/dev_admin.html" %}{% else %}{% include "react/admin.html" %}{% endif %}
     {% if DEV == '1' %}{% include "react/dev_polyfills.html" %}{% else %}{% include "react/polyfills.html" %}{% endif %}
     <script type="text/javascript">var SITE_DATA = {{ SITE_DATA|json_encode()|raw }};</script>
+    {% block admin_head %}{% endblock %}
 </head>
 <body class="skin-blue sidebar-mini{% if BODY_CLASS != null %} {{ BODY_CLASS }}{% endif %}">
 <div class="wrapper">

@@ -38,6 +38,18 @@ class FileListingContainer extends Component {
       course
     } = this.props;
 
+    if (files.length === 0) {
+      return (
+        <ul
+          className="file-listing"
+        >
+          <li>
+            <em>Ikke noe innhold</em>
+          </li>
+        </ul>
+      );
+    }
+
     return files.map(file => (
         <ul
           className="file-listing"

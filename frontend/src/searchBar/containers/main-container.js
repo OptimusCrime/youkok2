@@ -35,6 +35,7 @@ const MainContainer = props => {
   }
 
   const courses = window.COURSES_LOOKUP;
+  const displayResults = results.length > 0 && input_display.length >= MINIMUM_SEARCH_LENGTH
 
   return (
     <React.Fragment>
@@ -64,7 +65,7 @@ const MainContainer = props => {
             }
           }
 
-          if (keyCode === KEYCODE_ARROW_UP || keyCode === KEYCODE_ARROW_DOWN) {
+          if ((keyCode === KEYCODE_ARROW_UP || keyCode === KEYCODE_ARROW_DOWN) && displayResults) {
             updateCursorPosition(keyCode === KEYCODE_ARROW_DOWN ? ARROW_DOWN : ARROW_UP, cursor, results);
           }
         }}
@@ -74,7 +75,7 @@ const MainContainer = props => {
       <button className="btn" type="button" id="nav-search">
         <i className="fa fa-search"/>
       </button>
-      {results.length > 0 && input_display.length > MINIMUM_SEARCH_LENGTH && (
+      {displayResults && (
         <div className="search-bar__dropdown">
           {results.map((result, index) => (
               <a
@@ -84,7 +85,7 @@ const MainContainer = props => {
               >
                 <p
                   dangerouslySetInnerHTML={{
-                    __html: highlightSearchResult(input_raw, result)
+                    __html: highlightSearchResult(input_raw.toLowerCase(), result)
                   }}
                 />
               </a>

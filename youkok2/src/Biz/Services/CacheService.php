@@ -46,6 +46,15 @@ class CacheService
         }
     }
 
+    public function getAllKeys(): array
+    {
+        if ($this->cache !== null) {
+            return $this->cache->keys('*');
+        }
+
+        return [];
+    }
+
     public function insertIntoSet(string $setKey, int $value, string $id): void
     {
         // PHPStorm is complaining for no reason

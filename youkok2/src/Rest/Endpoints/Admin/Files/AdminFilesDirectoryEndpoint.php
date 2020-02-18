@@ -1,5 +1,5 @@
 <?php
-namespace Youkok\Rest\Endpoints\Admin\Home;
+namespace Youkok\Rest\Endpoints\Admin\Files;
 
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;

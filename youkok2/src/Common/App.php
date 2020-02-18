@@ -18,9 +18,10 @@ use Youkok\Common\Middlewares\DumpSqlLogMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Common\Middlewares\TimingMiddleware;
 use Youkok\Biz\Services\Job\JobService;
-use Youkok\Rest\Endpoints\Admin\Home\AdminFilesDirectoryEndpoint;
-use Youkok\Rest\Endpoints\Admin\Home\AdminFilesEndpoint;
-use Youkok\Rest\Endpoints\Admin\Home\AdminFilesPendingEndpoint;
+use Youkok\Rest\Endpoints\Admin\Diagnostics\AdminRedisCache;
+use Youkok\Rest\Endpoints\Admin\Files\AdminFilesDirectoryEndpoint;
+use Youkok\Rest\Endpoints\Admin\Files\AdminFilesEndpoint;
+use Youkok\Rest\Endpoints\Admin\Files\AdminFilesPendingEndpoint;
 use Youkok\Rest\Endpoints\Admin\Home\AdminHomeBoxesEndpoint;
 use Youkok\Rest\Endpoints\Admin\Home\AdminHomeGraphEndpoint;
 use Youkok\Rest\Endpoints\ArchiveEndpoint;
@@ -128,6 +129,7 @@ class App
             $app->get('', AdminHome::class . ':view')->setName('admin_home');
             $app->get('/ventende', AdminPending::class . ':view')->setName('admin_pending');
             $app->get('/filer', AdminFiles::class . ':view')->setName('admin_files');
+            $app->get('/filer/{id:[0-9]+}', AdminFiles::class . ':viewOne')->setName('admin_file');
             $app->get('/statistikk', AdminStatistics::class . ':view')->setName('admin_statistics');
             $app->get('/diagnostikk', AdminDiagnostics::class . ':view')->setName('admin_diagnostics');
             $app->get('/logger', AdminLogs::class . ':view')->setName('admin_logs');
@@ -179,33 +181,14 @@ class App
                     $app->put('/{id:[0-9]+}', AdminFilesEndpoint::class . ':put');
                     $app->get('/pending', AdminFilesPendingEndpoint::class . ':get');
                     $app->put('/directory', AdminFilesDirectoryEndpoint::class . ':get');
+                    $app->get('/single/{id:[0-9]+}', AdminFilesEndpoint::class . ':listSingle');
+                });
+
+                $app->group('/diagnostics', function () use ($app) {
+                    $app->get('/cache', AdminRedisCache::class . ':get');
                 });
             })->add(new AdminAuthMiddleware($app->getContainer()));
         });
-
-        // TODO remove
-        /*
-        $app->group('/processors', function () use ($app) {
-            $app->group('/admin', function () use ($app) {
-                $app->get(
-                    '/element-details/{id:[0-9]+}',
-                    '\Youkok\Views\Processors\Admin\ElementDetails:get'
-                )->setName('admin_processor_element_details_fetch');
-                $app->put(
-                    '/element-details',
-                    '\Youkok\Views\Processors\Admin\ElementDetails:update'
-                )->setName('admin_processor_element_details_update');
-                $app->post(
-                    '/element-create',
-                    '\Youkok\Views\Processors\Admin\ElementCreate:run'
-                )->setName('admin_processor_element_create');
-                $app->put(
-                    '/element-regenerate/uri',
-                    '\Youkok\Views\Processors\Admin\ElementRegenerate:uri'
-                )->setName('admin_processor_element_regenerate_uri');
-            })->add(new AdminAuthMiddleware($app->getContainer()));
-        })->add(new TimingMiddleware())->add(new ReverseProxyMiddleware());
-        */
     }
 
     private function dependencies(): void

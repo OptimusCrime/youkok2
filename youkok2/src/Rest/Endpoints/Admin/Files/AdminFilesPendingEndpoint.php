@@ -1,5 +1,5 @@
 <?php
-namespace Youkok\Rest\Endpoints\Admin\Home;
+namespace Youkok\Rest\Endpoints\Admin\Files;
 
 use Psr\Container\ContainerInterface;
 use Slim\Http\Request;
