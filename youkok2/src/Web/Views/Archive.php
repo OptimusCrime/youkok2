@@ -10,6 +10,7 @@ use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Models\CourseService;
+use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Common\Utilities\FileTypesHelper;
 
@@ -62,6 +63,7 @@ class Archive extends BaseView
 
         try {
             $element = $this->archiveService->getArchiveElementFromUri($uri);
+            $course = $this->getArchiveCourse($element);
             $parents = $this->archiveService->getBreadcrumbsForElement($element);
 
             if ($element->isCourse()) {
@@ -83,6 +85,7 @@ class Archive extends BaseView
             $this->setSiteData('archive_url_terms', $this->router->pathFor('terms'));
             $this->setSiteData('archive_valid_file_types', FileTypesHelper::getValidFileTypes());
             $this->setSiteData('archive_max_file_size_bytes', (int) getenv('FILE_MAX_SIZE_IN_BYTES'));
+            $this->setSiteData('archive_requested_deletion', $course->requested_deletion === 1);
 
             return $this->renderReactApp($response, 'archive.html', [
                 'HEADER_MENU' => 'courses',
@@ -94,5 +97,14 @@ class Archive extends BaseView
         } catch (ElementNotFoundException $ex) {
             return $this->render404($response);
         }
+    }
+
+    private function getArchiveCourse(Element $element): Element
+    {
+        if ($element->isCourse()) {
+            return $element;
+        }
+
+        return $element->getCourse();
     }
 }

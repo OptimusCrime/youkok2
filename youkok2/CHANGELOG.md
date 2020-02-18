@@ -1,3 +1,10 @@
+Youkok2 - 4.1.0-pl (xx. xxxxxx 2020)
+====================================
+
+- [Info] Features.
+- [Improved] La til funksjonalitet for å markere et fag med innhold som er ønsket slettet.
+- [Fixed] Admin kan nå redigere fag igjen.
+
 Youkok2 - 4.0.5-pl (4. februar 2020)
 ====================================
 

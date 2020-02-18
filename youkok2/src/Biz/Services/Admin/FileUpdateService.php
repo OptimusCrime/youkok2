@@ -33,13 +33,7 @@ class FileUpdateService
 
     public function put(int $courseId, int $elementId, array $data): array
     {
-        $course = $this->elementService->getElement(
-            new SelectStatements('id', $courseId),
-            ['id', 'empty', 'parent'],
-            [
-                ElementService::FLAG_FETCH_URI
-            ]
-        );
+        $course = $this->getCourse($courseId);
 
         if (!$course->isCourse()) {
             throw new UpdateException('Invalid courseId value: ' . $courseId);
@@ -66,11 +60,12 @@ class FileUpdateService
         // Check if the parent was changed during update
         $newParent = static::evaluateParentWasUpdated($oldElement, intval($data['parent']));
 
-        $element->parent = $this->validateNewParent(intval($data['parent']));
+        $element->parent = $this->validateNewParent($data['parent'] === null ? null : intval($data['parent']));
         $element->empty = static::evaluateAndSetNumericBoolean('empty', $data);
         $element->directory = static::evaluateAndSetNumericBoolean('directory', $data);
         $element->pending = static::evaluateAndSetNumericBoolean('pending', $data);
         $element->deleted = static::evaluateAndSetNumericBoolean('deleted', $data);
+        $element->requested_deletion = static::evaluateAndSetNumericBoolean('requested_deletion', $data);
 
         $element->checksum = static::evaluateAndSetNullSafeString('checksum', $data);
         $element->size = static::evaluateAndSetNullSafeString('size', $data);
@@ -112,6 +107,23 @@ class FileUpdateService
         return $this->adminFilesService->buildTreeFromId($course->id);
     }
 
+    private function getCourse(int $id): Element
+    {
+        $element = $this->elementService->getElement(
+            new SelectStatements('id', $id),
+            ['id', 'empty', 'parent'],
+            [
+                ElementService::FLAG_FETCH_URI
+            ]
+        );
+
+        if (!$element->isCourse()) {
+            throw new UpdateException('Invalid courseId value: ' . $id);
+        }
+
+        return $element;
+    }
+
     private function deleteOutdatedCaches(Element $oldElement, Element $updatedElement): void
     {
         if ($this->anyChanged(['pending', 'deleted'], $oldElement, $updatedElement)) {
@@ -146,6 +158,10 @@ class FileUpdateService
 
     private function updateParentAndChildren(Element $oldElement, Element $newElement): void
     {
+        if ($oldElement->parent === null) {
+            return;
+        }
+
         $oldParent = $this->getElementWithUri($oldElement->parent);
 
         // If old parent is now empty, update that flag
@@ -210,6 +226,7 @@ class FileUpdateService
                 'directory',
                 'pending',
                 'deleted',
+                'requested_deletion',
                 'link',
             ],
             [
@@ -256,8 +273,12 @@ class FileUpdateService
         );
     }
 
-    private function validateNewParent(int $parentId): int
+    private function validateNewParent(?int $parentId): ?int
     {
+        if ($parentId === null) {
+            return null;
+        }
+
         $parent = $this->elementService->getElement(
             new SelectStatements('id', $parentId),
             ['id', 'parent'],

@@ -1,3 +1,5 @@
+import {TYPE_COURSE} from "../../../common/types";
+
 export const mapUpdateFile = (course, data) => ({
   id: data.id,
   name: data.name,
@@ -11,6 +13,7 @@ export const mapUpdateFile = (course, data) => ({
   pending: data.pending,
   deleted: data.deleted,
   link: data.link,
+  requested_deletion: data.type === TYPE_COURSE ? data.requested_deletion : 0,
 
   course,
 });

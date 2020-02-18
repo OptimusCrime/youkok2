@@ -61,7 +61,4 @@ const mapStateToProps = ({ archive }) => ({
   archive: archive.archive
 });
 
-const mapDispatchToProps = {
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ArchiveContainer);
+export default connect(mapStateToProps, {})(ArchiveContainer);

@@ -46,7 +46,7 @@ class ArchiveService
     {
         $element = $this->elementService->getElementFromUri(
             $uri,
-            ['id', 'parent', 'name', 'slug', 'uri', 'empty', 'checksum', 'link', 'directory'],
+            ['id', 'parent', 'name', 'slug', 'uri', 'empty', 'checksum', 'link', 'directory', 'requested_deletion'],
             [
                 ElementService::FLAG_ENSURE_VISIBLE,
                 ElementService::FLAG_ONLY_DIRECTORIES,

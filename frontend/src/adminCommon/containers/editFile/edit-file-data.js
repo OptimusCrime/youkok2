@@ -5,7 +5,7 @@ import {ModalBody} from "../../components/modal/modal-body";
 import {ModalFooter} from "../../components/modal/modal-footer";
 import {hideEditFileModal, putAdminEditFile} from "../../redux/editFile/actions";
 import {connect} from "react-redux";
-import {TYPE_FILE, TYPE_LINK} from "../../../common/types";
+import {TYPE_COURSE, TYPE_FILE, TYPE_LINK} from "../../../common/types";
 import {
   ADMIN_EDIT_FILE_CHANGE_PARENT,
   ADMIN_EDIT_FILE_CHANGE_VALUE,
@@ -23,6 +23,8 @@ class EditFileData extends React.Component {
       putStarted
     } = this.props;
 
+    console.log(data);
+
     const {
       title,
       id,
@@ -39,6 +41,7 @@ class EditFileData extends React.Component {
       directory,
       pending,
       deleted,
+      requested_deletion,
       link
     } = data;
 
@@ -200,6 +203,15 @@ class EditFileData extends React.Component {
                 onChange={() => this.props.editFileToggleCheckbox('deleted')}
               /> Deleted
             </label>
+            {type === TYPE_COURSE &&
+            <label className="checkbox-inline">
+              <input
+                type="checkbox"
+                checked={requested_deletion === 1}
+                onChange={() => this.props.editFileToggleCheckbox('requested_deletion')}
+              /> Requested deletion
+            </label>
+            }
           </div>
           <div className="form-group">
             <label htmlFor="element-link">

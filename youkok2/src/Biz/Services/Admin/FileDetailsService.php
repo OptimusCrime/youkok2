@@ -47,6 +47,7 @@ class FileDetailsService
                 'link',
                 'added',
                 'last_visited',
+                'requested_deletion'
             ],
             [
                 ElementService::FLAG_FETCH_COURSE
