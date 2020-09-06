@@ -203,7 +203,9 @@ class Services implements ContainersInterface
 
         $container[CourseService::class] = function (ContainerInterface $container): CourseService {
             return new CourseService(
-                $container->get(ElementService::class)
+                $container->get(ElementService::class),
+                $container->get(CacheService::class),
+                $container->get(UrlService::class)
             );
         };
 

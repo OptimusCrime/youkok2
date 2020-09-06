@@ -52,11 +52,6 @@ class UserSessionService
         return $this->session->isAdmin();
     }
 
-    public function store(): bool
-    {
-        return $this->session->save();
-    }
-
     private function createSession(): Session
     {
         try {

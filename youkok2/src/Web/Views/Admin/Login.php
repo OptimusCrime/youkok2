@@ -40,6 +40,7 @@ class Login extends BaseView
 
             $session = $this->userSessionService->getSession();
             $session->setAdmin(true);
+            $session->save();
 
             return $this->output(
                 $response

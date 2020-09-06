@@ -11,13 +11,13 @@ use Youkok\Common\Utilities\CookieHelper;
 class SessionService
 {
     const SESSION_TOKEN_LENGTH = 100;
-    const SESSION_LIFE_TIME = 60 * 60 * 24 * 120; // 120 days
+    const SESSION_LIFE_TIME = 60 * 60 * 24 * 7; // seven days or one week, who needs these sessions after all?
     const KEYSPACE = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     public function get(string $hash): Session
     {
         $session = Session
-            ::select('id', 'hash', 'data', 'last_updated', 'expire')
+            ::select('id', 'hash', 'data', 'expire')
             ->where('hash', $hash)
             ->first();
 
@@ -26,13 +26,6 @@ class SessionService
         }
 
         return $session;
-    }
-
-    public function getNumberOfSessionsThisWeek(): int
-    {
-        return Session
-            ::where('last_updated', '>=', Carbon::now()->subWeek())
-            ->count();
     }
 
     public function deleteExpiredSessions(): bool
@@ -50,7 +43,6 @@ class SessionService
 
         $session = new Session();
         $session->hash = $hash;
-        $session->last_updated = Carbon::now();
         $session->expire = Carbon::createFromTimestamp(time() + static::SESSION_LIFE_TIME);
 
         if (!$session->save()) {

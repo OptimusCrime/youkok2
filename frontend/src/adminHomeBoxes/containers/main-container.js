@@ -14,7 +14,6 @@ const AdminHomeBoxes = ({started, finished, failed, data}) => {
   const isLoading = loading(started, finished);
 
   const {
-    sessions_week_num,
     files_num,
     downloads_num,
     courses_num,
@@ -27,13 +26,6 @@ const AdminHomeBoxes = ({started, finished, failed, data}) => {
         icon="download"
         text="Nedlastninger"
         value={downloads_num}
-        isLoading={isLoading}
-      />
-      <Block
-        background="red"
-        icon="users"
-        text="Sesjoner siste uke"
-        value={sessions_week_num}
         isLoading={isLoading}
       />
       <Block

@@ -61,6 +61,11 @@ class CacheService
         $this->cache->zadd($setKey, $value, $id);
     }
 
+    public function removeFromSetByRank(string $setKey, int $start, int $end): void
+    {
+        $this->cache->zRemRangeByRank($setKey, $start, $end);
+    }
+
     public function updateValueInSet($setKey, $increase, $id)
     {
         $this->cache->zIncrBy($setKey, $increase, $id);
@@ -115,10 +120,16 @@ class CacheService
         }
     }
 
-    private function getSortedRangeByKey(string $key, int $limit, int $offset = 0): array
+    public function getSortedRangeByKey(string $key, int $limit = null, int $offset = 0): array
     {
         if ($this->cache === null) {
             return [];
+        }
+
+        if ($limit === null) {
+            return $this->cache->zRevRangeByScore($key, '+inf', '-inf', [
+                'withscores' => true
+            ]);
         }
 
         return $this->cache->zRevRangeByScore($key, '+inf', '-inf', [

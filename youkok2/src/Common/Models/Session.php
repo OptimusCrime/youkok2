@@ -77,7 +77,6 @@ class Session extends BaseModel
         $data = $this->getAllData();
 
         $this->data = json_encode($data);
-        $this->last_updated = Carbon::now();
 
         return parent::save($options);
     }

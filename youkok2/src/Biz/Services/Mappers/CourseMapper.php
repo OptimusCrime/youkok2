@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Biz\Services\Mappers;
 
+use Carbon\Carbon;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
 
@@ -46,5 +47,28 @@ class CourseMapper
         }
 
         return $arr;
+    }
+
+    public function mapLastVisited(array $lastVisited): array
+    {
+        $out = [];
+
+        foreach ($lastVisited as $course) {
+            $out[] = $this->mapLastVisitedCourse($course);
+        }
+
+        return $out;
+    }
+
+    private function mapLastVisitedCourse(array $course): array
+    {
+        return [
+            'id' => $course['id'],
+            'courseCode' => $course['courseCode'],
+            'courseName' => $course['courseName'],
+            'url' => $course['url'],
+            'type' => Element::COURSE,
+            'last_visited' => Carbon::createFromTimestamp($course['last_visited'])->format('Y-m-d H:i:s')
+        ];
     }
 }

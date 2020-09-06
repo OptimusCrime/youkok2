@@ -1,6 +1,7 @@
 .PHONY: all bash build clean down logs restart start status stop tail
 
 SERVER_SERVICE_NAME = server
+DB_SERVICE_NAME = db
 
 #####################################################################################################
 #                                                DEV                                                #
@@ -52,6 +53,9 @@ dev-phpcs:
 dev-install: dev-composer dev-migrate
 
 dev-upgrade: dev-build dev-restart
+
+dev-dbbash:
+	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(DB_SERVICE_NAME) bash
 
 
 #####################################################################################################

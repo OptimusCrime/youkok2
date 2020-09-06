@@ -39,7 +39,6 @@ class AdminHomeBoxesEndpoint extends BaseRestEndpoint
     {
         return $this->outputJson($response, [
             'data' => [
-                'sessions_week_num' => $this->sessionService->getNumberOfSessionsThisWeek(),
                 'files_num' => $this->elementService->getNumberOfVisibleFiles(),
                 'downloads_num' => $this->downloadService->getNumberOfDownloads(),
                 'courses_num' => $this->courseService->getNumberOfVisibleCourses()

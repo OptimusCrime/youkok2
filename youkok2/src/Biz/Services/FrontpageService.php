@@ -117,9 +117,9 @@ class FrontpageService
         return $this->elementService->getNewestElements(static::SERVICE_LIMIT);
     }
 
-    public function lastVisited(): Collection
+    public function lastVisited(): array
     {
-        return $this->courseService->getLastVisitedCourses(static::SERVICE_LIMIT);
+        return $this->courseService->getLastVisitedCourses();
     }
 
     public function lastDownloaded(): array
@@ -150,6 +150,7 @@ class FrontpageService
         }
 
         $session->setMostPopularCourse($value);
+        $session->save();
 
         return $this->popularCoursesProcessor->fromDelta($value, static::SERVICE_LIMIT);
     }

@@ -9,6 +9,8 @@ services:
   db:
     container_name: "youkok2_db_prod"
     restart: always
+    ports:
+      - "3306"
     env_file:
       - common.env
       - prod.env

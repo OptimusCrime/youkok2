@@ -11,8 +11,6 @@ class BaseRestEndpoint extends BaseView
 {
     protected function outputJson(Response $response, array $object): Response
     {
-        $this->userSessionService->store();
-
         return $response
             ->withHeader('Content-Type', 'application/json')
             ->withJson($object);

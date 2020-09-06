@@ -92,15 +92,11 @@ class BaseView
 
     protected function output(Response $response): Response
     {
-        $this->userSessionService->store();
-
         return $response;
     }
 
     protected function render(Response $response, string $template, array $data = []): Response
     {
-        $this->userSessionService->store();
-
         return $this->view->render($response, $template, array_merge(
             $this->templateData,
             $data,

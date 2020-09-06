@@ -53,8 +53,6 @@ class App
 
     public function __construct(array $settings)
     {
-        session_start();
-
         $this->app = new Slim($settings);
     }
 

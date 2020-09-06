@@ -132,12 +132,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
         $payload = $this->frontpageService->lastVisited();
 
-        $data = $this->courseMapper->map(
-            $payload,
-            [
-                CourseMapper::LAST_VISITED
-            ]
-        );
+        $data = $this->courseMapper->mapLastVisited($payload);
 
         $this->cacheService->set(
             $cacheKey,

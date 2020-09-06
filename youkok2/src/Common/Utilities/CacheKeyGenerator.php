@@ -67,4 +67,9 @@ class CacheKeyGenerator
     {
         return 'uri_visible_file_' . $uri;
     }
+
+    public static function keyForLastVisitedCourseSet(): string
+    {
+        return 'last_visited_courses_set';
+    }
 }
