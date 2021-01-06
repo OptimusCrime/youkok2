@@ -14,7 +14,6 @@ use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
-use Youkok\Common\Models\Session;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class FrontpageEndpoint extends BaseRestEndpoint
@@ -56,7 +55,8 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
     public function popularElements(Request $request, Response $response): Response
     {
-        $delta = $this->userSessionService->getSession()->getMostPopularElement();
+        // TODO: Enum?
+        $delta = $request->params('delta') ?? 'all';
 
         try {
             $payload = $this->frontpageService->popularElements($delta);
@@ -74,7 +74,8 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
     public function popularCourses(Request $request, Response $response): Response
     {
-        $delta = $this->userSessionService->getSession()->getMostPopularCourse();
+        // TODO: Enum?
+        $delta = $request->params('delta') ?? 'all';
 
         try {
             $payload = $this->frontpageService->popularCourses($delta);
@@ -228,7 +229,8 @@ class FrontpageEndpoint extends BaseRestEndpoint
             'preference' => $value,
         ];
 
-        if ($delta === Session::KEY_MOST_POPULAR_ELEMENT) {
+        // TODO fix this
+        if ($delta === "most_popular_element") {
             $ret['elements'] = $this->mapElementsMostPopular($output);
         } else {
             $ret['courses'] = $this->mapCoursesMostPopular($output);

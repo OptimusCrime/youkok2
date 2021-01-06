@@ -7,27 +7,39 @@ use Psr\Container\ContainerInterface;
 use Monolog\Logger as MonologLogger;
 use Monolog\Handler\StreamHandler;
 
+use Youkok\Helpers\Configuration\Configuration;
+
 class Logger
 {
     public static function load(ContainerInterface $container): void
     {
         $container[MonologLogger::class] = function (): MonologLogger {
-            $logger = new MonologLogger(getenv('LOGGER_NAME'));
+            $configuration = Configuration::getInstance();
+
+            $logger = new MonologLogger($configuration->getLoggerName());
 
             $formatter = new LineFormatter(LineFormatter::SIMPLE_FORMAT, LineFormatter::SIMPLE_DATE);
             $formatter->includeStacktraces(true);
 
             $stream = new StreamHandler(
-                getenv('LOGS_DIRECTORY') . getenv('LOGGER_FILE'),
-                getenv('DEV') === '1' ? MonologLogger::ERROR : MonologLogger::INFO,
-                true,
-                0775
+                'php://stdout',
+                static::getLoggerLevel($configuration)
             );
+
             $stream->setFormatter($formatter);
 
             $logger->pushHandler($stream);
 
             return $logger;
         };
+    }
+
+    private static function getLoggerLevel(Configuration $configuration): int
+    {
+        if ($configuration->isDev() || php_sapi_name() === 'cli') {
+            return MonologLogger::DEBUG;
+        }
+
+        return MonologLogger::NOTICE;
     }
 }

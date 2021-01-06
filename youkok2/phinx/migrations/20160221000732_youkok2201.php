@@ -28,7 +28,7 @@ class Youkok2201 extends AbstractMigration
     public function change()
     {
         $this->table('archive')
-             ->addColumn('last_visited', 'timestamp', array('default' => null, 'null' => true, 'after' => 'alias'))
-             ->update();
+            ->addColumn('last_visited', 'timestamp', array('default' => null, 'null' => true, 'after' => 'alias'))
+            ->update();
     }
 }

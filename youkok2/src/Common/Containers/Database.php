@@ -9,17 +9,21 @@ use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\ConnectionResolver;
 
+use Youkok\Helpers\Configuration\Configuration;
+
 class Database implements ContainersInterface
 {
     public static function load(ContainerInterface $container): void
     {
+        $configuration = Configuration::getInstance();
+
         $connection = [
             'driver' => 'mysql',
-            'host' => getenv('MYSQL_HOST'),
-            'database' => getenv('MYSQL_DATABASE'),
-            'username' => getenv('MYSQL_USER'),
-            'password' => getenv('MYSQL_PASSWORD'),
-            'port' => getenv('MYSQL_PORT'),
+            'host' => $configuration->getMysqlHost(),
+            'username' => $configuration->getMysqlUser(),
+            'password' => $configuration->getMysqlPassword(),
+            'database' => $configuration->getMysqlDatabase(),
+            'port' => $configuration->getMysqlPort(),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
@@ -40,7 +44,7 @@ class Database implements ContainersInterface
         $resolver->setDefaultConnection('default');
         Model::setConnectionResolver($resolver);
 
-        if (getenv('DEV') === '1') {
+        if ($configuration->isDev()) {
             DB::connection()->enableQueryLog();
         }
 

@@ -2,11 +2,11 @@
 namespace Youkok\Biz\Services\Admin;
 
 use Youkok\Biz\Exceptions\InvalidLoginAttemptException;
+use Youkok\Helpers\Configuration\Configuration;
 
 class LoginService
 {
     const PARAM_PREFIX = 'password';
-    const ENV_PREFIX = 'ADMIN_PASS';
 
     public function validateLogin(array $params): void
     {
@@ -15,7 +15,9 @@ class LoginService
                 throw new InvalidLoginAttemptException();
             }
 
-            if (!password_verify($params[static::PARAM_PREFIX . $key], getenv(static::ENV_PREFIX . $key))) {
+            $configuration = Configuration::getInstance();
+
+            if (!password_verify($params[static::PARAM_PREFIX . $key], $configuration->getAdminPass($key))) {
                 throw new InvalidLoginAttemptException();
             }
         }

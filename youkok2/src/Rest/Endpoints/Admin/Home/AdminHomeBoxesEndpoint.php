@@ -8,22 +8,13 @@ use Slim\Http\Request;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Biz\Services\Models\ElementService;
-use Youkok\Biz\Services\Models\SessionService;
 use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class AdminHomeBoxesEndpoint extends BaseRestEndpoint
 {
-    /** @var CourseService */
-    private $courseService;
-
-    /** @var DownloadService */
-    private $downloadService;
-
-    /** @var ElementService */
-    private $elementService;
-
-    /** @var SessionService */
-    private $sessionService;
+    private CourseService $courseService;
+    private DownloadService $downloadService;
+    private ElementService $elementService;
 
     public function __construct(ContainerInterface $container)
     {
@@ -32,7 +23,6 @@ class AdminHomeBoxesEndpoint extends BaseRestEndpoint
         $this->courseService = $container->get(CourseService::class);
         $this->downloadService = $container->get(DownloadService::class);
         $this->elementService = $container->get(ElementService::class);
-        $this->sessionService = $container->get(SessionService::class);
     }
 
     public function get(Request $request, Response $response): Response

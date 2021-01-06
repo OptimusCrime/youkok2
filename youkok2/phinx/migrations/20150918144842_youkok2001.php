@@ -15,7 +15,7 @@ class Youkok2001 extends AbstractMigration
     public function change()
     {
         $this->table('karma')
-             ->addColumn('state', 'boolean', array('default' => 1, 'null' => false, 'after' => 'pending'))
-             ->update();
+            ->addColumn('state', 'boolean', array('default' => 1, 'null' => false, 'after' => 'pending'))
+            ->update();
     }
 }

@@ -36,23 +36,18 @@ class Youkok2300 extends AbstractMigration
         $this->execute('ALTER TABLE vote DROP FOREIGN KEY vote_ibfk_1');
         $this->execute('ALTER TABLE vote DROP FOREIGN KEY vote_ibfk_2');
 
-        $this->dropTable('flag');
-        $this->dropTable('report');
-        $this->dropTable('vote');
-        
-        $table = $this->table('archive');
-        $table->renameColumn('is_directory', 'directory');
-        $table->renameColumn('is_accepted', 'pending');
-        $table->renameColumn('is_visible', 'deleted');
+        $this->table('flag')->drop()->save();
+        $this->table('report')->drop()->save();
+        $this->table('vote')->drop()->save();
+
+        $this->table('archive')
+            ->renameColumn('is_directory', 'directory')
+            ->renameColumn('is_accepted', 'pending')
+            ->renameColumn('is_visible', 'deleted')
+            ->save();
     }
-    
+
     public function down()
     {
-        // Hmmmm
-        
-        $table = $this->table('archive');
-        $table->renameColumn('directory', 'is_directory');
-        $table->renameColumn('pending', 'is_accepted');
-        $table->renameColumn('deleted', 'is_visible');
     }
 }

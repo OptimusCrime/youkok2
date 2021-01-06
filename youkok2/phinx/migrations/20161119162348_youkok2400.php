@@ -27,11 +27,13 @@ class Youkok2400 extends AbstractMigration
      */
     public function change()
     {
-        $archiveTable = $this->table('archive');
-        $archiveTable->rename('resource');
+        $this->table('archive')
+            ->rename('resource')
+            ->save();
 
-        $userTable = $this->table('user');
-        $userTable->rename('contributor');
+        $this->table('user')
+            ->rename('contributor')
+            ->save();
 
         try {
             $this->execute('ALTER TABLE resource DROP FOREIGN KEY resource_ibfk_2');
@@ -44,15 +46,14 @@ class Youkok2400 extends AbstractMigration
 
             $this->execute('ALTER TABLE karma DROP FOREIGN KEY karma_ibfk_1');
             $this->execute('ALTER TABLE karma DROP FOREIGN KEY karma_ibfk_2');
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             //
         }
 
-        $this->dropTable('changepassword');
-        $this->dropTable('course');
-        $this->dropTable('favorite');
-        $this->dropTable('history');
-        $this->dropTable('karma');
+        $this->table('changepassword')->drop()->save();
+        $this->table('course')->drop()->save();
+        $this->table('favorite')->drop()->save();
+        $this->table('history')->drop()->save();
+        $this->table('karma')->drop()->save();
     }
 }

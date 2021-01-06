@@ -12,10 +12,10 @@ class Youkok1340 extends AbstractMigration
      *
      * Uncomment this method if you would like to use it.
      *
-    public function change()
-    {
-    }
-    */
+     * public function change()
+     * {
+     * }
+     */
 
     /**
      * Migrate Up.
@@ -23,12 +23,12 @@ class Youkok1340 extends AbstractMigration
     public function up()
     {
         try {
-            // Drop table
-            $this->dropTable('course');
-        } catch (Exception $e) {
+            $this->execute('ALTER TABLE archive DROP FOREIGN KEY archive_ibfk_2');
+        } catch (\Exception $e) {
             //
         }
 
+        $this->table('course')->drop()->save();
     }
 
     /**

@@ -12,6 +12,7 @@ use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Common\Utilities\SelectStatements;
 use Youkok\Enums\MostPopularCourse;
+use Youkok\Helpers\Configuration\Configuration;
 
 class MostPopularCoursesService implements MostPopularInterface
 {
@@ -136,8 +137,8 @@ class MostPopularCoursesService implements MostPopularInterface
 
     private function getCacheDirectory(): string
     {
-        $cacheDirectory = getenv(static::CACHE_DIRECTORY_KEY);
-        return $cacheDirectory . static::CACHE_DIRECTORY_SUB;
+        return Configuration::getInstance()->getDirectoryCache()
+            . static::CACHE_DIRECTORY_SUB;
     }
 
     private function resultArrayToElements(array $result, int $limit): array

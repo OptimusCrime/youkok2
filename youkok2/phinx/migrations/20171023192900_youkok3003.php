@@ -27,8 +27,7 @@ class Youkok3003 extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('element');
-        $table
+        $this->table('element')
             ->changeColumn('slug', 'string', ['limit' => 200, 'null' => true])
             ->save();
 

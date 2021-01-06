@@ -9,6 +9,7 @@ use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\FileTypesHelper;
 use Youkok\Common\Utilities\SelectStatements;
+use Youkok\Helpers\Configuration\Configuration;
 
 class CreateFileService
 {
@@ -118,7 +119,7 @@ class CreateFileService
 
     private static function getFileTargetDir(string $checksum): string
     {
-        return getenv('FILE_DIRECTORY')
+        return Configuration::getInstance()->getDirectoryFiles()
             . substr($checksum, 0, 1)
             . DIRECTORY_SEPARATOR
             . substr($checksum, 1, 1)

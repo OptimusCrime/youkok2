@@ -35,12 +35,8 @@ class Youkok3005 extends AbstractMigration
             ->removeColumn('exam')
             ->save();
 
-        $this->dropTable('cache');
-        $this->dropTable('contributor');
-
-        $downloadTable = $this->table('download');
-        $downloadTable
-            ->removeColumn('session')
-            ->save();
+        $this->table('cache')->drop()->save();
+        $this->table('contributor')->drop()->save();
+        $this->table('download')->removeColumn('session')->save();
     }
 }

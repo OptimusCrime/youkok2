@@ -31,8 +31,8 @@ class Youkok4100 extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('element');
-        $table->addColumn('requested_deletion', 'boolean', array('limit' => 1, 'null' => false, 'default' => 0))
+        $this->table('element')
+            ->addColumn('requested_deletion', 'boolean', array('limit' => 1, 'null' => false, 'default' => 0))
             ->save();
     }
 }

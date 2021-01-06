@@ -28,12 +28,13 @@ class Youkok3001 extends AbstractMigration
     public function change()
     {
         // Rename url to link
-        $table = $this->table('element');
-        $table->renameColumn('url', 'link');
-        
+        $this->table('element')
+            ->renameColumn('url', 'link')
+            ->save();
+
         // Add a new column uri
         $this->table('element')
-             ->addColumn('uri', 'string', array('limit' => 255, 'default' => null, 'null' => true, 'after' => 'slug'))
-             ->update();
+            ->addColumn('uri', 'string', array('limit' => 255, 'default' => null, 'null' => true, 'after' => 'slug'))
+            ->update();
     }
 }

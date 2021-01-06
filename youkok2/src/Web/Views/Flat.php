@@ -45,6 +45,7 @@ class Flat extends BaseView
                 'SITE_TITLE' => 'Retningslinjer',
                 'HEADER_MENU' => '',
                 'VIEW_NAME' => 'terms',
+                // TODO
                 'FILE_ENDINGS' => explode(',', getenv('FILE_ENDINGS')),
                 'BODY_CLASS' => 'flat',
                 'SITE_DESCRIPTION' => 'Retningslinjer for Youkok2.com'
@@ -58,6 +59,7 @@ class Flat extends BaseView
             $response->withHeader('Content-Type', 'text/plain; charset=utf-8'),
             'flat/changelog.txt',
             [
+                // TODO
                 'CONTENT' => @file_get_contents(getenv('BASE_DIRECTORY') . 'CHANGELOG.md')
             ]
         );

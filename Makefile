@@ -1,103 +1,56 @@
-.PHONY: all bash build clean down logs restart start status stop tail
+.PHONY: all build start p stop down restart status logs migrate composer phpunit phpcs bash-php bash-nginx bash-db
 
-SERVER_SERVICE_NAME = server
-DB_SERVICE_NAME = db
+PHP_SERVICE_NAME = youkok2-php
+NGINX_SERVICE_NAME = youkok2-nginx
+DB_SERVICE_NAME = youkok2-db
 
 #####################################################################################################
 #                                                DEV                                                #
 #####################################################################################################
 
-dev-build:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml build
+build:
+	@docker-compose build
 
-dev-start:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d
+start:
+	@docker-compose up -d
 
-dev-up: dev-start
+up: dev-start
 
-dev-stop:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml stop
+stop:
+	@docker-compose stop
 
-dev-down:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml down
+down:
+	@docker-compose down
 
-dev-restart: dev-stop dev-start
+restart: stop start
 
-dev-status:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml ps
+status:
+	@docker-compose ps
 
-dev-logs:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml logs -f
+logs:
+	@docker-compose logs -f
 
-dev-reload:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml restart $(SERVER_SERVICE_NAME)
+migrate:
+	@docker-compose run --rm $(PHP_SERVICE_NAME) composer migrate
 
-dev-bash:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) bash
+composer:
+	@docker-compose run --rm $(PHP_SERVICE_NAME) composer install
 
-dev-cron:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) cron_job
+phpunit:
+	@docker-compose run --rm $(PHP_SERVICE_NAME) composer phpunit
 
-dev-migrate:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) composer migrate
+phpcs:
+	@docker-compose run --rm $(PHP_SERVICE_NAME) composer phpcs
 
-dev-composer:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) composer install
+bash-php:
+	@docker-compose run --rm $(PHP_SERVICE_NAME) bash
 
-dev-phpunit:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) composer phpunit
+bash-nginx:
+	@docker-compose run --rm $(NGINX_SERVICE_NAME) sh
 
-dev-phpcs:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(SERVER_SERVICE_NAME) composer phpcs
+bash-db:
+	@docker-compose run --rm $(DB_SERVICE_NAME) sh
 
-dev-install: dev-composer dev-migrate
+install: composer migrate
 
-dev-upgrade: dev-build dev-restart
-
-dev-dbbash:
-	@docker-compose -f docker-compose.yml -f docker-compose-dev.yml run --rm $(DB_SERVICE_NAME) bash
-
-
-#####################################################################################################
-#                                                PROD                                               #
-#####################################################################################################
-
-prod-build:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml build
-
-prod-start:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml up -d
-
-prod-up: prod-start
-
-prod-stop:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml stop
-
-prod-down:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml down
-
-prod-restart: prod-stop prod-start
-
-prod-status:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml ps
-
-prod-logs:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml logs -f
-
-prod-reload:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml restart $(SERVER_SERVICE_NAME)
-
-prod-bash:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) bash
-
-prod-cron:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) cron_job
-
-prod-migrate:
-	@docker-compose -f docker-compose.yml -f docker-compose-production.yml run --rm $(SERVER_SERVICE_NAME) composer migrate
-
-prod-composer: dev-composer
-
-prod-install: prod-composer prod-migrate
-
-prod-upgrade: prod-build prod-composer prod-migrate prod-restart
+upgrade: build restart

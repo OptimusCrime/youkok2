@@ -5,6 +5,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 use Youkok\Biz\Exceptions\InvalidRequestException;
+use Youkok\Helpers\Configuration\Configuration;
 use Youkok\Web\Views\BaseView;
 
 class BaseRestEndpoint extends BaseView
@@ -44,7 +45,7 @@ class BaseRestEndpoint extends BaseView
 
     protected function returnBadRequest(Response $response, \Exception $ex): Response
     {
-        if (getenv('DEV') === '1') {
+        if (Configuration::getInstance()->isDev()) {
             return $response->write($ex->getTraceAsString());
         }
 

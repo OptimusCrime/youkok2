@@ -12,11 +12,11 @@ class Youkok1200 extends AbstractMigration
      *
      * Uncomment this method if you would like to use it.
      *
-    public function change()
-    {
-    }
-    */
-    
+     * public function change()
+     * {
+     * }
+     */
+
     /**
      * Migrate Up.
      */
@@ -24,18 +24,15 @@ class Youkok1200 extends AbstractMigration
     {
         // Get table
         $table = $this->table('history');
-        
-        // Remove index
-        $table->dropForeignKey(array('flag'));
-        
+
         // Do other stuff
         $table->removeColumn('flag')
-              ->removeColumn('type')
-              ->removeColumn('karma')
-              ->removeColumn('active')
-              ->removeColumn('positive')
-              ->addColumn('visible', 'boolean', array('default' => true, 'null' => false))
-              ->update();
+            ->removeColumn('type')
+            ->removeColumn('karma')
+            ->removeColumn('active')
+            ->removeColumn('positive')
+            ->addColumn('visible', 'boolean', array('default' => true, 'null' => false))
+            ->update();
     }
 
     /**

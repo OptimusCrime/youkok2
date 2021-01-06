@@ -14,9 +14,7 @@ use Youkok\Common\Containers\PageNotFound;
 use Youkok\Common\Containers\Services;
 use Youkok\Common\Containers\View;
 use Youkok\Common\Middlewares\AdminAuthMiddleware;
-use Youkok\Common\Middlewares\DumpSqlLogMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
-use Youkok\Common\Middlewares\TimingMiddleware;
 use Youkok\Biz\Services\Job\JobService;
 use Youkok\Rest\Endpoints\Admin\Diagnostics\AdminRedisCache;
 use Youkok\Rest\Endpoints\Admin\Files\AdminFilesDirectoryEndpoint;
@@ -102,9 +100,7 @@ class App
     private function routes(): void
     {
         $app = $this->app;
-        $app->add(new TimingMiddleware());
         $app->add(new ReverseProxyMiddleware());
-        $app->add(new DumpSqlLogMiddleware());
 
         $app->group('', function () use ($app) {
             $app->get('/', Frontpage::class . ':view')->setName('home');

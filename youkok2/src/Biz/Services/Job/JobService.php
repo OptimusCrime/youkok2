@@ -4,7 +4,6 @@ namespace Youkok\Biz\Services\Job;
 use Psr\Container\ContainerInterface;
 use Youkok\Biz\Services\Job\Jobs\ClearReddisCachePartitionsService;
 use Youkok\Biz\Services\Job\Jobs\PopulateCoursesLookupFileJobService;
-use Youkok\Biz\Services\Job\Jobs\RemoveOldSessionsJobServiceJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
 
@@ -15,7 +14,6 @@ class JobService
     const SPECIFIC_JOB = 2;
 
     private static $schedule = [
-        RemoveOldSessionsJobServiceJobService::class,
         UpdateMostPopularCoursesJobService::class,
         UpdateMostPopularElementsJobService::class,
         PopulateCoursesLookupFileJobService::class,
@@ -23,7 +21,6 @@ class JobService
     ];
 
     private static $upgrade = [
-        RemoveOldSessionsJobServiceJobService::class,
         UpdateMostPopularCoursesJobService::class,
         UpdateMostPopularElementsJobService::class,
         PopulateCoursesLookupFileJobService::class,
@@ -34,7 +31,6 @@ class JobService
         'lookup' => PopulateCoursesLookupFileJobService::class,
         'popular_courses' => UpdateMostPopularCoursesJobService::class,
         'popular_elements' => UpdateMostPopularElementsJobService::class,
-        'remove_old_session' => RemoveOldSessionsJobServiceJobService::class,
         'clear_cache_partitions' => ClearReddisCachePartitionsService::class,
     ];
 

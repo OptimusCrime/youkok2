@@ -3,10 +3,11 @@ namespace Youkok\Biz\Services\Download;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Common\Models\Element;
+use Youkok\Helpers\Configuration\Configuration;
 
 class DownloadFileInfoService
 {
-    private $updateDownloadsService;
+    private UpdateDownloadsService $updateDownloadsService;
 
     public function __construct(UpdateDownloadsService $updateDownloadsService)
     {
@@ -49,6 +50,11 @@ class DownloadFileInfoService
         $folder1 = substr($checksum, 0, 1);
         $folder2 = substr($checksum, 1, 1);
 
-        return getenv('FILE_DIRECTORY') . $folder1 . DIRECTORY_SEPARATOR . $folder2 . DIRECTORY_SEPARATOR . $checksum;
+        return Configuration::getInstance()->getDirectoryFiles()
+            . $folder1
+            . DIRECTORY_SEPARATOR
+            . $folder2
+            . DIRECTORY_SEPARATOR
+            . $checksum;
     }
 }

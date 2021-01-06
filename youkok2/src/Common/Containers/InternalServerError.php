@@ -5,6 +5,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Exception;
 use Psr\Container\ContainerInterface;
+use Youkok\Helpers\Configuration\Configuration;
 
 class InternalServerError implements ContainersInterface
 {
@@ -13,7 +14,8 @@ class InternalServerError implements ContainersInterface
         // TODO handle rest better!
         $container['errorHandler'] = function () {
             return function (Request $request, Response $response, Exception $exception): Response {
-                if (getenv('DEV') === '1') {
+                $configuration = Configuration::getInstance();
+                if ($configuration->isDev()) {
                     var_dump(get_class($exception));
                     var_dump($exception->getMessage());
                     var_dump($exception->getCode());
@@ -23,7 +25,7 @@ class InternalServerError implements ContainersInterface
 
                 return $response->withStatus(500)
                     ->withHeader('Content-Type', 'text/html')
-                    ->write(@file_get_contents(getenv('TEMPLATE_DIRECTORY') . 'errors/500.html'));
+                    ->write(@file_get_contents($configuration->getDirectoryTemplate() . 'errors/500.html'));
             };
         };
     }

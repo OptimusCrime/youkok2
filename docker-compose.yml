@@ -6,36 +6,71 @@ services:
   #                   Database                  #
   ###############################################
 
-  db:
+  youkok2-db:
     build:
       context: .
-      dockerfile: Dockerfile.db
+      dockerfile: docker_db.Dockerfile
+    container_name: "youkok2_db_dev"
     volumes:
       - /var/lib/mysql
+    ports:
+      - "3306:3306"
+    env_file:
+      - env_db_dev.env
 
   ###############################################
   #                    Cache                    #
   ###############################################
 
-  cache:
-    image: "redis:4.0.14-alpine"
-    volumes:
-      - /data
+  youkok2-cache:
+    image: "redis:6.0.8-alpine"
+    container_name: "youkok2_cache_dev"
+    ports:
+      - "6379:6379"
 
   ###############################################
   #                  Webserver                  #
   ###############################################
 
-  server:
-    depends_on:
-      - db
-      - cache
-    user: "0"
+  youkok2-php:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker_php.Dockerfile
+      args:
+        - ENV=dev
+    container_name: "youkok2_web_dev"
     ports:
-      - "8000:80"
+      - "9000"
+    env_file:
+      - env_php_dev.env
+    volumes:
+      - ./youkok2:/code/site
+      - ./_docker/files:/code/files
+      - ./_docker/cache:/code/cache
+    depends_on:
+      - youkok2-db
+      - youkok2-cache
     links:
-      - db
-      - cache
+      - youkok2-db
+      - youkok2-cache
+
+  ###############################################
+  #                    Nginx                    #
+  ###############################################
+
+  youkok2-nginx:
+    build:
+      context: .
+      dockerfile: docker_nginx.Dockerfile
+      args:
+        - ENV=dev
+    container_name: "youkok2_nginx_dev"
+    ports:
+      - "8091:80"
+    volumes:
+      - ./_docker/site.conf:/etc/nginx/conf.d/site.conf
+      - ./static:/static
+    depends_on:
+      - youkok2-php
+    links:
+      - youkok2-php

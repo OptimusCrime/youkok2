@@ -5,22 +5,21 @@ namespace Youkok\Web\Views\Admin;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
-
 use Slim\Interfaces\RouterInterface;
+
 use Youkok\Biz\Exceptions\InvalidLoginAttemptException;
-use Youkok\Biz\Services\Admin\LoginService;
+use Youkok\Biz\Services\Auth\AuthService;
 use Youkok\Web\Views\BaseView;
 
 class Login extends BaseView
 {
-    /** @var LoginService */
-    private $loginService;
+    private AuthService $authService;
 
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
-        $this->loginService = $container->get(LoginService::class);
+        $this->authService = $container->get(AuthService::class);
     }
 
     public function view(Request $request, Response $response)
@@ -36,11 +35,9 @@ class Login extends BaseView
     {
         try {
             // The validate method throws exceptions for all invalid login attempts
-            $this->loginService->validateLogin($request->getParams());
+            $this->authService->validateLogin($request->getParams());
 
-            $session = $this->userSessionService->getSession();
-            $session->setAdmin(true);
-            $session->save();
+            $this->authService->setAdminCookie();
 
             return $this->output(
                 $response

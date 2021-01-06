@@ -12,19 +12,19 @@ class Youkok1004 extends AbstractMigration
      *
      * Uncomment this method if you would like to use it.
      *
-    public function change()
-    {
-    }
-    */
-    
+     * public function change()
+     * {
+     * }
+     */
+
     /**
      * Migrate Up.
      */
     public function up()
     {
         $this->table('archive')
-             ->addColumn('empty', 'boolean', array('limit' => 1, 'null' => false, 'default' => 1, 'after' => 'parent'))
-             ->update();
+            ->addColumn('empty', 'boolean', array('limit' => 1, 'null' => false, 'default' => 1, 'after' => 'parent'))
+            ->update();
     }
 
     /**

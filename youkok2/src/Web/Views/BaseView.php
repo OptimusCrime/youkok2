@@ -1,36 +1,25 @@
 <?php
 namespace Youkok\Web\Views;
 
-use SebastianBergmann\Timer\Timer;
 use Slim\Http\Response;
 use Psr\Container\ContainerInterface;
 use Slim\Interfaces\RouterInterface;
 use Slim\Views\Twig;
-use Youkok\Biz\Services\UserSessionService;
 use Youkok\Common\Utilities\CoursesCacheConstants;
 
 class BaseView
 {
-    protected $container;
+    protected ContainerInterface $container;
 
-    /** @var Twig */
-    protected $view;
-
-    /** @var UserSessionService */
-    protected $userSessionService;
-
-    /** @var RouterInterface */
-    protected $router;
-
-    /** @var array */
-    protected $templateData = [];
+    protected Twig $view;
+    protected RouterInterface $router;
+    protected array $templateData = [];
 
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
 
         $this->view = $container->get('view');
-        $this->userSessionService = $container->get(UserSessionService::class);
         $this->router = $container->get('router');
 
         $this->templateData = $this->getDefaultTemplateData();
@@ -66,16 +55,12 @@ class BaseView
                 'courses_url' => $this->router->pathFor('courses')
             ],
 
-            // Information about the current user
-            'USER' => $this->userSessionService->getSession()->getAllData(),
-
             // Other things
             'SITE_TITLE' => 'Den beste kokeboka på nettet',
             'HEADER_MENU' => 'home',
             'VIEW_NAME' => 'frontpage',
             'SEARCH_QUERY' => '',
 
-            'ADMIN' => $this->userSessionService->isAdmin(),
             'COURSE_LOOKUP' => $course_lookup
         ];
     }
@@ -100,9 +85,6 @@ class BaseView
         return $this->view->render($response, $template, array_merge(
             $this->templateData,
             $data,
-            [
-                'EXECUTION_TIME' => Timer::secondsToTimeString(Timer::stop())
-            ]
         ));
     }
 

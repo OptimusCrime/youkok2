@@ -12,11 +12,11 @@ class Youkok1201 extends AbstractMigration
      *
      * Uncomment this method if you would like to use it.
      *
-    public function change()
-    {
-    }
-    */
-    
+     * public function change()
+     * {
+     * }
+     */
+
     /**
      * Migrate Up.
      */
@@ -24,19 +24,19 @@ class Youkok1201 extends AbstractMigration
     {
         // Create table
         $this->table('karma')
-             ->addColumn('user', 'biginteger', array('limit' => 22, 'null' => false))
-             ->addColumn('file', 'biginteger', array('limit' => 22, 'null' => false))
-             ->addColumn('value', 'integer', array('limit' => 2, 'null' => false, 'default' => 5))
-             ->addColumn('pending', 'boolean', array('null' => false, 'default' => true))
-             ->addColumn('added', 'timestamp', array('null' => false, 'default' => 'CURRENT_TIMESTAMP'))
-             ->create();
+            ->addColumn('user', 'biginteger', array('limit' => 22, 'null' => false))
+            ->addColumn('file', 'biginteger', array('limit' => 22, 'null' => false))
+            ->addColumn('value', 'integer', array('limit' => 2, 'null' => false, 'default' => 5))
+            ->addColumn('pending', 'boolean', array('null' => false, 'default' => true))
+            ->addColumn('added', 'timestamp', array('null' => false, 'default' => 'CURRENT_TIMESTAMP'))
+            ->create();
         $this->execute('ALTER TABLE  `karma` CHANGE  `id`  `id` BIGINT( 22 ) NOT NULL AUTO_INCREMENT');
-        
+
         // Add foreign keys
         $this->table('karma')
-             ->addForeignKey('file', 'archive', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
-             ->addForeignKey('user', 'user', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
-             ->update();
+            ->addForeignKey('file', 'archive', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
+            ->addForeignKey('user', 'user', 'id', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
+            ->update();
     }
 
     /**

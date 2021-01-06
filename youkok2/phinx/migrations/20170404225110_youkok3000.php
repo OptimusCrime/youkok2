@@ -36,8 +36,7 @@ class Youkok3000 extends AbstractMigration
             $this->execute('ALTER TABLE element DROP FOREIGN KEY element_ibfk_3');
 
             $this->execute('ALTER TABLE verify DROP FOREIGN KEY verify_ibfk_1');
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             //
         }
     }

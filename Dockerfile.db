@@ -1,5 +1,0 @@
-FROM mysql:5.7.17
-
-COPY ./docker/config/mysql/youkok2.cnf /etc/mysql/conf.d/youkok2.cnf
-
-RUN chmod 644 /etc/mysql/conf.d/youkok2.cnf

@@ -10,23 +10,18 @@ use Slim\Http\Request;
 use Psr\Container\ContainerInterface;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Services\Auth\AuthService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
 use Youkok\Biz\Services\Models\ElementService;
 
 class Download extends BaseView
 {
-    /** @var DownloadFileInfoService */
-    private $downloadService;
-
-    /** @var UpdateDownloadsService */
-    private $updateDownloadsProcessor;
-
-    /** @var ElementService */
-    private $elementService;
-
-    /** @var Logger */
-    private $logger;
+    private DownloadFileInfoService $downloadService;
+    private UpdateDownloadsService $updateDownloadsProcessor;
+    private ElementService $elementService;
+    private AuthService $authService;
+    private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {
@@ -35,6 +30,7 @@ class Download extends BaseView
         $this->downloadService = $container->get(DownloadFileInfoService::class);
         $this->updateDownloadsProcessor = $container->get(UpdateDownloadsService::class);
         $this->elementService = $container->get(ElementService::class);
+        $this->authService = $container->get(AuthService::class);
         $this->logger = $container->get(Logger::class);
     }
 
@@ -46,7 +42,7 @@ class Download extends BaseView
         ];
 
         // If we are not currently logged in as admin, also make sure that the file is visible
-        if (!$this->userSessionService->isAdmin()) {
+        if (!$this->authService->isAdmin()) {
             $flags[] = ElementService::FLAG_ENSURE_VISIBLE;
         }
 
@@ -63,7 +59,7 @@ class Download extends BaseView
                 throw new ElementNotFoundException();
             }
 
-            if (!$this->userSessionService->isAdmin()) {
+            if (!$this->authService->isAdmin()) {
                 $this->updateDownloadsProcessor->run($element);
             }
 

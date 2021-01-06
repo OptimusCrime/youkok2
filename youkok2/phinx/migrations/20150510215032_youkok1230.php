@@ -12,11 +12,11 @@ class Youkok1230 extends AbstractMigration
      *
      * Uncomment this method if you would like to use it.
      *
-    public function change()
-    {
-    }
-    */
-    
+     * public function change()
+     * {
+     * }
+     */
+
     /**
      * Migrate Up.
      */
@@ -24,12 +24,12 @@ class Youkok1230 extends AbstractMigration
     {
         // Create table
         $this->table('message')
-             ->addColumn('time_start', 'timestamp', array('null' => false, 'default' => 'CURRENT_TIMESTAMP'))
-             ->addColumn('time_end', 'timestamp', array('null' => true, 'default' => null))
-             ->addColumn('message', 'text', array('null' => true, 'default' => null))
-             ->addColumn('type', 'string', array('limit' => 30, 'null' => false, 'default' => 'sucess'))
-             ->addColumn('pattern', 'string', array('limit' => 30, 'null' => false, 'default' => '*'))
-             ->create();
+            ->addColumn('time_start', 'timestamp', array('null' => false, 'default' => 'CURRENT_TIMESTAMP'))
+            ->addColumn('time_end', 'timestamp', array('null' => true, 'default' => null))
+            ->addColumn('message', 'text', array('null' => true, 'default' => null))
+            ->addColumn('type', 'string', array('limit' => 30, 'null' => false, 'default' => 'sucess'))
+            ->addColumn('pattern', 'string', array('limit' => 30, 'null' => false, 'default' => '*'))
+            ->create();
         $this->execute('ALTER TABLE  `message` CHANGE  `id`  `id` BIGINT( 22 ) NOT NULL AUTO_INCREMENT');
     }
 

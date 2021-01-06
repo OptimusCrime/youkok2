@@ -7,6 +7,7 @@ use Slim\Interfaces\RouterInterface;
 use Slim\Views\TwigExtension;
 use Slim\Views\Twig;
 
+use Youkok\Helpers\Configuration\Configuration;
 use Youkok\Web\TwigPlugins\YoukokTwigExtension;
 
 class View implements ContainersInterface
@@ -20,11 +21,13 @@ class View implements ContainersInterface
             /** @var RouterInterface $router */
             $router = $container->get('router');
 
-            $templatesDir = getenv('TEMPLATE_DIRECTORY');
-            $cacheDir = getenv('CACHE_DIRECTORY');
+            $configuration = Configuration::getInstance();
+
+            $templatesDir = $configuration->getDirectoryTemplate();
+            $cacheDir = $configuration->getDirectoryCache();
 
             $cache = false;
-            if (getenv('DEV') === '0') {
+            if (!$configuration->isDev()) {
                 $twigCacheDir = $cacheDir . 'twig';
                 if (!file_exists($twigCacheDir)) {
                     mkdir($twigCacheDir);
@@ -36,7 +39,7 @@ class View implements ContainersInterface
 
             $view = new Twig($templatesDir, [
                 'cache' => $cache,
-                'auto_reload' => getenv('DEV') === '1',
+                'auto_reload' => $configuration->isDev(),
                 'debug' => 1
             ]);
 

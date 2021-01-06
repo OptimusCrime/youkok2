@@ -28,8 +28,8 @@ class Youkok2010 extends AbstractMigration
     public function change()
     {
         $this->table('user')
-             ->removeColumn('most_popular_delta')
-             ->addColumn('module_settings', 'text', array('default' => null, 'null' => true, 'after' => 'nick'))
-             ->update();
+            ->removeColumn('most_popular_delta')
+            ->addColumn('module_settings', 'text', array('default' => null, 'null' => true, 'after' => 'nick'))
+            ->update();
     }
 }

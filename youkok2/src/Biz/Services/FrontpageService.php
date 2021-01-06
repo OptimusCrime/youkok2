@@ -9,7 +9,6 @@ use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
-use Youkok\Common\Models\Session;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
@@ -21,17 +20,15 @@ class FrontpageService
     const FRONTPAGE_PUT_DELTA_PARAM = 'delta';
     const FRONTPAGE_PUT_VALUE_PARAM = 'value';
 
-    private $sessionService;
+    private MostPopularCoursesService $popularCoursesProcessor;
+    private MostPopularElementsService $popularElementsProcessor;
+    private CacheService $cacheService;
+    private ElementService $elementService;
+    private CourseService $courseService;
+    private DownloadService $downloadService;
 
-    private $popularCoursesProcessor;
-    private $popularElementsProcessor;
-    private $cacheService;
-    private $elementService;
-    private $courseService;
-    private $downloadService;
 
     public function __construct(
-        UserSessionService $sessionService,
         MostPopularCoursesService $popularCoursesProcessor,
         MostPopularElementsService $popularElementsProcessor,
         CacheService $cacheService,
@@ -39,7 +36,6 @@ class FrontpageService
         CourseService $courseService,
         DownloadService $downloadService
     ) {
-        $this->sessionService = $sessionService;
         $this->popularCoursesProcessor = $popularCoursesProcessor;
         $this->popularElementsProcessor = $popularElementsProcessor;
         $this->popularElementsProcessor = $popularElementsProcessor;
@@ -125,33 +121,5 @@ class FrontpageService
     public function lastDownloaded(): array
     {
         return $this->downloadService->getLatestDownloads(static::SERVICE_LIMIT);
-    }
-
-    public function put(string $delta, string $value): array
-    {
-        if (!in_array($delta, [Session::KEY_MOST_POPULAR_ELEMENT, Session::KEY_MOST_POPULAR_COURSE])) {
-            throw new InvalidRequestException();
-        }
-
-        if ($delta === Session::KEY_MOST_POPULAR_ELEMENT && !in_array($value, MostPopularElement::all())) {
-            throw new InvalidRequestException();
-        }
-
-        if ($delta === Session::KEY_MOST_POPULAR_COURSE && !in_array($value, MostPopularCourse::all())) {
-            throw new InvalidRequestException();
-        }
-
-        $session = $this->sessionService->getSession();
-
-        if ($delta === Session::KEY_MOST_POPULAR_ELEMENT) {
-            $session->setMostPopularElement($value);
-
-            return $this->popularElementsProcessor->fromDelta($value, static::SERVICE_LIMIT);
-        }
-
-        $session->setMostPopularCourse($value);
-        $session->save();
-
-        return $this->popularCoursesProcessor->fromDelta($value, static::SERVICE_LIMIT);
     }
 }

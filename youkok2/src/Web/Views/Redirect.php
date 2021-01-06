@@ -8,6 +8,7 @@ use Psr\Container\ContainerInterface;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\InvalidRequestException;
+use Youkok\Biz\Services\Auth\AuthService;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
@@ -15,11 +16,9 @@ use Youkok\Common\Utilities\SelectStatements;
 
 class Redirect extends BaseView
 {
-    /** @var UpdateDownloadsService */
-    private $updateDownloadsProcessor;
-
-    /** @var ElementService */
-    private $elementService;
+    private UpdateDownloadsService $updateDownloadsProcessor;
+    private ElementService $elementService;
+    private AuthService $authService;
 
     public function __construct(ContainerInterface $container)
     {
@@ -27,6 +26,7 @@ class Redirect extends BaseView
 
         $this->updateDownloadsProcessor = $container->get(UpdateDownloadsService::class);
         $this->elementService = $container->get(ElementService::class);
+        $this->authService = $container->get(AuthService::class);
     }
 
     public function view(Request $request, Response $response, array $args): Response
@@ -38,10 +38,9 @@ class Redirect extends BaseView
         $flags = [];
 
         // If we are not currently logged in as admin, also make sure that the file is visible
-        if (!$this->userSessionService->isAdmin()) {
+        if (!$this->authService->isAdmin()) {
             $flags[] = ElementService::FLAG_ENSURE_VISIBLE;
         }
-
 
         try {
             $element = $this->elementService->getElement(
@@ -57,7 +56,7 @@ class Redirect extends BaseView
             return $this->render404($response);
         }
 
-        if (!$this->userSessionService->isAdmin()) {
+        if (!$this->authService->isAdmin()) {
             $this->updateDownloadsProcessor->run($element);
         }
 

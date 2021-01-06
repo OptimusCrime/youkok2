@@ -12,19 +12,19 @@ class Youkok1211 extends AbstractMigration
      *
      * Uncomment this method if you would like to use it.
      *
-    public function change()
-    {
-    }
-    */
-    
+     * public function change()
+     * {
+     * }
+     */
+
     /**
      * Migrate Up.
      */
     public function up()
     {
         $this->table('favorite')
-             ->removeColumn('ordering')
-             ->update();
+            ->removeColumn('ordering')
+            ->update();
     }
 
     /**

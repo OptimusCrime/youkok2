@@ -1,22 +1,23 @@
 <?php
 namespace Youkok\Helpers;
 
+use Youkok\Helpers\Configuration\Configuration;
+
 class SettingsParser
 {
     public static function getSlimConfig(): array
     {
         return [
             'settings' => [
-                'displayErrorDetails' => getenv('DEV') === '1',
+                'displayErrorDetails' => Configuration::getInstance()->isDev(),
                 'addContentLengthHeader' => false,
-
-                'base_dir' => getenv('BASE_DIRECTORY'),
             ]
         ];
     }
 
     public static function getPhinxConfig(): array
     {
+        $configuration = Configuration::getInstance();
         return [
             'paths' => [
                 'migrations' => '%%PHINX_CONFIG_DIR%%/../phinx/migrations',
@@ -27,11 +28,11 @@ class SettingsParser
                 'default_database' => 'production',
                 'production' => [
                     'adapter' => 'mysql',
-                    'host' => getenv('MYSQL_HOST'),
-                    'name' => getenv('MYSQL_DATABASE'),
-                    'user' => getenv('MYSQL_USER'),
-                    'pass' => getenv('MYSQL_PASSWORD'),
-                    'port' => getenv('MYSQL_PORT'),
+                    'host' => $configuration->getMysqlHost(),
+                    'user' => $configuration->getMysqlUser(),
+                    'pass' => $configuration->getMysqlPassword(),
+                    'name' => $configuration->getMysqlDatabase(),
+                    'port' => $configuration->getMysqlPort(),
                     'charset' => 'utf8',
                 ],
                 'test' => [

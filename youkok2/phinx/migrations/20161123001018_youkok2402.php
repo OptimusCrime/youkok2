@@ -27,7 +27,6 @@ class Youkok2402 extends AbstractMigration
      */
     public function change()
     {
-        $resourceTable = $this->table('resource');
-        $resourceTable->rename('element');
+        $this->table('resource')->rename('element')->save();
     }
 }

@@ -6,6 +6,7 @@ use Monolog\Logger;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CoursesCacheConstants;
+use Youkok\Helpers\Configuration\Configuration;
 
 class CacheCollection {
 
@@ -110,12 +111,16 @@ class CoursesLookupService
 
     static function getTemplateFileLocation(string $fileName): string
     {
-        return getenv('CACHE_DIRECTORY') . CoursesCacheConstants::DYNAMIC_SUB_DIRECTORY . $fileName;
+        return Configuration::getInstance()->getDirectoryTemplate()
+            . CoursesCacheConstants::DYNAMIC_SUB_DIRECTORY
+            . $fileName;
     }
 
     static function getJsFileLocation(string $fileName): string
     {
-        return getenv('CACHE_DIRECTORY') . CoursesCacheConstants::DYNAMIC_SUB_DIRECTORY . $fileName;
+        return Configuration::getInstance()->getDirectoryCache()
+            . CoursesCacheConstants::DYNAMIC_SUB_DIRECTORY
+            . $fileName;
     }
 
     private function deleteCacheFile(string $file): void
