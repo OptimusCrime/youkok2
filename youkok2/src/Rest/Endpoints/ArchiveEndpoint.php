@@ -14,14 +14,9 @@ use Youkok\Biz\Services\Mappers\ElementMapper;
 
 class ArchiveEndpoint extends BaseRestEndpoint
 {
-    /** @var ArchiveService */
-    private $archiveService;
-
-    /** @var ElementMapper */
-    private $elementMapper;
-
-    /** @var Logger */
-    private $logger;
+    private ArchiveService $archiveService;
+    private ElementMapper $elementMapper;
+    private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {

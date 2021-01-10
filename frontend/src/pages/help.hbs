@@ -1,14 +1,16 @@
-{{> "templates/top" BODY_CLASS="frontpage" HEADER_MENU="home" }}
-<div class="row"> <div class="col-xs-12 col-md-8">
+{{> "partials/top" BODY_CLASS="flat" HEADER_MENU="help" TITLE="Hjelp" SITE_DESCRIPTION="Trenger du hjelp med Youkok2.com? Se her" }}
+
+<div class="row">
+    <div class="col-xs-12 col-md-8">
         <h1>Hjelp</h1>
-        <p>Kontakt oss på <a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">{{ SITE_SETTINGS.EMAIL_CONTACT }}</a> dersom du har problemer med nettsiden eller om du trenger hjelp.</p>
+        <p>Kontakt oss på <a href="mailto:post@youkok2.com">post@youkok2.com</a> dersom du har problemer med nettsiden eller om du trenger hjelp.</p>
         <h2>Jeg får ikke lastet opp bidrag</h2>
-        <p>Opplasteren skal fungere i alle moderne nettlesere. Pass på at bidraget har <a href="{{ path_for('terms') }}#filtyper">godkjent filendelse</a>. Ta kontakt med oss dersom du fortsatt opplever problemer med opplasting av bidrag.</p>
+        <p>Opplasteren skal fungere i alle moderne nettlesere. Pass på at bidraget har <a href="/retningslinjer#filtyper">godkjent filendelse</a>. Ta kontakt med oss dersom du fortsatt opplever problemer med opplasting av bidrag.</p>
     </div>
     <div class="col-xs-12 col-md-4" id="sidebar">
-        {% include "sidebar/flat.html" %}
-        {% if DEV == '1' %}{% include "react/dev_sidebarPopular.html" %}{% else %}{% include "react/sidebarPopular.html" %}{% endif %}
+        {{> "partials/sidebar-flat" FLAT_MENU="help" }}
+        {{> "partials/sidebar-popular" }}
     </div>
 </div>
-{{> "templates/bottom" }}
-{% endblock %}
+
+{{> "partials/bottom" }}

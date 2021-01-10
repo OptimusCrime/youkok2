@@ -3,4 +3,4 @@ import 'whatwg-fetch';
 
 import { bootstrap } from "./youkok2";
 
-bootstrap();
+document.addEventListener("DOMContentLoaded", bootstrap);

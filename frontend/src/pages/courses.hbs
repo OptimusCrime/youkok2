@@ -1,0 +1,24 @@
+{{> "partials/top" BODY_CLASS="courses" HEADER_MENU="courses" SITE_TITLE="Emner" SITE_DESCRIPTION="Oversikt over alle emnene som ligger inne på Youkok2.com" }}
+
+<div class="row">
+    <div class="col-xs-12 col-md-8">
+        <div class="row">
+            <div class="col-xs-12">
+                <ol class="breadcrumb" id="archive-breadcrumbs">
+                    <li><a href={{ SITE_URL }}>Hjem</a></li>
+                    <li>Emner</li>
+                </ol>
+            </div>
+        </div>
+        <div class="center">
+            <h1>Emner</h1>
+        </div>
+        <div id="courses"></div>
+    </div>
+    <div id="sidebar" class="col-xs-12 col-md-4">
+        {{> "partials/sidebar-courses" }}
+        {{> "partials/sidebar-popular" }}
+    </div>
+</div>
+
+{{> "partials/bottom" }}

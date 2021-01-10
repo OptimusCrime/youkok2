@@ -5,9 +5,13 @@ import { BoxWrapper } from "../../../../common/components/box-wrapper";
 import { CourseItem } from "../../../components/course-item";
 import { MostPopularDropdown } from "../../../components/most-popular/dropdown";
 import {formatNumber, loading} from "../../../../common/utils";
-import {DELTA_POST_POPULAR_COURSES} from "../../../consts";
+import {
+  DEFAULT_MOST_POPULAR_COURSES_DELTA,
+  DELTA_POST_POPULAR_COURSES,
+} from "../../../consts";
 import {updateFrontpagePopularCourses as updateFrontpagePopularCoursesDispatch } from "../../../redux/popular_courses/actions";
 import {EmptyItem} from "../../../../common/components/empty-item";
+import {getItem} from "../../../../common/local-storage";
 
 class BoxMostPopularCourses extends Component {
 
@@ -31,7 +35,7 @@ class BoxMostPopularCourses extends Component {
   changeDelta(delta) {
     const { updateFrontpagePopularCourses } = this.props;
 
-    updateFrontpagePopularCourses(DELTA_POST_POPULAR_COURSES, delta);
+    updateFrontpagePopularCourses(delta);
   }
 
   render() {
@@ -62,6 +66,8 @@ class BoxMostPopularCourses extends Component {
       );
     }
 
+    const selected = getItem(DELTA_POST_POPULAR_COURSES) || DEFAULT_MOST_POPULAR_COURSES_DELTA;
+
     return (
       <div className="col-xs-12 col-sm-6 frontpage-box">
         <BoxWrapper
@@ -71,7 +77,7 @@ class BoxMostPopularCourses extends Component {
           isEmpty={!isLoading && courses.length === 0}
           dropdown={
             <MostPopularDropdown
-              selectedButton={preference}
+              selectedButton={selected}
               open={this.state.open}
               toggleDropdown={this.toggleDropdown}
               changeDelta={this.changeDelta}

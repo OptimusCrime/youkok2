@@ -1,20 +1,21 @@
-{% extends "base.html" %}
-{% block content %}
+{{> "partials/top" BODY_CLASS="flat" HEADER_MENU="about" SITE_TITLE="Om Youkok2" SITE_DESCRIPTION="Om Youkok2" }}
+
 <div class="row">
     <div class="col-xs-12 col-md-8">
         <h1>Om Youkok2</h1>
         <div class="well">
             <p>Kok først når du har fått gryte. ~ <em>Youkok.com</em></p>
         </div>
-        <p>Youkok2 er ment som en ressurs for studenter ved NTNU. Her kan man dele relevant faginformasjon og filer. Målet er å lage en felles ressursside som studenter kan bruke for å få hjelp i studenthverdagen. Youkok2 bygger på "dugnadsprinsippet" hvor bidrag kommer fra brukerne selv. Uten bidrag og oppdatert faginformasjon er denne siden ubrukelig. Bidra derfor hvis du har filer eller linker som du mener kan komme til nytte for andre studenter, og les våre <a href="{{ path_for('terms') }}">retningslinjer</a> før du eventuelt gjør dette.</p>
+        <p>Youkok2 er ment som en ressurs for studenter ved NTNU. Her kan man dele relevant faginformasjon og filer. Målet er å lage en felles ressursside som studenter kan bruke for å få hjelp i studenthverdagen. Youkok2 bygger på "dugnadsprinsippet" hvor bidrag kommer fra brukerne selv. Uten bidrag og oppdatert faginformasjon er denne siden ubrukelig. Bidra derfor hvis du har filer eller linker som du mener kan komme til nytte for andre studenter, og les våre <a href="/retningslinjer">retningslinjer</a> før du eventuelt gjør dette.</p>
         <p>Vi har en manuell godkjenningsprosess for alle bidrag slik at vi, etter beste evne, kan luke ut filer og linker som ikke er passende her. Ta kontakt på <a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">{{ SITE_SETTINGS.EMAIL_CONTACT }}</a> hvis du finner bidrag som du mener burde fjernes. Det er vanskelig for oss å verifisere hvem som sender inn bidrag, og vi fjerner eventuelle bidrag om noen mener vi har gjort en feil.</p>
         <h2>Annet</h2>
         <p>Kildekoden til Youkok2 ligger åpent på <a href="https://github.com/OptimusCrime/youkok2" target="_blank">GitHub</a>.</p>
         <p>Noen ikoner er lånt fra <a href="http://www.kloudspeaker.com" target="_blank">kloudspeaker</a> (tidligere Mollify).</p>
     </div>
     <div class="col-xs-12 col-md-4" id="sidebar">
-        {% include "sidebar/flat.html" %}
-        {% if DEV == '1' %}{% include "react/dev_sidebarPopular.html" %}{% else %}{% include "react/sidebarPopular.html" %}{% endif %}
+        {{> "partials/sidebar-flat" FLAT_MENU="about" }}
+        {{> "partials/sidebar-popular" }}
     </div>
 </div>
-{% endblock %}
+
+{{> "partials/bottom" }}

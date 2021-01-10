@@ -18,20 +18,11 @@ use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class FrontpageEndpoint extends BaseRestEndpoint
 {
-    /** @var FrontpageService */
-    private $frontpageService;
-
-    /** @var CourseMapper */
-    private $courseMapper;
-
-    /** @var ElementMapper */
-    private $elementMapper;
-
-    /** @var Logger */
-    private $logger;
-
-    /** @var CacheService */
-    private $cacheService;
+    private FrontpageService $frontpageService;
+    private CourseMapper $courseMapper;
+    private ElementMapper $elementMapper;
+    private Logger $logger;
+    private CacheService $cacheService;
 
     public function __construct(ContainerInterface $container)
     {
@@ -56,7 +47,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
     public function popularElements(Request $request, Response $response): Response
     {
         // TODO: Enum?
-        $delta = $request->params('delta') ?? 'all';
+        $delta = $request->getQueryParam('delta', 'all');
 
         try {
             $payload = $this->frontpageService->popularElements($delta);
@@ -75,7 +66,7 @@ class FrontpageEndpoint extends BaseRestEndpoint
     public function popularCourses(Request $request, Response $response): Response
     {
         // TODO: Enum?
-        $delta = $request->params('delta') ?? 'all';
+        $delta = $request->getQueryParam('delta', 'all');
 
         try {
             $payload = $this->frontpageService->popularCourses($delta);
@@ -176,31 +167,6 @@ class FrontpageEndpoint extends BaseRestEndpoint
         ]);
     }
 
-    public function put(Request $request, Response $response): Response
-    {
-        $params = json_decode($request->getBody(), true);
-
-        $delta = $params[FrontpageService::FRONTPAGE_PUT_DELTA_PARAM] ?? null;
-        $value = $params[FrontpageService::FRONTPAGE_PUT_VALUE_PARAM] ?? null;
-
-        if (!is_string($delta) || !is_string($value)) {
-            return $response->withStatus(400);
-        }
-
-        try {
-            $output = $this->frontpageService->put($delta, $value);
-
-            return $this->outputJson(
-                $response,
-                $this->mapUpdateMostPopular($output, $delta, $value)
-            );
-        } catch (InvalidRequestException $e) {
-            $this->logger->info('Got invalid frontpage put request. Delta: ' . $delta . '. Value: ' . $value);
-
-            return $response->withStatus(400);
-        }
-    }
-
     private function mapElementsMostPopular($arr): array
     {
         return $this->elementMapper->mapFromArray(
@@ -221,22 +187,6 @@ class FrontpageEndpoint extends BaseRestEndpoint
                 CourseMapper::DATASTORE_DOWNLOAD_ESTIMATE
             ]
         );
-    }
-
-    private function mapUpdateMostPopular($output, $delta, $value)
-    {
-        $ret = [
-            'preference' => $value,
-        ];
-
-        // TODO fix this
-        if ($delta === "most_popular_element") {
-            $ret['elements'] = $this->mapElementsMostPopular($output);
-        } else {
-            $ret['courses'] = $this->mapCoursesMostPopular($output);
-        }
-
-        return $ret;
     }
 
     private function fetchFromRedisCache(string $key): ?array

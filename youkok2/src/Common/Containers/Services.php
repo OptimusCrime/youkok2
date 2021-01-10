@@ -13,6 +13,7 @@ use Youkok\Biz\Services\Admin\HomeGraphService;
 use Youkok\Biz\Services\Admin\FileListingService;
 use Youkok\Biz\Services\ArchiveHistoryService;
 use Youkok\Biz\Services\ArchiveService;
+use Youkok\Biz\Services\Auth\AuthService;
 use Youkok\Biz\Services\CoursesLookupService;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Download\DownloadCountService;
@@ -45,6 +46,10 @@ class Services implements ContainersInterface
 {
     public static function load(ContainerInterface $container): void
     {
+        $container[AuthService::class] = function (ContainerInterface $container): AuthService {
+            return new AuthService();
+        };
+
         $container[CacheService::class] = function (ContainerInterface $container): CacheService {
             return new CacheService(
                 $container->get('cache')

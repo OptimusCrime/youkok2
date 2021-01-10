@@ -6,14 +6,12 @@ import {
   FRONTPAGE_POPULAR_COURSES_FETCH_FINISHED,
   FRONTPAGE_POPULAR_COURSES_FETCH_STARTED,
 } from './constants';
-import {DEFAULT_MOST_POPULAR_COURSES_DELTA} from "../../consts";
 
 const defaultState = {
   started: false,
   finished: false,
   failed: false,
   courses: [],
-  preference: DEFAULT_MOST_POPULAR_COURSES_DELTA
 };
 
 export const popularCourses = (state = defaultState, action) => {
@@ -31,7 +29,6 @@ export const popularCourses = (state = defaultState, action) => {
         started: false,
         finished: true,
         courses: action.courses,
-        preference: action.preference
       };
 
     case FRONTPAGE_POPULAR_COURSES_FETCH_FAILED:
@@ -63,7 +60,6 @@ export const popularCourses = (state = defaultState, action) => {
         started: false,
         finished: true,
         courses: action.courses,
-        preference: action.preference
       };
 
     default:

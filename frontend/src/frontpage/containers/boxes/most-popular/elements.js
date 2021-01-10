@@ -5,9 +5,13 @@ import { BoxWrapper } from "../../../../common/components/box-wrapper";
 import { ElementItem } from "../../../../common/components/element-item";
 import { MostPopularDropdown } from "../../../components/most-popular/dropdown";
 import {formatNumber, loading} from "../../../../common/utils";
-import { DELTA_POST_POPULAR_ELEMENTS } from "../../../consts";
+import {
+  DEFAULT_MOST_POPULAR_ELEMENTS_DELTA,
+  DELTA_POST_POPULAR_ELEMENTS
+} from "../../../consts";
 import {EmptyItem} from "../../../../common/components/empty-item";
 import {updateFrontpagePopularElements as updateFrontpagePopularElementsDispatch } from "../../../redux/popular_elements/actions";
+import {getItem} from "../../../../common/local-storage";
 
 class BoxMostPopularElements extends Component {
 
@@ -31,7 +35,7 @@ class BoxMostPopularElements extends Component {
   changeDelta(delta) {
     const { updateFrontpagePopularElements } = this.props;
 
-    updateFrontpagePopularElements(DELTA_POST_POPULAR_ELEMENTS, delta);
+    updateFrontpagePopularElements(delta);
   }
 
   render() {
@@ -41,7 +45,6 @@ class BoxMostPopularElements extends Component {
       finished,
       failed,
       elements,
-      preference
     } = this.props;
 
     const isLoading = loading(started, finished);
@@ -62,6 +65,8 @@ class BoxMostPopularElements extends Component {
       );
     }
 
+    const selected = getItem(DELTA_POST_POPULAR_ELEMENTS) || DEFAULT_MOST_POPULAR_ELEMENTS_DELTA;
+
     return (
       <div className="col-xs-12 col-sm-6 frontpage-box">
         <BoxWrapper
@@ -71,7 +76,7 @@ class BoxMostPopularElements extends Component {
           isEmpty={!isLoading && elements.length === 0}
           dropdown={
             <MostPopularDropdown
-              selectedButton={preference}
+              selectedButton={selected}
               open={this.state.open}
               toggleDropdown={this.toggleDropdown}
               changeDelta={this.changeDelta}
@@ -92,7 +97,6 @@ const mapStateToProps = ({ popularElements }) => ({
   finished: popularElements.finished,
   failed: popularElements.failed,
   elements: popularElements.elements,
-  preference: popularElements.preference,
 });
 
 const mapDispatchToProps = {

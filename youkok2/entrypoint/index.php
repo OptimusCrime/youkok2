@@ -18,6 +18,11 @@ catch (Exception $ex) {
         if (Configuration::getInstance()->isDev()) {
             echo '<h1>Uncaught out exception!</h1>';
             echo '<p>' . $ex->getMessage() . '</p>';
+
+            echo '<pre>';
+            var_dump($ex->getTraceAsString());
+            echo '</pre>';
+
             die();
         }
     }

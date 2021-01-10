@@ -51,10 +51,6 @@ class BaseView
 
             ],
 
-            'SITE_DATA' => [
-                'courses_url' => $this->router->pathFor('courses')
-            ],
-
             // Other things
             'SITE_TITLE' => 'Den beste kokeboka på nettet',
             'HEADER_MENU' => 'home',

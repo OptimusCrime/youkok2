@@ -1,5 +1,5 @@
-{% extends "base.html" %}
-{% block content %}
+{{> "partials/top" BODY_CLASS="flat" SITE_TITLE="Retningslinjer" SITE_DESCRIPTION="Retningslinjer for Youkok2.com" }}
+
 <div class="row">
     <div class="col-xs-12 col-md-8">
         <h1>Retningslinjer</h1>
@@ -9,21 +9,19 @@
         </div>
         <p>For å gjøre dette mulig har vi noen regler og retningslinjer for som hjelper oss å bedre definere hva dette betyr.</p>
 
-        <h2><a href="{{ path_for('terms') }}#opphavsrett" id="opphavsrett">Opphavsrett</a></h2>
+        <h2><a href="/retningslinjener#opphavsrett" id="opphavsrett">Opphavsrett</a></h2>
         <p>På Youkok2 ønsker vi ikke å ha innhold som bryter med <a href="https://lovdata.no/dokument/NL/lov/1961-05-12-2" target="_blank">opphavsretten</a>. Dette kan potensielt føre til Youkok2s nedleggelse. Legg derfor aldri ut filer av bøker, tekster, eller annet materiell hvor opphavsretten brytes. Som bidragsyter på Youkok2 vedgår du at du er kjent med vårt reglement, og at du selv er ansvarlig for å ikke bryte disse. Hvis du sender inn bidrag skrevet av andre må du forsikre deg om at dette er greit. Dette gjelder også gruppeoppgaver, selv om du har vært med på denne gruppe.</p>
         <p>Aller helst ønsker vi linker til bidrag som er lagret eksternt. Merk at disse må være tilgjengelig uten innlogging eller spesielle tilganger (som NTNU-nettverk eller liknende).</p>
-        <p>Dersom du finner bidrag som bryter med retningslinjene våre håper vi du rapporterer det så fort som mulig til oss på <a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">{{ SITE_SETTINGS.EMAIL_CONTACT }}</a>.</p>
+        <p>Dersom du finner bidrag som bryter med retningslinjene våre håper vi du rapporterer det så fort som mulig til oss på <a href="mailto:post@youkok2.com">post@youkok2.com</a>.</p>
 
-        <h2><a href="{{ path_for('terms') }}#filtyper" id="filtyper">Godkjente filtyper</a></h2>
-        <p>Her er en liste for godkjente filtyper på Youkok2. Dersom du har ønsker om nye filtyper kan du sende en epost til <a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">{{ SITE_SETTINGS.EMAIL_CONTACT }}</a>. Vi har en begrenset liste av sikkerhetsmessige årsaker.</p>
+        <h2><a href="/retningslinjener#filtyper" id="filtyper">Godkjente filtyper</a></h2>
+        <p>Her er en liste for godkjente filtyper på Youkok2. Dersom du har ønsker om nye filtyper kan du sende en epost til <a href="mailto:post@youkok2.com">post@youkok2.com</a>. Vi har en begrenset liste av sikkerhetsmessige årsaker.</p>
         <p><b>Filendelser:</b></p>
         <ul>
-            {% for FILE_ENDING in FILE_ENDINGS %}
-                <li>.{{ FILE_ENDING }}</li>
-            {% endfor %}
+            <li>{{ FILE_TYPES }}</li>
         </ul>
 
-        <h2><a href="{{ path_for('terms') }}#cookies" id="cookies">Bruk av cookies</a></h2>
+        <h2><a href="/retningslinjer#cookies" id="cookies">Bruk av cookies</a></h2>
         <p>Ved å bruke Youkok2 samtykker du til det settes cookies i din nettleser. Dersom du ikke aksepterer vår bruk av cookies, kan du gå inn i innstillingene i din nettleser og trekke tilbake ditt samtykke. Legg merke til at dette vil føre til at tjenester på Youkok2 ikke vil fungere optimalt.</p>
         <p>Under er en liste over de cookiene vi bruker og til hvilke formål:</p>
         <ul>
@@ -36,8 +34,9 @@
         <em>Det kan tenkes Google Analytics også setter andre cookies som begynner med _. Disse brukes også til å telle antall besøkende.</em>
     </div>
     <div class="col-xs-12 col-md-4" id="sidebar">
-        {% include "sidebar/flat.html" %}
-        {% if DEV == '1' %}{% include "react/dev_sidebarPopular.html" %}{% else %}{% include "react/sidebarPopular.html" %}{% endif %}
+        {{> "partials/sidebar-flat" FLAT_MENU="terms" }}
+        {{> "partials/sidebar-popular" }}
     </div>
 </div>
-{% endblock %}
+
+{{> "partials/bottom" }}

@@ -14,11 +14,8 @@ class MostPopularEndpoint extends BaseRestEndpoint
 {
     const SERVICE_LIMIT = 10;
 
-    /** @var MostPopularElementsService */
-    private $mostPopularElementsService;
-
-    /** @var ElementMapper */
-    private $elementMapper;
+    private MostPopularElementsService $mostPopularElementsService;
+    private ElementMapper $elementMapper;
 
     public function __construct(ContainerInterface $container)
     {

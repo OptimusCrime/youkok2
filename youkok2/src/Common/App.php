@@ -29,12 +29,9 @@ use Youkok\Rest\Endpoints\Sidebar\MostPopularEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\Post\Create\CreateFileEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\Post\Create\CreateLinkEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\Post\TitleFetchEndpoint;
-use Youkok\Web\Views\Archive;
-use Youkok\Web\Views\Courses;
 use Youkok\Web\Views\Download;
-use Youkok\Web\Views\Flat;
-use Youkok\Web\Views\Frontpage;
 use Youkok\Web\Views\KokebokaLegacyRedirect;
+use Youkok\Web\Views\Noop;
 use Youkok\Web\Views\Redirect;
 use Youkok\Web\Views\Admin\Login;
 use Youkok\Web\Views\Admin\AdminDiagnostics;
@@ -103,16 +100,19 @@ class App
         $app->add(new ReverseProxyMiddleware());
 
         $app->group('', function () use ($app) {
-            $app->get('/', Frontpage::class . ':view')->setName('home');
-            $app->get('/emner', Courses::class . ':view')->setName('courses');
-            $app->get('/emner/{course:[^/]+}[/{path:.+}]', Archive::class . ':view')->setName('archive');
+            // These routes are never actually accessed, they only server to make it easier to create the
+            // routes with the router component.
+            $app->get('/', Noop::class . ':view')->setName('home');
+            $app->get('/emner', Noop::class . ':view')->setName('courses');
+            $app->get('/emner/{course:[^/]+}[/{path:.+}]', Noop::class . ':view')->setName('archive');
+            $app->get('/hjelp', Noop::class . ':help')->setName('help');
+            $app->get('/om', Noop::class . ':about')->setName('about');
+            $app->get('/changelog.txt', Noop::class . ':changelog')->setName('changelog');
+            $app->get('/retningslinjer', Noop::class . ':terms')->setName('terms');
+
+            // Keep these
             $app->get('/redirect/{id:[0-9]+}', Redirect::class . ':view')->setName('redirect');
             $app->get('/last-ned/{uri:.*}', Download::class . ':view')->setName('download');
-            $app->get('/hjelp', Flat::class . ':help')->setName('help');
-            $app->get('/om', Flat::class . ':about')->setName('about');
-            $app->get('/changelog.txt', Flat::class . ':changelog')->setName('changelog');
-            $app->get('/retningslinjer', Flat::class . ':terms')->setName('terms');
-
             $app->get('/lorem', Login::class . ':view')->setName('admin_login');
             $app->post('/lorem', Login::class . ':post')->setName('admin_login_submit');
 
@@ -140,8 +140,6 @@ class App
                     $app->get('/visited', FrontpageEndpoint::class . ':lastVisited');
                     $app->get('/downloaded', FrontpageEndpoint::class . ':lastDownloaded');
                 });
-
-                $app->put('', FrontpageEndpoint::class . ':put');
 
                 $app->get('/boxes', FrontpageEndpoint::class . ':boxes');
                 $app->get('/newest', FrontpageEndpoint::class . ':newest');

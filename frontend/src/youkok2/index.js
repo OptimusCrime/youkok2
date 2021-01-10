@@ -40,5 +40,3 @@ export const bootstrap = () => {
     );
   }
 };
-
-document.addEventListener("DOMContentLoaded", bootstrap);

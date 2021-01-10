@@ -12,11 +12,8 @@ use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class TitleFetchEndpoint extends BaseRestEndpoint
 {
-    /** @var TitleFetchService */
-    private $titleFetchService;
-
-    /** @var Logger */
-    private $logger;
+    private TitleFetchService $titleFetchService;
+    private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {

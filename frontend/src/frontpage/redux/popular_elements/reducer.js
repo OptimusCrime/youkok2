@@ -12,7 +12,6 @@ const defaultState = {
   finished: false,
   failed: false,
   elements: [],
-  preference: DEFAULT_MOST_POPULAR_ELEMENTS_DELTA
 };
 
 export const popularElements = (state = defaultState, action) => {
@@ -30,7 +29,6 @@ export const popularElements = (state = defaultState, action) => {
         started: false,
         finished: true,
         elements: action.elements,
-        preference: action.preference
       };
 
     case FRONTPAGE_POPULAR_ELEMENTS_FETCH_FAILED:
@@ -62,7 +60,6 @@ export const popularElements = (state = defaultState, action) => {
         started: false,
         finished: true,
         elements: action.elements,
-        preference: action.preference
       };
 
     default:

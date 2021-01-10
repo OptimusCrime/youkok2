@@ -13,11 +13,8 @@ use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class ArchiveHistoryEndpoint extends BaseRestEndpoint
 {
-    /** @var ArchiveHistoryService */
-    private $archiveHistoryService;
-
-    /** @var Logger */
-    private $logger;
+    private ArchiveHistoryService $archiveHistoryService;
+    private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {

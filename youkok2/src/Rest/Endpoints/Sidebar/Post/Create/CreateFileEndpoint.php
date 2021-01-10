@@ -14,11 +14,8 @@ class CreateFileEndpoint extends BaseRestEndpoint
 {
     const FILE_ARRAY_KEY = 'file';
 
-    /** @var CreateFileService */
-    private $createFileService;
-
-    /** @var Logger */
-    private $logger;
+    private CreateFileService $createFileService;
+    private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {

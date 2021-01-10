@@ -13,11 +13,8 @@ use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class CreateLinkEndpoint extends BaseRestEndpoint
 {
-    /** @var CreateLinkService */
-    private $createLinkService;
-
-    /** @var Logger */
-    private $logger;
+    private CreateLinkService $createLinkService;
+    private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {

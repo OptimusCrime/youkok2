@@ -29,7 +29,7 @@ class BoxNewestContainer extends Component {
             isLoading={false}
             isEmpty={false}
           >
-            <EmptyItem text="Kunne ikke hente neste" />
+            <EmptyItem text="Kunne ikke hente nyeste" />
           </BoxWrapper>
         </div>
       );

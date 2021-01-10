@@ -7,3 +7,5 @@ COPY ./static /static
 RUN chmod 644 /etc/nginx/conf.d/site.conf
 
 RUN rm /etc/nginx/conf.d/default.conf
+
+# TODO: Remove .gitignore file
