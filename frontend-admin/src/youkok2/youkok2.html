@@ -1,0 +1,19 @@
+{{#extend "./templates/base.html"}}
+
+    {{#content "head" mode="append"}}
+        {{#each htmlWebpackPlugin.files.css}}
+            <link rel="stylesheet" type="text/css" href="{{this}}>" />
+        {{/each}}
+    {{/content}}
+
+    {{#content "content" mode="append"}}
+        <div id="frontpage"></div>
+    {{/content}}
+
+    {{#content "head" mode="append"}}
+        {{#each htmlWebpackPlugin.files.js}}
+            <script src="{{this}}"></script>
+        {{/each}}
+    {{/content}}
+
+{{/extend}}

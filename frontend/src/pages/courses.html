@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-xs-12 col-md-8">
+        <div class="row">
+            <div class="col-xs-12">
+                <ol class="breadcrumb" id="archive-breadcrumbs">
+                    <li><a href="{{ youkok_url() }}">Hjem</a></li>
+                    <li class="active">Emner</li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 center">
+                <h1>Emner</h1>
+            </div>
+        </div>
+        <div class="row">{% for LETTER, COLLECTION in COURSES %}
+
+            <div class="col-xs-12 col-md-6 course-box">
+                <h3>{{ LETTER }}</h3>
+                <ul class="list-group">
+                    {% for COURSE in COLLECTION %}
+                        <li class="{% if COURSE.empty %}course-empty {% endif %}list-group-item">
+                            <a href="{{ path_for('archive', {'course': COURSE.getFullUri() }) }}">
+                                <strong>{{ COURSE.getCourseCode() }}</strong> &mdash; {{ COURSE.getCourseName() }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div id="sidebar" class="col-xs-12 col-md-4 sidebar-no-top-margin">
+        {% include "sidebar/courses.html" %}
+        {% include "sidebar/popular_elements.html" %}
+        {% include "sidebar/newest_elements.html" %}
+    </div>
+</div>
+{% endblock %}

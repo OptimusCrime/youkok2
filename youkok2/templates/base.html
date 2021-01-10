@@ -14,16 +14,6 @@
     {{ COURSE_LOOKUP|raw }}
     {% if DEV == '1' %}{% include "react/dev_youkok2.html" %}{% else %}{% include "react/youkok2.html" %}{% endif %}
     {% if DEV == '1' %}{% include "react/dev_polyfills.html" %}{% else %}{% include "react/polyfills.html" %}{% endif %}
-    <script type="text/javascript">var SITE_DATA = {{ SITE_DATA|json_encode()|raw }};</script>
-    {% if SITE_SETTINGS.GOOGLE_SENSE %}
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "{{ SITE_SETTINGS.GOOGLE_SENSE_CODE }}",
-            enable_page_level_ads: true
-        });
-    </script>
-    {% endif %}
     {% block head %}{% endblock %}
 </head>
 <body{% if BODY_CLASS != null %} class="{{ BODY_CLASS }}"{% endif %}>
@@ -71,13 +61,12 @@
     <div class="row">
         <footer class="col-xs-12 footer">
             <ul>
-                <li><a href="{{ path_for('changelog') }}">Youkok2 v{{ SITE_SETTINGS.VERSION }}</a></li>
-                <li><a href="{{ path_for('about') }}">Om Youkok2</a></li>
-                <li><a href="{{ path_for('terms') }}">Retningslinjer</a></li>
-                <li><a href="{{ path_for('help') }}">Hjelp</a></li>
-                <li><a href="{{ path_for('terms') }}#cookies">Om informasjonskapsler (cookies)</a></li>
-                <li><a href="mailto:{{ SITE_SETTINGS.EMAIL_CONTACT }}">{{ SITE_SETTINGS.EMAIL_CONTACT }}</a></li>
-                <li>{{ EXECUTION_TIME }}</li>
+                <li><a href="/changelog.txt">Youkok2 v{{ SITE_SETTINGS.VERSION }}</a></li>
+                <li><a href="/om">Om Youkok2</a></li>
+                <li><a href="/retningslinjer">Retningslinjer</a></li>
+                <li><a href="/hjelp">Hjelp</a></li>
+                <li><a href="/retningslinjer#cookies">Om informasjonskapsler (cookies)</a></li>
+                <li><a href="mailto:post@youkok2.com">post@youkok2.com</a></li>
                 <li><a href="https://github.com/OptimusCrime/youkok2" target="_blank">GitHub</a></li>
             </ul>
         </footer>

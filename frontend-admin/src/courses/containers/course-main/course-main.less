@@ -1,0 +1,64 @@
+@import "../../../youkok2/variables.less";
+
+.course-list {
+    border-width: 1px;
+    border-color: @gray;
+    background-color: @white;
+    border-style: solid;
+    border-radius: 4px;
+}
+.course-row {
+    border-top: 1px solid @gray;
+    color: @default-font-color;
+    display: flex;
+
+    &:hover {
+        background-color: @gray-light;
+        color: @default-font-color;
+        text-decoration: none;
+    }
+
+    &__header {
+        cursor: pointer;
+        border-top: none;
+
+        &:hover {
+            background-color: @white;
+        }
+        &--code, &--name {
+            display: flex;
+            justify-content: space-between;
+
+            &:hover {
+                background-color: @gray-light;
+                color: @default-font-color;
+            }
+            strong, .fa {
+                display: block;
+            }
+            .inactive {
+                color: @gray;
+            }
+        }
+    }
+    &__code, &__name, &__no-results {
+        padding: 10px 15px;
+    }
+    &__code {
+        width: 25%;
+        border-right: 1px solid @gray;
+    }
+    &__name {
+        width: 75%;
+    }
+}
+a.course-row {
+    color:@default-link-color;
+    &__empty {
+        color: @blue-light;
+        font-weight: normal;
+    }
+    &:hover {
+        color: @default-link-color;
+    }
+}

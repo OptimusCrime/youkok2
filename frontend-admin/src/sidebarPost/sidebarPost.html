@@ -1,4 +1,7 @@
 <% for (let css in htmlWebpackPlugin.files.css) { %><link rel="stylesheet" type="text/css" href="<%= htmlWebpackPlugin.files.css[css] %>" />
 <% } %>
+
+<div id="sidebar-post"></div>
+
 <% for (let js in htmlWebpackPlugin.files.js) { %><script src="<%= htmlWebpackPlugin.files.js[js] %>"></script>
 <% } %>

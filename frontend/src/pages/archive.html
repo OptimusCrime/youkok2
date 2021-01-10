@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xs-12 col-md-8">
+        <div id="archive"></div>
+    </div>
+    <div id="sidebar" class="col-xs-12 col-md-4">
+        {% if DEV == '1' %}{% include "react/dev_sidebarPost.html" %}{% else %}{% include "react/sidebarPost.html" %}{% endif %}
+        {% include "sidebar/archive/report.html" %}
+        {% include "sidebar/archive/help.html" %}
+        {% if DEV == '1' %}{% include "react/dev_sidebarHistory.html" %}{% else %}{% include "react/sidebarHistory.html" %}{% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="assets/apps/archive.js?hash=2bff9a5cf4b6eef87fa0"></script>
+{% endblock %}

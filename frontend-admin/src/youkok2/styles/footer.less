@@ -1,0 +1,36 @@
+@import "../variables.less";
+
+.footer {
+  padding-top: 10px;
+  color: @black;
+
+  ul {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  li {
+    margin-right: 10px;
+    list-style: none;
+
+    &:last-child {
+      margin-right: 0;
+    }
+    &::before {
+      content: "::";
+      padding-right: 10px;
+    }
+    &:first-child::before {
+      content: none;
+    }
+  }
+  a {
+    color: @black;
+    text-decoration: underline;
+
+    &:hover {
+      color: @black;
+      text-decoration: none;
+    }
+  }
+}
