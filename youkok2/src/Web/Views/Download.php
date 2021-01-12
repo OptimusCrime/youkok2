@@ -42,7 +42,7 @@ class Download extends BaseView
         ];
 
         // If we are not currently logged in as admin, also make sure that the file is visible
-        if (!$this->authService->isAdmin()) {
+        if (!$this->authService->isAdmin($request)) {
             $flags[] = ElementService::FLAG_ENSURE_VISIBLE;
         }
 
@@ -59,7 +59,7 @@ class Download extends BaseView
                 throw new ElementNotFoundException();
             }
 
-            if (!$this->authService->isAdmin()) {
+            if (!$this->authService->isAdmin($request)) {
                 $this->updateDownloadsProcessor->run($element);
             }
 

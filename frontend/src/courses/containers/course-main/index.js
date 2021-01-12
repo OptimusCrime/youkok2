@@ -21,13 +21,6 @@ const calculateNumberOfPages = numberOfCourses => {
 };
 
 const CourseMain = ({column, order, courses, page, changeOrder, changePage}) => {
-
-  if (!window.COURSES_LOOKUP) {
-    return (
-      <div className="alert alert-warning" role="alert">Kunne ikke laste fagene</div>
-    );
-  }
-
   const NUMBER_OF_PAGES = calculateNumberOfPages(courses.length);
 
   const coursesCurrentPage = courses.slice(page * COURSES_PER_PAGE, (page + 1) * COURSES_PER_PAGE);

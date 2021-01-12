@@ -32,11 +32,13 @@ class CacheService
         return $this->getCacheByKey($key);
     }
 
-    public function set(string $key, string $value): void
+    public function set(string $key, string $value): bool
     {
         if ($this->cache !== null) {
-            $this->cache->set($key, $value);
+            return $this->cache->set($key, $value);
         }
+
+        return false;
     }
 
     public function delete(string $key): void

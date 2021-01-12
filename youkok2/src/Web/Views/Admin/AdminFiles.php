@@ -35,6 +35,7 @@ class AdminFiles extends AdminBaseView
         ]);
     }
 
+    // TODO remove this
     private static function getAdminTemplateData()
     {
         $course_lookup = @file_get_contents(

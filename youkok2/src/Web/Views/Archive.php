@@ -1,4 +1,5 @@
 <?php
+// TODO remove this file
 namespace Youkok\Web\Views;
 
 use Monolog\Logger;

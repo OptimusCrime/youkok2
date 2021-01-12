@@ -3,194 +3,119 @@ namespace Youkok\Biz\Services;
 
 use Illuminate\Database\Eloquent\Collection;
 use Monolog\Logger;
+use Youkok\Biz\Exceptions\CacheServiceException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\IdenticalLookupException;
+use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Common\Models\Element;
+use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Common\Utilities\CoursesCacheConstants;
 use Youkok\Helpers\Configuration\Configuration;
 
-class CacheCollection {
-
-    const REGULAR = "REGULAR";
-    const ADMIN = "ADMIN";
-
-    private $type;
-    private $jsFile;
-    private $templateFile;
-    private $templateContent;
-
-    public function __construct(string $type, string $jsFile, string $templateFile)
-    {
-        $this->type = $type;
-        $this->jsFile = CoursesLookupService::getJsFileLocation($jsFile);
-        $this->templateFile = CoursesLookupService::getTemplateFileLocation($templateFile);
-
-        $this->templateContent = '<script src="'
-            . CoursesLookupService::JS_DIRECTORY
-            . $jsFile
-            . '?hash=%s"></script>';
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function getJsFile(): string
-    {
-        return $this->jsFile;
-    }
-
-    public function getTemplateFile(): string
-    {
-        return $this->templateFile;
-    }
-
-    public function getTemplateContent(): string
-    {
-        return $this->templateContent;
-    }
-}
-
 class CoursesLookupService
 {
-    const JS_DIRECTORY = 'assets/data/';
-    const JS_FILE_NAME = 'courses_lookup.js';
-    const ADMIN_JS_FILE_NAME = 'courses_lookup_admin.js';
-    const JS_TEMPLATE = 'var COURSES_LOOKUP = %s;';
+    private UrlService $urlService;
+    private CourseService $courseService;
+    private CacheService $cacheService;
+    private Logger $logger;
 
-    private $urlService;
-    private $courseService;
-    private $logger;
-
-    public function __construct(UrlService $urlService, CourseService $courseService, Logger $logger)
-    {
+    public function __construct(
+        UrlService $urlService,
+        CourseService $courseService,
+        CacheService $cacheService,
+        Logger $logger
+    ) {
         $this->urlService = $urlService;
         $this->courseService = $courseService;
+        $this->cacheService = $cacheService;
         $this->logger = $logger;
     }
 
-    public function refresh(): void
+    /**
+     * @param string|null $checksum
+     * @return array
+     * @throws GenericYoukokException
+     * @throws IdenticalLookupException
+     */
+    public function get(?string $checksum): array
     {
-        $files = static::getFilesInformation();
-        $data = $this->courseService->getAllVisibleCourses();
-
-        foreach ($files as $file) {
-            $this->deleteCacheFile($file->getJsFile());
-            $this->deleteCacheFile($file->getTemplateFile());
-
-            $this->populateCacheFile($data, $file);
-            $this->createCacheBustingTemplate($file);
-            $this->changeOwnership($file);
-        }
-    }
-
-    private static function getFilesInformation(): array
-    {
-        return [
-            static::getFileInformation(
-                CacheCollection::REGULAR,
-                static::JS_FILE_NAME,
-                CoursesCacheConstants::CACHE_BUSTING_FILE_NAME
-            ),
-            static::getFileInformation(
-                CacheCollection::ADMIN,
-                static::ADMIN_JS_FILE_NAME,
-                CoursesCacheConstants::ADMIN_CACHE_BUSTING_FILE_NAME
-            ),
-        ];
-    }
-
-    private static function getFileInformation(string $type, string $jsFile, string $templateFile): CacheCollection
-    {
-        return new CacheCollection(
-            $type,
-            $jsFile,
-            $templateFile
-        );
-    }
-
-    static function getTemplateFileLocation(string $fileName): string
-    {
-        return Configuration::getInstance()->getDirectoryTemplate()
-            . CoursesCacheConstants::DYNAMIC_SUB_DIRECTORY
-            . $fileName;
-    }
-
-    static function getJsFileLocation(string $fileName): string
-    {
-        return Configuration::getInstance()->getDirectoryCache()
-            . CoursesCacheConstants::DYNAMIC_SUB_DIRECTORY
-            . $fileName;
-    }
-
-    private function deleteCacheFile(string $file): void
-    {
-        if (!file_exists($file) || !is_file($file)) {
-            return;
+        if ($checksum === null) {
+            return $this->getCoursesFromCache();
         }
 
-        if (!unlink($file)) {
-            $this->logger->error('Failed to delete cache file in location: ' . $file);
+        $currentChecksum = $this->getCurrentChecksum();
+        if ($currentChecksum === $checksum) {
+            throw new IdenticalLookupException();
         }
+
+        // If we got here, it is because of one of these reasons:
+        // - The cache checksums are different
+        // - The server cache checksum is null
+        // Regardless of the reason, attempt to refresh the cache.
+        return $this->getCoursesFromCache();
     }
 
-    private function populateCacheFile(Collection $data, CacheCollection $file): void
+    /**
+     * @return array
+     * @throws GenericYoukokException
+     */
+    private function getCoursesFromCache(): array
     {
-        $dataAsJson = $this->coursesToJsonData($data, $file->getType());
-        $content = str_replace('%s', $dataAsJson, static::JS_TEMPLATE);
-
-        $response = file_put_contents($file->getJsFile(), $content);
-        if ($response === false) {
-            $this->logger->error('Failed to populate cache file in location: ' . $file->getJsFile());
+        $courses = $this->getCoursesData();
+        if ($courses !== null) {
+            return json_decode($courses, true);
         }
+
+        // Cache is empty, try refreshing it before retrying once more
+        $coursesFromQuery = $this->refreshLookupCache();
+
+        if ($coursesFromQuery === null || (is_array($coursesFromQuery) && count($coursesFromQuery) === 0)) {
+            throw new GenericYoukokException('Failed to load courses from the database for lookup');
+        }
+
+        return $coursesFromQuery;
     }
 
-    private function coursesToJsonData(Collection $courses, string $type): string
+    private function refreshLookupCache(): array
+    {
+        $courses = $this->coursesToJsonData($this->courseService->getAllVisibleCourses());
+        $coursesJson = json_encode($courses);
+
+        $resultData = $this->cacheService->set(CacheKeyGenerator::keyForCoursesLookupData(), $coursesJson);
+        $resultKey = $this->cacheService->set(CacheKeyGenerator::keyForCoursesLookupChecksum(), sha1($coursesJson));
+
+        return $courses;
+    }
+
+    private function getCurrentChecksum(): ?string
+    {
+        $checksum = $this->cacheService->get(CacheKeyGenerator::keyForCoursesLookupChecksum());
+    }
+
+    private function getCoursesData(): ?string
+    {
+        return $this->cacheService->get(CacheKeyGenerator::keyForCoursesLookupData());
+    }
+
+    private function coursesToJsonData(Collection $courses): array
     {
         $output = [];
         foreach ($courses as $course) {
-            $output[] = $this->mapCourse($course, $type);
+            $output[] = $this->mapCourse($course);
         }
 
-        return json_encode($output);
+        return $output;
     }
 
-    private function mapCourse(Element $course, string $type): array
+    private function mapCourse(Element $course): array
     {
         return [
             'id' => $course->id,
             'name' => $course->getCourseName(),
             'code' => $course->getCourseCode(),
-            'url' => $type === CacheCollection::REGULAR
-                ? $this->urlService->urlForCourse($course)
-                : $this->urlService->urlForAdminFiles($course),
+            'url' => $this->urlService->urlForCourse($course),
             'empty' => $course->empty === 1,
         ];
-    }
-
-
-    private function createCacheBustingTemplate(CacheCollection $file): void
-    {
-        $lookupChecksum = sha1_file($file->getJsFile());
-        $content = str_replace('%s', $lookupChecksum, $file->getTemplateContent());
-
-        $response = file_put_contents($file->getTemplateFile(), $content);
-
-        if ($response === false) {
-            $this->logger->error(
-                'Failed to store content in cache busting template in location: ' . $file->getTemplateFile()
-            );
-        }
-    }
-
-    private function changeOwnership(CacheCollection $file): void
-    {
-        if (exec('whoami') === 'root') {
-            chown($file->getTemplateFile(), 'www-data');
-            chgrp($file->getTemplateFile(), 'www-data');
-
-            chown($file->getJsFile(), 'www-data');
-            chgrp($file->getJsFile(), 'www-data');
-        }
     }
 }

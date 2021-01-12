@@ -72,4 +72,14 @@ class CacheKeyGenerator
     {
         return 'last_visited_courses_set';
     }
+
+    public static function keyForCoursesLookupChecksum(): string
+    {
+        return 'courses_lookup_checksum';
+    }
+
+    public static function keyForCoursesLookupData(): string
+    {
+        return 'crouses_lookup_data';
+    }
 }

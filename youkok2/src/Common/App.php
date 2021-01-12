@@ -23,6 +23,7 @@ use Youkok\Rest\Endpoints\Admin\Files\AdminFilesPendingEndpoint;
 use Youkok\Rest\Endpoints\Admin\Home\AdminHomeBoxesEndpoint;
 use Youkok\Rest\Endpoints\Admin\Home\AdminHomeGraphEndpoint;
 use Youkok\Rest\Endpoints\ArchiveEndpoint;
+use Youkok\Rest\Endpoints\CoursesEndpoint;
 use Youkok\Rest\Endpoints\FrontpageEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\ArchiveHistoryEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\MostPopularEndpoint;
@@ -30,7 +31,6 @@ use Youkok\Rest\Endpoints\Sidebar\Post\Create\CreateFileEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\Post\Create\CreateLinkEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\Post\TitleFetchEndpoint;
 use Youkok\Web\Views\Download;
-use Youkok\Web\Views\KokebokaLegacyRedirect;
 use Youkok\Web\Views\Noop;
 use Youkok\Web\Views\Redirect;
 use Youkok\Web\Views\Admin\Login;
@@ -116,7 +116,7 @@ class App
             $app->get('/lorem', Login::class . ':view')->setName('admin_login');
             $app->post('/lorem', Login::class . ':post')->setName('admin_login_submit');
 
-            $app->get('/kokeboka/[{path:.*}]', KokebokaLegacyRedirect::class . ':view');
+            // TODO: Handle redirects in nginx /kokeboka/ and /emner/kokeboka/
         });
 
         $app->group('/admin', function () use ($app) {
@@ -145,6 +145,7 @@ class App
                 $app->get('/newest', FrontpageEndpoint::class . ':newest');
             });
 
+            $app->post('/courses', CoursesEndpoint::class . ':post');
             $app->get('/archive/{id:[0-9]+}', ArchiveEndpoint::class . ':get');
 
             $app->group('/sidebar', function () use ($app) {

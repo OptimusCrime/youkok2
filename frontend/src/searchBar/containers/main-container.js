@@ -15,11 +15,12 @@ import {highlightSearchResult} from "../utils/highlighter";
 import {CLOSE_SEARCH_RESULTS} from "../redux/form/constants";
 import {SEARCH_QUERY_IDENTIFIER} from "../../courses/constants";
 import {KEYCODE_ENTER} from "../../common/constants";
+import {URLS} from "../../common/urls";
+import {getCourses, verifyLookup} from "../../common/coursesLookup";
 
 const MINIMUM_SEARCH_LENGTH = 2;
 
 const MainContainer = props => {
-
   const {
     input_raw,
     input_display,
@@ -30,11 +31,6 @@ const MainContainer = props => {
     closeSearchResults
   } = props;
 
-  if (!window.COURSES_LOOKUP) {
-    return null;
-  }
-
-  const courses = window.COURSES_LOOKUP;
   const displayResults = results.length > 0 && input_display.length >= MINIMUM_SEARCH_LENGTH
 
   return (
@@ -47,9 +43,12 @@ const MainContainer = props => {
           const keyCode = e.keyCode;
 
           if (keyCode !== KEYCODE_ARROW_UP && keyCode !== KEYCODE_ARROW_DOWN) {
-            updateSearchField(e.target.value, courses)
+            const courses = getCourses();
+
+            updateSearchField(e.target.value, courses);
           }
         }}
+        onFocus={() => verifyLookup()}
         onKeyDown={e => {
           const keyCode = e.keyCode;
 
@@ -61,7 +60,7 @@ const MainContainer = props => {
               window.location.replace(`${window.location.origin}${results[cursor].url}`);
             }
             else {
-              window.location.replace(`${window.SITE_DATA.courses_url}?${SEARCH_QUERY_IDENTIFIER}=${encodeURI(input_raw)}`);
+              window.location.replace(`${URLS.courses}?${SEARCH_QUERY_IDENTIFIER}=${encodeURI(input_raw)}`);
             }
           }
 
@@ -78,16 +77,16 @@ const MainContainer = props => {
       {displayResults && (
         <div className="search-bar__dropdown">
           {results.map((result, index) => (
-              <a
-                key={result.id}
-                className={`search-bar__suggestion ${(cursor !== null && cursor === index) ? 'search-bar__cursor' : ''}`}
-                href={result.url}
-              >
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: highlightSearchResult(input_raw.toLowerCase(), result)
-                  }}
-                />
+            <a
+              key={result.id}
+              className={`search-bar__suggestion ${(cursor !== null && cursor === index) ? 'search-bar__cursor' : ''}`}
+              href={result.url}
+            >
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: highlightSearchResult(input_raw.toLowerCase(), result)
+                }}
+              />
               </a>
             )
           )}

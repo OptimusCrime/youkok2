@@ -11,7 +11,6 @@ class InternalServerError implements ContainersInterface
 {
     public static function load(ContainerInterface $container): void
     {
-        // TODO handle rest better!
         $container['errorHandler'] = function () {
             return function (Request $request, Response $response, Exception $exception): Response {
                 $configuration = Configuration::getInstance();
@@ -23,9 +22,7 @@ class InternalServerError implements ContainersInterface
                     die();
                 }
 
-                return $response->withStatus(500)
-                    ->withHeader('Content-Type', 'text/html')
-                    ->write(@file_get_contents($configuration->getDirectoryTemplate() . 'errors/500.html'));
+                return $response->withStatus(500);
             };
         };
     }

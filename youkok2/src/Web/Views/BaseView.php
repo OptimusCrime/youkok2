@@ -22,42 +22,8 @@ class BaseView
         $this->view = $container->get('view');
         $this->router = $container->get('router');
 
-        $this->templateData = $this->getDefaultTemplateData();
-    }
-
-    private function getDefaultTemplateData()
-    {
-        $course_lookup = @file_get_contents(
-            '/volume_data/cache/'
-            . CoursesCacheConstants::DYNAMIC_SUB_DIRECTORY
-            .  CoursesCacheConstants::CACHE_BUSTING_FILE_NAME
-        );
-
-        if ($course_lookup === false) {
-            $course_lookup = '';
-        }
-
-        return [
-            'DEV' => getenv('DEV'),
-
-            'SITE_SETTINGS' => [
-                'VERSION' => getenv('SITE_VERSION'),
-                'EMAIL_CONTACT' => getenv('SITE_EMAIL_CONTACT'),
-
-                'GOOGLE_ANALYTICS' => getenv('SITE_GOOGLE_ANALYTICS') === '1',
-                'GOOGLE_SENSE' => getenv('SITE_GOOGLE_SENSE') === '1',
-                'GOOGLE_ANALYTICS_CODE' => getenv('SITE_GOOGLE_ANALYTICS_CODE'),
-                'GOOGLE_SENSE_CODE' => getenv('SITE_GOOGLE_SENSE_CODE'),
-
-            ],
-
-            // Other things
-            'SITE_TITLE' => 'Den beste kokeboka på nettet',
-            'HEADER_MENU' => 'home',
-            'VIEW_NAME' => 'frontpage',
-            'SEARCH_QUERY' => '',
-
-            'COURSE_LOOKUP' => $course_lookup
+        $this->templateData = [
+            'SITE_DATA' => []
         ];
     }
 
@@ -103,17 +69,7 @@ class BaseView
         );
     }
 
-    protected function fetch(string $template, array $data = []): string
-    {
-        return $this->view->fetch(
-            $template,
-            array_merge(
-                $this->templateData,
-                $data
-            )
-        );
-    }
-
+    // TODO Remove
     protected function render404(Response $response): Response
     {
         return $this->render(

@@ -92,7 +92,7 @@ module.exports = (env, argv) => ({
         SITE_URL: argv.mode === 'development' ? 'http://youkok2.local:8091' : 'https://youkok2.com',
         VERSION: '5.0.0', // TODO
         CHANGELOG: 'TODO', // TODO
-        FILE_TYPES: 'TODO'
+        FILE_TYPES: 'TODO' // TODO
       },
       helpers: {
         projectHelpers: path.join(process.cwd(), "helpers", "*.js")

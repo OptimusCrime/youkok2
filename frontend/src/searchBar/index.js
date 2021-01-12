@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import SearchBarContainer from './containers/main-container';
 import configureStore from './redux/configureStore';
 import {CLOSE_SEARCH_RESULTS} from "./redux/form/constants";
+import LoaderWrapperContainer from "./containers/loader-wrapper";
 
 export const run = () => {
   const preloadedState = window.__INITIAL_STATE__;
@@ -13,7 +13,7 @@ export const run = () => {
 
   ReactDOM.render((
       <Provider store={store}>
-        <SearchBarContainer />
+        <LoaderWrapperContainer />
       </Provider>
     ), document.getElementById('search-bar')
   );

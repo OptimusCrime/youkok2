@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import CourseMain from './containers/course-main';
+import LoaderWrapperContainer from './containers/loader-wrapper/loader-wrapper';
 import configureStore from './redux/configureStore';
 import {getSearchFromUrl, queryPresentInUrl} from "./prefill";
 import {COURSES_UPDATE_SEARCH} from "./redux/courses/constants";
@@ -14,7 +14,7 @@ export const run = () => {
 
   ReactDOM.render((
       <Provider store={store}>
-        <CourseMain />
+        <LoaderWrapperContainer />
       </Provider>
     ), document.getElementById('courses')
   );

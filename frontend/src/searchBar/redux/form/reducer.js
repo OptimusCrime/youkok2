@@ -2,11 +2,13 @@ import {
   UPDATE_SEARCH_FIELD,
   UPDATE_SEARCH_RESULTS,
   UPDATE_CURSOR_POSITION,
-  CLOSE_SEARCH_RESULTS
+  CLOSE_SEARCH_RESULTS, UPDATE_COURSES_LOADED
 } from "./constants";
 import { resultsAreIdentical } from "./util";
+import {getCourses} from "../../../common/coursesLookup";
 
 const defaultState = {
+  loaded: getCourses() !== null,
   input_raw: '',
   input_display: '',
 
@@ -16,7 +18,11 @@ const defaultState = {
 
 export const form = (state = defaultState, action) => {
   switch (action.type) {
-
+    case UPDATE_COURSES_LOADED:
+      return {
+        ...state,
+        loaded: true,
+      }
     case UPDATE_SEARCH_FIELD:
       return {
         ...state,

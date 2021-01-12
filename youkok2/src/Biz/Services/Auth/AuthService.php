@@ -69,6 +69,17 @@ class AuthService
         }
     }
 
+    public function isAdmin(Request $request): bool
+    {
+        try {
+            $this->validateCookie($request);
+            return true;
+        }
+        catch (InsufficientAccessException $e) {
+            return false;
+        }
+    }
+
     private static function getCookieName(): string
     {
         return Configuration::getInstance()->getAdminCookie();

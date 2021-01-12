@@ -1,14 +1,30 @@
-import {COLUMN_CODE, DEFAULT_SEARCH, ORDER_DESC} from "../../constants";
+import {
+  COLUMN_CODE,
+  DEFAULT_COLUMN,
+  DEFAULT_ORDER,
+  DEFAULT_SEARCH,
+  DEFAULT_SHOW_ONLY_NOT_EMPTY,
+  ORDER_DESC
+} from "../../constants";
+import {getCourses} from "../../../common/coursesLookup";
+
+export const defaultCourses = () =>
+  updateCourses({
+    column: DEFAULT_COLUMN,
+    order: DEFAULT_ORDER,
+    search: DEFAULT_SEARCH,
+    showOnlyNotEmpty: DEFAULT_SHOW_ONLY_NOT_EMPTY,
+  });
 
 export const updateCourses = ({ column, order, search, showOnlyNotEmpty}) => {
-  if (!window.COURSES_LOOKUP) {
+  if (!getCourses()) {
     return [];
   }
 
   return sortCoursesList(filterSearch(search, showOnlyNotEmpty), column, order);
 };
 
-const filterSearch = (search, showOnlyNotEmpty) => window.COURSES_LOOKUP.filter(course => {
+const filterSearch = (search, showOnlyNotEmpty) => getCourses().filter(course => {
     if (showOnlyNotEmpty && course.empty) {
       return false;
     }

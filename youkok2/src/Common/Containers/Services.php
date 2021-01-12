@@ -176,6 +176,7 @@ class Services implements ContainersInterface
             return new CoursesLookupService(
                 $container->get(UrlService::class),
                 $container->get(CourseService::class),
+                $container->get(CacheService::class),
                 $container->get(MonoLogger::class)
             );
         };

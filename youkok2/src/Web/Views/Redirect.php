@@ -38,7 +38,7 @@ class Redirect extends BaseView
         $flags = [];
 
         // If we are not currently logged in as admin, also make sure that the file is visible
-        if (!$this->authService->isAdmin()) {
+        if (!$this->authService->isAdmin($request)) {
             $flags[] = ElementService::FLAG_ENSURE_VISIBLE;
         }
 
@@ -56,7 +56,7 @@ class Redirect extends BaseView
             return $this->render404($response);
         }
 
-        if (!$this->authService->isAdmin()) {
+        if (!$this->authService->isAdmin($request)) {
             $this->updateDownloadsProcessor->run($element);
         }
 

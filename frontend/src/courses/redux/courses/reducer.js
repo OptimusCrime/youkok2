@@ -1,6 +1,9 @@
 import {
   COURSE_CHANGE_CHECKBOX,
-  COURSES_CHANGE_ORDER, COURSES_CHANGE_PAGE, COURSES_UPDATE_SEARCH,
+  COURSES_CHANGE_ORDER,
+  COURSES_CHANGE_PAGE,
+  COURSES_LOOKUP_LOADED,
+  COURSES_UPDATE_SEARCH,
 } from "./constants";
 import {
   DEFAULT_PAGE,
@@ -9,25 +12,30 @@ import {
   DEFAULT_SHOW_ONLY_NOT_EMPTY,
   DEFAULT_SEARCH
 } from "../../constants";
-import {updateCourses} from "./utilities";
+import {defaultCourses, updateCourses} from "./utilities";
+import {getCourses} from "../../../common/coursesLookup";
 
 const defaultState = {
+  loaded: getCourses() !== null,
   column: DEFAULT_COLUMN,
   order: DEFAULT_ORDER,
   page: DEFAULT_PAGE,
   search: DEFAULT_SEARCH,
   showOnlyNotEmpty: DEFAULT_SHOW_ONLY_NOT_EMPTY,
 
-  courses: updateCourses({
-    column: DEFAULT_COLUMN,
-    order: DEFAULT_ORDER,
-    search: DEFAULT_SEARCH,
-    showOnlyNotEmpty: DEFAULT_SHOW_ONLY_NOT_EMPTY,
-  }),
+  courses: defaultCourses()
 };
 
 export const courses = (state = defaultState, action) => {
   switch (action.type) {
+
+    case COURSES_LOOKUP_LOADED:
+      return {
+        ...state,
+        loaded: true,
+
+        courses: defaultCourses()
+      };
 
     case COURSES_CHANGE_ORDER:
       return {
