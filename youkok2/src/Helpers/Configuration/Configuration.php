@@ -26,6 +26,9 @@ class Configuration
     const CACHE_HOST = 'cache.host';
     const CACHE_PORT = 'cache.port';
 
+    const FILE_UPLOAD_MAX_SIZE_IN_BYTES = 'file_upload.max_size_in_bytes';
+    const FILE_UPLOAD_ALLOWED_TYPES = 'file_upload.allowed_types';
+
     private static ?Configuration $instance = null;
     private array $defaultConfiguration;
     private array $configuration;
@@ -111,6 +114,16 @@ class Configuration
         return intval($this->lookup(static::CACHE_PORT));
     }
 
+    public function getFileUploadMaxSizeInBytes(): int
+    {
+        return intval($this->lookup(static::FILE_UPLOAD_MAX_SIZE_IN_BYTES));
+    }
+
+    public function getFileUploadAllowedTypes(): array
+    {
+        return static::formatAllowedTypes($this->lookup(static::FILE_UPLOAD_ALLOWED_TYPES));
+    }
+
     private function lookup(string $key): string
     {
         if (isset($this->configuration[$key])) {
@@ -144,5 +157,19 @@ class Configuration
         }
 
         return self::$instance;
+    }
+
+    private static function formatAllowedTypes(string $types): array
+    {
+        $arr = [];
+
+        $typesSplit = explode(',', $types);
+        foreach ($typesSplit as $type) {
+            if (mb_strlen($type) > 0) {
+                $arr[] = $type;
+            }
+        }
+
+        return $arr;
     }
 }

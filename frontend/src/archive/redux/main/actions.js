@@ -1,5 +1,5 @@
 import {SIDEBAR_POST_OPEN} from "./constants";
-import {TYPE_NONE} from "../../constants";
+import {TYPE_NONE} from "../../../sidebarPost/constants";
 
 export const changeOpen = (open, currentOpen) => {
   if (open === TYPE_NONE || open === currentOpen) {

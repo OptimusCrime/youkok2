@@ -1,3 +1,12 @@
+Youkok2 - 5.0.0-pl (xx. xxxxxx 2021)
+====================================
+
+- [Info] Ytelsesforbedringer
+- [Stuff] Bytte ut php-apache med php-fpm.
+- [Stuff] Bruke nginx for å serve statisk innhold.
+- [Removed] Sessions. Brukerinnstillinger lagres heller i localStorage.
+- [Stuff] Forenkling av kodebase.
+
 Youkok2 - 4.2.0-pl (18. februar 2020)
 ====================================
 
@@ -345,7 +354,7 @@ Youkok2 - 0.1.0-pl (4. august, 2014)
 - [Info] Fjernet påkrevd NTNU-identifisering og Wall-of-Shame-konseptet.
 - [New] På forsiden står det nå hvilke mappe filer ligger i, ikke bare hvilke fag det tilhører.
 - [New] Linker til nedlastninger har nå rel="nofollow", for å unngå at botter besøker dem titt og ofte.
-- [New] .js- & .css-filer er nå minifiserte.
+- [New] js- og css-filer er nå minifiserte.
 - [New] Implementert heftig caching av hele siden, som reduserer antall queries drastisk.
 - [New] Når man linker til nedlastning av filer på Facebook får man nå opp informasjon om fila.
 - [New] Introduserte pending karma. Dette er karma på flagg som enda ikke er stengt.

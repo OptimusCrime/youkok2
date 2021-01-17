@@ -11,9 +11,9 @@ import {
 import {uploadFileRest} from "../../api";
 import {isValidFile} from "../../utilities";
 
-export const addFiles = files => dispatch => {
+export const addFiles = (valid_file_types, max_file_size_bytes, files) => dispatch => {
   files.forEach(file => {
-    if (!isValidFile(file)) {
+    if (!isValidFile(valid_file_types, max_file_size_bytes, file)) {
       alert(`${file.name} er ikke av godkjent type.`);
     }
     else {
@@ -22,13 +22,13 @@ export const addFiles = files => dispatch => {
   });
 };
 
-export const uploadFiles = files => dispatch => {
+export const uploadFiles = (id, files) => dispatch => {
   dispatch({ type: SIDEBAR_POST_FILE_UPLOADS_STARTED });
 
   const promises = [];
 
   files.forEach((file, index) => {
-    promises.push(uploadFile(file, index, dispatch))
+    promises.push(uploadFile(id, file, index, dispatch))
   });
 
   Promise.all(promises).then(() => {
@@ -36,10 +36,10 @@ export const uploadFiles = files => dispatch => {
   });
 };
 
-const uploadFile = (file, index, dispatch) => {
+const uploadFile = (id, file, index, dispatch) => {
   dispatch({ type: SIDEBAR_POST_FILE_UPLOAD_STARTED, index });
 
-  return uploadFileRest(file.data)
+  return uploadFileRest(id, file.data)
     .then(response => response.json())
     .then(() => dispatch({ type: SIDEBAR_POST_FILE_UPLOAD_FINISHED, index }))
     .catch(() => dispatch({type: SIDEBAR_POST_FILE_UPLOAD_FAILED, index }));

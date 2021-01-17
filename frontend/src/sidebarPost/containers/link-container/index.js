@@ -1,4 +1,6 @@
 import React from 'react';
+import {connect} from "react-redux";
+
 import {
   LINK_POST_ERROR_BACKEND,
   LINK_POST_ERROR_TITLE,
@@ -6,14 +8,13 @@ import {
   TYPE_LINK,
   TYPE_NONE
 } from "../../constants";
-import {changeOpen as changeOpenDispatch} from "../../redux/main/actions";
-import {postLink as postLinkDispatch} from "../../redux/link/actions";
-import {connect} from "react-redux";
+import {changeOpen as changeOpenDispatch} from "../../../archive/redux/main/actions";
+import {postLink as postLinkDispatch} from "../../../archive/redux/link/actions";
 import {
   SIDEBAR_POST_LINK_CHANGE,
   SIDEBAR_POST_LINK_RESET,
   SIDEBAR_POST_LINK_TITLE_POST_ERROR
-} from "../../redux/link/constants";
+} from "../../../archive/redux/link/constants";
 import LinkTitleContainer from "../link-title-container";
 
 // Mirrored from backend
@@ -58,6 +59,7 @@ const LinkContainer = props => {
     title,
     post_started,
     post_finished,
+    course_id,
   } = props;
 
   return (
@@ -90,7 +92,7 @@ const LinkContainer = props => {
           onClick={() => {
             if (!post_started) {
               if (valid && title.length >= MIN_VALID_TITLE_LENGTH) {
-                postLink(url, title);
+                postLink(course_id, url, title);
               } else {
                 if (!valid) {
                   linkPostError(LINK_POST_ERROR_URL);
@@ -127,13 +129,14 @@ const LinkContainer = props => {
   );
 };
 
-const mapStateToProps = ({link}) => ({
+const mapStateToProps = ({link, archive}) => ({
   url: link.url,
   valid: link.valid,
   title: link.title,
   error: link.error,
   post_started: link.post_started,
   post_finished: link.post_finished,
+  course_id: archive.course_id,
 });
 
 const mapDispatchToProps = {

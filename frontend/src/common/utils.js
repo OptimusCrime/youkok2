@@ -1,5 +1,5 @@
-import format from 'date-fns/format';
-import nbFormat from 'date-fns/locale/nb';
+import { format as dateFnsFormat, formatDistanceToNow as dateFnsFormatDistanceToNow } from 'date-fns';
+import nb from 'date-fns/locale/nb';
 
 // https://stackoverflow.com/a/2901298/921563
 export const formatNumber = number => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -26,4 +26,6 @@ export const fromDatabaseDateToJavaScriptDate = datetime => {
   return new Date(year, month - 1, day, hour, minute, second);
 };
 
-export const formatJavaScriptDateHumanReadable = date => format(date, 'D. MMM YYYY @ HH:mm:ss', { locale: nbFormat });
+export const format = date => dateFnsFormat(date, 'd. MMM yyyy @ HH:mm:ss', { locale: nb });
+
+export const formatDistanceToNow = datetime => dateFnsFormatDistanceToNow(datetime, { locale: nb, addSuffix: true })

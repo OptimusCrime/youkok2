@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { ArchiveRow } from "../components/archive-row";
 import {loading} from "../../common/utils";
-import {StencilArchiveList} from "../components/stencil-archive-list";
+import {StencilArchiveList} from "../components/stencil-archive";
 import {ArchiveList} from "../components/archive-list";
 import {ArchiveError} from "../components/archive-error";
 
@@ -12,23 +12,24 @@ class ArchiveContainer extends Component {
   render() {
 
     const {
-      failed,
-      started,
-      finished,
+      content_failed,
+      content_started,
+      content_finished,
+      empty,
       archive
     } = this.props;
 
-    if (window.SITE_DATA.archive_empty) {
+    if (empty) {
       return (
         <div id="archive-empty" className="well">
           <p>Ingen filer eller linker!</p>
-          <p>Det er visst ingen filer eller linker her. Du kan bidra ved å laste opp filer eller poste linker i panelet til høyre. Pass på at du leser våre <a href="#">retningslinjer</a> før du eventuelt gjør dette.</p>
+          <p>Det er visst ingen filer eller linker her. Du kan bidra ved å laste opp filer eller poste linker i panelet til høyre. Pass på at du leser våre <a href={URLS.terms}>retningslinjer</a> før du eventuelt gjør dette.</p>
           <p>- YouKok2</p>
         </div>
       );
     }
 
-    if (failed) {
+    if (content_failed) {
       return (
         <ArchiveList>
           <ArchiveError />
@@ -36,7 +37,7 @@ class ArchiveContainer extends Component {
       );
     }
 
-    const isLoading = loading(started, finished);
+    const isLoading = loading(content_started, content_finished);
 
     if (isLoading) {
       return (
@@ -55,10 +56,12 @@ class ArchiveContainer extends Component {
 }
 
 const mapStateToProps = ({ archive }) => ({
-  failed: archive.failed,
-  started: archive.started,
-  finished: archive.finished,
-  archive: archive.archive
+  content_started: archive.content_started,
+  content_finished: archive.content_finished,
+  content_failed: archive.content_failed,
+
+  archive: archive.archive,
+  empty: archive.empty,
 });
 
 export default connect(mapStateToProps, {})(ArchiveContainer);

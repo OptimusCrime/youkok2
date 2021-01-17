@@ -1,9 +1,10 @@
 const path = require('path'),
-  UglifyJsPlugin = require('uglifyjs-webpack-plugin'),
+  fs = require('fs'),
+  TerserWebpackPlugin = require('terser-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
-  OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin"),
-  MiniCssExtractPlugin = require('mini-css-extract-plugin'),
-  HandlebarsPlugin = require("handlebars-webpack-plugin");
+  HandlebarsWebpackPlugin = require("handlebars-webpack-plugin"),
+  OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plugin"),
+  MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 /**
  * This webpack configuration is some of the the worst mess I have ever produced, and I feel sorry for anyone who
@@ -32,6 +33,9 @@ const path = require('path'),
  * to assemble the templates on request server side, but this results in unwanted overhead.
  */
 
+const VERSION = fs.readFileSync(path.resolve(__dirname, '..', 'VERSION'), { encoding: 'utf-8'}).trim();
+const CHANGELOG = fs.readFileSync(path.resolve(__dirname, '..', 'CHANGELOG.md'), { encoding: 'utf-8'}).trim();
+
 const pages = [
   "404",
   "500",
@@ -44,12 +48,22 @@ const pages = [
   "terms"
 ];
 
+const generateHtmlWebpackPluginInfoChunks = entry => {
+  switch (entry) {
+    case "changelog":
+    case "500":
+      return [];
+    default:
+      return ["main"];
+  }
+};
+
 const generateHtmlWebpackPluginInfo = (argv, entry) => ({
   inject: true,
   scriptLoading: "defer",
   template: `./dist/${entry}.html`,
   filename: path.resolve(__dirname, '..', 'static', 'content', `${entry}.html`),
-  chunks: ["main"],
+  chunks: generateHtmlWebpackPluginInfoChunks(entry),
 });
 
 module.exports = (env, argv) => ({
@@ -60,7 +74,7 @@ module.exports = (env, argv) => ({
     pathinfo: false,
     publicPath: '/static/'
   },
-  devtool: argv.mode === 'development' ? 'eval-source-map' : '',
+  devtool: argv.mode === 'development' ? 'eval-source-map' : false,
   resolve: {
     extensions: ['.js', '.json', '.jsx', '.hbs']
   },
@@ -82,17 +96,17 @@ module.exports = (env, argv) => ({
     ]
   },
   optimization: {
-    minimizer: argv.mode === 'development' ? [] : [new UglifyJsPlugin(), new OptimizeCSSAssetsPlugin()],
+    minimize: argv.mode !== 'development',
+    minimizer: argv.mode === 'development' ? [] : [new TerserWebpackPlugin(), new OptimizeCssAssetsWebpackPlugin()],
   },
   plugins: [
-    new HandlebarsPlugin({
+    new HandlebarsWebpackPlugin({
       entry: path.join(process.cwd(), "src", "pages", "*.hbs"),
       output: path.join(process.cwd(), "dist", "[name].html"),
       data: {
         SITE_URL: argv.mode === 'development' ? 'http://youkok2.local:8091' : 'https://youkok2.com',
-        VERSION: '5.0.0', // TODO
-        CHANGELOG: 'TODO', // TODO
-        FILE_TYPES: 'TODO' // TODO
+        VERSION,
+        CHANGELOG,
       },
       helpers: {
         projectHelpers: path.join(process.cwd(), "helpers", "*.js")
@@ -103,6 +117,7 @@ module.exports = (env, argv) => ({
     }),
     ...pages
       .map(page => new HtmlWebpackPlugin(generateHtmlWebpackPluginInfo(argv, page))),
+    // TODO: extra HtmlWebpackPlugin for 404 placed into templates directory
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css'
     }),

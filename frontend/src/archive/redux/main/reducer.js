@@ -1,5 +1,5 @@
-import {TYPE_NONE} from "../../constants";
 import {SIDEBAR_POST_OPEN} from "./constants";
+import {TYPE_NONE} from "../../../sidebarPost/constants";
 
 const defaultState = {
   open: TYPE_NONE

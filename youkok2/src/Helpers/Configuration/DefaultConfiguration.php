@@ -23,7 +23,10 @@ class DefaultConfiguration
             Configuration::MYSQL_PORT => '3306',
 
             Configuration::CACHE_HOST => 'youkok2-cache',
-            Configuration::CACHE_PORT => '6379'
+            Configuration::CACHE_PORT => '6379',
+
+            Configuration::FILE_UPLOAD_MAX_SIZE_IN_BYTES => '10000000',
+            Configuration::FILE_UPLOAD_ALLOWED_TYPES => 'pdf,txt,java,py,html,htm,sql'
         ];
     }
 }

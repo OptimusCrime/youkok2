@@ -8,7 +8,11 @@ import {TextItem} from "../../common/components/text-item";
 
 const HISTORY_STENCIL_SIZE = 5;
 
-const MainContainer = ({started, finished, failed, data}) => {
+const MainContainer = ({started, finished, failed, data, data_failed }) => {
+
+  if (data_failed) {
+    return <div/>;
+  }
 
   if (failed) {
     return (
@@ -46,11 +50,13 @@ const MainContainer = ({started, finished, failed, data}) => {
   );
 };
 
-const mapStateToProps = ({elements}) => ({
-  started: elements.started,
-  finished: elements.finished,
-  failed: elements.failed,
-  data: elements.data,
+const mapStateToProps = ({history, archive}) => ({
+  started: history.started,
+  finished: history.finished,
+  failed: history.failed,
+  data: history.data,
+
+  data_failed: archive.data_failed,
 });
 
 export default connect(mapStateToProps)(MainContainer);

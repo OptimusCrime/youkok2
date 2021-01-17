@@ -1,7 +1,8 @@
 import React from 'react';
 import {connect} from "react-redux";
-import {SIDEBAR_POST_LINK_CHANGE, SIDEBAR_POST_LINK_TITLE_CHANGE} from "../../redux/link/constants";
-import {fetchTitleFromUrl as fetchTitleFromUrlDispatch} from "../../redux/link/actions";
+
+import {SIDEBAR_POST_LINK_TITLE_CHANGE} from "../../../archive/redux/link/constants";
+import {fetchTitleFromUrl as fetchTitleFromUrlDispatch} from "../../../archive/redux/link/actions";
 
 const INPUT_HTML_ID = 'sidebar-create__link--title-input';
 

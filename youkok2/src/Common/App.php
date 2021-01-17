@@ -110,11 +110,14 @@ class App
             $app->get('/changelog.txt', Noop::class . ':changelog')->setName('changelog');
             $app->get('/retningslinjer', Noop::class . ':terms')->setName('terms');
 
+            // TODO: Implement
+            $app->get('/lorem', Noop::class . ':view')->setName('admin_login');
+            // TODO: Change to rest
+            $app->post('/lorem', Noop::class . ':post')->setName('admin_login_submit');
+
             // Keep these
             $app->get('/redirect/{id:[0-9]+}', Redirect::class . ':view')->setName('redirect');
             $app->get('/last-ned/{uri:.*}', Download::class . ':view')->setName('download');
-            $app->get('/lorem', Login::class . ':view')->setName('admin_login');
-            $app->post('/lorem', Login::class . ':post')->setName('admin_login_submit');
 
             // TODO: Handle redirects in nginx /kokeboka/ and /emner/kokeboka/
         });
@@ -146,7 +149,11 @@ class App
             });
 
             $app->post('/courses', CoursesEndpoint::class . ':post');
-            $app->get('/archive/{id:[0-9]+}', ArchiveEndpoint::class . ':get');
+
+            $app->group('/archive', function () use ($app) {
+                $app->get('/data', ArchiveEndpoint::class . ':data');
+                $app->get('/content', ArchiveEndpoint::class . ':content');
+            });
 
             $app->group('/sidebar', function () use ($app) {
                 $app->group('/post', function () use ($app) {
@@ -192,6 +199,7 @@ class App
             InternalServerError::class,
             PageNotFound::class,
             Services::class,
+            // TODO: Remove
             View::class,
             Logger::class,
         ];

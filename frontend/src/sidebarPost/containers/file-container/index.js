@@ -1,16 +1,20 @@
 import React from 'react';
+import {connect} from "react-redux";
 import Dropzone from 'react-dropzone'
+
 import {
   TYPE_NONE,
   TYPE_UPLOAD
 } from "../../constants";
-import {changeOpen as changeOpenDispatch} from "../../redux/main/actions";
+import {changeOpen as changeOpenDispatch} from "../../../archive/redux/main/actions";
 import {
   addFiles as addFilesDispatch,
   uploadFiles as uploadFilesDispatch,
-} from "../../redux/file/actions";
-import {connect} from "react-redux";
-import {SIDEBAR_POST_FILE_REMOVE_FILE, SIDEBAR_POST_FILE_RESET} from "../../redux/file/constants";
+} from "../../../archive/redux/file/actions";
+import {
+  SIDEBAR_POST_FILE_REMOVE_FILE,
+  SIDEBAR_POST_FILE_RESET
+} from "../../../archive/redux/file/constants";
 import {calculateProgress, humanReadableFileSize} from "../../utilities";
 import {FileUploadMessage} from "../../components/upload-message";
 
@@ -25,7 +29,11 @@ const FileContainer = props => {
 
     files,
     upload_started,
-    upload_finished
+    upload_finished,
+
+    course_id,
+    valid_file_types,
+    max_file_size_bytes,
   } = props;
 
   const progress = Math.floor(calculateProgress(files));
@@ -67,7 +75,7 @@ const FileContainer = props => {
           ))}
         </div>
         <div className="sidebar-create__file--dropzone">
-          <Dropzone onDrop={addFiles}>
+          <Dropzone onDrop={file => addFiles(valid_file_types, max_file_size_bytes, file)}>
             {({getRootProps, getInputProps}) => (
               <div className="sidebar-create__file--dropzone--inner" {...getRootProps()}>
                 <div className="sidebar-create__file--dropzone--button">
@@ -100,7 +108,7 @@ const FileContainer = props => {
         }
       </div>
       <div className="sidebar-create__file--valid">
-        <p>{`Godkjente  filtyper: ${window.SITE_DATA.archive_valid_file_types.join(', ')}.`}</p>
+        <p>{`Godkjente  filtyper: ${valid_file_types.join(', ')}.`}</p>
       </div>
       <div className="sidebar-create-submit">
         <button
@@ -111,7 +119,7 @@ const FileContainer = props => {
               reset();
             } else {
               if (!upload_started && files.length > 0) {
-                uploadFiles(files);
+                uploadFiles(course_id, files);
               }
             }
           }}
@@ -139,10 +147,13 @@ const FileContainer = props => {
   );
 };
 
-const mapStateToProps = ({file}) => ({
+const mapStateToProps = ({file, archive}) => ({
   files: file.files,
   upload_started: file.upload_started,
   upload_finished: file.upload_finished,
+  course_id: archive.course_id,
+  valid_file_types: archive.valid_file_types,
+  max_file_size_bytes: archive.max_file_size_bytes,
 });
 
 const mapDispatchToProps = {

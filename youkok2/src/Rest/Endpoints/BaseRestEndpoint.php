@@ -46,7 +46,13 @@ class BaseRestEndpoint extends BaseView
     protected function returnBadRequest(Response $response, \Exception $ex): Response
     {
         if (Configuration::getInstance()->isDev()) {
-            return $response->write($ex->getTraceAsString());
+            return $response
+                ->withStatus(400)
+                ->write(
+                    '<h1>Rest exception caught</h1>' .
+                    '<p>' . $ex->getMessage() . '</p>' .
+                    '<pre>' . $ex->getTraceAsString() . '</pre>'
+                );
         }
 
         return $response

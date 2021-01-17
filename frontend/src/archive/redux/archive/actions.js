@@ -1,30 +1,37 @@
-import { fetchArchiveRest } from '../../api';
+import {fetchArchiveContentRest, fetchArchiveDataRest,} from '../../api';
 import {
-  ARCHIVE_FETCH_FAILED,
-  ARCHIVE_FETCH_FINISHED,
-  ARCHIVE_FETCH_STARTED,
+  ARCHIVE_DATA_FETCH_STARTED,
+  ARCHIVE_DATA_FETCH_FINISHED,
+  ARCHIVE_DATA_FETCH_FAILED,
+  ARCHIVE_CONTENT_FETCH_STARTED,
+  ARCHIVE_CONTENT_FETCH_FINISHED,
+  ARCHIVE_CONTENT_FETCH_FAILED,
 } from './constants';
-import {TEMP_CACHE_TIMEOUT_IN_SECONDS} from "../../consts";
-import {setItem} from "../../../common/local-storage";
-import {getLocalStorageKeyForCurrentUri} from "../../utilities";
+import {fetchSidebarHistory} from "../history/actions";
 
-export const fetchArchive = () => dispatch => {
-  dispatch({ type: ARCHIVE_FETCH_STARTED });
+export const fetchArchiveData = params => dispatch => {
+  dispatch({ type: ARCHIVE_DATA_FETCH_STARTED });
 
-  fetchArchiveRest()
+  const { course, path } = params;
+
+  fetchArchiveDataRest(course, path)
     .then(response => response.json())
     .then(data => {
-      dispatch({ type: ARCHIVE_FETCH_FINISHED, data: data });
+      dispatch({ type: ARCHIVE_DATA_FETCH_FINISHED, data: data });
 
-      const timeout = new Date().getTime() + (TEMP_CACHE_TIMEOUT_IN_SECONDS * 1000);
+      dispatch(fetchArchiveContent(data.id));
 
-      setItem(
-        getLocalStorageKeyForCurrentUri(),
-        JSON.stringify({
-          data,
-          timeout
-        })
-      );
+      // Run the related sidebars
+      dispatch(fetchSidebarHistory(data.id));
     })
-    .catch(() => dispatch({ type: ARCHIVE_FETCH_FAILED }));
+    .catch(() => dispatch({ type: ARCHIVE_DATA_FETCH_FAILED }));
+};
+
+export const fetchArchiveContent = id => dispatch => {
+  dispatch({ type: ARCHIVE_CONTENT_FETCH_STARTED });
+
+  fetchArchiveContentRest(id)
+    .then(response => response.json())
+    .then(data => dispatch({ type: ARCHIVE_CONTENT_FETCH_FINISHED, data: data }))
+    .catch(() => dispatch({ type: ARCHIVE_CONTENT_FETCH_FAILED }));
 };

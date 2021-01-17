@@ -1,6 +1,8 @@
 import React from 'react';
 import {randomBetween} from "../../../common/utils";
 
+export const StencilArchiveTitle = () => <div className="stencil-archive__title"/>;
+
 export const StencilArchiveList = ({ size }) => {
   const range = [...Array(size).keys()];
 

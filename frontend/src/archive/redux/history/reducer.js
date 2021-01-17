@@ -12,7 +12,7 @@ const defaultState = {
   data: []
 };
 
-export const elements = (state = defaultState, action) => {
+export const history = (state = defaultState, action) => {
   switch (action.type) {
 
     case SIDEBAR_HISTORY_FETCH_STARTED:

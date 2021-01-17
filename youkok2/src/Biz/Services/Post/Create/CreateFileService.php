@@ -7,7 +7,6 @@ use Psr\Http\Message\UploadedFileInterface;
 use Youkok\Biz\Exceptions\CreateException;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
-use Youkok\Common\Utilities\FileTypesHelper;
 use Youkok\Common\Utilities\SelectStatements;
 use Youkok\Helpers\Configuration\Configuration;
 
@@ -70,7 +69,8 @@ class CreateFileService
             throw new CreateException('Found no file type in upload.');
         }
 
-        if (!in_array($extension, FileTypesHelper::getValidFileTypes())) {
+        if (!in_array($extension, Configuration::getInstance()->getFileUploadAllowedTypes())) {
+
             throw new CreateException('Found invalid extension of type ' . $extension . ' in upload.');
         }
 
