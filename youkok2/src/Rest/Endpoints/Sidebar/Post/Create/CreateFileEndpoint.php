@@ -19,8 +19,6 @@ class CreateFileEndpoint extends BaseRestEndpoint
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->createFileService = $container->get(CreateFileService::class);
         $this->logger = $container->get(Logger::class);
     }

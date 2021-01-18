@@ -9,16 +9,8 @@ use Youkok\Web\Views\BaseView;
 
 class AdminBaseView extends BaseView
 {
-    /** @var ElementService */
-    private $elementService;
-
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
-
-        $this->elementService = $container->get(ElementService::class);
-    }
-
+    // TODO: Place into rest endpoint
+    /*
     protected function render(Response $response, string $template, array $data = []): Response
     {
         return parent::render($response, $template, array_merge(
@@ -28,14 +20,5 @@ class AdminBaseView extends BaseView
             ]
         ));
     }
-
-    protected function renderReactApp(Response $response, string $template, array $data = []): Response
-    {
-        return parent::renderReactApp($response, $template, array_merge(
-            $data,
-            [
-                'NUM_PENDING' => $this->elementService->getAllPending()
-            ]
-        ));
-    }
+    */
 }

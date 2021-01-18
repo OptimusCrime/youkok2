@@ -45,6 +45,7 @@ const pages = [
   "courses",
   "frontpage",
   "help",
+  "login",
   "terms"
 ];
 
@@ -58,12 +59,20 @@ const generateHtmlWebpackPluginInfoChunks = entry => {
   }
 };
 
-const generateHtmlWebpackPluginInfo = (argv, entry) => ({
+const generateHtmlWebpackPluginInfo = entry => ({
   inject: true,
   scriptLoading: "defer",
   template: `./dist/${entry}.html`,
   filename: path.resolve(__dirname, '..', 'static', 'content', `${entry}.html`),
   chunks: generateHtmlWebpackPluginInfoChunks(entry),
+});
+
+const generate404HtmlWebpackPluginInfo = () => ({
+  inject: true,
+  scriptLoading: "defer",
+  template: `./dist/404.html`,
+  filename: path.resolve(__dirname, '..', 'youkok2', 'templates', `404.html`),
+  chunks: generateHtmlWebpackPluginInfoChunks("404"),
 });
 
 module.exports = (env, argv) => ({
@@ -116,8 +125,8 @@ module.exports = (env, argv) => ({
       ]
     }),
     ...pages
-      .map(page => new HtmlWebpackPlugin(generateHtmlWebpackPluginInfo(argv, page))),
-    // TODO: extra HtmlWebpackPlugin for 404 placed into templates directory
+      .map(page => new HtmlWebpackPlugin(generateHtmlWebpackPluginInfo(page))),
+    new HtmlWebpackPlugin(generate404HtmlWebpackPluginInfo()),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css'
     }),

@@ -27,8 +27,6 @@ class ArchiveEndpoint extends BaseRestEndpoint
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->archiveService = $container->get(ArchiveService::class);
         $this->courseService = $container->get(CourseService::class);
         $this->cacheService = $container->get(CacheService::class);

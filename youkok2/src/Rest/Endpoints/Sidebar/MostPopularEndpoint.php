@@ -19,8 +19,6 @@ class MostPopularEndpoint extends BaseRestEndpoint
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->mostPopularElementsService = $container->get(MostPopularElementsService::class);
         $this->elementMapper = $container->get(ElementMapper::class);
     }

@@ -60,10 +60,8 @@ class Redirect extends BaseView
             $this->updateDownloadsProcessor->run($element);
         }
 
-        return $this->output(
-            $response
-                ->withStatus(302)
-                ->withHeader('Location', $element->link)
-        );
+        return $response
+            ->withStatus(302)
+            ->withHeader('Location', $element->link);
     }
 }

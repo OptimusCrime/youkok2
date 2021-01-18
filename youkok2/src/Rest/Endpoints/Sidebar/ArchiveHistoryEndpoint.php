@@ -18,8 +18,6 @@ class ArchiveHistoryEndpoint extends BaseRestEndpoint
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->archiveHistoryService = $container->get(ArchiveHistoryService::class);
         $this->logger = $container->get(Logger::class);
     }

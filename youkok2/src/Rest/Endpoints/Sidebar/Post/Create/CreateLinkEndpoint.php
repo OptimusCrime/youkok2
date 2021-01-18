@@ -18,8 +18,6 @@ class CreateLinkEndpoint extends BaseRestEndpoint
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->createLinkService = $container->get(CreateLinkService::class);
         $this->logger = $container->get(Logger::class);
     }

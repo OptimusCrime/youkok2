@@ -42,7 +42,8 @@ class AuthService
         $ret = setcookie(
             static::getCookieName(),
             $cookieValue,
-            time() + static::COOKIE_LIFETIME
+            time() + static::COOKIE_LIFETIME,
+            '/'
         );
 
         if ($ret === false) {

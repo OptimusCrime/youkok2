@@ -8,7 +8,7 @@ class AdminHome extends AdminBaseView
 {
     public function view(Request $request, Response $response): Response
     {
-        $this->setSiteData('view', 'admin_home');
+        //$this->setSiteData('view', 'admin_home');
 
         return $this->render($response, 'admin/home.html', [
             'SITE_TITLE' => 'Admin',

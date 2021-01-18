@@ -8,7 +8,7 @@ class AdminPending extends AdminBaseView
 {
     public function view(Request $request, Response $response): Response
     {
-        $this->setSiteData('view', 'admin_pending');
+        //$this->setSiteData('view', 'admin_pending');
 
         return $this->render($response, 'admin/pending.html', [
             'SITE_TITLE' => 'Admin',

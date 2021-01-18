@@ -1,2 +1,0 @@
-{{> "top.hbs" BODY_CLASS="frontpage" HEADER_MENU="home" }}
-{{> "bottom.hbs" }}

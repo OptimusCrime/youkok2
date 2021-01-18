@@ -1,4 +1,5 @@
 *
 !.gitignore
+!admin/
 !favicon.ico
 !favicon.png

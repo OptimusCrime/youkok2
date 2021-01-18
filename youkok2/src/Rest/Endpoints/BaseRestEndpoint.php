@@ -6,9 +6,8 @@ use Slim\Http\Response;
 
 use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Helpers\Configuration\Configuration;
-use Youkok\Web\Views\BaseView;
 
-class BaseRestEndpoint extends BaseView
+class BaseRestEndpoint
 {
     protected function outputJson(Response $response, array $object): Response
     {

@@ -9,22 +9,23 @@ class AdminFiles extends AdminBaseView
 {
     public function view(Request $request, Response $response): Response
     {
-        $this->setSiteData('view', 'admin_files');
+        //$this->setSiteData('view', 'admin_files');
 
         return $this->renderAdminFiles($response);
     }
 
     public function viewOne(Request $request, Response $response, array $args): Response
     {
-        $this->setSiteData('view', 'admin_files');
-        $this->setSiteData('admin_file', (int) $args['id']);
+        //$this->setSiteData('view', 'admin_files');
+        //$this->setSiteData('admin_file', (int) $args['id']);
 
         return $this->renderAdminFiles($response);
     }
 
     private function renderAdminFiles(Response $response): Response
     {
-        $this->overrideTemplateData('COURSE_LOOKUP', static::getAdminTemplateData());
+        // TODO
+        //$this->overrideTemplateData('COURSE_LOOKUP', static::getAdminTemplateData());
 
         return $this->render($response, 'admin/files.html', [
             'SITE_TITLE' => 'Admin',

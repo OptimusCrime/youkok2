@@ -26,8 +26,6 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->frontpageService = $container->get(FrontpageService::class);
         $this->courseMapper = $container->get(CourseMapper::class);
         $this->elementMapper = $container->get(ElementMapper::class);

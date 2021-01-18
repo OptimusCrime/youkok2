@@ -8,7 +8,7 @@ class AdminDiagnostics extends AdminBaseView
 {
     public function view(Request $request, Response $response): Response
     {
-        $this->setSiteData('view', 'admin_diagnostics');
+        //$this->setSiteData('view', 'admin_diagnostics');
 
         return $this->render($response, 'admin/diagnostics.html', [
             'SITE_TITLE' => 'Admin',

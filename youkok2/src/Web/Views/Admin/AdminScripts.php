@@ -8,7 +8,7 @@ class AdminScripts extends AdminBaseView
 {
     public function view(Request $request, Response $response): Response
     {
-        $this->setSiteData('view', 'admin_scripts');
+        //$this->setSiteData('view', 'admin_scripts');
 
         return $this->render($response, 'admin/todo.html', [
             'SITE_TITLE' => 'Admin',

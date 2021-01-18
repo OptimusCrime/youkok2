@@ -12,7 +12,6 @@ use Youkok\Common\Containers\InternalServerError;
 use Youkok\Common\Containers\Logger;
 use Youkok\Common\Containers\PageNotFound;
 use Youkok\Common\Containers\Services;
-use Youkok\Common\Containers\View;
 use Youkok\Common\Middlewares\AdminAuthMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Biz\Services\Job\JobService;
@@ -25,6 +24,7 @@ use Youkok\Rest\Endpoints\Admin\Home\AdminHomeGraphEndpoint;
 use Youkok\Rest\Endpoints\ArchiveEndpoint;
 use Youkok\Rest\Endpoints\CoursesEndpoint;
 use Youkok\Rest\Endpoints\FrontpageEndpoint;
+use Youkok\Rest\Endpoints\LoginEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\ArchiveHistoryEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\MostPopularEndpoint;
 use Youkok\Rest\Endpoints\Sidebar\Post\Create\CreateFileEndpoint;
@@ -33,7 +33,6 @@ use Youkok\Rest\Endpoints\Sidebar\Post\TitleFetchEndpoint;
 use Youkok\Web\Views\Download;
 use Youkok\Web\Views\Noop;
 use Youkok\Web\Views\Redirect;
-use Youkok\Web\Views\Admin\Login;
 use Youkok\Web\Views\Admin\AdminDiagnostics;
 use Youkok\Web\Views\Admin\AdminHome;
 use Youkok\Web\Views\Admin\AdminLogs;
@@ -109,11 +108,7 @@ class App
             $app->get('/om', Noop::class . ':about')->setName('about');
             $app->get('/changelog.txt', Noop::class . ':changelog')->setName('changelog');
             $app->get('/retningslinjer', Noop::class . ':terms')->setName('terms');
-
-            // TODO: Implement
             $app->get('/lorem', Noop::class . ':view')->setName('admin_login');
-            // TODO: Change to rest
-            $app->post('/lorem', Noop::class . ':post')->setName('admin_login_submit');
 
             // Keep these
             $app->get('/redirect/{id:[0-9]+}', Redirect::class . ':view')->setName('redirect');
@@ -123,17 +118,15 @@ class App
         });
 
         $app->group('/admin', function () use ($app) {
-            $app->get('', AdminHome::class . ':view')->setName('admin_home');
-            $app->get('/ventende', AdminPending::class . ':view')->setName('admin_pending');
-            $app->get('/filer', AdminFiles::class . ':view')->setName('admin_files');
-            $app->get('/filer/{id:[0-9]+}', AdminFiles::class . ':viewOne')->setName('admin_file');
-            $app->get('/statistikk', AdminStatistics::class . ':view')->setName('admin_statistics');
-            $app->get('/diagnostikk', AdminDiagnostics::class . ':view')->setName('admin_diagnostics');
-            $app->get('/logger', AdminLogs::class . ':view')->setName('admin_logs');
-            $app->get('/scripts', AdminScripts::class . ':view')->setName('admin_scripts');
+            $app->get('', Noop::class . ':view')->setName('admin_home');
+            $app->get('/ventende', Noop::class . ':view')->setName('admin_pending');
+            $app->get('/filer', Noop::class . ':view')->setName('admin_files');
+            $app->get('/filer/{id:[0-9]+}', Noop::class . ':viewOne')->setName('admin_file');
+            $app->get('/diagnostikk', Noop::class . ':view')->setName('admin_diagnostics');
         })->add(new AdminAuthMiddleware($app->getContainer()));
 
         $app->group('/rest', function () use ($app) {
+            $app->post('/login', LoginEndpoint::class . ':post');
             $app->group('/frontpage', function () use ($app) {
                 $app->group('/popular', function () use ($app) {
                     $app->get('/elements', FrontpageEndpoint::class . ':popularElements');
@@ -199,8 +192,6 @@ class App
             InternalServerError::class,
             PageNotFound::class,
             Services::class,
-            // TODO: Remove
-            View::class,
             Logger::class,
         ];
 

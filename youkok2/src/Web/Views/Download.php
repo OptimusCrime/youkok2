@@ -67,17 +67,15 @@ class Download extends BaseView
             $fileSize = $this->downloadService->getFileSize($element);
             $filePath = $this->downloadService->getFilePath($element);
 
-            return $this->output(
-                $response
-                    ->withHeader('Content-Description', 'File Transfer')
-                    ->withHeader('Content-Type', $fileInfo)
-                    ->withHeader('Content-Disposition', 'inline; filename="' . $element->name . '"')
-                    ->withHeader('Expires', '0')
-                    ->withHeader('Cache-Control', 'must-revalidate')
-                    ->withHeader('Pragm', 'public')
-                    ->withHeader('Content-Length', $fileSize)
-                    ->withBody(new Stream(fopen($filePath, 'r')))
-            );
+            return $response
+                ->withHeader('Content-Description', 'File Transfer')
+                ->withHeader('Content-Type', $fileInfo)
+                ->withHeader('Content-Disposition', 'inline; filename="' . $element->name . '"')
+                ->withHeader('Expires', '0')
+                ->withHeader('Cache-Control', 'must-revalidate')
+                ->withHeader('Pragm', 'public')
+                ->withHeader('Content-Length', $fileSize)
+                ->withBody(new Stream(fopen($filePath, 'r')));
         } catch (ElementNotFoundException | Exception $ex) {
             return $this->render404($response);
         }

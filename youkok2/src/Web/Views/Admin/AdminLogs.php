@@ -27,7 +27,7 @@ class AdminLogs extends AdminBaseView
 
     public function view(Request $request, Response $response): Response
     {
-        $this->setSiteData('view', 'admin_logs');
+        //$this->setSiteData('view', 'admin_logs');
 
         try {
             return $this->render($response, 'admin/logs.html', [
@@ -40,7 +40,8 @@ class AdminLogs extends AdminBaseView
             ]);
         } catch (GenericYoukokException $ex) {
             $this->logger->error($ex);
-            return $this->render($response, 'errors/500.html');
+
+            return $response->withStatus(500);
         }
     }
 }

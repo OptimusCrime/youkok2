@@ -25,8 +25,6 @@ class CoursesEndpoint extends BaseRestEndpoint
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->coursesLookupService = $container->get(CoursesLookupService::class);
         $this->logger = $container->get(Logger::class);
     }

@@ -17,8 +17,6 @@ class TitleFetchEndpoint extends BaseRestEndpoint
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->titleFetchService = $container->get(TitleFetchService::class);
         $this->logger = $container->get(Logger::class);
     }

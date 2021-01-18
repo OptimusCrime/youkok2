@@ -8,7 +8,7 @@ class AdminStatistics extends AdminBaseView
 {
     public function view(Request $request, Response $response): Response
     {
-        $this->setSiteData('view', 'admin_statistics');
+        // $this->setSiteData('view', 'admin_statistics');
 
         return $this->render($response, 'admin/todo.html', [
             'SITE_TITLE' => 'Admin',

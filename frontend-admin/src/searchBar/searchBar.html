@@ -1,9 +1,0 @@
-<% for (let css in htmlWebpackPlugin.files.css) { %><link rel="stylesheet" type="text/css" href="<%= htmlWebpackPlugin.files.css[css] %>" />
-<% } %>
-
-<form class="navbar-form navbar-right" id="search-form" name="search-form" action="{{ path_for('courses') }}" method="get">
-    <div class="form-group div-relative" id="search-bar"></div>
-</form>
-
-<% for (let js in htmlWebpackPlugin.files.js) { %><script src="<%= htmlWebpackPlugin.files.js[js] %>"></script>
-<% } %>

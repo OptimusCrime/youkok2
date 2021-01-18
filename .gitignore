@@ -2,7 +2,8 @@
 .DS_Store
 .idea
 vendor
-frontend/node_modules
+node_modules
+dist
 
 # Production env file
 prod.env
