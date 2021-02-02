@@ -11,13 +11,12 @@ if (!(include __DIR__ . '/../vendor/autoload.php')) {
 
 use Youkok\Common\App;
 use Youkok\Helpers\SettingsParser;
-use OptimusCrime\CodereviewGifs\Biz\Domain\Enums\JobEnum;
 
 $settingsParser = new SettingsParser();
 
 try {
     $app = new App($settingsParser->getSlimConfig());
-    $app->runJob(JobEnum::fromValue($argv[1]));
+    $app->runCronJobs();
 } catch (\Exception $ex) {
     echo 'Uncaught out exception!' . PHP_EOL;
     echo $ex->getMessage() . PHP_EOL;

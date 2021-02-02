@@ -1,5 +1,4 @@
 <?php
-
 namespace Youkok\Rest\Endpoints;
 
 use Monolog\Logger;
@@ -7,8 +6,8 @@ use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
 
-use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\InvalidRequestException;
+use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Mappers\ElementMapper;
@@ -37,11 +36,11 @@ class ArchiveEndpoint extends BaseRestEndpoint
     public function data(Request $request, Response $response): Response
     {
         try {
-            $course = $request->getQueryParam('course', null);
-            $path = urldecode($request->getQueryParam('path', null));
+            $course = $request->getQueryParam('course');
+            $path = urldecode($request->getQueryParam('path'));
 
             if ($course === null || $path === null) {
-                throw new InvalidRequestException('Malformed id: ' . $id);
+                throw new InvalidRequestException('Malformed request. Course: ' . $course . ', path: ' . $path);
             }
 
             $uri = $course . '/' . $path;
@@ -73,9 +72,8 @@ class ArchiveEndpoint extends BaseRestEndpoint
                 'html_title' => $this->archiveService->getSiteTitle($element),
                 'html_description' => $this->archiveService->getSiteDescription($element),
             ]);
-        } catch (ElementNotFoundException | InvalidRequestException $ex) {
+        } catch (YoukokException $ex) {
             $this->logger->error($ex);
-
             return $this->returnBadRequest($response, $ex);
         }
     }
@@ -83,7 +81,7 @@ class ArchiveEndpoint extends BaseRestEndpoint
     public function content(Request $request, Response $response): Response
     {
         try {
-            $id = $request->getQueryParam('id', null);
+            $id = $request->getQueryParam('id');
             if ($id === null || !is_numeric($id)) {
                 throw new InvalidRequestException('Malformed id: ' . $id);
             }
@@ -100,9 +98,8 @@ class ArchiveEndpoint extends BaseRestEndpoint
                     ]
                 )
             );
-        } catch (ElementNotFoundException | InvalidRequestException $ex) {
+        } catch (YoukokException $ex) {
             $this->logger->error($ex);
-
             return $this->returnBadRequest($response, $ex);
         }
     }

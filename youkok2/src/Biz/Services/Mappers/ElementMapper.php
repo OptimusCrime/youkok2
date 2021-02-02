@@ -1,11 +1,11 @@
 <?php
-
 namespace Youkok\Biz\Services\Mappers;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Collection as SupportCollection;
 use Monolog\Logger;
+
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Biz\Services\Models\CourseService;
@@ -23,12 +23,12 @@ class ElementMapper
 
     const DOWNLOADED_TIME = 'KEEP_DOWNLOADED_TIME';
 
-    private $urlService;
-    private $courseMapper;
-    private $downloadCountService;
-    private $elementService;
-    private $courseService;
-    private $logger;
+    private UrlService $urlService;
+    private CourseMapper $courseMapper;
+    private DownloadCountService $downloadCountService;
+    private ElementService $elementService;
+    private CourseService $courseService;
+    private Logger $logger;
 
     public function __construct(
         UrlService $urlService,
@@ -46,6 +46,13 @@ class ElementMapper
         $this->logger = $logger;
     }
 
+    /**
+     * @param Collection $elements
+     * @param array $additionalFields
+     * @return array
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     */
     public function map(Collection $elements, array $additionalFields = []): array
     {
         $out = [];
@@ -59,6 +66,13 @@ class ElementMapper
         return $out;
     }
 
+    /**
+     * @param array $elements
+     * @param array $additionalFields
+     * @return array
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     */
     public function mapFromArray(array $elements, array $additionalFields = []): array
     {
         $out = [];
@@ -72,6 +86,13 @@ class ElementMapper
         return $out;
     }
 
+    /**
+     * @param Element $element
+     * @param array $additionalFields
+     * @return array|null
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     */
     public function mapElement(Element $element, array $additionalFields = []): ?array
     {
         $arr = [
@@ -101,8 +122,14 @@ class ElementMapper
 
         if (in_array(static::PARENT_COURSE, $additionalFields)) {
             try {
-                $arr['course'] = $this->courseMapper->mapCourse($element->getCourse());
-            } catch (ElementNotFoundException $e) {
+                $course = $element->getCourse();
+
+                if ($course === null) {
+                    throw new ElementNotFoundException('Could not find coure for element ' . $element->id);
+                }
+
+                $arr['course'] = $this->courseMapper->mapCourse($course);
+            } catch (GenericYoukokException $e) {
                 $this->logger->warning('Failed to find course for element: ' . $element->id);
                 return null;
             }
@@ -128,6 +155,12 @@ class ElementMapper
         return $arr;
     }
 
+    /**
+     * @param array $elements
+     * @return array
+     * @throws GenericYoukokException
+     * @throws ElementNotFoundException
+     */
     public function mapBreadcrumbs(array $elements): array
     {
         $out = [];

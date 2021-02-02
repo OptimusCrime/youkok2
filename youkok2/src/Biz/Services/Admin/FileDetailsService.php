@@ -1,7 +1,9 @@
 <?php
-
 namespace Youkok\Biz\Services\Admin;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Models\Admin\AdminCourseService;
 use Youkok\Biz\Services\Models\ElementService;
@@ -11,10 +13,10 @@ use Youkok\Common\Utilities\SelectStatements;
 
 class FileDetailsService
 {
-    private $adminCourseService;
-    private $adminFilesService;
-    private $elementService;
-    private $downloadFileInfoService;
+    private AdminCourseService $adminCourseService;
+    private FilesService $adminFilesService;
+    private ElementService $elementService;
+    private DownloadFileInfoService $downloadFileInfoService;
 
     public function __construct(
         AdminCourseService $adminCourseService,
@@ -28,6 +30,13 @@ class FileDetailsService
         $this->downloadFileInfoService = $downloadFileInfoService;
     }
 
+    /**
+     * @param int $id
+     * @return array
+     * @throws GenericYoukokException
+     * @throws ElementNotFoundException
+     * @throws InvalidFlagCombination
+     */
     public function get(int $id): array
     {
         $element = $this->elementService->getElement(
@@ -57,6 +66,11 @@ class FileDetailsService
         return $this->map($element);
     }
 
+    /**
+     * @param Element $element
+     * @return array
+     * @throws GenericYoukokException
+     */
     private function map(Element $element): array
     {
         $arr = $element->toArray();
@@ -74,6 +88,11 @@ class FileDetailsService
         return $arr;
     }
 
+    /**
+     * @param Element $element
+     * @return array
+     * @throws GenericYoukokException
+     */
     private function mapCourseDirectoriesTree(Element $element): array
     {
         $list = $this->mapCourseDirectories(
@@ -84,7 +103,6 @@ class FileDetailsService
 
         $output = [];
 
-        /** @var CourseDirectory $value */
         foreach ($list as $value) {
             $output[] = $value->getOutput();
         }
@@ -92,6 +110,12 @@ class FileDetailsService
         return $output;
     }
 
+    /**
+     * @param Element $directory
+     * @param int $depth
+     * @return CourseDirectory[]
+     * @throws GenericYoukokException
+     */
     private function mapCourseDirectories(Element $directory, int $depth = 0): array
     {
         $output = [

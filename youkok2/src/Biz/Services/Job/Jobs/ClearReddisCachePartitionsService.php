@@ -6,14 +6,14 @@ use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class ClearReddisCachePartitionsService implements JobServiceInterface
 {
-    private $cacheService;
+    private CacheService $cacheService;
 
     public function __construct(CacheService $cacheService)
     {
         $this->cacheService = $cacheService;
     }
 
-    public function run()
+    public function run(): void
     {
         foreach (ClearReddisCachePartitionsService::partitionsToClear() as $partition) {
             $this->cacheService->delete($partition);

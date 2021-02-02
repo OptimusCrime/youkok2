@@ -2,21 +2,27 @@
 namespace Youkok\Biz\Services\Mappers;
 
 use Carbon\Carbon;
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
 
 class CourseMapper
 {
-    const LAST_VISITED = 'LAST_VISITED';
     const DATASTORE_DOWNLOAD_ESTIMATE = 'DOWNLOADS_ESTIMATE';
 
-    private $urlService;
+    private UrlService $urlService;
 
     public function __construct(UrlService $urlService)
     {
         $this->urlService = $urlService;
     }
 
+    /**
+     * @param $courses
+     * @param array $additionalFields
+     * @return array
+     * @throws GenericYoukokException
+     */
     public function map($courses, $additionalFields = []): array
     {
         $out = [];
@@ -27,6 +33,12 @@ class CourseMapper
         return $out;
     }
 
+    /**
+     * @param Element $element
+     * @param array $additionalFields
+     * @return array
+     * @throws GenericYoukokException
+     */
     public function mapCourse(Element $element, $additionalFields = []): array
     {
         $arr = [
@@ -36,10 +48,6 @@ class CourseMapper
             'url' => $this->urlService->urlForCourse($element),
             'type' => Element::COURSE
         ];
-
-        if (in_array(static::LAST_VISITED, $additionalFields)) {
-            $arr['last_visited'] = $element->last_visited;
-        }
 
         // This is stored in the Elements datastore (prefixed with an underscore)
         if (in_array(static::DATASTORE_DOWNLOAD_ESTIMATE, $additionalFields)) {

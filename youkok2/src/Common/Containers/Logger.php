@@ -1,9 +1,8 @@
 <?php
 namespace Youkok\Common\Containers;
 
-use Closure;
-use Monolog\Formatter\LineFormatter;
 use Psr\Container\ContainerInterface;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Logger as MonologLogger;
 use Monolog\Handler\StreamHandler;
 

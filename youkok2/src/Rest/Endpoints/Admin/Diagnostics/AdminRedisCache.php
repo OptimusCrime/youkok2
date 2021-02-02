@@ -10,13 +10,10 @@ use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class AdminRedisCache extends BaseRestEndpoint
 {
-    /** @var CacheContentService */
-    private $cacheContentService;
+    private CacheContentService $cacheContentService;
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->cacheContentService = $container->get(CacheContentService::class);
     }
 

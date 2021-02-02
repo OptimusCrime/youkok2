@@ -7,14 +7,14 @@ use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class CacheService
 {
-    private $cache;
+    private Redis $cache;
 
     public function __construct(Redis $cache)
     {
         $this->cache = $cache;
     }
 
-    public function getMostPopularElementsFromDelta(string $delta, int $limit)
+    public function getMostPopularElementsFromDelta(string $delta, int $limit): array
     {
         $key = CacheKeyGenerator::keyForMostPopularElementsForDelta($delta);
 
@@ -108,18 +108,6 @@ class CacheService
         }
 
         $this->setDownloadsForId($id, $downloads + 1);
-    }
-
-    public function clearCacheForMostPopularKeys(array $keys): void
-    {
-        if ($this->cache === null) {
-            return;
-        }
-
-        foreach ($keys as $key) {
-            $cacheKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($key);
-            $this->cache->delete($cacheKey);
-        }
     }
 
     public function getSortedRangeByKey(string $key, int $limit = null, int $offset = 0): array

@@ -1,5 +1,4 @@
 <?php
-
 namespace Youkok\Biz\Pools;
 
 use Youkok\Biz\Exceptions\PoolException;
@@ -9,8 +8,8 @@ use Youkok\Common\Utilities\SelectStatements;
 
 class ElementPool
 {
-    private static $DISABLED = true;
-    private static $POOL = [];
+    private static bool $DISABLED = true;
+    private static array $POOL = [];
 
     public static function init()
     {
@@ -45,6 +44,12 @@ class ElementPool
         return false;
     }
 
+    /**
+     * @param array $attributes
+     * @param SelectStatements $selectStatements
+     * @return Element
+     * @throws PoolException
+     */
     public static function get(array $attributes, SelectStatements $selectStatements): Element
     {
         if (static::$DISABLED) {

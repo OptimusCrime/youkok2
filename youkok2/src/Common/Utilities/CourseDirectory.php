@@ -1,13 +1,20 @@
 <?php
 namespace Youkok\Common\Utilities;
 
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Common\Models\Element;
 
 class CourseDirectory
 {
-    private $id;
-    private $name;
+    private int $id;
+    private string $name;
 
+    /**
+     * CourseDirectory constructor.
+     * @param Element $directory
+     * @param int $depth
+     * @throws GenericYoukokException
+     */
     public function __construct(Element $directory, int $depth)
     {
         $this->id = $directory->id;
@@ -22,6 +29,12 @@ class CourseDirectory
         ];
     }
 
+    /**
+     * @param Element $directory
+     * @param int $depth
+     * @return string
+     * @throws GenericYoukokException
+     */
     private static function getCourseDirectoryName(Element $directory, int $depth): string
     {
         $prefix = str_repeat('-', $depth);
@@ -32,6 +45,11 @@ class CourseDirectory
             . $displayName;
     }
 
+    /**
+     * @param Element $directory
+     * @return string
+     * @throws GenericYoukokException
+     */
     private static function getCourseDirectoryDisplayName(Element $directory): string
     {
         if ($directory->getType() === Element::COURSE) {

@@ -3,13 +3,14 @@ namespace Youkok\Biz\Services\Admin;
 
 use DateInterval;
 use DateTime;
+
 use Youkok\Biz\Services\Models\Admin\AdminDownloadService;
 
 class HomeGraphService
 {
     const RANGE_IN_DAYS = 30;
 
-    private $adminDownloadService;
+    private AdminDownloadService $adminDownloadService;
 
     public function __construct(AdminDownloadService $adminDownloadService)
     {

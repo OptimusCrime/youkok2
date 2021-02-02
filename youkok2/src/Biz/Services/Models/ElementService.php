@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Exceptions\InvalidFlagCombination;
+use Youkok\Biz\Exceptions\PoolException;
 use Youkok\Biz\Pools\Containers\ElementPoolContainer;
 use Youkok\Biz\Pools\ElementPool;
 use Youkok\Biz\Services\CacheService;
@@ -35,14 +36,22 @@ class ElementService
 
     const FLAG_ONLY_DIRECTORIES = 'FLAG_ONLY_DIRECTORIES';
 
-    /** @var CacheService */
-    private $cacheService;
+    private CacheService $cacheService;
 
     public function __construct(CacheService $cacheService)
     {
         $this->cacheService = $cacheService;
     }
 
+    /**
+     * @param SelectStatements $selectStatements
+     * @param array $attributes
+     * @param array $flags
+     * @return Element
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     public function getElement(SelectStatements $selectStatements, array $attributes = [], array $flags = []): Element
     {
         $this->validateFlags($flags);
@@ -118,6 +127,12 @@ class ElementService
         return $element;
     }
 
+    /**
+     * @param Element $element
+     * @param bool $forceFetchFromParentSlugFragments
+     * @return string
+     * @throws ElementNotFoundException
+     */
     public function getUriForElement(Element $element, bool $forceFetchFromParentSlugFragments = false): string
     {
         if ($element->uri !== null && !$forceFetchFromParentSlugFragments) {
@@ -146,6 +161,15 @@ class ElementService
         return implode('/', $fragments) . '/' . $element->slug;
     }
 
+    /**
+     * @param string $uri
+     * @param array $attributes
+     * @param array $flags
+     * @return Element
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     public function getElementFromUri(string $uri, array $attributes = [], array $flags = []): Element
     {
         $this->validateFlags($flags);
@@ -169,6 +193,11 @@ class ElementService
         return $this->getElementFromUriFragments($uri, $attributes, $flags);
     }
 
+    /**
+     * @param Element $element
+     * @return Element
+     * @throws ElementNotFoundException
+     */
     public function getVisibleParentForElement(Element $element): Element
     {
         $parent = Element
@@ -203,6 +232,13 @@ class ElementService
             ->count();
     }
 
+    /**
+     * @param int $limit
+     * @return array
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     public function getNewestElements(int $limit = 10): array
     {
         $elements = Element::select('id')
@@ -230,6 +266,7 @@ class ElementService
         return $newest;
     }
 
+    /*
     public function getAllPending(): int
     {
         return Element::where('pending', 1)
@@ -238,6 +275,7 @@ class ElementService
             ->orderBy('name')
             ->count();
     }
+    */
 
     public function getVisibleChildren(Element $element, int $order = self::SORT_TYPE_ORGANIZED): Collection
     {
@@ -254,6 +292,15 @@ class ElementService
         return $query->get();
     }
 
+    /**
+     * @param string $uri
+     * @param array $attributes
+     * @param array $flags
+     * @return Element
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     private function getElementFromUriCache(string $uri, array $attributes, array $flags): Element
     {
         $key = static::generateUriCacheKey($uri, $flags);
@@ -271,6 +318,15 @@ class ElementService
         );
     }
 
+    /**
+     * @param string $uri
+     * @param array $attributes
+     * @param array $flags
+     * @return Element
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     private function getElementFromOriginalUri(string $uri, array $attributes, array $flags): Element
     {
         // We only need to fetch the id there, the rest of the information is fetched in the second call
@@ -299,6 +355,15 @@ class ElementService
         return $element;
     }
 
+    /**
+     * @param string $uri
+     * @param array $attributes
+     * @param array $flags
+     * @return Element
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     private function getElementFromUriFragments(string $uri, array $attributes, array $flags): Element
     {
         $fragments = UriCleaner::cleanFragments(explode('/', $uri));
@@ -337,6 +402,13 @@ class ElementService
         return $element;
     }
 
+    /**
+     * @param Element $element
+     * @param array $attributes
+     * @param array $flags
+     * @return array
+     * @throws ElementNotFoundException
+     */
     private function fetchParents(Element $element, array $attributes, array $flags): array
     {
         $currentParentId = $element->parent;
@@ -379,6 +451,13 @@ class ElementService
         return array_reverse($parents);
     }
 
+    /**
+     * @param SelectStatements $selectStatements
+     * @param array $attributes
+     * @param array $flags
+     * @return Element|null
+     * @throws ElementNotFoundException
+     */
     private function buildQuery(SelectStatements $selectStatements, array $attributes, array $flags): ?Element
     {
         $element = $this->fetchElement($attributes, $selectStatements);
@@ -401,31 +480,41 @@ class ElementService
         return $element;
     }
 
+    /**
+     * @param array $attributes
+     * @param SelectStatements $selectStatements
+     * @return Element
+     * @throws ElementNotFoundException
+     */
     private function fetchElement(array $attributes, SelectStatements $selectStatements): Element
     {
-        $element = null;
         if (ElementPool::contains($attributes, $selectStatements)) {
-            $element = ElementPool::get($attributes, $selectStatements);
-        } else {
-            $query = Element::select($attributes);
-
-            foreach ($selectStatements as $key => $value) {
-                $query = $query->where($key, $value);
+            try {
+                return ElementPool::get($attributes, $selectStatements);
             }
-
-            $element = $query->first();
-
-            // Add to pool here, no need to do that later in this methdo, as it would re-add already existing
-            // pool elements.
-            if ($element !== null) {
-                ElementPool::add(
-                    new ElementPoolContainer(
-                        $attributes,
-                        $selectStatements,
-                        $element
-                    )
-                );
+            catch (PoolException $ex) {
+                // Mute exception
             }
+        }
+
+        $query = Element::select($attributes);
+
+        foreach ($selectStatements as $key => $value) {
+            $query = $query->where($key, $value);
+        }
+
+        $element = $query->first();
+
+        // Add to pool here, no need to do that later in this method, as it would re-add already existing
+        // pool elements.
+        if ($element !== null) {
+            ElementPool::add(
+                new ElementPoolContainer(
+                    $attributes,
+                    $selectStatements,
+                    $element
+                )
+            );
         }
 
         if ($element === null) {
@@ -437,14 +526,16 @@ class ElementService
         return $element;
     }
 
+    /**
+     * @param array $flags
+     * @throws InvalidFlagCombination
+     */
     private function validateFlags(array $flags): void
     {
         if (in_array(static::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE, $flags)
             && in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {
             throw new InvalidFlagCombination('Can not fetch only files AND directories at the same time.');
         }
-
-        // TODO validate more
     }
 
     public static function createSlug(string $fileName): string
@@ -545,6 +636,12 @@ class ElementService
         return $attributes;
     }
 
+    /**
+     * @param string $uri
+     * @param array $flags
+     * @return string
+     * @throws GenericYoukokException
+     */
     private static function generateUriCacheKey(string $uri, array $flags): string
     {
         if (in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {

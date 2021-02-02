@@ -2,7 +2,11 @@
 namespace Youkok\Biz\Services\Post\Create;
 
 use Carbon\Carbon;
+
 use Youkok\Biz\Exceptions\CreateException;
+use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\SelectStatements;
@@ -13,13 +17,22 @@ class CreateLinkService
     const MIN_VALID_URL_LENGTH = 4;
     const MIN_VALID_TITLE_LENGTH = 2;
 
-    private $elementService;
+    private ElementService $elementService;
 
     public function __construct(ElementService $elementService)
     {
         $this->elementService = $elementService;
     }
 
+    /**
+     * @param int $parent
+     * @param string $url
+     * @param string $title
+     * @throws CreateException
+     * @throws GenericYoukokException
+     * @throws ElementNotFoundException
+     * @throws InvalidFlagCombination
+     */
     public function run(int $parent, string $url, string $title): void
     {
         if (mb_strlen($url) < static::MIN_VALID_URL_LENGTH || mb_strlen($title) < static::MIN_VALID_TITLE_LENGTH) {

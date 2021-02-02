@@ -31,7 +31,6 @@ COPY ./_docker/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
 
 COPY ./youkok2 /code/site
 COPY ./_docker/cronjob /etc/cron.d/cronjob
-COPY ./_docker/cache /code/cache
 COPY ./_docker/files /code/files
 
 RUN chmod 775 /usr/local/bin/docker-php-entrypoint

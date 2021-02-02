@@ -1,15 +1,17 @@
 <?php
-
 namespace Youkok\Biz\Services;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Utilities\SelectStatements;
 
 class ArchiveHistoryService
 {
-    private $elementMapper;
-    private $elementService;
+    private ElementMapper $elementMapper;
+    private ElementService $elementService;
 
     public function __construct(
         ElementMapper $elementMapper,
@@ -19,6 +21,13 @@ class ArchiveHistoryService
         $this->elementService = $elementService;
     }
 
+    /**
+     * @param int $id
+     * @return array
+     * @throws GenericYoukokException
+     * @throws ElementNotFoundException
+     * @throws InvalidFlagCombination
+     */
     public function get(int $id): array
     {
         // This throws an exception if the element is hidden

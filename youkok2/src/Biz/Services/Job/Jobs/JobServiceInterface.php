@@ -3,5 +3,5 @@ namespace Youkok\Biz\Services\Job\Jobs;
 
 interface JobServiceInterface
 {
-    public function run();
+    public function run(): void;
 }

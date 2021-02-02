@@ -1,12 +1,11 @@
 <?php
-
 namespace Youkok\Biz\Services\Admin;
 
 use Youkok\Biz\Services\CacheService;
 
 class CacheContentService
 {
-    private $cacheService;
+    private CacheService $cacheService;
 
     public function __construct(CacheService $cacheService)
     {

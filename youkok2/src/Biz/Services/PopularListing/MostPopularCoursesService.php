@@ -1,31 +1,27 @@
 <?php
-
 namespace Youkok\Biz\Services\PopularListing;
 
 use Monolog\Logger;
-use Slim\Collection;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
+use Youkok\Biz\Exceptions\InvalidValueException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Biz\Services\Models\ElementService;
-use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Common\Utilities\SelectStatements;
 use Youkok\Enums\MostPopularCourse;
-use Youkok\Helpers\Configuration\Configuration;
 
 class MostPopularCoursesService implements MostPopularInterface
 {
-    // We only display 10 on the actual frontpage, but it does not really make any difference. Good to have?
-    const MAX_COURSES_TO_FETCH = 20;
+    const MAX_COURSES_TO_FETCH = 10;
 
-    const CACHE_DIRECTORY_KEY = 'CACHE_DIRECTORY';
-    const CACHE_DIRECTORY_SUB = 'courses';
-
-    private $cacheService;
-    private $logger;
-    private $downloadService;
-    private $elementService;
+    private CacheService $cacheService;
+    private Logger $logger;
+    private DownloadService $downloadService;
+    private ElementService $elementService;
 
     public function __construct(
         CacheService $cacheService,
@@ -39,108 +35,85 @@ class MostPopularCoursesService implements MostPopularInterface
         $this->elementService = $elementService;
     }
 
+    /**
+     * @param string $delta
+     * @param int $limit
+     * @return array
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     public function fromDelta(string $delta, int $limit): array
     {
-        $result = $this->cacheService->getMostPopularCoursesFromDelta($delta);
-        if (empty($result)) {
-            // We did not find the set in the cache, try to load it from disk
-            $result = $this->getMostPopularCoursesFromDisk($delta);
+        try {
+            return $this->resultArrayToElements(
+                static::decodeJsonPayload(
+                    $this->cacheService->getMostPopularCoursesFromDelta(
+                        $delta
+                    ),
+                ),
+                $limit
+            );
+        } catch (InvalidValueException $ex) {
+            return $this->resultArrayToElements(
+                $this->refreshForDelta(
+                    $delta
+                ),
+                $limit
+            );
         }
 
-        if ($result === null or mb_strlen($result) === 0) {
-            return [];
-        }
-
-        $resultArr = json_decode($result, true);
-        if (!is_array($resultArr) or empty($resultArr)) {
-            return [];
-        }
-
-        return $this->resultArrayToElements($resultArr, $limit);
     }
 
-    public function refresh(): void
+    /**
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
+    public function refreshAll(): void
     {
-        $this->clearFileCache();
-        $this->cacheService->clearCacheForMostPopularKeys(MostPopularCourse::all());
-
-        foreach (MostPopularCourse::all() as $key) {
-            $this->refreshForDelta($key);
+        foreach (MostPopularCourse::collection() as $delta) {
+            $this->refresh($delta);
         }
-
-        $this->changeOwnership();
     }
 
-    private function refreshForDelta(string $delta): void
+    /**
+     * @param string $delta
+     * @return string
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
+    public function refresh(string $delta): string
+    {
+        $cacheKey = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
+        $this->cacheService->delete($cacheKey);
+
+        return json_encode($this->refreshForDelta($delta));
+    }
+
+    /**
+     * @param string $delta
+     * @return array
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
+    private function refreshForDelta(string $delta): array
     {
         $courses = $this->downloadService->getMostPopularCoursesFromDelta($delta, static::MAX_COURSES_TO_FETCH);
         $setKey = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
 
         $this->cacheService->set($setKey, json_encode($courses));
 
-        $this->storeDataInFile($setKey, $courses);
+        return $courses;
     }
 
-    private function storeDataInFile(string $setKey, array $courses): bool
-    {
-        // Make sure we have the directory first
-        if (!$this->createCacheDirectory()) {
-            $this->logger->error('Failed to create cache directory');
-
-            return false;
-        }
-
-        $cacheDirectory = static::getCacheDirectory();
-
-        $write = file_put_contents($cacheDirectory . DIRECTORY_SEPARATOR . $setKey . '.json', json_encode($courses));
-
-        // file_put_contents returns false on error, otherwise the number of bytes written
-        if ($write !== false) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private function createCacheDirectory(): bool
-    {
-        $cacheDirectory = $this->getCacheDirectory();
-        if (file_exists($cacheDirectory)) {
-            return true;
-        }
-
-        return mkdir($cacheDirectory, 0777, true);
-    }
-
-    private function getMostPopularCoursesFromDisk(string $delta): ?string
-    {
-        $key = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
-
-        $cacheDirectory = $this->getCacheDirectory();
-        $cacheFile = $cacheDirectory . DIRECTORY_SEPARATOR . $key . '.json';
-
-        return @file_get_contents($cacheFile);
-    }
-
-    private function clearFileCache(): void
-    {
-        $cacheDirectory = $this->getCacheDirectory();
-        if (!file_exists($cacheDirectory)) {
-            return;
-        }
-
-        $files = glob($cacheDirectory . DIRECTORY_SEPARATOR . '*');
-        foreach ($files as $file) {
-            unlink($file);
-        }
-    }
-
-    private function getCacheDirectory(): string
-    {
-        return Configuration::getInstance()->getDirectoryCache()
-            . static::CACHE_DIRECTORY_SUB;
-    }
-
+    /**
+     * @param array $result
+     * @param int $limit
+     * @return array
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     * @throws ElementNotFoundException
+     */
     private function resultArrayToElements(array $result, int $limit): array
     {
         $elements = [];
@@ -164,14 +137,6 @@ class MostPopularCoursesService implements MostPopularInterface
         return static::resultArrayToMaxLimit($elements, $limit);
     }
 
-    private function changeOwnership(): void
-    {
-        if (exec('whoami') === 'root') {
-            chown($this->getCacheDirectory(), 'www-data');
-            chgrp($this->getCacheDirectory(), 'www-data');
-        }
-    }
-
     private static function resultArrayToMaxLimit(array $elements, int $limit): array
     {
         $newElements = [];
@@ -183,5 +148,24 @@ class MostPopularCoursesService implements MostPopularInterface
         }
 
         return $newElements;
+    }
+
+    /**
+     * @param string|null $payload
+     * @return array
+     * @throws InvalidValueException
+     */
+    private static function decodeJsonPayload(?string $payload): array
+    {
+        if ($payload === null or mb_strlen($payload) === 0) {
+            throw new InvalidValueException('Payload is empty');
+        }
+
+        $resultArr = json_decode($payload, true);
+        if (!is_array($resultArr) or empty($resultArr)) {
+            throw new InvalidValueException('Payload is invalid JSON');
+        }
+
+        return $resultArr;
     }
 }

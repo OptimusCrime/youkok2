@@ -2,35 +2,47 @@
 namespace Youkok\Biz\Services\Admin;
 
 use Carbon\Carbon;
+
+use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Exceptions\UpdateException;
-use Youkok\Biz\Pools\ElementPool;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Models\Admin\AdminElementService;
 use Youkok\Biz\Services\Models\ElementService;
-
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Common\Utilities\SelectStatements;
 
 class FileUpdateService
 {
-    private $adminFilesService;
-    private $adminElementService;
-    private $elementService;
-    private $cacheService;
+    private FilesService $fileService;
+    private AdminElementService $adminElementService;
+    private ElementService $elementService;
+    private CacheService $cacheService;
 
     public function __construct(
-        FilesService $adminFilesService,
+        FilesService $fileService,
         AdminElementService $adminElementService,
         ElementService $elementService,
         CacheService $cacheService
     ) {
+        $this->fileService = $fileService;
         $this->adminElementService = $adminElementService;
-        $this->adminFilesService = $adminFilesService;
         $this->elementService = $elementService;
         $this->cacheService = $cacheService;
     }
 
+    /**
+     * @param int $courseId
+     * @param int $elementId
+     * @param array $data
+     * @return array
+     * @throws GenericYoukokException
+     * @throws UpdateException
+     * @throws ElementNotFoundException
+     * @throws InvalidFlagCombination
+     */
     public function put(int $courseId, int $elementId, array $data): array
     {
         $course = $this->getCourse($courseId);
@@ -104,9 +116,17 @@ class FileUpdateService
 
         $this->deleteOutdatedCaches($oldElement, $element);
 
-        return $this->adminFilesService->buildTreeFromId($course->id);
+        return $this->fileService->buildTreeFromId($course->id);
     }
 
+    /**
+     * @param int $id
+     * @return Element
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     * @throws UpdateException
+     */
     private function getCourse(int $id): Element
     {
         $element = $this->elementService->getElement(
@@ -156,6 +176,13 @@ class FileUpdateService
         return false;
     }
 
+    /**
+     * @param Element $oldElement
+     * @param Element $newElement
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     private function updateParentAndChildren(Element $oldElement, Element $newElement): void
     {
         if ($oldElement->parent === null) {
@@ -184,6 +211,12 @@ class FileUpdateService
         $this->recursivelyUpdateChildrenUris($oldElement->id);
     }
 
+    /**
+     * @param int $id
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     private function recursivelyUpdateChildrenUris(int $id): void
     {
         $children = $this->adminElementService->getAllChildren($id);
@@ -210,6 +243,13 @@ class FileUpdateService
         }
     }
 
+    /**
+     * @param int $elementId
+     * @return Element
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     private function getElement(int $elementId): Element
     {
         return $this->elementService->getElement(
@@ -235,6 +275,15 @@ class FileUpdateService
         );
     }
 
+    /**
+     * @param array $data
+     * @param Element $element
+     * @return array
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     * @throws UpdateException
+     */
     private function regenerateNameSlugAndURI(array $data, Element $element): array
     {
         if ($element->getType() === Element::COURSE) {
@@ -262,6 +311,13 @@ class FileUpdateService
         ];
     }
 
+    /**
+     * @param int $id
+     * @return Element
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     private function getElementWithUri(int $id): Element
     {
         return $this->elementService->getElement(
@@ -273,6 +329,13 @@ class FileUpdateService
         );
     }
 
+    /**
+     * @param int|null $parentId
+     * @return int|null
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     private function validateNewParent(?int $parentId): ?int
     {
         if ($parentId === null) {
@@ -309,6 +372,12 @@ class FileUpdateService
         return $visibleOrEmptyCounter === 0;
     }
 
+    /**
+     * @param string $key
+     * @param array $data
+     * @return int
+     * @throws UpdateException
+     */
     private static function evaluateAndSetNumericBoolean(string $key, array $data): int
     {
         if (!array_key_exists($key, $data)) {

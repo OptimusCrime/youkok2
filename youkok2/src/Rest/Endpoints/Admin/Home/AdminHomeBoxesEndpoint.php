@@ -18,8 +18,6 @@ class AdminHomeBoxesEndpoint extends BaseRestEndpoint
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->courseService = $container->get(CourseService::class);
         $this->downloadService = $container->get(DownloadService::class);
         $this->elementService = $container->get(ElementService::class);

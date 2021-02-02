@@ -1,19 +1,25 @@
 <?php
 namespace Youkok\Biz\Services\Job\Jobs;
 
+use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 
 class UpdateMostPopularCoursesJobService implements JobServiceInterface
 {
-    private $mostPopularCoursesService;
+    private MostPopularCoursesService $mostPopularCoursesService;
 
     public function __construct(MostPopularCoursesService $mostPopularCoursesService)
     {
         $this->mostPopularCoursesService = $mostPopularCoursesService;
     }
 
-    public function run()
+    /**
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
+    public function run(): void
     {
-        $this->mostPopularCoursesService->refresh();
+        $this->mostPopularCoursesService->refreshAll();
     }
 }

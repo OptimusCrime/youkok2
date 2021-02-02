@@ -15,7 +15,7 @@ class PageNotFound implements ContainersInterface
     {
         $container['notFoundHandler'] = function (ContainerInterface $container): Closure {
             return function (Request $request, Response $response) use ($container) {
-                $pageNotFound = new PageNotFoundView($container);
+                $pageNotFound = new PageNotFoundView();
                 return $pageNotFound->view($request, $response);
             };
         };

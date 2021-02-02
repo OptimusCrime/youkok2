@@ -1,15 +1,34 @@
 <?php
-
 namespace Youkok\Common\Models;
+
+use Illuminate\Database\Eloquent\Model;
 
 use Youkok\Biz\Exceptions\GenericYoukokException;
 
-class Element extends BaseModel
+/**
+ * @property int id
+ * @property string name
+ * @property string|null slug
+ * @property string|null uri
+ * @property int|null parent
+ * @property int empty
+ * @property string|null checksum
+ * @property int|null size
+ * @property int directory
+ * @property int pending
+ * @property int deleted
+ * @property string|null link
+ * @property string added
+ * @property int requested_deletion
+ * @method static where(string $key, string $value)
+ * @method static select(string|array ...$string)
+ *
+ */
+class Element extends Model
 {
     const LINK = 'LINK';
     const COURSE = 'COURSE';
     const DIRECTORY = 'DIRECTORY';
-    const NON_DIRECTORY = 'NON_DIRECTORY';
     const FILE = 'FILE';
 
     const VALID_FILE_ICONS = ['htm', 'html', 'java', 'pdf', 'py', 'sql', 'txt'];
@@ -20,20 +39,18 @@ class Element extends BaseModel
     protected $fillable = ['*'];
     protected $guarded = [''];
 
-    private $downloads;
-    private $parents;
-    private $children;
-    private $course;
-    private $downloadedTime;
+    private ?int $downloads;
+    private array $parents;
+    private array $children;
+    private ?string $downloadedTime;
 
-    public function __construct(array $attributes = [])
+    public function __construct()
     {
-        parent::__construct($attributes);
+        parent::__construct();
 
         $this->downloads = null;
         $this->parents = [];
         $this->children = [];
-        $this->course = null;
         $this->downloadedTime = null;
     }
 
@@ -52,12 +69,20 @@ class Element extends BaseModel
         return Element::FILE;
     }
 
+    /**
+     * @return string
+     * @throws GenericYoukokException
+     */
     public function getCourseCode(): string
     {
         $courseArr = $this->getCourseArray();
         return $courseArr[0];
     }
 
+    /**
+     * @return string
+     * @throws GenericYoukokException
+     */
     public function getCourseName(): string
     {
         $courseArr = $this->getCourseArray();
@@ -65,6 +90,10 @@ class Element extends BaseModel
         return $courseArr[1];
     }
 
+    /**
+     * @return array
+     * @throws GenericYoukokException
+     */
     private function getCourseArray(): array
     {
         if ($this->name === null) {
@@ -114,7 +143,7 @@ class Element extends BaseModel
             return 'unknown.png';
         }
 
-        $ext = pathinfo($this->checksum, \PATHINFO_EXTENSION);
+        $ext = pathinfo($this->checksum, PATHINFO_EXTENSION);
 
         if (in_array($ext, static::VALID_FILE_ICONS)) {
             return $ext . '.png';

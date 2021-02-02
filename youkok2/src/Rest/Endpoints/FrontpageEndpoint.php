@@ -1,5 +1,4 @@
 <?php
-
 namespace Youkok\Rest\Endpoints;
 
 use Monolog\Logger;
@@ -9,12 +8,15 @@ use Slim\Http\Request;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidRequestException;
+use Youkok\Biz\Exceptions\InvalidValueException;
+use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Common\Utilities\CacheKeyGenerator;
+use Youkok\Enums\MostPopularCourse;
+use Youkok\Enums\MostPopularElement;
 
 class FrontpageEndpoint extends BaseRestEndpoint
 {
@@ -44,38 +46,32 @@ class FrontpageEndpoint extends BaseRestEndpoint
 
     public function popularElements(Request $request, Response $response): Response
     {
-        // TODO: Enum?
-        $delta = $request->getQueryParam('delta', 'all');
-
         try {
+            $delta = MostPopularElement::fromValue($request->getQueryParam('delta', 'ALL'));
             $payload = $this->frontpageService->popularElements($delta);
 
             return $this->outputJson($response, [
                 'elements' => $this->mapElementsMostPopular($payload),
                 'preference' => $delta
             ]);
-        } catch (ElementNotFoundException | GenericYoukokException $ex) {
-            $this->logger->warning($ex);
-
+        } catch (YoukokException $ex) {
+            $this->logger->error($ex);
             return $response->withStatus(400);
         }
     }
 
     public function popularCourses(Request $request, Response $response): Response
     {
-        // TODO: Enum?
-        $delta = $request->getQueryParam('delta', 'all');
-
         try {
+            $delta = MostPopularCourse::fromValue($request->getQueryParam('delta', 'ALL'));
             $payload = $this->frontpageService->popularCourses($delta);
 
             return $this->outputJson($response, [
                 'courses' => $this->mapCoursesMostPopular($payload),
                 'preference' => $delta
             ]);
-        } catch (ElementNotFoundException | GenericYoukokException $ex) {
+        } catch (YoukokException $ex) {
             $this->logger->error($ex);
-
             return $response->withStatus(400);
         }
     }
@@ -90,24 +86,29 @@ class FrontpageEndpoint extends BaseRestEndpoint
             ]);
         }
 
-        $payload = $this->frontpageService->newest();
-        $data = $this->elementMapper->mapFromArray(
-            $payload,
-            [
-                ElementMapper::POSTED_TIME,
-                ElementMapper::PARENT_DIRECT,
-                ElementMapper::PARENT_COURSE
-            ]
-        );
+        try {
+            $payload = $this->frontpageService->newest();
+            $data = $this->elementMapper->mapFromArray(
+                $payload,
+                [
+                    ElementMapper::POSTED_TIME,
+                    ElementMapper::PARENT_DIRECT,
+                    ElementMapper::PARENT_COURSE
+                ]
+            );
 
-        $this->cacheService->set(
-            $cacheKey,
-            json_encode($data)
-        );
+            $this->cacheService->set(
+                $cacheKey,
+                json_encode($data)
+            );
 
-        return $this->outputJson($response, [
-            'data' => $data
-        ]);
+            return $this->outputJson($response, [
+                'data' => $data
+            ]);
+        } catch (YoukokException $ex) {
+            $this->logger->error($ex);
+            return $response->withStatus(400);
+        }
     }
 
     public function lastVisited(Request $request, Response $response): Response
@@ -144,27 +145,38 @@ class FrontpageEndpoint extends BaseRestEndpoint
             ]);
         }
 
-        $payload = $this->frontpageService->lastDownloaded();
+        try {
+            $payload = $this->frontpageService->lastDownloaded();
 
-        $data = $this->elementMapper->mapFromArray(
-            $payload,
-            [
-                ElementMapper::DOWNLOADED_TIME,
-                ElementMapper::PARENT_DIRECT,
-                ElementMapper::PARENT_COURSE
-            ]
-        );
+            $data = $this->elementMapper->mapFromArray(
+                $payload,
+                [
+                    ElementMapper::DOWNLOADED_TIME,
+                    ElementMapper::PARENT_DIRECT,
+                    ElementMapper::PARENT_COURSE
+                ]
+            );
 
-        $this->cacheService->set(
-            $cacheKey,
-            json_encode($data)
-        );
+            $this->cacheService->set(
+                $cacheKey,
+                json_encode($data)
+            );
 
-        return $this->outputJson($response, [
-            'data' => $data
-        ]);
+            return $this->outputJson($response, [
+                'data' => $data
+            ]);
+        } catch (YoukokException $ex) {
+            $this->logger->error($ex);
+            return $response->withStatus(400);
+        }
     }
 
+    /**
+     * @param $arr
+     * @return array
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     */
     private function mapElementsMostPopular($arr): array
     {
         return $this->elementMapper->mapFromArray(
@@ -177,7 +189,12 @@ class FrontpageEndpoint extends BaseRestEndpoint
         );
     }
 
-    private function mapCoursesMostPopular($arr)
+    /**
+     * @param $arr
+     * @return array
+     * @throws GenericYoukokException
+     */
+    private function mapCoursesMostPopular($arr): array
     {
         return $this->courseMapper->map(
             $arr,

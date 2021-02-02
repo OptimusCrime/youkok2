@@ -1,15 +1,16 @@
 <?php
-
 namespace Youkok\Web\Views;
 
-use Exception;
 use Monolog\Logger;
+use Slim\Http\Message;
 use Slim\Http\Stream;
 use Slim\Http\Response;
 use Slim\Http\Request;
 use Psr\Container\ContainerInterface;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\TemplateFileNotFoundException;
+use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\Auth\AuthService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
@@ -25,8 +26,6 @@ class Download extends BaseView
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->downloadService = $container->get(DownloadFileInfoService::class);
         $this->updateDownloadsProcessor = $container->get(UpdateDownloadsService::class);
         $this->elementService = $container->get(ElementService::class);
@@ -34,6 +33,13 @@ class Download extends BaseView
         $this->logger = $container->get(Logger::class);
     }
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Message|Response
+     * @throws TemplateFileNotFoundException
+     */
     public function view(Request $request, Response $response, array $args)
     {
         $flags = [
@@ -76,7 +82,8 @@ class Download extends BaseView
                 ->withHeader('Pragm', 'public')
                 ->withHeader('Content-Length', $fileSize)
                 ->withBody(new Stream(fopen($filePath, 'r')));
-        } catch (ElementNotFoundException | Exception $ex) {
+        } catch (YoukokException $ex) {
+            $this->logger->error($ex);
             return $this->render404($response);
         }
     }

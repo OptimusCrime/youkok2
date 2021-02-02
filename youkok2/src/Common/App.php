@@ -1,10 +1,12 @@
 <?php
-
 namespace Youkok\Common;
 
 use Exception;
 use Slim\App as Slim;
+use Monolog\Logger as MonologLogger;
 
+use Slim\Exception\MethodNotAllowedException;
+use Slim\Exception\NotFoundException;
 use Youkok\Biz\Pools\ElementPool;
 use Youkok\Common\Containers\Cache;
 use Youkok\Common\Containers\Database;
@@ -33,23 +35,20 @@ use Youkok\Rest\Endpoints\Sidebar\Post\TitleFetchEndpoint;
 use Youkok\Web\Views\Download;
 use Youkok\Web\Views\Noop;
 use Youkok\Web\Views\Redirect;
-use Youkok\Web\Views\Admin\AdminDiagnostics;
-use Youkok\Web\Views\Admin\AdminHome;
-use Youkok\Web\Views\Admin\AdminLogs;
-use Youkok\Web\Views\Admin\AdminScripts;
-use Youkok\Web\Views\Admin\AdminStatistics;
-use Youkok\Web\Views\Admin\AdminFiles;
-use Youkok\Web\Views\Admin\AdminPending;
 
 class App
 {
-    private $app;
+    private Slim $app;
 
     public function __construct(array $settings)
     {
         $this->app = new Slim($settings);
     }
 
+    /**
+     * @throws MethodNotAllowedException
+     * @throws NotFoundException
+     */
     public function run(): void
     {
         $this->setup();
@@ -58,7 +57,7 @@ class App
         try {
             $this->app->run();
         } catch (Exception $ex) {
-            /** @var Logger $logger */
+            /** @var MonologLogger $logger */
             $logger = $this->app->getContainer()->get(Logger::class);
 
             $logger->error($ex);
@@ -73,18 +72,14 @@ class App
         ElementPool::init();
     }
 
-    public function runJobs($mode = JobService::CRON_JOB, $code = null): void
+    public function runCronJobs(): void
     {
         $this->setup();
 
         /** @var JobService $jobRunner */
         $jobRunner = $this->app->getContainer()->get(JobService::class);
 
-        if ($mode == JobService::SPECIFIC_JOB && $code !== null) {
-            $jobRunner->runCode($code);
-        } else {
-            $jobRunner->run($mode);
-        }
+        $jobRunner->run();
     }
 
     private function setup(): void

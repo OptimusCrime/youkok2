@@ -6,9 +6,9 @@ use Youkok\Common\Utilities\SelectStatements;
 
 class ElementPoolContainer
 {
-    private $attributes;
-    private $selectStatements;
-    private $element;
+    private array $attributes;
+    private SelectStatements $selectStatements;
+    private Element $element;
 
     public function __construct(array $attributes, SelectStatements $selectStatements, Element $element)
     {
@@ -20,11 +20,6 @@ class ElementPoolContainer
     public function getAttributes(): array
     {
         return $this->attributes;
-    }
-
-    public function getSelectStatements(): SelectStatements
-    {
-        return $this->selectStatements;
     }
 
     public function getElement(): Element

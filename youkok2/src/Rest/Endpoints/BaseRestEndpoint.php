@@ -1,6 +1,8 @@
 <?php
 namespace Youkok\Rest\Endpoints;
 
+use Exception;
+
 use Slim\Http\Request;
 use Slim\Http\Response;
 
@@ -16,6 +18,12 @@ class BaseRestEndpoint
             ->withJson($object);
     }
 
+    /**
+     * @param Request $request
+     * @param array $ensureKeysExists
+     * @return array
+     * @throws InvalidRequestException
+     */
     protected function getJsonArrayFromBody(Request $request, array $ensureKeysExists = []): array
     {
         $body = (string) $request->getBody();
@@ -42,7 +50,7 @@ class BaseRestEndpoint
         return $this->outputJson($response, ['state' => 'OK']);
     }
 
-    protected function returnBadRequest(Response $response, \Exception $ex): Response
+    protected function returnBadRequest(Response $response, Exception $ex): Response
     {
         if (Configuration::getInstance()->isDev()) {
             return $response

@@ -1,8 +1,9 @@
 <?php
-
 namespace Youkok\Biz\Services\Admin;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\Mappers\Admin\AdminElementMapper;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
@@ -14,8 +15,8 @@ class FilesService
         'id', 'name', 'link', 'pending', 'deleted', 'parent', 'directory', 'checksum', 'uri', 'slug'
     ];
 
-    private $elementService;
-    private $adminElementMapper;
+    private ElementService $elementService;
+    private AdminElementMapper $adminElementMapper;
 
     public function __construct(ElementService $elementService, AdminElementMapper $adminElementMapper)
     {
@@ -23,6 +24,12 @@ class FilesService
         $this->adminElementMapper = $adminElementMapper;
     }
 
+    /**
+     * @param array $courses
+     * @return array
+     * @throws ElementNotFoundException
+     * @throws InvalidFlagCombination
+     */
     public function buildTree(array $courses): array
     {
         $content = [];
@@ -37,6 +44,13 @@ class FilesService
         return $content;
     }
 
+    /**
+     * @param int $id
+     * @return array
+     * @throws GenericYoukokException
+     * @throws ElementNotFoundException
+     * @throws InvalidFlagCombination
+     */
     public function buildTreeFromId(int $id): array
     {
         $course = $this->elementService->getElement(

@@ -2,6 +2,8 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import 'whatwg-fetch';
 
+import "./admin/admin.less";
+
 import { run as diagnosticsRun } from "./diagnostics";
 import { run as filesRun } from "./files";
 import { run as filesPendingRun } from "./filesPending";

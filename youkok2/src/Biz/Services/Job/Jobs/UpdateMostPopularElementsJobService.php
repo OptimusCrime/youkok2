@@ -1,19 +1,23 @@
 <?php
 namespace Youkok\Biz\Services\Job\Jobs;
 
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 
 class UpdateMostPopularElementsJobService implements JobServiceInterface
 {
-    private $mostPopularElementsService;
+    private MostPopularElementsService $mostPopularElementsService;
 
     public function __construct(MostPopularElementsService $mostPopularElementsService)
     {
         $this->mostPopularElementsService = $mostPopularElementsService;
     }
 
-    public function run()
+    /**
+     * @throws GenericYoukokException
+     */
+    public function run(): void
     {
-        $this->mostPopularElementsService->refresh();
+        $this->mostPopularElementsService->refreshAll();
     }
 }

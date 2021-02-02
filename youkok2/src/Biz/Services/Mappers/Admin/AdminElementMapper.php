@@ -1,15 +1,16 @@
 <?php
-
 namespace Youkok\Biz\Services\Mappers\Admin;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
 
 class AdminElementMapper
 {
-    private $elementMapper;
-    private $urlService;
+    private ElementMapper $elementMapper;
+    private UrlService $urlService;
 
     public function __construct(ElementMapper $elementMapper, UrlService $urlService)
     {
@@ -17,6 +18,12 @@ class AdminElementMapper
         $this->urlService = $urlService;
     }
 
+    /**
+     * @param Element $element
+     * @return array
+     * @throws GenericYoukokException
+     * @throws ElementNotFoundException
+     */
     public function map(Element $element): array
     {
         $arr = $this->elementMapper->mapElement(

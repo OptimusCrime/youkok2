@@ -80,6 +80,6 @@ class CacheKeyGenerator
 
     public static function keyForCoursesLookupData(): string
     {
-        return 'crouses_lookup_data';
+        return 'courses_lookup_data';
     }
 }

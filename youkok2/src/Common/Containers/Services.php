@@ -14,13 +14,11 @@ use Youkok\Biz\Services\Admin\FileListingService;
 use Youkok\Biz\Services\ArchiveHistoryService;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\Auth\AuthService;
-use Youkok\Biz\Services\CoursesLookupService;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Job\Jobs\ClearReddisCachePartitionsService;
-use Youkok\Biz\Services\Job\Jobs\PopulateCoursesLookupFileJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
 use Youkok\Biz\Services\Job\JobService;
@@ -39,7 +37,6 @@ use Youkok\Biz\Services\Post\Create\CreateFileService;
 use Youkok\Biz\Services\Post\Create\CreateLinkService;
 use Youkok\Biz\Services\Post\TitleFetchService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
-use Youkok\Biz\Services\SystemLogService;
 use Youkok\Biz\Services\UrlService;
 
 class Services implements ContainersInterface
@@ -160,29 +157,10 @@ class Services implements ContainersInterface
             );
         };
 
-        $container[PopulateCoursesLookupFileJobService::class] = function (ContainerInterface $container): PopulateCoursesLookupFileJobService {
-            return new PopulateCoursesLookupFileJobService(
-                $container->get(CoursesLookupService::class)
-            );
-        };
-
         $container[ClearReddisCachePartitionsService::class] = function (ContainerInterface $container): ClearReddisCachePartitionsService {
             return new ClearReddisCachePartitionsService(
                 $container->get(CacheService::class)
             );
-        };
-
-        $container[CoursesLookupService::class] = function (ContainerInterface $container): CoursesLookupService {
-            return new CoursesLookupService(
-                $container->get(UrlService::class),
-                $container->get(CourseService::class),
-                $container->get(CacheService::class),
-                $container->get(MonoLogger::class)
-            );
-        };
-
-        $container[SystemLogService::class] = function (): SystemLogService {
-            return new SystemLogService();
         };
 
         $container[CourseService::class] = function (ContainerInterface $container): CourseService {

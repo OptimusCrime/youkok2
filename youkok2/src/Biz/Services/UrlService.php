@@ -2,13 +2,15 @@
 namespace Youkok\Biz\Services;
 
 use Slim\Interfaces\RouterInterface;
+
+use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 
 class UrlService
 {
-    private $router;
-    private $elementService;
+    private RouterInterface $router;
+    private ElementService $elementService;
 
     public function __construct(RouterInterface $router, ElementService $elementService)
     {
@@ -21,11 +23,18 @@ class UrlService
         return $this->router->pathFor('archive', ['course' => $element->slug]);
     }
 
+    /*
     public function urlForAdminFiles(Element $element): string
     {
         return $this->router->pathFor('admin_file', ['id' => $element->id]);
     }
+    */
 
+    /**
+     * @param Element $element
+     * @return string
+     * @throws ElementNotFoundException
+     */
     public function urlForElement(Element $element): string
     {
         switch ($element->getType()) {
@@ -39,6 +48,11 @@ class UrlService
         }
     }
 
+    /**
+     * @param Element $element
+     * @return string
+     * @throws ElementNotFoundException
+     */
     private function urlForFile(Element $element): string
     {
         if ($element->uri !== null) {
@@ -53,6 +67,11 @@ class UrlService
         return $this->router->pathFor('redirect', ['id' => $element->id]);
     }
 
+    /**
+     * @param Element $element
+     * @return string
+     * @throws ElementNotFoundException
+     */
     private function urlForDirectory(Element $element): string
     {
         $uri = $this->getUriForDirectory($element);
@@ -70,6 +89,11 @@ class UrlService
         ]);
     }
 
+    /**
+     * @param Element $element
+     * @return string
+     * @throws ElementNotFoundException
+     */
     private function getUriForDirectory(Element $element): string
     {
         if ($element->uri !== null) {

@@ -20,6 +20,11 @@ class DownloadFileInfoService
         return file_exists($filePath) && is_readable($filePath);
     }
 
+    /**
+     * @param Element $element
+     * @return string
+     * @throws ElementNotFoundException
+     */
     public function getFileInfo(Element $element): string
     {
         $filePath = $this->getFilePath($element);
@@ -32,6 +37,11 @@ class DownloadFileInfoService
         return $info;
     }
 
+    /**
+     * @param Element $element
+     * @return int
+     * @throws ElementNotFoundException
+     */
     public function getFileSize(Element $element): int
     {
         $filePath = $this->getFilePath($element);

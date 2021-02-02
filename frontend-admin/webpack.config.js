@@ -10,16 +10,10 @@ const path = require('path'),
  */
 
 const pages = [
-  "404",
-  "500",
-  "about",
-  "archive",
-  "changelog",
-  "courses",
-  "frontpage",
-  "help",
-  "login",
-  "terms"
+  "diagnostics",
+  "files",
+  "home",
+  "pending"
 ];
 
 const generateHtmlWebpackPluginInfo = entry => ({

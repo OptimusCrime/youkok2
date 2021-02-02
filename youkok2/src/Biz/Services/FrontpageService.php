@@ -1,9 +1,9 @@
 <?php
-
 namespace Youkok\Biz\Services;
 
-use Illuminate\Support\Collection;
-use Youkok\Biz\Exceptions\InvalidRequestException;
+use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Biz\Services\Models\ElementService;
@@ -17,16 +17,12 @@ class FrontpageService
 {
     const SERVICE_LIMIT = 10;
 
-    const FRONTPAGE_PUT_DELTA_PARAM = 'delta';
-    const FRONTPAGE_PUT_VALUE_PARAM = 'value';
-
     private MostPopularCoursesService $popularCoursesProcessor;
     private MostPopularElementsService $popularElementsProcessor;
     private CacheService $cacheService;
     private ElementService $elementService;
     private CourseService $courseService;
     private DownloadService $downloadService;
-
 
     public function __construct(
         MostPopularCoursesService $popularCoursesProcessor,
@@ -92,22 +88,41 @@ class FrontpageService
         ];
     }
 
-    public function popularElements(string $delta): array
+    /**
+     * @param MostPopularElement $delta
+     * @return array
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
+    public function popularElements(MostPopularElement $delta): array
     {
         return $this->popularElementsProcessor->fromDelta(
-            $delta,
+            $delta->getValue(),
             static::SERVICE_LIMIT
         );
     }
 
-    public function popularCourses(string $delta): array
+    /**
+     * @param MostPopularCourse $delta
+     * @return array
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
+    public function popularCourses(MostPopularCourse $delta): array
     {
         return $this->popularCoursesProcessor->fromDelta(
-            $delta,
+            $delta->getValue(),
             static::SERVICE_LIMIT
         );
     }
 
+    /**
+     * @return array
+     * @throws GenericYoukokException
+     * @throws ElementNotFoundException
+     * @throws InvalidFlagCombination
+     */
     public function newest(): array
     {
         return $this->elementService->getNewestElements(static::SERVICE_LIMIT);
@@ -118,6 +133,12 @@ class FrontpageService
         return $this->courseService->getLastVisitedCourses();
     }
 
+    /**
+     * @return array
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     public function lastDownloaded(): array
     {
         return $this->downloadService->getLatestDownloads(static::SERVICE_LIMIT);

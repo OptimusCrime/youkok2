@@ -11,7 +11,6 @@ class Configuration
     const LOGGER_NAME = 'logger.name';
 
     const DIRECTORY_TEMPLATE = 'directory.template';
-    const DIRECTORY_CACHE = 'directory.cache';
     const DIRECTORY_FILES = 'directory.files';
 
     const MYSQL_HOST = 'mysql.host';
@@ -57,11 +56,6 @@ class Configuration
     public function getDirectoryTemplate(): string
     {
         return $this->lookup(static::DIRECTORY_TEMPLATE);
-    }
-
-    public function getDirectoryCache(): string
-    {
-        return $this->lookup(static::DIRECTORY_CACHE);
     }
 
     public function getDirectoryFiles(): string

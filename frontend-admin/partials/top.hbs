@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="{{ SITE_URL }}" />
+    <title>Youkok2.com</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/libs/bootstrap.lumen.3.3.1+2.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/admin/AdminLTE.2.3.0.min.css" />
+</head>
+<body class="skin-blue sidebar-mini {{ BODY_CLASS }}">
+<div class="wrapper">
+    <header class="main-header">
+        <a href="{{ SITE_URL }}" class="logo">
+            <span class="logo-mini">Yk2</span>
+            <span class="logo-lg">Youkok2</span>
+        </a>
+    </header>
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="treeview{{#ifEquals HEADER_MENU "home" }} active{{/ifEquals}}">
+                    <a href="/admin">
+                        <i class="fa fa-home"></i> <span>Hjem</span>
+                    </a>
+                </li>
+                <li class="treeview{{#ifEquals HEADER_MENU "pending" }} active{{/ifEquals}}">
+                    <a href="/admin/ventende">
+                        <i class="fa fa-upload"></i> <span>Nye bidrag</span>
+                        <span class="label label-primary pull-right">{{ NUM_PENDING }}</span>
+                    </a>
+                </li>
+                <li class="treeview{{#ifEquals HEADER_MENU "files" }} active{{/ifEquals}}">
+                    <a href="/admin/filer">
+                        <i class="fa fa-sitemap"></i> <span>Filer</span>
+                    </a>
+                </li>
+                <li class="treeview{{#ifEquals HEADER_MENU "diagnostics" }} active{{/ifEquals}}">
+                    <a href="/admin/diagnostikk">
+                        <i class="fa fa-dashboard"></i> <span>Diagnostikk</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </aside>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>
+                Youkok2 Dashboard &mdash; {{ ADMIN_TITLE }}
+            </h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="{{ SITE_URL }}">Youkok2</a>
+                </li>
+                <li class="active">{{ ADMIN_TITLE }}</li>
+            </ol>
+        </section>

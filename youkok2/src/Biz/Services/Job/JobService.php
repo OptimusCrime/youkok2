@@ -1,71 +1,49 @@
 <?php
 namespace Youkok\Biz\Services\Job;
 
+use Exception;
+
+use Monolog\Logger as MonologLogger;
 use Psr\Container\ContainerInterface;
+
 use Youkok\Biz\Services\Job\Jobs\ClearReddisCachePartitionsService;
-use Youkok\Biz\Services\Job\Jobs\PopulateCoursesLookupFileJobService;
+use Youkok\Biz\Services\Job\Jobs\JobServiceInterface;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
 
 class JobService
 {
-    const CRON_JOB = 0;
-    const UPGRADE = 1;
-    const SPECIFIC_JOB = 2;
-
-    private static $schedule = [
+    private static array $jobs = [
         UpdateMostPopularCoursesJobService::class,
         UpdateMostPopularElementsJobService::class,
-        PopulateCoursesLookupFileJobService::class,
         ClearReddisCachePartitionsService::class,
     ];
 
-    private static $upgrade = [
-        UpdateMostPopularCoursesJobService::class,
-        UpdateMostPopularElementsJobService::class,
-        PopulateCoursesLookupFileJobService::class,
-        ClearReddisCachePartitionsService::class,
-    ];
-
-    private static $codeMapping = [
-        'lookup' => PopulateCoursesLookupFileJobService::class,
-        'popular_courses' => UpdateMostPopularCoursesJobService::class,
-        'popular_elements' => UpdateMostPopularElementsJobService::class,
-        'clear_cache_partitions' => ClearReddisCachePartitionsService::class,
-    ];
-
-    private $container;
+    private ContainerInterface $container;
+    private MonologLogger $logger;
 
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->logger = $container->get(MonologLogger::class);
     }
 
-    public function run($mode)
+    public function run(): void
     {
-        $this->runJobs($mode === JobService::CRON_JOB ? static::$schedule : static::$upgrade);
-    }
-
-    public function runCode($code)
-    {
-        if (isset(static::$codeMapping[$code])) {
-            $this->runJob(static::$codeMapping[$code]);
-        } else {
-            echo 'No job with code: ' . $code . '.' . PHP_EOL;
-            die();
-        }
-    }
-
-    private function runJobs($jobs)
-    {
-        foreach ($jobs as $job) {
+        foreach (static::$jobs as $job) {
             $this->runJob($job);
         }
     }
 
-    private function runJob($jobClass)
+    private function runJob(string $jobClass): void
     {
-        $job = $this->container->get($jobClass);
-        $job->run();
+        try {
+            /** @var JobServiceInterface $job */
+            $job = $this->container->get($jobClass);
+            $job->run();
+        }
+        catch (Exception $ex) {
+            $this->logger->error('Could not fetch job class: ' . $jobClass, $ex->getTrace());
+        }
     }
 }

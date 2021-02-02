@@ -5,24 +5,18 @@ use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Youkok\Biz\Exceptions\CreateException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidRequestException;
+
+use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\Admin\FileCreateDirectoryService;
 use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
 {
-    /** @var FileCreateDirectoryService */
-    private $adminFileCreateDirectoryService;
-
-    /** @var Logger */
-    private $logger;
+    private FileCreateDirectoryService $adminFileCreateDirectoryService;
+    private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->adminFileCreateDirectoryService = $container->get(FileCreateDirectoryService::class);
         $this->logger = $container->get(Logger::class);
     }
@@ -46,7 +40,7 @@ class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
                     (string) $data['value'],
                 )
             ]);
-        } catch (InvalidRequestException | CreateException | GenericYoukokException$ex) {
+        } catch (YoukokException $ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }

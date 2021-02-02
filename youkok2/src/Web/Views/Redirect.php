@@ -1,16 +1,15 @@
 <?php
-
 namespace Youkok\Web\Views;
+
+use Exception;
 
 use Slim\Http\Response;
 use Slim\Http\Request;
 use Psr\Container\ContainerInterface;
 
-use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\InvalidRequestException;
+use Youkok\Biz\Exceptions\TemplateFileNotFoundException;
 use Youkok\Biz\Services\Auth\AuthService;
 use Youkok\Biz\Services\Models\ElementService;
-use Youkok\Common\Models\Element;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
 use Youkok\Common\Utilities\SelectStatements;
 
@@ -22,13 +21,18 @@ class Redirect extends BaseView
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->updateDownloadsProcessor = $container->get(UpdateDownloadsService::class);
         $this->elementService = $container->get(ElementService::class);
         $this->authService = $container->get(AuthService::class);
     }
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws TemplateFileNotFoundException
+     */
     public function view(Request $request, Response $response, array $args): Response
     {
         if (!isset($args['id']) || !is_numeric($args['id'])) {
@@ -52,7 +56,7 @@ class Redirect extends BaseView
             if ($element->link === null) {
                 return $this->render404($response);
             }
-        } catch (ElementNotFoundException $e) {
+        } catch (Exception $e) {
             return $this->render404($response);
         }
 

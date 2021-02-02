@@ -1,10 +1,15 @@
 <?php
 namespace Youkok\Biz\Services\Post\Create;
 
-use Carbon\Carbon;
 use Exception;
+
+use Carbon\Carbon;
 use Psr\Http\Message\UploadedFileInterface;
+
 use Youkok\Biz\Exceptions\CreateException;
+use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\SelectStatements;
@@ -15,13 +20,21 @@ class CreateFileService
     const MIN_VALID_NAME_LENGTH = 2;
     const CRYPTO_STRING_LENGTH = 32;
 
-    private $elementService;
+    private ElementService $elementService;
 
     public function __construct(ElementService $elementService)
     {
         $this->elementService = $elementService;
     }
 
+    /**
+     * @param int $id
+     * @param UploadedFileInterface $file
+     * @throws CreateException
+     * @throws GenericYoukokException
+     * @throws ElementNotFoundException
+     * @throws InvalidFlagCombination
+     */
     public function run(int $id, UploadedFileInterface $file): void
     {
         $fileName = $file->getClientFilename();
@@ -62,6 +75,11 @@ class CreateFileService
         }
     }
 
+    /**
+     * @param string $fileName
+     * @return string
+     * @throws CreateException
+     */
     private static function extractAndValidateExtension(string $fileName): string
     {
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
@@ -77,6 +95,11 @@ class CreateFileService
         return $extension;
     }
 
+    /**
+     * @param string $extension
+     * @return string
+     * @throws CreateException
+     */
     private static function generateChecksum(string $extension): string
     {
         try {
@@ -96,11 +119,13 @@ class CreateFileService
         } catch (Exception $ex) {
             throw new CreateException('Failed to create a checksum for file.', $ex->getCode(), $ex);
         }
-
-        // Guard
-        throw new CreateException('Failed to create a checksum for file.');
     }
 
+    /**
+     * @param UploadedFileInterface $file
+     * @param string $checksum
+     * @throws CreateException
+     */
     private static function moveFile(UploadedFileInterface $file, string $checksum): void
     {
         $targetDir = static::getFileTargetDir($checksum);

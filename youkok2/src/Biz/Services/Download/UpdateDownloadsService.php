@@ -9,8 +9,8 @@ use Youkok\Enums\MostPopularElement;
 
 class UpdateDownloadsService
 {
-    private $cacheService;
-    private $downloadService;
+    private CacheService $cacheService;
+    private DownloadService $downloadService;
 
     public function __construct(CacheService $cacheService, DownloadService $downloadService)
     {
@@ -59,7 +59,7 @@ class UpdateDownloadsService
 
     private function addDownloadForElementInMostPopularSets(Element $element)
     {
-        foreach (MostPopularElement::all() as $delta) {
+        foreach (MostPopularElement::collection() as $delta) {
             $setKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($delta);
 
             $this->cacheService->updateValueInSet($setKey, 1, $element->id);

@@ -5,8 +5,9 @@ use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
+
 use Youkok\Biz\Exceptions\CreateException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\Post\Create\CreateFileService;
 use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
@@ -45,7 +46,7 @@ class CreateFileEndpoint extends BaseRestEndpoint
             );
 
             return $this->outputSuccess($response);
-        } catch (CreateException | GenericYoukokException $ex) {
+        } catch (YoukokException $ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }

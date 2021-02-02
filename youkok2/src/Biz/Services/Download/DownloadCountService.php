@@ -2,14 +2,13 @@
 namespace Youkok\Biz\Services\Download;
 
 use Youkok\Biz\Services\CacheService;
-use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Common\Models\Element;
 
 class DownloadCountService
 {
-    private $cacheService;
-    private $downloadService;
+    private CacheService $cacheService;
+    private DownloadService $downloadService;
 
     public function __construct(CacheService $cacheService, DownloadService $downloadService)
     {

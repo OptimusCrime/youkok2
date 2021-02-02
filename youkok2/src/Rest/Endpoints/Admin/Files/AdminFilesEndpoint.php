@@ -5,9 +5,8 @@ use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidRequestException;
-use Youkok\Biz\Exceptions\UpdateException;
+
+use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\Admin\FileDetailsService;
 use Youkok\Biz\Services\Admin\FileListingService;
 use Youkok\Biz\Services\Admin\FileUpdateService;
@@ -15,22 +14,13 @@ use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class AdminFilesEndpoint extends BaseRestEndpoint
 {
-    /** @var FileListingService */
-    private $adminFileListingService;
-
-    /** @var FileDetailsService */
-    private $adminFileDetailsService;
-
-    /** @var FileUpdateService */
-    private $adminFileUpdateService;
-
-    /** @var Logger */
-    private $logger;
+    private FileListingService $adminFileListingService;
+    private FileDetailsService $adminFileDetailsService;
+    private FileUpdateService $adminFileUpdateService;
+    private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         $this->adminFileListingService = $container->get(FileListingService::class);
         $this->adminFileDetailsService = $container->get(FileDetailsService::class);
         $this->adminFileUpdateService = $container->get(FileUpdateService::class);
@@ -39,23 +29,38 @@ class AdminFilesEndpoint extends BaseRestEndpoint
 
     public function get(Request $request, Response $response, array $args): Response
     {
-        return $this->outputJson($response, [
-            'data' => $this->adminFileDetailsService->get((int) $args['id'])
-        ]);
+        try {
+            return $this->outputJson($response, [
+                'data' => $this->adminFileDetailsService->get((int)$args['id'])
+            ]);
+        } catch (YoukokException $ex) {
+            $this->logger->error($ex);
+            return $this->returnBadRequest($response, $ex);
+        }
     }
 
     public function list(Request $request, Response $response): Response
     {
-        return $this->outputJson($response, [
-            'data' => $this->adminFileListingService->getAll()
-        ]);
+        try {
+            return $this->outputJson($response, [
+                'data' => $this->adminFileListingService->getAll()
+            ]);
+        } catch (YoukokException $ex) {
+            $this->logger->error($ex);
+            return $this->returnBadRequest($response, $ex);
+        }
     }
 
     public function listSingle(Request $request, Response $response, array $args): Response
     {
-        return $this->outputJson($response, [
-            'data' => $this->adminFileListingService->get((int) $args['id'])
-        ]);
+        try {
+            return $this->outputJson($response, [
+                'data' => $this->adminFileListingService->get((int)$args['id'])
+            ]);
+        } catch (YoukokException $ex) {
+            $this->logger->error($ex);
+            return $this->returnBadRequest($response, $ex);
+        }
     }
 
     public function put(Request $request, Response $response, array $args): Response
@@ -79,7 +84,7 @@ class AdminFilesEndpoint extends BaseRestEndpoint
                     'course' => $course
                 ]
             ]);
-        } catch (InvalidRequestException | UpdateException | GenericYoukokException $ex) {
+        } catch (YoukokException $ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);
         }

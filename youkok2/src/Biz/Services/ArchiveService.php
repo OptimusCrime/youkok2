@@ -1,9 +1,11 @@
 <?php
-
 namespace Youkok\Biz\Services;
 
 use Illuminate\Database\Eloquent\Collection;
+
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\ElementService;
@@ -12,9 +14,9 @@ use Youkok\Common\Utilities\SelectStatements;
 
 class ArchiveService
 {
-    private $elementMapper;
-    private $elementService;
-    private $courseService;
+    private ElementMapper $elementMapper;
+    private ElementService $elementService;
+    private CourseService $courseService;
 
     public function __construct(
         ElementMapper $elementMapper,
@@ -26,6 +28,13 @@ class ArchiveService
         $this->courseService = $courseService;
     }
 
+    /**
+     * @param int $id
+     * @return Collection
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     public function get(int $id): Collection
     {
         $directory = $this->elementService->getElement(
@@ -42,9 +51,16 @@ class ArchiveService
         return $this->elementService->getVisibleChildren($directory);
     }
 
+    /**
+     * @param string $uri
+     * @return Element
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     public function getArchiveElementFromUri(string $uri): Element
     {
-        $element = $this->elementService->getElementFromUri(
+        return $this->elementService->getElementFromUri(
             $uri,
             ['id', 'parent', 'name', 'slug', 'uri', 'empty', 'checksum', 'link', 'directory', 'requested_deletion'],
             [
@@ -53,11 +69,15 @@ class ArchiveService
                 ElementService::FLAG_FETCH_PARENTS
             ]
         );
-
-        return $element;
     }
 
-    public function getBreadcrumbsForElement(Element $element)
+    /**
+     * @param Element $element
+     * @return array
+     * @throws GenericYoukokException
+     * @throws ElementNotFoundException
+     */
+    public function getBreadcrumbsForElement(Element $element): array
     {
         // The list of parents does not include the current element, add it
         $breadcrumbs = $element->getParents();
@@ -66,6 +86,12 @@ class ArchiveService
         return $this->elementMapper->mapBreadcrumbs($breadcrumbs);
     }
 
+    /**
+     * @param Element $element
+     * @return string
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     */
     public function getSiteTitle(Element $element): string
     {
         if ($element->isCourse()) {
@@ -86,6 +112,12 @@ class ArchiveService
             . $course->getCourseName();
     }
 
+    /**
+     * @param Element $element
+     * @return string
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     */
     public function getSiteDescription(Element $element): string
     {
         if ($element->isCourse()) {

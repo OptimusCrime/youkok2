@@ -1,11 +1,12 @@
 <?php
 namespace Youkok\Common\Utilities;
 
-class SelectStatements implements \Iterator
+use Iterator;
+
+class SelectStatements implements Iterator
 {
-    /** @var array */
-    private $statements;
-    private $position;
+    private array $statements;
+    private int $position;
 
     public function __construct(?string $key = null, ?string $value = null)
     {

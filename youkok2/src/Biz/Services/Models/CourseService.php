@@ -3,6 +3,7 @@
 namespace Youkok\Biz\Services\Models;
 
 use Illuminate\Database\Eloquent\Collection;
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
@@ -12,9 +13,9 @@ class CourseService
 {
     const LAST_VISITED_COURSES_SET_SIZE = 10;
 
-    private $elementService;
-    private $cacheService;
-    private $urlService;
+    private ElementService $elementService;
+    private CacheService $cacheService;
+    private UrlService $urlService;
 
     public function __construct(ElementService $elementService, CacheService $cacheService, UrlService $urlService)
     {
@@ -59,6 +60,10 @@ class CourseService
         return $output;
     }
 
+    /**
+     * @param Element $element
+     * @throws GenericYoukokException
+     */
     public function updateLastVisited(Element $element): void
     {
         $key = CacheKeyGenerator::keyForLastVisitedCourseSet();

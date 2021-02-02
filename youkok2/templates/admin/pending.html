@@ -1,8 +1,0 @@
-{% extends "admin/base.html" %}
-{% block admin_page %}Nye bidrag{% endblock %}
-{% block content %}
-<section class="content">
-    {% if DEV == '1' %}{% include "react/dev_adminFilesPending.html" %}{% else %}{% include "react/adminFilesPending.html" %}{% endif %}
-</section>
-{% include "admin/includes/files_modals.html" %}
-{% endblock %}

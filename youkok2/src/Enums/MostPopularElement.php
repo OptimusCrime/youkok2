@@ -1,22 +1,74 @@
 <?php
 namespace Youkok\Enums;
 
-abstract class MostPopularElement
-{
-    const DAY = 'DAY';
-    const WEEK = 'WEEK';
-    const MONTH = 'MONTH';
-    const YEAR = 'YEAR';
-    const ALL = 'ALL';
+use MyCLabs\Enum\Enum;
 
-    public static function all(): array
+use Youkok\Biz\Exceptions\InvalidValueException;
+
+class MostPopularElement extends Enum
+{
+    private const DAY = 'DAY';
+    private const WEEK = 'WEEK';
+    private const MONTH = 'MONTH';
+    private const YEAR = 'YEAR';
+    private const ALL = 'ALL';
+
+    public function eq(?string $value): bool
+    {
+        if ($value === null) {
+            return false;
+        }
+
+        return $this->value === $value;
+    }
+
+    /**
+     * @param string|null $value
+     * @return Identifier
+     * @throws InvalidValueException
+     */
+    public static function fromValue(?string $value): MostPopularElement
+    {
+        if ($value !== null && !self::isValid($value)) {
+            throw new InvalidValueException($value . ' is not a valid value for ' . self::class);
+        }
+
+        return new MostPopularElement($value);
+    }
+
+    public static function DAY(): MostPopularElement
+    {
+        return new MostPopularElement(static::DAY);
+    }
+
+    public static function WEEK(): MostPopularElement
+    {
+        return new MostPopularElement(static::WEEK);
+    }
+
+    public static function MONTH(): MostPopularElement
+    {
+        return new MostPopularElement(static::MONTH);
+    }
+
+    public static function YEAR(): MostPopularElement
+    {
+        return new MostPopularElement(static::YEAR);
+    }
+
+    public static function ALL(): MostPopularElement
+    {
+        return new MostPopularElement(static::ALL);
+    }
+
+    public static function collection(): array
     {
         return [
-            static::DAY,
-            static::WEEK,
-            static::MONTH,
-            static::YEAR,
-            static::ALL,
+            static::DAY(),
+            static::WEEK(),
+            static::MONTH(),
+            static::YEAR(),
+            static::ALL(),
         ];
     }
 }

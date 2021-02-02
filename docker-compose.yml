@@ -38,7 +38,7 @@ services:
       dockerfile: docker_php.Dockerfile
       args:
         - ENV=dev
-    container_name: "youkok2_web_dev"
+    container_name: "youkok2_php_dev"
     ports:
       - "9000"
     env_file:
@@ -46,7 +46,6 @@ services:
     volumes:
       - ./youkok2:/code/site
       - ./_docker/files:/code/files
-      - ./_docker/cache:/code/cache
     depends_on:
       - youkok2-db
       - youkok2-cache
@@ -62,8 +61,6 @@ services:
     build:
       context: .
       dockerfile: docker_nginx.Dockerfile
-      args:
-        - ENV=dev
     container_name: "youkok2_nginx_dev"
     ports:
       - "8091:80"
@@ -74,3 +71,26 @@ services:
       - youkok2-php
     links:
       - youkok2-php
+
+  ###############################################
+  #                 Migrations                  #
+  ###############################################
+
+  youkok2-migrations:
+    build:
+      context: .
+      dockerfile: docker_migrations.Dockerfile
+      args:
+        - ENV=dev
+    container_name: "youkok2_migrations_dev"
+    environment:
+      WAIT_HOSTS: youkok2-db:3306
+    env_file:
+      - env_php_dev.env
+    volumes:
+      - ./youkok2:/code/site
+    depends_on:
+      - youkok2-db
+    links:
+      - youkok2-db
+

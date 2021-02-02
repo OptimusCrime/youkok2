@@ -7,6 +7,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Support\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\GenericYoukokException;
+use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Common\Models\Download;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\SelectStatements;
@@ -15,7 +16,7 @@ use Youkok\Enums\MostPopularElement;
 
 class DownloadService
 {
-    private $elementService;
+    private ElementService $elementService;
 
     public function __construct(ElementService $elementService)
     {
@@ -24,7 +25,8 @@ class DownloadService
 
     public function getDownloadsForId(int $id): int
     {
-        return Download::select(DB::raw("COUNT(`id`) as `result`"))
+        return Download
+            ::selectRaw("COUNT(`id`) as `result`")
             ->where('resource', $id)
             ->count();
     }
@@ -34,6 +36,13 @@ class DownloadService
         return Download::count();
     }
 
+    /**
+     * @param int $limit
+     * @return array
+     * @throws ElementNotFoundException
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     public function getLatestDownloads(int $limit): array
     {
         $downloads = DB::table('download')
@@ -61,6 +70,12 @@ class DownloadService
         return $response;
     }
 
+    /**
+     * @param string $delta
+     * @param int|null $limit
+     * @return Collection
+     * @throws GenericYoukokException
+     */
     public function getMostPopularElementsFromDelta(string $delta, ?int $limit = null): Collection
     {
         $query = DB::table('download')
@@ -69,11 +84,11 @@ class DownloadService
                 'element.parent AS parent',
                 'element.pending AS pending',
                 'element.deleted AS deleted',
-                DB::raw('COUNT(download.id) AS download_count')
             )
+            ->selectRaw('COUNT(download.id) AS download_count')
             ->leftJoin('element AS element', 'element.id', '=', 'download.resource');
 
-        if ($delta !== MostPopularElement::ALL && $delta !== MostPopularCourse::ALL) {
+        if (!MostPopularElement::ALL()->eq($delta) && !MostPopularCourse::ALL()->eq($delta)) {
             $query = $query->whereDate(
                 'download.downloaded_time',
                 '>=',
@@ -86,13 +101,20 @@ class DownloadService
         }
 
         return $query
-            ->groupBy('download.resource')
+            ->groupBy(['download.resource'])
             ->orderBy('download_count', 'DESC')
             ->orderBy('element.added', 'DESC')
             ->get();
     }
 
-    public function getMostPopularCoursesFromDelta(string $delta, int $limit)
+    /**
+     * @param string $delta
+     * @param int $limit
+     * @return array
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
+    public function getMostPopularCoursesFromDelta(string $delta, int $limit): array
     {
         $result = $this->summarizeDownloads($this->getMostPopularElementsFromDelta($delta));
 
@@ -106,9 +128,16 @@ class DownloadService
         $download->ip = $_SERVER['REMOTE_ADDR'];
         $download->agent = $_SERVER['HTTP_USER_AGENT'];
         $download->downloaded_time = Carbon::now();
+
         return $download->save();
     }
 
+    /**
+     * @param Collection $downloads
+     * @return array
+     * @throws GenericYoukokException
+     * @throws InvalidFlagCombination
+     */
     private function summarizeDownloads(Collection $downloads): array
     {
         $parentToCourse = [];
@@ -120,7 +149,7 @@ class DownloadService
 
             try {
                 if (isset($parentToCourse[$download->parent])) {
-                    // We can completely avoid fetching all parents for the Element if we already have etablished
+                    // We can completely avoid fetching all parents for the Element if we already have established
                     // the relationship between the parent -> course.
                     $selectStatements = new SelectStatements();
                     $selectStatements->addStatement('id', $download->id);
@@ -225,16 +254,21 @@ class DownloadService
         return $newResult;
     }
 
+    /**
+     * @param string $delta
+     * @return Carbon
+     * @throws GenericYoukokException
+     */
     private static function getMostPopularElementQueryFromDelta(string $delta): Carbon
     {
         switch ($delta) {
-            case MostPopularElement::DAY:
+            case MostPopularElement::DAY():
                 return Carbon::now()->subDay();
-            case MostPopularElement::WEEK:
+            case MostPopularElement::WEEK():
                 return Carbon::now()->subWeek();
-            case MostPopularElement::MONTH:
+            case MostPopularElement::MONTH():
                 return Carbon::now()->subMonth();
-            case MostPopularElement::YEAR:
+            case MostPopularElement::YEAR():
                 return Carbon::now()->subYear();
             default:
                 throw new GenericYoukokException('Invalid delta');

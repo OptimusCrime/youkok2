@@ -8,7 +8,7 @@ use Youkok\Helpers\Configuration\Configuration;
 
 class ReverseProxyMiddleware
 {
-    public function __invoke(Request $request, Response $response, callable $next)
+    public function __invoke(Request $request, Response $response, callable $next): Response
     {
         $scheme = Configuration::getInstance()->isSSL() ? 'https' : 'http';
         $uri = $request->getUri()->withScheme($scheme);

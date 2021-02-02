@@ -1,22 +1,14 @@
 <?php
 namespace Youkok\Rest\Endpoints;
 
-use Exception;
-
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
 
-use Youkok\Biz\Exceptions\CacheServiceException;
-use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Exceptions\IdenticalLookupException;
-use Youkok\Biz\Exceptions\InvalidRequestException;
-use Youkok\Biz\Services\ArchiveService;
-use Youkok\Biz\Services\CacheService;
+use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\CoursesLookupService;
-use Youkok\Biz\Services\Mappers\ElementMapper;
 
 class CoursesEndpoint extends BaseRestEndpoint
 {
@@ -42,10 +34,9 @@ class CoursesEndpoint extends BaseRestEndpoint
             );
         } catch (IdenticalLookupException $ex) {
             // Content has not changed
-            return $this->output($response->withStatus(304));
-        } catch (Exception $ex) {
+            return $response->withStatus(304);
+        } catch (YoukokException $ex) {
             $this->logger->error($ex);
-
             return $this->returnBadRequest($response, $ex);
         }
     }
