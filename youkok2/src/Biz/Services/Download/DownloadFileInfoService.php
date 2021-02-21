@@ -16,7 +16,7 @@ class DownloadFileInfoService
 
     public function fileExists(Element $element): bool
     {
-        $filePath = $this->getFilePath($element);
+        $filePath = static::getFilePath($element);
         return file_exists($filePath) && is_readable($filePath);
     }
 
@@ -27,7 +27,7 @@ class DownloadFileInfoService
      */
     public function getFileInfo(Element $element): string
     {
-        $filePath = $this->getFilePath($element);
+        $filePath = static::getFilePath($element);
         $info = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $filePath);
 
         if ($info === false) {
@@ -54,7 +54,7 @@ class DownloadFileInfoService
         return $size;
     }
 
-    public function getFilePath(Element $element): string
+    public static function getFilePath(Element $element): string
     {
         $checksum = $element->checksum;
         $folder1 = substr($checksum, 0, 1);

@@ -4,29 +4,37 @@ import 'whatwg-fetch';
 
 import "./admin/admin.less";
 
-import { run as diagnosticsRun } from "./diagnostics";
-import { run as filesRun } from "./files";
-import { run as filesPendingRun } from "./filesPending";
-import { run as homeBoxesRun } from "./homeBoxes";
-import { run as homeGraphRun } from "./homeGraph";
+import { run as diagnostics } from "./diagnostics";
+import { run as files } from "./files";
+import { run as filesPending } from "./filesPending";
+import { run as homeBoxes } from "./homeBoxes";
+import { run as homeGraph } from "./homeGraph";
+import { run as pendingNum } from "./pendingNum";
+import { run as searchBar } from "./searchBar";
+import {MODE_ADMIN} from "./searchBar/constants";
 
 const bootstrap = () => {
   if (document.getElementById('admin-diagnostics-cache')) {
-    diagnosticsRun();
+    diagnostics();
   }
   if (document.getElementById('admin-files')) {
-    filesRun();
+    files();
   }
   if (document.getElementById('admin-files-pending')) {
-    filesPendingRun();
+    filesPending();
   }
   if (document.getElementById('admin-home-boxes')) {
-    homeBoxesRun();
+    homeBoxes();
   }
   if (document.getElementById('admin-home-graph')) {
-    homeGraphRun();
+    homeGraph();
   }
-
+  if (document.getElementById('admin-pending-num')) {
+    pendingNum();
+  }
+  if (document.getElementById('search-bar')) {
+    searchBar(MODE_ADMIN);
+  }
 };
 
 document.addEventListener("DOMContentLoaded", bootstrap);

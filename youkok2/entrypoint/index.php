@@ -17,6 +17,7 @@ catch (Exception $ex) {
     try {
         if (Configuration::getInstance()->isDev()) {
             echo '<h1>Uncaught out exception!</h1>';
+            echo '<p>' . get_class($ex) . '</p>';
             echo '<p>' . $ex->getMessage() . '</p>';
 
             echo '<pre>';

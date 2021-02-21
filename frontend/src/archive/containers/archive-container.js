@@ -6,6 +6,7 @@ import {loading} from "../../common/utils";
 import {StencilArchiveList} from "../components/stencil-archive";
 import {ArchiveList} from "../components/archive-list";
 import {ArchiveError} from "../components/archive-error";
+import {URLS} from "../../common/urls";
 
 class ArchiveContainer extends Component {
 

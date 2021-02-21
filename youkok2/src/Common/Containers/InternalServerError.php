@@ -17,8 +17,7 @@ class InternalServerError implements ContainersInterface
                 if ($configuration->isDev()) {
                     var_dump(get_class($exception));
                     var_dump($exception->getMessage());
-                    var_dump($exception->getCode());
-                    var_dump($exception->getTrace());
+                    var_dump($exception->getTraceAsString());
                     die();
                 }
 

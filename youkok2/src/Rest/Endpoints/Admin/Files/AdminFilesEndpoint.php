@@ -14,16 +14,16 @@ use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class AdminFilesEndpoint extends BaseRestEndpoint
 {
-    private FileListingService $adminFileListingService;
-    private FileDetailsService $adminFileDetailsService;
-    private FileUpdateService $adminFileUpdateService;
+    private FileListingService $fileListingService;
+    private FileDetailsService $fileDetailsService;
+    private FileUpdateService $fileUpdateService;
     private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {
-        $this->adminFileListingService = $container->get(FileListingService::class);
-        $this->adminFileDetailsService = $container->get(FileDetailsService::class);
-        $this->adminFileUpdateService = $container->get(FileUpdateService::class);
+        $this->fileListingService = $container->get(FileListingService::class);
+        $this->fileDetailsService = $container->get(FileDetailsService::class);
+        $this->fileUpdateService = $container->get(FileUpdateService::class);
         $this->logger = $container->get(Logger::class);
     }
 
@@ -31,7 +31,7 @@ class AdminFilesEndpoint extends BaseRestEndpoint
     {
         try {
             return $this->outputJson($response, [
-                'data' => $this->adminFileDetailsService->get((int)$args['id'])
+                'data' => $this->fileDetailsService->get((int)$args['id'])
             ]);
         } catch (YoukokException $ex) {
             $this->logger->error($ex);
@@ -43,7 +43,7 @@ class AdminFilesEndpoint extends BaseRestEndpoint
     {
         try {
             return $this->outputJson($response, [
-                'data' => $this->adminFileListingService->getAll()
+                'data' => $this->fileListingService->getAll()
             ]);
         } catch (YoukokException $ex) {
             $this->logger->error($ex);
@@ -55,7 +55,7 @@ class AdminFilesEndpoint extends BaseRestEndpoint
     {
         try {
             return $this->outputJson($response, [
-                'data' => $this->adminFileListingService->get((int)$args['id'])
+                'data' => $this->fileListingService->get((int)$args['id'])
             ]);
         } catch (YoukokException $ex) {
             $this->logger->error($ex);
@@ -72,7 +72,7 @@ class AdminFilesEndpoint extends BaseRestEndpoint
             );
 
             // Remember to run the update service before fetching the updated information below
-            $course = $this->adminFileUpdateService->put(
+            $course = $this->fileUpdateService->put(
                 (int) $data['course'],
                 (int) $args['id'],
                 $data
@@ -80,7 +80,7 @@ class AdminFilesEndpoint extends BaseRestEndpoint
 
             return $this->outputJson($response, [
                 'data' => [
-                    'element' => $this->adminFileDetailsService->get((int) $args['id']),
+                    'element' => $this->fileDetailsService->get((int) $args['id']),
                     'course' => $course
                 ]
             ]);

@@ -266,7 +266,6 @@ class ElementService
         return $newest;
     }
 
-    /*
     public function getAllPending(): int
     {
         return Element::where('pending', 1)
@@ -275,7 +274,6 @@ class ElementService
             ->orderBy('name')
             ->count();
     }
-    */
 
     public function getVisibleChildren(Element $element, int $order = self::SORT_TYPE_ORGANIZED): Collection
     {

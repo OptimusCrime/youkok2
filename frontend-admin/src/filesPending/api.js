@@ -1,1 +1,3 @@
-export const fetchAdminFilesPendingRest = () => fetch('/rest/admin/files/pending');
+import { adminFetch } from "../common/fetch";
+
+export const fetchAdminFilesPendingRest = () => adminFetch('/rest/admin/files/pending');

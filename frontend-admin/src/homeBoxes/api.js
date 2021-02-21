@@ -1,1 +1,3 @@
-export const fetchAdminHomeBoxesRest = () => fetch('/rest/admin/home/boxes');
+import { adminFetch } from "../common/fetch";
+
+export const fetchAdminHomeBoxesRest = () => adminFetch('/rest/admin/home/boxes');

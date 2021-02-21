@@ -17,6 +17,7 @@ use Youkok\Common\Containers\Services;
 use Youkok\Common\Middlewares\AdminAuthMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Biz\Services\Job\JobService;
+use Youkok\Rest\Endpoints\Admin\AdminPendingNumEndpoint;
 use Youkok\Rest\Endpoints\Admin\Diagnostics\AdminRedisCache;
 use Youkok\Rest\Endpoints\Admin\Files\AdminFilesDirectoryEndpoint;
 use Youkok\Rest\Endpoints\Admin\Files\AdminFilesEndpoint;
@@ -162,6 +163,8 @@ class App
                     $app->get('/boxes', AdminHomeBoxesEndpoint::class . ':get');
                     $app->get('/graph', AdminHomeGraphEndpoint::class . ':get');
                 });
+
+                $app->get('/pending/num', AdminPendingNumEndpoint::class . ':get');
 
                 $app->group('/files', function () use ($app) {
                     $app->get('', AdminFilesEndpoint::class . ':list');

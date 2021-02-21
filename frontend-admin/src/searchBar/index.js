@@ -5,6 +5,9 @@ import { Provider } from 'react-redux';
 import configureStore from './redux/configureStore';
 import {CLOSE_SEARCH_RESULTS} from "./redux/form/constants";
 import LoaderWrapperContainer from "./containers/loader-wrapper";
+import { SET_MODE } from "./redux/config/constants";
+import {MODE_ADMIN} from "./constants";
+import {refreshCourses} from "../common/coursesLookup";
 
 // This entrypoint is written this way to allow us to directly copy it into
 // the admin directory without modifications. This was done because I am lazy
@@ -13,6 +16,14 @@ export const run = mode => {
   const preloadedState = window.__INITIAL_STATE__;
 
   const store = configureStore(preloadedState);
+
+  store.dispatch({ type: SET_MODE, mode });
+
+  if (mode === MODE_ADMIN) {
+    // For admin users, just fetch the entire data set every single time
+    refreshCourses();
+  }
+
   ReactDOM.render((
       <Provider store={store}>
         <LoaderWrapperContainer />

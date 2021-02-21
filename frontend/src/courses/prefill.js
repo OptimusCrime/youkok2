@@ -1,4 +1,4 @@
-import {SEARCH_QUERY_IDENTIFIER} from "./constants";
+import {SEARCH_QUERY_IDENTIFIER} from "../common/constants";
 
 export const queryPresentInUrl = () => window.location.href.includes('?');
 

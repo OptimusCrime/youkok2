@@ -13,7 +13,7 @@ class DefaultConfiguration
             Configuration::LOGGER_NAME => 'youkok2',
 
             Configuration::DIRECTORY_TEMPLATE => '/code/site/templates/',
-            Configuration::DIRECTORY_FILES => '/code/file/',
+            Configuration::DIRECTORY_FILES => '/code/files/',
 
             Configuration::MYSQL_HOST => 'youkok2-db',
             Configuration::MYSQL_USER => 'youkok2',

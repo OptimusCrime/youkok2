@@ -12,12 +12,12 @@ use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class AdminFilesPendingEndpoint extends BaseRestEndpoint
 {
-    private FileListingService $adminFileListingService;
+    private FileListingService $fileListingService;
     private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {
-        $this->adminFileListingService = $container->get(FileListingService::class);
+        $this->fileListingService = $container->get(FileListingService::class);
         $this->logger = $container->get(Logger::class);
     }
 
@@ -25,7 +25,7 @@ class AdminFilesPendingEndpoint extends BaseRestEndpoint
     {
         try {
             return $this->outputJson($response, [
-                'data' => $this->adminFileListingService->getPending()
+                'data' => $this->fileListingService->getPending()
             ]);
         } catch (YoukokException $ex) {
             $this->logger->error($ex);

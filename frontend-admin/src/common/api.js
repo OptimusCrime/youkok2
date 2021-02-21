@@ -1,4 +1,6 @@
-export const postAdminCreateDirectoryRest = (directory, course, value) => fetch('/rest/admin/files/directory', {
+import { adminFetch } from "./fetch";
+
+export const postAdminCreateDirectoryRest = (directory, course, value) => adminFetch('/rest/admin/files/directory', {
   body: JSON.stringify({
     directory,
     course,
@@ -7,9 +9,9 @@ export const postAdminCreateDirectoryRest = (directory, course, value) => fetch(
   method: 'PUT',
 });
 
-export const putAdminEditFileRest = (id, data) => fetch(`/rest/admin/files/${id}`, {
+export const putAdminEditFileRest = (id, data) => adminFetch(`/rest/admin/files/${id}`, {
   body: JSON.stringify(data),
   method: 'PUT',
 });
 
-export const fetchAdminFileDetailsRest = id => fetch(`/rest/admin/files/${id}`);
+export const fetchAdminFileDetailsRest = id => adminFetch(`/rest/admin/files/${id}`);

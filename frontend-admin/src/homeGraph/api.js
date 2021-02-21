@@ -1,1 +1,3 @@
-export const fetchAdminHomeGraphRest = () => fetch('/rest/admin/home/graph');
+import { adminFetch } from "../common/fetch";
+
+export const fetchAdminHomeGraphRest = () => adminFetch('/rest/admin/home/graph')

@@ -17,7 +17,7 @@ export const bootstrap = () => {
     frontpage();
   }
   if (document.getElementById('search-bar')) {
-    searchBar();
+    searchBar('site');
   }
   if (document.getElementById('sidebar-popular')) {
     sidebarPopular();

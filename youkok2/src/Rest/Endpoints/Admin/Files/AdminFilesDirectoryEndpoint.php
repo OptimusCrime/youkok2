@@ -12,12 +12,12 @@ use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
 class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
 {
-    private FileCreateDirectoryService $adminFileCreateDirectoryService;
+    private FileCreateDirectoryService $fileCreateDirectoryService;
     private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {
-        $this->adminFileCreateDirectoryService = $container->get(FileCreateDirectoryService::class);
+        $this->fileCreateDirectoryService = $container->get(FileCreateDirectoryService::class);
         $this->logger = $container->get(Logger::class);
     }
 
@@ -34,7 +34,7 @@ class AdminFilesDirectoryEndpoint extends BaseRestEndpoint
             );
 
             return $this->outputJson($response, [
-                'data' => $this->adminFileCreateDirectoryService->createDirectory(
+                'data' => $this->fileCreateDirectoryService->createDirectory(
                     (int) $data['course'],
                     (int) $data['directory'],
                     (string) $data['value'],

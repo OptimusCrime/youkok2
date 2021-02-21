@@ -3,11 +3,14 @@ namespace Youkok\Web\Views;
 
 use Exception;
 
+use Monolog\Logger;
 use Slim\Http\Response;
 use Slim\Http\Request;
 use Psr\Container\ContainerInterface;
 
+use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\TemplateFileNotFoundException;
+use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\Auth\AuthService;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
@@ -18,12 +21,14 @@ class Redirect extends BaseView
     private UpdateDownloadsService $updateDownloadsProcessor;
     private ElementService $elementService;
     private AuthService $authService;
+    private Logger $logger;
 
     public function __construct(ContainerInterface $container)
     {
         $this->updateDownloadsProcessor = $container->get(UpdateDownloadsService::class);
         $this->elementService = $container->get(ElementService::class);
         $this->authService = $container->get(AuthService::class);
+        $this->logger = $container->get(Logger::class);
     }
 
     /**
@@ -56,7 +61,11 @@ class Redirect extends BaseView
             if ($element->link === null) {
                 return $this->render404($response);
             }
-        } catch (Exception $e) {
+        } catch (ElementNotFoundException $ex) {
+            $this->logger->error('Non existing element with id: ' . $args['id'] . ' attempted redirected.');
+            return $this->render404($response);
+        } catch (YoukokException $ex) {
+            $this->logger->error($ex);
             return $this->render404($response);
         }
 

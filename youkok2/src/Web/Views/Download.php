@@ -83,6 +83,7 @@ class Download extends BaseView
                 ->withHeader('Content-Length', $fileSize)
                 ->withBody(new Stream(fopen($filePath, 'r')));
         } catch (YoukokException $ex) {
+            // TODO: Handle file errors, not found errors etc better here
             $this->logger->error($ex);
             return $this->render404($response);
         }

@@ -55,7 +55,6 @@ class FileDetailsService
                 'deleted',
                 'link',
                 'added',
-                'last_visited',
                 'requested_deletion'
             ],
             [

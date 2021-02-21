@@ -1,1 +1,3 @@
-export const fetchAdminDiagnosticsCacheRest = () => fetch('/rest/admin/diagnostics/cache');
+import { adminFetch } from "../common/fetch";
+
+export const fetchAdminDiagnosticsCacheRest = () => adminFetch('/rest/admin/diagnostics/cache');

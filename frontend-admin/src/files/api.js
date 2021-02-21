@@ -1,7 +1,12 @@
+import { adminFetch } from "../common/fetch";
+
 export const fetchAdminFilesRest = () => {
-  if (!window.SITE_DATA.admin_file) {
-    return fetch('/rest/admin/files');
+  const path = window.location.pathname.split('/');
+  const id = path[path.length - 1];
+
+  if (!/^[0-9]+$/.test(id)) {
+    return adminFetch('/rest/admin/files');
   }
 
-  return fetch(`/rest/admin/files/single/${window.SITE_DATA.admin_file}`);
+  return adminFetch(`/rest/admin/files/single/${id}`);
 }
