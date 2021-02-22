@@ -1,5 +1,7 @@
 FROM nginx:1.19.3-alpine
 
+ARG ENV=prod
+
 COPY ./_docker/site.conf /etc/nginx/conf.d/site.conf
 COPY ./static /static
 

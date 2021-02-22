@@ -32,7 +32,7 @@ jobs:
         cd frontend
         npm ci
         npm run build:production
-    - name: Build backend frontend
+    - name: Build admin frontend
       run: |
         cd frontend-admin
         npm ci

@@ -61,6 +61,8 @@ services:
     build:
       context: .
       dockerfile: docker_nginx.Dockerfile
+      args:
+        - ENV=dev
     container_name: "youkok2_nginx_dev"
     ports:
       - "8091:80"
