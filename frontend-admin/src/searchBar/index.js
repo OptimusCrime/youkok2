@@ -21,7 +21,7 @@ export const run = mode => {
 
   if (mode === MODE_ADMIN) {
     // For admin users, just fetch the entire data set every single time
-    refreshCourses();
+    store.dispatch(refreshCourses());
   }
 
   ReactDOM.render((

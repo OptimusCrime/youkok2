@@ -3,6 +3,7 @@ namespace Youkok\Biz\Services\Auth;
 
 use Slim\Http\Request;
 
+use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Exceptions\InsufficientAccessException;
 use Youkok\Biz\Exceptions\InvalidLoginAttemptException;
 use Youkok\Helpers\Configuration\Configuration;
@@ -49,6 +50,24 @@ class AuthService
         if ($ret === false) {
             // Failed to set cookie for some reason
             throw new InvalidLoginAttemptException();
+        }
+    }
+
+    /**
+     * @throws GenericYoukokException
+     */
+    public function removeAdminCookie(): void
+    {
+        $ret = setcookie(
+            static::getCookieName(),
+            null,
+            time() - static::COOKIE_LIFETIME,
+            '/'
+        );
+
+        if ($ret === false) {
+            // Failed to set cookie for some reason
+            throw new GenericYoukokException();
         }
     }
 

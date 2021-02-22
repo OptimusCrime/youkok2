@@ -9,7 +9,7 @@ import {
   ARROW_DOWN,
   ARROW_UP,
   KEYCODE_ARROW_DOWN,
-  KEYCODE_ARROW_UP,
+  KEYCODE_ARROW_UP, MODE_SITE,
 } from "../constants";
 import {highlightSearchResult} from "../utils/highlighter";
 import {CLOSE_SEARCH_RESULTS} from "../redux/form/constants";
@@ -27,10 +27,12 @@ const MainContainer = props => {
     cursor,
     updateCursorPosition,
     updateSearchField,
-    closeSearchResults
+    closeSearchResults,
+    mode,
+    admin_courses,
   } = props;
 
-  const displayResults = results.length > 0 && input_display.length >= MINIMUM_SEARCH_LENGTH
+  const displayResults = results.length > 0 && input_display.length >= MINIMUM_SEARCH_LENGTH;
 
   return (
     <React.Fragment>
@@ -42,12 +44,16 @@ const MainContainer = props => {
           const keyCode = e.keyCode;
 
           if (keyCode !== KEYCODE_ARROW_UP && keyCode !== KEYCODE_ARROW_DOWN) {
-            const courses = getCourses();
+            const courses = mode === MODE_SITE ? getCourses() : admin_courses;
 
             updateSearchField(e.target.value, courses);
           }
         }}
-        onFocus={() => verifyLookup()}
+        onFocus={
+          () => mode === MODE_SITE
+            ? verifyLookup()
+            : () => {}
+        }
         onKeyDown={e => {
           const keyCode = e.keyCode;
 
@@ -59,7 +65,10 @@ const MainContainer = props => {
               window.location.replace(`${window.location.origin}${results[cursor].url}`);
             }
             else {
-              window.location.replace(`${URLS.courses}?${SEARCH_QUERY_IDENTIFIER}=${encodeURI(input_raw)}`);
+              // Only allow search functionality for the actual site
+              if (mode === MODE_SITE) {
+                window.location.replace(`${URLS.courses}?${SEARCH_QUERY_IDENTIFIER}=${encodeURI(input_raw)}`);
+              }
             }
           }
 
@@ -95,11 +104,13 @@ const MainContainer = props => {
   );
 };
 
-const mapStateToProps = ({form}) => ({
+const mapStateToProps = ({form, config}) => ({
   input_raw: form.input_raw,
   input_display: form.input_display,
   results: form.results,
   cursor: form.cursor,
+  mode: config.mode,
+  admin_courses: config.admin_courses,
 });
 
 const mapDispatchToProps = {

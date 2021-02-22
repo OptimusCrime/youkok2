@@ -15,6 +15,7 @@ use Youkok\Biz\Services\ArchiveHistoryService;
 use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\Auth\AuthService;
 use Youkok\Biz\Services\CacheService;
+use Youkok\Biz\Services\CoursesLookupService;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\FrontpageService;
@@ -98,6 +99,16 @@ class Services implements ContainersInterface
         $container[CourseMapper::class] = function (ContainerInterface $container): CourseMapper {
             return new CourseMapper(
                 $container->get(UrlService::class)
+            );
+        };
+
+        $container[CoursesLookupService::class] = function (ContainerInterface $container): CoursesLookupService {
+            return new CoursesLookupService(
+                $container->get(UrlService::class),
+                $container->get(CourseService::class),
+                $container->get(CourseMapper::class),
+                $container->get(CacheService::class),
+                $container->get(MonoLogger::class)
             );
         };
 

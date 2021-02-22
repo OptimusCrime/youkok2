@@ -1,30 +1,32 @@
 <?php
 namespace Youkok\Biz\Services;
 
-use Illuminate\Database\Eloquent\Collection;
 use Monolog\Logger;
 
 use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Exceptions\IdenticalLookupException;
+use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Models\CourseService;
-use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class CoursesLookupService
 {
     private UrlService $urlService;
     private CourseService $courseService;
+    private CourseMapper $courseMapper;
     private CacheService $cacheService;
     private Logger $logger;
 
     public function __construct(
         UrlService $urlService,
         CourseService $courseService,
+        CourseMapper $courseMapper,
         CacheService $cacheService,
         Logger $logger
     ) {
         $this->urlService = $urlService;
         $this->courseService = $courseService;
+        $this->courseMapper = $courseMapper;
         $this->cacheService = $cacheService;
         $this->logger = $logger;
     }
@@ -57,6 +59,18 @@ class CoursesLookupService
      * @return array
      * @throws GenericYoukokException
      */
+    public function getCoursesToAdminLookup(): array
+    {
+        return $this->courseMapper->mapCoursesToLookup(
+            $this->courseService->getAllCourses(),
+            CourseMapper::ADMIN,
+        );
+    }
+
+    /**
+     * @return array
+     * @throws GenericYoukokException
+     */
     private function getCoursesFromCache(): array
     {
         $courses = $this->getCoursesData();
@@ -80,7 +94,7 @@ class CoursesLookupService
      */
     private function refreshLookupCache(): array
     {
-        $courses = $this->coursesToJsonData($this->courseService->getAllVisibleCourses());
+        $courses = $this->courseMapper->mapCoursesToLookup($this->courseService->getAllCourses());
         $coursesJson = json_encode($courses);
 
         $this->cacheService->set(CacheKeyGenerator::keyForCoursesLookupData(), $coursesJson);
@@ -97,36 +111,5 @@ class CoursesLookupService
     private function getCoursesData(): ?string
     {
         return $this->cacheService->get(CacheKeyGenerator::keyForCoursesLookupData());
-    }
-
-    /**
-     * @param Collection $courses
-     * @return array
-     * @throws GenericYoukokException
-     */
-    private function coursesToJsonData(Collection $courses): array
-    {
-        $output = [];
-        foreach ($courses as $course) {
-            $output[] = $this->mapCourse($course);
-        }
-
-        return $output;
-    }
-
-    /**
-     * @param Element $course
-     * @return array
-     * @throws GenericYoukokException
-     */
-    private function mapCourse(Element $course): array
-    {
-        return [
-            'id' => $course->id,
-            'name' => $course->getCourseName(),
-            'code' => $course->getCourseCode(),
-            'url' => $this->urlService->urlForCourse($course),
-            'empty' => $course->empty === 1,
-        ];
     }
 }

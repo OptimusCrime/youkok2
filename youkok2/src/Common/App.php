@@ -17,7 +17,9 @@ use Youkok\Common\Containers\Services;
 use Youkok\Common\Middlewares\AdminAuthMiddleware;
 use Youkok\Common\Middlewares\ReverseProxyMiddleware;
 use Youkok\Biz\Services\Job\JobService;
+use Youkok\Rest\Endpoints\Admin\AdminLookupEndpoint;
 use Youkok\Rest\Endpoints\Admin\AdminPendingNumEndpoint;
+use Youkok\Rest\Endpoints\Admin\AdminLogOutEndpoint;
 use Youkok\Rest\Endpoints\Admin\Diagnostics\AdminRedisCache;
 use Youkok\Rest\Endpoints\Admin\Files\AdminFilesDirectoryEndpoint;
 use Youkok\Rest\Endpoints\Admin\Files\AdminFilesEndpoint;
@@ -109,8 +111,6 @@ class App
             // Keep these
             $app->get('/redirect/{id:[0-9]+}', Redirect::class . ':view')->setName('redirect');
             $app->get('/last-ned/{uri:.*}', Download::class . ':view')->setName('download');
-
-            // TODO: Handle redirects in nginx /kokeboka/ and /emner/kokeboka/
         });
 
         $app->group('/admin', function () use ($app) {
@@ -165,6 +165,8 @@ class App
                 });
 
                 $app->get('/pending/num', AdminPendingNumEndpoint::class . ':get');
+                $app->get('/lookup', AdminLookupEndpoint::class . ':get');
+                $app->get('/log-out', AdminLogOutEndpoint::class . ':get');
 
                 $app->group('/files', function () use ($app) {
                     $app->get('', AdminFilesEndpoint::class . ':list');

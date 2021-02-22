@@ -23,12 +23,10 @@ class UrlService
         return $this->router->pathFor('archive', ['course' => $element->slug]);
     }
 
-    /*
-    public function urlForAdminFiles(Element $element): string
+    public function urlForCourseAdmin(Element $element): string
     {
         return $this->router->pathFor('admin_file', ['id' => $element->id]);
     }
-    */
 
     /**
      * @param Element $element

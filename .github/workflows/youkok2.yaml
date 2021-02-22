@@ -1,0 +1,99 @@
+name: youkok2
+on:
+  push:
+    branches: master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    ##############################################################
+    # Workflow setup
+    ##############################################################
+
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Get release version
+      id: get_version
+      run: echo "name=RELEASE_VERSION::$(echo $GITHUB_SHA | cut -c1-8)" >> $GITHUB_ENV
+
+    ##############################################################
+    # Frontend
+    ##############################################################
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: Build site frontend
+      run: |
+        cd frontend
+        npm ci
+        npm run build:production
+    - name: Build backend frontend
+      run: |
+        cd frontend-admin
+        npm ci
+        npm run build:production
+
+    ##############################################################
+    # Backend
+    ##############################################################
+
+    - name: Setup PHP with specific version of PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+        tools: composer
+    - name: Install site backend dependencies
+      run: |
+        cd youkok2
+        composer install
+
+    ##############################################################
+    # Build and push docker images
+    ##############################################################
+
+    - name: Build and publish nginx to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      env:
+        ENV: prod
+        COMPOSER_ALLOW_SUPERUSER: 1
+      with:
+        name: optimuscrime/youkok2-nginx
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        dockerfile: docker_nginx.Dockerfile
+        buildargs: ENV
+        tags: "latest,${{ env.RELEASE_VERSION }}"
+    - name: Build and publish php to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      env:
+        ENV: prod
+      with:
+        name: optimuscrime/youkok2-php
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        dockerfile: docker_php.Dockerfile
+        buildargs: ENV,COMPOSER_ALLOW_SUPERUSER
+        tags: "latest,${{ env.RELEASE_VERSION }}"
+    - name: Build and publish db to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: optimuscrime/youkok2-migrations
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        dockerfile: docker_migrations.Dockerfile
+        tags: "latest,${{ env.RELEASE_VERSION }}"
+
+    # TODO: Might want to ignore this
+    - name: Build and publish db to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: optimuscrime/youkok2-db
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        dockerfile: docker_db.Dockerfile
+        tags: "latest,${{ env.RELEASE_VERSION }}"

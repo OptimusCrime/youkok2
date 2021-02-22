@@ -34,7 +34,7 @@ class CourseService
             ->count();
     }
 
-    public function getAllVisibleCourses(): Collection
+    public function getAllCourses(): Collection
     {
         return Element::select('id', 'name', 'slug', 'empty')
             ->where('parent', null)

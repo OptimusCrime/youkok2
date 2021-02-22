@@ -1,16 +1,16 @@
 <?php
-namespace Youkok\Rest\Endpoints;
+namespace Youkok\Rest\Endpoints\Admin;
 
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 use Slim\Http\Request;
 
-use Youkok\Biz\Exceptions\IdenticalLookupException;
 use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\CoursesLookupService;
+use Youkok\Rest\Endpoints\BaseRestEndpoint;
 
-class CoursesEndpoint extends BaseRestEndpoint
+class AdminLookupEndpoint extends BaseRestEndpoint
 {
     private CoursesLookupService $coursesLookupService;
     private Logger $logger;
@@ -21,20 +21,13 @@ class CoursesEndpoint extends BaseRestEndpoint
         $this->logger = $container->get(Logger::class);
     }
 
-    public function post(Request $request, Response $response): Response
+    public function get(Request $request, Response $response): Response
     {
-        $checksum = $request->getQueryParam('checksum');
-
         try {
-            return $this->outputJson(
-                $response,
-                $this->coursesLookupService->get(
-                    $checksum
-                )
-            );
-        } catch (IdenticalLookupException $ex) {
-            // Content has not changed
-            return $response->withStatus(304);
+            return $this->outputJson($response, [
+                'data' => $this->coursesLookupService->getCoursesToAdminLookup()
+            ]);
+
         } catch (YoukokException $ex) {
             $this->logger->error($ex);
             return $this->returnBadRequest($response, $ex);

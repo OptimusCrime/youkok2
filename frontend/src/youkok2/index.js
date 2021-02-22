@@ -3,6 +3,7 @@ import { run as courses } from "../courses";
 import { run as frontpage } from "../frontpage";
 import { run as searchBar } from "../searchBar";
 import { run as sidebarPopular } from "../sidebarPopular";
+import { MODE_SITE } from "../searchBar/constants";
 
 import './site.less';
 
@@ -17,7 +18,7 @@ export const bootstrap = () => {
     frontpage();
   }
   if (document.getElementById('search-bar')) {
-    searchBar('site');
+    searchBar(MODE_SITE);
   }
   if (document.getElementById('sidebar-popular')) {
     sidebarPopular();

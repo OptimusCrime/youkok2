@@ -2,12 +2,17 @@
 namespace Youkok\Biz\Services\Mappers;
 
 use Carbon\Carbon;
+
+use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
 
 class CourseMapper
 {
+    const REGULAR = 1;
+    const ADMIN = 2;
+
     const DATASTORE_DOWNLOAD_ESTIMATE = 'DOWNLOADS_ESTIMATE';
 
     private UrlService $urlService;
@@ -68,6 +73,27 @@ class CourseMapper
         return $out;
     }
 
+    /**
+     * @param Collection $courses
+     * @param int $mode
+     * @return array
+     * @throws GenericYoukokException
+     */
+    public function mapCoursesToLookup(Collection $courses, int $mode = CourseMapper::REGULAR): array
+    {
+        $output = [];
+        foreach ($courses as $course) {
+            if ($mode === static::REGULAR) {
+                $output[] = $this->mapCoursesToLookupRegular($course);
+            }
+            else {
+                $output[] = $this->mapCoursesToLookupAdmin($course);
+            }
+        }
+
+        return $output;
+    }
+
     private function mapLastVisitedCourse(array $course): array
     {
         return [
@@ -77,6 +103,49 @@ class CourseMapper
             'url' => $course['url'],
             'type' => Element::COURSE,
             'last_visited' => Carbon::createFromTimestamp($course['last_visited'])->format('Y-m-d H:i:s')
+        ];
+    }
+
+    /**
+     * @param Element $course
+     * @return array
+     * @throws GenericYoukokException
+     */
+    private function mapCoursesToLookupRegular(Element $course): array
+    {
+        return array_merge(
+            $this->mapCoursesToLookupBase($course), [
+                'url' => $this->urlService->urlForCourse($course),
+            ]
+        );
+    }
+
+    /**
+     * @param Element $course
+     * @return array[]
+     * @throws GenericYoukokException
+     */
+    private function mapCoursesToLookupAdmin(Element $course): array
+    {
+        return array_merge(
+            $this->mapCoursesToLookupBase($course), [
+                'url' => $this->urlService->urlForCourseAdmin($course),
+            ]
+        );
+    }
+
+    /**
+     * @param Element $course
+     * @return array
+     * @throws GenericYoukokException
+     */
+    private function mapCoursesToLookupBase(Element $course): array
+    {
+        return [
+            'id' => $course->id,
+            'name' => $course->getCourseName(),
+            'code' => $course->getCourseCode(),
+            'empty' => $course->empty === 1,
         ];
     }
 }
