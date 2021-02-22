@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode development",
-    "build:prod": "webpack --mode production",
-    "build:production": "webpack --mode production",
-    "watch": "webpack --mode development",
-    "dev": "webpack --mode development",
-    "prod": "webpack --mode production"
+    "build": "npm run clean && webpack --mode development",
+    "build:prod": "npm run clean && webpack --mode production",
+    "build:production": "npm run clean && webpack --mode production",
+    "watch": "npm run clean && webpack --mode development",
+    "dev": "npm run clean && webpack --mode development",
+    "prod": "npm run clean && webpack --mode production",
+    "clean": "rimraf ../static/content/static/**"
   },
   "author": "",
   "license": "MIT",
@@ -47,6 +48,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.4",
     "postcss-loader": "^4.1.0",
     "regenerator-runtime": "^0.13.7",
+    "rimraf": "^3.0.2",
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^5.1.1",
     "url-loader": "^4.1.1",
