@@ -1,6 +1,7 @@
 <?php
-
 namespace Youkok\Biz\Services\Models;
+
+use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\Collection;
 use Youkok\Biz\Exceptions\GenericYoukokException;
@@ -78,9 +79,11 @@ class CourseService
         // Get the current set
         $set = $this->cacheService->getSortedRangeByKey($key);
 
+        $currentTimestamp = Carbon::now()->timestamp;
+
         // If the set contains the current element, increase that value with the timestamp difference
         if (isset($set[$member])) {
-            $valueDifference = time() - $set[$member];
+            $valueDifference = $currentTimestamp - $set[$member];
             $this->cacheService->updateValueInSet($key, $valueDifference, $member);
             return;
         }
@@ -88,7 +91,7 @@ class CourseService
         // The current member does not exist. We have to insert it
         $this->cacheService->insertIntoSet(
             $key,
-            time(), // Value equals the current timestamp
+            $currentTimestamp, // Value equals the current timestamp
             $member
         );
 

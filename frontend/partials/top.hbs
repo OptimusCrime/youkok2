@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base href="{{ SITE_URL }}" />
+    {{#if ENABLE_GOOGLE_ANALYTICS}}<script async src="https://www.googletagmanager.com/gtag/js?id=UA-50619069-1"></script>
+    <script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-50619069-1');</script>{{/if}}<base href="{{ SITE_URL }}" />
     <title>{{#if SITE_TITLE}}{{ SITE_TITLE }}{{else}}Den beste kokeboka på nettet{{/if}} :: Youkok2.com</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="icon" type="image/png" href="favicon.png" />

@@ -65,6 +65,9 @@ const generateHtmlWebpackPluginInfo = entry => ({
   template: `./dist/${entry}.html`,
   filename: path.resolve(__dirname, '..', 'static', 'content', `${entry}.html`),
   chunks: generateHtmlWebpackPluginInfoChunks(entry),
+
+  // Do not minify the changelog because this removes the newlines in the file
+  minify: entry !== "changelog",
 });
 
 const generate404HtmlWebpackPluginInfo = () => ({
@@ -114,6 +117,7 @@ module.exports = (env, argv) => ({
       output: path.join(process.cwd(), "dist", "[name].html"),
       data: {
         SITE_URL: argv.mode === 'development' ? 'http://youkok2.local:8091' : 'https://youkok2.com',
+        ENABLE_GOOGLE_ANALYTICS: argv.mode === "production",
         VERSION,
         CHANGELOG,
       },

@@ -1,5 +1,5 @@
-Youkok2 - 5.0.0-pl (xx. xxxxxx 2021)
-====================================
+Youkok2 - 5.0.0-pl (23. februar 2021)
+=====================================
 
 - [Info] Ytelsesforbedringer
 - [Stuff] Bytte ut php-apache med php-fpm.
