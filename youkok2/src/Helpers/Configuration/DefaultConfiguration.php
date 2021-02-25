@@ -7,8 +7,8 @@ class DefaultConfiguration
     {
         // Note: This array must have all values as strings
         return [
-            Configuration::DEV => '1',
-            Configuration::SSL => '0',
+            Configuration::DEV => '0',
+            Configuration::SSL => '1',
 
             Configuration::LOGGER_NAME => 'youkok2',
 

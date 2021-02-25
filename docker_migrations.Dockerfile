@@ -12,6 +12,7 @@ RUN cd /usr/src \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
     && echo $TZ > /etc/timezone \
+    && echo "date.timezone = $TZ" > /usr/local/etc/php/conf.d/timezone.ini \
     && docker-php-ext-install pdo_mysql
 
 COPY ./youkok2 /code/site

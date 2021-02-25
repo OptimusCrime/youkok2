@@ -13,6 +13,7 @@ RUN cd /usr/src \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
     && echo $TZ > /etc/timezone \
+    && echo "date.timezone = $TZ" > /usr/local/etc/php/conf.d/timezone.ini \
     && apt-get update \
     && apt-get install -y --fix-missing apt-utils gnupg \
     && echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list \
