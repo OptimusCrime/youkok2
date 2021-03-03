@@ -5,10 +5,6 @@ ENV PHPREDIS_VERSION=5.3.1
 
 ARG ENV=prod
 
-RUN if [ $ENV = "prod" ] ; then \
-    mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" ; \
-fi ;
-
 RUN cd /usr/src \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
@@ -25,7 +21,12 @@ RUN cd /usr/src \
     && mkdir -p /usr/src/php/ext/redis \
     && curl -L https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
     && echo 'redis' >> /usr/src/php-available-exts \
-    && docker-php-ext-install redis
+    && docker-php-ext-install redis \
+    && sed -i 's/#EXTRA_OPTS=""/EXTRA_OPTS="-l"/g' /etc/default/cron
+
+RUN if [ $ENV = "prod" ] ; then \
+    mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" ; \
+fi ;
 
 # Override the entrypoint file
 COPY ./_docker/docker-php-entrypoint /usr/local/bin/docker-php-entrypoint

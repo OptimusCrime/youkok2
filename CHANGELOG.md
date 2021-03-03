@@ -1,3 +1,10 @@
+Youkok2 - 5.0.1-pl (3. mars 2021)
+=================================
+
+- [Info] Bugfix
+- [Fixed] Cronjobs
+- [Improved] Building Docker images should be faster due to cached layers.
+
 Youkok2 - 5.0.0-pl (23. februar 2021)
 =====================================
 

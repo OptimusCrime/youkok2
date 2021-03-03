@@ -1,1 +1,1 @@
-30 1 * * * php /code/site/entrypoint/cron.php
+30 1 * * * root /usr/local/bin/php /code/site/entrypoint/cron.php
