@@ -57,7 +57,7 @@ jobs:
     ##############################################################
 
     - name: Build and publish nginx to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
+      uses: elgohr/Publish-Docker-Github-Action@v5
       env:
         ENV: prod
         COMPOSER_ALLOW_SUPERUSER: 1
@@ -69,7 +69,7 @@ jobs:
         buildargs: ENV
         tags: "latest,${{ env.RELEASE_VERSION }}"
     - name: Build and publish php to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
+      uses: elgohr/Publish-Docker-Github-Action@v5
       env:
         ENV: prod
       with:
@@ -80,7 +80,7 @@ jobs:
         buildargs: ENV,COMPOSER_ALLOW_SUPERUSER
         tags: "latest,${{ env.RELEASE_VERSION }}"
     - name: Build and publish db to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
+      uses: elgohr/Publish-Docker-Github-Action@v5
       with:
         name: optimuscrime/youkok2-migrations
         username: ${{ secrets.DOCKER_USERNAME }}
@@ -90,7 +90,7 @@ jobs:
 
     # Uncomment to build new database image
     #- name: Build and publish db to Registry
-    #  uses: elgohr/Publish-Docker-Github-Action@master
+    #  uses: elgohr/Publish-Docker-Github-Action@v5
     #  with:
     #    name: optimuscrime/youkok2-db
     #    username: ${{ secrets.DOCKER_USERNAME }}
