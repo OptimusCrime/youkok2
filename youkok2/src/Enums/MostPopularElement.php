@@ -7,11 +7,11 @@ use Youkok\Biz\Exceptions\InvalidValueException;
 
 class MostPopularElement extends Enum
 {
-    private const DAY = 'DAY';
-    private const WEEK = 'WEEK';
-    private const MONTH = 'MONTH';
-    private const YEAR = 'YEAR';
-    private const ALL = 'ALL';
+    private const string DAY = 'DAY';
+    private const string WEEK = 'WEEK';
+    private const string MONTH = 'MONTH';
+    private const string YEAR = 'YEAR';
+    private const string ALL = 'ALL';
 
     public function eq(?string $value): bool
     {
@@ -23,8 +23,6 @@ class MostPopularElement extends Enum
     }
 
     /**
-     * @param string|null $value
-     * @return Identifier
      * @throws InvalidValueException
      */
     public static function fromValue(?string $value): MostPopularElement

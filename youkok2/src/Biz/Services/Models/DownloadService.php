@@ -2,12 +2,11 @@
 namespace Youkok\Biz\Services\Models;
 
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Capsule\Manager as DB;
 
 use Illuminate\Support\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Common\Models\Download;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\SelectStatements;
@@ -37,11 +36,7 @@ class DownloadService
     }
 
     /**
-     * @param int $limit
-     * @return array
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
      */
     public function getLatestDownloads(int $limit): array
     {
@@ -71,10 +66,7 @@ class DownloadService
     }
 
     /**
-     * @param string $delta
-     * @param int|null $limit
-     * @return Collection
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     public function getMostPopularElementsFromDelta(string $delta, ?int $limit = null): Collection
     {
@@ -108,11 +100,7 @@ class DownloadService
     }
 
     /**
-     * @param string $delta
-     * @param int $limit
-     * @return array
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws Exception
      */
     public function getMostPopularCoursesFromDelta(string $delta, int $limit): array
     {
@@ -133,10 +121,7 @@ class DownloadService
     }
 
     /**
-     * @param Collection $downloads
-     * @return array
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws Exception
      */
     private function summarizeDownloads(Collection $downloads): array
     {
@@ -160,7 +145,6 @@ class DownloadService
                     $this->elementService->getElement(
                         $selectStatements,
                         ['id', 'parent'],
-                        []
                     );
 
                     $currentCourse = $parentToCourse[$download->parent];
@@ -255,9 +239,7 @@ class DownloadService
     }
 
     /**
-     * @param string $delta
-     * @return Carbon
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     private static function getMostPopularElementQueryFromDelta(string $delta): Carbon
     {
@@ -271,7 +253,7 @@ class DownloadService
             case MostPopularElement::YEAR():
                 return Carbon::now()->subYear();
             default:
-                throw new GenericYoukokException('Invalid delta');
+                throw new Exception('Invalid delta');
         }
     }
 }

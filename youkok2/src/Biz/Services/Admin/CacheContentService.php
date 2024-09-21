@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Biz\Services\Admin;
 
+use RedisException;
 use Youkok\Biz\Services\CacheService;
 
 class CacheContentService
@@ -12,6 +13,9 @@ class CacheContentService
         $this->cacheService = $cacheService;
     }
 
+    /**
+     * @throws RedisException
+     */
     public function getAllCacheContent(): array
     {
         $keys = $this->cacheService->getAllKeys();

@@ -1,7 +1,7 @@
 <?php
 namespace Youkok\Biz\Services\Job\Jobs;
 
-use Youkok\Biz\Exceptions\GenericYoukokException;
+use RedisException;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 
 class UpdateMostPopularElementsJobService implements JobServiceInterface
@@ -14,7 +14,7 @@ class UpdateMostPopularElementsJobService implements JobServiceInterface
     }
 
     /**
-     * @throws GenericYoukokException
+     * @throws RedisException
      */
     public function run(): void
     {

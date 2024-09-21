@@ -1,38 +1,35 @@
 <?php
 namespace Youkok\Common\Containers;
 
-use Illuminate\Container\Container;
+use DI\Container;
+use Illuminate\Container\Container as DispatchContainer;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Database\Capsule\Manager as DB;
-use Psr\Container\ContainerInterface;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\ConnectionResolver;
 
 use Youkok\Helpers\Configuration\Configuration;
 
-class Database implements ContainersInterface
+class Database
 {
-    public static function load(ContainerInterface $container): void
+    public static function load(Container $container): void
     {
         $configuration = Configuration::getInstance();
 
         $connection = [
-            'driver' => 'mysql',
-            'host' => $configuration->getMysqlHost(),
-            'username' => $configuration->getMysqlUser(),
-            'password' => $configuration->getMysqlPassword(),
-            'database' => $configuration->getMysqlDatabase(),
-            'port' => $configuration->getMysqlPort(),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
+            'driver' => 'pgsql',
+            'host' => $configuration->getDbHost(),
+            'username' => $configuration->getDbUser(),
+            'password' => $configuration->getDbPassword(),
+            'database' => $configuration->getDbDatabase(),
+            'port' => $configuration->getDbPort(),
         ];
 
         $capsule = new Manager;
         $capsule->addConnection($connection);
 
-        $capsule->setEventDispatcher(new Dispatcher(new Container()));
+        $capsule->setEventDispatcher(new Dispatcher(new DispatchContainer()));
 
         // Make it possible to use $app->get('db') -> whatever
         $capsule->setAsGlobal();
@@ -48,8 +45,6 @@ class Database implements ContainersInterface
             DB::connection()->enableQueryLog();
         }
 
-        $container['db'] = function () use ($capsule): Manager {
-            return $capsule;
-        };
+        $container->set(Database::class, $capsule);
     }
 }

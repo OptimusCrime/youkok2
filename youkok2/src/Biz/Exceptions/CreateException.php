@@ -1,7 +1,9 @@
 <?php
 namespace Youkok\Biz\Exceptions;
 
-class CreateException extends YoukokException
+use Exception;
+
+class CreateException extends Exception
 {
 
 }

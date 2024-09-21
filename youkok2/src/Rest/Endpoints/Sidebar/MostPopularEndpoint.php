@@ -1,15 +1,16 @@
 <?php
 namespace Youkok\Rest\Endpoints\Sidebar;
 
+use Exception;
 use Monolog\Logger;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
-use Slim\Http\Request;
+use Psr\Container\NotFoundExceptionInterface;
+use RedisException;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
-use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 use Youkok\Enums\MostPopularElement;
 use Youkok\Rest\Endpoints\BaseRestEndpoint;
@@ -17,17 +18,21 @@ use Youkok\Biz\Services\Mappers\ElementMapper;
 
 class MostPopularEndpoint extends BaseRestEndpoint
 {
-    const SERVICE_LIMIT = 10;
+    const int SERVICE_LIMIT = 10;
 
     private MostPopularElementsService $mostPopularElementsService;
     private ElementMapper $elementMapper;
     private Logger $logger;
 
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->mostPopularElementsService = $container->get(MostPopularElementsService::class);
         $this->elementMapper = $container->get(ElementMapper::class);
-        $this->logger = $container->get(Logger::class);
+        $this->logger = $container->get('logger');
     }
 
     public function get(Request $request, Response $response): Response
@@ -36,17 +41,16 @@ class MostPopularEndpoint extends BaseRestEndpoint
             return $this->outputJson($response, [
                 'data' => $this->getMostPopularElements()
             ]);
-        } catch (YoukokException $ex) {
+        } catch (Exception $ex) {
             $this->logger->error($ex);
-            return $this->returnBadRequest($response, $ex);
+
+            return $this->returnInternalServerError($response);
         }
     }
 
     /**
-     * @return array
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
      */
     private function getMostPopularElements(): array
     {

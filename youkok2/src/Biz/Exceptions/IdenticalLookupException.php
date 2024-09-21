@@ -1,7 +1,9 @@
 <?php
 namespace Youkok\Biz\Exceptions;
 
-class IdenticalLookupException extends YoukokException
+use Exception;
+
+class IdenticalLookupException extends Exception
 {
 
 }

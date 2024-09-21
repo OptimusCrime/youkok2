@@ -1,21 +1,19 @@
 <?php
 namespace Youkok\Biz\Services\Auth;
 
-use Slim\Http\Request;
-
-use Youkok\Biz\Exceptions\GenericYoukokException;
+use Exception;
+use Slim\Psr7\Request;
 use Youkok\Biz\Exceptions\InsufficientAccessException;
 use Youkok\Biz\Exceptions\InvalidLoginAttemptException;
 use Youkok\Helpers\Configuration\Configuration;
 
 class AuthService
 {
-    const PARAM_PREFIX = 'password';
+    const string PARAM_PREFIX = 'password';
 
-    const COOKIE_LIFETIME = 60 * 60 * 24 * 30; // 30 days
+    const int|float COOKIE_LIFETIME = 60 * 60 * 24 * 30; // 30 days
 
     /**
-     * @param array $params
      * @throws InvalidLoginAttemptException
      */
     public function validateLogin(array $params): void
@@ -54,7 +52,7 @@ class AuthService
     }
 
     /**
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     public function removeAdminCookie(): void
     {
@@ -67,18 +65,18 @@ class AuthService
 
         if ($ret === false) {
             // Failed to set cookie for some reason
-            throw new GenericYoukokException();
+            throw new Exception('Failed to set cookie');
         }
     }
 
     /**
-     * @param Request $request
      * @throws InsufficientAccessException
      */
 
     public function validateCookie(Request $request): void
     {
-        $cookieValue = $request->getCookieParam(static::getCookieName());
+        $cookies = $request->getCookieParams();
+        $cookieValue = $cookies[static::getCookieName()] ?? null;
 
         if ($cookieValue === null || mb_strlen($cookieValue) === 0) {
             throw new InsufficientAccessException();

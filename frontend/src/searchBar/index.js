@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import configureStore from './redux/configureStore';
@@ -24,12 +24,12 @@ export const run = mode => {
     store.dispatch(refreshCourses());
   }
 
-  ReactDOM.render((
+  const root = ReactDOM.createRoot(document.getElementById('search-bar'));
+    root.render(
       <Provider store={store}>
         <LoaderWrapperContainer />
       </Provider>
-    ), document.getElementById('search-bar')
-  );
+    );
 
 // Handle click outside dropdown list, to close it
   document.addEventListener("DOMContentLoaded", () => {

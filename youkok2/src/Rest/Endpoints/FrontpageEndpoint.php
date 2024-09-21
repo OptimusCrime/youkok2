@@ -1,15 +1,19 @@
 <?php
+
 namespace Youkok\Rest\Endpoints;
 
+use Exception;
 use Monolog\Logger;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
-use Slim\Http\Request;
+use Psr\Container\NotFoundExceptionInterface;
+use RedisException;
+use Slim\Interfaces\RouteParserInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
+use Slim\Routing\RouteContext;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidValueException;
-use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
@@ -26,69 +30,86 @@ class FrontpageEndpoint extends BaseRestEndpoint
     private Logger $logger;
     private CacheService $cacheService;
 
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->frontpageService = $container->get(FrontpageService::class);
         $this->courseMapper = $container->get(CourseMapper::class);
         $this->elementMapper = $container->get(ElementMapper::class);
-        $this->logger = $container->get(Logger::class);
+        $this->logger = $container->get('logger');
         $this->cacheService = $container->get(CacheService::class);
     }
 
     public function boxes(Request $request, Response $response): Response
     {
-        $payload = $this->frontpageService->boxes();
+        try {
+            $payload = $this->frontpageService->boxes();
 
-        return $this->outputJson($response, [
-            'data' => $payload
-        ]);
+            return $this->outputJson($response, [
+                'data' => $payload
+            ]);
+        } catch (Exception $ex) {
+            $this->logger->error($ex);
+            return $this->returnInternalServerError($response);
+        }
     }
 
     public function popularElements(Request $request, Response $response): Response
     {
         try {
-            $delta = MostPopularElement::fromValue($request->getQueryParam('delta', 'ALL'));
+            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+            $queryParams = $request->getQueryParams();
+            $delta = MostPopularElement::fromValue($queryParams['delta'] ?? 'ALL');
             $payload = $this->frontpageService->popularElements($delta);
 
             return $this->outputJson($response, [
-                'elements' => $this->mapElementsMostPopular($payload),
+                'elements' => $this->mapElementsMostPopular($routeParser, $payload),
                 'preference' => $delta
             ]);
-        } catch (YoukokException $ex) {
+        } catch (Exception $ex) {
             $this->logger->error($ex);
-            return $response->withStatus(400);
+            return $this->returnInternalServerError($response);
         }
     }
 
     public function popularCourses(Request $request, Response $response): Response
     {
         try {
-            $delta = MostPopularCourse::fromValue($request->getQueryParam('delta', 'ALL'));
+            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+            $queryParams = $request->getQueryParams();
+            $delta = MostPopularCourse::fromValue($queryParams['delta'] ?? 'ALL');
+
             $payload = $this->frontpageService->popularCourses($delta);
 
             return $this->outputJson($response, [
-                'courses' => $this->mapCoursesMostPopular($payload),
+                'courses' => $this->mapCoursesMostPopular($routeParser, $payload),
                 'preference' => $delta
             ]);
-        } catch (YoukokException $ex) {
+        } catch (Exception $ex) {
             $this->logger->error($ex);
-            return $response->withStatus(400);
+            return $this->returnInternalServerError($response);
         }
     }
 
     public function newest(Request $request, Response $response): Response
     {
-        $cacheKey = CacheKeyGenerator::keyForNewestElementsPayload();
-        $cache = $this->fetchFromRedisCache($cacheKey);
-        if ($cache !== null) {
-            return $this->outputJson($response, [
-                'data' => $cache
-            ]);
-        }
-
         try {
+            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+            $cacheKey = CacheKeyGenerator::keyForNewestElementsPayload();
+            $cache = $this->fetchFromRedisCache($cacheKey);
+
+            if ($cache !== null) {
+                return $this->outputJson($response, [
+                    'data' => $cache
+                ]);
+            }
+
             $payload = $this->frontpageService->newest();
             $data = $this->elementMapper->mapFromArray(
+                $routeParser,
                 $payload,
                 [
                     ElementMapper::POSTED_TIME,
@@ -105,50 +126,60 @@ class FrontpageEndpoint extends BaseRestEndpoint
             return $this->outputJson($response, [
                 'data' => $data
             ]);
-        } catch (YoukokException $ex) {
+        } catch (Exception $ex) {
             $this->logger->error($ex);
-            return $response->withStatus(400);
+            return $this->returnInternalServerError($response);
         }
     }
 
     public function lastVisited(Request $request, Response $response): Response
     {
-        $cacheKey = CacheKeyGenerator::keyForLastVisitedCoursesPayload();
-        $cache = $this->fetchFromRedisCache($cacheKey);
-        if ($cache !== null) {
+        try {
+            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+            $cacheKey = CacheKeyGenerator::keyForLastVisitedCoursesPayload();
+            $cache = $this->fetchFromRedisCache($cacheKey);
+
+            if ($cache !== null) {
+                return $this->outputJson($response, [
+                    'data' => $cache
+                ]);
+            }
+
+            $payload = $this->frontpageService->lastVisited();
+
+            $data = $this->courseMapper->mapLastVisited($payload);
+
+            $this->cacheService->set(
+                $cacheKey,
+                json_encode($data)
+            );
+
             return $this->outputJson($response, [
-                'data' => $cache
+                'data' => $data
             ]);
+        } catch (Exception $ex) {
+            $this->logger->error($ex);
+            return $this->returnInternalServerError($response);
         }
-
-        $payload = $this->frontpageService->lastVisited();
-
-        $data = $this->courseMapper->mapLastVisited($payload);
-
-        $this->cacheService->set(
-            $cacheKey,
-            json_encode($data)
-        );
-
-        return $this->outputJson($response, [
-            'data' => $data
-        ]);
     }
 
     public function lastDownloaded(Request $request, Response $response): Response
     {
-        $cacheKey = CacheKeyGenerator::keyForLastDownloadedPayload();
-        $cache = $this->fetchFromRedisCache($cacheKey);
-        if ($cache !== null) {
-            return $this->outputJson($response, [
-                'data' => $cache
-            ]);
-        }
-
         try {
+            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+            $cacheKey = CacheKeyGenerator::keyForLastDownloadedPayload();
+            $cache = $this->fetchFromRedisCache($cacheKey);
+
+            if ($cache !== null) {
+                return $this->outputJson($response, [
+                    'data' => $cache
+                ]);
+            }
+
             $payload = $this->frontpageService->lastDownloaded();
 
             $data = $this->elementMapper->mapFromArray(
+                $routeParser,
                 $payload,
                 [
                     ElementMapper::DOWNLOADED_TIME,
@@ -165,21 +196,20 @@ class FrontpageEndpoint extends BaseRestEndpoint
             return $this->outputJson($response, [
                 'data' => $data
             ]);
-        } catch (YoukokException $ex) {
+        } catch (Exception $ex) {
             $this->logger->error($ex);
-            return $response->withStatus(400);
+            return $this->returnInternalServerError($response);
         }
     }
 
     /**
-     * @param $arr
-     * @return array
+     * @throws RedisException
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
      */
-    private function mapElementsMostPopular($arr): array
+    private function mapElementsMostPopular(RouteParserInterface $routeParser, $arr): array
     {
         return $this->elementMapper->mapFromArray(
+            $routeParser,
             $arr,
             [
                 ElementMapper::DATASTORE_DOWNLOADS,
@@ -190,13 +220,12 @@ class FrontpageEndpoint extends BaseRestEndpoint
     }
 
     /**
-     * @param $arr
-     * @return array
-     * @throws GenericYoukokException
+     * @throws Exception
      */
-    private function mapCoursesMostPopular($arr): array
+    private function mapCoursesMostPopular(RouteParserInterface $routeParser, $arr): array
     {
         return $this->courseMapper->map(
+            $routeParser,
             $arr,
             [
                 CourseMapper::DATASTORE_DOWNLOAD_ESTIMATE
@@ -204,6 +233,9 @@ class FrontpageEndpoint extends BaseRestEndpoint
         );
     }
 
+    /**
+     * @throws RedisException
+     */
     private function fetchFromRedisCache(string $key): ?array
     {
         $cache = $this->cacheService->get($key);

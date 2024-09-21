@@ -1,10 +1,11 @@
 <?php
 namespace Youkok\Biz\Services\Job\Jobs;
 
+use RedisException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 
-class ClearReddisCachePartitionsService implements JobServiceInterface
+class ClearRedisCachePartitionsService implements JobServiceInterface
 {
     private CacheService $cacheService;
 
@@ -13,9 +14,12 @@ class ClearReddisCachePartitionsService implements JobServiceInterface
         $this->cacheService = $cacheService;
     }
 
+    /**
+     * @throws RedisException
+     */
     public function run(): void
     {
-        foreach (ClearReddisCachePartitionsService::partitionsToClear() as $partition) {
+        foreach (ClearRedisCachePartitionsService::partitionsToClear() as $partition) {
             $this->cacheService->delete($partition);
         }
     }

@@ -1,7 +1,7 @@
-FROM php:7.4.11-fpm
+FROM php:8.3.11-fpm
 
 ENV TZ=Europe/Oslo
-ENV PHPREDIS_VERSION=5.3.1
+ENV PHPREDIS_VERSION=6.0.2
 
 ARG ENV=prod
 
@@ -11,13 +11,8 @@ RUN cd /usr/src \
     && echo $TZ > /etc/timezone \
     && echo "date.timezone = $TZ" > /usr/local/etc/php/conf.d/timezone.ini \
     && apt-get update \
-    && apt-get install -y --fix-missing apt-utils gnupg \
-    && echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list \
-    && echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list \
-    && curl -sS --insecure https://www.dotdeb.org/dotdeb.gpg | apt-key add - \
-    && apt-get update \
-    && apt-get install -y zlib1g-dev libzip-dev zip cron \
-    && docker-php-ext-install zip pdo_mysql \
+    && apt-get install -y zlib1g-dev libzip-dev zip cron libpq-dev \
+    && docker-php-ext-install zip pdo pdo_pgsql \
     && mkdir -p /usr/src/php/ext/redis \
     && curl -L https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
     && echo 'redis' >> /usr/src/php-available-exts \

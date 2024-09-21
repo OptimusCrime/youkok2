@@ -1,7 +1,9 @@
 <?php
 namespace Youkok\Biz\Exceptions;
 
-class InvalidLoginAttemptException extends YoukokException
+use Exception;
+
+class InvalidLoginAttemptException extends Exception
 {
 
 }

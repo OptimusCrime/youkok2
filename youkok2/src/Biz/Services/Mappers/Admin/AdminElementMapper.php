@@ -1,8 +1,9 @@
 <?php
 namespace Youkok\Biz\Services\Mappers\Admin;
 
+use Exception;
+use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
@@ -19,14 +20,13 @@ class AdminElementMapper
     }
 
     /**
-     * @param Element $element
-     * @return array
-     * @throws GenericYoukokException
      * @throws ElementNotFoundException
+     * @throws Exception
      */
-    public function map(Element $element): array
+    public function map(RouteParserInterface $routeParser, Element $element): array
     {
         $arr = $this->elementMapper->mapElement(
+            $routeParser,
             $element,
             [
                 ElementMapper::ICON
@@ -36,7 +36,7 @@ class AdminElementMapper
         if ($element->getType() === Element::COURSE) {
             $arr['courseCode'] = $element->getCourseCode();
             $arr['courseName'] = $element->getCourseName();
-            $arr['url'] = $this->urlService->urlForCourse($element);
+            $arr['url'] = $this->urlService->urlForCourse($routeParser, $element);
             unset($arr['name']);
         }
 
@@ -47,7 +47,7 @@ class AdminElementMapper
             $arr['children'] = [];
 
             foreach ($element->getChildren() as $child) {
-                $arr['children'][] = $this->map($child);
+                $arr['children'][] = $this->map($routeParser, $child);
             }
         }
 

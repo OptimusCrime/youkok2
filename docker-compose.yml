@@ -1,36 +1,25 @@
-version: '2'
-
 services:
 
-  ###############################################
-  #                   Database                  #
-  ###############################################
-
   youkok2-db:
-    build:
-      context: .
-      dockerfile: docker_db.Dockerfile
+    image: postgres:14.9
     container_name: "youkok2_db_dev"
-    volumes:
-      - /var/lib/mysql
+    environment:
+      POSTGRES_USER: youkok2
+      POSTGRES_PASSWORD: youkok2
+      POSTGRES_DB: youkok2
     ports:
-      - "3306:3306"
-    env_file:
-      - env_db_dev.env
-
-  ###############################################
-  #                    Cache                    #
-  ###############################################
+      - '5444:5432'
+    healthcheck:
+      test: [ 'CMD-SHELL', 'pg_isready -U postgres' ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   youkok2-cache:
     image: "redis:6.0.8-alpine"
     container_name: "youkok2_cache_dev"
     ports:
       - "6379:6379"
-
-  ###############################################
-  #                  Webserver                  #
-  ###############################################
 
   youkok2-php:
     build:
@@ -53,10 +42,6 @@ services:
       - youkok2-db
       - youkok2-cache
 
-  ###############################################
-  #                    Nginx                    #
-  ###############################################
-
   youkok2-nginx:
     build:
       context: .
@@ -73,26 +58,3 @@ services:
       - youkok2-php
     links:
       - youkok2-php
-
-  ###############################################
-  #                 Migrations                  #
-  ###############################################
-
-  youkok2-migrations:
-    build:
-      context: .
-      dockerfile: docker_migrations.Dockerfile
-      args:
-        - ENV=dev
-    container_name: "youkok2_migrations_dev"
-    environment:
-      WAIT_HOSTS: youkok2-db:3306
-    env_file:
-      - env_php_dev.env
-    volumes:
-      - ./youkok2:/code/site
-    depends_on:
-      - youkok2-db
-    links:
-      - youkok2-db
-

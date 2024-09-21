@@ -1,8 +1,7 @@
 <?php
 namespace Youkok\Biz\Services\Admin;
 
-use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
+use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Services\Models\Admin\AdminCourseService;
 
 class FileListingService
@@ -18,39 +17,18 @@ class FileListingService
         $this->filesService = $filesService;
     }
 
-    /**
-     * @return array
-     * @throws ElementNotFoundException
-     * @throws InvalidFlagCombination
-     */
-    public function getAll(): array
+    public function getAll(RouteParserInterface $routeParser): array
     {
         return $this->filesService->buildTree(
+            $routeParser,
             $this->adminCourseService->getAllNonEmptyCourses()
         );
     }
 
-    /**
-     * @param int $id
-     * @return array
-     * @throws ElementNotFoundException
-     * @throws InvalidFlagCombination
-     */
-    public function get(int $id): array
+    public function getPending(RouteParserInterface $routeParser): array
     {
         return $this->filesService->buildTree(
-            $this->adminCourseService->getCourse($id)
-        );
-    }
-
-    /**
-     * @return array
-     * @throws ElementNotFoundException
-     * @throws InvalidFlagCombination
-     */
-    public function getPending(): array
-    {
-        return $this->filesService->buildTree(
+            $routeParser,
             $this->adminCourseService->getAllCoursesWithPendingContent()
         );
     }

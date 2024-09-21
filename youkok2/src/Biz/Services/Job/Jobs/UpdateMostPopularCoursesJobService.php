@@ -1,8 +1,7 @@
 <?php
 namespace Youkok\Biz\Services\Job\Jobs;
 
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
+use RedisException;
 use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
 
 class UpdateMostPopularCoursesJobService implements JobServiceInterface
@@ -15,8 +14,7 @@ class UpdateMostPopularCoursesJobService implements JobServiceInterface
     }
 
     /**
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
      */
     public function run(): void
     {

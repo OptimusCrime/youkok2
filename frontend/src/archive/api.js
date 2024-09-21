@@ -1,14 +1,9 @@
-import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
-import {fetch} from 'whatwg-fetch';
-
 export const fetchArchiveDataRest = (course, path) => fetch(`/rest/archive/data?course=${course}&path=${encodeURIComponent(path)}`);
 export const fetchArchiveContentRest = id => fetch(`/rest/archive/content?id=${id}`);
 
 export const fetchSidebarHistoryRest = id => fetch(`/rest/sidebar/history/${id}`);
 
 const controllers = [];
-
-const abortableFetch = ('signal' in new Request('')) ? window.fetch : fetch;
 
 export const fetchTitleFromUrlRest = url => {
   try {
@@ -24,7 +19,7 @@ export const fetchTitleFromUrlRest = url => {
 
   controllers.push(controller);
 
-  return abortableFetch('/rest/sidebar/post/title', {
+  return fetch('/rest/sidebar/post/title', {
     body: JSON.stringify({
       url
     }),

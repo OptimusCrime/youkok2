@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import LoaderWrapperContainer from './containers/loader-wrapper/loader-wrapper';
@@ -12,12 +12,12 @@ export const run = () => {
 
   const store = configureStore(preloadedState);
 
-  ReactDOM.render((
+  const root = ReactDOM.createRoot(document.getElementById('courses'));
+    root.render(
       <Provider store={store}>
         <LoaderWrapperContainer />
       </Provider>
-    ), document.getElementById('courses')
-  );
+    );
 
 // Check if we have search parameters from the URI
   if (queryPresentInUrl()) {

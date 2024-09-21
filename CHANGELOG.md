@@ -1,3 +1,12 @@
+Youkok2 - 6.0.0-pl        (?????)
+=================================
+
+- [Info] Overhaul
+- [Change] Erstatte MySQL med Postgres
+- [Upgrade] PHP 8.3
+- [Upgrade] Slim4
+- [Upgrade] Node18
+
 Youkok2 - 5.0.1-pl (3. mars 2021)
 =================================
 

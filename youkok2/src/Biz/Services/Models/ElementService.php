@@ -3,10 +3,10 @@ namespace Youkok\Biz\Services\Models;
 
 use Carbon\Carbon;
 
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use RedisException;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Exceptions\PoolException;
 use Youkok\Biz\Pools\Containers\ElementPoolContainer;
 use Youkok\Biz\Pools\ElementPool;
@@ -18,23 +18,23 @@ use Youkok\Common\Utilities\UriCleaner;
 
 class ElementService
 {
-    const SORT_TYPE_ORGANIZED = 0;
-    const SORT_TYPE_AGE = 1;
+    const int SORT_TYPE_ORGANIZED = 0;
+    const int SORT_TYPE_AGE = 1;
 
-    const FLAG_FETCH_PARENTS = 'FLAG_FETCH_PARENTS';
-    const FLAG_FETCH_COURSE = 'FLAG_FETCH_COURSE';
-    const FLAG_FETCH_URI = 'FLAG_FETCH_URI';
+    const string FLAG_FETCH_PARENTS = 'FLAG_FETCH_PARENTS';
+    const string FLAG_FETCH_COURSE = 'FLAG_FETCH_COURSE';
+    const string FLAG_FETCH_URI = 'FLAG_FETCH_URI';
 
     // This flag will force visible check on all parents, even if FLAG_FETCH_PARENTS is not used
-    const FLAG_ENSURE_VISIBLE = 'FLAG_ENSURE_VISIBLE';
+    const string FLAG_ENSURE_VISIBLE = 'FLAG_ENSURE_VISIBLE';
 
-    // This flag will force check to ensure that all the parents are directories, and current element is file
-    const FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE =
+    // This flag will force check to ensure that all the parents are directories, and current element is a file
+    const string FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE =
         'FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE';
 
-    const FLAG_ENSURE_IS_COURSE = 'FLAG_ENSURE_IS_COURSE';
+    const string FLAG_ENSURE_IS_COURSE = 'FLAG_ENSURE_IS_COURSE';
 
-    const FLAG_ONLY_DIRECTORIES = 'FLAG_ONLY_DIRECTORIES';
+    const string FLAG_ONLY_DIRECTORIES = 'FLAG_ONLY_DIRECTORIES';
 
     private CacheService $cacheService;
 
@@ -44,13 +44,8 @@ class ElementService
     }
 
     /**
-     * @param SelectStatements $selectStatements
-     * @param array $attributes
-     * @param array $flags
-     * @return Element
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws Exception
      */
     public function getElement(SelectStatements $selectStatements, array $attributes = [], array $flags = []): Element
     {
@@ -91,26 +86,26 @@ class ElementService
 
         if (in_array(static::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE, $flags)) {
             if (count($element->getParents()) === 0) {
-                throw new GenericYoukokException('No parents loaded for verification.');
+                throw new Exception('No parents loaded for verification.');
             }
 
             foreach ($element->getParents() as $index => $parent) {
                 // First child will be identified as a COURSE
                 if ($index > 0 && !$parent->isDirectory()) {
-                    throw new GenericYoukokException(
+                    throw new Exception(
                         'Parent of ' . $element->id . ' should be all directories, but is ' . $parent->getType() . '.'
                     );
                 }
 
                 if ($index === 0 && !$parent->isCourse()) {
-                    throw new GenericYoukokException(
+                    throw new (
                         'First parent of ' . $element->id . ' should be COURSE, but is ' . $parent->getType() . '.'
                     );
                 }
             }
 
             if ($element->getType() !== Element::FILE) {
-                throw new GenericYoukokException(
+                throw new Exception(
                     'Element ' . $element->id . ' should be FILE, but is ' . $element->getType()
                 );
             }
@@ -118,7 +113,7 @@ class ElementService
 
         if (in_array(static::FLAG_ENSURE_IS_COURSE, $flags)) {
             if (!$element->isCourse()) {
-                throw new GenericYoukokException(
+                throw new Exception(
                     'Element ' . $element->id . ' should be COURSE, but is ' . $element->getType()
                 );
             }
@@ -128,9 +123,6 @@ class ElementService
     }
 
     /**
-     * @param Element $element
-     * @param bool $forceFetchFromParentSlugFragments
-     * @return string
      * @throws ElementNotFoundException
      */
     public function getUriForElement(Element $element, bool $forceFetchFromParentSlugFragments = false): string
@@ -162,13 +154,8 @@ class ElementService
     }
 
     /**
-     * @param string $uri
-     * @param array $attributes
-     * @param array $flags
-     * @return Element
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws Exception
      */
     public function getElementFromUri(string $uri, array $attributes = [], array $flags = []): Element
     {
@@ -194,8 +181,6 @@ class ElementService
     }
 
     /**
-     * @param Element $element
-     * @return Element
      * @throws ElementNotFoundException
      */
     public function getVisibleParentForElement(Element $element): Element
@@ -233,11 +218,7 @@ class ElementService
     }
 
     /**
-     * @param int $limit
-     * @return array
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
      */
     public function getNewestElements(int $limit = 10): array
     {
@@ -291,13 +272,9 @@ class ElementService
     }
 
     /**
-     * @param string $uri
-     * @param array $attributes
-     * @param array $flags
-     * @return Element
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws Exception
+     * @throws RedisException
      */
     private function getElementFromUriCache(string $uri, array $attributes, array $flags): Element
     {
@@ -317,13 +294,9 @@ class ElementService
     }
 
     /**
-     * @param string $uri
-     * @param array $attributes
-     * @param array $flags
-     * @return Element
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
+     * @throws Exception
      */
     private function getElementFromOriginalUri(string $uri, array $attributes, array $flags): Element
     {
@@ -354,13 +327,9 @@ class ElementService
     }
 
     /**
-     * @param string $uri
-     * @param array $attributes
-     * @param array $flags
-     * @return Element
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
+     * @throws Exception
      */
     private function getElementFromUriFragments(string $uri, array $attributes, array $flags): Element
     {
@@ -401,10 +370,6 @@ class ElementService
     }
 
     /**
-     * @param Element $element
-     * @param array $attributes
-     * @param array $flags
-     * @return array
      * @throws ElementNotFoundException
      */
     private function fetchParents(Element $element, array $attributes, array $flags): array
@@ -450,10 +415,6 @@ class ElementService
     }
 
     /**
-     * @param SelectStatements $selectStatements
-     * @param array $attributes
-     * @param array $flags
-     * @return Element|null
      * @throws ElementNotFoundException
      */
     private function buildQuery(SelectStatements $selectStatements, array $attributes, array $flags): ?Element
@@ -479,9 +440,6 @@ class ElementService
     }
 
     /**
-     * @param array $attributes
-     * @param SelectStatements $selectStatements
-     * @return Element
      * @throws ElementNotFoundException
      */
     private function fetchElement(array $attributes, SelectStatements $selectStatements): Element
@@ -525,14 +483,13 @@ class ElementService
     }
 
     /**
-     * @param array $flags
-     * @throws InvalidFlagCombination
+     * @throws Exception
      */
     private function validateFlags(array $flags): void
     {
         if (in_array(static::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE, $flags)
             && in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {
-            throw new InvalidFlagCombination('Can not fetch only files AND directories at the same time.');
+            throw new Exception('Can not fetch only files AND directories at the same time.');
         }
     }
 
@@ -635,10 +592,7 @@ class ElementService
     }
 
     /**
-     * @param string $uri
-     * @param array $flags
-     * @return string
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     private static function generateUriCacheKey(string $uri, array $flags): string
     {
@@ -650,6 +604,6 @@ class ElementService
             return CacheKeyGenerator::keyForAllParentsAreDirectoriesExceptCurrentIsFile($uri);
         }
 
-        throw new GenericYoukokException('Not implemented yet, sry');
+        throw new Exception('Not implemented yet, sry');
     }
 }

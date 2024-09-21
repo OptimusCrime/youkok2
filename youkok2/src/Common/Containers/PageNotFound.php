@@ -1,23 +1,21 @@
 <?php
+
 namespace Youkok\Common\Containers;
 
-use \Closure;
+use DI\Container;
+use Exception;
 
-use Slim\Http\Request;
-use Slim\Http\Response;
-use Psr\Container\ContainerInterface;
-
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 use Youkok\Web\Views\PageNotFound as PageNotFoundView;
 
-class PageNotFound implements ContainersInterface
+class PageNotFound
 {
-    public static function load(ContainerInterface $container): void
+    public static function load(Container $container): void
     {
-        $container['notFoundHandler'] = function (ContainerInterface $container): Closure {
-            return function (Request $request, Response $response) use ($container) {
-                $pageNotFound = new PageNotFoundView();
-                return $pageNotFound->view($request, $response);
-            };
-        };
+        $container->set(PageNotFound::class, function (Request $request, Response $response, Exception $_): Response {
+            $pageNotFound = new PageNotFoundView();
+            return $pageNotFound->view($request, $response);
+        });
     }
 }

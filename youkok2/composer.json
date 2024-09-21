@@ -3,42 +3,26 @@
   "description": "Utility website for students",
   "license": "MIT",
   "require": {
-    "php": ">=7.4",
-    "slim/slim": "3.12.1",
-    "monolog/monolog": "1.24.0",
-    "illuminate/database": "6.20.14",
-    "illuminate/events": "6.20.14",
-    "robmorgan/phinx": "0.10.8",
-    "illuminate/cache": "6.20.14",
-    "myclabs/php-enum": "^1.7",
+    "php": ">=8.3.11",
+    "slim/slim": "4.14.0",
+    "monolog/monolog": "3.7.0",
+    "illuminate/database": "11.23.5",
+    "illuminate/events": "11.23.5",
+    "robmorgan/phinx": "0.16.3",
+    "myclabs/php-enum": "^1.8.4",
     "ext-json": "*",
     "ext-redis": "*",
     "ext-fileinfo": "*",
-    "ext-curl": "*"
-  },
-  "require-dev": {
-    "squizlabs/php_codesniffer": "3.4.2",
-    "phpunit/phpunit": "8.2.5",
-    "php-coveralls/php-coveralls": "1.1.0"
+    "ext-curl": "*",
+    "php-di/slim-bridge": "^3.4",
+    "slim/psr7": "^1.7"
   },
   "autoload": {
     "psr-4": {
       "Youkok\\": "src"
     }
   },
-  "autoload-dev": {
-    "psr-4": {
-      "Youkok\\Tests\\": "tests"
-    }
-  },
   "scripts": {
-    "test": [
-      "@phpunit",
-      "@phpcs",
-      "@phpmd"
-    ],
-    "phpunit": "vendor/bin/phpunit",
-    "phpcs": "vendor/bin/phpcs",
     "migrate": "vendor/bin/phinx migrate -c phinx/config.php"
   }
 }

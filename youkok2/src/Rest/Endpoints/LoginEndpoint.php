@@ -1,23 +1,27 @@
 <?php
 namespace Youkok\Rest\Endpoints;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Slim\Interfaces\RouterInterface;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Container\NotFoundExceptionInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
+use Slim\Routing\RouteContext;
 use Youkok\Biz\Exceptions\InvalidLoginAttemptException;
 use Youkok\Biz\Services\Auth\AuthService;
 
 class LoginEndpoint extends BaseRestEndpoint
 {
     private AuthService $authService;
-    private RouterInterface $router;
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->authService = $container->get(AuthService::class);
-        $this->router = $container->get('router');
     }
 
     public function post(Request $request, Response $response): Response
@@ -28,9 +32,11 @@ class LoginEndpoint extends BaseRestEndpoint
 
             $this->authService->setAdminCookie();
 
+            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+
             return $response
                 ->withStatus(302)
-                ->withHeader('Location', $this->router->pathFor('admin_home'));
+                ->withHeader('Location', $routeParser->urlFor('admin_home'));
 
         } catch (InvalidLoginAttemptException $e) {
             return $response

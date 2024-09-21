@@ -1,33 +1,33 @@
 <?php
 namespace Youkok\Biz\Services\Mappers;
 
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Monolog\Logger;
 
+use RedisException;
+use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\UrlService;
-use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 
 class ElementMapper
 {
-    const PARENT_DIRECT = 'PARENT_DIRECT';
-    const PARENT_COURSE = 'PARENT_COURSE';
-    const POSTED_TIME = 'POSTED_TIME';
-    const DOWNLOADS = 'DOWNLOADS';
-    const ICON = 'ICON';
-    const DATASTORE_DOWNLOADS = 'KEEP_DOWNLOADS';
+    const string PARENT_DIRECT = 'PARENT_DIRECT';
+    const string PARENT_COURSE = 'PARENT_COURSE';
+    const string POSTED_TIME = 'POSTED_TIME';
+    const string DOWNLOADS = 'DOWNLOADS';
+    const string ICON = 'ICON';
+    const string DATASTORE_DOWNLOADS = 'KEEP_DOWNLOADS';
 
-    const DOWNLOADED_TIME = 'KEEP_DOWNLOADED_TIME';
+    const string DOWNLOADED_TIME = 'KEEP_DOWNLOADED_TIME';
 
     private UrlService $urlService;
     private CourseMapper $courseMapper;
     private DownloadCountService $downloadCountService;
     private ElementService $elementService;
-    private CourseService $courseService;
     private Logger $logger;
 
     public function __construct(
@@ -35,29 +35,24 @@ class ElementMapper
         CourseMapper $courseMapper,
         DownloadCountService $downloadCountService,
         ElementService $elementService,
-        CourseService $courseService,
         Logger $logger
     ) {
         $this->urlService = $urlService;
         $this->courseMapper = $courseMapper;
         $this->downloadCountService = $downloadCountService;
         $this->elementService = $elementService;
-        $this->courseService = $courseService;
         $this->logger = $logger;
     }
 
     /**
-     * @param Collection $elements
-     * @param array $additionalFields
-     * @return array
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
+     * @throws RedisException
      */
-    public function map(Collection $elements, array $additionalFields = []): array
+    public function map(RouteParserInterface $routeParser, Collection $elements, array $additionalFields = []): array
     {
         $out = [];
         foreach ($elements as $element) {
-            $mappedElement = $this->mapElement($element, $additionalFields);
+            $mappedElement = $this->mapElement($routeParser, $element, $additionalFields);
             if ($mappedElement !== null) {
                 $out[] = $mappedElement;
             }
@@ -67,17 +62,14 @@ class ElementMapper
     }
 
     /**
-     * @param array $elements
-     * @param array $additionalFields
-     * @return array
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
+     * @throws RedisException
      */
-    public function mapFromArray(array $elements, array $additionalFields = []): array
+    public function mapFromArray(RouteParserInterface $routeParser, array $elements, array $additionalFields = []): array
     {
         $out = [];
         foreach ($elements as $element) {
-            $mappedElement = $this->mapElement($element, $additionalFields);
+            $mappedElement = $this->mapElement($routeParser, $element, $additionalFields);
             if ($mappedElement !== null) {
                 $out[] = $mappedElement;
             }
@@ -87,19 +79,17 @@ class ElementMapper
     }
 
     /**
-     * @param Element $element
-     * @param array $additionalFields
-     * @return array|null
+     * @throws RedisException
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
+     * @throws Exception
      */
-    public function mapElement(Element $element, array $additionalFields = []): ?array
+    public function mapElement(RouteParserInterface $routeParser, Element $element, array $additionalFields = []): ?array
     {
         $arr = [
             'id' => $element->id,
             'name' => $element->name,
             'type' => $element->getType(),
-            'url' => $this->urlService->urlForElement($element),
+            'url' => $this->urlService->urlForElement($routeParser, $element),
             'link' => $element->link,
         ];
 
@@ -112,8 +102,8 @@ class ElementMapper
                 $parent = $this->elementService->getVisibleParentForElement($element);
 
                 $arr['parent'] = $parent->isCourse()
-                               ? $this->courseMapper->mapCourse($parent)
-                               : $this->mapElement($parent);
+                               ? $this->courseMapper->mapCourse($routeParser, $parent)
+                               : $this->mapElement($routeParser, $parent);
             } catch (ElementNotFoundException $e) {
                 $this->logger->warning('Failed to find parent for element: ' . $element->id);
                 return null;
@@ -128,8 +118,8 @@ class ElementMapper
                     throw new ElementNotFoundException('Could not find coure for element ' . $element->id);
                 }
 
-                $arr['course'] = $this->courseMapper->mapCourse($course);
-            } catch (GenericYoukokException $e) {
+                $arr['course'] = $this->courseMapper->mapCourse($routeParser, $course);
+            } catch (Exception $e) {
                 $this->logger->warning('Failed to find course for element: ' . $element->id);
                 return null;
             }
@@ -141,7 +131,7 @@ class ElementMapper
 
         // This is stored in the Elements datastore (prefixed with an underscore)
         if (in_array(static::DATASTORE_DOWNLOADS, $additionalFields)) {
-            $arr['downloads'] = (int)$element->getDownloads();
+            $arr['downloads'] = $element->getDownloads();
         }
 
         if (in_array(static::ICON, $additionalFields)) {
@@ -156,21 +146,19 @@ class ElementMapper
     }
 
     /**
-     * @param array $elements
-     * @return array
-     * @throws GenericYoukokException
      * @throws ElementNotFoundException
+     * @throws Exception
      */
-    public function mapBreadcrumbs(array $elements): array
+    public function mapBreadcrumbs(RouteParserInterface $routeParser, array $elements): array
     {
         $out = [];
         foreach ($elements as $key => $element) {
             if ($key === 0) {
-                $out[] = $this->courseMapper->mapCourse($element);
+                $out[] = $this->courseMapper->mapCourse($routeParser, $element);
                 continue;
             }
 
-            $out[] = $this->mapElement($element);
+            $out[] = $this->mapElement($routeParser, $element);
         }
 
         return $out;

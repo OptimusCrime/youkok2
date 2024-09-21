@@ -1,9 +1,8 @@
 <?php
 namespace Youkok\Biz\Services\Admin;
 
+use Exception;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Models\Admin\AdminCourseService;
 use Youkok\Biz\Services\Models\ElementService;
@@ -14,28 +13,22 @@ use Youkok\Common\Utilities\SelectStatements;
 class FileDetailsService
 {
     private AdminCourseService $adminCourseService;
-    private FilesService $adminFilesService;
     private ElementService $elementService;
     private DownloadFileInfoService $downloadFileInfoService;
 
     public function __construct(
         AdminCourseService $adminCourseService,
-        FilesService $adminFilesService,
         ElementService $elementService,
         DownloadFileInfoService $downloadFileInfoService
     ) {
         $this->adminCourseService = $adminCourseService;
-        $this->adminFilesService = $adminFilesService;
         $this->elementService = $elementService;
         $this->downloadFileInfoService = $downloadFileInfoService;
     }
 
     /**
-     * @param int $id
-     * @return array
-     * @throws GenericYoukokException
      * @throws ElementNotFoundException
-     * @throws InvalidFlagCombination
+     * @throws Exception
      */
     public function get(int $id): array
     {
@@ -66,9 +59,7 @@ class FileDetailsService
     }
 
     /**
-     * @param Element $element
-     * @return array
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     private function map(Element $element): array
     {
@@ -88,9 +79,7 @@ class FileDetailsService
     }
 
     /**
-     * @param Element $element
-     * @return array
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     private function mapCourseDirectoriesTree(Element $element): array
     {
@@ -110,10 +99,7 @@ class FileDetailsService
     }
 
     /**
-     * @param Element $directory
-     * @param int $depth
-     * @return CourseDirectory[]
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     private function mapCourseDirectories(Element $directory, int $depth = 0): array
     {

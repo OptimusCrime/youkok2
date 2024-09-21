@@ -8,7 +8,7 @@ use Youkok\Biz\Services\Models\Admin\AdminDownloadService;
 
 class HomeGraphService
 {
-    const RANGE_IN_DAYS = 30;
+    const int RANGE_IN_DAYS = 30;
 
     private AdminDownloadService $adminDownloadService;
 

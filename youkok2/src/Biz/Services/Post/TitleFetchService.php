@@ -3,9 +3,9 @@ namespace Youkok\Biz\Services\Post;
 
 class TitleFetchService
 {
-    const CURL_CONNECTION_TIMEOUT_IN_SECONDS = 5;
-    const CURL_TIMEOUT_IN_SECONDS = 8;
-    const CURL_MAX_REDIRECTS = 5;
+    const int CURL_CONNECTION_TIMEOUT_IN_SECONDS = 5;
+    const int CURL_TIMEOUT_IN_SECONDS = 8;
+    const int CURL_MAX_REDIRECTS = 5;
 
     public function run(string $url): ?string
     {

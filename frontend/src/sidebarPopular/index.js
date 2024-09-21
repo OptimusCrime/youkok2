@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import SidebarMostPopularContainer from './containers/main-container';
@@ -12,10 +12,10 @@ export const run = () => {
   const store = configureStore(preloadedState);
   store.dispatch(fetchSidebarMostPopular());
 
-  ReactDOM.render((
+  const root = ReactDOM.createRoot(document.getElementById('sidebar-popular'));
+    root.render(
       <Provider store={store}>
         <SidebarMostPopularContainer />
       </Provider>
-    ), document.getElementById('sidebar-popular')
-  );
+    );
 };

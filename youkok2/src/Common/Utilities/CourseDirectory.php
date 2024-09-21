@@ -1,7 +1,7 @@
 <?php
 namespace Youkok\Common\Utilities;
 
-use Youkok\Biz\Exceptions\GenericYoukokException;
+use Exception;
 use Youkok\Common\Models\Element;
 
 class CourseDirectory
@@ -10,10 +10,7 @@ class CourseDirectory
     private string $name;
 
     /**
-     * CourseDirectory constructor.
-     * @param Element $directory
-     * @param int $depth
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     public function __construct(Element $directory, int $depth)
     {
@@ -30,10 +27,7 @@ class CourseDirectory
     }
 
     /**
-     * @param Element $directory
-     * @param int $depth
-     * @return string
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     private static function getCourseDirectoryName(Element $directory, int $depth): string
     {
@@ -46,9 +40,7 @@ class CourseDirectory
     }
 
     /**
-     * @param Element $directory
-     * @return string
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     private static function getCourseDirectoryDisplayName(Element $directory): string
     {

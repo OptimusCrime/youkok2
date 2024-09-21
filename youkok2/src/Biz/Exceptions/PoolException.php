@@ -1,7 +1,10 @@
 <?php
 namespace Youkok\Biz\Exceptions;
 
-class PoolException extends GenericYoukokException
+use Exception;
+
+// TODO: Delete class
+class PoolException extends Exception
 {
 
 }

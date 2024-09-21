@@ -1,11 +1,9 @@
 <?php
 namespace Youkok\Biz\Services\PopularListing;
 
-use Monolog\Logger;
-
+use Exception;
+use RedisException;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Exceptions\InvalidValueException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Models\DownloadService;
@@ -16,32 +14,25 @@ use Youkok\Enums\MostPopularCourse;
 
 class MostPopularCoursesService implements MostPopularInterface
 {
-    const MAX_COURSES_TO_FETCH = 10;
+    const int MAX_COURSES_TO_FETCH = 10;
 
     private CacheService $cacheService;
-    private Logger $logger;
     private DownloadService $downloadService;
     private ElementService $elementService;
 
     public function __construct(
         CacheService $cacheService,
-        Logger $logger,
         DownloadService $downloadService,
         ElementService $elementService
     ) {
         $this->cacheService = $cacheService;
-        $this->logger = $logger;
         $this->downloadService = $downloadService;
         $this->elementService = $elementService;
     }
 
     /**
-     * @param string $delta
-     * @param int $limit
-     * @return array
+     * @throws RedisException
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
      */
     public function fromDelta(string $delta, int $limit): array
     {
@@ -54,7 +45,8 @@ class MostPopularCoursesService implements MostPopularInterface
                 ),
                 $limit
             );
-        } catch (InvalidValueException $ex) {
+        }
+        catch (InvalidValueException $ex) {
             return $this->resultArrayToElements(
                 $this->refreshForDelta(
                     $delta
@@ -66,8 +58,7 @@ class MostPopularCoursesService implements MostPopularInterface
     }
 
     /**
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
      */
     public function refreshAll(): void
     {
@@ -77,10 +68,7 @@ class MostPopularCoursesService implements MostPopularInterface
     }
 
     /**
-     * @param string $delta
-     * @return string
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
      */
     public function refresh(string $delta): string
     {
@@ -91,10 +79,8 @@ class MostPopularCoursesService implements MostPopularInterface
     }
 
     /**
-     * @param string $delta
-     * @return array
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
+     * @throws Exception
      */
     private function refreshForDelta(string $delta): array
     {
@@ -107,11 +93,6 @@ class MostPopularCoursesService implements MostPopularInterface
     }
 
     /**
-     * @param array $result
-     * @param int $limit
-     * @return array
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
      * @throws ElementNotFoundException
      */
     private function resultArrayToElements(array $result, int $limit): array
@@ -128,10 +109,6 @@ class MostPopularCoursesService implements MostPopularInterface
             $element->setDownloads($res['downloads']);
 
             $elements[] = $element;
-        }
-
-        if ($limit === null) {
-            return $elements;
         }
 
         return static::resultArrayToMaxLimit($elements, $limit);
@@ -151,8 +128,6 @@ class MostPopularCoursesService implements MostPopularInterface
     }
 
     /**
-     * @param string|null $payload
-     * @return array
      * @throws InvalidValueException
      */
     private static function decodeJsonPayload(?string $payload): array

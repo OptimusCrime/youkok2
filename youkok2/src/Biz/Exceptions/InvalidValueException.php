@@ -1,7 +1,9 @@
 <?php
 namespace Youkok\Biz\Exceptions;
 
-class InvalidValueException extends YoukokException
+use Exception;
+
+class InvalidValueException extends Exception
 {
 
 }

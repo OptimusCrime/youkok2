@@ -1,34 +1,37 @@
 <?php
 namespace Youkok\Common\Containers;
 
+use DI\Container;
+use Exception;
 use Redis;
 use RedisException;
-use Psr\Container\ContainerInterface;
 
 use Youkok\Helpers\Configuration\Configuration;
 
-class Cache implements ContainersInterface
+class Cache implements ContainerInterface
 {
-    public static function load(ContainerInterface $container): void
+    public static function load(Container $container): void
     {
-        $container['cache'] = function () use ($container): ?Redis {
-            $cache = null;
-            $configuration = Configuration::getInstance();
+        $cache = null;
+        $configuration = Configuration::getInstance();
 
+        try {
+            $cache = new Redis();
+            $cache->connect(
+                $configuration->getRedisHost(),
+                $configuration->getCachePort()
+            );
+
+            $container->set('cache', $cache);
+        } catch (RedisException $ex) {
             try {
-                $cache = new Redis();
-                $cache->connect(
-                    $configuration->getCacheHost(),
-                    $configuration->getCachePort()
-                );
-
-                return $cache;
-            } catch (RedisException $ex) {
-                $logger = $container->get(Logger::class);
-                $logger->error($ex);
+                $container->get('logger')->error($ex);
             }
+            catch (Exception $ex) {
+                // Oh well
+            }
+        }
 
-            return $cache;
-        };
+        $container->set('cache', $cache);
     }
 }

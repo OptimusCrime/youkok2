@@ -8,8 +8,6 @@ use Psr\Http\Message\UploadedFileInterface;
 
 use Youkok\Biz\Exceptions\CreateException;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\SelectStatements;
@@ -17,8 +15,8 @@ use Youkok\Helpers\Configuration\Configuration;
 
 class CreateFileService
 {
-    const MIN_VALID_NAME_LENGTH = 2;
-    const CRYPTO_STRING_LENGTH = 32;
+    const int MIN_VALID_NAME_LENGTH = 2;
+    const int CRYPTO_STRING_LENGTH = 32;
 
     private ElementService $elementService;
 
@@ -28,12 +26,8 @@ class CreateFileService
     }
 
     /**
-     * @param int $id
-     * @param UploadedFileInterface $file
      * @throws CreateException
-     * @throws GenericYoukokException
      * @throws ElementNotFoundException
-     * @throws InvalidFlagCombination
      */
     public function run(int $id, UploadedFileInterface $file): void
     {
@@ -76,16 +70,11 @@ class CreateFileService
     }
 
     /**
-     * @param string $fileName
-     * @return string
      * @throws CreateException
      */
     private static function extractAndValidateExtension(string $fileName): string
     {
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-        if ($extension === null) {
-            throw new CreateException('Found no file type in upload.');
-        }
 
         if (!in_array($extension, Configuration::getInstance()->getFileUploadAllowedTypes())) {
 
@@ -96,8 +85,6 @@ class CreateFileService
     }
 
     /**
-     * @param string $extension
-     * @return string
      * @throws CreateException
      */
     private static function generateChecksum(string $extension): string
@@ -122,8 +109,6 @@ class CreateFileService
     }
 
     /**
-     * @param UploadedFileInterface $file
-     * @param string $checksum
      * @throws CreateException
      */
     private static function moveFile(UploadedFileInterface $file, string $checksum): void

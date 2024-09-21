@@ -1,7 +1,9 @@
 <?php
 namespace Youkok\Biz\Exceptions;
 
-class InvalidRequestException extends YoukokException
+use Exception;
+
+class InvalidRequestException extends Exception
 {
 
 }

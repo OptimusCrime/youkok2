@@ -1,17 +1,14 @@
 <?php
 namespace Youkok\Web\Views;
 
-use Slim\Http\Response;
-
-use Youkok\Biz\Exceptions\TemplateFileNotFoundException;
+use Exception;
+use Slim\Psr7\Response;
 use Youkok\Helpers\Configuration\Configuration;
 
 class BaseView
 {
     /**
-     * @param Response $response
-     * @return Response
-     * @throws TemplateFileNotFoundException
+     * @throws Exception
      */
     protected function render404(Response $response): Response
     {
@@ -19,11 +16,12 @@ class BaseView
         $template = @file_get_contents($templateDir . "404.html");
 
         if ($template === false) {
-            throw new TemplateFileNotFoundException("Failed to get 404.html template file");
+            throw new Exception("Failed to get 404.html template file");
         }
 
+        $response->getBody()->write($template);
+
         return $response
-            ->write($template)
             ->withStatus(404);
     }
 }

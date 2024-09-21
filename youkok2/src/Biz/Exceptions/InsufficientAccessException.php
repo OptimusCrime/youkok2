@@ -1,7 +1,9 @@
 <?php
 namespace Youkok\Biz\Exceptions;
 
-class InsufficientAccessException extends YoukokException
+use Exception;
+
+class InsufficientAccessException extends Exception
 {
 
 }

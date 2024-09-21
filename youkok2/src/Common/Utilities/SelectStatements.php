@@ -27,7 +27,7 @@ class SelectStatements implements Iterator
         ];
     }
 
-    public function current()
+    public function current(): mixed
     {
         return $this->statements[$this->position]['value'];
     }
@@ -37,7 +37,7 @@ class SelectStatements implements Iterator
         $this->position++;
     }
 
-    public function key()
+    public function key(): mixed
     {
         return $this->statements[$this->position]['key'];
     }
@@ -71,7 +71,7 @@ class SelectStatements implements Iterator
             }
         }
 
-        // All of the selects in other is also found in `this`
+        // All the selects in other is also found in `this`
         return true;
     }
 

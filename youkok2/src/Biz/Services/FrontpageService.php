@@ -1,9 +1,8 @@
 <?php
 namespace Youkok\Biz\Services;
 
+use RedisException;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Biz\Services\Models\ElementService;
@@ -15,7 +14,7 @@ use Youkok\Enums\MostPopularElement;
 
 class FrontpageService
 {
-    const SERVICE_LIMIT = 10;
+    const int SERVICE_LIMIT = 10;
 
     private MostPopularCoursesService $popularCoursesProcessor;
     private MostPopularElementsService $popularElementsProcessor;
@@ -34,13 +33,15 @@ class FrontpageService
     ) {
         $this->popularCoursesProcessor = $popularCoursesProcessor;
         $this->popularElementsProcessor = $popularElementsProcessor;
-        $this->popularElementsProcessor = $popularElementsProcessor;
         $this->cacheService = $cacheService;
         $this->elementService = $elementService;
         $this->courseService = $courseService;
         $this->downloadService = $downloadService;
     }
 
+    /**
+     * @throws RedisException
+     */
     public function boxes(): array
     {
         $numberFiles = $this->cacheService->get(CacheKeyGenerator::keyForBoxesNumberOfFiles());
@@ -89,10 +90,7 @@ class FrontpageService
     }
 
     /**
-     * @param MostPopularElement $delta
-     * @return array
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
      */
     public function popularElements(MostPopularElement $delta): array
     {
@@ -103,11 +101,8 @@ class FrontpageService
     }
 
     /**
-     * @param MostPopularCourse $delta
-     * @return array
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
      */
     public function popularCourses(MostPopularCourse $delta): array
     {
@@ -118,26 +113,23 @@ class FrontpageService
     }
 
     /**
-     * @return array
-     * @throws GenericYoukokException
      * @throws ElementNotFoundException
-     * @throws InvalidFlagCombination
      */
     public function newest(): array
     {
         return $this->elementService->getNewestElements(static::SERVICE_LIMIT);
     }
 
+    /**
+     * @throws RedisException
+     */
     public function lastVisited(): array
     {
         return $this->courseService->getLastVisitedCourses();
     }
 
     /**
-     * @return array
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
      */
     public function lastDownloaded(): array
     {

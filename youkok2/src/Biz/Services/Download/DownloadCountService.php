@@ -1,6 +1,7 @@
 <?php
 namespace Youkok\Biz\Services\Download;
 
+use RedisException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Common\Models\Element;
@@ -16,6 +17,9 @@ class DownloadCountService
         $this->downloadService = $downloadService;
     }
 
+    /**
+     * @throws RedisException
+     */
     public function getDownloadsForElement(Element $element): int
     {
         if ($element->getType() === Element::DIRECTORY) {
@@ -25,8 +29,8 @@ class DownloadCountService
         $downloads = $this->cacheService->getDownloadsForId($element->id);
 
         // Redis returns false for values that does not exist for some reason
-        if ($downloads !== null && $downloads !== false) {
-            return (int) $downloads;
+        if ($downloads !== null) {
+            return $downloads;
         }
 
         $downloads = $this->downloadService->getDownloadsForId($element->id);

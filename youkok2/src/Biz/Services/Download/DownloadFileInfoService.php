@@ -7,11 +7,8 @@ use Youkok\Helpers\Configuration\Configuration;
 
 class DownloadFileInfoService
 {
-    private UpdateDownloadsService $updateDownloadsService;
-
-    public function __construct(UpdateDownloadsService $updateDownloadsService)
+    public function __construct()
     {
-        $this->updateDownloadsService = $updateDownloadsService;
     }
 
     public function fileExists(Element $element): bool
@@ -21,8 +18,6 @@ class DownloadFileInfoService
     }
 
     /**
-     * @param Element $element
-     * @return string
      * @throws ElementNotFoundException
      */
     public function getFileInfo(Element $element): string
@@ -38,8 +33,6 @@ class DownloadFileInfoService
     }
 
     /**
-     * @param Element $element
-     * @return int
      * @throws ElementNotFoundException
      */
     public function getFileSize(Element $element): int

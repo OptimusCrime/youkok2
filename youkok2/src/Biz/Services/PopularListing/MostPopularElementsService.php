@@ -1,11 +1,11 @@
 <?php
 namespace Youkok\Biz\Services\PopularListing;
 
+use Exception;
 use Monolog\Logger;
 
+use RedisException;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Biz\Services\Models\ElementService;
@@ -15,8 +15,8 @@ use Youkok\Enums\MostPopularElement;
 
 class MostPopularElementsService implements MostPopularInterface
 {
-    const MAX_ELEMENTS_TO_FETCH = 30;
-    const MAX_ELEMENTS_TO_RETURN = 10;
+    const int MAX_ELEMENTS_TO_FETCH = 30;
+    const int MAX_ELEMENTS_TO_RETURN = 10;
 
     private CacheService $cacheService;
     private DownloadService $downloadService;
@@ -36,11 +36,8 @@ class MostPopularElementsService implements MostPopularInterface
     }
 
     /**
-     * @param string $delta
-     * @param int $limit
-     * @return array
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
+     * @throws Exception
      */
     public function fromDelta(string $delta, int $limit): array
     {
@@ -54,7 +51,7 @@ class MostPopularElementsService implements MostPopularInterface
     }
 
     /**
-     * @throws GenericYoukokException
+     * @throws RedisException
      */
     public function refreshAll(): void
     {
@@ -64,9 +61,7 @@ class MostPopularElementsService implements MostPopularInterface
     }
 
     /**
-     * @param string $delta
-     * @return string
-     * @throws GenericYoukokException
+     * @throws RedisException
      */
     public function refresh(string $delta): string
     {
@@ -77,9 +72,8 @@ class MostPopularElementsService implements MostPopularInterface
     }
 
     /**
-     * @param string $delta
-     * @return array
-     * @throws GenericYoukokException
+     * @throws RedisException
+     * @throws Exception
      */
     private function refreshForDelta(string $delta): array
     {
@@ -105,10 +99,7 @@ class MostPopularElementsService implements MostPopularInterface
     }
 
     /**
-     * @param array $ids
-     * @return array
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws Exception
      */
     private function idListToElements(array $ids): array
     {

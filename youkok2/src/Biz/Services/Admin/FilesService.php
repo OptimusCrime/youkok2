@@ -1,9 +1,9 @@
 <?php
 namespace Youkok\Biz\Services\Admin;
 
+use Exception;
+use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
 use Youkok\Biz\Services\Mappers\Admin\AdminElementMapper;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
@@ -11,7 +11,7 @@ use Youkok\Common\Utilities\SelectStatements;
 
 class FilesService
 {
-    const LISTING_SELECT_ATTRIBUTES = [
+    const array LISTING_SELECT_ATTRIBUTES = [
         'id', 'name', 'link', 'pending', 'deleted', 'parent', 'directory', 'checksum', 'uri', 'slug'
     ];
 
@@ -24,19 +24,13 @@ class FilesService
         $this->adminElementMapper = $adminElementMapper;
     }
 
-    /**
-     * @param array $courses
-     * @return array
-     * @throws ElementNotFoundException
-     * @throws InvalidFlagCombination
-     */
-    public function buildTree(array $courses): array
+    public function buildTree(RouteParserInterface $routeParser, array $courses): array
     {
         $content = [];
         foreach ($courses as $course) {
             try {
-                $content[] = $this->buildTreeFromId($course);
-            } catch (GenericYoukokException $ex) {
+                $content[] = $this->buildTreeFromId($routeParser, $course);
+            } catch (Exception $ex) {
                 // Some legacy file is not added directory on parent, keep going, this is handled in the frontend
             }
         }
@@ -45,13 +39,9 @@ class FilesService
     }
 
     /**
-     * @param int $id
-     * @return array
-     * @throws GenericYoukokException
      * @throws ElementNotFoundException
-     * @throws InvalidFlagCombination
      */
-    public function buildTreeFromId(int $id): array
+    public function buildTreeFromId(RouteParserInterface $routeParser, int $id): array
     {
         $course = $this->elementService->getElement(
             new SelectStatements('id', $id),
@@ -65,7 +55,7 @@ class FilesService
 
         $this->fetchDirectoryContentRecursively($course);
 
-        return $this->adminElementMapper->map($course);
+        return $this->adminElementMapper->map($routeParser, $course);
     }
 
     private function getAllChildrenFromParent(int $id): array

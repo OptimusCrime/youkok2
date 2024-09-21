@@ -1,8 +1,10 @@
 <?php
+
 namespace Youkok\Common\Containers;
 
-use Psr\Container\ContainerInterface;
-use Monolog\Logger as MonoLogger;
+use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
 
 use Youkok\Biz\Services\Admin\CacheContentService;
 use Youkok\Biz\Services\Admin\FileCreateDirectoryService;
@@ -19,7 +21,7 @@ use Youkok\Biz\Services\CoursesLookupService;
 use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\FrontpageService;
-use Youkok\Biz\Services\Job\Jobs\ClearReddisCachePartitionsService;
+use Youkok\Biz\Services\Job\Jobs\ClearRedisCachePartitionsService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
 use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
 use Youkok\Biz\Services\Job\JobService;
@@ -40,247 +42,236 @@ use Youkok\Biz\Services\Post\TitleFetchService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
 use Youkok\Biz\Services\UrlService;
 
-class Services implements ContainersInterface
+class Services
 {
-    public static function load(ContainerInterface $container): void
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    public static function load(Container $container): void
     {
-        $container[AuthService::class] = function (ContainerInterface $container): AuthService {
-            return new AuthService();
-        };
+        $container->set(AuthService::class, new AuthService());
 
-        $container[CacheService::class] = function (ContainerInterface $container): CacheService {
-            return new CacheService(
+        $container->set(CacheService::class,
+            new CacheService(
                 $container->get('cache')
-            );
-        };
+            ));
 
-        $container[FrontpageService::class] = function (ContainerInterface $container): FrontpageService {
-            return new FrontpageService(
+        $container->set(ElementService::class,
+            new ElementService(
+                $container->get(CacheService::class)
+            )
+        );
+
+        $container->set(MostPopularElementsService::class,
+            new MostPopularElementsService(
+                $container->get(CacheService::class),
+                $container->get(DownloadService::class),
+                $container->get(ElementService::class),
+                $container->get('logger')
+            )
+        );
+
+        $container->set(UrlService::class,
+            new UrlService(
+                $container->get(ElementService::class)
+            )
+        );
+
+        $container->set(CourseService::class,
+            new CourseService(
+                $container->get(CacheService::class),
+                $container->get(UrlService::class)
+            )
+        );
+
+        $container->set(FrontpageService::class,
+            new FrontpageService(
                 $container->get(MostPopularCoursesService::class),
                 $container->get(MostPopularElementsService::class),
                 $container->get(CacheService::class),
                 $container->get(ElementService::class),
                 $container->get(CourseService::class),
                 $container->get(DownloadService::class),
-            );
-        };
+            )
+        );
 
-        $container[MostPopularElementsService::class] = function (ContainerInterface $container): MostPopularElementsService {
-            return new MostPopularElementsService(
+        $container->set(MostPopularCoursesService::class,
+            new MostPopularCoursesService(
                 $container->get(CacheService::class),
-                $container->get(DownloadService::class),
-                $container->get(ElementService::class),
-                $container->get(MonoLogger::class)
-            );
-        };
-
-        $container[MostPopularCoursesService::class] = function (ContainerInterface $container): MostPopularCoursesService {
-            return new MostPopularCoursesService(
-                $container->get(CacheService::class),
-                $container->get(MonoLogger::class),
                 $container->get(DownloadService::class),
                 $container->get(ElementService::class)
-            );
-        };
+            )
+        );
 
-        $container[UpdateDownloadsService::class] = function (ContainerInterface $container): UpdateDownloadsService {
-            return new UpdateDownloadsService(
+        $container->set(UpdateDownloadsService::class,
+            new UpdateDownloadsService(
                 $container->get(CacheService::class),
                 $container->get(DownloadService::class)
-            );
-        };
+            )
+        );
 
-        $container[DownloadFileInfoService::class] = function (ContainerInterface $container): DownloadFileInfoService {
-            return new DownloadFileInfoService(
-                $container->get(UpdateDownloadsService::class)
-            );
-        };
+        $container->set(DownloadFileInfoService::class,
+            new DownloadFileInfoService()
+        );
 
-        $container[CourseMapper::class] = function (ContainerInterface $container): CourseMapper {
-            return new CourseMapper(
+        $container->set(CourseMapper::class,
+            new CourseMapper(
                 $container->get(UrlService::class)
-            );
-        };
+            )
+        );
 
-        $container[CoursesLookupService::class] = function (ContainerInterface $container): CoursesLookupService {
-            return new CoursesLookupService(
-                $container->get(UrlService::class),
+        $container->set(CoursesLookupService::class,
+            new CoursesLookupService(
                 $container->get(CourseService::class),
                 $container->get(CourseMapper::class),
                 $container->get(CacheService::class),
-                $container->get(MonoLogger::class)
-            );
-        };
+            )
+        );
 
-        $container[ElementMapper::class] = function (ContainerInterface $container): ElementMapper {
-            return new ElementMapper(
+        $container->set(ElementMapper::class,
+            new ElementMapper(
                 $container->get(UrlService::class),
                 $container->get(CourseMapper::class),
                 $container->get(DownloadCountService::class),
                 $container->get(ElementService::class),
-                $container->get(CourseService::class),
-                $container->get(MonoLogger::class)
-            );
-        };
+                $container->get('logger')
+            )
+        );
 
-        $container[UrlService::class] = function (ContainerInterface $container): UrlService {
-            return new UrlService(
-                $container->get('router'),
-                $container->get(ElementService::class)
-            );
-        };
-
-        $container[ArchiveService::class] = function (ContainerInterface $container): ArchiveService {
-            return new ArchiveService(
+        $container->set(ArchiveService::class,
+            new ArchiveService(
                 $container->get(ElementMapper::class),
                 $container->get(ElementService::class),
-                $container->get(CourseService::class)
-            );
-        };
+            )
+        );
 
-        $container[ArchiveHistoryService::class] = function (ContainerInterface $container): ArchiveHistoryService {
-            return new ArchiveHistoryService(
+        $container->set(ArchiveHistoryService::class,
+            new ArchiveHistoryService(
                 $container->get(ElementMapper::class),
                 $container->get(ElementService::class)
-            );
-        };
+            )
+        );
 
-        $container[DownloadCountService::class] = function (ContainerInterface $container): DownloadCountService {
-            return new DownloadCountService(
+        $container->set(DownloadCountService::class,
+            new DownloadCountService(
                 $container->get(CacheService::class),
                 $container->get(DownloadService::class)
-            );
-        };
+            )
+        );
 
-        $container[JobService::class] = function (ContainerInterface $container): JobService {
-            return new JobService($container);
-        };
+        $container->set(JobService::class,
+            new JobService($container, $container->get('logger'))
+        );
 
-        $container[UpdateMostPopularElementsJobService::class] = function (ContainerInterface $container): UpdateMostPopularElementsJobService {
-            return new UpdateMostPopularElementsJobService(
+        $container->set(UpdateMostPopularElementsJobService::class,
+            new UpdateMostPopularElementsJobService(
                 $container->get(MostPopularElementsService::class)
-            );
-        };
+            )
+        );
 
-        $container[UpdateMostPopularCoursesJobService::class] = function (ContainerInterface $container): UpdateMostPopularCoursesJobService {
-            return new UpdateMostPopularCoursesJobService(
+        $container->set(UpdateMostPopularCoursesJobService::class,
+            new UpdateMostPopularCoursesJobService(
                 $container->get(MostPopularCoursesService::class)
-            );
-        };
+            )
+        );
 
-        $container[ClearReddisCachePartitionsService::class] = function (ContainerInterface $container): ClearReddisCachePartitionsService {
-            return new ClearReddisCachePartitionsService(
+        $container->set(ClearRedisCachePartitionsService::class,
+            new ClearRedisCachePartitionsService(
                 $container->get(CacheService::class)
-            );
-        };
+            )
+        );
 
-        $container[CourseService::class] = function (ContainerInterface $container): CourseService {
-            return new CourseService(
-                $container->get(ElementService::class),
-                $container->get(CacheService::class),
-                $container->get(UrlService::class)
-            );
-        };
-
-        $container[DownloadService::class] = function (ContainerInterface $container): DownloadService {
-            return new DownloadService(
+        $container->set(DownloadService::class,
+            new DownloadService(
                 $container->get(ElementService::class)
-            );
-        };
+            )
+        );
 
-        $container[ElementService::class] = function (ContainerInterface $container): ElementService {
-            return new ElementService(
-                $container->get(CacheService::class)
-            );
-        };
+        $container->set(TitleFetchService::class,
+            new TitleFetchService()
+        );
 
-        $container[TitleFetchService::class] = function (): TitleFetchService {
-            return new TitleFetchService();
-        };
-
-        $container[CreateLinkService::class] = function (ContainerInterface $container): CreateLinkService {
-            return new CreateLinkService(
+        $container->set(CreateLinkService::class,
+            new CreateLinkService(
                 $container->get(ElementService::class)
-            );
-        };
+            )
+        );
 
-        $container[CreateFileService::class] = function (ContainerInterface $container): CreateFileService {
-            return new CreateFileService(
+        $container->set(CreateFileService::class,
+            new CreateFileService(
                 $container->get(ElementService::class)
-            );
-        };
+            )
+        );
 
-        $container[HomeGraphService::class] = function (ContainerInterface $container): HomeGraphService {
-            return new HomeGraphService(
+        $container->set(HomeGraphService::class,
+            new HomeGraphService(
                 $container->get(AdminDownloadService::class)
-            );
-        };
+            )
+        );
 
-        $container[FileListingService::class] = function (ContainerInterface $container): FileListingService {
-            return new FileListingService(
+        $container->set(FilesService::class,
+            new FilesService(
+                $container->get(ElementService::class),
+                $container->get(AdminElementMapper::class),
+            )
+        );
+
+        $container->set(AdminCourseService::class,
+            new AdminCourseService()
+        );
+
+        $container->set(FileListingService::class,
+            new FileListingService(
                 $container->get(AdminCourseService::class),
                 $container->get(FilesService::class)
-            );
-        };
+            )
+        );
 
-        $container[FileDetailsService::class] = function (ContainerInterface $container): FileDetailsService {
-            return new FileDetailsService(
+        $container->set(FileDetailsService::class,
+            new FileDetailsService(
                 $container->get(AdminCourseService::class),
-                $container->get(FilesService::class),
                 $container->get(ElementService::class),
                 $container->get(DownloadFileInfoService::class),
-            );
-        };
+            )
+        );
 
-        $container[FileUpdateService::class] = function (ContainerInterface $container): FileUpdateService {
-            return new FileUpdateService(
+        $container->set(FileUpdateService::class,
+            new FileUpdateService(
                 $container->get(FilesService::class),
                 $container->get(AdminElementService::class),
                 $container->get(ElementService::class),
                 $container->get(CacheService::class),
-            );
-        };
+            )
+        );
 
-        $container[FileCreateDirectoryService::class] = function (ContainerInterface $container): FileCreateDirectoryService {
-            return new FileCreateDirectoryService(
+        $container->set(FileCreateDirectoryService::class,
+            new FileCreateDirectoryService(
                 $container->get(FilesService::class),
                 $container->get(ElementService::class),
-            );
-        };
+            )
+        );
 
-        $container[CacheContentService::class] = function (ContainerInterface $container): CacheContentService {
-            return new CacheContentService(
+        $container->set(CacheContentService::class,
+            new CacheContentService(
                 $container->get(CacheService::class)
-            );
-        };
+            )
+        );
 
-        $container[FilesService::class] = function (ContainerInterface $container): FilesService {
-            return new FilesService(
-                $container->get(ElementService::class),
-                $container->get(AdminElementMapper::class),
-            );
-        };
-
-        $container[AdminElementMapper::class] = function (ContainerInterface $container): AdminElementMapper {
-            return new AdminElementMapper(
+        $container->set(AdminElementMapper::class,
+            new AdminElementMapper(
                 $container->get(ElementMapper::class),
                 $container->get(UrlService::class),
-            );
-        };
+            )
+        );
 
-        $container[AdminElementService::class] = function (ContainerInterface $container): AdminElementService {
-            return new AdminElementService(
-            );
-        };
+        $container->set(AdminElementService::class,
+            new AdminElementService()
+        );
 
-        $container[AdminDownloadService::class] = function (ContainerInterface $container): AdminDownloadService {
-            return new AdminDownloadService(
-            );
-        };
+        $container->set(AdminDownloadService::class,
+            new AdminDownloadService()
+        );
 
-        $container[AdminCourseService::class] = function (ContainerInterface $container): AdminCourseService {
-            return new AdminCourseService(
-            );
-        };
     }
 }

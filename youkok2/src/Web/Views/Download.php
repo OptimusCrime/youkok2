@@ -1,16 +1,16 @@
 <?php
 namespace Youkok\Web\Views;
 
+use Exception;
 use Monolog\Logger;
-use Slim\Http\Message;
-use Slim\Http\Stream;
-use Slim\Http\Response;
-use Slim\Http\Request;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 use Psr\Container\ContainerInterface;
 
+use Slim\Psr7\Stream;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\TemplateFileNotFoundException;
-use Youkok\Biz\Exceptions\YoukokException;
 use Youkok\Biz\Services\Auth\AuthService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\Download\UpdateDownloadsService;
@@ -24,35 +24,32 @@ class Download extends BaseView
     private AuthService $authService;
     private Logger $logger;
 
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->downloadService = $container->get(DownloadFileInfoService::class);
         $this->updateDownloadsProcessor = $container->get(UpdateDownloadsService::class);
         $this->elementService = $container->get(ElementService::class);
         $this->authService = $container->get(AuthService::class);
-        $this->logger = $container->get(Logger::class);
+        $this->logger = $container->get('logger');
     }
 
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return Message|Response
-     * @throws TemplateFileNotFoundException
-     */
-    public function view(Request $request, Response $response, array $args)
+    public function view(Request $request, Response $response, array $args): Response
     {
-        $flags = [
-            ElementService::FLAG_FETCH_PARENTS,
-            ElementService::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE
-        ];
-
-        // If we are not currently logged in as admin, also make sure that the file is visible
-        if (!$this->authService->isAdmin($request)) {
-            $flags[] = ElementService::FLAG_ENSURE_VISIBLE;
-        }
-
         try {
+            $flags = [
+                ElementService::FLAG_FETCH_PARENTS,
+                ElementService::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE
+            ];
+
+            // If we are not currently logged in as admin, also make sure that the file is visible
+            if (!$this->authService->isAdmin($request)) {
+                $flags[] = ElementService::FLAG_ENSURE_VISIBLE;
+            }
+
             $element = $this->elementService->getElementFromUri(
                 $args['uri'],
                 ['id', 'checksum', 'directory', 'name'],
@@ -82,10 +79,19 @@ class Download extends BaseView
                 ->withHeader('Pragm', 'public')
                 ->withHeader('Content-Length', $fileSize)
                 ->withBody(new Stream(fopen($filePath, 'r')));
-        } catch (YoukokException $ex) {
-            // TODO: Handle file errors, not found errors etc better here
+        } catch (ElementNotFoundException $ex) {
+            $this->logger->debug($ex);
+
+            try {
+                return $this->render404($response);
+            }
+            catch (Exception $ex) {
+                $this->logger->error($ex);
+                return $response->withStatus(500);
+            }
+        } catch (Exception $ex) {
             $this->logger->error($ex);
-            return $this->render404($response);
+            return $response->withStatus(500);
         }
     }
 }

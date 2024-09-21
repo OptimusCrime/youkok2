@@ -1,10 +1,13 @@
 <?php
 namespace Youkok\Common\Middlewares;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Slim\Http\Request;
-use Slim\Http\Response;
 
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 use Youkok\Biz\Exceptions\InsufficientAccessException;
 use Youkok\Biz\Services\Auth\AuthService;
 
@@ -12,23 +15,22 @@ class AdminAuthMiddleware
 {
     private AuthService $authService;
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->authService = $container->get(AuthService::class);
     }
 
-    public function __invoke(Request $request, Response $response, callable $next): Response
+    public function __invoke(Request $request, RequestHandlerInterface $requestHandler): Response
     {
         try {
             $this->authService->validateCookie($request);
-            return $next($request, $response);
-        } catch (InsufficientAccessException $e) {
-            return static::noAccess($response);
+            return $requestHandler->handle($request);
+        } catch (InsufficientAccessException $_) {
+            return (new Response())->withStatus(403);
         }
-    }
-
-    private static function noAccess(Response $response): Response
-    {
-        return $response->withStatus(403);
     }
 }

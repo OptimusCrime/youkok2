@@ -3,8 +3,10 @@ namespace Youkok\Biz\Services\Models;
 
 use Carbon\Carbon;
 
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
-use Youkok\Biz\Exceptions\GenericYoukokException;
+use RedisException;
+use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
@@ -12,15 +14,13 @@ use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class CourseService
 {
-    const LAST_VISITED_COURSES_SET_SIZE = 10;
+    const int LAST_VISITED_COURSES_SET_SIZE = 10;
 
-    private ElementService $elementService;
     private CacheService $cacheService;
     private UrlService $urlService;
 
-    public function __construct(ElementService $elementService, CacheService $cacheService, UrlService $urlService)
+    public function __construct(CacheService $cacheService, UrlService $urlService)
     {
-        $this->elementService = $elementService;
         $this->cacheService = $cacheService;
         $this->urlService = $urlService;
     }
@@ -44,6 +44,9 @@ class CourseService
             ->get();
     }
 
+    /**
+     * @throws RedisException
+     */
     public function getLastVisitedCourses(): array
     {
         $set = $this->cacheService->getSortedRangeByKey(
@@ -62,10 +65,10 @@ class CourseService
     }
 
     /**
-     * @param Element $element
-     * @throws GenericYoukokException
+     * @throws RedisException
+     * @throws Exception
      */
-    public function updateLastVisited(Element $element): void
+    public function updateLastVisited(RouteParserInterface $routeParser, Element $element): void
     {
         $key = CacheKeyGenerator::keyForLastVisitedCourseSet();
 
@@ -73,7 +76,7 @@ class CourseService
             'id' => $element->id,
             'courseCode' => $element->getCourseCode(),
             'courseName' => $element->getCourseName(),
-            'url' => $this->urlService->urlForCourse($element),
+            'url' => $this->urlService->urlForCourse($routeParser, $element),
         ]);
 
         // Get the current set

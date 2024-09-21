@@ -3,10 +3,10 @@ namespace Youkok\Biz\Services\Admin;
 
 use Carbon\Carbon;
 
+use Exception;
+use RedisException;
+use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\GenericYoukokException;
-use Youkok\Biz\Exceptions\InvalidFlagCombination;
-use Youkok\Biz\Exceptions\UpdateException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Models\Admin\AdminElementService;
 use Youkok\Biz\Services\Models\ElementService;
@@ -34,21 +34,15 @@ class FileUpdateService
     }
 
     /**
-     * @param int $courseId
-     * @param int $elementId
-     * @param array $data
-     * @return array
-     * @throws GenericYoukokException
-     * @throws UpdateException
      * @throws ElementNotFoundException
-     * @throws InvalidFlagCombination
+     * @throws Exception
      */
-    public function put(int $courseId, int $elementId, array $data): array
+    public function put(RouteParserInterface $routeParser, int $courseId, int $elementId, array $data): array
     {
         $course = $this->getCourse($courseId);
 
         if (!$course->isCourse()) {
-            throw new UpdateException('Invalid courseId value: ' . $courseId);
+            throw new Exception('Invalid courseId value: ' . $courseId);
         }
 
         // These keys needs to be present
@@ -57,14 +51,14 @@ class FileUpdateService
             || !array_key_exists('slug', $data)
             || !array_key_exists('uri', $data)
         ) {
-            throw new UpdateException('Invalid data posted, missing one of: parent, name, slug or uri.');
+            throw new Exception('Invalid data posted, missing one of: parent, name, slug or uri.');
         }
 
         $element = $this->getElement($elementId);
 
         // Let's avoid this one, shall we...
         if ($element->parent === intval($data['id'])) {
-            throw new UpdateException('Can not assign self as parent!');
+            throw new Exception('Can not assign self as parent!');
         }
 
         $oldElement = clone $element;
@@ -116,16 +110,12 @@ class FileUpdateService
 
         $this->deleteOutdatedCaches($oldElement, $element);
 
-        return $this->fileService->buildTreeFromId($course->id);
+        return $this->fileService->buildTreeFromId($routeParser, $course->id);
     }
 
     /**
-     * @param int $id
-     * @return Element
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
-     * @throws UpdateException
+     * @throws Exception
      */
     private function getCourse(int $id): Element
     {
@@ -138,15 +128,18 @@ class FileUpdateService
         );
 
         if (!$element->isCourse()) {
-            throw new UpdateException('Invalid courseId value: ' . $id);
+            throw new Exception('Invalid courseId value: ' . $id);
         }
 
         return $element;
     }
 
+    /**
+     * @throws RedisException
+     */
     private function deleteOutdatedCaches(Element $oldElement, Element $updatedElement): void
     {
-        if ($this->anyChanged(['pending', 'deleted'], $oldElement, $updatedElement)) {
+        if ($this->anyChanged($oldElement, $updatedElement)) {
             $this->cacheService->delete(CacheKeyGenerator::keyForBoxesNumberOfFiles());
             $this->cacheService->delete(CacheKeyGenerator::keyForBoxesNumberOfCoursesWithContent());
             $this->cacheService->delete(CacheKeyGenerator::keyForBoxesNumberOfFilesThisMonth());
@@ -154,6 +147,9 @@ class FileUpdateService
         }
     }
 
+    /**
+     * @throws RedisException
+     */
     private function deleteUriCacheForElement(?string $uri): void
     {
         if ($uri === null) {
@@ -165,9 +161,9 @@ class FileUpdateService
         $this->cacheService->delete(CacheKeyGenerator::keyForVisibleUriFile($uri));
     }
 
-    private function anyChanged(array $keys, Element $oldElement, Element $updatedElement): bool
+    private function anyChanged(Element $oldElement, Element $updatedElement): bool
     {
-        foreach ($keys as $key) {
+        foreach (['pending', 'deleted']  as $key) {
             if ($oldElement->$key !== $updatedElement->$key) {
                 return true;
             }
@@ -177,11 +173,8 @@ class FileUpdateService
     }
 
     /**
-     * @param Element $oldElement
-     * @param Element $newElement
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
      */
     private function updateParentAndChildren(Element $oldElement, Element $newElement): void
     {
@@ -212,10 +205,8 @@ class FileUpdateService
     }
 
     /**
-     * @param int $id
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
+     * @throws RedisException
      */
     private function recursivelyUpdateChildrenUris(int $id): void
     {
@@ -244,11 +235,7 @@ class FileUpdateService
     }
 
     /**
-     * @param int $elementId
-     * @return Element
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
      */
     private function getElement(int $elementId): Element
     {
@@ -276,20 +263,15 @@ class FileUpdateService
     }
 
     /**
-     * @param array $data
-     * @param Element $element
-     * @return array
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
-     * @throws UpdateException
+     * @throws Exception
      */
     private function regenerateNameSlugAndURI(array $data, Element $element): array
     {
         if ($element->getType() === Element::COURSE) {
             $courseSplit = explode('||', $data['name']);
             if (count($courseSplit) !== 2) {
-                throw new UpdateException('Encountered invalid course name: ' . $data['name']);
+                throw new Exception('Encountered invalid course name: ' . $data['name']);
             }
 
             $slug = ElementService::createSlug($courseSplit[0]);
@@ -312,11 +294,7 @@ class FileUpdateService
     }
 
     /**
-     * @param int $id
-     * @return Element
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
      */
     private function getElementWithUri(int $id): Element
     {
@@ -330,11 +308,7 @@ class FileUpdateService
     }
 
     /**
-     * @param int|null $parentId
-     * @return int|null
      * @throws ElementNotFoundException
-     * @throws GenericYoukokException
-     * @throws InvalidFlagCombination
      */
     private function validateNewParent(?int $parentId): ?int
     {
@@ -345,7 +319,6 @@ class FileUpdateService
         $parent = $this->elementService->getElement(
             new SelectStatements('id', $parentId),
             ['id', 'parent'],
-            []
         );
 
         return $parent->id;
@@ -373,10 +346,7 @@ class FileUpdateService
     }
 
     /**
-     * @param string $key
-     * @param array $data
-     * @return int
-     * @throws UpdateException
+     * @throws Exception
      */
     private static function evaluateAndSetNumericBoolean(string $key, array $data): int
     {
@@ -388,7 +358,7 @@ class FileUpdateService
             return intval($data[$key]);
         }
 
-        throw new UpdateException('Unexpected value for key "' . $key . '". Value = ' . $data[$key]);
+        throw new Exception('Unexpected value for key "' . $key . '". Value = ' . $data[$key]);
     }
 
     private static function evaluateAndSetNullSafeString(string $key, array $data): ?string

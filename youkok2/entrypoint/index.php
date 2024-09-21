@@ -6,11 +6,10 @@ if (!(include __DIR__ . '/../vendor/autoload.php')) {
 }
 
 use Youkok\Common\App;
-use Youkok\Helpers\SettingsParser;
 use Youkok\Helpers\Configuration\Configuration;
 
 try {
-    $app = new App(SettingsParser::getSlimConfig());
+    $app = new App();
     $app->run();
 }
 catch (Exception $ex) {

@@ -1,9 +1,9 @@
 <?php
 namespace Youkok\Biz\Services;
 
-use Monolog\Logger;
-
-use Youkok\Biz\Exceptions\GenericYoukokException;
+use Exception;
+use RedisException;
+use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Exceptions\IdenticalLookupException;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Models\CourseService;
@@ -11,36 +11,28 @@ use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class CoursesLookupService
 {
-    private UrlService $urlService;
     private CourseService $courseService;
     private CourseMapper $courseMapper;
     private CacheService $cacheService;
-    private Logger $logger;
 
     public function __construct(
-        UrlService $urlService,
         CourseService $courseService,
         CourseMapper $courseMapper,
         CacheService $cacheService,
-        Logger $logger
     ) {
-        $this->urlService = $urlService;
         $this->courseService = $courseService;
         $this->courseMapper = $courseMapper;
         $this->cacheService = $cacheService;
-        $this->logger = $logger;
     }
 
     /**
-     * @param string|null $checksum
-     * @return array
-     * @throws GenericYoukokException
      * @throws IdenticalLookupException
+     * @throws RedisException
      */
-    public function get(?string $checksum): array
+    public function get(RouteParserInterface $routeParser, ?string $checksum): array
     {
         if ($checksum === null) {
-            return $this->getCoursesFromCache();
+            return $this->getCoursesFromCache($routeParser);
         }
 
         $currentChecksum = $this->getCurrentChecksum();
@@ -52,26 +44,26 @@ class CoursesLookupService
         // - The cache checksums are different
         // - The server cache checksum is null
         // Regardless of the reason, attempt to refresh the cache.
-        return $this->getCoursesFromCache();
+        return $this->getCoursesFromCache($routeParser);
     }
 
     /**
-     * @return array
-     * @throws GenericYoukokException
+     * @throws Exception
      */
-    public function getCoursesToAdminLookup(): array
+    public function getCoursesToAdminLookup(RouteParserInterface $routeParser): array
     {
         return $this->courseMapper->mapCoursesToLookup(
+            $routeParser,
             $this->courseService->getAllCourses(),
             CourseMapper::ADMIN,
         );
     }
 
     /**
-     * @return array
-     * @throws GenericYoukokException
+     * @throws RedisException
+     * @throws Exception
      */
-    private function getCoursesFromCache(): array
+    private function getCoursesFromCache(RouteParserInterface $routeParser): array
     {
         $courses = $this->getCoursesData();
         if ($courses !== null) {
@@ -79,22 +71,22 @@ class CoursesLookupService
         }
 
         // Cache is empty, try refreshing it before retrying once more
-        $coursesFromQuery = $this->refreshLookupCache();
+        $coursesFromQuery = $this->refreshLookupCache($routeParser);
 
-        if ($coursesFromQuery === null || (is_array($coursesFromQuery) && count($coursesFromQuery) === 0)) {
-            throw new GenericYoukokException('Failed to load courses from the database for lookup');
+        if (count($coursesFromQuery) === 0) {
+            throw new Exception('Failed to load courses from the database for lookup');
         }
 
         return $coursesFromQuery;
     }
 
     /**
-     * @return array
-     * @throws GenericYoukokException
+     * @throws RedisException
+     * @throws Exception
      */
-    private function refreshLookupCache(): array
+    private function refreshLookupCache(RouteParserInterface $routeParser): array
     {
-        $courses = $this->courseMapper->mapCoursesToLookup($this->courseService->getAllCourses());
+        $courses = $this->courseMapper->mapCoursesToLookup($routeParser, $this->courseService->getAllCourses());
         $coursesJson = json_encode($courses);
 
         $this->cacheService->set(CacheKeyGenerator::keyForCoursesLookupData(), $coursesJson);
@@ -103,11 +95,17 @@ class CoursesLookupService
         return $courses;
     }
 
+    /**
+     * @throws RedisException
+     */
     private function getCurrentChecksum(): ?string
     {
         return $this->cacheService->get(CacheKeyGenerator::keyForCoursesLookupChecksum());
     }
 
+    /**
+     * @throws RedisException
+     */
     private function getCoursesData(): ?string
     {
         return $this->cacheService->get(CacheKeyGenerator::keyForCoursesLookupData());

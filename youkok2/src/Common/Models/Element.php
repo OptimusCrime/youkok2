@@ -1,9 +1,9 @@
 <?php
 namespace Youkok\Common\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 
-use Youkok\Biz\Exceptions\GenericYoukokException;
 
 /**
  * @property int id
@@ -26,12 +26,12 @@ use Youkok\Biz\Exceptions\GenericYoukokException;
  */
 class Element extends Model
 {
-    const LINK = 'LINK';
-    const COURSE = 'COURSE';
-    const DIRECTORY = 'DIRECTORY';
-    const FILE = 'FILE';
+    const string LINK = 'LINK';
+    const string COURSE = 'COURSE';
+    const string DIRECTORY = 'DIRECTORY';
+    const string FILE = 'FILE';
 
-    const VALID_FILE_ICONS = ['htm', 'html', 'java', 'pdf', 'py', 'sql', 'txt'];
+    const array VALID_FILE_ICONS = ['htm', 'html', 'java', 'pdf', 'py', 'sql', 'txt'];
 
     public $timestamps = false;
 
@@ -70,8 +70,7 @@ class Element extends Model
     }
 
     /**
-     * @return string
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     public function getCourseCode(): string
     {
@@ -80,8 +79,7 @@ class Element extends Model
     }
 
     /**
-     * @return string
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     public function getCourseName(): string
     {
@@ -92,18 +90,18 @@ class Element extends Model
 
     /**
      * @return array
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     private function getCourseArray(): array
     {
         if ($this->name === null) {
-            throw new GenericYoukokException('Element does not have a name');
+            throw new Exception('Element does not have a name');
         }
 
         $split = explode('||', $this->name);
 
         if (count($split) !== 2) {
-            throw new GenericYoukokException('Element does not have valid course name: ' . $this->name);
+            throw new Exception('Element does not have valid course name: ' . $this->name);
         }
 
         return $split;
@@ -112,11 +110,6 @@ class Element extends Model
     public function isLink(): bool
     {
         return $this->link !== null && mb_strlen($this->link) > 0;
-    }
-
-    public function isFile(): bool
-    {
-        return $this->checksum !== null;
     }
 
     public function isCourse(): bool
@@ -139,7 +132,7 @@ class Element extends Model
             return 'link.png';
         }
 
-        if (strpos($this->checksum, '.') === false) {
+        if (!str_contains($this->checksum, '.')) {
             return 'unknown.png';
         }
 

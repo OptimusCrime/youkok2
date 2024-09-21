@@ -10,12 +10,9 @@ if (!(include __DIR__ . '/../vendor/autoload.php')) {
 }
 
 use Youkok\Common\App;
-use Youkok\Helpers\SettingsParser;
-
-$settingsParser = new SettingsParser();
 
 try {
-    $app = new App($settingsParser->getSlimConfig());
+    $app = new App();
     $app->runCronJobs();
 } catch (\Exception $ex) {
     echo 'Uncaught out exception!' . PHP_EOL;

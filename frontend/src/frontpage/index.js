@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import { MainContainer } from './containers/main-container';
@@ -23,10 +23,11 @@ export const run = () => {
   store.dispatch(fetchFrontPageLastVisited());
   store.dispatch(fetchFrontPageLastDownloaded());
 
-  ReactDOM.render((
+  const root = ReactDOM.createRoot(document.getElementById('frontpage'));
+
+  root.render(
       <Provider store={store}>
         <MainContainer />
       </Provider>
-    ), document.getElementById('frontpage')
   );
 }

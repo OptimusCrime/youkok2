@@ -11,7 +11,7 @@ class ElementPool
     private static bool $DISABLED = true;
     private static array $POOL = [];
 
-    public static function init()
+    public static function init(): void
     {
         static::$DISABLED = false;
     }

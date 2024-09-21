@@ -1,12 +1,16 @@
 <?php
 namespace Youkok\Rest\Endpoints\Admin\Files;
 
+use Exception;
 use Monolog\Logger;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Container\NotFoundExceptionInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
-use Youkok\Biz\Exceptions\YoukokException;
+use Slim\Routing\RouteContext;
+use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\Admin\FileDetailsService;
 use Youkok\Biz\Services\Admin\FileListingService;
 use Youkok\Biz\Services\Admin\FileUpdateService;
@@ -19,12 +23,16 @@ class AdminFilesEndpoint extends BaseRestEndpoint
     private FileUpdateService $fileUpdateService;
     private Logger $logger;
 
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->fileListingService = $container->get(FileListingService::class);
         $this->fileDetailsService = $container->get(FileDetailsService::class);
         $this->fileUpdateService = $container->get(FileUpdateService::class);
-        $this->logger = $container->get(Logger::class);
+        $this->logger = $container->get('logger');
     }
 
     public function get(Request $request, Response $response, array $args): Response
@@ -33,39 +41,33 @@ class AdminFilesEndpoint extends BaseRestEndpoint
             return $this->outputJson($response, [
                 'data' => $this->fileDetailsService->get((int)$args['id'])
             ]);
-        } catch (YoukokException $ex) {
+        } catch (Exception $ex) {
             $this->logger->error($ex);
-            return $this->returnBadRequest($response, $ex);
+
+            return $this->returnInternalServerError($response);
         }
     }
 
     public function list(Request $request, Response $response): Response
     {
         try {
-            return $this->outputJson($response, [
-                'data' => $this->fileListingService->getAll()
-            ]);
-        } catch (YoukokException $ex) {
-            $this->logger->error($ex);
-            return $this->returnBadRequest($response, $ex);
-        }
-    }
+            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
-    public function listSingle(Request $request, Response $response, array $args): Response
-    {
-        try {
             return $this->outputJson($response, [
-                'data' => $this->fileListingService->get((int)$args['id'])
+                'data' => $this->fileListingService->getAll($routeParser)
             ]);
-        } catch (YoukokException $ex) {
+        } catch (Exception $ex) {
             $this->logger->error($ex);
-            return $this->returnBadRequest($response, $ex);
+
+            return $this->returnInternalServerError($response);
         }
     }
 
     public function put(Request $request, Response $response, array $args): Response
     {
         try {
+            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+
             $data = $this->getJsonArrayFromBody(
                 $request,
                 ['course']
@@ -73,6 +75,7 @@ class AdminFilesEndpoint extends BaseRestEndpoint
 
             // Remember to run the update service before fetching the updated information below
             $course = $this->fileUpdateService->put(
+                $routeParser,
                 (int) $data['course'],
                 (int) $args['id'],
                 $data
@@ -84,9 +87,12 @@ class AdminFilesEndpoint extends BaseRestEndpoint
                     'course' => $course
                 ]
             ]);
-        } catch (YoukokException $ex) {
+        } catch (InvalidRequestException $ex) {
+            $this->logger->debug($ex);
+            return $this->returnBadRequest($response);
+        } catch (Exception $ex) {
             $this->logger->error($ex);
-            return $this->returnBadRequest($response, $ex);
+            return $this->returnInternalServerError($response);
         }
     }
 }

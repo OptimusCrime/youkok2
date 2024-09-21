@@ -3,17 +3,18 @@ namespace Youkok\Biz\Services\Mappers;
 
 use Carbon\Carbon;
 
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
-use Youkok\Biz\Exceptions\GenericYoukokException;
+use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
 
 class CourseMapper
 {
-    const REGULAR = 1;
-    const ADMIN = 2;
+    const int REGULAR = 1;
+    const int ADMIN = 2;
 
-    const DATASTORE_DOWNLOAD_ESTIMATE = 'DOWNLOADS_ESTIMATE';
+    const string DATASTORE_DOWNLOAD_ESTIMATE = 'DOWNLOADS_ESTIMATE';
 
     private UrlService $urlService;
 
@@ -23,34 +24,28 @@ class CourseMapper
     }
 
     /**
-     * @param $courses
-     * @param array $additionalFields
-     * @return array
-     * @throws GenericYoukokException
+     * @throws Exception
      */
-    public function map($courses, $additionalFields = []): array
+    public function map(RouteParserInterface $routeParser, $courses, array $additionalFields = []): array
     {
         $out = [];
         foreach ($courses as $course) {
-            $out[] = $this->mapCourse($course, $additionalFields);
+            $out[] = $this->mapCourse($routeParser, $course, $additionalFields);
         }
 
         return $out;
     }
 
     /**
-     * @param Element $element
-     * @param array $additionalFields
-     * @return array
-     * @throws GenericYoukokException
+     * @throws Exception
      */
-    public function mapCourse(Element $element, $additionalFields = []): array
+    public function mapCourse(RouteParserInterface $routeParser, Element $element, array $additionalFields = []): array
     {
         $arr = [
             'id' => $element->id,
             'courseCode' => $element->getCourseCode(),
             'courseName' => $element->getCourseName(),
-            'url' => $this->urlService->urlForCourse($element),
+            'url' => $this->urlService->urlForCourse($routeParser, $element),
             'type' => Element::COURSE
         ];
 
@@ -74,20 +69,17 @@ class CourseMapper
     }
 
     /**
-     * @param Collection $courses
-     * @param int $mode
-     * @return array
-     * @throws GenericYoukokException
+     * @throws Exception
      */
-    public function mapCoursesToLookup(Collection $courses, int $mode = CourseMapper::REGULAR): array
+    public function mapCoursesToLookup(RouteParserInterface $routeParser, Collection $courses, int $mode = CourseMapper::REGULAR): array
     {
         $output = [];
         foreach ($courses as $course) {
             if ($mode === static::REGULAR) {
-                $output[] = $this->mapCoursesToLookupRegular($course);
+                $output[] = $this->mapCoursesToLookupRegular($routeParser, $course);
             }
             else {
-                $output[] = $this->mapCoursesToLookupAdmin($course);
+                $output[] = $this->mapCoursesToLookupAdmin($routeParser, $course);
             }
         }
 
@@ -107,37 +99,31 @@ class CourseMapper
     }
 
     /**
-     * @param Element $course
-     * @return array
-     * @throws GenericYoukokException
+     * @throws Exception
      */
-    private function mapCoursesToLookupRegular(Element $course): array
+    private function mapCoursesToLookupRegular(RouteParserInterface $routeParser, Element $course): array
     {
         return array_merge(
             $this->mapCoursesToLookupBase($course), [
-                'url' => $this->urlService->urlForCourse($course),
+                'url' => $this->urlService->urlForCourse($routeParser, $course),
             ]
         );
     }
 
     /**
-     * @param Element $course
-     * @return array[]
-     * @throws GenericYoukokException
+     * @throws Exception
      */
-    private function mapCoursesToLookupAdmin(Element $course): array
+    private function mapCoursesToLookupAdmin(RouteParserInterface $routeParser, Element $course): array
     {
         return array_merge(
             $this->mapCoursesToLookupBase($course), [
-                'url' => $this->urlService->urlForCourseAdmin($course),
+                'url' => $this->urlService->urlForCourseAdmin($routeParser, $course),
             ]
         );
     }
 
     /**
-     * @param Element $course
-     * @return array
-     * @throws GenericYoukokException
+     * @throws Exception
      */
     private function mapCoursesToLookupBase(Element $course): array
     {

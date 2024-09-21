@@ -1,18 +1,14 @@
 <?php
 namespace Youkok\Web\Views;
 
-use Slim\Http\Response;
-use Slim\Http\Request;
-
-use Youkok\Biz\Exceptions\TemplateFileNotFoundException;
+use Exception;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
 class PageNotFound extends BaseView
 {
     /**
-     * @param Request $request
-     * @param Response $response
-     * @return Response
-     * @throws TemplateFileNotFoundException
+     * @throws Exception
      */
     public function view(Request $request, Response $response): Response
     {
