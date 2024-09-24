@@ -36,7 +36,6 @@ class AdminHomeGraphEndpoint extends BaseRestEndpoint
         }
         catch (Exception $ex) {
             $this->logger->error($ex);
-
             return $this->returnInternalServerError($response);
         }
     }

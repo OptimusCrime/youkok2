@@ -1,11 +1,14 @@
 <?php
 namespace Youkok\Biz\Services\Download;
 
+use Carbon\Carbon;
+use Exception;
 use RedisException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
+use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
 
 class UpdateDownloadsService
@@ -21,52 +24,66 @@ class UpdateDownloadsService
 
     /**
      * @throws RedisException
+     * @throws Exception
      */
     public function run(Element $element): void
     {
-        // Add the download to the database first
-        $this->downloadService->newDownloadForElement($element);
+        $this->downloadService->addDatabaseDownload($element);
 
-        // Update the number of downloads in the cache for this particular element
-        $this->addDownloadForElement($element);
+        $this->updateElementDownloads($element, false);
 
-        // Update these elements downloads in the most popular sets
-        $this->addDownloadForElementInMostPopularSets($element);
+        $course = $element->getCourse();
+        if ($course) {
+            $this->updateElementDownloads($course, true);
+            $this->addAndFlushDownloadForCourseInMostPopularSets($course);
+        }
 
-        // Update the total number of downloads
+        $this->addAndFlushDownloadForElementInMostPopularSets($element);
+
         $this->updateTotalNumberOfDownloads();
 
-        // Flush the payload cache
         $this->cacheService->delete(CacheKeyGenerator::keyForLastDownloadedPayload());
     }
 
-    /**
-     * @throws RedisException
-     */
-    private function addDownloadForElement(Element $element): void
+    private function updateElementDownloads(Element $element, bool $isCourse): void
     {
-        $downloads = $this->cacheService->getDownloadsForId($element->id);
-
-        if ($downloads === null) {
-            // Unable to find number of downloads from the cache (it could be zero), so fetch it from the DB
-            $databaseDownloads = $this->downloadService->getDownloadsForId($element->id);
-
-            // This element has downloads, but the cache was empty, update the cache
-            $this->cacheService->setDownloadsForId($element->id, $databaseDownloads);
+        $element->downloads_today += 1;
+        $element->downloads_week += 1;
+        $element->downloads_month += 1;
+        $element->downloads_year += 1;
+        $element->downloads_all += 1;
+        if (!$isCourse) {
+            $element->last_downloaded = Carbon::now();
         }
 
-        $this->cacheService->increaseDownloadsForId($element->id);
+        $element->save();
     }
 
     /**
      * @throws RedisException
      */
-    private function addDownloadForElementInMostPopularSets(Element $element): void
+    private function addAndFlushDownloadForElementInMostPopularSets(Element $element): void
     {
         foreach (MostPopularElement::collection() as $delta) {
-            $setKey = CacheKeyGenerator::keyForMostPopularElementsForDelta($delta);
+            $setKey = CacheKeyGenerator::keyForMostPopularElementsSetForDelta($delta);
 
             $this->cacheService->updateValueInSet($setKey, 1, $element->id);
+
+            $this->cacheService->delete(CacheKeyGenerator::keyForMostPopularElementsForDelta($delta));
+        }
+    }
+
+    /**
+     * @throws RedisException
+     */
+    private function addAndFlushDownloadForCourseInMostPopularSets(Element $element): void
+    {
+        foreach (MostPopularCourse::collection() as $delta) {
+            $setKey = CacheKeyGenerator::keyForMostPopularCoursesSetForDelta($delta);
+
+            $this->cacheService->updateValueInSet($setKey, 1, $element->id);
+
+            $this->cacheService->delete(CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta));
         }
     }
 

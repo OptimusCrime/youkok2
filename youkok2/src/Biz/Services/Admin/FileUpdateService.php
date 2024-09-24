@@ -77,7 +77,7 @@ class FileUpdateService
         $element->size = static::evaluateAndSetNullSafeString('size', $data);
         $element->link = static::evaluateAndSetNullSafeString('link', $data);
 
-        if ($oldElement->pending === 1 && $element->pending === 0) {
+        if ($oldElement->pending && !$element->pending) {
             $element->added = Carbon::now();
         }
 
@@ -121,7 +121,6 @@ class FileUpdateService
     {
         $element = $this->elementService->getElement(
             new SelectStatements('id', $id),
-            ['id', 'empty', 'parent'],
             [
                 ElementService::FLAG_FETCH_URI
             ]
@@ -186,13 +185,13 @@ class FileUpdateService
 
         // If old parent is now empty, update that flag
         if ($this->oldParentIsNowEmpty($oldParent->id, $newElement)) {
-            if ($oldParent->empty === 0) {
-                $oldParent->empty = 1;
+            if (!$oldParent->empty) {
+                $oldParent->empty = true;
                 $oldParent->save();
             }
         } else {
-            if ($oldParent->empty === 1) {
-                $oldParent->empty = 0;
+            if ($oldParent->empty) {
+                $oldParent->empty = false;
                 $oldParent->save();
             }
         }
@@ -242,21 +241,6 @@ class FileUpdateService
         return $this->elementService->getElement(
             new SelectStatements('id', $elementId),
             [
-                'id',
-                'name',
-                'slug',
-                'uri',
-                'parent',
-                'empty',
-                'checksum',
-                'size',
-                'directory',
-                'pending',
-                'deleted',
-                'requested_deletion',
-                'link',
-            ],
-            [
                 ElementService::FLAG_FETCH_URI
             ]
         );
@@ -300,7 +284,6 @@ class FileUpdateService
     {
         return $this->elementService->getElement(
             new SelectStatements('id', $id),
-            ['id', 'empty', 'parent'],
             [
                 ElementService::FLAG_FETCH_URI
             ]
@@ -318,7 +301,6 @@ class FileUpdateService
 
         $parent = $this->elementService->getElement(
             new SelectStatements('id', $parentId),
-            ['id', 'parent'],
         );
 
         return $parent->id;
@@ -334,7 +316,7 @@ class FileUpdateService
                 continue;
             }
 
-            if ($oldParentChild->deleted === 1 || $oldParentChild->pending === 1) {
+            if ($oldParentChild->deleted || $oldParentChild->pending) {
                 continue;
             }
 
@@ -354,7 +336,7 @@ class FileUpdateService
             return 0;
         }
 
-        if (in_array(strval($data[$key]), ['1', '0'])) {
+        if (in_array(strval($data[$key]), [true, false])) {
             return intval($data[$key]);
         }
 
@@ -367,7 +349,7 @@ class FileUpdateService
             return null;
         }
 
-        if (mb_strlen($data[$key]) === 0) {
+        if (mb_strlen($data[$key] ?? '') === 0) {
             return null;
         }
 

@@ -89,7 +89,7 @@ export const editFile = (state = defaultState, action) => {
         ...state,
         data: {
           ...state.data,
-          [action.id]: state.data[action.id] === 1 ? 0 : 1
+          [action.id]: state.data[action.id] !== true
         }
       };
 

@@ -12,7 +12,6 @@ use Monolog\Logger as MonologLogger;
 
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
-use Youkok\Biz\Pools\ElementPool;
 use Youkok\Common\Containers\Cache;
 use Youkok\Common\Containers\Database;
 use Youkok\Common\Containers\InternalServerError;
@@ -79,8 +78,6 @@ class App
      */
     public function run(): void
     {
-        $this->startPools();
-
         try {
             $this->app->run();
         } catch (Exception $ex) {
@@ -92,11 +89,6 @@ class App
             // Rethrow exception to the outer exception handler
             throw $ex;
         }
-    }
-
-    public function startPools(): void
-    {
-        ElementPool::init();
     }
 
     /**
@@ -163,7 +155,7 @@ class App
                 $group->get('/newest', FrontpageEndpoint::class . ':newest');
             });
 
-            $group->post('/courses', CoursesEndpoint::class . ':post');
+            $group->get('/courses', CoursesEndpoint::class . ':get');
 
             $group->group('/archive', function (RouteCollectorProxy $group) {
                 $group->get('/data', ArchiveEndpoint::class . ':data');

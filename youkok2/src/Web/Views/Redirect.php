@@ -1,5 +1,4 @@
 <?php
-
 namespace Youkok\Web\Views;
 
 use Exception;
@@ -43,7 +42,9 @@ class Redirect extends BaseView
                 return $this->render404($response);
             }
 
-            $flags = [];
+            $flags = [
+                ElementService::FLAG_FETCH_COURSE
+            ];
 
             // If we are not currently logged in as admin, also make sure that the file is visible
             if (!$this->authService->isAdmin($request)) {
@@ -53,7 +54,6 @@ class Redirect extends BaseView
 
             $element = $this->elementService->getElement(
                 new SelectStatements('id', $args['id']),
-                ['id', 'link', 'parent'],
                 $flags
             );
 
@@ -62,7 +62,12 @@ class Redirect extends BaseView
             }
 
             if (!$this->authService->isAdmin($request)) {
-                $this->updateDownloadsProcessor->run($element);
+                try {
+                    $this->updateDownloadsProcessor->run($element);
+                }
+                catch (Exception $ex) {
+                    $this->logger->error($ex);
+                }
             }
 
             return $response

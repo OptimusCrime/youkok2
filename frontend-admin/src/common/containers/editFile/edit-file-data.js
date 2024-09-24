@@ -176,28 +176,28 @@ class EditFileData extends React.Component {
             <label className="checkbox-inline">
               <input
                 type="checkbox"
-                checked={empty === 1}
+                checked={empty}
                 onChange={() => this.props.editFileToggleCheckbox('empty')}
               /> Empty
             </label>
             <label className="checkbox-inline">
               <input
                 type="checkbox"
-                checked={directory === 1}
+                checked={directory}
                 onChange={() => this.props.editFileToggleCheckbox('directory')}
               /> Directory
             </label>
             <label className="checkbox-inline">
               <input
                 type="checkbox"
-                checked={pending === 1}
+                checked={pending}
                 onChange={() => this.props.editFileToggleCheckbox('pending')}
               /> Pending
             </label>
             <label className="checkbox-inline">
               <input
                 type="checkbox"
-                checked={deleted === 1}
+                checked={deleted}
                 onChange={() => this.props.editFileToggleCheckbox('deleted')}
               /> Deleted
             </label>
@@ -205,7 +205,7 @@ class EditFileData extends React.Component {
             <label className="checkbox-inline">
               <input
                 type="checkbox"
-                checked={requested_deletion === 1}
+                checked={requested_deletion}
                 onChange={() => this.props.editFileToggleCheckbox('requested_deletion')}
               /> Requested deletion
             </label>

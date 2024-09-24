@@ -8,17 +8,13 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
 use Psr\Container\NotFoundExceptionInterface;
-use Youkok\Biz\Services\Job\Jobs\ClearRedisCachePartitionsService;
+use Youkok\Biz\Services\Job\Jobs\UpdateDownloadsJobService;
 use Youkok\Biz\Services\Job\Jobs\JobServiceInterface;
-use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
-use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
 
 class JobService
 {
     private static array $jobs = [
-        UpdateMostPopularCoursesJobService::class,
-        UpdateMostPopularElementsJobService::class,
-        ClearRedisCachePartitionsService::class,
+        UpdateDownloadsJobService::class,
     ];
 
     private ContainerInterface $container;
@@ -53,7 +49,7 @@ class JobService
             $job->run();
         }
         catch (Exception $ex) {
-            $this->logger->error('Could not fetch job class: ' . $jobClass, $ex->getTrace());
+            $this->logger->error($ex);
         }
     }
 }

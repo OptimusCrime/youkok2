@@ -1,8 +1,6 @@
 <?php
 namespace Youkok\Biz\Services\Mappers;
 
-use Carbon\Carbon;
-
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Slim\Interfaces\RouteParserInterface;
@@ -14,26 +12,17 @@ class CourseMapper
     const int REGULAR = 1;
     const int ADMIN = 2;
 
-    const string DATASTORE_DOWNLOAD_ESTIMATE = 'DOWNLOADS_ESTIMATE';
+    const string DOWNLOADS_TODAY = 'DOWNLOADS_TODAY';
+    const string DOWNLOADS_WEEK = 'DOWNLOADS_WEEK';
+    const string DOWNLOADS_MONTH = 'DOWNLOADS_MONTH';
+    const string DOWNLOADS_YEAR = 'DOWNLOADS_YEAR';
+    const string DOWNLOADS_ALL = 'DOWNLOADS_ALL';
 
     private UrlService $urlService;
 
     public function __construct(UrlService $urlService)
     {
         $this->urlService = $urlService;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function map(RouteParserInterface $routeParser, $courses, array $additionalFields = []): array
-    {
-        $out = [];
-        foreach ($courses as $course) {
-            $out[] = $this->mapCourse($routeParser, $course, $additionalFields);
-        }
-
-        return $out;
     }
 
     /**
@@ -49,20 +38,38 @@ class CourseMapper
             'type' => Element::COURSE
         ];
 
-        // This is stored in the Elements datastore (prefixed with an underscore)
-        if (in_array(static::DATASTORE_DOWNLOAD_ESTIMATE, $additionalFields)) {
-            $arr['download_estimate'] = $element->getDownloads();
+        if (in_array(static::DOWNLOADS_TODAY, $additionalFields)) {
+            $arr['downloads'] = $element->downloads_today;
+        }
+
+        if (in_array(static::DOWNLOADS_WEEK, $additionalFields)) {
+            $arr['downloads'] = $element->downloads_week;
+        }
+
+        if (in_array(static::DOWNLOADS_MONTH, $additionalFields)) {
+            $arr['downloads'] = $element->downloads_month;
+        }
+
+        if (in_array(static::DOWNLOADS_YEAR, $additionalFields)) {
+            $arr['downloads'] = $element->downloads_year;
+        }
+
+        if (in_array(static::DOWNLOADS_ALL, $additionalFields)) {
+            $arr['downloads'] = $element->downloads_all;
         }
 
         return $arr;
     }
 
-    public function mapLastVisited(array $lastVisited): array
+    /**
+     * @throws Exception
+     */
+    public function mapLastVisited(RouteParserInterface $routeParser, Collection $lastVisited): array
     {
         $out = [];
 
         foreach ($lastVisited as $course) {
-            $out[] = $this->mapLastVisitedCourse($course);
+            $out[] = $this->mapLastVisitedCourse($routeParser, $course);
         }
 
         return $out;
@@ -86,15 +93,18 @@ class CourseMapper
         return $output;
     }
 
-    private function mapLastVisitedCourse(array $course): array
+    /**
+     * @throws Exception
+     */
+    private function mapLastVisitedCourse(RouteParserInterface $routeParser, Element $element): array
     {
         return [
-            'id' => $course['id'],
-            'courseCode' => $course['courseCode'],
-            'courseName' => $course['courseName'],
-            'url' => $course['url'],
+            'id' => $element->id,
+            'courseCode' => $element->getCourseCode(),
+            'courseName' => $element->getCourseName(),
+            'url' => $this->urlService->urlForCourse($routeParser, $element),
             'type' => Element::COURSE,
-            'last_visited' => Carbon::createFromTimestamp($course['last_visited'])->format('Y-m-d H:i:s')
+            'last_visited' => $element->last_visited,
         ];
     }
 
@@ -131,7 +141,7 @@ class CourseMapper
             'id' => $course->id,
             'name' => $course->getCourseName(),
             'code' => $course->getCourseCode(),
-            'empty' => $course->empty === 1,
+            'empty' => $course->empty,
         ];
     }
 }

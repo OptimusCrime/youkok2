@@ -10,20 +10,8 @@ class AdminCourseService
     {
         $courses = Element
             ::select('id')
-            ->where('directory', 1)
-            ->where('empty', 0)
-            ->where('parent', null)
-            ->get();
-
-        return $this->mapCollectionToIdArray($courses);
-    }
-
-    public function getCourse(int $id): array
-    {
-        $courses = Element
-            ::select('id')
-            ->where('id', $id)
-            ->where('directory', 1)
+            ->where('directory', true)
+            ->where('empty', false)
             ->where('parent', null)
             ->get();
 
@@ -35,7 +23,7 @@ class AdminCourseService
         $courses = Element
             ::select('parent')
             ->distinct()
-            ->where('pending', 1)
+            ->where('pending', true)
             ->get();
 
         $ids = [];
@@ -51,9 +39,9 @@ class AdminCourseService
         $childrenCollection = Element
             ::select('id', 'name', 'parent', 'link', 'directory')
             ->where('parent', $element->id)
-            ->where('directory', 1)
-            ->where('deleted', 0)
-            ->where('pending', 0)
+            ->where('directory', true)
+            ->where('deleted', false)
+            ->where('pending', false)
             ->get();
 
         if (count($childrenCollection) === 0) {

@@ -29,7 +29,7 @@ const mapContent = entry => ({
 
 const mapPendingData = data =>
   mapPendingDataChildren(data)
-    .filter(entry => entry.pending === 1); // ugh, I know, but I am lazy and this was the easiest way to fix this
+    .filter(entry => entry.pending); // ugh, I know, but I am lazy and this was the easiest way to fix this
 
 const mapPendingDataChildren = data => {
   if (!data.children) {

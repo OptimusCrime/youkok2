@@ -34,7 +34,6 @@ class CreateLinkService
 
         $course = $this->elementService->getElement(
             new SelectStatements('id', $parent),
-            ['id'],
             [
                 ElementService::FLAG_ENSURE_VISIBLE,
                 ElementService::FLAG_ENSURE_IS_COURSE

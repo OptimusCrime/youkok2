@@ -35,22 +35,6 @@ class FileDetailsService
         $element = $this->elementService->getElement(
             new SelectStatements('id', $id),
             [
-                'id',
-                'name',
-                'slug',
-                'uri',
-                'parent',
-                'empty',
-                'checksum',
-                'size',
-                'directory',
-                'pending',
-                'deleted',
-                'link',
-                'added',
-                'requested_deletion'
-            ],
-            [
                 ElementService::FLAG_FETCH_COURSE
             ]
         );

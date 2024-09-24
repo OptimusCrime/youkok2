@@ -28,7 +28,7 @@ class LoginEndpoint extends BaseRestEndpoint
     {
         try {
             // The validate method throws exceptions for all invalid login attempts
-            $this->authService->validateLogin($request->getParams());
+            $this->authService->validateLogin($request->getParsedBody());
 
             $this->authService->setAdminCookie();
 

@@ -18,12 +18,9 @@ use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\Auth\AuthService;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\CoursesLookupService;
-use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\FrontpageService;
-use Youkok\Biz\Services\Job\Jobs\ClearRedisCachePartitionsService;
-use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularCoursesJobService;
-use Youkok\Biz\Services\Job\Jobs\UpdateMostPopularElementsJobService;
+use Youkok\Biz\Services\Job\Jobs\UpdateDownloadsJobService;
 use Youkok\Biz\Services\Job\JobService;
 use Youkok\Biz\Services\Mappers\Admin\AdminElementMapper;
 use Youkok\Biz\Services\Mappers\CourseMapper;
@@ -63,36 +60,57 @@ class Services
             )
         );
 
-        $container->set(MostPopularElementsService::class,
-            new MostPopularElementsService(
-                $container->get(CacheService::class),
-                $container->get(DownloadService::class),
-                $container->get(ElementService::class),
-                $container->get('logger')
-            )
-        );
-
         $container->set(UrlService::class,
             new UrlService(
                 $container->get(ElementService::class)
             )
         );
 
+        $container->set(DownloadService::class,
+            new DownloadService(
+                $container->get(ElementService::class)
+            )
+        );
+
+        $container->set(CourseMapper::class,
+            new CourseMapper(
+                $container->get(UrlService::class)
+            )
+        );
+
+        $container->set(ElementMapper::class,
+            new ElementMapper(
+                $container->get(UrlService::class),
+                $container->get(CourseMapper::class),
+                $container->get(ElementService::class),
+                $container->get('logger')
+            )
+        );
+
         $container->set(CourseService::class,
             new CourseService(
                 $container->get(CacheService::class),
-                $container->get(UrlService::class)
             )
         );
 
         $container->set(FrontpageService::class,
             new FrontpageService(
-                $container->get(MostPopularCoursesService::class),
-                $container->get(MostPopularElementsService::class),
                 $container->get(CacheService::class),
                 $container->get(ElementService::class),
                 $container->get(CourseService::class),
                 $container->get(DownloadService::class),
+                $container->get(ElementMapper::class),
+                $container->get(CourseMapper::class),
+            )
+        );
+
+        $container->set(MostPopularElementsService::class,
+            new MostPopularElementsService(
+                $container->get(CacheService::class),
+                $container->get(DownloadService::class),
+                $container->get(ElementService::class),
+                $container->get(ElementMapper::class),
+                $container->get('logger')
             )
         );
 
@@ -100,7 +118,9 @@ class Services
             new MostPopularCoursesService(
                 $container->get(CacheService::class),
                 $container->get(DownloadService::class),
-                $container->get(ElementService::class)
+                $container->get(ElementService::class),
+                $container->get(CourseMapper::class),
+                $container->get('logger')
             )
         );
 
@@ -115,27 +135,11 @@ class Services
             new DownloadFileInfoService()
         );
 
-        $container->set(CourseMapper::class,
-            new CourseMapper(
-                $container->get(UrlService::class)
-            )
-        );
-
         $container->set(CoursesLookupService::class,
             new CoursesLookupService(
                 $container->get(CourseService::class),
                 $container->get(CourseMapper::class),
                 $container->get(CacheService::class),
-            )
-        );
-
-        $container->set(ElementMapper::class,
-            new ElementMapper(
-                $container->get(UrlService::class),
-                $container->get(CourseMapper::class),
-                $container->get(DownloadCountService::class),
-                $container->get(ElementService::class),
-                $container->get('logger')
             )
         );
 
@@ -153,38 +157,14 @@ class Services
             )
         );
 
-        $container->set(DownloadCountService::class,
-            new DownloadCountService(
-                $container->get(CacheService::class),
-                $container->get(DownloadService::class)
-            )
-        );
-
         $container->set(JobService::class,
             new JobService($container, $container->get('logger'))
         );
 
-        $container->set(UpdateMostPopularElementsJobService::class,
-            new UpdateMostPopularElementsJobService(
-                $container->get(MostPopularElementsService::class)
-            )
-        );
-
-        $container->set(UpdateMostPopularCoursesJobService::class,
-            new UpdateMostPopularCoursesJobService(
-                $container->get(MostPopularCoursesService::class)
-            )
-        );
-
-        $container->set(ClearRedisCachePartitionsService::class,
-            new ClearRedisCachePartitionsService(
-                $container->get(CacheService::class)
-            )
-        );
-
-        $container->set(DownloadService::class,
-            new DownloadService(
-                $container->get(ElementService::class)
+        $container->set(UpdateDownloadsJobService::class,
+            new UpdateDownloadsJobService(
+                $container->get(CacheService::class),
+                $container->get(ElementService::class),
             )
         );
 

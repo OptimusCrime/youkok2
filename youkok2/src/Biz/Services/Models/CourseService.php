@@ -6,40 +6,35 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use RedisException;
-use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Services\CacheService;
-use Youkok\Biz\Services\UrlService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 
 class CourseService
 {
-    const int LAST_VISITED_COURSES_SET_SIZE = 10;
-
     private CacheService $cacheService;
-    private UrlService $urlService;
 
-    public function __construct(CacheService $cacheService, UrlService $urlService)
+    public function __construct(CacheService $cacheService)
     {
         $this->cacheService = $cacheService;
-        $this->urlService = $urlService;
     }
 
     public function getNumberOfVisibleCourses(): int
     {
         return Element
-            ::where('directory', 1)
+            ::where('directory', true)
             ->where('parent', null)
-            ->where('deleted', 0)
-            ->where('empty', 0)
+            ->where('deleted', false)
+            ->where('empty', false)
             ->count();
     }
 
     public function getAllCourses(): Collection
     {
-        return Element::select('id', 'name', 'slug', 'empty')
+        return Element::select(Element::ALL_FIELDS)
             ->where('parent', null)
-            ->where('directory', 1)
+            ->where('directory', true)
+            ->where('deleted', false)
             ->orderBy('name')
             ->get();
     }
@@ -47,65 +42,33 @@ class CourseService
     /**
      * @throws RedisException
      */
-    public function getLastVisitedCourses(): array
+    public function getLastVisitedCourses(): Collection
     {
-        $set = $this->cacheService->getSortedRangeByKey(
-            CacheKeyGenerator::keyForLastVisitedCourseSet()
-        );
-
-        $output = [];
-        foreach ($set as $member => $visited) {
-            $arr = json_decode($member, true);
-            $arr['last_visited'] = $visited;
-
-            $output[] = $arr;
-        }
-
-        return $output;
+        return Element::select(Element::ALL_FIELDS)
+            ->where('directory', true)
+            ->where('deleted', false)
+            ->whereNull('parent')
+            ->whereNotNull('last_visited')
+            ->orderBy('last_visited', 'DESC')
+            ->get();
     }
 
     /**
      * @throws RedisException
      * @throws Exception
      */
-    public function updateLastVisited(RouteParserInterface $routeParser, Element $element): void
+    public function updateLastVisited(Element $element): void
     {
-        $key = CacheKeyGenerator::keyForLastVisitedCourseSet();
-
-        $member = json_encode([
-            'id' => $element->id,
-            'courseCode' => $element->getCourseCode(),
-            'courseName' => $element->getCourseName(),
-            'url' => $this->urlService->urlForCourse($routeParser, $element),
-        ]);
-
-        // Get the current set
-        $set = $this->cacheService->getSortedRangeByKey($key);
-
-        $currentTimestamp = Carbon::now()->timestamp;
-
-        // If the set contains the current element, increase that value with the timestamp difference
-        if (isset($set[$member])) {
-            $valueDifference = $currentTimestamp - $set[$member];
-            $this->cacheService->updateValueInSet($key, $valueDifference, $member);
-            return;
+        if ($element->isCourse()) {
+            $element->last_visited = Carbon::now();
+            $element->save();
+        }
+        else {
+            $course = $element->getCourse();
+            $course->last_visited = Carbon::now();
+            $course->save();
         }
 
-        // The current member does not exist. We have to insert it
-        $this->cacheService->insertIntoSet(
-            $key,
-            $currentTimestamp, // Value equals the current timestamp
-            $member
-        );
-
-        // If the set contains ten members before we added the new member, delete the last one
-        if (count($set) >= static::LAST_VISITED_COURSES_SET_SIZE) {
-
-            $this->cacheService->removeFromSetByRank(
-                $key,
-                0,
-                0
-            );
-        }
+        $this->cacheService->delete(CacheKeyGenerator::keyForLastVisitedCoursesPayload());
     }
 }

@@ -9,6 +9,8 @@ use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 
+const MILLISECONDS_IN_DAY = 60 * 60 * 24 * 1000;
+
 class CoursesLookupService
 {
     private CourseService $courseService;
@@ -28,23 +30,35 @@ class CoursesLookupService
     /**
      * @throws IdenticalLookupException
      * @throws RedisException
+     * @throws Exception
      */
     public function get(RouteParserInterface $routeParser, ?string $checksum): array
     {
-        if ($checksum === null) {
-            return $this->getCoursesFromCache($routeParser);
-        }
+        $keyChecksum = CacheKeyGenerator::keyForCoursesLookupChecksum();
+        $currentChecksum = $this->cacheService->get($keyChecksum);
 
-        $currentChecksum = $this->getCurrentChecksum();
-        if ($currentChecksum === $checksum) {
+        if ($checksum !== null && $currentChecksum !== null && $currentChecksum === $checksum) {
             throw new IdenticalLookupException();
         }
 
-        // If we got here, it is because of one of these reasons:
-        // - The cache checksums are different
-        // - The server cache checksum is null
-        // Regardless of the reason, attempt to refresh the cache.
-        return $this->getCoursesFromCache($routeParser);
+        $lookupKey = CacheKeyGenerator::keyForCoursesLookupData();
+        $courses = $this->cacheService->get($lookupKey);
+        if ($courses !== null) {
+            return json_decode($courses, true);
+        }
+
+        $courses = $this->courseMapper->mapCoursesToLookup($routeParser, $this->courseService->getAllCourses());
+        $coursesJson = json_encode($courses);
+
+        $this->cacheService->set(CacheKeyGenerator::keyForCoursesLookupData(), $coursesJson,MILLISECONDS_IN_DAY);
+        $this->cacheService->set(CacheKeyGenerator::keyForCoursesLookupChecksum(), sha1($coursesJson), MILLISECONDS_IN_DAY);
+
+
+        if (count($courses) === 0) {
+            throw new Exception('Failed to load courses from the database for lookup');
+        }
+
+        return $courses;
     }
 
     /**
@@ -57,57 +71,5 @@ class CoursesLookupService
             $this->courseService->getAllCourses(),
             CourseMapper::ADMIN,
         );
-    }
-
-    /**
-     * @throws RedisException
-     * @throws Exception
-     */
-    private function getCoursesFromCache(RouteParserInterface $routeParser): array
-    {
-        $courses = $this->getCoursesData();
-        if ($courses !== null) {
-            return json_decode($courses, true);
-        }
-
-        // Cache is empty, try refreshing it before retrying once more
-        $coursesFromQuery = $this->refreshLookupCache($routeParser);
-
-        if (count($coursesFromQuery) === 0) {
-            throw new Exception('Failed to load courses from the database for lookup');
-        }
-
-        return $coursesFromQuery;
-    }
-
-    /**
-     * @throws RedisException
-     * @throws Exception
-     */
-    private function refreshLookupCache(RouteParserInterface $routeParser): array
-    {
-        $courses = $this->courseMapper->mapCoursesToLookup($routeParser, $this->courseService->getAllCourses());
-        $coursesJson = json_encode($courses);
-
-        $this->cacheService->set(CacheKeyGenerator::keyForCoursesLookupData(), $coursesJson);
-        $this->cacheService->set(CacheKeyGenerator::keyForCoursesLookupChecksum(), sha1($coursesJson));
-
-        return $courses;
-    }
-
-    /**
-     * @throws RedisException
-     */
-    private function getCurrentChecksum(): ?string
-    {
-        return $this->cacheService->get(CacheKeyGenerator::keyForCoursesLookupChecksum());
-    }
-
-    /**
-     * @throws RedisException
-     */
-    private function getCoursesData(): ?string
-    {
-        return $this->cacheService->get(CacheKeyGenerator::keyForCoursesLookupData());
     }
 }

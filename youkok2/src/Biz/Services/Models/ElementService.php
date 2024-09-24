@@ -7,9 +7,6 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use RedisException;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Exceptions\PoolException;
-use Youkok\Biz\Pools\Containers\ElementPoolContainer;
-use Youkok\Biz\Pools\ElementPool;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
@@ -47,12 +44,11 @@ class ElementService
      * @throws ElementNotFoundException
      * @throws Exception
      */
-    public function getElement(SelectStatements $selectStatements, array $attributes = [], array $flags = []): Element
+    public function getElement(SelectStatements $selectStatements, array $flags = []): Element
     {
         $this->validateFlags($flags);
-        $attributes = static::supplementAttributesBasedOnFlags($attributes, $flags);
 
-        $element = $this->buildQuery($selectStatements, $attributes, $flags);
+        $element = $this->buildQuery($selectStatements, $flags);
 
         if ($element->parent === null) {
             // .parent was fetched, but was `null` indicating that the current Element is a course
@@ -66,7 +62,7 @@ class ElementService
                 static::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE
             ];
             if (static::anyFlags($fetchParentsFlags, $flags)) {
-                $parents = $this->fetchParents($element, $attributes, $flags);
+                $parents = $this->fetchParents($element, $flags);
 
                 $element->setParents($parents);
             }
@@ -139,7 +135,6 @@ class ElementService
             $element->setParents(
                 $this->fetchParents(
                     $element,
-                    ['id', 'slug', 'parent', 'directory'],
                     []
                 )
             );
@@ -157,43 +152,51 @@ class ElementService
      * @throws ElementNotFoundException
      * @throws Exception
      */
-    public function getElementFromUri(string $uri, array $attributes = [], array $flags = []): Element
+    public function getElementFromUri(string $uri, array $flags = []): Element
     {
         $this->validateFlags($flags);
-        $attributes = static::supplementAttributesBasedOnFlags($attributes, $flags);
 
         // First, try to fetch using cache
         try {
-            return $this->getElementFromUriCache($uri, $attributes, $flags);
+            return $this->getElementFromUriCache($uri, $flags);
         } catch (ElementNotFoundException $ex) {
             // To be expected
         }
 
         // Secondly, try to fetch, using the entire uri
         try {
-            return $this->getElementFromOriginalUri($uri, $attributes, $flags);
+            return $this->getElementFromOriginalUri($uri, $flags);
         } catch (ElementNotFoundException $ex) {
             // To be expected
         }
 
         // Looks like we have to do this the hard way, e.i. looking up each fragment
-        return $this->getElementFromUriFragments($uri, $attributes, $flags);
+        return $this->getElementFromUriFragments($uri, $flags);
     }
 
     /**
      * @throws ElementNotFoundException
+     * @throws RedisException
      */
     public function getVisibleParentForElement(Element $element): Element
     {
+        $key = CacheKeyGenerator::keyForElementParent($element->id);
+        $cache = $this->cacheService->get($key);
+        if ($cache !== null) {
+            return new Element(json_decode($cache, true));
+        }
+
         $parent = Element
             ::where('id', $element->parent)
-            ->where('deleted', 0)
-            ->where('pending', 0)
+            ->where('deleted', false)
+            ->where('pending', false)
             ->first();
 
         if ($parent === null) {
             throw new ElementNotFoundException();
         }
+
+        $this->cacheService->set($key, $parent);
 
         return $parent;
     }
@@ -201,18 +204,18 @@ class ElementService
     public function getNumberOfVisibleFiles(): int
     {
         return Element
-            ::where('directory', 0)
-            ->where('deleted', 0)
-            ->where('pending', 0)
+            ::where('directory', false)
+            ->where('deleted', false)
+            ->where('pending', false)
             ->count();
     }
 
     public function getNumberOfFilesThisMonth(): int
     {
         return Element
-            ::where('directory', 0)
-            ->where('deleted', 0)
-            ->where('pending', 0)
+            ::where('directory', false)
+            ->where('deleted', false)
+            ->where('pending', false)
             ->whereDate('added', '>=', Carbon::now()->subMonth())
             ->count();
     }
@@ -223,9 +226,9 @@ class ElementService
     public function getNewestElements(int $limit = 10): array
     {
         $elements = Element::select('id')
-            ->where('directory', 0)
-            ->where('pending', 0)
-            ->where('deleted', 0)
+            ->where('directory', false)
+            ->where('pending', false)
+            ->where('deleted', false)
             ->orderBy('added', 'DESC')
             ->orderBy('name', 'DESC')
             ->limit($limit)
@@ -235,7 +238,6 @@ class ElementService
         foreach ($elements as $element) {
             $newest[] = $this->getElement(
                 new SelectStatements('id', $element->id),
-                ['id', 'name', 'slug', 'uri', 'parent', 'checksum', 'link', 'added', 'directory', 'deleted'],
                 [
                     static::FLAG_ENSURE_VISIBLE,
                     static::FLAG_FETCH_URI,
@@ -249,8 +251,8 @@ class ElementService
 
     public function getAllPending(): int
     {
-        return Element::where('pending', 1)
-            ->where('deleted', 0)
+        return Element::where('pending', true)
+            ->where('deleted', false)
             ->whereNotNull('parent')
             ->orderBy('name')
             ->count();
@@ -259,8 +261,8 @@ class ElementService
     public function getVisibleChildren(Element $element, int $order = self::SORT_TYPE_ORGANIZED): Collection
     {
         $query = Element::where('parent', $element->id)
-            ->where('deleted', 0)
-            ->where('pending', 0);
+            ->where('deleted', false)
+            ->where('pending', false);
 
         if ($order === static::SORT_TYPE_ORGANIZED) {
             $query = $query->orderBy('directory', 'DESC')->orderBy('name', 'ASC');
@@ -276,7 +278,7 @@ class ElementService
      * @throws Exception
      * @throws RedisException
      */
-    private function getElementFromUriCache(string $uri, array $attributes, array $flags): Element
+    private function getElementFromUriCache(string $uri, array $flags): Element
     {
         $key = static::generateUriCacheKey($uri, $flags);
 
@@ -288,7 +290,6 @@ class ElementService
 
         return $this->getElement(
             new SelectStatements('id', (int) $elementId),
-            $attributes,
             $flags
         );
     }
@@ -298,14 +299,10 @@ class ElementService
      * @throws RedisException
      * @throws Exception
      */
-    private function getElementFromOriginalUri(string $uri, array $attributes, array $flags): Element
+    private function getElementFromOriginalUri(string $uri, array $flags): Element
     {
-        // We only need to fetch the id there, the rest of the information is fetched in the second call
-        $elementFromUriAttributes = static::supplementAttributesBasedOnFlags(['id'], $flags);
-
         $elementFromUri = $this->buildQuery(
             new SelectStatements('uri', UriCleaner::cleanUri($uri)),
-            $elementFromUriAttributes,
             $flags
         );
 
@@ -315,7 +312,6 @@ class ElementService
 
         $element = $this->getElement(
             new SelectStatements('id', $elementFromUri->id),
-            $attributes,
             $flags
         );
 
@@ -331,7 +327,7 @@ class ElementService
      * @throws RedisException
      * @throws Exception
      */
-    private function getElementFromUriFragments(string $uri, array $attributes, array $flags): Element
+    private function getElementFromUriFragments(string $uri, array $flags): Element
     {
         $fragments = UriCleaner::cleanFragments(explode('/', $uri));
         $currentParentId = null;
@@ -342,8 +338,7 @@ class ElementService
             $selectStatements->addStatement('slug', $fragment);
             $selectStatements->addStatement('parent', $currentParentId);
 
-            $fragmentElementAttributes = static::supplementAttributesBasedOnFlags(['id'], $flags);
-            $fragmentElement = $this->buildQuery($selectStatements, $fragmentElementAttributes, $flags);
+            $fragmentElement = $this->buildQuery($selectStatements, $flags);
 
             $currentParentId = $fragmentElement->id;
         }
@@ -359,7 +354,6 @@ class ElementService
 
         $element = $this->getElement(
             new SelectStatements('id', $fragmentElement->id),
-            $attributes,
             $flags
         );
 
@@ -372,7 +366,7 @@ class ElementService
     /**
      * @throws ElementNotFoundException
      */
-    private function fetchParents(Element $element, array $attributes, array $flags): array
+    private function fetchParents(Element $element, array $flags): array
     {
         $currentParentId = $element->parent;
         $parents = [];
@@ -382,7 +376,7 @@ class ElementService
 
             $parent = null;
             try {
-                $parent = $this->fetchElement($attributes, $selectStatements);
+                $parent = $this->fetchElement($selectStatements);
             } catch (ElementNotFoundException $ex) {
                 // Rethrow exception
                 throw new ElementNotFoundException(
@@ -390,7 +384,7 @@ class ElementService
                 );
             }
 
-            if ($parent->directory !== 1) {
+            if (!$parent->directory) {
                 throw new ElementNotFoundException(
                     'Expected to find directory for parent, was: ' . $parent->getType() . ' for ID: ' . $parent->id
                 );
@@ -417,9 +411,9 @@ class ElementService
     /**
      * @throws ElementNotFoundException
      */
-    private function buildQuery(SelectStatements $selectStatements, array $attributes, array $flags): ?Element
+    private function buildQuery(SelectStatements $selectStatements, array $flags): ?Element
     {
-        $element = $this->fetchElement($attributes, $selectStatements);
+        $element = $this->fetchElement($selectStatements);
 
         // Can not fetch both visible and/or specific
         if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
@@ -429,7 +423,7 @@ class ElementService
         }
 
         if (in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {
-            if ($element->directory !== 1) {
+            if (!$element->directory) {
                 throw new ElementNotFoundException(
                     'Expected to find directory for element, was: ' . $element->getType() . ' for ID: ' . $element->id
                 );
@@ -442,36 +436,15 @@ class ElementService
     /**
      * @throws ElementNotFoundException
      */
-    private function fetchElement(array $attributes, SelectStatements $selectStatements): Element
+    private function fetchElement(SelectStatements $selectStatements): Element
     {
-        if (ElementPool::contains($attributes, $selectStatements)) {
-            try {
-                return ElementPool::get($attributes, $selectStatements);
-            }
-            catch (PoolException $ex) {
-                // Mute exception
-            }
-        }
-
-        $query = Element::select($attributes);
+        $query = Element::select(Element::ALL_FIELDS);
 
         foreach ($selectStatements as $key => $value) {
             $query = $query->where($key, $value);
         }
 
         $element = $query->first();
-
-        // Add to pool here, no need to do that later in this method, as it would re-add already existing
-        // pool elements.
-        if ($element !== null) {
-            ElementPool::add(
-                new ElementPoolContainer(
-                    $attributes,
-                    $selectStatements,
-                    $element
-                )
-            );
-        }
 
         if ($element === null) {
             throw new ElementNotFoundException(
@@ -525,70 +498,6 @@ class ElementService
         }
 
         return false;
-    }
-
-    private static function supplementAttributesBasedOnFlags(array $attributes, array $flags): array
-    {
-        if (!in_array('uri', $attributes) && in_array(static::FLAG_FETCH_URI, $flags)) {
-            $attributes[] = 'uri';
-        }
-
-        $flagsRequireParent = [
-            static::FLAG_FETCH_PARENTS,
-            static::FLAG_FETCH_URI,
-            static::FLAG_ENSURE_VISIBLE,
-            static::FLAG_FETCH_COURSE
-        ];
-
-        if (static::anyFlags($flagsRequireParent, $flags)) {
-            if (!in_array('parent', $attributes)) {
-                $attributes[] = 'parent';
-            }
-
-            if (!in_array('link', $attributes)) {
-                $attributes[] = 'link';
-            }
-
-            if (!in_array('directory', $attributes)) {
-                $attributes[] = 'directory';
-            }
-
-            if (!in_array('slug', $attributes)) {
-                $attributes[] = 'slug';
-            }
-
-            if (!in_array('uri', $attributes)) {
-                $attributes[] = 'uri';
-            }
-        }
-
-        if (in_array(static::FLAG_ENSURE_VISIBLE, $flags)) {
-            if (!in_array('deleted', $attributes)) {
-                $attributes[] = 'deleted';
-            }
-
-            if (!in_array('pending', $attributes)) {
-                $attributes[] = 'pending';
-            }
-        }
-
-        if (in_array(static::FLAG_ONLY_DIRECTORIES, $flags)) {
-            if (!in_array('directory', $attributes)) {
-                $attributes[] = 'directory';
-            }
-        }
-
-        if (in_array(static::FLAG_ENSURE_IS_COURSE, $flags)) {
-            if (!in_array('directory', $attributes)) {
-                $attributes[] = 'directory';
-            }
-
-            if (!in_array('parent', $attributes)) {
-                $attributes[] = 'parent';
-            }
-        }
-
-        return $attributes;
     }
 
     /**

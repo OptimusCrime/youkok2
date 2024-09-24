@@ -52,29 +52,6 @@ class SelectStatements implements Iterator
         $this->position = 0;
     }
 
-    public function getStatements(): array
-    {
-        return $this->statements;
-    }
-
-    public function equals(SelectStatements $other): bool
-    {
-        $otherStatements = $other->getStatements();
-        if ($this->statements === $otherStatements) {
-            // Select statements are exactly the same
-            return true;
-        }
-
-        foreach ($this->statements as $key => $value) {
-            if (!isset($otherStatements[$key]) || $otherStatements[$key] !== $value) {
-                return false;
-            }
-        }
-
-        // All the selects in other is also found in `this`
-        return true;
-    }
-
     public function __toString(): string
     {
         $output = '';

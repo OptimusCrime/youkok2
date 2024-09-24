@@ -30,8 +30,33 @@ services:
     container_name: "youkok2_php_dev"
     ports:
       - "9000"
-    env_file:
-      - env_php_dev.env
+    environment:
+      DEV: 'true'
+      SSL: 'false'
+
+      DIRECTORY_TEMPLATE: '/code/site/templates/'
+      DIRECTORY_FILES: '/code/files/'
+
+      DB_HOST: 'youkok2-db'
+      DB_USER: 'youkok2'
+      DB_PASSWORD: 'youkok2'
+      DB_DATABASE: 'postgres'
+
+      REDIS_HOST: 'youkok2-cache'
+      REDIS_PORT: '6379'
+
+      FILE_UPLOAD_MAX_SIZE_IN_BYTES: '10000000'
+      FILE_UPLOAD_ALLOWED_TYPES: 'pdf,txt,java,py,html,htm,sql'
+
+      ADMIN_COOKIE: 'foobar'
+
+      # Password is admin for the first input field, and the other fields are empty
+      ADMIN_PASS1: '$$2y$$10$$HQw8J9SNuqTb6s3YSdto9OWPaNORYkIRypJ8uX5UkKS5Fn32Yzwmu'
+      ADMIN_PASS2: '$$2y$$10$$wht6JZryFVCUMUi9qmPegOaETImo64e0oTrUMkWExslBVzoNecqC2'
+      ADMIN_PASS3: '$$2y$$10$$wht6JZryFVCUMUi9qmPegOaETImo64e0oTrUMkWExslBVzoNecqC2'
+      ADMIN_PASS4: '$$2y$$10$$wht6JZryFVCUMUi9qmPegOaETImo64e0oTrUMkWExslBVzoNecqC2'
+      ADMIN_PASS5: '$$2y$$10$$wht6JZryFVCUMUi9qmPegOaETImo64e0oTrUMkWExslBVzoNecqC2'
+      ADMIN_PASS6: '$$2y$$10$$wht6JZryFVCUMUi9qmPegOaETImo64e0oTrUMkWExslBVzoNecqC2'
     volumes:
       - ./youkok2:/code/site
       - ./_docker/files:/code/files

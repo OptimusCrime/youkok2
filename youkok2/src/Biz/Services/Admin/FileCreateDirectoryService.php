@@ -48,14 +48,15 @@ class FileCreateDirectoryService
         $element->slug = $slug;
         $element->uri = $uri;
         $element->parent = $directory->id;
-        $element->empty = 0;
-        $element->directory = 1;
-        $element->pending = 0;
-        $element->deleted = 0;
+        $element->empty = false;
+        $element->directory = true;
+        $element->pending = false;
+        $element->deleted = false;
         $element->added = Carbon::now();
+        $element->requested_deletion = false;
 
-        if ($course->empty === 1) {
-            $course->empty = 0;
+        if ($course->empty) {
+            $course->empty = false;
 
             if (!$course->save()) {
                 throw new CreateException('Failed to set course at non-empty. CourseId: ' . $courseId);
@@ -76,7 +77,6 @@ class FileCreateDirectoryService
     {
         return $this->elementService->getElement(
             new SelectStatements('id', $id),
-            ['id', 'empty', 'parent'],
             [
                 ElementService::FLAG_FETCH_URI
             ]

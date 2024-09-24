@@ -1,42 +1,42 @@
 <?php
 namespace Youkok\Biz\Services;
 
+use Exception;
 use RedisException;
+use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Services\Mappers\CourseMapper;
+use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Biz\Services\Models\ElementService;
-use Youkok\Biz\Services\PopularListing\MostPopularCoursesService;
-use Youkok\Biz\Services\PopularListing\MostPopularElementsService;
 use Youkok\Common\Utilities\CacheKeyGenerator;
-use Youkok\Enums\MostPopularCourse;
-use Youkok\Enums\MostPopularElement;
 
 class FrontpageService
 {
     const int SERVICE_LIMIT = 10;
 
-    private MostPopularCoursesService $popularCoursesProcessor;
-    private MostPopularElementsService $popularElementsProcessor;
     private CacheService $cacheService;
     private ElementService $elementService;
     private CourseService $courseService;
     private DownloadService $downloadService;
+    private ElementMapper $elementMapper;
+    private CourseMapper $courseMapper;
 
     public function __construct(
-        MostPopularCoursesService $popularCoursesProcessor,
-        MostPopularElementsService $popularElementsProcessor,
         CacheService $cacheService,
         ElementService $elementService,
         CourseService $courseService,
-        DownloadService $downloadService
+        DownloadService $downloadService,
+        ElementMapper $elementMapper,
+        CourseMapper $courseMapper
     ) {
-        $this->popularCoursesProcessor = $popularCoursesProcessor;
-        $this->popularElementsProcessor = $popularElementsProcessor;
         $this->cacheService = $cacheService;
         $this->elementService = $elementService;
         $this->courseService = $courseService;
         $this->downloadService = $downloadService;
+        $this->elementMapper = $elementMapper;
+        $this->courseMapper = $courseMapper;
     }
 
     /**
@@ -90,49 +90,92 @@ class FrontpageService
     }
 
     /**
+     * @throws ElementNotFoundException
      * @throws RedisException
      */
-    public function popularElements(MostPopularElement $delta): array
+    public function getNewestElements(RouteParserInterface $routeParser): array
     {
-        return $this->popularElementsProcessor->fromDelta(
-            $delta->getValue(),
-            static::SERVICE_LIMIT
+        $cacheKey = CacheKeyGenerator::keyForNewestElementsPayload();
+        $cache = $this->cacheService->get($cacheKey);
+
+        if ($cache !== null) {
+            return json_decode($cache, true);
+        }
+
+        $payload = $this->elementService->getNewestElements(static::SERVICE_LIMIT);
+        $data = $this->elementMapper->mapFromArray(
+            $routeParser,
+            $payload,
+            [
+                ElementMapper::POSTED_TIME,
+                ElementMapper::PARENT_DIRECT,
+                ElementMapper::PARENT_COURSE
+            ]
         );
-    }
 
-    /**
-     * @throws ElementNotFoundException
-     * @throws RedisException
-     */
-    public function popularCourses(MostPopularCourse $delta): array
-    {
-        return $this->popularCoursesProcessor->fromDelta(
-            $delta->getValue(),
-            static::SERVICE_LIMIT
+        $this->cacheService->set(
+            $cacheKey,
+            json_encode($data)
         );
-    }
 
-    /**
-     * @throws ElementNotFoundException
-     */
-    public function newest(): array
-    {
-        return $this->elementService->getNewestElements(static::SERVICE_LIMIT);
+        return $data;
     }
 
     /**
      * @throws RedisException
+     * @throws Exception
      */
-    public function lastVisited(): array
+    public function getLastVisitedCurses(RouteParserInterface $routeParser): array
     {
-        return $this->courseService->getLastVisitedCourses();
+        $cacheKey = CacheKeyGenerator::keyForLastVisitedCoursesPayload();
+        $cache = $this->cacheService->get($cacheKey);
+
+        if ($cache !== null) {
+            return json_decode($cache, true);
+        }
+
+        $payload = $this->courseService->getLastVisitedCourses();
+
+        $data = $this->courseMapper->mapLastVisited($routeParser, $payload);
+
+        $this->cacheService->set(
+            $cacheKey,
+            json_encode($data)
+        );
+
+        return $data;
     }
 
     /**
+     * @throws RedisException
      * @throws ElementNotFoundException
      */
-    public function lastDownloaded(): array
+    public function getLastDownloaded(RouteParserInterface $routeParser): array
     {
-        return $this->downloadService->getLatestDownloads(static::SERVICE_LIMIT);
+        $cacheKey = CacheKeyGenerator::keyForLastDownloadedPayload();
+        $cache = $this->cacheService->get($cacheKey);
+
+        if ($cache !== null) {
+            return json_decode($cache, true);
+        }
+
+        $payload = $this->downloadService->getLatestDownloads(static::SERVICE_LIMIT);
+
+        $data = $this->elementMapper->mapFromArray(
+            $routeParser,
+            $payload,
+            [
+                ElementMapper::LAST_DOWNLOADED,
+                ElementMapper::PARENT_DIRECT,
+                ElementMapper::PARENT_COURSE
+            ]
+        );
+
+        $this->cacheService->set(
+            $cacheKey,
+            json_encode($data)
+        );
+
+        return $data;
     }
 }

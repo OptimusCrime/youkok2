@@ -1,13 +1,12 @@
 <?php
 namespace Youkok\Biz\Services\Models;
 
-use Carbon\Carbon;
+use DateTime;
 use Exception;
 use Illuminate\Database\Capsule\Manager as DB;
 
 use Illuminate\Support\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Common\Models\Download;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\SelectStatements;
 use Youkok\Enums\MostPopularCourse;
@@ -22,17 +21,9 @@ class DownloadService
         $this->elementService = $elementService;
     }
 
-    public function getDownloadsForId(int $id): int
-    {
-        return Download
-            ::selectRaw("COUNT(`id`) as `result`")
-            ->where('resource', $id)
-            ->count();
-    }
-
     public function getNumberOfDownloads(): int
     {
-        return Download::count();
+        return Element::whereNotNull('parent')->sum('downloads_all');
     }
 
     /**
@@ -40,10 +31,13 @@ class DownloadService
      */
     public function getLatestDownloads(int $limit): array
     {
-        $downloads = DB::table('download')
-            ->select(['downloaded_time', 'element.id'])
-            ->leftJoin('element as element', 'element.id', '=', 'download.resource')
-            ->orderBy('downloaded_time', 'DESC')
+        $downloads = Element::select(Element::ALL_FIELDS)
+            ->where('deleted', false)
+            ->where('pending', false)
+            ->where('requested_deletion', false)
+            ->whereNotNull('parent')
+            ->whereNotNull('last_downloaded')
+            ->orderBy('last_downloaded', 'DESC')
             ->limit($limit)
             ->get();
 
@@ -51,13 +45,10 @@ class DownloadService
         foreach ($downloads as $download) {
             $element = $this->elementService->getElement(
                 new SelectStatements('id', $download->id),
-                ['id', 'name', 'slug', 'uri'],
                 [
                     ElementService::FLAG_FETCH_COURSE
                 ]
             );
-
-            $element->setDownloadedTime($download->downloaded_time);
 
             $response[] = $element;
         }
@@ -68,192 +59,84 @@ class DownloadService
     /**
      * @throws Exception
      */
-    public function getMostPopularElementsFromDelta(string $delta, ?int $limit = null): Collection
+    public function getMostPopularElementsFromDelta(MostPopularElement $delta): Collection
     {
-        $query = DB::table('download')
-            ->select(
-                'download.resource AS id',
-                'element.parent AS parent',
-                'element.pending AS pending',
-                'element.deleted AS deleted',
-            )
-            ->selectRaw('COUNT(download.id) AS download_count')
-            ->leftJoin('element AS element', 'element.id', '=', 'download.resource');
+        $query = Element::select(Element::ALL_FIELDS)
+            ->where('deleted', false)
+            ->where('pending', false)
+            ->where('requested_deletion', false)
+            ->whereNotNull('parent');
 
-        if (!MostPopularElement::ALL()->eq($delta) && !MostPopularCourse::ALL()->eq($delta)) {
-            $query = $query->whereDate(
-                'download.downloaded_time',
-                '>=',
-                $this->getMostPopularElementQueryFromDelta($delta)
-            );
-        }
-
-        if ($limit !== null) {
-            $query = $query->limit($limit);
-        }
-
-        return $query
-            ->groupBy(['download.resource'])
-            ->orderBy('download_count', 'DESC')
-            ->orderBy('element.added', 'DESC')
-            ->get();
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function getMostPopularCoursesFromDelta(string $delta, int $limit): array
-    {
-        $result = $this->summarizeDownloads($this->getMostPopularElementsFromDelta($delta));
-
-        return array_slice($result, 0, $limit);
-    }
-
-    public function newDownloadForElement(Element $element): bool
-    {
-        $download = new Download();
-        $download->resource = $element->id;
-        $download->ip = $_SERVER['REMOTE_ADDR'];
-        $download->agent = $_SERVER['HTTP_USER_AGENT'];
-        $download->downloaded_time = Carbon::now();
-
-        return $download->save();
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function summarizeDownloads(Collection $downloads): array
-    {
-        $parentToCourse = [];
-        $courses = [];
-
-        foreach ($downloads as $download) {
-            $downloadElement = null;
-            $currentCourse = null;
-
-            try {
-                if (isset($parentToCourse[$download->parent])) {
-                    // We can completely avoid fetching all parents for the Element if we already have established
-                    // the relationship between the parent -> course.
-                    $selectStatements = new SelectStatements();
-                    $selectStatements->addStatement('id', $download->id);
-                    $selectStatements->addStatement('deleted', 0);
-                    $selectStatements->addStatement('pending', 0);
-
-                    // Ensure the element is visible
-                    $this->elementService->getElement(
-                        $selectStatements,
-                        ['id', 'parent'],
-                    );
-
-                    $currentCourse = $parentToCourse[$download->parent];
-                } else {
-                    $downloadElement = $this->elementService->getElement(
-                        new SelectStatements('id', $download->id),
-                        ['id', 'parent'],
-                        [
-                            ElementService::FLAG_FETCH_PARENTS,
-                            ElementService::FLAG_FETCH_COURSE,
-                            ElementService::FLAG_ENSURE_VISIBLE,
-                        ]
-                    );
-
-                    $currentCourseObject = $downloadElement->getCourse();
-
-                    // Weird guard, I do not know why, but it might seem like some courses have downloads on them?
-                    // No idea how that happened, but this guard should take care of it. Might be an artifact
-                    // from ages ago.
-                    if ($currentCourseObject === null) {
-                        continue;
-                    }
-
-                    $parentToCourse[$download->parent] = $currentCourseObject->id;
-
-                    $currentCourse = $currentCourseObject->id;
-                }
-            } catch (ElementNotFoundException $ex) {
-                // This is to be expected, if we found a popular download, that is later deleted (or their parents are)
-                // we should just ignore this and keep going.
-                continue;
-            }
-
-            if (!isset($courses[$currentCourse])) {
-                $courses[$currentCourse] = 0;
-            }
-
-            $courses[$currentCourse] += $download->download_count;
-        }
-
-        // Make sure to filter out all courses that are either deleted or filtered away
-        $courses = $this->filterRemovedCourses($courses);
-
-        arsort($courses);
-
-        return static::transformResultArray($courses);
-    }
-
-    private function filterRemovedCourses(array $courses): array
-    {
-        $validCourseIds = [];
-        $filteredCourses = [];
-        foreach ($courses as $courseId => $downloads) {
-            $inValidCoursesIds = in_array($courseId, $validCourseIds);
-            if ($inValidCoursesIds || $this->isValidCourseId((int) $courseId)) {
-                $filteredCourses[$courseId] = $downloads;
-
-                if (!$inValidCoursesIds) {
-                    $validCourseIds[] = $courseId;
-                }
-            }
-        }
-
-        return $filteredCourses;
-    }
-
-    private function isValidCourseId(int $courseId): bool
-    {
-        $element = Element
-            ::select('id')
-            ->where('id', $courseId)
-            ->where('parent', null)
-            ->where('deleted', 0)
-            ->where('pending', 0)
-            ->get();
-
-        return count($element) !== 0;
-    }
-
-    private static function transformResultArray(array $courses): array
-    {
-        $newResult = [];
-
-        foreach ($courses as $courseId => $courseDownloads) {
-            $newResult[] = [
-                'id' => $courseId,
-                'downloads' => $courseDownloads
-            ];
-        }
-
-        return $newResult;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private static function getMostPopularElementQueryFromDelta(string $delta): Carbon
-    {
-        switch ($delta) {
-            case MostPopularElement::DAY():
-                return Carbon::now()->subDay();
-            case MostPopularElement::WEEK():
-                return Carbon::now()->subWeek();
-            case MostPopularElement::MONTH():
-                return Carbon::now()->subMonth();
-            case MostPopularElement::YEAR():
-                return Carbon::now()->subYear();
+        switch ($delta->getValue()) {
+            case MostPopularElement::DAY()->getValue():
+                $query = $query->orderBy('downloads_today', 'DESC');
+                break;
+            case MostPopularElement::WEEK()->getValue():
+                $query = $query->orderBy('downloads_week', 'DESC');
+                break;
+            case MostPopularElement::MONTH()->getValue():
+                $query = $query->orderBy('downloads_month', 'DESC');
+                break;
+            case MostPopularElement::YEAR()->getValue():
+                $query = $query->orderBy('downloads_year', 'DESC');
+                break;
+            case MostPopularElement::ALL()->getValue():
             default:
-                throw new Exception('Invalid delta');
+                $query = $query->orderBy('downloads_all', 'DESC');
+                break;
+
         }
+
+        return $query->get();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getMostPopularCurseFromDelta(MostPopularCourse $delta): Collection
+    {
+        $query = Element::select(Element::ALL_FIELDS)
+            ->where('deleted', false)
+            ->where('pending', false)
+            ->where('requested_deletion', false)
+            ->whereNull('parent');
+
+        switch ($delta->getValue()) {
+            case MostPopularCourse::DAY()->getValue():
+                $query = $query->orderBy('downloads_today', 'DESC');
+                break;
+            case MostPopularCourse::WEEK()->getValue():
+                $query = $query->orderBy('downloads_week', 'DESC');
+                break;
+            case MostPopularCourse::MONTH()->getValue():
+                $query = $query->orderBy('downloads_month', 'DESC');
+                break;
+            case MostPopularCourse::YEAR()->getValue():
+                $query = $query->orderBy('downloads_year', 'DESC');
+                break;
+            case MostPopularCourse::ALL()->getValue():
+            default:
+                $query = $query->orderBy('downloads_all', 'DESC');
+                break;
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function addDatabaseDownload(Element $element): void
+    {
+        $date = (new DateTime())->format('Y-m-d');
+
+        DB::statement("
+        INSERT INTO download
+          (element, date, downloads)
+        VALUES (" . $element->id . ", '" . $date . "', 1)
+        ON CONFLICT (element, date) DO
+        UPDATE SET
+          downloads=download.downloads + 1
+        ");
     }
 }

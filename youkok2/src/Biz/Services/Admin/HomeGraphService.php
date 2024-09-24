@@ -21,16 +21,15 @@ class HomeGraphService
     {
         $range = static::createRange();
 
-        $downloads = $this->adminDownloadService->getGroupedDownloadsForRange(static::RANGE_IN_DAYS);
-
-        foreach ($downloads as $download) {
-            // This should always be true, but avoid messing up the array
-            if (isset($range[$download->dtime])) {
-                $range[$download->dtime] = $download->total;
-            }
+        $output = [];
+        foreach ($range as $date) {
+            $output[] = [
+                'date' => $date,
+                'value' => $this->adminDownloadService->getDownloadsOnDate($date),
+            ];
         }
 
-        return static::mapGraph($range);
+        return $output;
     }
 
     private static function createRange(): array
@@ -38,27 +37,14 @@ class HomeGraphService
         $now = new DateTime();
 
         $range = [
-            $now->format('Y-m-d') => 0
+            $now->format('Y-m-d'),
         ];
 
         for ($i = 1; $i <= static::RANGE_IN_DAYS; $i++) {
             $dayInPast = $now->sub(DateInterval::createFromDateString('1 day'));
-            $range[$dayInPast->format('Y-m-d')] = 0;
+            $range[] = $dayInPast->format('Y-m-d');
         }
 
         return $range;
-    }
-
-    private static function mapGraph(array $data): array
-    {
-        $output = [];
-        foreach ($data as $date => $value) {
-            $output[] = [
-                'date' => $date,
-                'value' => $value
-            ];
-        }
-
-        return $output;
     }
 }

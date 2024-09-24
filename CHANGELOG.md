@@ -1,11 +1,24 @@
-Youkok2 - 6.0.0-pl        (?????)
-=================================
+Youkok2 - 6.0.0-pl (23. september 2024)
+=======================================
 
-- [Info] Overhaul
-- [Change] Erstatte MySQL med Postgres
-- [Upgrade] PHP 8.3
-- [Upgrade] Slim4
-- [Upgrade] Node18
+- [Info] Fixxes
+- [Change] MySQL -> Postgres
+- [Upgrade] PHP 7.4 -> PHP 8.3
+- [Upgrade] Slim 3 -> Slim 4
+- [Upgrade] Node 12 -> Node 18 (kunne godt ha oppgradert mer, men fikk problemer med noen deps)
+- [Removal] Fjernet oppsettet med migrasjoner helt, fordi det ikke var nødvendig.
+- [Removal] Fjernet pools, som var totalt unødvendig.
+- [Removal] Alle spørringer henter nå alle attributter i `elements`-tabellen.
+- [Removal] Variabler på model-klassene, som bare lagde problemer.
+- [Improvement] Forbedret logging av feilmeldinger i stede for å legge exceptions til default error
+-               handler.
+- [Improvement] Forenklet caching drastisk.
+- [Improvement] Caching av hele output-payload, for å redusere unødvendig arbeid.
+- [Change] Drastisk forenklet og redusert hvordan vi logger nedlastninger, som gjør at databasen
+           blir mye mindre, og spørringene blir enklere.
+- [Fix] Antall nedlastninger per fag reflekteres nå i sanntid.
+- [New] Implementert enklere system for å logge antall nedlastninger per dag, uke, mnd, og år.
+- [New] Nedtelling på toppen av siden til sunset av Youkok2.com.
 
 Youkok2 - 5.0.1-pl (3. mars 2021)
 =================================

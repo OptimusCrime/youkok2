@@ -27,7 +27,6 @@ class ArchiveHistoryService
         // This throws an exception if the element is hidden
          $element = $this->elementService->getElement(
              new SelectStatements('id', $id),
-             ['id'],
              [
                 ElementService::FLAG_ENSURE_VISIBLE
              ]

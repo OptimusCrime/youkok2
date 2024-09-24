@@ -1,7 +1,7 @@
 name: youkok2
 on:
   push:
-    branches: master
+    branches: main
   pull_request:
 
 jobs:
@@ -14,7 +14,8 @@ jobs:
     ##############################################################
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+
     - name: Get release version
       id: get_version
       run: echo "name=RELEASE_VERSION::$(echo $GITHUB_SHA | cut -c1-8)" >> $GITHUB_ENV
@@ -24,18 +25,20 @@ jobs:
     ##############################################################
 
     - name: Setup Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
-        node-version: '12.x'
+        node-version-file: ./frontend/.nvmrc
+
     - name: Build site frontend
       run: |
         cd frontend
-        npm ci
+        npm i --force
         npm run build:production
+
     - name: Build admin frontend
       run: |
         cd frontend-admin
-        npm ci
+            npm i --force
         npm run build:production
 
     ##############################################################
@@ -45,8 +48,9 @@ jobs:
     - name: Setup PHP with specific version of PECL extension
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
+        php-version: '8.3.11'
         tools: composer
+
     - name: Install site backend dependencies
       run: |
         cd youkok2
@@ -68,6 +72,7 @@ jobs:
         dockerfile: docker_nginx.Dockerfile
         buildargs: ENV
         tags: "latest,${{ env.RELEASE_VERSION }}"
+
     - name: Build and publish php to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       env:
@@ -79,21 +84,3 @@ jobs:
         dockerfile: docker_php.Dockerfile
         buildargs: ENV,COMPOSER_ALLOW_SUPERUSER
         tags: "latest,${{ env.RELEASE_VERSION }}"
-    - name: Build and publish db to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        name: optimuscrime/youkok2-migrations
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        dockerfile: docker_migrations.Dockerfile
-        tags: "latest,${{ env.RELEASE_VERSION }}"
-
-    # Uncomment to build new database image
-    #- name: Build and publish db to Registry
-    #  uses: elgohr/Publish-Docker-Github-Action@master
-    #  with:
-    #    name: optimuscrime/youkok2-db
-    #    username: ${{ secrets.DOCKER_USERNAME }}
-    #    password: ${{ secrets.DOCKER_PASSWORD }}
-    #    dockerfile: docker_db.Dockerfile
-    #    tags: "latest,${{ env.RELEASE_VERSION }}"

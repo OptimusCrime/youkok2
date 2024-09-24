@@ -11,10 +11,6 @@ use Youkok\Common\Utilities\SelectStatements;
 
 class FilesService
 {
-    const array LISTING_SELECT_ATTRIBUTES = [
-        'id', 'name', 'link', 'pending', 'deleted', 'parent', 'directory', 'checksum', 'uri', 'slug'
-    ];
-
     private ElementService $elementService;
     private AdminElementMapper $adminElementMapper;
 
@@ -45,7 +41,6 @@ class FilesService
     {
         $course = $this->elementService->getElement(
             new SelectStatements('id', $id),
-            static::LISTING_SELECT_ATTRIBUTES,
             [
                 ElementService::FLAG_ENSURE_IS_COURSE
             ]
@@ -61,7 +56,7 @@ class FilesService
     private function getAllChildrenFromParent(int $id): array
     {
         $collection = Element
-            ::select(static::LISTING_SELECT_ATTRIBUTES)
+            ::select(Element::ALL_FIELDS)
             ->where('parent', $id)
             ->orderBy('directory', 'DESC')
             ->orderBy('name', 'ASC')

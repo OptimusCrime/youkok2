@@ -85,7 +85,7 @@ class BoxMostPopularCourses extends Component {
           }
         >
           {!isLoading && courses.map((course, index) =>
-            <CourseItem course={course} key={index} additional={<span>[ca. {formatNumber(course.download_estimate)}]</span>} /> )
+            <CourseItem course={course} key={index} additional={<span>[{formatNumber(course.downloads)}]</span>} /> )
           }
         </BoxWrapper>
       </div>

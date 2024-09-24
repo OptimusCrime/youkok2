@@ -31,7 +31,6 @@ class ArchiveService
     {
         $directory = $this->elementService->getElement(
             new SelectStatements('id', $id),
-            ['id', 'name', 'slug', 'uri', 'parent', 'directory'],
             [
                 ElementService::FLAG_ENSURE_VISIBLE,
                 ElementService::FLAG_FETCH_PARENTS,
@@ -50,7 +49,6 @@ class ArchiveService
     {
         return $this->elementService->getElementFromUri(
             $uri,
-            ['id', 'parent', 'name', 'slug', 'uri', 'empty', 'checksum', 'link', 'directory', 'requested_deletion'],
             [
                 ElementService::FLAG_ENSURE_VISIBLE,
                 ElementService::FLAG_ONLY_DIRECTORIES,

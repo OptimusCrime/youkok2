@@ -1,8 +1,6 @@
 <?php
 namespace Youkok\Helpers\Configuration;
 
-use Exception;
-
 class Configuration
 {
     const string DEV = 'DEV';
@@ -17,14 +15,14 @@ class Configuration
     CONST STRING DB_DATABASE = 'MYSQL_DATABASE';
     CONST STRING DB_PORT = 'MYSQL_PORT';
 
-    CONST STRING ADMIN_COOKIE = 'ADMIN_COOKIE';
-    CONST STRING ADMIN_PASS_PREFIX = 'ADMIN_PASS';
-
     CONST STRING REDIS_HOST = 'CACHE_HOST';
     CONST STRING REDIS_PORT = 'CACHE_PORT';
 
     CONST STRING FILE_UPLOAD_MAX_SIZE_IN_BYTES = 'FILE_UPLOAD_MAX_SIZE_IN_BYTES';
     CONST STRING FILE_UPLOAD_ALLOWED_TYPES = 'FILE_UPLOAD_ALLOWED_TYPES';
+
+    CONST STRING ADMIN_COOKIE = 'ADMIN_COOKIE';
+    CONST STRING ADMIN_PASS_PREFIX = 'ADMIN_PASS';
 
     private static ?Configuration $instance = null;
     private array $configuration;
@@ -79,16 +77,6 @@ class Configuration
         return intval($this->lookup(static::DB_PORT, '5432'));
     }
 
-    public function getAdminCookie(): string
-    {
-        return $this->lookup(static::ADMIN_COOKIE, 'foobar');
-    }
-
-    public function getAdminPass(int $value): string
-    {
-        return $this->lookup(static::ADMIN_PASS_PREFIX . $value, '');
-    }
-
     public function getRedisHost(): string
     {
         return $this->lookup(static::REDIS_HOST, 'youkok2-cache');
@@ -107,6 +95,16 @@ class Configuration
     public function getFileUploadAllowedTypes(): array
     {
         return static::formatAllowedTypes($this->lookup(static::FILE_UPLOAD_ALLOWED_TYPES, 'pdf,txt,java,py,html,htm,sql'));
+    }
+
+    public function getAdminCookie(): string
+    {
+        return $this->lookup(static::ADMIN_COOKIE, 'foobar');
+    }
+
+    public function getAdminPass(int $value): string
+    {
+        return $this->lookup(static::ADMIN_PASS_PREFIX . $value, '');
     }
 
     private function lookup(string $key, string $fallback): string

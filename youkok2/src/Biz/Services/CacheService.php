@@ -5,6 +5,8 @@ use Redis;
 
 use RedisException;
 use Youkok\Common\Utilities\CacheKeyGenerator;
+use Youkok\Enums\MostPopularCourse;
+use Youkok\Enums\MostPopularElement;
 
 class CacheService
 {
@@ -18,20 +20,19 @@ class CacheService
     /**
      * @throws RedisException
      */
-    public function getMostPopularElementsFromDelta(string $delta, int $limit): array
+    public function getMostPopularElementsSetFromDelta(MostPopularElement $delta): array
     {
-        $key = CacheKeyGenerator::keyForMostPopularElementsForDelta($delta);
-
-        return $this->getSortedRangeByKey($key, $limit);
+        $key = CacheKeyGenerator::keyForMostPopularElementsSetForDelta($delta);
+        return $this->getSortedRangeByKey($key);
     }
 
     /**
      * @throws RedisException
      */
-    public function getMostPopularCoursesFromDelta(string $delta): ?string
+    public function getMostPopularCoursesSetFromDelta(MostPopularCourse $delta): array
     {
-        $key = CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta);
-        return $this->getCacheByKey($key);
+        $key = CacheKeyGenerator::keyForMostPopularCoursesSetForDelta($delta);
+        return $this->getSortedRangeByKey($key);
     }
 
     /**
@@ -43,11 +44,13 @@ class CacheService
     }
 
     /**
+     * Stores for one hour by default.
+     *
      * @throws RedisException
      */
-    public function set(string $key, string $value): bool
+    public function set(string $key, string $value, int $expireMs = 60 * 60 * 1000): bool
     {
-        return $this->cache->set($key, $value);
+        return $this->cache->setex($key, $expireMs, $value);
     }
 
     /**
@@ -77,14 +80,6 @@ class CacheService
     /**
      * @throws RedisException
      */
-    public function removeFromSetByRank(string $setKey, int $start, int $end): void
-    {
-        $this->cache->zRemRangeByRank($setKey, $start, $end);
-    }
-
-    /**
-     * @throws RedisException
-     */
     public function updateValueInSet($setKey, $increase, $id): void
     {
         $this->cache->zIncrBy($setKey, $increase, $id);
@@ -93,57 +88,9 @@ class CacheService
     /**
      * @throws RedisException
      */
-    public function getDownloadsForId(int $id): ?int
+    public function getSortedRangeByKey(string $key): array
     {
-        $downloads = $this->cache->get(CacheKeyGenerator::keyForElementDownloads($id));
-
-        // Redis returns false for null values for unknown reasons
-        if ($downloads === false) {
-            return null;
-        }
-
-        return (int) $downloads;
-    }
-
-    /**
-     * @throws RedisException
-     */
-    public function setDownloadsForId(int $id, int $downloads): void
-    {
-        $this->set(CacheKeyGenerator::keyForElementDownloads($id), (string) $downloads);
-    }
-
-    /**
-     * @throws RedisException
-     */
-    public function increaseDownloadsForId(int $id): void
-    {
-        $downloads = $this->getDownloadsForId($id);
-
-        // This is just a guard, and should never have to happen
-        if ($downloads === null) {
-            $downloads = 0;
-        }
-
-        $this->setDownloadsForId($id, $downloads + 1);
-    }
-
-    /**
-     * @throws RedisException
-     */
-    public function getSortedRangeByKey(string $key, int $limit = null, int $offset = 0): array
-    {
-        if ($limit === null) {
-            return $this->cache->zRevRangeByScore($key, '+inf', '-inf', [
-                'withscores' => true
-            ]);
-        }
-
         return $this->cache->zRevRangeByScore($key, '+inf', '-inf', [
-            'limit' => [
-                $offset,
-                $limit
-            ],
             'withscores' => true
         ]);
     }

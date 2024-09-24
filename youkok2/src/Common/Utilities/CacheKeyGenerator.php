@@ -1,16 +1,24 @@
 <?php
 namespace Youkok\Common\Utilities;
 
+use Youkok\Enums\MostPopularCourse;
+use Youkok\Enums\MostPopularElement;
+
 class CacheKeyGenerator
 {
-    public static function keyForElementDownloads(int $id): string
+    public static function keyForMostPopularElementsSetForDelta(MostPopularElement $delta): string
     {
-        return 'downloads_' . $id;
+        return 'most_popular_elements_set_' . $delta->getValue();
     }
 
-    public static function keyForMostPopularElementsForDelta(string $delta): string
+    public static function keyForMostPopularElementsForDelta(MostPopularElement $delta): string
     {
-        return 'most_popular_elements_' . $delta;
+        return 'most_popular_elements_' . $delta->getValue();
+    }
+
+    public static function keyForMostPopularCoursesSetForDelta(MostPopularCourse $delta): string
+    {
+        return 'most_popular_courses_set_' . $delta->getValue();
     }
 
     public static function keyForMostPopularCoursesForDelta(string $delta): string
@@ -58,6 +66,11 @@ class CacheKeyGenerator
         return 'uri_visible_directory_' . $uri;
     }
 
+    public static function keyForElementParent(int $id): string
+    {
+        return 'element_parent_' . $id;
+    }
+
     public static function keyForAllParentsAreDirectoriesExceptCurrentIsFile(string $uri): string
     {
         return 'uri_visible_parents_directory_current_file_' . $uri;
@@ -66,11 +79,6 @@ class CacheKeyGenerator
     public static function keyForVisibleUriFile(string $uri): string
     {
         return 'uri_visible_file_' . $uri;
-    }
-
-    public static function keyForLastVisitedCourseSet(): string
-    {
-        return 'last_visited_courses_set';
     }
 
     public static function keyForCoursesLookupChecksum(): string

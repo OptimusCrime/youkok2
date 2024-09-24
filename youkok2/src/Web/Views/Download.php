@@ -42,6 +42,7 @@ class Download extends BaseView
         try {
             $flags = [
                 ElementService::FLAG_FETCH_PARENTS,
+                ElementService::FLAG_FETCH_COURSE,
                 ElementService::FLAG_ENSURE_ALL_PARENTS_ARE_DIRECTORIES_CURRENT_IS_FILE
             ];
 
@@ -52,7 +53,6 @@ class Download extends BaseView
 
             $element = $this->elementService->getElementFromUri(
                 $args['uri'],
-                ['id', 'checksum', 'directory', 'name'],
                 $flags
             );
 
@@ -63,7 +63,12 @@ class Download extends BaseView
             }
 
             if (!$this->authService->isAdmin($request)) {
-                $this->updateDownloadsProcessor->run($element);
+                try {
+                    $this->updateDownloadsProcessor->run($element);
+                }
+                catch (Exception $ex) {
+                    $this->logger->error($ex);
+                }
             }
 
             $fileInfo = $this->downloadService->getFileInfo($element);

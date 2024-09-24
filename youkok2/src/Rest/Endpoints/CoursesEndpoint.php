@@ -28,7 +28,7 @@ class CoursesEndpoint extends BaseRestEndpoint
         $this->logger = $container->get('logger');
     }
 
-    public function post(Request $request, Response $response): Response
+    public function get(Request $request, Response $response): Response
     {
         try {
             $routeParser = RouteContext::fromRequest($request)->getRouteParser();
@@ -43,11 +43,9 @@ class CoursesEndpoint extends BaseRestEndpoint
                 )
             );
         } catch (IdenticalLookupException $ex) {
-            // Content has not changed
             return $response->withStatus(304);
         } catch (Exception $ex) {
             $this->logger->error($ex);
-
             return $this->returnInternalServerError($response);
         }
     }

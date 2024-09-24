@@ -6,6 +6,7 @@ use Slim\Psr7\Request;
 use Youkok\Biz\Exceptions\InsufficientAccessException;
 use Youkok\Biz\Exceptions\InvalidLoginAttemptException;
 use Youkok\Helpers\Configuration\Configuration;
+use function setcookie;
 
 class AuthService
 {
@@ -58,7 +59,7 @@ class AuthService
     {
         $ret = setcookie(
             static::getCookieName(),
-            null,
+            '',
             time() - static::COOKIE_LIFETIME,
             '/'
         );

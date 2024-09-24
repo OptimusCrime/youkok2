@@ -11,15 +11,22 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null slug
  * @property string|null uri
  * @property int|null parent
- * @property int empty
+ * @property boolean empty
  * @property string|null checksum
  * @property int|null size
- * @property int directory
- * @property int pending
- * @property int deleted
+ * @property boolean directory
+ * @property boolean pending
+ * @property boolean deleted
  * @property string|null link
  * @property string added
- * @property int requested_deletion
+ * @property boolean requested_deletion
+ * @property int downloads_today
+ * @property int downloads_week
+ * @property int downloads_month
+ * @property int downloads_year
+ * @property int downloads_all
+ * @property int last_visited
+ * @property int last_downloaded
  * @method static where(string $key, string $value)
  * @method static select(string|array ...$string)
  *
@@ -31,28 +38,41 @@ class Element extends Model
     const string DIRECTORY = 'DIRECTORY';
     const string FILE = 'FILE';
 
+    const array ALL_FIELDS = [
+        'id',
+        'name',
+        'slug',
+        'uri',
+        'parent',
+        'empty',
+        'checksum',
+        'size',
+        'directory',
+        'pending',
+        'deleted',
+        'link',
+        'added',
+        'requested_deletion',
+        'downloads_today',
+        'downloads_week',
+        'downloads_month',
+        'downloads_year',
+        'downloads_all',
+        'last_visited',
+        'last_downloaded'
+    ];
+
     const array VALID_FILE_ICONS = ['htm', 'html', 'java', 'pdf', 'py', 'sql', 'txt'];
 
     public $timestamps = false;
 
     protected $table = 'element';
-    protected $fillable = ['*'];
+    protected $fillable = [
+    ];
     protected $guarded = [''];
 
-    private ?int $downloads;
-    private array $parents;
-    private array $children;
-    private ?string $downloadedTime;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->downloads = null;
-        $this->parents = [];
-        $this->children = [];
-        $this->downloadedTime = null;
-    }
+    private array $parents = [];
+    private array $children = [];
 
     public function getType(): string
     {
@@ -112,14 +132,19 @@ class Element extends Model
         return $this->link !== null && mb_strlen($this->link) > 0;
     }
 
+    public function isFile(): bool
+    {
+        return $this->checksum !== null;
+    }
+
     public function isCourse(): bool
     {
-        return $this->parent === null && $this->directory === 1;
+        return $this->parent === null && $this->directory;
     }
 
     public function isDirectory(): bool
     {
-        return !$this->isCourse() && $this->directory === 1;
+        return !$this->isCourse() && $this->directory;
     }
 
     public function getIcon(): string
@@ -132,7 +157,7 @@ class Element extends Model
             return 'link.png';
         }
 
-        if (!str_contains($this->checksum, '.')) {
+        if (!str_contains($this->checksum ?? '', '.')) {
             return 'unknown.png';
         }
 
@@ -143,16 +168,6 @@ class Element extends Model
         }
 
         return 'unknown.png';
-    }
-
-    public function setDownloads(int $downloads): void
-    {
-        $this->downloads = $downloads;
-    }
-
-    public function getDownloads(): int
-    {
-        return $this->downloads;
     }
 
     public function setParents(array $parents): void
@@ -184,18 +199,8 @@ class Element extends Model
         return $this->parents[0];
     }
 
-    public function setDownloadedTime(string $downloadedTime): void
-    {
-        $this->downloadedTime = $downloadedTime;
-    }
-
-    public function getDownloadedTime(): string
-    {
-        return $this->downloadedTime;
-    }
-
     public function isVisible(): bool
     {
-        return $this->deleted === 0 && $this->pending === 0;
+        return !$this->deleted && !$this->pending;
     }
 }

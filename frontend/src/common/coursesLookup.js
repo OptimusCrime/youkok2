@@ -45,7 +45,7 @@ export const verifyLookup = () => {
 
 export async function refreshCourses(checksum) {
   const response = await fetch(`/rest/courses${checksum === null ? '' : `?checksum=${checksum}`}`, {
-    method: 'POST',
+    method: 'GET',
   });
 
   const currentTimestamp = getCurrentTimestamp().toString();

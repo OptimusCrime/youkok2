@@ -12,18 +12,15 @@ use Slim\Psr7\Response;
 use Slim\Routing\RouteContext;
 use Youkok\Biz\Exceptions\InvalidRequestException;
 use Youkok\Biz\Services\ArchiveService;
-use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\Models\CourseService;
 use Youkok\Common\Models\Element;
-use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Helpers\Configuration\Configuration;
 
 class ArchiveEndpoint extends BaseRestEndpoint
 {
     private ArchiveService $archiveService;
     private CourseService $courseService;
-    private CacheService $cacheService;
     private ElementMapper $elementMapper;
     private Logger $logger;
 
@@ -35,7 +32,6 @@ class ArchiveEndpoint extends BaseRestEndpoint
     {
         $this->archiveService = $container->get(ArchiveService::class);
         $this->courseService = $container->get(CourseService::class);
-        $this->cacheService = $container->get(CacheService::class);
         $this->elementMapper = $container->get(ElementMapper::class);
         $this->logger = $container->get('logger');
     }
@@ -59,26 +55,24 @@ class ArchiveEndpoint extends BaseRestEndpoint
             $course = $this->getArchiveCourse($element);
             $parents = $this->archiveService->getBreadcrumbsForElement($routeParser, $element);
 
-            if ($element->isCourse()) {
-                $this->courseService->updateLastVisited($routeParser, $element);
-            } else {
-                $this->courseService->updateLastVisited($routeParser, $element->getCourse());
+            try {
+                $this->courseService->updateLastVisited($element);
             }
-
-            // Flush cache
-            $this->cacheService->delete(CacheKeyGenerator::keyForLastVisitedCoursesPayload());
+            catch (Exception $ex) {
+                $this->logger->error($ex);
+            }
 
             $configuration = Configuration::getInstance();
 
             return $this->outputJson($response, [
                 'id' => $element->id,
-                'empty' => $element->empty === 1,
+                'empty' => $element->empty,
                 'parents' => $parents,
                 'title' => $element->isCourse() ? $element->getCourseCode() : $element->name,
                 'sub_title' => $element->isCourse() ? $element->getCourseName() : null,
                 'valid_file_types' => $configuration->getFileUploadAllowedTypes(),
                 'max_file_size_bytes' => $configuration->getFileUploadMaxSizeInBytes(),
-                'requested_deletion' => $course->requested_deletion === 1,
+                'requested_deletion' => $course->requested_deletion,
                 'html_title' => $this->archiveService->getSiteTitle($element),
                 'html_description' => $this->archiveService->getSiteDescription($element),
             ]);
@@ -109,9 +103,8 @@ class ArchiveEndpoint extends BaseRestEndpoint
                     $routeParser,
                     $this->archiveService->get(intval($id)),
                     [
-                        ElementMapper::DOWNLOADS,
+                        ElementMapper::DOWNLOADS_ALL,
                         ElementMapper::POSTED_TIME,
-                        ElementMapper::DOWNLOADS,
                         ElementMapper::ICON
                     ]
                 )

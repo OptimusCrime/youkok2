@@ -8,7 +8,6 @@ use Monolog\Logger;
 use RedisException;
 use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
-use Youkok\Biz\Services\Download\DownloadCountService;
 use Youkok\Biz\Services\UrlService;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
@@ -18,28 +17,29 @@ class ElementMapper
     const string PARENT_DIRECT = 'PARENT_DIRECT';
     const string PARENT_COURSE = 'PARENT_COURSE';
     const string POSTED_TIME = 'POSTED_TIME';
-    const string DOWNLOADS = 'DOWNLOADS';
     const string ICON = 'ICON';
-    const string DATASTORE_DOWNLOADS = 'KEEP_DOWNLOADS';
 
-    const string DOWNLOADED_TIME = 'KEEP_DOWNLOADED_TIME';
+    const string DOWNLOADS_TODAY = 'DOWNLOADS_TODAY';
+    const string DOWNLOADS_WEEK = 'DOWNLOADS_WEEK';
+    const string DOWNLOADS_MONTH = 'DOWNLOADS_MONTH';
+    const string DOWNLOADS_YEAR = 'DOWNLOADS_YEAR';
+    const string DOWNLOADS_ALL = 'DOWNLOADS_ALL';
+
+    const string LAST_DOWNLOADED = 'LAST_DOWNLOADED';
 
     private UrlService $urlService;
     private CourseMapper $courseMapper;
-    private DownloadCountService $downloadCountService;
     private ElementService $elementService;
     private Logger $logger;
 
     public function __construct(
         UrlService $urlService,
         CourseMapper $courseMapper,
-        DownloadCountService $downloadCountService,
         ElementService $elementService,
         Logger $logger
     ) {
         $this->urlService = $urlService;
         $this->courseMapper = $courseMapper;
-        $this->downloadCountService = $downloadCountService;
         $this->elementService = $elementService;
         $this->logger = $logger;
     }
@@ -115,7 +115,7 @@ class ElementMapper
                 $course = $element->getCourse();
 
                 if ($course === null) {
-                    throw new ElementNotFoundException('Could not find coure for element ' . $element->id);
+                    throw new ElementNotFoundException('Could not find course for element ' . $element->id);
                 }
 
                 $arr['course'] = $this->courseMapper->mapCourse($routeParser, $course);
@@ -125,21 +125,32 @@ class ElementMapper
             }
         }
 
-        if (in_array(static::DOWNLOADS, $additionalFields)) {
-            $arr['downloads'] = $this->downloadCountService->getDownloadsForElement($element);
+        if (in_array(static::DOWNLOADS_TODAY, $additionalFields)) {
+            $arr['downloads'] = $element->downloads_today;
         }
 
-        // This is stored in the Elements datastore (prefixed with an underscore)
-        if (in_array(static::DATASTORE_DOWNLOADS, $additionalFields)) {
-            $arr['downloads'] = $element->getDownloads();
+        if (in_array(static::DOWNLOADS_WEEK, $additionalFields)) {
+            $arr['downloads'] = $element->downloads_week;
+        }
+
+        if (in_array(static::DOWNLOADS_MONTH, $additionalFields)) {
+            $arr['downloads'] = $element->downloads_month;
+        }
+
+        if (in_array(static::DOWNLOADS_YEAR, $additionalFields)) {
+            $arr['downloads'] = $element->downloads_year;
+        }
+
+        if (in_array(static::DOWNLOADS_ALL, $additionalFields)) {
+            $arr['downloads'] = $element->downloads_all;
         }
 
         if (in_array(static::ICON, $additionalFields)) {
             $arr['icon'] = $element->getIcon();
         }
 
-        if (in_array(static::DOWNLOADED_TIME, $additionalFields)) {
-            $arr['downloaded_time'] = $element->getDownloadedTime();
+        if (in_array(static::LAST_DOWNLOADED, $additionalFields)) {
+            $arr['downloaded_time'] = $element->last_downloaded;
         }
 
         return $arr;
@@ -167,6 +178,7 @@ class ElementMapper
     public function mapHistory(Collection $elements): array
     {
         $out = [];
+        /** @var Element $element */
         foreach ($elements as $element) {
             if ($element->isLink()) {
                 $out[] = $element->name . ' ble postet.';
