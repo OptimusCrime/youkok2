@@ -1,5 +1,5 @@
 {
-  "name": "youkok2-frontend",
+  "name": "youkok2-frontend-admin",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,7 @@
     "watch": "npm run clean && webpack --mode development",
     "dev": "npm run clean && webpack --mode development",
     "prod": "npm run clean && webpack --mode production",
-    "clean": "rimraf ../static/content/static/**"
+    "clean": "rimraf ../static/content/admin/static/**"
   },
   "author": "",
   "license": "MIT",

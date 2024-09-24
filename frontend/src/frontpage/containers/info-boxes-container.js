@@ -34,7 +34,7 @@ class InfoBoxesContainer extends Component {
                                 </>
                             ) : (
                                 <>
-                                    Youkok2.com legger ned om {formatNumber(1_000_000 - number_downloads)} nedlastninger.
+                                    Youkok2.com legges ned om {formatNumber(1_000_000 - number_downloads)} nedlastninger.
                                 </>
                             )}
                         </div>
