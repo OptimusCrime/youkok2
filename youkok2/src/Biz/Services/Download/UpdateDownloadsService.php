@@ -35,7 +35,7 @@ class UpdateDownloadsService
         $course = $element->getCourse();
         if ($course) {
             $this->updateElementDownloads($course, true);
-            $this->addAndFlushDownloadForCourseInMostPopularSets($course);
+            $this->flushDownloadForCourseInMostPopularSets();
         }
 
         $this->addAndFlushDownloadForElementInMostPopularSets($element);
@@ -76,13 +76,9 @@ class UpdateDownloadsService
     /**
      * @throws RedisException
      */
-    private function addAndFlushDownloadForCourseInMostPopularSets(Element $element): void
+    private function flushDownloadForCourseInMostPopularSets(): void
     {
         foreach (MostPopularCourse::collection() as $delta) {
-            $setKey = CacheKeyGenerator::keyForMostPopularCoursesSetForDelta($delta);
-
-            $this->cacheService->updateValueInSet($setKey, 1, $element->id);
-
             $this->cacheService->delete(CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta));
         }
     }

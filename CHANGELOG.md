@@ -1,5 +1,12 @@
-Youkok2 - 6.0.0-pl (23. september 2024)
-=======================================
+Youkok2 - 6.0.1-pl      (5. oktober 2024)
+=========================================
+
+- [Info] Fixxes
+- [Fix] Vise bare 10 siste besøkte fag.
+- [Fix] Forenkle mest populære fag.
+
+Youkok2 - 6.0.0-pl   (23. september 2024)
+=========================================
 
 - [Info] Fixxes
 - [Change] MySQL -> Postgres
@@ -20,15 +27,15 @@ Youkok2 - 6.0.0-pl (23. september 2024)
 - [New] Implementert enklere system for å logge antall nedlastninger per dag, uke, mnd, og år.
 - [New] Nedtelling på toppen av siden til sunset av Youkok2.com.
 
-Youkok2 - 5.0.1-pl (3. mars 2021)
-=================================
+Youkok2 - 5.0.1-pl         (3. mars 2021)
+=========================================
 
 - [Info] Bugfix
 - [Fixed] Cronjobs
 - [Improved] Building Docker images should be faster due to cached layers.
 
-Youkok2 - 5.0.0-pl (23. februar 2021)
-=====================================
+Youkok2 - 5.0.0-pl     (23. februar 2021)
+=========================================
 
 - [Info] Ytelsesforbedringer
 - [Stuff] Bytte ut php-apache med php-fpm.
@@ -36,8 +43,8 @@ Youkok2 - 5.0.0-pl (23. februar 2021)
 - [Removed] Sessions. Brukerinnstillinger lagres heller i localStorage.
 - [Stuff] Forenkling av kodebase.
 
-Youkok2 - 4.2.0-pl (18. februar 2020)
-====================================
+Youkok2 - 4.2.0-pl     (18. februar 2020)
+=========================================
 
 - [Info] Features og bugfixes.
 - [Fixed] Søkefeltet viser resultater etter søk på bare to bokstaver i stede for tre.
@@ -46,36 +53,36 @@ Youkok2 - 4.2.0-pl (18. februar 2020)
 - [Admin] Opplistning av Redis-cache.
 - [Admin] Mulighet til å søke opp og redigere enkeltfag, selv de uten innhold.
 
-Youkok2 - 4.1.0-pl (17. februar 2020)
-====================================
+Youkok2 - 4.1.0-pl     (17. februar 2020)
+=========================================
 
 - [Info] Features.
 - [Improved] La til funksjonalitet for å markere et fag med innhold som er ønsket slettet.
 - [Fixed] Admin kan nå redigere fag igjen.
 
-Youkok2 - 4.0.5-pl (4. februar 2020)
-====================================
+Youkok2 - 4.0.5-pl      (4. februar 2020)
+=========================================
 
 - [Info] Improvements.
 - [Improved] Bedre håndtering og redirecting av gamle linker som støyer veldig i loggene.
 
-Youkok2 - 4.0.4-pl (3. februar 2020)
-====================================
+Youkok2 - 4.0.4-pl      (3. februar 2020)
+=========================================
 
 - [Info] Improvements.
 - [Improved] Siden ser og fungerer bedre på mobile enheter nå. Perfekt er det ikke, men det
              er en liten forbedring fra tidligere.
 
-Youkok2 - 4.0.3-pl (3. februar 2020)
-====================================
+Youkok2 - 4.0.3-pl      (3. februar 2020)
+=========================================
 
 - [Info] Bugfix.
 - [Fixed] Nye fag er ikke lenger cachet. Antallet blir resatt og telt på nytt hver natt.
 - [Fixed] Oversikten over fag viser nå piler til neste sider hvis man står på side en og det er
           flere fag på neste side.
 
-Youkok2 - 4.0.2-pl (28. august 2019)
-====================================
+Youkok2 - 4.0.2-pl      (28. august 2019)
+=========================================
 
 - [Info] Bugfix.
 - [Fixed] Fikset faktisk opplisting av fag.
@@ -85,20 +92,20 @@ Youkok2 - 4.0.2-pl (28. august 2019)
 - [Technical] Endret hvordan mounting av filer gjøres på systemet.
 - [Technical] Splittet opp env-filene i common, dev og prod.
 
-Youkok2 - 4.0.1-pl (27. august 2019)
-====================================
+Youkok2 - 4.0.1-pl      (27. august 2019)
+=========================================
 
 - [Info] Bugfix.
 - [Fixed] Forsøk på å fikse opplisting av fag.
 
-Youkok2 - 4.0.0-pl (26. august 2019)
-====================================
+Youkok2 - 4.0.0-pl      (26. august 2019)
+=========================================
 
 - [Info] Release.
 - [Changed] Endret versjonsnummeret.
 
-Youkok2 - 4.0.0-alpha (22. august 2019)
-=======================================
+Youkok2 - 4.0.0-alpha   (22. august 2019)
+=========================================
 
 - [Info] Alpha for testing.
 - [Info] Total omskrivning, igjen.
@@ -110,8 +117,8 @@ Youkok2 - 4.0.0-alpha (22. august 2019)
 - [New] Vise siste nedlastninger på forsiden.
 - [Fixed] Forsiden viser nå faktiske nedlastninger for hver dag, uke, måned, år og alltid.
 
-Youkok2 - 3.0.0-pl  (19. november 2017)
-=======================================
+Youkok2 - 3.0.0-pl    (19. november 2017)
+=========================================
 
 - [Info] Total omskrivning.
 - [Technical] Skrevet om hele nettsiden til Request/Response pattern i Slim3.
@@ -130,15 +137,15 @@ Youkok2 - 3.0.0-pl  (19. november 2017)
 - [Enhanced] Opplisting av mapper og filer bruker nå en listevisning i stede for rutenett.
 - [New] Skrevet om alle statiske sider.
 
-Youkok2 - 2.4.1-pl  (29. april 2016)
-====================================
+Youkok2 - 2.4.1-pl       (29. april 2016)
+=========================================
 
 - [Info] Bigfixes
 - [Fixed] Messages knakk...igjen.
 - [Fixed] Man kan nå bruke piltastene til å velge fag i søkeboksen.
 
-Youkok2 - 2.4.0-pl  (29. april 2016)
-====================================
+Youkok2 - 2.4.0-pl       (29. april 2016)
+=========================================
 
 - [Info] Bigfix and various
 - [Fixed] La til filendelse i nedlastningsurl for filer.
@@ -147,14 +154,14 @@ Youkok2 - 2.4.0-pl  (29. april 2016)
 - [Fixed] Rar spørring på personlige, tidligere nedlastninger som gjorde at enkelte nedlstninger forsvant.
 - [Enhanced] Meldinger kan nå ha wildcards.
 
-Youkok2 - 2.3.1-pl  (29. april 2016)
-====================================
+Youkok2 - 2.3.1-pl       (29. april 2016)
+=========================================
 
 - [Info] Bigfix
 - [Fixed] Nye nedlastninger manglet timestamp.
 
-Youkok2 - 2.3.0-pl  (27. april 2016)
-====================================
+Youkok2 - 2.3.0-pl       (27. april 2016)
+=========================================
 
 - [Info] Rewrites, Unit tests, bugfixes
 - [Enhanced] Skrevet om hvordan URLer blir parset.
@@ -166,8 +173,8 @@ Youkok2 - 2.3.0-pl  (27. april 2016)
 - [Fixed] Filer som ikke er godkjent eller som er skjulte vil være skjulte over alt i systemet nå.
 - [New] Implementert system for reverse URL oppslag, for å minimere sjansene for feil URLer i systemet.
 
-Youkok2 - 2.2.0-pl  (21. februar 2016)
-======================================
+Youkok2 - 2.2.0-pl     (21. februar 2016)
+=========================================
 
 - [Info] Bugfixes og ymse
 - [Fixed] Småplukk på stylingen i arkivet.
@@ -179,27 +186,27 @@ Youkok2 - 2.2.0-pl  (21. februar 2016)
         byttet fagkode eller navn.
 - [New] På forsiden vises nå de siste 15 besøkte fagene.
 
-Youkok2 - 2.1.1-pl  (1. desember 2015)
-======================================
+Youkok2 - 2.1.1-pl     (1. desember 2015)
+=========================================
 
 - [Info] Bugfixes
 - [Fixed] Forsiden viste feil tall for populære fag og elementer.
 
-Youkok2 - 2.1.0-pl  (29. november 2015)
-=======================================
+Youkok2 - 2.1.0-pl    (29. november 2015)
+=========================================
 
 - [Info] Fixes og mest populære fag
 - [Fixes] Stavet GitHub korrekt i footeren.
 - [New] På forsiden vises nå de mest populære fagene.
 
-Youkok2 - 2.0.1-pl  (3. november 2015)
-======================================
+Youkok2 - 2.0.1-pl     (3. november 2015)
+=========================================
 
 - [Info] Småfixes
 - [Enhanced] Viser nå eksamensdatoer for fag som har mappearbeid.
 
-Youkok2 - 2.0.0-pl  (20. september 2015)
-========================================
+Youkok2 - 2.0.0-pl   (20. september 2015)
+=========================================
 
 - [Info] Prettification
 - [Enhanced] Flyttet alt av HTML ut av programmeringsstuff.
@@ -210,43 +217,43 @@ Youkok2 - 2.0.0-pl  (20. september 2015)
 - [Fixed] Korrekt brukernavn blir nå lagret i databasen.
 - [Fixed] Valg av element i søkemenyen funker igjen.
 
-Youkok2 - 1.3.4-pl  (26. mai 2015)
-====================================
+Youkok2 - 1.3.4-pl         (26. mai 2015)
+=========================================
 
 - [Info] Bugfixes och søk
 - [Fixed] Diverse bugs.
 - [Fixed] Søk funker igjen.
 - [Other] Mindre speedboost.
 
-Youkok2 - 1.3.3-pl  (25. mai 2015)
-====================================
+Youkok2 - 1.3.3-pl         (25. mai 2015)
+=========================================
 
 - [Info] Bugfixes
 - [Fixed] Fikset bugs relatert til caching (igjen).
 - [New] Favicon!!!!!
 
-Youkok2 - 1.3.2-pl  (22. mai 2015)
-====================================
+Youkok2 - 1.3.2-pl         (22. mai 2015)
+=========================================
 
 - [Info] Bugfixes
 - [Fixed] Fikset bugs relatert til caching.
 
-Youkok2 - 1.3.1-pl  (16. mai 2015)
-====================================
+Youkok2 - 1.3.1-pl         (16. mai 2015)
+=========================================
 
 - [Info] Bugfixes
 - [Fixed] Fikset nedtelling til eksamen.
 
-Youkok2 - 1.3.0-pl  (11. mai 2015)
-====================================
+Youkok2 - 1.3.0-pl         (11. mai 2015)
+=========================================
 
 - [Info] Bugfixes, meldinger og nedtelling
 - [Enhanced] Backend stuff.
 - [New] Statiske medlinger.
 - [New] Nedtelling til eksamen!
 
-Youkok2 - 1.2.2-pl  (11. april 2015)
-====================================
+Youkok2 - 1.2.2-pl       (11. april 2015)
+=========================================
 
 - [Info] Minor, tekst og meny
 - [Removed] Privacy-siden er fjernet da den egentlig ikke ga noen mening.
@@ -256,8 +263,8 @@ Youkok2 - 1.2.2-pl  (11. april 2015)
 - [New] Reintrodusert menyen for hvert enkelt element i kokeboka. Menyen gjør ikke så mye i dag, men mye av funksjonaliteten
         som ble fjernet ved overgangen til 1.0.0 vil legges til her igjen.
 
-Youkok2 - 1.2.1-pl  (25. februar 2015)
-======================================
+Youkok2 - 1.2.1-pl     (25. februar 2015)
+=========================================
 
 - [Info] Minor og bugfixes
 - [New] Når man poster en link hentes automatisk tittelen til siden og foreslår denne som navn. Man står fremdeles
@@ -266,8 +273,8 @@ Youkok2 - 1.2.1-pl  (25. februar 2015)
 - [Enhanced] Byggescript.
 - [Enhanced] Fjernet flere legacy ting i databasen.
 
-Youkok2 - 1.2.0-pl  (25. februar 2015)
-======================================
+Youkok2 - 1.2.0-pl     (25. februar 2015)
+=========================================
 
 - [Info] Bugfixes og reimplementering
 - [New] Man kan laste opp filer på siden igjen!
@@ -287,16 +294,16 @@ Youkok2 - 1.2.0-pl  (25. februar 2015)
 - [Removed] Batchnedlastning av filer som .zip er fjernet.
 - [Other] Ble kvitt enda mer legacy kode.
 
-Youkok2 - 1.1.0-pl  (29. januar 2015)
-=====================================
+Youkok2 - 1.1.0-pl      (29. januar 2015)
+=========================================
 
 - [Info] Legacy code removal
 - [Enhanced] Systemet bruker nå nye fysiske plasseringer til filer som er raskere å hente frem.
 - [Fixed] Fjernet en del legacy kode fra systemet som var nødvendig for oppgradering.
 - [Fixed] Søk på eksisterende emner fungerte ikke.
 
-Youkok2 - 1.0.0-pl (29. januar 2015)
-====================================
+Youkok2 - 1.0.0-pl      (29. januar 2015)
+=========================================
 
 - [Info] Komplett omskrivning av hele kildekoden
 - [Enhanced] Nettsiden bruker nå "mobile first"-prinsippet til Bootstrap.
@@ -309,8 +316,8 @@ Youkok2 - 1.0.0-pl (29. januar 2015)
 - [Fixed] Feil som gjorde at cache ble hengende igjen.
 - [Fixed] Antall millisekunder siden bruker på å laste er ikke lenget cachet.
 
-Youkok2 - 0.4.0-pl (13. oktober, 2014)
-======================================
+Youkok2 - 0.4.0-pl    (13. oktober, 2014)
+=========================================
 
 - [Info] Ny funksjonalitet
 - [New] Se detaljer om en fil/link/mappe ved å høyreklikke og velge 'Detaljer'.
@@ -325,8 +332,8 @@ Youkok2 - 0.3.1.-pl (29. september, 2014)
 - [Info] Hotfix.
 - [Fixed] Jeg ødela compression av js-fila.
 
-Youkok2 - 0.3.0-pl (29. september, 2014)
-========================================
+Youkok2 - 0.3.0-pl  (29. september, 2014)
+=========================================
 
 - [Info] Ny funksjonalitet.
 - [New] Man kan nå opprette linker som linker direkte til sider og enkeltfiler.
@@ -339,14 +346,14 @@ Youkok2 - 0.3.0-pl (29. september, 2014)
 - [Fixed] Feil som gjorde at antall flagg for elementer også telte lukkede flagg.
 - [Fixed] Feil som gjorde at lukking av et flag ikke ble oppdatert på grunn av cache.
 
-Youkok2 - 0.2.1-pl (25. august, 2014)
-=====================================
+Youkok2 - 0.2.1-pl     (25. august, 2014)
+=========================================
 
 - [Info] Hotfix.
 - [Fixed] Rar feil som gjorde at linking til zip-filer ikke fungerte.
 
-Youkok2 - 0.2.0-pl (25. august, 2014)
-=====================================
+Youkok2 - 0.2.0-pl     (25. august, 2014)
+=========================================
 
 - [Info] Flere bugfixes og andre ting.
 - [New] Batch/zip nedlastning av alle filer i en mappe.
@@ -363,8 +370,8 @@ Youkok2 - 0.2.0-pl (25. august, 2014)
 - [Other] La til Phinx og Composer under 'Teknisk om nettsiden' på 'Om'-siden.
 - [Enhanced] Søkefunksjonen er nå funksjonell for brukere på mobil.
 
-Youkok2 - 0.1.1-pl (7. august, 2014)
-====================================
+Youkok2 - 0.1.1-pl      (7. august, 2014)
+=========================================
 
 - [Info] Ny funksjonalitet.
 - [New] Søkefunksjon.
@@ -376,8 +383,8 @@ Youkok2 - 0.1.1-pl (7. august, 2014)
 - [Fixed] Duplikate filer fikk feil navn.
 - [Enhanced] Fjernet drøssevis av ikoner som ikke var i bruk.
 
-Youkok2 - 0.1.0-pl (4. august, 2014)
-====================================
+Youkok2 - 0.1.0-pl      (4. august, 2014)
+=========================================
 
 - [Info] First Public Release.
 - [Info] Fjernet påkrevd NTNU-identifisering og Wall-of-Shame-konseptet.
@@ -399,8 +406,8 @@ Youkok2 - 0.1.0-pl (4. august, 2014)
 - [Enhanced] Rapportering gir nå penere tilbakemelding
 - [Other] Mange mindre tekstlige endringer.
 
-Youkok2 - 0.0.1-c (2. mai, 2014)
-================================
+Youkok2 - 0.0.1-c          (2. mai, 2014)
+=========================================
 
 - [Info] Closed Charlie Version.
 - [Enhanced] Meldinger ser penere ut.
@@ -430,8 +437,8 @@ Youkok2 - 0.0.1-c (2. mai, 2014)
 - [Changed] Rekkefølgen og innholdet i headeren.
 - [Other] Masse andre mindre greier.
 
-Youkok2 - 0.0.1-b (22. april, 2014)
-===================================
+Youkok2 - 0.0.1-b       (22. april, 2014)
+=========================================
 
 - [Info] Closed Beta Version.
 - [New] Det er nå mulig for brukere å endre passord.
@@ -455,8 +462,8 @@ Youkok2 - 0.0.1-b (22. april, 2014)
 - [Other] Skrev om nesten alle tekstene på siden.
 - [Other] Masse, masse feilrettinger.
 
-Youkok2 - 0.0.1-a (18. april, 2014)
-===================================
+Youkok2 - 0.0.1-a       (18. april, 2014)
+=========================================
 
 - [Info] Closed Alpha Version
 - [Fixed] Context meny i arkivet viste valg man ikke hadde rettigheter til å benytte.
@@ -473,7 +480,7 @@ Youkok2 - 0.0.1-a (18. april, 2014)
 - [New] Implementasjon av 'Slett'- og 'Nytt navn'-flagg.
 - [Other] Masse, masse andre fixes og forbedringer.
 
-Youkok2 - 0.0.0-dev (1. oktober, 2013)
-======================================
+Youkok2 -    0.0.0-dev (1. oktober, 2013)
+=========================================
 
 - [Info] Initial commit

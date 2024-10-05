@@ -118,7 +118,6 @@ class Services
             new MostPopularCoursesService(
                 $container->get(CacheService::class),
                 $container->get(DownloadService::class),
-                $container->get(ElementService::class),
                 $container->get(CourseMapper::class),
                 $container->get('logger')
             )

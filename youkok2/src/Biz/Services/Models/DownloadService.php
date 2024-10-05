@@ -93,7 +93,7 @@ class DownloadService
     /**
      * @throws Exception
      */
-    public function getMostPopularCurseFromDelta(MostPopularCourse $delta): Collection
+    public function getMostPopularCursesFromDelta(MostPopularCourse $delta, int $limit): Collection
     {
         $query = Element::select(Element::ALL_FIELDS)
             ->where('deleted', false)
@@ -120,7 +120,9 @@ class DownloadService
                 break;
         }
 
-        return $query->get();
+        return $query
+            ->limit($limit)
+            ->get();
     }
 
     /**

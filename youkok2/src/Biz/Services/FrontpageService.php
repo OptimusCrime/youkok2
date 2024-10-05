@@ -134,7 +134,7 @@ class FrontpageService
             return json_decode($cache, true);
         }
 
-        $payload = $this->courseService->getLastVisitedCourses();
+        $payload = $this->courseService->getLastVisitedCourses(static::SERVICE_LIMIT);
 
         $data = $this->courseMapper->mapLastVisited($routeParser, $payload);
 

@@ -118,7 +118,6 @@ class UpdateDownloadsJobService implements JobServiceInterface
         }
 
         foreach (MostPopularCourse::collection() as $delta) {
-            $this->cacheService->delete(CacheKeyGenerator::keyForMostPopularCoursesSetForDelta($delta));
             $this->cacheService->delete(CacheKeyGenerator::keyForMostPopularCoursesForDelta($delta));
         }
     }

@@ -42,7 +42,7 @@ class CourseService
     /**
      * @throws RedisException
      */
-    public function getLastVisitedCourses(): Collection
+    public function getLastVisitedCourses(int $limit): Collection
     {
         return Element::select(Element::ALL_FIELDS)
             ->where('directory', true)
@@ -50,6 +50,7 @@ class CourseService
             ->whereNull('parent')
             ->whereNotNull('last_visited')
             ->orderBy('last_visited', 'DESC')
+            ->limit($limit)
             ->get();
     }
 
