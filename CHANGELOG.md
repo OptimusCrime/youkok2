@@ -1,3 +1,10 @@
+Youkok2 - 6.0.2-pl     (17. oktober 2024)
+=========================================
+
+- [Info] Fixxxes
+- [Fix] Problemer med caching av mest populære filer.
+- [Improvement] Fjernet litt ubrukt kode og ryddet opp litt.
+
 Youkok2 - 6.0.1-pl      (5. oktober 2024)
 =========================================
 
@@ -18,7 +25,7 @@ Youkok2 - 6.0.0-pl   (23. september 2024)
 - [Removal] Alle spørringer henter nå alle attributter i `elements`-tabellen.
 - [Removal] Variabler på model-klassene, som bare lagde problemer.
 - [Improvement] Forbedret logging av feilmeldinger i stede for å legge exceptions til default error
--               handler.
+                handler.
 - [Improvement] Forenklet caching drastisk.
 - [Improvement] Caching av hele output-payload, for å redusere unødvendig arbeid.
 - [Change] Drastisk forenklet og redusert hvordan vi logger nedlastninger, som gjør at databasen

@@ -7,6 +7,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 use Illuminate\Support\Collection;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\InvalidValueException;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\SelectStatements;
 use Youkok\Enums\MostPopularCourse;
@@ -58,6 +59,7 @@ class DownloadService
 
     /**
      * @throws Exception
+     * @throws InvalidValueException
      */
     public function getMostPopularElementsFromDelta(MostPopularElement $delta): Collection
     {
@@ -65,6 +67,7 @@ class DownloadService
             ->where('deleted', false)
             ->where('pending', false)
             ->where('requested_deletion', false)
+            ->where('directory', false)
             ->whereNotNull('parent');
 
         switch ($delta->getValue()) {
@@ -81,9 +84,10 @@ class DownloadService
                 $query = $query->orderBy('downloads_year', 'DESC');
                 break;
             case MostPopularElement::ALL()->getValue():
-            default:
                 $query = $query->orderBy('downloads_all', 'DESC');
                 break;
+            default:
+                throw new InvalidValueException('Unexpected most popular element value: ' . $delta->getValue());
 
         }
 
@@ -115,9 +119,10 @@ class DownloadService
                 $query = $query->orderBy('downloads_year', 'DESC');
                 break;
             case MostPopularCourse::ALL()->getValue():
-            default:
                 $query = $query->orderBy('downloads_all', 'DESC');
                 break;
+            default:
+                throw new InvalidValueException('Unexpected most popular course value: ' . $delta->getValue());
         }
 
         return $query

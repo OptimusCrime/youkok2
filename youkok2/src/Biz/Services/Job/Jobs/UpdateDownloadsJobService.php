@@ -112,8 +112,12 @@ class UpdateDownloadsJobService implements JobServiceInterface
      */
     private function clearMostPopularCaches(): void
     {
+        // Clear set before clearing the actual output cache, so that we don't get a race condition
         foreach (MostPopularElement::collection() as $delta) {
             $this->cacheService->delete(CacheKeyGenerator::keyForMostPopularElementsSetForDelta($delta));
+        }
+
+        foreach (MostPopularElement::collection() as $delta) {
             $this->cacheService->delete(CacheKeyGenerator::keyForMostPopularElementsForDelta($delta));
         }
 

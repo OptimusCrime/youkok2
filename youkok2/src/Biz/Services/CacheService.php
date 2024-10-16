@@ -5,7 +5,6 @@ use Redis;
 
 use RedisException;
 use Youkok\Common\Utilities\CacheKeyGenerator;
-use Youkok\Enums\MostPopularCourse;
 use Youkok\Enums\MostPopularElement;
 
 class CacheService
@@ -23,15 +22,6 @@ class CacheService
     public function getMostPopularElementsSetFromDelta(MostPopularElement $delta): array
     {
         $key = CacheKeyGenerator::keyForMostPopularElementsSetForDelta($delta);
-        return $this->getSortedRangeByKey($key);
-    }
-
-    /**
-     * @throws RedisException
-     */
-    public function getMostPopularCoursesSetFromDelta(MostPopularCourse $delta): array
-    {
-        $key = CacheKeyGenerator::keyForMostPopularCoursesSetForDelta($delta);
         return $this->getSortedRangeByKey($key);
     }
 
@@ -80,7 +70,7 @@ class CacheService
     /**
      * @throws RedisException
      */
-    public function updateValueInSet($setKey, $increase, $id): void
+    public function updateValueInSet(string $setKey, int $increase, string $id): void
     {
         $this->cache->zIncrBy($setKey, $increase, $id);
     }

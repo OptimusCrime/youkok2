@@ -9,6 +9,7 @@ use Monolog\Logger;
 use RedisException;
 use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\InvalidValueException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Mappers\CourseMapper;
 use Youkok\Biz\Services\Models\DownloadService;
@@ -37,6 +38,7 @@ class MostPopularCoursesService
     /**
      * @throws RedisException
      * @throws Exception
+     * @throws InvalidValueException
      */
     public function getMostPopularCourses(RouteParserInterface $routeParser, MostPopularCourse $delta, int $limit): array
     {
@@ -55,8 +57,8 @@ class MostPopularCoursesService
     }
 
     /**
-     * @throws RedisException
      * @throws Exception
+     * @throws InvalidValueException
      */
     private function mapMostPopularCourse(RouteParserInterface $routeParser, Collection $elements, MostPopularCourse $delta, int $limit): array
     {
@@ -77,9 +79,10 @@ class MostPopularCoursesService
                 $fields[] = CourseMapper::DOWNLOADS_YEAR;
                 break;
             case MostPopularCourse::ALL()->getValue():
-            default:
                 $fields[] = CourseMapper::DOWNLOADS_ALL;
                 break;
+            default:
+                throw new InvalidValueException('Unexpected most popular course value: ' . $delta->getValue());
 
         }
 

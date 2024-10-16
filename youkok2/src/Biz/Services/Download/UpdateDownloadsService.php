@@ -67,7 +67,7 @@ class UpdateDownloadsService
         foreach (MostPopularElement::collection() as $delta) {
             $setKey = CacheKeyGenerator::keyForMostPopularElementsSetForDelta($delta);
 
-            $this->cacheService->updateValueInSet($setKey, 1, $element->id);
+            $this->cacheService->updateValueInSet($setKey, 1, (string) $element->id);
 
             $this->cacheService->delete(CacheKeyGenerator::keyForMostPopularElementsForDelta($delta));
         }

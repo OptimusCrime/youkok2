@@ -16,14 +16,9 @@ class CacheKeyGenerator
         return 'most_popular_elements_' . $delta->getValue();
     }
 
-    public static function keyForMostPopularCoursesSetForDelta(MostPopularCourse $delta): string
+    public static function keyForMostPopularCoursesForDelta(MostPopularCourse $delta): string
     {
-        return 'most_popular_courses_set_' . $delta->getValue();
-    }
-
-    public static function keyForMostPopularCoursesForDelta(string $delta): string
-    {
-        return 'most_popular_courses_' . $delta;
+        return 'most_popular_courses_' . $delta->getValue();
     }
 
     public static function keyForTotalNumberOfDownloads(): string

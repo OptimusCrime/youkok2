@@ -8,6 +8,7 @@ use Monolog\Logger;
 use RedisException;
 use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\InvalidValueException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\Models\DownloadService;
@@ -42,6 +43,7 @@ class MostPopularElementsService
 
     /**
      * @throws RedisException
+     * @throws InvalidValueException
      * @throws Exception
      */
     public function getMostPopularElements(RouteParserInterface $routeParser, MostPopularElement $delta, int $limit): array
@@ -60,6 +62,10 @@ class MostPopularElementsService
 
         $elements = [];
         foreach ($mostPopularSet as $id => $downloads) {
+            if ((int)$downloads === 0) {
+                break;
+            }
+
             try {
                 $element = $this->elementService->getElement(
                     new SelectStatements('id', $id),
@@ -140,6 +146,7 @@ class MostPopularElementsService
 
     /**
      * @throws RedisException
+     * @throws InvalidValueException
      * @throws Exception
      */
     private function buildMostPopularCacheSet(MostPopularElement $delta): void
@@ -149,10 +156,13 @@ class MostPopularElementsService
 
         foreach ($elements as $element) {
             $downloads = static::getDownloadsFromElement($element, $delta);
-            $this->cacheService->insertIntoSet($key, (int)$downloads, (string)$element->id);
+            $this->cacheService->insertIntoSet($key, $downloads, (string)$element->id);
         }
     }
 
+    /**
+     * @throws InvalidValueException
+     */
     private static function getDownloadsFromElement(Element $element, MostPopularElement $delta): int
     {
         switch ($delta->getValue()) {
@@ -165,8 +175,9 @@ class MostPopularElementsService
             case MostPopularElement::YEAR()->getValue():
                 return $element->downloads_year;
             case MostPopularElement::ALL()->getValue():
-            default:
                 return $element->downloads_all;
+            default:
+                throw new InvalidValueException('Unexpected most popular element value: ' . $delta->getValue());
         }
     }
 }
