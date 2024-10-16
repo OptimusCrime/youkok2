@@ -10,10 +10,9 @@ use Slim\Interfaces\RouteParserInterface;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Exceptions\InvalidValueException;
 use Youkok\Biz\Services\CacheService;
+use Youkok\Biz\Services\Download\DownloadCacheSetService;
 use Youkok\Biz\Services\Mappers\ElementMapper;
-use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Biz\Services\Models\ElementService;
-use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
 use Youkok\Common\Utilities\SelectStatements;
 use Youkok\Enums\MostPopularElement;
@@ -21,23 +20,23 @@ use Youkok\Enums\MostPopularElement;
 class MostPopularElementsService
 {
     private CacheService $cacheService;
-    private DownloadService $downloadService;
     private ElementService $elementService;
     private ElementMapper $elementMapper;
+    private DownloadCacheSetService $downloadCacheSetService;
     private Logger $logger;
 
     public function __construct(
         CacheService    $cacheService,
-        DownloadService $downloadService,
         ElementService  $elementService,
         ElementMapper   $elementMapper,
+        DownloadCacheSetService $downloadCacheSetService,
         Logger          $logger
     )
     {
         $this->cacheService = $cacheService;
-        $this->downloadService = $downloadService;
         $this->elementService = $elementService;
         $this->elementMapper = $elementMapper;
+        $this->downloadCacheSetService = $downloadCacheSetService;
         $this->logger = $logger;
     }
 
@@ -54,11 +53,7 @@ class MostPopularElementsService
             return json_decode($cache, true);
         }
 
-        $mostPopularSet = $this->cacheService->getMostPopularElementsSetFromDelta($delta);
-        if (count($mostPopularSet) === 0) {
-            $this->buildMostPopularCacheSet($delta);
-            $mostPopularSet = $this->cacheService->getMostPopularElementsSetFromDelta($delta);
-        }
+        $mostPopularSet = $this->downloadCacheSetService->getMostPopularElementsForDeltaFromCacheSetOrCreatIfNecessary($delta);
 
         $elements = [];
         foreach ($mostPopularSet as $id => $downloads) {
@@ -142,42 +137,5 @@ class MostPopularElementsService
         }
 
         return $response;
-    }
-
-    /**
-     * @throws RedisException
-     * @throws InvalidValueException
-     * @throws Exception
-     */
-    private function buildMostPopularCacheSet(MostPopularElement $delta): void
-    {
-        $elements = $this->downloadService->getMostPopularElementsFromDelta($delta);
-        $key = CacheKeyGenerator::keyForMostPopularElementsSetForDelta($delta);
-
-        foreach ($elements as $element) {
-            $downloads = static::getDownloadsFromElement($element, $delta);
-            $this->cacheService->insertIntoSet($key, $downloads, (string)$element->id);
-        }
-    }
-
-    /**
-     * @throws InvalidValueException
-     */
-    private static function getDownloadsFromElement(Element $element, MostPopularElement $delta): int
-    {
-        switch ($delta->getValue()) {
-            case MostPopularElement::DAY()->getValue():
-                return $element->downloads_today;
-            case MostPopularElement::WEEK()->getValue():
-                return $element->downloads_week;
-            case MostPopularElement::MONTH()->getValue():
-                return $element->downloads_month;
-            case MostPopularElement::YEAR()->getValue():
-                return $element->downloads_year;
-            case MostPopularElement::ALL()->getValue():
-                return $element->downloads_all;
-            default:
-                throw new InvalidValueException('Unexpected most popular element value: ' . $delta->getValue());
-        }
     }
 }

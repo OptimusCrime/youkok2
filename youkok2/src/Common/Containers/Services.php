@@ -18,6 +18,7 @@ use Youkok\Biz\Services\ArchiveService;
 use Youkok\Biz\Services\Auth\AuthService;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\CoursesLookupService;
+use Youkok\Biz\Services\Download\DownloadCacheSetService;
 use Youkok\Biz\Services\Download\DownloadFileInfoService;
 use Youkok\Biz\Services\FrontpageService;
 use Youkok\Biz\Services\Job\Jobs\UpdateDownloadsJobService;
@@ -104,12 +105,18 @@ class Services
             )
         );
 
+        $container->set(DownloadCacheSetService::class,
+            new DownloadCacheSetService(
+            $container->get(CacheService::class),
+            $container->get(DownloadService::class)
+        ));
+
         $container->set(MostPopularElementsService::class,
             new MostPopularElementsService(
                 $container->get(CacheService::class),
-                $container->get(DownloadService::class),
                 $container->get(ElementService::class),
                 $container->get(ElementMapper::class),
+                $container->get(DownloadCacheSetService::class),
                 $container->get('logger')
             )
         );
@@ -126,7 +133,8 @@ class Services
         $container->set(UpdateDownloadsService::class,
             new UpdateDownloadsService(
                 $container->get(CacheService::class),
-                $container->get(DownloadService::class)
+                $container->get(DownloadService::class),
+                $container->get(DownloadCacheSetService::class)
             )
         );
 
@@ -164,6 +172,7 @@ class Services
             new UpdateDownloadsJobService(
                 $container->get(CacheService::class),
                 $container->get(ElementService::class),
+                $container->get(DownloadCacheSetService::class),
             )
         );
 

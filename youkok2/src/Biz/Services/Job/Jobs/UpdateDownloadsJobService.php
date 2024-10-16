@@ -6,7 +6,9 @@ use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Support\Collection;
 use RedisException;
 use Youkok\Biz\Exceptions\ElementNotFoundException;
+use Youkok\Biz\Exceptions\InvalidValueException;
 use Youkok\Biz\Services\CacheService;
+use Youkok\Biz\Services\Download\DownloadCacheSetService;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
 use Youkok\Common\Utilities\CacheKeyGenerator;
@@ -18,19 +20,23 @@ class UpdateDownloadsJobService implements JobServiceInterface
 {
     private CacheService $cacheService;
     private ElementService $elementService;
+    private DownloadCacheSetService $downloadCacheSetService;
 
     public function __construct(
         CacheService $cacheService,
         ElementService $elementService,
+        DownloadCacheSetService $downloadCacheSetService
     )
     {
         $this->cacheService = $cacheService;
         $this->elementService = $elementService;
+        $this->downloadCacheSetService = $downloadCacheSetService;
     }
 
     /**
      * @throws RedisException
      * @throws ElementNotFoundException
+     * @throws InvalidValueException
      */
     public function run(): void
     {
@@ -109,15 +115,15 @@ class UpdateDownloadsJobService implements JobServiceInterface
 
     /**
      * @throws RedisException
+     * @throws InvalidValueException
      */
     private function clearMostPopularCaches(): void
     {
-        // Clear set before clearing the actual output cache, so that we don't get a race condition
         foreach (MostPopularElement::collection() as $delta) {
-            $this->cacheService->delete(CacheKeyGenerator::keyForMostPopularElementsSetForDelta($delta));
-        }
+            // Refresh the downloads for all the elements in the cache
+            $this->downloadCacheSetService->createMostPopularCacheSetForDelta($delta);
 
-        foreach (MostPopularElement::collection() as $delta) {
+            // Delete the cached output from the endpoint
             $this->cacheService->delete(CacheKeyGenerator::keyForMostPopularElementsForDelta($delta));
         }
 

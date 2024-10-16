@@ -1,3 +1,9 @@
+Youkok2 - 6.0.3-pl     (17. oktober 2024)
+=========================================
+
+- [Info] Fixxxes
+- [Fix] Caching forblir et av universets største utfordringer...
+
 Youkok2 - 6.0.2-pl     (17. oktober 2024)
 =========================================
 

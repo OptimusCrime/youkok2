@@ -4,6 +4,7 @@ namespace Youkok\Biz\Services\Download;
 use Carbon\Carbon;
 use Exception;
 use RedisException;
+use Youkok\Biz\Exceptions\InvalidValueException;
 use Youkok\Biz\Services\CacheService;
 use Youkok\Biz\Services\Models\DownloadService;
 use Youkok\Common\Models\Element;
@@ -15,11 +16,13 @@ class UpdateDownloadsService
 {
     private CacheService $cacheService;
     private DownloadService $downloadService;
+    private DownloadCacheSetService $downloadCacheSetService;
 
-    public function __construct(CacheService $cacheService, DownloadService $downloadService)
+    public function __construct(CacheService $cacheService, DownloadService $downloadService, DownloadCacheSetService $downloadCacheSetService)
     {
         $this->cacheService = $cacheService;
         $this->downloadService = $downloadService;
+        $this->downloadCacheSetService = $downloadCacheSetService;
     }
 
     /**
@@ -61,13 +64,17 @@ class UpdateDownloadsService
 
     /**
      * @throws RedisException
+     * @throws InvalidValueException
      */
     private function addAndFlushDownloadForElementInMostPopularSets(Element $element): void
     {
         foreach (MostPopularElement::collection() as $delta) {
-            $setKey = CacheKeyGenerator::keyForMostPopularElementsSetForDelta($delta);
+            // REMEMBER! Ensure that the cache set is created before increasing the value
+            $this->downloadCacheSetService->createMostPopularElementsForDeltaCacheIfNecessary($delta);
 
-            $this->cacheService->updateValueInSet($setKey, 1, (string) $element->id);
+            $key = CacheKeyGenerator::keyForMostPopularElementsSetForDelta($delta);
+
+            $this->cacheService->updateValueInSet($key, 1, (string) $element->id);
 
             $this->cacheService->delete(CacheKeyGenerator::keyForMostPopularElementsForDelta($delta));
         }
