@@ -25,7 +25,19 @@ class InfoBoxesContainer extends Component {
     return (
         <>
             <div className="row">
-
+                <div className="col-xs-12 archive-title">
+                    <div className="alert alert-success" role="alert">
+                        <p>
+                            Lyst til å prøve noe nytt? Vi har lansert{" "}
+                            <a href="https://apps.apple.com/us/app/boost-me-boost-you/id6739365322" target="_blank">Boost Me - A social game experiment</a>{" "}til iPhone.
+                        </p>
+                        <p>
+                            Last ned fra{" "}<a href="https://apps.apple.com/us/app/boost-me-boost-you/id6739365322" target="_blank">App Store</a>{" "}eller besøk{" "}<a href="https://boostmeapp.com" target="_blank">boostmeapp.com</a>{" "}for mer informasjon.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div className="row">
                     <div className="col-xs-12 archive-title">
                         <div className="alert alert-success" role="alert">
                             {downloadsRemaining < 0 ? (
