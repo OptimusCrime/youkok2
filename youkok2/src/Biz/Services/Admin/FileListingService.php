@@ -21,7 +21,15 @@ class FileListingService
     {
         return $this->filesService->buildTree(
             $routeParser,
-            $this->adminCourseService->getAllNonEmptyCourses()
+            $this->adminCourseService->getAllCourses()
+        );
+    }
+
+    public function getOne(RouteParserInterface $routeParser, int $id): array
+    {
+        return $this->filesService->buildTree(
+            $routeParser,
+            $this->adminCourseService->getSingleCourse($id)
         );
     }
 

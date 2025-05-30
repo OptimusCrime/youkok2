@@ -5,7 +5,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 
 use Slim\Interfaces\RouteParserInterface;
-use Youkok\Biz\Exceptions\ElementNotFoundException as ElementNotFoundExceptionAlias;
+use Youkok\Biz\Exceptions\ElementNotFoundException;
 use Youkok\Biz\Services\Mappers\ElementMapper;
 use Youkok\Biz\Services\Models\ElementService;
 use Youkok\Common\Models\Element;
@@ -25,7 +25,7 @@ class ArchiveService
     }
 
     /**
-     * @throws ElementNotFoundExceptionAlias
+     * @throws ElementNotFoundException
      */
     public function get(int $id): Collection
     {
@@ -43,7 +43,7 @@ class ArchiveService
     }
 
     /**
-     * @throws ElementNotFoundExceptionAlias
+     * @throws ElementNotFoundException
      */
     public function getArchiveElementFromUri(string $uri): Element
     {
@@ -58,7 +58,7 @@ class ArchiveService
     }
 
     /**
-     * @throws ElementNotFoundExceptionAlias
+     * @throws ElementNotFoundException
      */
     public function getBreadcrumbsForElement(RouteParserInterface $routeParser, Element $element): array
     {
@@ -70,7 +70,7 @@ class ArchiveService
     }
 
     /**
-     * @throws ElementNotFoundExceptionAlias
+     * @throws ElementNotFoundException
      * @throws Exception
      */
     public function getSiteTitle(Element $element): string
@@ -82,7 +82,7 @@ class ArchiveService
         $course = $element->getCourse();
 
         if ($course === null) {
-            throw new ElementNotFoundExceptionAlias('No course loaded for element ' . $element->id);
+            throw new ElementNotFoundException('No course loaded for element ' . $element->id);
         }
 
         return 'Bidrag i '
@@ -94,7 +94,7 @@ class ArchiveService
     }
 
     /**
-     * @throws ElementNotFoundExceptionAlias
+     * @throws ElementNotFoundException
      * @throws Exception
      */
     public function getSiteDescription(Element $element): string
@@ -110,7 +110,7 @@ class ArchiveService
         $course = $element->getCourse();
 
         if ($course === null) {
-            throw new ElementNotFoundExceptionAlias('No course loaded for element ' . $element->id);
+            throw new ElementNotFoundException('No course loaded for element ' . $element->id);
         }
 
         return $this->getSiteTitle($course);

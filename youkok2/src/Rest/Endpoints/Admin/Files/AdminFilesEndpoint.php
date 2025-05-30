@@ -63,6 +63,23 @@ class AdminFilesEndpoint extends BaseRestEndpoint
         }
     }
 
+    public function listSingle(Request $request, Response $response, array $args): Response
+    {
+        try {
+            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+
+            return $this->outputJson($response, [
+                'data' => $this->fileListingService->getOne($routeParser,
+                    (int) $args['id'],
+                )
+            ]);
+        } catch (Exception $ex) {
+            $this->logger->error($ex);
+
+            return $this->returnInternalServerError($response);
+        }
+    }
+
     public function put(Request $request, Response $response, array $args): Response
     {
         try {

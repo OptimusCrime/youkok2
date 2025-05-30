@@ -6,13 +6,22 @@ use Youkok\Common\Models\Element;
 
 class AdminCourseService
 {
-    public function getAllNonEmptyCourses(): array
+    public function getAllCourses(): array
     {
         $courses = Element
             ::select('id')
             ->where('directory', true)
-            ->where('empty', false)
             ->where('parent', null)
+            ->get();
+
+        return $this->mapCollectionToIdArray($courses);
+    }
+
+    public function getSingleCourse(int $id): array
+    {
+        $courses = Element
+            ::select('id')
+            ->where('id', $id)
             ->get();
 
         return $this->mapCollectionToIdArray($courses);
